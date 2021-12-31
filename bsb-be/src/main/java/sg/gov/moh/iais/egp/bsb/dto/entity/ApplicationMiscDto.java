@@ -54,4 +54,12 @@ public class ApplicationMiscDto extends BaseEntityDto {
     private String selectedAfc;
 
     private String processDecision;
+
+    private String suspensionType;
+
+    private Date suspensionStartDt;
+
+    private Date suspensionEndDt;
+
+    private String additionalComments;
 }

@@ -34,7 +34,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.CommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 
@@ -136,7 +135,7 @@ public class BiosafetyEnquiryDelegator {
         HttpServletRequest request = bpc.request;
         EnquiryDto enquiryDto = getSearchDto(request);
         String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
         enquiryDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO, enquiryDto);
     }

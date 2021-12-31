@@ -1,4 +1,6 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -14,7 +16,8 @@
 
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
-<c:set var="showClaimFields" value="${isRFC && !isRfi && specialSubLic}" scope="request"/>
+<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi && specialSubLic}"
+       scope="request"/>
 
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

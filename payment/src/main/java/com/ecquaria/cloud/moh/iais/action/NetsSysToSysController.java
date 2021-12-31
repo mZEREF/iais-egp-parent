@@ -8,6 +8,7 @@ import com.dbs.sgqr.generator.io.QRGeneratorResponse;
 import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -85,7 +86,8 @@ public class NetsSysToSysController {
 
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
-        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
+        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(
+                AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, reqNo).getEntity();
         String url=  ConfigUtil.getString( "rvl.baiduri.return.url");
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace('\n',' ');
@@ -146,7 +148,7 @@ public class NetsSysToSysController {
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrpNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
@@ -215,7 +217,7 @@ public class NetsSysToSysController {
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrpNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);

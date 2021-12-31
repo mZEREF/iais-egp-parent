@@ -83,6 +83,8 @@
             $premContent.find('.addPubHolDay').removeClass('hidden');
             $premContent.find('.addEvent').removeClass('hidden');
             //init opertation
+            $premContent.find('input[name="isPartEdit"]').val('');
+            $premContent.find("input[name='chooseExistData']").val('0');
             $premContent.find('div.operationDivGroup div.operationDiv').remove();
             $premContent.find('input[name="opLength"]').val(0);
             $premContent.find('input[name="retrieveflag"]').val(0);
@@ -182,10 +184,6 @@
                     fillForm('easMts',data,$premContent);
                     setAddress('easMts',data,$premContent);
                 }
-                //if Moving to new address need value from page 68859
-                $premContent.find("input[name='isPartEdit']").val('1');
-                $premContent.find("input[name='isEdit']").val('1');
-                $premContent.find("input[name='chooseExistData']").val('0');
                 dismissWaiting();
             } else if("-1" == premSelectVal) {
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -252,8 +250,6 @@
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
                             var eqHciCode= data.eqHciCode;
-                            $("input[name='isEdit']").val('1');
-
                             //copy ph form
                             //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
@@ -280,10 +276,6 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
-                            operationDel();
-                            var length = $currForm.find('div.operationDiv').length;
-                            console.log('Floor and Unit (premSelect): ' + length);
-                            $premContent.find('.opLength').val(length);
 
                             var allDayTime = "0";
                             //weekly
@@ -296,7 +288,7 @@
                                 //remove first field
                                 $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
                                 //remove first del btn
-                                $weeklyCountent.find('div.weeklyDiv .weeklyDel').remove();
+                                $weeklyCountent.find('div.weeklyDiv .weeklyDel:eq(0)').remove();
                                 //gen multi dropdown
                                 $weeklyCountent.find('select.Weekly').each(function () {
                                     $(this).multiSelect();
@@ -335,8 +327,6 @@
                                         }
                                         fillWeekly($thisDiv,premisesType,'Weekly',startHHVal,startMMVal,endHHVal,endMMVal,selectAllDay);
                                     }
-
-
                                 });
                             }
 
@@ -350,7 +340,7 @@
                             //remove first field
                             //$phCountent.find('div.form-group:eq(0)').remove();
                             //remove first del btn
-                            $phCountent.find('.pubHolidayDel').remove();
+                            $phCountent.find('.pubHolidayDel:eq(0)').remove();
                             //gen multi dropdown
                             $phCountent.find('select.PubHoliday').each(function () {
                                 $(this).multiSelect();
@@ -402,7 +392,7 @@
                                 //remove first field
 
                                 //remove first del btn
-                                $eventContent.find('.eventDel').remove();
+                                $eventContent.find('.eventDel:eq(0)').remove();
                                 //fill data
                                 $eventContent.find('div.eventDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -446,13 +436,19 @@
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                             if (eqHciCode=='true') {
-                                $premContent.find("input[name='isPartEdit']").val('1');
                                 $premContent.find('input[name="chooseExistData"]').val('0');
-                                //$('.premisesEdit').trigger('click');
                                 doEditPremise($premContent);
                             } else {
                                 $premContent.find('input[name="chooseExistData"]').val('1');
                             }
+                            $premContent.find('input[name="opLength"]').val($currForm.find('div.operationDiv').length);
+                            $premContent.find('input[name="weeklyLength"]').val($currForm.find('div.weeklyDiv').length);
+                            $premContent.find('input[name="eventLength"]').val($currForm.find('div.eventDiv').length);
+                            $premContent.find('input[name="phLength"]').val($currForm.find('div.pubHolidayDiv').length);
+                            operationDel();
+                            removeWeekly();
+                            removePh();
+                            removeEvent();
                         }
                         dismissWaiting();
                     },
@@ -559,7 +555,7 @@
                 removePremises();
                 retrieveAddr();
                 $('.addPubHolDay').unbind('click');
-                removePH();
+                //removePH();
                 coLocation();
                 cl();
                 preperChange();
@@ -616,12 +612,15 @@
         });
     };
 
-    function doEditPremise(premContent) {
-        premContent.find('input[name="isPartEdit"]').val('1');
+    function doEditPremise(premContent, isPartEdit) {
+        if (premContent == null) {
+            return;
+        }
+        premContent.find('input[name="isPartEdit"]').val('');
         var premType = premContent.find('input[name="premType"]').val();
         var existingData = premContent.find("input[name='chooseExistData']").val();
         console.log("Exist Data: " + existingData);
-        if ('1' == existingData) {
+        if ('1' == existingData && '1' != isPartEdit) {
             var $premSel = null;
             if ("ONSITE" == premType) {
                 $premSel = premContent.find('.onSiteSelect');
@@ -639,6 +638,10 @@
             unDisabledPartPage($('#premisesType'));
             unreadonlyPartPage($('#premisesType'));
             return;
+        }
+        if ('1' == isPartEdit) {
+            $('#isEditHiddenVal').val('1');
+            premContent.find('input[name="isPartEdit"]').val('1');
         }
         <!--unDisabled -->
         unDisabledPartPage(premContent);
@@ -680,17 +683,20 @@
         } else if ('EASMTS' == premType) {
             premDivName = 'new-premise-form-eas-mts';
         }
-
-        if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){
-            premContent.find('.addWeeklyDiv').removeClass('hidden');
+        if (!isEmpty(premDivName)) {
+            if (premContent.find('.' + premDivName + ' .weeklyDiv').length < ${weeklyCount}) {
+                premContent.find('.addWeekly').removeClass('hidden');
+                premContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .pubHolidayDiv').length < ${phCount}) {
+                premContent.find('.addPubHolDay').removeClass('hidden');
+                premContent.find('.addPhDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .eventDiv').length < ${eventCount}) {
+                premContent.find('.addEvent').removeClass('hidden');
+                premContent.find('.addEventDiv').removeClass('hidden');
+            }
         }
-        if(premContent.find('.'+premDivName+' .pubHolidayDiv').length < ${phCount}){
-            premContent.find('.addPhDiv').removeClass('hidden');
-        }
-        if(premContent.find('.'+premDivName+' .eventDiv').length < ${eventCount}){
-            premContent.find('.addEventDiv').removeClass('hidden');
-        }
-
         premContent.find('input.allDay:checked').each(function(){
             var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);

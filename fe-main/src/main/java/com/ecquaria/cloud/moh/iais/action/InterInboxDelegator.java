@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
@@ -33,12 +34,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -117,7 +114,7 @@ public class InterInboxDelegator {
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         initInboxDto(bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
-        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,IaisEGPHelper.isActiveMigrated() ? AppConsts.NO : AppConsts.YES);
+        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,ConfigHelper.getString("inbox.lic.print.flag","1"));
     }
 
     public void initToPage(BaseProcessClass bpc){
@@ -825,6 +822,16 @@ public class InterInboxDelegator {
                     }
                 }
             }
+            //check is base service
+            if(result){
+                result = checkIsBaseRenew(licIdValue);
+                if(!result){
+                    ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",false);
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"Special Service Licence need to renew together with Base Service Licence.");
+                    return;
+                }
+            }
+
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -833,7 +840,7 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }else{
-                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
+                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",false);
                 if(StringUtil.isEmpty(errorMessage.toString())){
                     String errorMessage2 = errorMap.get("errorMessage2");
                     if(StringUtil.isEmpty(errorMessage2)){
@@ -846,6 +853,57 @@ public class InterInboxDelegator {
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMessage.toString());
             }
         }
+    }
+
+    // check lic spec,select lic need have base
+    private boolean checkIsBaseRenew(List<String> licIds){
+        for (String licId : licIds) {
+            LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
+            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+            log.info(StringUtil.changeForLog("----- service svc type : "+ serviceDto.getSvcType()+"-------------"));
+            if(!ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType())){
+                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licId).getEntity();
+                if(IaisCommonUtils.isEmpty(entity)){
+                    log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id ------------------"));
+                    return false;
+                }else {
+                    boolean isHaveBase = false;
+                    List<String> baseLicIds = IaisCommonUtils.genNewArrayList( entity.size());
+                    for (LicBaseSpecifiedCorrelationDto licBaseSpecifiedCorrelationDto : entity){
+                        if(!isHaveBase && licIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
+                            isHaveBase = true;
+                        }
+                        if( !baseLicIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
+                            baseLicIds.add(licBaseSpecifiedCorrelationDto.getBaseLicId());
+                        }
+                    }
+                    if(!isHaveBase){
+                        for (String baseId : baseLicIds){
+                            LicenceDto licenceDto1 = licenceInboxClient.getRootLicenceDtoByOrgId(baseId).getEntity();
+                            if(licenceDto1 != null){
+                                List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceDto1.getId()).getEntity();
+                                if(IaisCommonUtils.isNotEmpty(apps)){
+                                    for (ApplicationDto a : apps) {
+                                        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                                                && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                                                && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                                                && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
+                                            isHaveBase = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id  in select lics------------------"));
+                        if(!isHaveBase){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public void licDoCease(BaseProcessClass bpc) throws IOException {

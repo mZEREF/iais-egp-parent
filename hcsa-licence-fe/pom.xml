@@ -87,12 +87,17 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.15.0</version>
+            <version>2.16.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.15.0</version>
+            <version>2.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.16.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -136,8 +141,8 @@
                             <targetPath>WEB-INF/classes/docTemplate</targetPath>
                         </resource>
                     </webResources>
-                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</packagingExcludes>
-                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</dependentWarExcludes>
+                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar,WEB-INF/lib/log4j-to-slf4j-2.13.3.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar,WEB-INF/lib/log4j-to-slf4j-2.13.3.jar</dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>

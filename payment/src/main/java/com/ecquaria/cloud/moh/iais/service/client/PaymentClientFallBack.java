@@ -48,7 +48,7 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> isTxnRef(List<String> txnRefNo){
+    public FeignResponseEntity<List<String>> isTxnRef(List<String> txnRefNo, String sysClientId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -56,7 +56,7 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
-    public FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(String reqRefNo) {
+    public FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(String sysClientId, String reqRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -64,7 +64,7 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
-    public FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(String reqRefNo) {
+    public FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(String clientId, String reqRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -72,7 +72,7 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
-    public FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(String reqRefNo) {
+    public FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(String sysClientId, String reqRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -80,7 +80,7 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
-    public FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto() {
+    public FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto(String sysClientId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

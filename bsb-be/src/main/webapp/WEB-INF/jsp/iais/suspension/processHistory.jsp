@@ -14,7 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                <%--@elvariable id="suspensionReinstatementDto" type="sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto"--%>
 <%--                <c:if test="${processData.historyDtos ne null}">--%>
 <%--                    <c:forEach items="${processData.historyDtos}" var="history">--%>
 <%--                        <tr>--%>

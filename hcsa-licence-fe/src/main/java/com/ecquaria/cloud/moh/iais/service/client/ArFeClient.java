@@ -167,4 +167,7 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/over-day-not-completed-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
     public FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(@RequestParam(name = "day") Integer day);
+
+    @GetMapping(value = "/data-submission/data-submission-ar-cycle-count",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getArCycleStageCountByIdTypeAndIdNoAndNationality(@RequestParam("idType") String idType, @RequestParam("idNo") String idNo, @RequestParam("nationality") String nationality);
 }

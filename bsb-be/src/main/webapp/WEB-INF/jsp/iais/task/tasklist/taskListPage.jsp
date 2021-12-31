@@ -117,7 +117,7 @@
                                             <p>
                                                 <c:choose>
                                                     <c:when test="${not empty entity.processUrl}">
-                                                        <a href="${entity.processUrl}?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.application.applicationNo}"/></a>
+                                                        <a href="${entity.processUrl}?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:out value="${entity.application.applicationNo}"/>

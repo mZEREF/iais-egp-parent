@@ -9,6 +9,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-suspension.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
@@ -73,13 +74,13 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                    <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
+                                                                    <%--@elvariable id="suspensionReinstatementDto" type="sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Current Status</p>
+                                                                                <iais:code code="${suspensionReinstatementDto.applicationStatus}"/>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -87,7 +88,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Type" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Suspension Type</p>
+                                                                                <iais:code code="${suspensionReinstatementDto.suspensionType}"/>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -95,23 +96,29 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Start Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Suspension Start Date</p>
+                                                                                <p>${suspensionReinstatementDto.startDate}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Suspension End Date" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p>Suspension End Date</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
+                                                                    <c:if test="${suspensionReinstatementDto.endDate ne null}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Suspension End Date" required="false"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${suspensionReinstatementDto.endDate}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Additional Comments (for Facility/AFC)" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Additional Comments</p>
+                                                                                <textarea id="additionalComments"
+                                                                                          name="additionalComments"
+                                                                                          cols="70"
+                                                                                          rows="5"
+                                                                                          maxlength="300">${suspensionReinstatementDto.additionalComments}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -119,7 +126,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Reason for Suspension (MOH internal info)" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Reason for Suspension</p>
+                                                                                <p>${suspensionReinstatementDto.suspensionReason}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -127,27 +134,29 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO Remarks" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>DO Remarks/p>
+                                                                                <p>${suspensionReinstatementDto.doRemarks}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="HM Remarks" width="15" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p>HM Remarks</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
+                                                                    <c:if test="${suspensionReinstatementDto.hmRemarks ne null}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="HM Remarks" width="15" required="false"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${suspensionReinstatementDto.hmRemarks}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="suspensionReason"
-                                                                                          name="suspensionReason"
+                                                                                <textarea id="aoRemarks"
+                                                                                          name="aoRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${suspensionReinstatementDto.aoRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -155,24 +164,21 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" width="15" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select>
-                                                                                    <option>Please Select</option>
-                                                                                    <option>Approve</option>
-                                                                                    <option>Reject</option>
-                                                                                    <option>Route Back to DO</option>
-                                                                                    <option>Route to HM</option>
+                                                                                <select name="aoDecision" id="aoDecision">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                    <option value="MOHPRO008" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO008'}">selected = 'selected'</c:if>>Route Back to DO</option>
+                                                                                    <option value="MOHPRO009" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO009'}">selected = 'selected'</c:if>>Route to HM</option>
                                                                                 </select>
-                                                                                <span data-err-ind="decision"
-                                                                                      class="error-msg"></span>
+                                                                                <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                                                <div align="right">
-                                                                    <button type="submit" class="btn btn-primary">Update
-                                                                        Inventory
-                                                                    </button>
+                                                                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                <div style="text-align: right">
+                                                                    <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>

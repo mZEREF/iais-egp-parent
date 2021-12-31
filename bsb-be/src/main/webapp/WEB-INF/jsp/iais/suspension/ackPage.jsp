@@ -14,13 +14,16 @@
                     <div class="center-content">
                         <div class="intranet-content">
                             <div class="bg-title">
-                                <h2>You have successfully submitted a Suspension Task.</h2>
+                                <h2>${ackMsg}</h2>
                             </div>
                         </div>
-                        <div align="left">
-                            <span>
-                                <a href="#"><em class="fa fa-angle-left"></em> Back</a>
-                            </span>
+                        <div style="text-align: left">
+                            <c:if test="${back eq 'fac'}">
+                                <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                            </c:if>
+                            <c:if test="${back eq 'app'}">
+                                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>

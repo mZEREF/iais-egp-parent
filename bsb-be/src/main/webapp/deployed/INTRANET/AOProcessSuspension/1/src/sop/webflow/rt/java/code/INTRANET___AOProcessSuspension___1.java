@@ -24,11 +24,11 @@ public class INTRANET___AOProcessSuspension___1 extends BaseProcessClass {
 	}
 
 	public void doValidate_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "otherValidate", this);
+		EngineHelper.delegate(DELEGATOR, "aoSuspensionValidate", this);
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
-	// 		submit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "aoSuspension", this);
 	}
 
 }

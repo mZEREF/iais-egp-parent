@@ -52,12 +52,4 @@ public class ApplicationDto extends BaseEntityDto {
     private ApplicationGroupDto appGroup;
 
     private String toBeSuspendReinstateAppId;
-
-    private String suspensionType;
-
-    private Date suspensionStartDt;
-
-    private Date suspensionEndDt;
-
-    private String additionalComments;
 }

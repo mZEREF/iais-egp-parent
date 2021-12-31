@@ -118,6 +118,8 @@
                         </iais:row>
                         <iais:row  style="margin-bottom:0px">
                             <iais:field value="Is Administrator" id="userRole" width="12"/>
+                            <c:choose>
+                            <c:when test="${!('Edit' eq feusertitle && empty inter_user_attr.uenNo)}">
                             <div class="col-md-3" style="padding-left: 0px;">
                                 <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="${RoleConsts.USER_ROLE_ORG_ADMIN}" name="role" <c:if test="${inter_user_attr.userRole== RoleConsts.USER_ROLE_ORG_ADMIN}">checked</c:if>></div>
                                 <label class="col-md-2 control-label" >Yes</label>
@@ -131,6 +133,14 @@
                             <div class="col-md-3" style="padding-left: 0px;">
                                 <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
                             </div>
+                            </c:when>
+                                <c:otherwise>
+                                    <iais:value width="12">
+                                        <p>No</p>
+                                        <input type="hidden" value="user" name="role" id="role" oninput="doChangeUserRole()" readonly>
+                                    </iais:value>
+                                </c:otherwise>
+                            </c:choose>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Assign Role" width="5" required="true" id="assignRoleTitle" />
@@ -188,7 +198,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        <c:if test="${'Create' != feusertitle && empty inter_user_attr.uenNo}">
+        <c:if test="${'Create' != feusertitle && inter_user_attr.solo}">
         disableContent('.solo');
         </c:if>
     });
@@ -249,8 +259,8 @@
         $('.clearRoleCheckbox').remove();
     }
 
-
-
-
+    function doChangeUserRole(){
+       $('#role').val('user');
+    }
 
 </script>

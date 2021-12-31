@@ -1,4 +1,10 @@
 $(function () {
+    $("#nextBtn").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doNext");
+        $("#mainForm").submit();
+    });
+
     $("#submitBtn").click(function (){
         showWaiting();
         $("[name='action_type']").val("doSave");

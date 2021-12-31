@@ -68,7 +68,12 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <a class="back" href="#"><em class="fa fa-angle-left"></em>Back</a>
+                <c:if test="${back eq 'fac'}">
+                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                </c:if>
+                <c:if test="${back eq 'app'}">
+                    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                </c:if>
             </iais:action>
         </div>
     </div>

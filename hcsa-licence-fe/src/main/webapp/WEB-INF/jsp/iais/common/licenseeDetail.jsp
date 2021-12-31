@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
 <c:set var="soloType" value="LICT002" />
@@ -5,8 +7,8 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
-<c:set var="showClaimFields"
-       value="${isRFC && !isRfi && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
+<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi
+       && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
 
 <div class="form-horizontal licenseeContent">
     <iais:row>
