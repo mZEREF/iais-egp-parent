@@ -822,11 +822,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                 reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
             }
-            if(IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtoList)){
-                addressList1.add(licAddress);
-            }else {
-                addressList1.add(licAddress);
-            }
+            addressList1.add(licAddress);
         }
         reqForInfoSearchListDto.setAddress(addressList1);
         String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
