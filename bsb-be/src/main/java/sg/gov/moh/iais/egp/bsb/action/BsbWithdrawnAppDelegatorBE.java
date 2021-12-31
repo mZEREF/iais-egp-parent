@@ -15,7 +15,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.MASK_PARAM_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
 /**
  * @author : tangtang
@@ -46,8 +48,8 @@ public class BsbWithdrawnAppDelegatorBE {
         AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
         if (StringUtils.isEmpty(dto.getAppId())){
-            String maskedAppId = request.getParameter(KEY_APP_ID);
-            String maskedTaskId = request.getParameter(KEY_TASK_ID);
+            String maskedAppId = request.getParameter(PARAM_NAME_APP_ID);
+            String maskedTaskId = request.getParameter(PARAM_NAME_TASK_ID);
             if (log.isInfoEnabled()) {
                 log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
                 log.info("masked task ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedTaskId));
