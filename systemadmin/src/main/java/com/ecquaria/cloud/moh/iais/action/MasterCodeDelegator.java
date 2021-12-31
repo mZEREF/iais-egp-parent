@@ -682,7 +682,8 @@ public class MasterCodeDelegator {
                 String dateReplace = dateStr.replace(" "," at ");
                 String ackMsg = MessageUtil.replaceMessage("ACKMCM004",dateReplace,"Date");
                 ParamUtil.setRequestAttr(request,"UPLOAD_ACKMSG",ackMsg);
-                masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                List<MasterCodeDto> syncMasterCodeList =masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
             }
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
