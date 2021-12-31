@@ -1197,7 +1197,7 @@ public class LicenceViewServiceDelegator {
         return appEditSelectDto;
     }
 
-    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) {
+    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) throws Exception {
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         dealWithMultipleDoc(appSubmissionDto);
         if (oldAppSubmissionDto == null) {
@@ -1817,45 +1817,6 @@ public class LicenceViewServiceDelegator {
                     appSvcPrincipalOfficersDto.setMobileNo("");
                     appSvcPrincipalOfficersDto.setEmailAddr("");
                     olAppSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
-                }
-            }
-        }
-    }
-
-    private void appSvcPersonnelDtoList( List<AppSvcPersonnelDto> appSvcPersonnelDtoList,List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList ) {
-        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) && IaisCommonUtils.isNotEmpty(oldAppSvcPersonnelDtoList)) {
-            appSvcPersonnelDtoList = new ArrayList<>(oldAppSvcPersonnelDtoList.size());
-            for (int i = 0; i < oldAppSvcPersonnelDtoList.size(); i++) {
-                AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(i).getPersonnelType());
-                appSvcPersonnelDto.setDesignation("");
-                appSvcPersonnelDto.setName("");
-                appSvcPersonnelDto.setProfRegNo("");
-                appSvcPersonnelDto.setQualification("");
-                appSvcPersonnelDtoList.add(appSvcPersonnelDto);
-            }
-        } else if (IaisCommonUtils.isNotEmpty(appSvcPersonnelDtoList) && IaisCommonUtils.isNotEmpty(oldAppSvcPersonnelDtoList)) {
-            int size = appSvcPersonnelDtoList.size();
-            int oldSize = oldAppSvcPersonnelDtoList.size();
-            if (size < oldSize) {
-                for (int i = 0; i < oldSize - size; i++) {
-                    AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(size + i).getPersonnelType());
-                    appSvcPersonnelDto.setDesignation("");
-                    appSvcPersonnelDto.setName("");
-                    appSvcPersonnelDto.setProfRegNo("");
-                    appSvcPersonnelDto.setQualification("");
-                    appSvcPersonnelDtoList.add(appSvcPersonnelDto);
-                }
-            } else if (oldSize < size) {
-                for (int i = 0; i < size - oldSize; i++) {
-                    AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                    appSvcPersonnelDto.setPersonnelType(appSvcPersonnelDtoList.get(oldSize + i).getPersonnelType());
-                    appSvcPersonnelDto.setDesignation("");
-                    appSvcPersonnelDto.setName("");
-                    appSvcPersonnelDto.setProfRegNo("");
-                    appSvcPersonnelDto.setQualification("");
-                    oldAppSvcPersonnelDtoList.add(appSvcPersonnelDto);
                 }
             }
         }
