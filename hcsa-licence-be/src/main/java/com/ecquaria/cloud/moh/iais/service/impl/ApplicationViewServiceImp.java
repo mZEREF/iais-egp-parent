@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -117,7 +119,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-     
+
         return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
 
 
@@ -141,11 +143,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         String result = null;
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         if(workingGroupDto != null){
-        if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
-            result = AppConsts.WORK_GROUP_BROADCAST;
-        }else{
-            result = workingGroupDto.getGroupName();
-        }
+            if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
+                result = AppConsts.WORK_GROUP_BROADCAST;
+            }else{
+                result = workingGroupDto.getGroupName();
+            }
         }
         return result;
     }
@@ -223,62 +225,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     Integer personTypeNum = appSupDocDto.getPersonTypeNum();
                     String personType = appSupDocDto.getPersonType();
                     Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
-                    String psnIndex = StringUtil.nullToEmpty(integer);
-                    if ("0".equals(entity.getDupForPrem()) && entity.getDupForPerson() != null) {
-                        switch (entity.getDupForPerson()) {
-                            case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                                appSupDocDto.setFile("Clinical Governance Officer " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_PO:
-                                appSupDocDto.setFile("Principal Officers " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                                appSupDocDto.setFile("Nominee " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                                appSupDocDto.setFile("MedAlert Person " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                                appSupDocDto.setFile("Service Personnel " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_CD:
-                                appSupDocDto.setFile("Clinical Director " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            default:
-                                appSupDocDto.setFile(entity.getDocTitle());
-                        }
-                    } else if (entity.getDupForPerson() != null && "1".equals(entity.getDupForPrem())) {
-                        switch (entity.getDupForPerson()) {
-                            case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                                appSupDocDto.setFile(
-                                        TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officer " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_PO:
-                                appSupDocDto.setFile(
-                                        TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                                appSupDocDto.setFile(TITLE_MODE_OF_SVCDLVY + " 1: Nominee " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                                appSupDocDto.setFile(
-                                        TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                                appSupDocDto.setFile("Service Personnel " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            case ApplicationConsts.DUP_FOR_PERSON_CD:
-                                appSupDocDto.setFile(
-                                        TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + psnIndex + ": " + entity.getDocTitle());
-                                break;
-                            default:
-                                appSupDocDto.setFile(entity.getDocTitle());
-                        }
-                    } else if (entity.getDupForPerson() == null && "1".equals(entity.getDupForPrem())) {
-                        appSupDocDto.setFile(TITLE_MODE_OF_SVCDLVY + " 1 : " + entity.getDocTitle());
-                    } else {
-                        appSupDocDto.setFile(entity.getDocTitle());
-                    }
+                    appSupDocDto.setFile(ApplicationHelper.getDocDisplayTitle(entity, integer));
                 }
             }
             for (int j = 0; j < userNameList.size(); j++) {
@@ -390,6 +337,36 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         return applicationViewDto;
     }
 
+    private static String getDupForPersonName(String dupForPerson) {
+        String psnName = "";
+        switch (dupForPerson) {
+            case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_PO:
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                psnName = HcsaConsts.NOMINEE;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                psnName = HcsaConsts.MEDALERT_PERSON;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                psnName = HcsaConsts.SERVICE_PERSONNEL;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_CD:
+                psnName = HcsaConsts.CLINICAL_DIRECTOR;
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SL:
+                psnName = HcsaConsts.SECTION_LEADER;
+                break;
+            default:
+                break;
+        }
+        return psnName;
+    }
+
     private void setTcuDate(String appCorId,ApplicationViewDto applicationViewDto){
         AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(dto != null && dto.getRecomInDate() != null){
@@ -402,7 +379,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
         }
     }
-
 
     private void setAppealTypeValues(ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -550,13 +526,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                             applicationDto.setNeedNewLicNo(true);
-                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                                 applicationDtoMain.setNeedNewLicNo(true);
-                             }
-                         }
+                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                        applicationDto.setNeedNewLicNo(true);
+                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                            applicationDtoMain.setNeedNewLicNo(true);
+                        }
                     }
+                }
             }
         }
         log.info("-----------clearApprovedHclCodeByExistRejectApp end------");

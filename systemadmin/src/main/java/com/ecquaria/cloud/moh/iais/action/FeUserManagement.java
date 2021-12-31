@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -154,6 +155,9 @@ public class FeUserManagement {
         FeUserDto feUserDto;
         if (StringUtil.isNotEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
+            if (feUserDto.getUserId().indexOf('_') < 0) {
+                feUserDto.setSolo(true);
+            }
             ParamUtil.setSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO, feUserDto);
         } else {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO);
@@ -197,7 +201,7 @@ public class FeUserManagement {
             String prevIdNumber = userAttr.getIdentityNo();
             ControllerHelper.get(request,userAttr);
             userAttr.setId(id);
-            if (!StringUtil.isEmpty(userAttr.getUenNo()) || "Create".equals(title)) {
+            if (!userAttr.isSolo() || "Create".equals(title)) {
                 userAttr.setIdType(idType);
                 userAttr.setIdentityNo(idNo);
                 userAttr.setIdNumber(idNo);
@@ -246,7 +250,7 @@ public class FeUserManagement {
                 }
             }
             // set user id
-            if (userAttr.isCorpPass()) {
+            if (userAttr.isCorpPass() && !userAttr.isSolo()) {
                 userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
                 userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
             } else {

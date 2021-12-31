@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 
 public final class SystemParamUtil {
 
-    public static SystemParamConfig getSystemParamConfig(){
+    public static SystemParamConfig getSystemParamConfig() {
         return SpringContextHelper.getContext().getBean(SystemParamConfig.class);
     }
 

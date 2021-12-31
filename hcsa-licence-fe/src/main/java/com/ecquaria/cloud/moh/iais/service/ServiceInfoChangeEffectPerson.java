@@ -10,5 +10,11 @@ import java.util.List;
  * @date 2021/4/27 15:47
  */
 public interface ServiceInfoChangeEffectPerson {
-    List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception;
+
+    List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto)
+            throws Exception;
+
+    List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            int check) throws Exception;
+
 }

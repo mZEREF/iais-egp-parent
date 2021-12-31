@@ -22,6 +22,9 @@
                 <c:when test="${'32' == config.dupForPerson}">
                     <%=HcsaConsts.CLINICAL_DIRECTOR%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
+                <c:when test="${'64' == config.dupForPerson}">
+                    <%=HcsaConsts.SECTION_LEADER%>&nbsp;${psnStat.index+1}:&nbsp;
+                </c:when>
             </c:choose>
         </c:if>
         ${config.docTitle}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if>

@@ -181,6 +181,7 @@
                   <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
                   <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
                   <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                  <option <c:if test="${doc.dupForPerson=='SECLDR'}">selected</c:if> value="SECLDR">Section Leader</option>
                   <c:if test="${hcsaServiceDto.svcCode=='EAS' || hcsaServiceDto.svcCode=='MTS'}"><option <c:if test="${doc.dupForPerson=='CD'}">selected</c:if> value="CD">Clinical Director</option></c:if>
                 </select>
               </div>

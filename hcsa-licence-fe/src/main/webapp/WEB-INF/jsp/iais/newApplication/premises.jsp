@@ -180,7 +180,7 @@
 
         addPubHolDayHtml();
 
-        removePH();
+        //removePH();
 
         addOperational();
 
@@ -221,7 +221,7 @@
             handlePage($(this));
         });
         </c:if>
-        <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null}">
+        <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null && !readOnly}">
         $('div.premContent').each(function () {
             doEditPremise($(this));
         });
@@ -235,25 +235,10 @@
         });
 
         init = 1;
-        //68859
-        /*if ($('#rfc_eqHciNameChange').val()=='false') {
-            $("input[name='isPartEdit']").val('1');
-            $("input[name='chooseExistData']").val('1');
-            $('.premSelect').removeClass('disabled');
-            $('.premisesEdit').addClass('hidden');
-        } else if ($('#rfc_eqHciNameChange').val()=='true') {
-            $("input[name='isPartEdit']").val('0');
-            $("input[name='chooseExistData']").val('0');
-            $('.premisesEdit').removeClass('hidden');
-        }*/
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
         if ($("#errorMapIs").val()=='error') {
             $('div.premContent').each(function () {
-                var $premisesEdit = $(this).find('.premisesEdit');
-                if ($premisesEdit.length > 0) {
-                    $premisesEdit.trigger('click');
-                    $premisesEdit.addClass('hidden');
-                }
+                doEditPremise($(this), '1');
             });
         }
         </c:if>

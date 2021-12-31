@@ -176,9 +176,11 @@ public class PaymentPayNowProxy extends PaymentProxy {
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 		}
-		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(
+				AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrpNo).getEntity();
 		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			RedirectUtil.redirect(fields.get("vpc_ReturnURL"), bpc.request, bpc.response);
 		}
@@ -216,7 +218,8 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
-		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient()
+				.getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
@@ -233,7 +236,8 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		}
 
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(
+				AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrpNo).getEntity();
 		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 			paymentRequestDto.setStatus(status);
@@ -244,6 +248,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String response = "payment "+status;
 		setPaymentResponse(response);
 		setPaymentTransStatus(status);
+		paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
 		PaymentBaiduriProxyUtil.getPaymentClient().updatePaymentResquset(paymentRequestDto);
 
 
@@ -297,16 +302,8 @@ public class PaymentPayNowProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
-		String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
-
-		try {
-			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
-		} catch (IOException e) {
-			log.info(e.getMessage(),e);
-			log.info(e.getMessage(),e);
-		}
+		PaymentBaiduriProxyUtil.getPaymentClient()
+				.getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, reqNo).getEntity();
 	}
 
 	@SuppressWarnings("rawtypes")

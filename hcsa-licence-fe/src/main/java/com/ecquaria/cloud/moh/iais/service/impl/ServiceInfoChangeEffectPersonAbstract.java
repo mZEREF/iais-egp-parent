@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -51,6 +52,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
      *                            Refer to the method - EqRequestForChangeSubmitResultChange.eqServiceChange and personContact
      * @param stepList:           The steps which is changed, it will contains not-auto fields and maybe it contains auto fields.
      *                            Refer to the method - EqRequestForChangeSubmitResultChange.compareNotChangePersonnel
+     *                            && EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto
      * @return The svc related info with the auto fields changed
      */
     public List<AppSvcRelatedInfoDto> generateDtosForAutoFields(AppSubmissionDto appSubmissionDto,
@@ -66,7 +68,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         if (changeList == null) {
             changeList = IaisCommonUtils.genNewArrayList();
         }
-        log.info(StringUtil.changeForLog("stepList: " + stepList + " - changeList: " + changeList));
         AppSvcRelatedInfoDto newDto = (AppSvcRelatedInfoDto) CopyUtil.copyMutableObject(currSvcInfoDto);
         for (String step : stepList) {
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(step)) {
@@ -75,6 +76,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             } else if (HcsaConsts.STEP_VEHICLES.equals(step)) {
                 newDto.setAppSvcVehicleDtoList(
                         (List<AppSvcVehicleDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcVehicleDtoList()));
+            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(step)) {
+                newDto.setAppSvcSectionLeaderList(
+                        (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList()));
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(step)) {
+                /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(step)) {
                 newDto.setAppSvcLaboratoryDisciplinesDtoList(
                         (List<AppSvcLaboratoryDisciplinesDto>) CopyUtil.copyMutableObjectList(
@@ -94,6 +101,8 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR));
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_KAH));
+            } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
+                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP));
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -139,6 +148,10 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
                     sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList());
             newList = targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
+            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+                    sourceReletedInfo.getAppSvcMedAlertPersonList());
+            newList = targetReletedInfo.getAppSvcMedAlertPersonList();
         }
         if (isChanged && psnList != null && newList != null) {
             for (int i = 0, len = psnList.size(); i < len; i++) {
@@ -159,12 +172,32 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             targetReletedInfo.setAppSvcClinicalDirectorDtoList(psnList);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
             targetReletedInfo.setAppSvcKeyAppointmentHolderDtoList(psnList);
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
+            targetReletedInfo.setAppSvcMedAlertPersonList(psnList);
         }
     }
+
+
 
     @Override
     public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto,
             AppSubmissionDto oldAppSubmissionDto) throws Exception {
+        return personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto, 2);
+    }
+
+    /**
+     * Check personnel affected data
+     *
+     * @param licenseeId
+     * @param appSubmissionDto
+     * @param oldAppSubmissionDto
+     * @param check 0: only check changed; 1: check changed and retrieve affected data; 2: check changed, retrieve affected data and
+     *             reset them.
+     * @return
+     */
+    @Override
+    public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto,
+            AppSubmissionDto oldAppSubmissionDto, int check) throws Exception {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -238,7 +271,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         changeList.addAll(currEditList);
         appSubmissionDto.getChangeSelectDto().setPersonnelEditList(changeList);
-
+        if (check == 0) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         list.addAll(set);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
         for (String string : list) {
@@ -292,19 +327,20 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appEditSelectDto.setPersonnelEditList(personnelEditList);
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
-            appSubmissionDtoByLicenceId.setPartPremise(false);
-            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-            requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAutoRfc(true);
-            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
+            if (check == 2) {
+                appSubmissionDtoByLicenceId.setPartPremise(false);
+                appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
+                RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+                appSubmissionDtoByLicenceId.setAutoRfc(true);
+                appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
+            }
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
-
         return appSubmissionDtoList;
     }
 
@@ -472,12 +508,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtos) {
                 for (AppSvcPrincipalOfficersDto v1 : oldAppSvcClinicalDirectorDtos) {
                     if (v.getIdNo().equals(v1.getIdNo())) {
-                        boolean b = Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
-                                && Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
-                                && Objects.equals(v.getSalutation(), v1.getSalutation())
+                        boolean b = Objects.equals(v.getSalutation(), v1.getSalutation())
                                 && Objects.equals(v.getName(), v1.getName())
                                 && Objects.equals(v.getIdType(), v1.getIdType())
                                 && Objects.equals(v.getDesignation(), v1.getDesignation())
+                                /*&& Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
+                                && Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
                                 && Objects.equals(v.getSpeciality(), v1.getSpeciality())
                                 && Objects.equals(v.getSpecialtyGetDate(), v1.getSpecialtyGetDate())
                                 && Objects.equals(v.getTypeOfCurrRegi(), v1.getTypeOfCurrRegi())
@@ -486,7 +522,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                                 && Objects.equals(v.getTypeOfRegister(), v1.getTypeOfRegister())
                                 && Objects.equals(v.getRelevantExperience(), v1.getRelevantExperience())
                                 && Objects.equals(v.getHoldCerByEMS(), v1.getHoldCerByEMS())
-                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())
+                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())*/
                                 && Objects.equals(v.getMobileNo(), v1.getMobileNo())
                                 && Objects.equals(v.getEmailAddr(), v1.getEmailAddr());
                         if (!b) {

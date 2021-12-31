@@ -16,7 +16,7 @@ public class AppGrpPaymentClientFallBack implements AppGrpPaymentClient {
 
 
     @Override
-    public FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(String reqRefNo) {
+    public FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(String reqRefNo, String sysClientId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -32,7 +32,7 @@ public class AppGrpPaymentClientFallBack implements AppGrpPaymentClient {
     }
 
     @Override
-    public FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(String reqRefNo) {
+    public FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(String sysClientId, String reqRefNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

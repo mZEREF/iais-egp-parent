@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -68,7 +69,8 @@ public class PaymentServiceImpl implements PaymentService {
         soapiTxnQueryReq.setMsg(msg);
         SoapiS2SResponse soapiS2SResponse =sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
 
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY,
+                paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
         try{
             appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
@@ -113,7 +115,9 @@ public class PaymentServiceImpl implements PaymentService {
         if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
             paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
         }
+        paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.saveHcsaPayment(paymentDto);
+        paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.updatePaymentResquset(paymentRequestDto);
     }
 
@@ -183,12 +187,14 @@ public class PaymentServiceImpl implements PaymentService {
         }catch (Exception e){
             appGrpNo=paymentRequestDto.getReqRefNo();
         }
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY,
+                appGrpNo).getEntity();
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
             paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
             paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
             paymentClient.saveHcsaPayment(paymentDto);
         }else{
             paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
@@ -200,6 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
             paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
         }
+        paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.updatePaymentResquset(paymentRequestDto);
     }
 }

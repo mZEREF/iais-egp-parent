@@ -66,9 +66,9 @@ public interface AppSubmissionService {
     AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             Process process);
 
-    Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId);
+    List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 
-    Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId);
+    List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId);
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
@@ -171,10 +171,10 @@ public interface AppSubmissionService {
 
     List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
 
-    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList);
+    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode);
 
     void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
-            AppSvcRelatedInfoDto currentSvcDto);
+            AppSvcRelatedInfoDto currentSvcDto, Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap);
 
     void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
 

@@ -726,7 +726,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         if (!errorListMap.isEmpty()) {
-            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+            bpc.request.setAttribute(RfcConst.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
             return;
         }
@@ -741,7 +741,7 @@ public class RequestForChangeMenuDelegator {
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
-                    appEditSelectDto, null, bpc.request);
+                    appEditSelectDto, null);
             if ("replace".equals(editSelect)) {
                 replacePersonnelDate(appSubmissionDto, newPerson, oldPersonnelDto.getIdNo());
             } else {
@@ -1603,21 +1603,14 @@ public class RequestForChangeMenuDelegator {
         if (total == null) {
             total = 0.0;
         }
+        Map<String, String> errorMap = null;
         if (selectLicence != null) {
-            boolean isValid = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0), null,
-                    total, null, appGroupNo, appEditSelectDto, appSubmissionDtos, bpc.request);
-            log.info(StringUtil.changeForLog("The affected data is valid - " + isValid));
+            errorMap = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),
+                    total, null, appGroupNo, appEditSelectDto, appSubmissionDtos);
+            log.info(StringUtil.changeForLog("The affected data is valid - " + errorMap));
         }
-        // validate the related app submissions
-        Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
-        for (AppSubmissionDto dto : appSubmissionDtos) {
-            List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
-            if (!errorList.isEmpty()) {
-                errorListMap.put(dto, errorList);
-            }
-        }
-        if (!errorListMap.isEmpty()) {
-            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+        if (errorMap != null && !errorMap.isEmpty()) {
+            NewApplicationHelper.setErrorRequest(errorMap, true, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
         }

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.action.RequestForChangeMenuDelegator;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -54,6 +55,8 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -95,7 +98,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /****
  *
@@ -457,12 +463,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (licenceDtos == null || licenceDtos.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
-        List<LicenceDto> licenceDtoList = licenceDtos.stream()
+        return licenceDtos.stream()
                 .filter(dto -> !StringUtil.isIn(dto.getLicenceNo(), excludeNos))
+                .map(licenceDto -> {
+                    log.info(StringUtil.changeForLog("--- licenceDto licenceNo : " + licenceDto.getLicenceNo()));
+                    return licenceDto;
+                })
                 .collect(Collectors.toList());
-        licenceDtoList.forEach(
-                licenceDto -> log.info(StringUtil.changeForLog("--- licenceDto licenceNo : " + licenceDto.getLicenceNo())));
-        return licenceDtoList;
     }
 
     @Override
@@ -1118,7 +1125,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getOffSiteBlockNo());
                             boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getOffSiteUnitNo());
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(offSiteAddressType)) {
-
                                 if (empty) {
                                     addrTypeFlag = false;
                                     errorMap.put("offSiteFloorNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
@@ -1189,13 +1195,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                         list.addAll(sbList);
                                     }
-
-                                 /*   if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("postalCode" + i, "NEW_ACK010");
-
-                                    } else {
-                                        list.add(stringBuilder.toString());
-                                    }*/
                                 }
                             }
                         } else {
@@ -1208,13 +1207,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String hciNAmeErr = errorMap.get("offSiteHciName" + i);
                         hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                    }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
+                    } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
                         validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, keywords, floorUnitList, floorUnitNo,
                                 licenseeId, appType, licenceId);
-                        if (validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
-                                i,licenseeId,appGrpPremisesDto,rfi)){
-                            needAppendMsg = true;
-                        }
+                        hciFlag = validateEasmts.doValidatePremises(errorMap, appSubmissionDto.getAppType(),
+                                i, licenseeId, appGrpPremisesDto, rfi);
                     }
                 } else {
                     //premiseSelect = organization hci code
@@ -1273,8 +1270,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
                         errorMap.put("premisesHci" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
-//                        appGrpPremisesDto.setPremisesSelect("newPremise");
-//                        NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
                     }
                 }
                 //65116
@@ -2358,65 +2353,86 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public boolean checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-            AppGrpPremisesDto oldAppGrpPremisesDto, double amount,  String draftNo, String appGroupNo,
-            AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception {
-        if (selectLicence == null) {
-            return true;
+    public Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicences, AppGrpPremisesDto appGrpPremisesDto,
+            double amount,  String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
+            List<AppSubmissionDto> appSubmissionDtos) throws Exception {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (selectLicences == null || selectLicences.isEmpty()) {
+            return errorMap;
         }
-        for (LicenceDto licence : selectLicence) {
-            AppSubmissionDto appSubmissionDtoByLicenceId = getAppSubmissionDtoByLicenceId(licence.getId());
-            // Premises
-            boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
-            if (oldAppGrpPremisesDto == null) {
-                oldAppGrpPremisesDto = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0);
-            }
-            String premisesIndexNo;
-            if (groupLic) {
-                premisesIndexNo = oldAppGrpPremisesDto.getPremisesIndexNo();
-            } else {
-                premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
-            }
-            List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
-            appGrpPremisesDtos.add(copyMutableObject);
-            if (groupLic) {
-                appGrpPremisesDtos.get(0).setGroupLicenceFlag(licence.getId());
-            }
-            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-            appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
-            // check app edit select dto
-            if (StringUtil.isEmpty(draftNo)) {
-                appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
-                draftNo = appSubmissionDtoByLicenceId.getDraftNo();
-            }
-            boolean isValid = checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, amount, draftNo, appGroupNo,
-                    appEditSelectDto, appSubmissionDtos, request);
-            if (!isValid) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
-                return false;
-            }
+        /**
+         * check all these licences whether are eligible or not
+         */
+        String licenseeId = selectLicences.get(0).getLicenseeId();
+        List<LicenceDto> licenceDtoByHciCode = getLicenceDtoByHciCode(licenseeId, appGrpPremisesDto);
+        if (licenceDtoByHciCode == null || licenceDtoByHciCode.isEmpty()) {
+            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR024"));
+            return errorMap;
         }
-        return true;
+        boolean parallel = selectLicences.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+        boolean allMatch = StreamSupport.stream(selectLicences.spliterator(), parallel)
+                .allMatch(dto -> licenceDtoByHciCode.parallelStream()
+                        .anyMatch(obj -> Objects.equals(obj.getId(), dto.getId())));
+        if (!allMatch) {
+            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR024"));
+            return errorMap;
+        }
+        String presmiseType = appGrpPremisesDto.getPremisesType();
+        if (StringUtil.isEmpty(presmiseType)) {
+            return errorMap;
+        }
+        /**
+         *  check whether there is another operation for the original licence
+         */
+        Set<String> preseTypes = Collections.singleton(presmiseType);
+        errorMap = StreamSupport.stream(selectLicences.spliterator(), parallel)
+                .map(licenceDto -> NewApplicationHelper.validateLicences(licenceDto, preseTypes,
+                        NewApplicationConstant.SECTION_PREMISES))
+                .filter(Objects::nonNull)
+                .collect(IaisCommonUtils::genNewHashMap, Map::putAll, Map::putAll);
+        if (!errorMap.isEmpty()) {
+            return errorMap;
+        }
+        if (StringUtil.isEmpty(draftNo)) {
+            draftNo = systemAdminClient.draftNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
+        }
+        String draft = draftNo;
+        List<AppSubmissionDto> appSubmissionDtoList = StreamSupport.stream(selectLicences.spliterator(), parallel)
+                .map(licence -> {
+                    AppSubmissionDto appSubmissionDtoByLicenceId = getAppSubmissionDtoByLicenceId(licence.getId());
+                    // Premises
+                    NewApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
+                    // check mains
+                    checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, amount, draft, appGroupNo,
+                            appEditSelectDto, null);
+                    return appSubmissionDtoByLicenceId;
+                })
+                .collect(Collectors.toList());
+        Map<AppSubmissionDto, List<String>> errorListMap = StreamSupport.stream(appSubmissionDtoList.spliterator(), parallel)
+                .collect(Collectors.toMap(Function.identity(), dto -> appSubmissionService.doPreviewSubmitValidate(null, dto, false)));
+        String errorMsg = NewApplicationHelper.getErrorMsg(errorListMap);
+        if (StringUtil.isNotEmpty(errorMsg)) {
+            errorMap.put(RfcConst.SHOW_OTHER_ERROR, errorMsg);
+        } else if (appSubmissionDtos != null) {
+            appSubmissionDtos.addAll(appSubmissionDtoList);
+        }
+        return errorMap;
     }
 
     @Override
-    public boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
-            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
-            HttpServletRequest request) {
+    public Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (appSubmissionDto == null) {
-            return true;
+            return errorMap;
         }
         if (licence == null) {
             licence = licenceClient.getLicBylicId(appSubmissionDto.getLicenceId()).getEntity();
         }
         if (licence == null) {
             log.info("Invalid Licence");
-            if (request != null) {
-                request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
-            }
-            return false;
+            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR024"));
+            return errorMap;
         }
         // set draft no
         appSubmissionDto.setDraftNo(draftNo);
@@ -2424,15 +2440,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId(), appGroupNo);
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        if (request != null) {
-            String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", licence.getSvcName());
-            String baseServiceId1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
-            if (StringUtil.isEmpty(baseServiceId1)) {
-                log.info(StringUtil.changeForLog("BaseService is null - " + errorSvcMsg));
-                request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
-                return false;
-            }
         }
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(
                 appSubmissionDto);
@@ -2447,8 +2454,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (amount != null) {
             total = amount.doubleValue();
         }
-        if (licence.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED) && licence.getMigrated() == 1
-                && IaisEGPHelper.isActiveMigrated()) {
+        if (licence.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             total = 0.0;
         }
         appSubmissionDto.setAmount(total);
@@ -2486,7 +2492,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (appSubmissionDtos != null) {
             appSubmissionDtos.add(appSubmissionDto);
         }
-        return true;
+        return errorMap;
+    }
+
+    @Override
+    public List<AppSubmissionDto> getAlginAppSubmissionDtos(String licenceId, boolean checkSpec) {
+        log.info(StringUtil.changeForLog("--------- Licence Id: " + licenceId + " : " + checkSpec + " --------"));
+        if (StringUtil.isEmpty(licenceId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licenceClient.getAlginAppSubmissionDtos(licenceId, checkSpec).getEntity();
     }
 
 }
