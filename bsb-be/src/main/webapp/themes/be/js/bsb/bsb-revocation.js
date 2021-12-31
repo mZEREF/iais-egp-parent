@@ -14,6 +14,9 @@ function checkEndTime(startTime,endTime){
 }
 
 $(function () {
+    $("select[data-action-select]").change(function () {
+        window.location = this.value;
+    });
     //Facility list
     $("#searchBtn").click(function (){
         var optionValue = $("#auditType option:selected").val();

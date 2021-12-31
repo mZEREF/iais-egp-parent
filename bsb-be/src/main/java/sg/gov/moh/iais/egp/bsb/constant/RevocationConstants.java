@@ -51,7 +51,6 @@ public final class RevocationConstants {
     public static final String AUDIT_DOC_DTO = "auditDocDto";
     public static final String KEY_CAN_UPLOAD = "canUpload";
 
-    public static final String FLAG = "flag";
     public static final String BACK = "back";
     public static final String FROM = "from";
     public static final String FAC = "fac";

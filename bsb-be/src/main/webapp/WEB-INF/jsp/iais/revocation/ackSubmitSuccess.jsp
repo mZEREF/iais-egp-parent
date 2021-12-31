@@ -18,11 +18,11 @@
                                 <h2>You have successfully submit.</h2>
                             </div>
                         </div>
-                        <div align="left">
-                            <c:if test="${back eq 'revocationFacility'}">
+                        <div style="text-align: left">
+                            <c:if test="${from eq 'fac'}">
                                 <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                             </c:if>
-                            <c:if test="${back eq 'revocationTaskList'}">
+                            <c:if test="${from eq 'app'}">
                                 <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                             </c:if>
                         </div>

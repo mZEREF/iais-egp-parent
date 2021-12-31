@@ -11,23 +11,24 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___HMProcessSuspension___1 extends BaseProcessClass {
-
+	private static final String DELEGATOR ="bsbSuspensionDelegator";
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void preData_OnStepProcess_0() throws Exception {
-	// 		preData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void doValidate_OnStepProcess_0() throws Exception {
-	// 		doValidate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hmSuspensionValidate", this);
 	}
 
 	public void doSubmit_OnStepProcess_0() throws Exception {
-	// 		doSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hmSuspension", this);
 	}
 
 }

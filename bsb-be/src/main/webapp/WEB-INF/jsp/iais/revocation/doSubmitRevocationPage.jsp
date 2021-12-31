@@ -104,13 +104,13 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <c:if test="${back eq 'revocationFacility'}">
+                                                                <c:if test="${from eq 'fac'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
-                                                                <c:if test="${back eq 'revocationTaskList'}">
+                                                                <c:if test="${from eq 'app'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
-                                                                <div align="right">
+                                                                <div style="text-align: right">
                                                                     <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>

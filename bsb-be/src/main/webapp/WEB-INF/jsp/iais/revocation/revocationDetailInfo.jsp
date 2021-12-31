@@ -9,33 +9,33 @@
                             <th scope="col" style="display: none"></th>
                         </tr>
                         <tr>
-                            <td align="right">Active Approval No. to be revoked</td>
+                            <td style="text-align: right">Active Approval No. to be revoked</td>
                             <td style="padding-left : 20px"><c:out value="${revokeDto.approvalNo}"/></td>
                         </tr>
                         <tr>
-                            <td class="col-xs-6" align="right">Facility Name</td>
+                            <td class="col-xs-6" style="text-align: right">Facility Name</td>
                             <td style="padding-left : 20px"><c:out value="${revokeDto.facName}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Facility Address</td>
+                            <td style="text-align: right">Facility Address</td>
                             <td style="padding-left : 20px"><c:out value="${revokeDto.facAddress}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Facility Classification</td>
+                            <td style="text-align: right">Facility Classification</td>
                             <td style="padding-left : 20px"><iais:code code="${revokeDto.facClassification}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Activity Type</td>
+                            <td style="text-align: right">Activity Type</td>
                             <td style="padding-left : 20px">
                                 <iais:code code="${revokeDto.activityType}"/>
                             </td>
                         </tr>
                         <tr>
-                            <td align="right">Approval</td>
+                            <td style="text-align: right">Approval</td>
                             <td style="padding-left : 20px"></td>
                         </tr>
                         <tr>
-                            <td align="right">Approval Status</td>
+                            <td style="text-align: right">Approval Status</td>
                             <td style="padding-left : 20px"><iais:code code="${revokeDto.approvalStatus}"/></td>
                         </tr>
                     </tbody>
@@ -44,11 +44,11 @@
         </div>
     </div>
 </div>
-<div align="left">
-    <c:if test="${back eq 'revocationFacility'}">
+<div style="text-align: left">
+    <c:if test="${from eq 'fac'}">
         <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
     </c:if>
-    <c:if test="${back eq 'revocationTaskList'}">
+    <c:if test="${from eq 'app'}">
         <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
     </c:if>
 </div>

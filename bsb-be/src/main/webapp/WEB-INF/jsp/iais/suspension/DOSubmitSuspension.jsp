@@ -9,6 +9,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-suspension.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
@@ -71,13 +72,13 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                    <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
+                                                                    <%--@elvariable id="suspensionReinstatementDto" type="sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Active Approval No. to be suspended" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Approval No.</p>
+                                                                                <p>${suspensionReinstatementDto.approvalNo}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -85,7 +86,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Facility Name" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Facility Name</p>
+                                                                                <p>${suspensionReinstatementDto.facName}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -93,7 +94,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Facility Address" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Facility Address</p>
+                                                                                <p>${suspensionReinstatementDto.facAddress}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -101,12 +102,12 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Type" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select>
-                                                                                    <option>Please Select</option>
-                                                                                    <option>Suspended (NC)</option>
-                                                                                    <option>Suspended (pending investigation)</option>
-                                                                                    <option>Suspended (conditional inventory movement)</option>
-                                                                                    <option>Suspended (others)</option>
+                                                                                <select id="suspensionType" name="suspensionType">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="SUSPTY001" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY001'}">selected="selected"</c:if>>Suspended (NC)</option>
+                                                                                    <option value="SUSPTY002" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY002'}">selected="selected"</c:if>>Suspended (pending investigation)</option>
+                                                                                    <option value="SUSPTY003" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY003'}">selected="selected"</c:if>>Suspended (conditional inventory movement)</option>
+                                                                                    <option value="SUSPTY004" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY004'}">selected="selected"</c:if>>Suspended (others)</option>
                                                                                 </select>
                                                                                 <span data-err-ind="suspensionType" class="error-msg"></span>
                                                                             </iais:value>
@@ -116,7 +117,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Start Date" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="startDate" id="startDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value=""/>
+                                                                                <input type="text" autocomplete="off" name="startDate" id="startDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${suspensionReinstatementDto.startDate}"/>
                                                                                 <span data-err-ind="startDate" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -125,7 +126,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension End Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="endDate" id="endDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value=""/>
+                                                                                <input type="text" autocomplete="off" name="endDate" id="endDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${suspensionReinstatementDto.endDate}"/>
                                                                                 <span data-err-ind="endDate" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -138,7 +139,7 @@
                                                                                           name="additionalComments"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${suspensionReinstatementDto.additionalComments}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -150,7 +151,8 @@
                                                                                           name="suspensionReason"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="1000"></textarea>
+                                                                                          maxlength="1000">${suspensionReinstatementDto.suspensionReason}</textarea>
+                                                                                <span data-err-ind="suspensionReason" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -162,14 +164,19 @@
                                                                                           name="doRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${suspensionReinstatementDto.doRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                                                <div align="right">
-                                                                    <button type="submit" class="btn btn-primary">Update Inventory</button>
+                                                                        <c:if test="${back eq 'fac'}">
+                                                                            <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                        </c:if>
+                                                                        <c:if test="${back eq 'app'}">
+                                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                        </c:if>
+                                                                <div style="text-align: right">
+                                                                    <button id="nextBtn" class="btn btn-primary">Update Inventory</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>

@@ -2,8 +2,11 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -105,15 +108,19 @@
                                                 <td><iais:code code="${items.facName}"/></td>
                                                 <td><c:out value="${items.facAddress}"/></td>
                                                 <td><iais:code code="${items.facStatus}"/></td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
-                                                            <a href="/bsb-be/eservicecontinue/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">revoke</a>
-                                                        </c:when>
-                                                        <c:otherwise>
-
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                <td style="width: 13%">
+                                                    <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                        <option value="#" selected="selected">Select</option>
+                                                        <c:if test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
+                                                            <option value="/bsb-be/eservice/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&from=fac">Revoke</option>
+                                                        </c:if>
+                                                        <c:if test="${items.status eq 'APPRSTA001'}">
+                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitSuspension?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Suspend</option>
+                                                        </c:if>
+                                                        <c:if test="${items.status eq 'APPRSTA004'}">
+                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitReinstatement?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Reinstate</option>
+                                                        </c:if>
+                                                    </select>
                                                 </td>
                                             </tr>
                                         </c:forEach>

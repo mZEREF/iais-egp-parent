@@ -28,7 +28,7 @@ public class INTRANET___DOSubmitSuspension___1 extends BaseProcessClass {
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "doSuspension", this);
 	}
 
 }

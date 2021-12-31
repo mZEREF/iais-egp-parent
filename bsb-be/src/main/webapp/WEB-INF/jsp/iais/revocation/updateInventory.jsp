@@ -68,14 +68,14 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <c:if test="${back eq 'revocationFacility'}">
+                                <c:if test="${from eq 'fac'}">
                                     <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                 </c:if>
-                                <c:if test="${back eq 'revocationTaskList'}">
+                                <c:if test="${from eq 'app'}">
                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                 </c:if>
                             </div>
-                            <div align="right">
+                            <div style="text-align: right">
                                 <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">
                                     Submit
                                 </button>

@@ -60,6 +60,7 @@ public class DORevocationDelegator {
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
+        ParamUtil.setSessionAttr(request,BACK,null);
     }
 
     /**
@@ -162,11 +163,10 @@ public class DORevocationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FLAG, null);
-        ParamUtil.setSessionAttr(request, BACK, null);
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
 
         String from = ParamUtil.getRequestString(request, FROM);
+        ParamUtil.setSessionAttr(request, FROM, null);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         if (Boolean.TRUE.equals(needShowError)) {
@@ -177,8 +177,6 @@ public class DORevocationDelegator {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
                 revokeDto = revocationClient.getSubmitRevokeDtoByApprovalId(approvalId).getEntity();
-                ParamUtil.setSessionAttr(request, FLAG, FAC);
-                ParamUtil.setSessionAttr(request, BACK, REVOCATION_FACILITY);
             }
             if (from.equals(APP)) {
                 String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
@@ -193,11 +191,10 @@ public class DORevocationDelegator {
                 }
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
-                ParamUtil.setSessionAttr(request, FLAG, APP);
-                ParamUtil.setSessionAttr(request, BACK, REVOCATION_TASK_LIST);
                 setRevocationDoc(request, revokeDto);
             }
         }
+        ParamUtil.setSessionAttr(request,BACK,from);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
@@ -207,7 +204,7 @@ public class DORevocationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String reason = ParamUtil.getString(request, PARAM_REASON);
         String remarks = ParamUtil.getString(request, PARAM_DO_REMARKS);
-        String flag = (String) ParamUtil.getSessionAttr(request, FLAG);
+        String from = (String) ParamUtil.getSessionAttr(request, FROM);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         //get user name
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -217,11 +214,11 @@ public class DORevocationDelegator {
         revokeDto.setReasonContent(reason);
         revokeDto.setRemarks(remarks);
         revokeDto.setModule("doRevoke");
-        if (flag.equals(FAC)) {
+        if (from.equals(FAC)) {
             revokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
             revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
         }
-        if (flag.equals(APP)) {
+        if (from.equals(APP)) {
             revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
             setRevocationDoc(request,revokeDto);
         }

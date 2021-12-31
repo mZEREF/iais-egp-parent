@@ -10,27 +10,27 @@
                             <th scope="col" style="display: none"></th>
                         </tr>
                         <tr>
-                            <td class="col-xs-6" align="right">Application Type</td>
+                            <td class="col-xs-6" style="text-align: right">Application Type</td>
                             <td style="padding-left : 20px"><iais:code code="${withdrawnDto.appType}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Application No.</td>
+                            <td style="text-align: right">Application No.</td>
                             <td style="padding-left : 20px"><c:out value="${withdrawnDto.appNo}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Facility Classification</td>
+                            <td style="text-align: right">Facility Classification</td>
                             <td style="padding-left : 20px"><iais:code code="${withdrawnDto.facClassification}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Process Type</td>
+                            <td style="text-align: right">Process Type</td>
                             <td style="padding-left : 20px"><iais:code code="${withdrawnDto.processType}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Submission Date</td>
+                            <td style="text-align: right">Submission Date</td>
                             <td style="padding-left : 20px"><fmt:formatDate value="${withdrawnDto.createDate}" pattern="dd/MM/yyyy"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Current Status</td>
+                            <td style="text-align: right">Current Status</td>
                             <td style="padding-left : 20px"><iais:code code="${withdrawnDto.currentStatus}"/></td>
                         </tr>
                     </tbody>
@@ -39,6 +39,6 @@
         </div>
     </div>
 </div>
-<div align="left">
+<div style="text-align: left">
     <a class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
 </div>
