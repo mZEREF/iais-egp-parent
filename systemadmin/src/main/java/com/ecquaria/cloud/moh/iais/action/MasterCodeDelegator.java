@@ -104,7 +104,7 @@ public class MasterCodeDelegator {
         List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getAllCodeCategory();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
-                ) {
+        ) {
             mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCategoryDescription(), masterCodeCategoryDto.getCategoryDescription()));
         }
         ParamUtil.setRequestAttr(bpc.request, "allCodeCategory", mcCategorySelectList);
@@ -115,7 +115,7 @@ public class MasterCodeDelegator {
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
         List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
         for (MasterCodeQueryDto masterCodeQueryDto : masterCodeQueryDtoList
-                ) {
+        ) {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
@@ -242,7 +242,7 @@ public class MasterCodeDelegator {
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
@@ -764,7 +764,7 @@ public class MasterCodeDelegator {
         List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getCodeCategoryIsEdit();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
-                ) {
+        ) {
             mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCodeCategory(), masterCodeCategoryDto.getCategoryDescription()));
         }
         ParamUtil.setRequestAttr(bpc.request, "codeCategory", mcCategorySelectList);
@@ -848,7 +848,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
@@ -992,7 +992,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
