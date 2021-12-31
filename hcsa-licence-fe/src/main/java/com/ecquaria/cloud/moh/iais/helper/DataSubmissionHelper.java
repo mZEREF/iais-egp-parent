@@ -151,6 +151,19 @@ public final class DataSubmissionHelper {
         return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage, lastStatus);
     }
 
+    /**
+     * Cycle Stages
+     *
+     * Spec: 3.3.3 Stage Selection Business Rules
+     *
+     * @param latestCycle
+     * @param latestStage
+     * @param lastCycle
+     * @param lastStage
+     * @param additionalStage
+     * @param lastStatus
+     * @return
+     */
     private static List<String> getNextStageForAR(String latestCycle, String latestStage, String lastCycle, String lastStage,
             String additionalStage, String lastStatus) {
         log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
@@ -227,8 +240,8 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
-            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+            } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
