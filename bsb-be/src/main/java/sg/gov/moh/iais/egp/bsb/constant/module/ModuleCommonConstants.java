@@ -26,5 +26,5 @@ public class ModuleCommonConstants {
     public static final String KEY_ERROR_MESSAGE                    = "error_message";
 
 
-    public static final String KEY_VALIDATION_ERRORS                = "id";
+    public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
 }
