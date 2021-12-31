@@ -238,7 +238,7 @@ public abstract class CommonDelegator {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
         String stage = dataSubmissionDto.getCycleStage();
-        // Spec: 3.3.3.9
+        // Spec: 3.3.3.1.9
         String status = cycle.getStatus();
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
