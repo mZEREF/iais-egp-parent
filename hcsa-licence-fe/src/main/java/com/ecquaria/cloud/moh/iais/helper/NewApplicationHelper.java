@@ -423,6 +423,8 @@ public class NewApplicationHelper {
         log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
+        log.info(StringUtil.changeForLog("Source App Edit Select Dto: " + JsonUtil.parseToJson(source)));
+        log.info(StringUtil.changeForLog("Target App Edit Select Dto: " + JsonUtil.parseToJson(target)));
         if (source == null || target == null) {
             return;
         }
