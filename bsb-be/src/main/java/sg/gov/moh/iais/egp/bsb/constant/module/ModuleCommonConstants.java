@@ -15,16 +15,16 @@ public class ModuleCommonConstants {
 
     public static final String KEY_VALID                            = "valid";
 
+
+    public static final String KEY_PAGE_SIZE                        = "pageJumpNoPageSize";
+    public static final String KEY_PAGE_NO                          = "pageJumpNoTextchangePage";
+
+
     // message info shown at the top of the page
     public static final String KEY_MESSAGE                          = "message";
     public static final String KEY_WARN_MESSAGE                     = "warn_message";
     public static final String KEY_ERROR_MESSAGE                    = "error_message";
 
 
-    // mask param used by task list
-    public static final String MASK_PARAM_ID                        = "id";
-    public static final String KEY_APP_ID                           = "appId";
-    public static final String KEY_TASK_ID                          = "taskId";
-
-    public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
+    public static final String KEY_VALIDATION_ERRORS                = "id";
 }
