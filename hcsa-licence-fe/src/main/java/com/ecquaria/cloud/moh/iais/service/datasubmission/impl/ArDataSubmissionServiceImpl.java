@@ -801,4 +801,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         msgParam.setRefId(licenseeId);
         notificationHelper.sendNotification(msgParam);
     }
+
+    @Override
+    public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
+        return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
+                0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
+    }
 }
