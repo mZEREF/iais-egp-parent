@@ -6,12 +6,9 @@ $(document).ready(function (){
     }else {
         hideUsedDonorOocyteControlClass(0);
     }
-    if($('#enhancedCounsellingTipShow').val() == 1){
-        $('#enhancedCounsellingTip').modal('show');
-    }
-    if($("#DSERR019TipShow").val() == 1){
-        $('#DSERR019Tip').modal('show');
-    }
+    showPopCommon('#enhancedCounsellingTipShow','#enhancedCounsellingTipShow',1);
+    showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
+    showPopCommon('#DSERR021MessageShow','#DSERR021Message',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
 });
@@ -66,5 +63,11 @@ function toggleOnSelectNoSelect(sel, value, area){
         toggleOnSelect(sel,'-1',area);
     }
 }
+
+function DSERR021MessageClose(){
+    $('#DSERR021Message').modal('hide');
+}
+
+
 
 

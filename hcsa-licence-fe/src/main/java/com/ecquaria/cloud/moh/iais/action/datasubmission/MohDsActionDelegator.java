@@ -103,6 +103,7 @@ public class MohDsActionDelegator {
                 arCycleStageDelegator.init(request);
                 arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(), arSuper.getPatientInfoDto(),
                         arSuper.getPremisesDto().getHciCode());
+                arCycleStageDelegator.setEnhancedCounsellingTipShow(request,arSuper.getArCycleStageDto(),true);
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);

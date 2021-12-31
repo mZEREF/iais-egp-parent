@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -88,6 +90,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         valiateDonorDtos(request,donorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         checkDonorsVerifyPass(donorDtos,request);
+        valRFC(request,iuiCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
     }
 
@@ -140,5 +143,15 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
             iuiCycleStageDto.setFromDonorTissueFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_D_SEMEN_TESTICULAR));
         }
         return iuiCycleStageDto;
+    }
+
+    protected void valRFC(HttpServletRequest request, IuiCycleStageDto iuiCycleStageDto){
+        if( ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getIuiCycleStageDto()!= null && iuiCycleStageDto .equals(arOldSuperDataSubmissionDto.getIuiCycleStageDto())){
+                ParamUtil.setRequestAttr(request,"DSERR021Message",AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

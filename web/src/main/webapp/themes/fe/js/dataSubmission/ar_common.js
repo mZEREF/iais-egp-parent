@@ -129,3 +129,9 @@ function getDataForPrinting() {
     }
     return {declaration: declaration, printflag: printflag};
 }
+
+function showPopCommon(controlId,showPopId,val){
+    if($(controlId).val() == val){
+        $(showPopId).modal('show');
+    }
+}

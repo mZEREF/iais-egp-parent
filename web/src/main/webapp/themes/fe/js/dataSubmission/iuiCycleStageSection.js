@@ -5,9 +5,7 @@ $(document).ready(function (){
    }else {
        showOtherPremises(1);
    }
-    if($("#DSERR019TipShow").val() == 1){
-        $('#DSERR019Tip').modal('show');
-    }
+    showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
 });
 
 

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -107,21 +108,21 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
-            setEnhancedCounsellingTipShow(request,arCycleStageDto);
+            setEnhancedCounsellingTipShow(request,arCycleStageDto,false);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
-    public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto){
+    public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){
         if((arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0)
                 || arCycleStageDto.getCountForEnhancedCounselling() >10){
             if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
-                if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
-                ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
-                }
                 if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
                     ParamUtil.setSessionAttr(request,ENHANCEDCOUNSELLING_NO_SHOW,AppConsts.YES);
                     ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
+                }
+                if(needTip){
+                    ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
                 }
             }
         }
@@ -158,11 +159,23 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         valiateDonorDtos(request,donorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
-        setEnhancedCounsellingTipShow(request,arCycleStageDto);
+        setEnhancedCounsellingTipShow(request,arCycleStageDto,true);
         checkDonorsVerifyPass(donorDtos,request);
+        valRFC(request,arCycleStageDto);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
+
+    protected void valRFC(HttpServletRequest request, ArCycleStageDto arCycleStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto()!= null && arCycleStageDto .equals(arOldSuperDataSubmissionDto.getArCycleStageDto())){
+                ParamUtil.setRequestAttr(request,"DSERR021Message",AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
+    }
+
 
 
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
