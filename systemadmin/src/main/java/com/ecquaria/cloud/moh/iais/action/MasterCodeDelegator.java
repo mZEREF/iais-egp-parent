@@ -459,6 +459,20 @@ public class MasterCodeDelegator {
             boolean result = false;
             List<Map<String,Set<String>>> errResult = IaisCommonUtils.genNewArrayList();
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+                if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getRemakes())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getSequence())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getStatus())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getVersion())&&
+                        masterCodeToExcelDto.getEffectiveFrom()==null&&
+                        masterCodeToExcelDto.getEffectiveTo()==null
+                ){
+                    continue;
+                }
                 Map<String,Set<String>> errMap = IaisCommonUtils.genNewHashMap();
                 Set<String> errItems = IaisCommonUtils.genNewHashSet();
                 Date codeEffFrom = null;
@@ -666,7 +680,7 @@ public class MasterCodeDelegator {
                 Date date = new Date();
                 String dateStr = Formatter.formatDateTime(date);
                 String dateReplace = dateStr.replace(" "," at ");
-                String ackMsg = MessageUtil.replaceMessage("ACKMCM004","Date",dateReplace);
+                String ackMsg = MessageUtil.replaceMessage("ACKMCM004",dateReplace,"Date");
                 ParamUtil.setRequestAttr(request,"UPLOAD_ACKMSG",ackMsg);
                 masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
             }
