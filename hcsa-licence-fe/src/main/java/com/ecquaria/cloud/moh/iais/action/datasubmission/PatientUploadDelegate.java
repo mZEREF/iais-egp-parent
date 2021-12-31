@@ -137,7 +137,7 @@ public class PatientUploadDelegate {
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
-            bpc.request.getSession().removeAttribute(SEESION_FILES_MAP_AJAX);
+            clearSession(bpc.request);
             return;
         }
         int fileItemSize = 0;
