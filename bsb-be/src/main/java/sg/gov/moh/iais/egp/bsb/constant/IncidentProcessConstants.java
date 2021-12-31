@@ -20,4 +20,10 @@ public class IncidentProcessConstants {
 
     public static final String KEY_APP_ID = "appId";
     public static final String KEY_TASK_ID = "taskId";
+
+    public static final String ACTION_TYPE_SUBMIT = "submit";
+    public static final String ACTION_TYPE_BACK = "doBack";
+    public static final String ACTION_TYPE_VIEW_APPLICATION = "view";
+
+    public static final String PARAM_ACTION_TYPE = "action_type";
 }

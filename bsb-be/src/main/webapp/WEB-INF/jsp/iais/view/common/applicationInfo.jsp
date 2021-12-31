@@ -11,7 +11,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center">Application Type</td>
-                        <td style="text-align: center"><c:out value="${app.appType}"/></td>
+                        <td style="text-align: center"><iais:code code="${app.appType}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">Reference No.</td>
@@ -23,7 +23,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center">Current Status</td>
-                        <td style="text-align: center"><c:out value="${app.status}"/></td>
+                        <td style="text-align: center"><iais:code code="${app.status}"/></td>
                     </tr>
                     </tbody>
                 </table>

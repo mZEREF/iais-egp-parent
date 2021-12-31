@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/view/doScreeningPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/view/doProcessPage.jsp"%>

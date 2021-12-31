@@ -9,8 +9,14 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-report-event.js"></script>
+
 <div class="dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
+        <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -75,22 +81,43 @@
                                                 <div class="row" style="margin: 20px 0">
                                                     <div class="col-xs-12">
                                                         <div class="form-horizontal">
+                                                            <c:set var="dto" value="${processDto.processingDto}"/>
+                                                            <c:forEach var="role" items="${mohRoles}">
+                                                                <c:set var="item" value="${dto.newRemarkMap.get(role)}"/>
+                                                                <c:if test="${item ne null}">
+                                                                    <div class="form-group ">
+                                                                        <div class="col-sm-5 control-label">
+                                                                            <label for="remarks${role}">${role} Remarks</label>
+                                                                        </div>
+                                                                        <div class="col-sm-6 col-md-7">
+                                                                            <label id="remarks${role}"><c:out value="${item.remark}"/></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group ">
+                                                                        <div class="col-sm-5 control-label">
+                                                                            <label for="decision${role}">${role} Decision</label>
+                                                                        </div>
+                                                                        <div class="col-sm-6 col-md-7">
+                                                                            <label id="decision${role}"><c:out value="${item.decision}"/></label>                                                                        </div>
+                                                                    </div>
+                                                                </c:if>
+                                                            </c:forEach>
                                                             <div class="form-group ">
                                                                 <div class="col-sm-5 control-label">
                                                                     <label for="status">Current Status</label>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <input type="text" autocomplete="off" name="status" id="status" value='' maxlength="50"/>
+                                                                    <label id="status"><iais:code code="${dto.currentStatus}"/></label>
                                                                     <span data-err-ind="status" class="error-msg"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group ">
                                                                 <div class="col-sm-5 control-label">
-                                                                    <label for="remark">Remarks</label>
+                                                                    <label for="remarks">Remarks</label>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <textarea autocomplete="off" class="col-xs-12" name="remark" id="remark" maxlength="1000" style="width: 100%"></textarea>
-                                                                    <span data-err-ind="remark" class="error-msg"></span>
+                                                                    <textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${dto.remarks}"/></textarea>
+                                                                    <span data-err-ind="remarks" class="error-msg"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group ">
@@ -100,9 +127,9 @@
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
                                                                     <select name="decision" id="decision">
-                                                                        <option>Please Select</option>
-                                                                        <option>Acknowledged</option>
-                                                                        <option>Request for Information</option>
+                                                                        <c:forEach var="ops" items="${decisionOps}">
+                                                                            <option value="${ops.value}" <c:if test="${dto.decision eq ops.value}">selected="selected"</c:if>>${ops.text}</option>
+                                                                        </c:forEach>
                                                                     </select>
                                                                     <span data-err-ind="decision" class="error-msg"></span>
                                                                 </div>
@@ -120,8 +147,8 @@
                                                                     <span data-err-ind="approvalOfficer" class="error-msg"></span>
                                                                 </div>
                                                             </div>
-                                                            <a style=" float:left;padding-top: 1.1%;text-decoration:none;"><em class="fa fa-angle-left"> </em> Back</a>
-                                                            <button class="btn btn-primary" type="button" style="float: right">Submit</button>
+                                                            <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back"><em class="fa fa-angle-left"> </em> Back</a>
+                                                            <button class="btn btn-primary" type="button" id="submitButton" style="float: right">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -140,6 +167,14 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody id="tbodyFileListId">
+                                                            <c:forEach var="history" items="${dto.processHistoryList}">
+                                                                <tr>
+                                                                    <td><c:out value="${history.userName}"/></td>
+                                                                    <td><c:out value="${history.status}"/></td>
+                                                                    <td><c:out value="${history.remarks}"/></td>
+                                                                    <td><c:out value="${history.updateDate}"/></td>
+                                                                </tr>
+                                                            </c:forEach>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -156,5 +191,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/iais/doDocument/uploadFile.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>

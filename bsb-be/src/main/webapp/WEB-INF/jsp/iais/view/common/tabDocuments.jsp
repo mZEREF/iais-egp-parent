@@ -18,22 +18,22 @@
                     <th scope="col" style="width: 15%">Size</th>
                     <th scope="col" style="width: 15%">Submitted By</th>
                     <th scope="col" style="width: 15%">Date Submitted</th>
+                    <th scope="col" style="width: 15%">Status</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:if test="${savedFiles ne null}">
-                    <c:forEach var="docTypes" items="${docTypes}">
-                        <c:forEach var="info" items="${savedFiles.get(docTypes)}">
-                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                            <tr>
-                                <td>${info.filename}</td>
-                                <td>${info.docType}</td>
-                                <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
-                                <td>${String.format("%.1f", info.size/1024.0)}KB</td>
-                                <td>${info.submitBy}</td>
-                                <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
-                            </tr>
-                        </c:forEach>
+                <c:if test="${processDto.incidentDocDtoList ne null}">
+                    <c:forEach var="info" items="${processDto.incidentDocDtoList}">
+                        <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.fileRepoId)}"/>
+                        <tr>
+                            <td>${info.document}</td>
+                            <td>${info.docType}</td>
+                            <td><p><a href="javascript:void(0)" onclick="downloadFile('tab','${tmpId}')">${info.docName}</a></p></td>
+                            <td>${String.format("%.1f", info.docSize/1024.0)}KB</td>
+                            <td>${info.submitBy}</td>
+                            <td>${info.submitDt}</td>
+                            <td>${info.status}</td>
+                        </tr>
                     </c:forEach>
                 </c:if>
                 </tbody>

@@ -1,3 +1,4 @@
+<c:set var="per" value="${processDto.incidentPersonnelDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Facility Administrator/Officer</strong></div>
     <div class="panel-collapse in collapse">
@@ -22,17 +23,19 @@
                         </tr>
                         </thead>
                         <tbody class="form-horizontal">
-                        <tr style="text-align: center">
-                            <td>Peter</td>
-                            <td>Singaporean</td>
-                            <td>S8876543K</td>
-                            <td>Facility Administrator</td>
-                            <td>83948499</td>
-                            <td>peter@gmail.com</td>
-                            <td>18/02/2019</td>
-                            <td>Facility Admin</td>
-                            <td>Y</td>
-                        </tr>
+                        <c:forEach var="admin" items="${per.facilityAdminList}">
+                            <tr style="text-align: center">
+                                <td><c:out value="${admin.name}"/></td>
+                                <td><iais:code code="${admin.organisation}"/></td>
+                                <td><c:out value="${admin.address}"/></td>
+                                <td><c:out value="${admin.designation}"/></td>
+                                <td><c:out value="${admin.contactNo}"/></td>
+                                <td><c:out value="${admin.email}"/></td>
+                                <td><c:out value="${admin.employmentDate}"/></td>
+                                <td><c:out value="${admin.type}"/></td>
+                                <td><c:out value="${admin.isMain}"/></td>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -66,18 +69,20 @@
                         </tr>
                         </thead>
                         <tbody class="form-horizontal">
-                        <tr style="text-align: center">
-                            <td>Peter</td>
-                            <td>Singaporean</td>
-                            <td>S8876543K</td>
-                            <td>Facility Administrator</td>
-                            <td>83948499</td>
-                            <td>peter@gmail.com</td>
-                            <td>18/02/2019</td>
-                            <td>Facility Admin</td>
-                            <td>Facility Admin</td>
-                            <td>Y</td>
-                        </tr>
+                        <c:forEach var="commitee" items="${per.commiteeDtoList}">
+                            <tr style="text-align: center">
+                                <td><c:out value="${commitee.name}"/></td>
+                                <td><iais:code code="${commitee.nationality}"/></td>
+                                <td><c:out value="${commitee.idNumber}"/></td>
+                                <td><c:out value="${commitee.designation}"/></td>
+                                <td><c:out value="${commitee.contactNo}"/></td>
+                                <td><c:out value="${commitee.emailAddr}"/></td>
+                                <td><c:out value="${commitee.employmentDate}"/></td>
+                                <td><c:out value="${commitee.areaOfExpertise}"/></td>
+                                <td><c:out value="${commitee.role}"/></td>
+                                <td><c:out value="${commitee.employeeOfComp}"/></td>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -111,17 +116,20 @@
                         </tr>
                         </thead>
                         <tbody class="form-horizontal">
-                        <tr style="text-align: center">
-                            <td>Peter</td>
-                            <td>Singaporean</td>
-                            <td>S8876543K</td>
-                            <td>Facility Administrator</td>
-                            <td>83948499</td>
-                            <td>peter@gmail.com</td>
-                            <td>18/02/2019</td>
-                            <td>Facility Admin</td>
-                            <td>Facility Admin</td>
-                        </tr>
+                        <c:forEach var="author" items="${per.personnelAuthorisedList}">
+                            <tr style="text-align: center">
+                                <td><c:out value="${author.name}"/></td>
+                                <td><iais:code code="${author.nationality}"/></td>
+                                <td><c:out value="${author.idNumber}"/></td>
+                                <td><c:out value="${author.designation}"/></td>
+                                <td><c:out value="${author.contactNo}"/></td>
+                                <td><c:out value="${author.email}"/></td>
+                                <td><c:out value="${author.employmentDate}"/></td>
+                                <td><c:out value="${author.employmentPeriod}"/></td>
+                                <td><c:out value="${author.clearanceDate}"/></td>
+                                <td><c:out value="${author.workArea}"/></td>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>

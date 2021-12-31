@@ -18,17 +18,22 @@ public class INTRANET___DOScreeningIncidentNotification___1 extends BaseProcessC
 
 	public void start_OnStepProcess_0() throws Exception {
 		// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "startDO", this);
 	}
 
 	public void preScreeningData_OnStepProcess_0() throws Exception {
 	// 		PreScreeningData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preScreeningData", this);
+		EngineHelper.delegate(DELEGATOR, "preProcessingData", this);
+	}
+
+	public void preViewNotification_OnStepProcess_0() throws Exception {
+		// 		PreViewNotification->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewNotification", this);
 	}
 
 	public void handleScreening_OnStepProcess_0() throws Exception {
 	// 		HandleScreening->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleScreening", this);
+		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);
 	}
 
 	public void doProcessing_OnStepProcess_0() throws Exception {

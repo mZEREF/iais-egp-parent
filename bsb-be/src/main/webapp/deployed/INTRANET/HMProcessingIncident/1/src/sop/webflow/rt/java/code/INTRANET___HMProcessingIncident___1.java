@@ -18,17 +18,22 @@ public class INTRANET___HMProcessingIncident___1 extends BaseProcessClass {
 
 	public void preProcessingData_OnStepProcess_0() throws Exception {
 	// 		PreProcessingData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preHMProcessingData", this);
+		EngineHelper.delegate(DELEGATOR, "preProcessingData", this);
 	}
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "startHM", this);
+	}
+
+	public void preViewNotification_OnStepProcess_0() throws Exception {
+		// 		PreViewNotification->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewNotification", this);
 	}
 
 	public void handleHMProcessing_OnStepProcess_0() throws Exception {
 	// 		HandleHMProcessing->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleHMProcessing", this);
+		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);
 	}
 
 	public void doProcessing_OnStepProcess_0() throws Exception {

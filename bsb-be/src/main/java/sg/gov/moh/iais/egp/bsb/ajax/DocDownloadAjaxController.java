@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -109,6 +111,16 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetSavedFile);
     }
 
+    @GetMapping("/incident/repo/{id}")
+    public void downloadIncidentSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::incidentGetSavedFile);
+    }
+
+    @GetMapping("/incidentView/repo/{id}")
+    public void downloadIncidentViewSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::incidentViewGetSavedFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id
@@ -130,6 +142,26 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    public MultipartFile incidentViewGetSavedFile(HttpServletRequest request, String id){
+        Map<String,DocRecordInfo> repoIdDocMap = (Map<String, DocRecordInfo>) ParamUtil.getSessionAttr(request,"repoIdDocMap");
+        DocRecordInfo info = repoIdDocMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    public MultipartFile incidentGetSavedFile(HttpServletRequest request, String id){
+        Map<String, IncidentDocDto> repoIdDocMap = (Map<String, IncidentDocDto>) ParamUtil.getSessionAttr(request,"repoIdDocMap");
+        IncidentDocDto info = repoIdDocMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getDocName(), null, content);
     }
 
     private MultipartFile withdrawnGetSavedFile(HttpServletRequest request, String id) {

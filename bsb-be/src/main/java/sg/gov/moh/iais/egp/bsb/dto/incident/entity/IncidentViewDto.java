@@ -4,6 +4,7 @@ import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @version 2021/12/27 17:24
  **/
 @Data
-public class IncidentViewDto {
+public class IncidentViewDto implements Serializable{
     private IncidentInfoDto incidentInfoDto;
     private PersonReportingInfoDto reportingInfoDto;
 

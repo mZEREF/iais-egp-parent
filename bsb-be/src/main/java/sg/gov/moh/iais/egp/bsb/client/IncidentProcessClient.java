@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.IncidentNotificationDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.ProcessingDto;
 
@@ -18,15 +19,18 @@ import sg.gov.moh.iais.egp.bsb.dto.incident.ProcessingDto;
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "incident")
 public interface IncidentProcessClient {
-    @PostMapping(path = "/bsb_repoEvent/processDO",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/bsb-repoEvent/processDO",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveDOProcess(@RequestBody ProcessingDto processingDto);
 
-    @PostMapping(path = "/bsb_repoEvent/processAO",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/bsb-repoEvent/processAO",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAOProcess(@RequestBody ProcessingDto processingDto);
 
-    @PostMapping(path = "/bsb_repoEvent/processHM",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/bsb-repoEvent/processHM",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveHMProcess(@RequestBody ProcessingDto processingDto);
 
-    @GetMapping(path = "/bsb_repoEvent/notification/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/bsb-repoEvent/notification/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<IncidentNotificationDto> getIncidentNotificationByAppId(@PathVariable("appId") String appId);
+
+    @PostMapping(path = "/bsb-repoEvent/validate/process", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateProcessingDto(@RequestBody ProcessingDto dto);
 }

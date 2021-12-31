@@ -5,22 +5,37 @@
   <StartStep defClass="" executor="" icon="" name="Start" x="60" y="190">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreProcessingData" x="160" y="190">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preProcessingData_OnStepProcess_0" name="preProcessingData_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="HandleAOProcessing" x="520" y="190">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAOProcessing_OnStepProcess_0" name="handleAOProcessing_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="DoProcessing" x="660" y="310">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreViewNotification" x="530" y="290">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewNotification_OnStepProcess_0" name="preViewNotification_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
@@ -31,6 +46,12 @@
    <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PocessingSuccess" stageIndicator="" x="660" y="420">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewNotification" stageIndicator="" x="400" y="290">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -60,6 +81,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(690,210)(213,88)(180,210)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewNotification" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,210)(550,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewNotification" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreViewNotification" style="rectanular">
+   <position>{(550,310)(420,310)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -67,6 +94,7 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/DoProcessing" value="&quot;submit&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreViewNotification" value="&quot;view&quot;" />
   </Switch>
  </Switches>
  <Branches />

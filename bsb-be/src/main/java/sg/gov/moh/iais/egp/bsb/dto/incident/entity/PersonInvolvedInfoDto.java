@@ -2,12 +2,14 @@ package sg.gov.moh.iais.egp.bsb.dto.incident.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author YiMing
  * @version 2021/12/27 18:16
  **/
 @Data
-public class PersonInvolvedInfoDto {
+public class PersonInvolvedInfoDto implements Serializable {
     private String name;
     private String gender;
     private String telNo;

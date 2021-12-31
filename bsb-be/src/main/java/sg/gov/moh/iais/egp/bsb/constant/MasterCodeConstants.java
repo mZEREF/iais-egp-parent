@@ -11,6 +11,13 @@ public class MasterCodeConstants {
     public static final String YES = "Y";
     public static final String NO = "N";
 
+    public static final String FIRST_SCHEDULE_PART_I = "SCHTYPE001";
+    public static final String FIRST_SCHEDULE_PART_II = "SCHTYPE002";
+    public static final String SECOND_SCHEDULE = "SCHTYPE003";
+    public static final String THIRD_SCHEDULE = "SCHTYPE004";
+    public static final String FOURTH_SCHEDULE = "SCHTYPE005";
+    public static final String FIFTH_SCHEDULE = "SCHTYPE006";
+
     public static final String APP_TYPE_NEW = "BSBAPTY001";
     public static final String APP_TYPE_RENEW = "BSBAPTY002";
     public static final String APP_TYPE_RFC = "BSBAPTY003";

@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.dto.incident.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 
 /**
  * @author YiMing
@@ -9,7 +11,7 @@ import lombok.Data;
  **/
 @Data
 
-public class FacilityAdminDto {
+public class FacilityAdminDto implements Serializable {
     private String name;
     private String organisation;
     private String address;
