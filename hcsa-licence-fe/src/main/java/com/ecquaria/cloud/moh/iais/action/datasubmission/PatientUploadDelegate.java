@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -163,11 +164,13 @@ public class PatientUploadDelegate {
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
                     Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
-                    List<PatientDto> patientDtos = patientInfoList.stream().map(PatientInfoDto::getPatient).collect(
-                            Collectors.toList());
+                    List<PatientDto> patientDtos = patientInfoList.stream()
+                            .map(PatientInfoDto::getPatient)
+                            .collect(Collectors.toList());
                     for (int i = 1; i < fileItemSize; i++) {
                         if (duplicate(patientDtos.get(i), patientDtos.subList(0, i))) {
-                            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), "GENERAL_ERR0053"));
+                            errorMsgs.add(new FileErrorMsg(DataSubmissionHelper.getRow(i), fieldCellMap.get("idNumber"),
+                                    "GENERAL_ERR0053"));
                         }
                     }
                     if (!errorMsgs.isEmpty()) {

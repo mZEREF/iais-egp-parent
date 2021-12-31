@@ -620,12 +620,12 @@ public final class DataSubmissionHelper {
         return errorMap;
     }
 
-    /*public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile) {
-        return validateExcelList(objList, profile, 2, null);
-    }*/
+    public static int getRow(int i) {
+        return i + 2;
+    }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, ExcelPropertyDto> fieldCellMap) {
-        return validateExcelList(objList, profile, 2, fieldCellMap);
+        return validateExcelList(objList, profile, getRow(0), fieldCellMap);
     }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow,
