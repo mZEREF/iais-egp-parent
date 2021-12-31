@@ -473,6 +473,12 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Description","field");
                     errItems.add(errMsg);
                     result = true;
+                }else if(masterCodeToExcelDto.getCodeValue().length() >255) {
+                    Map<String,String> stringMap = new HashMap<>(2);
+                    stringMap.put("field","Code Description");
+                    stringMap.put("maxlength","255");
+                    errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
+                    result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Value","field");
@@ -602,7 +608,7 @@ public class MasterCodeDelegator {
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
                     String uploadVersion = masterCodeToExcelDto.getVersion();
                     if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                        errItems.add(err0006Msg);
+                        errItems.add(MessageUtil.getMessageDesc("GENERAL_ERR0027"));
                         result = true;
                     }else {
                         if(uploadVersion.length() > 4){
@@ -638,10 +644,10 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
-                if( !StringUtil.isEmpty(masterCodeToExcelDto.getRemakes()) && masterCodeToExcelDto.getRemakes().length() >256){
+                if( !StringUtil.isEmpty(masterCodeToExcelDto.getRemakes()) && masterCodeToExcelDto.getRemakes().length() >255){
                     Map<String,String> stringMap = new HashMap<>(2);
                     stringMap.put("field","Remarks");
-                    stringMap.put("maxlength","256");
+                    stringMap.put("maxlength","255");
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
