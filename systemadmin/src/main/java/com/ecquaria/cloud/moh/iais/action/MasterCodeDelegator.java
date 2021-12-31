@@ -375,7 +375,9 @@ public class MasterCodeDelegator {
         SearchResult<MasterCodeQueryDto> searchResult = masterCodeService.doQuery(searchParam);
         searchResult.getRows().forEach(h ->{
             MasterCodeToExcelDto mct = new MasterCodeToExcelDto();
-            mct.setCodeCategory(h.getCodeCategory());
+            String category = h.getCodeCategory();
+            MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            mct.setCodeCategory(masterCodeCategoryDto.getCategoryDescription());
             mct.setSequence(String.valueOf(h.getSequence() / 1000));
             mct.setCodeDescription(h.getCodeDescription());
             mct.setFilterValue(h.getFilterValue());

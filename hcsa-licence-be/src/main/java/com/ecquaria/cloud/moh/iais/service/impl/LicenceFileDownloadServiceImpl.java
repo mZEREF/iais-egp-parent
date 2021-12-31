@@ -227,6 +227,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         s = s + AppServicesConsts.ZIP_NAME;
                         if( !s.equals(name)){
                             log.info(StringUtil.changeForLog(s+" not equals "+name));
+                            v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+                            try {
+                                applicationClient.updateProcessFileTrack(v);
+                            }catch (Exception e){
+                                log.info("error updateProcessFileTrack");
+                            }
                             continue;
                         }
                     }catch (Exception e){
