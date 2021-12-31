@@ -2909,9 +2909,8 @@ public class NewApplicationDelegator {
 
         appSubmissionService.doSaveDraft(appSubmissionDto);
         List<String> licenceIds = appSubmissionDtoList.parallelStream()
-                .map(dto -> dto.getLicenceId())
+                .map(AppSubmissionDto::getLicenceId)
                 .collect(Collectors.toList());
-
         appSubmissionService.updateDrafts(NewApplicationHelper.getLicenseeId(bpc.request), licenceIds, draftNo);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
@@ -3275,7 +3274,7 @@ public class NewApplicationDelegator {
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
                 } else {
-                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---");
+                    log.info(StringUtil.changeForLog("--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---"));
                     ids.add(appSubmissionDto1.getAppGrpId());
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appSubmissionDto1.getAppGrpId());
@@ -4766,15 +4765,15 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        log.info("Primary Doc size: " + appGrpPrimaryDocDtoList.size());
+        log.info(StringUtil.changeForLog("Primary Doc size: " + appGrpPrimaryDocDtoList.size()));
         if (saveFileMap.size() != appGrpPrimaryDocDtoList.size()) {
-            log.info("Save file size: " + saveFileMap.size());
+            log.info(StringUtil.changeForLog("Save file size: " + saveFileMap.size()));
         }
         if (passValidateFileMap.size() > 0) {
             List<File> fileList = new ArrayList<>(passValidateFileMap.values());
             List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
             int fileRepo = fileRepoIdList.size();
-            log.info("File Repo size: " + fileRepo);
+            log.info(StringUtil.changeForLog("File Repo size: " + fileRepo));
             int i = 0;
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
                 String premIndexNo = appGrpPrimaryDocDto.getPremisessName();

@@ -55,7 +55,7 @@ public final class ApplicationHelper {
             }
             title.append(getDupForPersonName(dupForPerson));
             if (num != null) {
-                title.append(" ").append(num);
+                title.append(' ').append(num);
             }
             title.append(": ").append(docTitle);
             result = title.toString();

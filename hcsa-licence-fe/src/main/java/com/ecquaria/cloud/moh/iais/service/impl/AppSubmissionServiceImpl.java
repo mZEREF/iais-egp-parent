@@ -438,7 +438,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
                         signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
-                if ("401".equals(entity.getStatusCode())) {
+                if (401 == entity.getStatusCode()) {
                     professionalResponseDto = new ProfessionalResponseDto();
                     professionalResponseDto.setStatusCode("401");
                 } else {
@@ -2471,7 +2471,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto,
                 premisesHciList, isRfi, errorSvcConfig);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.CO_MAP);
         if (errorList.contains(NewApplicationConstant.SECTION_LICENSEE)) {
             coMap.put(NewApplicationConstant.SECTION_LICENSEE, "");
         } else {
@@ -3454,7 +3454,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-    private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
+    /*private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
         AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
 
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -3510,6 +3510,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
 
     }
+    */
+
     private void doCommomDocument(AppSubmissionDto appSubmissionDto, Map<String, String> documentMap, boolean isRfi) {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList;
