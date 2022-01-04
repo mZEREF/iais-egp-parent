@@ -15,7 +15,7 @@
     }
     body {
       font-family:"Open Sans", sans-serif;
-      font-size: 16pt;
+      font-size: 18pt;
       font-weight: 400;
       line-height: 1.5;
       color: #212529;
@@ -105,12 +105,12 @@
       margin-top: 10px;
     }
     .lic-number p {
-      font-size: 16pt;
+      font-size: 18pt;
       margin-bottom: 0;
       margin-top: 25px;
     }
     .lic-number h2 {
-      font-size: 16pt;
+      font-size: 18pt;
       font-weight: 700;
       text-transform:uppercase;
       border:none;
@@ -121,11 +121,11 @@
       margin-top: 15px;
     }
     .lic-info p {
-      font-size: 14pt;
+      font-size: 18pt;
       margin-bottom: 0px;
     }
     .lic-info h3 {
-      font-size: 16pt;
+      font-size: 18pt;
       font-weight: 700;
       text-transform:uppercase;
       margin-bottom: 10px;
@@ -154,11 +154,11 @@
       margin-top: 20px;
     }
     .lic-dateinfo p {
-      font-size: 16pt;
+      font-size: 18pt;
       margin-bottom: 0;
     }
     .lic-dateinfo h3 {
-      font-size: 16pt;
+      font-size: 18pt;
       font-weight: 700;
       text-transform:uppercase;
       margin-bottom: 10px;
@@ -170,7 +170,7 @@
       margin-top: 25px;
     }
     .lic-signature-info p {
-      font-size: 16pt;
+      font-size: 18pt;
       font-weight: 700;
       text-transform: uppercase;
       margin-bottom: 0px;
@@ -180,7 +180,7 @@
     }
     .vehicle-number {
       display: inline-block;
-      font-size: 16px;
+      font-size: 18px;
       margin: 4px;
     }
     ul.v-numberlist li {
