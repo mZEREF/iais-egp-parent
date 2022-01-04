@@ -6,7 +6,7 @@ $(document).ready(function (){
     }else {
         hideUsedDonorOocyteControlClass(0);
     }
-    showPopCommon('#enhancedCounsellingTipShow','enhancedCounsellingTip',1);
+    showPopCommon('#enhancedCounsellingTipShow','#enhancedCounsellingTip',1);
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     showPopCommon('#DSERR021MessageShow','#DSERR021Message',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');

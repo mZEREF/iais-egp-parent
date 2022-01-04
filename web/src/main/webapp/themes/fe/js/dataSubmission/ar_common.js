@@ -131,6 +131,12 @@ function getDataForPrinting() {
 }
 
 function showPopCommon(controlId,showPopId,val){
+    if($(controlId).length == 0){
+        controlId = '#'+controlId;
+    }
+    if($(showPopId).length == 0){
+        showPopId = '#' + showPopId;
+    }
     if($(controlId).val() == val){
         $(showPopId).modal('show');
     }
