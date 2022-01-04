@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
@@ -47,7 +48,13 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +74,8 @@ public class MasterCodeDelegator {
 
     private final MasterCodeService masterCodeService;
 
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService) {
@@ -487,7 +495,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Description","field");
                     errItems.add(errMsg);
                     result = true;
-                }else if(masterCodeToExcelDto.getCodeValue().length() >255) {
+                }else if(masterCodeToExcelDto.getCodeDescription().length() >255) {
                     Map<String,String> stringMap = new HashMap<>(2);
                     stringMap.put("field","Code Description");
                     stringMap.put("maxlength","255");
@@ -557,6 +565,20 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (codeEffFrom != null && codeEffTo != null){
+                    if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffFrom.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
+                    if ("Active".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffTo.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
                     if (codeEffFrom.compareTo(codeEffTo) >= 0) {
                         String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                         errItems.add(errMsg);
@@ -593,16 +615,16 @@ public class MasterCodeDelegator {
                             errItems.add(errMsg);
                             result = true;
                         }
-                    }else{
-                        List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                        masterCodeToExcelDtos.forEach(h -> {
-                            codeValueList.add(h.getCodeValue());
-                        });
-                        if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                            String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
-                            errItems.add(errMsg);
-                            result = true;
-                        }
+                    }
+
+                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                    masterCodeToExcelDtos.forEach(h -> {
+                        codeValueList.add(h.getCodeValue());
+                    });
+                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
+                        errItems.add(errMsg);
+                        result = true;
                     }
                 }
                 String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
@@ -615,7 +637,8 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        errItems.add(err0006Msg);
+                        String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0008");
+                        errItems.add(errMsg);
                         result = true;
                     }
                 }
@@ -1243,7 +1266,8 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0043");
+            String errMsg= MessageUtil.replaceMessage("GENERAL_ERR0043", String.valueOf(systemParamConfig.getUploadFileLimit()),"configNum");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
