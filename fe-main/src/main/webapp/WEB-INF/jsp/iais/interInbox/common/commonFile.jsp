@@ -99,6 +99,6 @@
     })
 
      function goToSubmission(){
-         window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohDataSubmissionsInbox",request))}";
+         window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohDataSubmissionsInbox")}";
      }
 </script>
