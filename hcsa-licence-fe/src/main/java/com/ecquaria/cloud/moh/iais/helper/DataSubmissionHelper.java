@@ -743,9 +743,6 @@ public final class DataSubmissionHelper {
         if (crudType == null) {
             return false;
         }
-        if ("next".equals(crudType)) {
-            return true;
-        }
         try {
             int i = Integer.parseInt(crudType.substring(4));
             String dsType = crudType.substring(0, 3);
