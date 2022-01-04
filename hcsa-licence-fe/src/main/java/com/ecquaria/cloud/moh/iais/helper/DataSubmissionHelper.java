@@ -57,6 +57,8 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.TOP_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
@@ -146,6 +148,18 @@ public final class DataSubmissionHelper {
 
     public static void setCurrentTopDataSubmission(TopSuperDataSubmissionDto topSuperDataSubmissionDto, HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+    }
+
+    public static LdtSuperDataSubmissionDto getCurrentLdtSuperDataSubmissionDto(HttpServletRequest request) {
+        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
+        if (LdtSuperDataSubmissionDto == null) {
+            log.info("------------------------------------LdtSuperDataSubmissionDto is null-----------------");
+        }
+        return LdtSuperDataSubmissionDto;
+    }
+
+    public static void setCurrentLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION, LdtSuperDataSubmissionDto);
     }
 
     public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
