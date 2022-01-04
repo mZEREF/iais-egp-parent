@@ -111,7 +111,9 @@ public class FESingpassLandingDelegator {
         } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-            if (oLoginInfo == null){
+            if (oLoginInfo == null || !"S".equals(oLoginInfo.getStatus())){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
 
@@ -137,6 +139,10 @@ public class FESingpassLandingDelegator {
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
                     identityNo = oiRepon.getUserInfo().getNricFin();
                 }
+            } else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+                return;
             }
         } else {
             identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
