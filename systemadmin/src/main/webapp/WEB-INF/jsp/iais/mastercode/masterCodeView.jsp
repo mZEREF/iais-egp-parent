@@ -32,7 +32,6 @@
         var fangDuoJi = $('#fangDuoJi').val();
         if(fangDuoJi != 'fangDuoJi'){
             $('#fangDuoJi').val('fangDuoJi');
-        }else {
             $("[name='crud_action_value']").val(mcId);
             submit('doDelete');
         }
