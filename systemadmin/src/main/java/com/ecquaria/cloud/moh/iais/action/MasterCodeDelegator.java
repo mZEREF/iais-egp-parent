@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
@@ -47,7 +48,13 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +74,8 @@ public class MasterCodeDelegator {
 
     private final MasterCodeService masterCodeService;
 
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService) {
@@ -1258,7 +1266,8 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0043");
+            String errMsg= MessageUtil.replaceMessage("GENERAL_ERR0043", String.valueOf(systemParamConfig.getUploadFileLimit()),"configNum");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
