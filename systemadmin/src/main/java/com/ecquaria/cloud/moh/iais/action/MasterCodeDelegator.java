@@ -487,7 +487,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Description","field");
                     errItems.add(errMsg);
                     result = true;
-                }else if(masterCodeToExcelDto.getCodeValue().length() >255) {
+                }else if(masterCodeToExcelDto.getCodeDescription().length() >255) {
                     Map<String,String> stringMap = new HashMap<>(2);
                     stringMap.put("field","Code Description");
                     stringMap.put("maxlength","255");
@@ -557,6 +557,20 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (codeEffFrom != null && codeEffTo != null){
+                    if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffFrom.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
+                    if ("Active".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffTo.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
                     if (codeEffFrom.compareTo(codeEffTo) >= 0) {
                         String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                         errItems.add(errMsg);
@@ -593,16 +607,16 @@ public class MasterCodeDelegator {
                             errItems.add(errMsg);
                             result = true;
                         }
-                    }else{
-                        List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                        masterCodeToExcelDtos.forEach(h -> {
-                            codeValueList.add(h.getCodeValue());
-                        });
-                        if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                            String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
-                            errItems.add(errMsg);
-                            result = true;
-                        }
+                    }
+
+                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                    masterCodeToExcelDtos.forEach(h -> {
+                        codeValueList.add(h.getCodeValue());
+                    });
+                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
+                        errItems.add(errMsg);
+                        result = true;
                     }
                 }
                 String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
@@ -615,7 +629,8 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        errItems.add(err0006Msg);
+                        String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0008");
+                        errItems.add(errMsg);
                         result = true;
                     }
                 }
