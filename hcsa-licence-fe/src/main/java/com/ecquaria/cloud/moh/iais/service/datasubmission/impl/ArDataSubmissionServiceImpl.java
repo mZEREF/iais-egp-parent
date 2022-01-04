@@ -308,11 +308,13 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 submissionNo = selectionDto.getLatestDataSubmission().getSubmissionNo();
             }
         }
-        if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(dsType).getEntity();
-        }
-        if (islinkableCycle || isNonCycle) {
-            submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
+        synchronized (this) {
+            if (StringUtil.isEmpty(submissionNo)) {
+                submissionNo = systemAdminClient.submissionID(dsType).getEntity();
+            }
+            if (islinkableCycle || isNonCycle) {
+                submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
+            }
         }
         log.info(StringUtil.changeForLog("The submissionNo: " + submissionNo));
         return submissionNo;

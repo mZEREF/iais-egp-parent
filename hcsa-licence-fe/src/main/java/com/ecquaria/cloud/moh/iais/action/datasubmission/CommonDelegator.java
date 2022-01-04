@@ -346,11 +346,11 @@ public abstract class CommonDelegator {
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         // declaration
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);*/
         // others
         pageConfirmAction(bpc);
     }
@@ -363,7 +363,7 @@ public abstract class CommonDelegator {
      */
     public void pageConfirmAction(BaseProcessClass bpc) {
         // validation
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -375,7 +375,7 @@ public abstract class CommonDelegator {
             log.error("------No checked for declaration-----");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
-        }
+        }*/
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,

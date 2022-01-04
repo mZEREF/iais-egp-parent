@@ -13,8 +13,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="hasError" value="${not empty errorMsg}" />
-<c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
+<c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
+
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 
 <%@ include file="common/arHeader.jsp" %>
@@ -50,57 +50,26 @@
                             (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
                             records uploaded)
                         </h3>
-                        <c:if test="${not empty errorMsg}">
-                        <div class="col-xs-12">
-                            <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
-                        </div>
-                        </c:if>
-                        <c:if test="${not empty fileItemErrorMsgs}">
-                        <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
-                            <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
-                            <table aria-describedby="" class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col" >Row</th>
-                                    <th scope="col" >Field Name (Column)</th>
-                                    <th scope="col" >Error Message</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="item" items="${fileItemErrorMsgs}">
-                                <tr>
-                                    <td>${item.row}</td>
-                                    <td>${item.cellName} (${item.colHeader})</td>
-                                    <td>${item.message}</td>
-                                </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                        </c:if>
                         <div name="uploadFileShowId" id="uploadFileShowId">
-                            <c:if test="${not empty showPatientFile && !hasError}">
                             <div id="${showPatientFile.fileMapId}">
                                 <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${showPatientFile.fileUploadUrl}" docName="${showPatientFile.fileName}"/>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('uploadFile',${showPatientFile.index});">Delete</button>
                             </div>
-                            </c:if>
                         </div>
-                        <br/>
-                        <input id="uploadFile" name="selectedFile"
-                               class="uploadFile commDoc" style="display: none;"
-                               type="file" aria-label="uploadFile"
-                               onclick="fileClicked(event)"
-                               onchange="ajaxCallUploadForMax('mainForm', 'uploadFile', false);"/>
-                        <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
-                        <input type="hidden" id="hasItems" name="hasItems" value="${hasItems}" />
                     </div>
+                    <%--<div style="padding: 20px;">
+                        <h3>Declarations</h3>
+                        <div class="col-xs-12"><iais:message key="DS_DEC001" /></div>
+                    </div>--%>
                 </div>
                 <br/><br/>
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <%@include file="common/arDeclaration.jsp" %>
+                </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
     </div>
-    <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
+

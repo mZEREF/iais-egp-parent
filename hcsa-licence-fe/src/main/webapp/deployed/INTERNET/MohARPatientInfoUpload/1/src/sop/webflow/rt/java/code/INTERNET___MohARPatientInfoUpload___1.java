@@ -47,4 +47,14 @@ public class INTERNET___MohARPatientInfoUpload___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "doSubmission", this);
     }
 
+    public void preparePreview_OnStepProcess_0() throws Exception {
+    // 		PreparePreview->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "preparePreview", this);
+    }
+
+    public void doPreview_OnStepProcess_0() throws Exception {
+    // 		DoPreview->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPreview", this);
+    }
+
 }

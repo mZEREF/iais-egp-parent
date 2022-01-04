@@ -1,12 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
-/**
- * Process: MohARPatientInfoUpload
- *
- * @Description PatientUploadDelegate
- * @Auther chenlei on 11/23/2021.
- */
-
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -60,18 +53,25 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * @Description PatientDelegator
- * @Auther chenlei on 10/22/2021.
+ * Process: MohARPatientInfoUpload
+ *
+ * @Description PatientUploadDelegate
+ * @Auther chenlei on 11/23/2021.
  */
 @Delegator("patientUploadDelegate")
 @Slf4j
 public class PatientUploadDelegate {
 
     protected static final String ACTION_TYPE_PAGE = "page";
+    protected static final String ACTION_TYPE_PREVIEW = "preview";
+
+    private static final String FILE_ITEM_SIZE = "fileItemSize";
 
     private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
+    private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
@@ -95,6 +95,7 @@ public class PatientUploadDelegate {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
         session.removeAttribute(PATIENT_INFO_LIST);
+        session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }
 
@@ -122,9 +123,21 @@ public class PatientUploadDelegate {
      */
     public void preparePage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PreparePage -----"));
+        preapreDate(DataSubmissionConstant.PAGE_STAGE_PAGE, bpc.request);
+
+    }
+
+    private void preapreDate(String pageStage, HttpServletRequest request) {
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
         maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"));
-        ParamUtil.setRequestAttr(bpc.request, "maxCountMap", maxCountMap);
+        ParamUtil.setRequestAttr(request, "maxCountMap", maxCountMap);
+        ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
+        Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
+        if (fileItemSize == null) {
+            List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) request.getSession().getAttribute(PATIENT_INFO_LIST);
+            fileItemSize = patientInfoList != null ? patientInfoList.size() : 0;
+            ParamUtil.setRequestAttr(request, FILE_ITEM_SIZE, fileItemSize);
+        }
     }
 
     /**
@@ -149,7 +162,7 @@ public class PatientUploadDelegate {
             // upload file (first time / error)
             Entry<String, File> fileEntry = getFileEntry(bpc.request);
             PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-            ParamUtil.setRequestAttr(bpc.request, "pageShowFileDto", pageShowFileDto);
+            ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
             errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
             if (errorMap.isEmpty()) {
                 List<PatientInfoExcelDto> patientInfoExcelDtoList = getPatientInfoExcelDtoList(fileEntry);
@@ -176,29 +189,31 @@ public class PatientUploadDelegate {
                     if (!errorMsgs.isEmpty()) {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                        errorMap.put("itemError", "itemError");                    }
+                        errorMap.put("itemError", "itemError");
+                    }
                 }
             }
-            crudype = "page";
+            //crudype = ACTION_TYPE_PAGE;
         } else {
             // To submission
-            crudype = "submission";
+            // crudype = "submission";
         }
         log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
         if (errorMap != null && !errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             clearSession(bpc.request);
             fileItemSize = 0;
+            crudype = ACTION_TYPE_PAGE;
         } else {
             if (patientInfoList != null) {
                 fileItemSize = patientInfoList.size();
             }
             bpc.request.getSession().setAttribute(PATIENT_INFO_LIST, patientInfoList);
+            crudype = ACTION_TYPE_PREVIEW;
         }
-        ParamUtil.setRequestAttr(bpc.request, "fileItemSize", fileItemSize);
+        ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
     }
 
     /**
@@ -237,6 +252,9 @@ public class PatientUploadDelegate {
         for (PatientInfoExcelDto patientInfoExcelDto : patientInfoExcelDtoList) {
             PatientInfoDto dto = new PatientInfoDto();
             PatientDto patient = MiscUtil.transferEntityDto(patientInfoExcelDto, PatientDto.class);
+            if (StringUtil.isNotEmpty(patient.getName())) {
+                patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
+            }
             patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
@@ -262,7 +280,9 @@ public class PatientUploadDelegate {
                 dto.setPrevious(previous);
             }
             HusbandDto husbandDto = new HusbandDto();
-            husbandDto.setName(patientInfoExcelDto.getNameHbd());
+            if (StringUtil.isNotEmpty(patientInfoExcelDto.getNameHbd())) {
+                husbandDto.setName(patientInfoExcelDto.getNameHbd().toUpperCase(AppConsts.DFT_LOCALE));
+            }
             husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
@@ -334,6 +354,45 @@ public class PatientUploadDelegate {
     }
 
     /**
+     * Step: PreparePreview
+     *
+     * @param bpc
+     */
+    public void preparePreview(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("----- PreparePreview -----"));
+        preapreDate(DataSubmissionConstant.PAGE_STAGE_PREVIEW, bpc.request);
+    }
+
+    /**
+     * Step: DoPreview
+     *
+     * @param bpc
+     */
+    public void doPreview(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("----- DoPreview -----"));
+        // declaration
+        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
+        dataSubmissionDto.setDeclaration(declaration);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (StringUtil.isIn(crudype, new String[]{ACTION_TYPE_PAGE, "back"})) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            return;
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if (StringUtil.isEmpty(declaration)) {
+            errorMap.put("declaration", "GENERAL_ERR0006");
+        }
+        if (!errorMap.isEmpty()) {
+            log.error("------No checked for declaration-----");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
+        }
+    }
+
+    /**
      * Step: Submission
      *
      * @param bpc
@@ -345,15 +404,10 @@ public class PatientUploadDelegate {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;
         }
-        boolean useParallel = patientInfoList.size() > 3;
+        boolean useParallel = patientInfoList.size() >= AppConsts.DFT_MIN_PARALLEL_SIZE;
         ArSuperDataSubmissionDto arSuperDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        Stream<PatientInfoDto> stream;
-        if (useParallel) {
-            stream = patientInfoList.parallelStream();
-        } else {
-            stream = patientInfoList.stream();
-        }
-        List<ArSuperDataSubmissionDto> arSuperList = stream
+        String declaration = arSuperDto.getDataSubmissionDto().getDeclaration();
+        List<ArSuperDataSubmissionDto> arSuperList = StreamSupport.stream(patientInfoList.spliterator(), useParallel)
                 .map(dto -> {
                     ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
                     newDto.setFe(true);
@@ -363,6 +417,7 @@ public class PatientUploadDelegate {
                     dataSubmissionDto.setSubmitBy(DataSubmissionHelper.getLoginContext(bpc.request).getUserId());
                     dataSubmissionDto.setSubmitDt(new Date());
                     dataSubmissionDto.setSubmissionNo(submissionNo);
+                    dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
                     PatientDto patient = dto.getPatient();
                     patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
