@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.dto.inbox;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -19,8 +18,8 @@ public class InboxApprovalFacAdminResultDto {
         private String approveNo;
         private String processType;
         private String status;
-        private Date approvalStartDate;
-        private Date approvalExpiryDate;
+        private String approvalStartDate;
+        private String approvalExpiryDate;
         private String renewable;
         private String facilityName;
         private String postalCode;

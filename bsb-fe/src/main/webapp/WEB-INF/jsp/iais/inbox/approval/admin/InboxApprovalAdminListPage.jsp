@@ -179,11 +179,11 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                                <p><fmt:formatDate value="${approval.approvalStartDate}" pattern="dd MMM yyyy"/></p>
+                                                                <p><c:out value='${approval.approvalStartDate}'></c:out></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                                <p><fmt:formatDate value="${approval.approvalExpiryDate}" pattern="dd MMM yyyy"/></p>
+                                                                <p><c:out value='${approval.approvalExpiryDate}'></c:out></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Download</p>
