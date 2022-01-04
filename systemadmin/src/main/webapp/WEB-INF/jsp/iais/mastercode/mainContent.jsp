@@ -118,6 +118,7 @@
                                                 <div class="modal-content">
                                                     <div class="modal-body">
                                                         <div class="row">
+                                                            <input type="hidden" name="fangDuoJi" id="fangDuoJi"/>
                                                             <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
                                                             <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the <c:choose>
                                                                     <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">Delete</c:when>
