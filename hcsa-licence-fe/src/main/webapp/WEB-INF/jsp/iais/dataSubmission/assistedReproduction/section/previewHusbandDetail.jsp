@@ -44,7 +44,7 @@
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group"/>
                     <iais:value width="7" display="true">
-                        <iais:code code="${patient.ethnicGroup}" />
+                        <iais:code code="${husband.ethnicGroup}" />
                     </iais:value>
                 </iais:row>
                 <div class="form-group"  style="<c:if test="${husband.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
