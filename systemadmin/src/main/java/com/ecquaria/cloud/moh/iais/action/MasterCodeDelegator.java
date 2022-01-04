@@ -705,7 +705,25 @@ public class MasterCodeDelegator {
                 String dateReplace = dateStr.replace(" "," at ");
                 String ackMsg = MessageUtil.replaceMessage("ACKMCM004",dateReplace,"Date");
                 ParamUtil.setRequestAttr(request,"UPLOAD_ACKMSG",ackMsg);
-                List<MasterCodeDto> syncMasterCodeList =masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                List<MasterCodeToExcelDto> masterCodeToExcelDtoSaveList=IaisCommonUtils.genNewArrayList();
+                for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+                    if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getRemakes())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getSequence())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getStatus())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getVersion())&&
+                            masterCodeToExcelDto.getEffectiveFrom()==null&&
+                            masterCodeToExcelDto.getEffectiveTo()==null
+                    ){
+                        continue;
+                    }
+                    masterCodeToExcelDtoSaveList.add(masterCodeToExcelDto);
+                }
+                List<MasterCodeDto> syncMasterCodeList =masterCodeService.saveMasterCodeList(masterCodeToExcelDtoSaveList);
                 masterCodeService.syncMasterCodeFe(syncMasterCodeList);
             }
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
