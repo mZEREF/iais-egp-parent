@@ -46,11 +46,13 @@
                                         <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
-                                        <%@ include file="section/previewPatientDetails.jsp" %>
-                                        <%@ include file="section/previewFamilyPlanning.jsp" %>
-                                        <%@ include file="section/previewPreTermination.jsp" %>
-                                        <%@ include file="section/previewPresentTermination.jsp" %>
-                                        <%@ include file="section/previewPostTermination.jsp" %>
+                                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                            <%@ include file="section/previewPatientDetails.jsp" %>
+                                            <%@ include file="section/previewFamilyPlanning.jsp" %>
+                                            <%@ include file="section/previewPreTermination.jsp" %>
+                                            <%@ include file="section/previewPresentTermination.jsp" %>
+                                            <%@ include file="section/previewPostTermination.jsp" %>
+                                        </div>
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/topFooter.jsp" %>
