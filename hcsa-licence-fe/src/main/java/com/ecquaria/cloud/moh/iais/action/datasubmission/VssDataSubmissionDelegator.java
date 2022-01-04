@@ -76,21 +76,7 @@ public class VssDataSubmissionDelegator {
     private String getActionType(HttpServletRequest request) {
         String actionType = (String) ParamUtil.getRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
         if (StringUtil.isEmpty(actionType)) {
-            String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-            if (StringUtil.isEmpty(crudType) || "VS".equals(crudType)) {
-                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, DsConfigHelper.VSS_STEP_TREATMENT, request);
-            } else if ("return".equals(crudType)) {
-                actionType = "return";
-            } else if ("previous".equals(crudType)) {
-                actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, request);
-            } else if ("page".equals(crudType) || "next".equals(crudType)) {
-                actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_VSS, request);
-            } else if ("submission".equals(crudType)) {
-                actionType = crudType;
-            } else {
-             actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, "return", request);
-                /*DsConfigHelper.setActiveConfig(crudType, request);*/
-            }
+            actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, DsConfigHelper.VSS_STEP_TREATMENT, request);
         }
         return actionType;
     }
@@ -117,9 +103,7 @@ public class VssDataSubmissionDelegator {
             prepareConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
-        }/* else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
-            preparePreview(bpc.request);
-        }*/
+        }
     }
 
     /**
@@ -129,6 +113,10 @@ public class VssDataSubmissionDelegator {
      */
     public void doStep(BaseProcessClass bpc) {
         log.info(" ----- DoStep ------ ");
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if ("return".equals(crudType)) {
+            return;
+        }
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
@@ -143,13 +131,7 @@ public class VssDataSubmissionDelegator {
             doPreview(bpc.request);
         }*/
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
-        String actionType = null;
-        if (0 == status) {// current
-            actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
-        } else if (-1 == status) { // previous
-            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
-        }
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
     }
 
     private void prepareTreatment(HttpServletRequest request) {
@@ -228,7 +210,7 @@ public class VssDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }
-        return 2;
+        return 1;
     }
 
     private void prepareTfsspParticulars(HttpServletRequest request) {
@@ -270,14 +252,7 @@ public class VssDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }
-        return 3;
-    }
-    private void preparePreview(HttpServletRequest request) {
-
-    }
-
-    private void doPreview(HttpServletRequest request) {
-
+        return 1;
     }
     /**
      * Step: DoSubmission
@@ -369,6 +344,26 @@ public class VssDataSubmissionDelegator {
      */
     public void doControl(BaseProcessClass bpc) {
         log.info(" ----- DoControl ------ ");
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        String actionType = null;
+        if ("return".equals(crudType)) {
+            actionType = "return";
+        } else if ("next".equals(crudType)) {
+            Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
+            if (status == null || 0 == status) {// current
+                actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
+            } else if (-1 == status) { // previous
+                actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
+            } else if (1 == status) { // next
+                actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_VSS, bpc.request);
+            }
+        } else if ("previous".equals(crudType)) {
+            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
+        } else {
+            actionType = crudType;
+            DsConfigHelper.setActiveConfig(actionType, bpc.request);
+        }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
     }
 
     /**
