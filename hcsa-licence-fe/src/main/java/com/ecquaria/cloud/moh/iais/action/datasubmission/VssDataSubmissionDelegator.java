@@ -120,16 +120,14 @@ public class VssDataSubmissionDelegator {
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
-        int status = 0;
+        int status = 0;// 0: current page; -1: back / previous; 1: next
         if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
             status = doTreatment(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
             status = doConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             status = doTfsspParticulars(bpc.request);
-        } /*else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
-            doPreview(bpc.request);
-        }*/
+        }
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
     }
@@ -155,8 +153,9 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+
+
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -199,8 +198,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
 
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -241,8 +239,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
 
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -348,7 +345,7 @@ public class VssDataSubmissionDelegator {
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
-        } else if ("next".equals(crudType)) {
+        } else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
             if (status == null || 0 == status) {// current
                 actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
