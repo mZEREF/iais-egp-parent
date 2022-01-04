@@ -345,7 +345,7 @@ public class VssDataSubmissionDelegator {
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
-        } else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
+        } else if ("next".equals(crudType)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
             if (status == null || 0 == status) {// current
                 actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
@@ -354,7 +354,15 @@ public class VssDataSubmissionDelegator {
             } else if (1 == status) { // next
                 actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_VSS, bpc.request);
             }
-        } else if ("previous".equals(crudType)) {
+        } else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
+            Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
+            if (status == null || 0 == status) {// current
+                actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
+            } else if (1 == status) { // nexts
+                actionType = crudType;
+                DsConfigHelper.setActiveConfig(actionType, bpc.request);
+            }
+        }else if ("previous".equals(crudType)) {
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
         } else {
             actionType = crudType;
