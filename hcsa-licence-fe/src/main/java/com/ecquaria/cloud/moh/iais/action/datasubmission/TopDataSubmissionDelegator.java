@@ -378,7 +378,6 @@ public class TopDataSubmissionDelegator {
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
-
         } else if ("next".equals(crudType)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
             if (status == null || 0 == status) {// current
