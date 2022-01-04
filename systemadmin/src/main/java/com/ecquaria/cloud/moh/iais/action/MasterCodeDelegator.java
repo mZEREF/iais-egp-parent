@@ -627,7 +627,6 @@ public class MasterCodeDelegator {
                         result = true;
                     }
                 }
-                String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
@@ -637,7 +636,7 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0008");
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR011");
                         errItems.add(errMsg);
                         result = true;
                     }
