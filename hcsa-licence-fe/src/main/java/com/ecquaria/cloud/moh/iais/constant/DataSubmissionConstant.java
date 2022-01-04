@@ -19,6 +19,8 @@ public class DataSubmissionConstant {
     public static String CRUD_ACTION_TYPE_VSS               = "crud_action_type_vss";
     public static String CRUD_ACTION_TYPE_TOP               = "crud_action_type_top";
 
+    public static String ACTION_STATUS                      = "DS_ACTION_STATUS";
+
     public static String CRUD_TYPE_FROM_DRAFT               = "fromDraft";
     public static String CRUD_TYPE_RFC                      = "rfc";
 
@@ -47,6 +49,11 @@ public class DataSubmissionConstant {
     public static String VSS_PREMISES_MAP                    = "VSS_PREMISES_MAP";
     public static String VSS_PREMISES                        = "VSS_PREMISES";
 
+    public static String TOP_DATA_SUBMISSION                 = "topSuperDataSubmissionDto";
+    public static String TOP_OLD_DATA_SUBMISSION             = "topOldSuperDataSubmissionDto";
+    public static String TOP_PREMISES_MAP                    = "TOP_PREMISES_MAP";
+    public static String TOP_PREMISES                        = "TOP_PREMISES";
+
     public static String DS_TITLE_NEW                       = "New Data Submission";
     public static String DS_TITLE_RFC                       = "Amendment";
 
@@ -56,6 +63,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_ART                     = "ART";
     public static String PRINT_FLAG_DRP                     = "DRP";
     public static String PRINT_FLAG_VSS                     = "VSS";
+    public static String PRINT_FLAG_TOP                     = "TOP";
     public static String PRINT_FLAG_ACKART                  = "ACKART";
     public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";
     public static String PRINT_FLAG_ACKVSS                  = "ACKVSS";

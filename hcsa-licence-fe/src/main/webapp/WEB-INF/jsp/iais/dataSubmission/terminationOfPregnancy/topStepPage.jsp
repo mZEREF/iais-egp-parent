@@ -28,20 +28,29 @@
                         <div class="tab-content">
                             <div class="tab-pane in active">
                                 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
-                                ------------------${currCode}--------------
+                                <%--------------------${currCode}----------------%>
                                 <c:choose>
                                     <c:when test="${currCode == 'TOPT001'}">
-                                        <%--<%@ include file="section/patientDetails.jsp" %>--%>
+                                        <%@ include file="section/patientDetails.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT002'}">
+                                        <%@ include file="section/familyPlanning.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT003'}">
+                                        <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
+                                        <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
+                                        <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
+                                        <%@ include file="section/previewPatientDetails.jsp" %>
+                                        <%@ include file="section/previewFamilyPlanning.jsp" %>
+                                        <%@ include file="section/previewPreTermination.jsp" %>
+                                        <%@ include file="section/previewPresentTermination.jsp" %>
+                                        <%@ include file="section/previewPostTermination.jsp" %>
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/topFooter.jsp" %>

@@ -5,14 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -60,6 +53,10 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.VSS_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.VSS_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.TOP_PREMISES);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
@@ -136,6 +133,19 @@ public final class DataSubmissionHelper {
 
     public static void setCurrentVssDataSubmission(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+    }
+
+    public static TopSuperDataSubmissionDto getCurrentTopDataSubmission(HttpServletRequest request){
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto=(TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.TOP_DATA_SUBMISSION);
+        if (topSuperDataSubmissionDto == null) {
+            log.info("------------------------------------TOP_SUPER_DATA_SUBMISSION_DTO is null-----------------");
+        }
+        return topSuperDataSubmissionDto;
+    }
+
+    public static void setCurrentTopDataSubmission(TopSuperDataSubmissionDto topSuperDataSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
     }
 
     public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
@@ -726,6 +736,25 @@ public final class DataSubmissionHelper {
             actionType = config.getCode();
         }
         return actionType;
+    }
+
+    public static boolean isToNextAction(HttpServletRequest request) {
+        String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if (crudType == null) {
+            return false;
+        }
+        if ("next".equals(crudType)) {
+            return true;
+        }
+        try {
+            int i = Integer.parseInt(crudType.substring(4));
+            String dsType = crudType.substring(0, 3);
+            DsConfig config = DsConfigHelper.getCurrentConfig(dsType, request);
+            int j = Integer.parseInt(config.getCode().substring(4));
+            return i > j;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static Map<String, PremisesDto> setArPremisesMap(HttpServletRequest request){

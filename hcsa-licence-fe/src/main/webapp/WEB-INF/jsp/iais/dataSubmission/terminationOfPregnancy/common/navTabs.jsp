@@ -69,11 +69,10 @@
             if (isEmpty(configCode)) {
                 configCode = $target.attr('data-config-code');
             }
-            console.info(currId);
+            console.info(currId + '--------' + canClick + '----' + configCode);
             if (controlLi == currId) {
                 return;
-            } else if ('true' == canClick) {
-                showWaiting();
+            } else if (canClick) {
                 submit(configCode);
             }
         });

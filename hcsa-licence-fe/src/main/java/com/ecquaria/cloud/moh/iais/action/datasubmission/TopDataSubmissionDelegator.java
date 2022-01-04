@@ -4,14 +4,18 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @Description TopDataSubmissionDelegator
@@ -61,23 +66,11 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
     }
 
+
     private String getActionType(HttpServletRequest request) {
         String actionType = (String) ParamUtil.getRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
         if (StringUtil.isEmpty(actionType)) {
-            String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-            if (StringUtil.isEmpty(crudType) || "TP".equals(crudType)) {
-                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_TOP, DsConfigHelper.TOP_STEP_PATIENT, request);
-            } else if ("return".equals(crudType)) {
-                actionType = "return";
-            } else if ("previous".equals(crudType)) {
-                actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, request);
-            } else if ("page".equals(crudType) || "next".equals(crudType)) {
-                actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_TOP, request);
-            } else if ("submission".equals(crudType)) {
-                actionType = crudType;
-            } else {
-                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_TOP, "return", request);
-            }
+            actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_TOP, DsConfigHelper.TOP_STEP_PATIENT, request);
         }
         return actionType;
     }
@@ -91,7 +84,7 @@ public class TopDataSubmissionDelegator {
         log.info(" -----PrepareStepData ------ ");
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_TOP, bpc.request);
-        if (DsConfigHelper.TOP_STEP_PATIENT.equals(currentConfig.getCode())) {
+        if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
@@ -100,9 +93,18 @@ public class TopDataSubmissionDelegator {
         if (DsConfigHelper.TOP_STEP_PATIENT.equals(currentCode)) {
             preparePatient(bpc.request);
         } else if (DsConfigHelper.TOP_STEP_PLANNING.equals(currentCode)) {
+            prepareFamilyPlanning(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_PRE_TERMINATION.equals(currentCode)) {
+            preparePreTermination(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(currentCode)) {
+            preparePresentTermination(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
+            preparePostTermination(bpc.request);
+        }/*else if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)) {
 
-        }
+        }*/
     }
+
 
     /**
      * Step: DoStep
@@ -111,30 +113,173 @@ public class TopDataSubmissionDelegator {
      */
     public void doStep(BaseProcessClass bpc) {
         log.info(" ----- DoStep ------ ");
-        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if ("return".equals(crudType)) {
+           return;
+        }
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_TOP, bpc.request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
-        int status = 0;
+        int status = 0; // 0: current page; -1: back / previous; 1: next
         if (DsConfigHelper.TOP_STEP_PATIENT.equals(currentCode)) {
             status = doPatient(bpc.request);
         } else if (DsConfigHelper.TOP_STEP_PLANNING.equals(currentCode)) {
+            status = doFamilyPlanning(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_PRE_TERMINATION.equals(currentCode)) {
+            status = doPreTermination(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(currentCode)) {
+            status = doPresentTermination(bpc.request);
+        }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
+            status = doPostTermination(bpc.request);
+        }/*else if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)) {
 
-        }
+        }*/
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
-        String actionType = null;
-        if (0 == status) {// current
-            actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
-        } else if (-1 == status) { // previous
-            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
-        }
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
     }
 
     private void preparePatient(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+    }
+    private void prepareFamilyPlanning(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+    }
+    private void preparePreTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+    }
+    private void preparePresentTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+    }
+    private void preparePostTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
     }
 
     private int doPatient(HttpServletRequest request) {
-        return 0;
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto() : terminationOfPregnancyDto.getPatientInformationDto();
+        ControllerHelper.get(request, patientInformationDto);
+        terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto,"TOP");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
+    }
+    private int doFamilyPlanning(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        FamilyPlanDto familyPlanDto = terminationOfPregnancyDto.getFamilyPlanDto() == null ? new FamilyPlanDto() : terminationOfPregnancyDto.getFamilyPlanDto();
+        ControllerHelper.get(request, familyPlanDto);
+        terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
+    }
+
+    private int doPreTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        PreTerminationDto preTerminationDto = terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
+        ControllerHelper.get(request, preTerminationDto);
+        terminationOfPregnancyDto.setPreTerminationDto(preTerminationDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
+    }
+
+    private int doPresentTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto() == null ? new TerminationDto() : terminationOfPregnancyDto.getTerminationDto();
+        ControllerHelper.get(request, terminationDto);
+        String topDate=ParamUtil.getString(request,"topDate");
+        terminationDto.setTopDate(topDate);
+        terminationOfPregnancyDto.setTerminationDto(terminationDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"TOP");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
+    }
+
+
+
+    private int doPostTermination(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
+        ControllerHelper.get(request, postTerminationDto);
+        terminationOfPregnancyDto.setPostTerminationDto(postTerminationDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
     }
 
     /**
@@ -195,6 +340,18 @@ public class TopDataSubmissionDelegator {
      */
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
+        String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        if (topSuperDataSubmissionDto != null) {
+            topSuperDataSubmissionDto.setDraftNo(topDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_TOP,
+                    topSuperDataSubmissionDto.getDraftNo()));
+            topSuperDataSubmissionDto = topDataSubmissionService.saveDataSubmissionDraft(topSuperDataSubmissionDto);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
+        } else {
+            log.info(StringUtil.changeForLog("The topSuperDataSubmission is null"));
+        }
     }
 
     /**
@@ -222,6 +379,26 @@ public class TopDataSubmissionDelegator {
      */
     public void doControl(BaseProcessClass bpc) {
         log.info(" ----- DoControl ------ ");
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        String actionType = null;
+        if ("return".equals(crudType)) {
+            actionType = "return";
+        } else if ("next".equals(crudType)) {
+            Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
+            if (status == null || 0 == status) {// current
+                actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_TOP, bpc.request);
+            } else if (-1 == status) { // previous
+                actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
+            } else if (1 == status) { // next
+                actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_TOP, bpc.request);
+            }
+        } else if ("previous".equals(crudType)) {
+            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
+        } else {
+            actionType = crudType;
+            DsConfigHelper.setActiveConfig(actionType, bpc.request);
+        }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, actionType);
     }
 
     /**
@@ -231,9 +408,9 @@ public class TopDataSubmissionDelegator {
      */
     public void doReturn(BaseProcessClass bpc) throws IOException {
         log.info(" ----- DoReturn ------ ");
-        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-        if (dpSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
+        if (topSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getAppType())) {
             target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
         }
         StringBuilder url = new StringBuilder();
