@@ -30,7 +30,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${postTerminationDto.counsellorIdType == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty postTerminationDto.counsellorIdType}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Termination Counsellor ID Type"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -38,7 +38,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${postTerminationDto.counsellorIdNo == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty postTerminationDto.counsellorIdNo}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Termination Counsellor ID No."/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -54,7 +54,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${postTerminationDto.patientSign == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty postTerminationDto.counsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Counselling Date"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -62,7 +62,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${postTerminationDto.counsellingPlace == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty postTerminationDto.counsellingPlace}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Place of Post-Counselling"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -70,10 +70,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-
-
-
-
             </div>
         </div>
     </div>

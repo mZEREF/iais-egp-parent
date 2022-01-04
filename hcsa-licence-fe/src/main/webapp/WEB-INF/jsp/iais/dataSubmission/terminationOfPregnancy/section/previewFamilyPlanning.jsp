@@ -59,7 +59,7 @@
                         <c:out value="${familyPlanDto.gestAgeBaseNotOnUltrDay}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${familyPlanDto.abortChdMoreWksGender == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty familyPlanDto.abortChdMoreWksGender}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" />
                         <iais:value width="7" cssClass="col-md-7">
@@ -85,7 +85,7 @@
                         <iais:code code="${familyPlanDto.subRopReason}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${familyPlanDto.subRopReason ='TOPSCTP009'}">style="display: none"</c:if>>
+                <div <c:if test="${familyPlanDto.subRopReason !='TOPSCTP009'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Sub Reason for Request to Terminate Pregnancy"/>
                         <iais:value width="7" cssClass="col-md-7">

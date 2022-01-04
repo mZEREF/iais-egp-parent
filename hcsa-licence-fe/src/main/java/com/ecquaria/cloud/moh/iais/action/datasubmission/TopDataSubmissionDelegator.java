@@ -169,8 +169,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+       if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -192,8 +191,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -216,8 +214,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -242,8 +239,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -268,8 +264,7 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType)){
+        if(DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -383,18 +378,19 @@ public class TopDataSubmissionDelegator {
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
-        } else if ("next".equals(crudType)) {
+
+        }else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
             if (status == null || 0 == status) {// current
                 actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_TOP, bpc.request);
-            } else if (-1 == status) { // previous
+            }else if (-1 == status) { // previous
                 actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
-            } else if (1 == status) { // next
+            }else if (1 == status) { // next
                 actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_TOP, bpc.request);
             }
-        } else if ("previous".equals(crudType)) {
+        }else if ("previous".equals(crudType)) {
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
-        } else {
+        }else {
             actionType = crudType;
             DsConfigHelper.setActiveConfig(actionType, bpc.request);
         }

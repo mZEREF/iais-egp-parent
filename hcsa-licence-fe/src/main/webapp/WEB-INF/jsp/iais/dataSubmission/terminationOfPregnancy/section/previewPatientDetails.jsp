@@ -36,7 +36,7 @@
                         <iais:code code="${patientInformationDto.nationality}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${patientInformationDto.commResidenceInSgDate == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty patientInformationDto.commResidenceInSgDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Date Commenced Residence In Singapore"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -44,7 +44,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${patientInformationDto.residenceStatus == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty patientInformationDto.residenceStatus}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Residence Status"/>
                         <iais:value width="7" cssClass="col-md-7">

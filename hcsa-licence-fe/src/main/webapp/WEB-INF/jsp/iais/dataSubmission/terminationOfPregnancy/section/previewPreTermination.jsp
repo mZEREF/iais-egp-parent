@@ -33,7 +33,7 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${preTerminationDto.patientSign == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.patientSign}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"/>
                         <iais:value width="6" display="true">
@@ -46,7 +46,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellorIdType == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellorIdType}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor ID Type" />
                         <iais:value width="7" cssClass="col-md-7">
@@ -54,7 +54,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellorIdNo == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellorIdNo}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor ID No."/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -62,7 +62,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellorName == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellorName}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor Name"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -70,7 +70,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellingDate == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counselling Date"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -78,7 +78,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellingPlace == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellingPlace}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Place"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -86,7 +86,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.counsellingResult == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.counsellingResult}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Result" />
                         <iais:value width="7" cssClass="col-md-7">
@@ -94,7 +94,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.secCounsellingDate == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.secCounsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="If undecided, date of second pre-counselling" />
                         <iais:value width="7" cssClass="col-md-7">
@@ -102,7 +102,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${preTerminationDto.secCounsellingResult == null}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.secCounsellingResult}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Result of Second Pre-Counselling" />
                         <iais:value width="7" cssClass="col-md-7">
