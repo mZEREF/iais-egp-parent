@@ -254,5 +254,3 @@
 <%@include file="donorSection.jsp"%>
 <input type="hidden" name="enhancedCounsellingTipShow" value="${enhancedCounsellingTipShow}" id="enhancedCounsellingTipShow">
 <iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="ok"  needFungDuoJi="false" yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />
-<input type="hidden" name="DSERR021MessageShow" value="${DSERR021Message}" id="DSERR021MessageShow">
-<iais:confirm msg="DS_ERR021" needCancel="false" popupOrder="DSERR021Message"  yesBtnDesc="ok"  needFungDuoJi="false" yesBtnCls="btn btn-primary"  callBack="DSERR021MessageClose()" />

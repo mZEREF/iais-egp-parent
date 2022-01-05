@@ -145,4 +145,15 @@ public class PatientDelegator extends CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConsts.DS_PATIENT_ART);
     }
 
+    @Override
+    public void submission(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            patientInfoDto.getPatient().setId(null);
+            patientInfoDto.getHusband().setId(null);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        }
+    }
+
 }

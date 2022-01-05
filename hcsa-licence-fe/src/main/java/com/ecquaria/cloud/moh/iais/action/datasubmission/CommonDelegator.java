@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -249,9 +251,21 @@ public abstract class CommonDelegator {
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED,
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN})) {
                     status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
+                } else if (StringUtil.isIn(outcomeStageDto, new String[]{
+                        DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY})) {//3.3.4.3
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {//3.3.4.3
+                OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
+                Boolean isPregnancyDetected = Optional.ofNullable(outcomeStageDto)
+                        .map(OutcomeStageDto::getPregnancyDetected)
+                        .filter(Objects::nonNull)
+                        .orElse(Boolean.FALSE);
+                if (isPregnancyDetected) {
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
+                }
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(stage)) {

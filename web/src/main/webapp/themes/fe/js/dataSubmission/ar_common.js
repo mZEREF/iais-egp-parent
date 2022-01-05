@@ -10,6 +10,9 @@ $(document).ready(function() {
     if ($draft.length > 0) {
         $draft.modal('show');
     }
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+
     var currPage = $('input[name="ar_page"]').val();
     console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {

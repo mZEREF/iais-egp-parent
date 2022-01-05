@@ -73,4 +73,7 @@ public class DataSubmissionConstant {
     public static String LDT_CANOT_LDT                      = "cannotCLT";
 
     public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
+
+
+    public static String RFC_NO_CHANGE_ERROR               = "RFC_NO_CHANGE_ERROR";
 }
