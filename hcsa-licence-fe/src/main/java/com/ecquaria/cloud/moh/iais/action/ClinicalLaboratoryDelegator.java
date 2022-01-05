@@ -4015,6 +4015,7 @@ public class ClinicalLaboratoryDelegator {
                         //not click edit
                         if (AppConsts.NO.equals(isPartEdit[i])) {
                             appSvcPersonnelDto = getAppSvcPersonnelDtoByIndexNo(appSvcRelatedInfoDto, indexNo);
+                            appSvcPersonnelDto.setSeqNum(i);
                             appSvcPersonnelDtos.add(appSvcPersonnelDto);
                             //change arr
                             indexNos = removeArrIndex(indexNos, i);
@@ -4032,6 +4033,7 @@ public class ClinicalLaboratoryDelegator {
                 if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode) ||
                         AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                     if (StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)) {
+                        appSvcPersonnelDto.setSeqNum(i);
                         appSvcPersonnelDtos.add(appSvcPersonnelDto);
                         continue;
                     }
@@ -4095,6 +4097,7 @@ public class ClinicalLaboratoryDelegator {
                 } else {
                     appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
                 }
+                appSvcPersonnelDto.setSeqNum(i);
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);
             }
         }
