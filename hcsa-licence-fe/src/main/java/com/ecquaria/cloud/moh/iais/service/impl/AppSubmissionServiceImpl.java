@@ -1734,12 +1734,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 boolean flag = true;
                 String premisesType = dto.getPremisesType();
                 if(premises.size() == 0){
-                    premises.add(dto.getOldHciCode());
+                    premises.add(dto.getHciCode());
                     premisessTypes.add(premisesType);
                     flag = false;
                 }else{
                     for(String premisesCode : premises){
-                        if(premisesCode.equals(dto.getOldHciCode())){
+                        if(premisesCode.equals(dto.getHciCode())){
                             flag = false;
                             break;
                         }
@@ -1747,7 +1747,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if(flag){
                     premisessTypes.add(premisesType);
-                    premises.add(dto.getOldHciCode());
+                    premises.add(dto.getHciCode());
                 }
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
