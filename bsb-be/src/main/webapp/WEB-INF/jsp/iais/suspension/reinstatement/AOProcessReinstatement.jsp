@@ -108,6 +108,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    <c:if test="${suspensionReinstatementDto.hmRemarks ne null}">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="HM Remarks" width="15" required="false"/>
@@ -116,6 +117,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Additional Comments (for Facility/AFC)" required="false"/>

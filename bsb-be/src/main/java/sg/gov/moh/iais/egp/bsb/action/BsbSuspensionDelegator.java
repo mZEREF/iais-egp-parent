@@ -85,8 +85,7 @@ public class BsbSuspensionDelegator {
         //validate duty officer submitted data
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("doSuspension");
-        dto.reqObjMapping(request);
+        dto.getDOSuspensionData(request);
         //validation
         String actionType = "";
         ValidationResultDto validationResultDto = suspensionClient.validateSuspensionDto(dto);
@@ -110,8 +109,7 @@ public class BsbSuspensionDelegator {
     public void aoSuspensionValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("doSuspension");
-        dto.reqObjMapping(request);
+        dto.getAOSuspensionData(request);
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
@@ -126,8 +124,7 @@ public class BsbSuspensionDelegator {
     public void hmSuspensionValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("hmSuspension");
-        dto.reqObjMapping(request);
+        dto.getHMSuspensionData(request);
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
@@ -143,8 +140,7 @@ public class BsbSuspensionDelegator {
     public void doReinstatementValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("doReinstatement");
-        dto.reqObjMapping(request);
+        dto.getDOReinstatementData(request);
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
@@ -159,8 +155,7 @@ public class BsbSuspensionDelegator {
     public void aoReinstatementValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("aoReinstatement");
-        dto.reqObjMapping(request);
+        dto.getAOReinstatementData(request);
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
@@ -175,8 +170,7 @@ public class BsbSuspensionDelegator {
     public void hmReinstatementValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SuspensionReinstatementDto dto = getSuspensionDto(request);
-        dto.setModule("hmReinstatement");
-        dto.reqObjMapping(request);
+        dto.getHMReinstatementData(request);
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }

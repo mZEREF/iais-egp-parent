@@ -102,7 +102,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Facility Classification (Type)" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>${suspensionReinstatementDto.facClassification}</p>
+                                                                                <iais:code code="${suspensionReinstatementDto.facClassification}"/>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
