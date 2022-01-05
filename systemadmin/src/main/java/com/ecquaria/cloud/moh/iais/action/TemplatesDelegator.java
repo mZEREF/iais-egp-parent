@@ -297,7 +297,7 @@ public class TemplatesDelegator {
             }else{
                 searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
                 searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
-                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Effective Start Date cannot be later than Effective End Date");
+                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "EMM_ERR004");
             }
         }else{
             if (!StringUtil.isEmpty(templateStartDate)){
