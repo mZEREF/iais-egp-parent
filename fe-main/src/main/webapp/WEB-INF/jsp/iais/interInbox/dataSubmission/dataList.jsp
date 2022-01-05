@@ -238,13 +238,13 @@
         $("#deleteDraftOkButton").modal('hide');
     }
     function dssToMsgPage(){
-        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request))}";
+        window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohInternetInbox")}";
     }
     function dssToAppPage(){
-        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request))}";
+        window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohInternetInbox?initPage=initApp")}";
     }
     function dssToLicPage(){
-        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initLic",request))}";
+        window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohInternetInbox?initPage=initLic")}";
     }
 
 
