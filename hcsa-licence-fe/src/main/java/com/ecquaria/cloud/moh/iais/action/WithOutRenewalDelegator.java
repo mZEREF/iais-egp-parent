@@ -97,6 +97,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -1657,15 +1658,7 @@ public class WithOutRenewalDelegator {
             }
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
             log.info(StringUtil.changeForLog("start giro payment appGrpId {}"+appGrpId));
-            if(appSubmissionDtos.size() > 1){
-                Double a = 0.0;
-                for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-                    if(appSubmissionDto.getAmount()!= null){
-                        a = a + appSubmissionDto.getAmount();
-                    }
-                }
-                appSubmissionDtos.get(0).setTotalAmountGroup(a);
-            }
+            setAmount(appSubmissionDtos);
             try {
                 //renew
                 sendEmail(bpc.request,appSubmissionDtos);
@@ -1697,6 +1690,23 @@ public class WithOutRenewalDelegator {
         }
 
     }
+    private Double setAmount(List<AppSubmissionDto> appSubmissionDtos){
+        Double d1 = 0.0;
+        for (AppSubmissionDto dto : appSubmissionDtos) {
+            d1 = add(add(d1,dto.getAmount()),dto.getLateFee());
+        }
+        appSubmissionDtos.get(0).setTotalAmountGroup(d1);
+        return d1;
+    }
+
+    private double add(Double v1, Double v2) {
+        v1 = (v1 == null ? 0.0 : v1);
+        v2 = (v2 == null ? 0.0 : v2);
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        return b1.add(b2).doubleValue();
+    }
+
 
     //doAcknowledgement
     public void doAcknowledgement(BaseProcessClass bpc) throws Exception {
