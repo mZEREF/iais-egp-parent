@@ -754,8 +754,7 @@ public class MasterCodeDelegator {
 
     private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
         if (!StringUtil.isEmpty(originalFilename)) {
-            String[] split = originalFilename.split("\\.");
-            if (split[0].length() > 100) {
+            if (originalFilename.length() > 100) {
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
                 errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
