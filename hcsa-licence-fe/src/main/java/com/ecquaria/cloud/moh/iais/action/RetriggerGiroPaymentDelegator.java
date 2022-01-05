@@ -333,6 +333,9 @@ public class RetriggerGiroPaymentDelegator {
                 List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     double rfcAmount = 100;
+                    if(NewApplicationHelper.isCharity(bpc.request)){
+                        rfcAmount=12;
+                    }
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
