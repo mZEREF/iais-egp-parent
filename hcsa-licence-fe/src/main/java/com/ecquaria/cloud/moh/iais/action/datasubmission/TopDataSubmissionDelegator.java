@@ -169,7 +169,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-       if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -191,7 +192,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -214,7 +216,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -239,7 +242,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -264,7 +268,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());

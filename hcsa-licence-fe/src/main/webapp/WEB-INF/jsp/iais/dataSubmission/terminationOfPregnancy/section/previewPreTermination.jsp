@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-heading ${canEdit}">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#preDetails">
                 Pre-Termination of Pregnancy Counselling

@@ -16,6 +16,7 @@
 <%@ include file="common/topHeader.jsp" %>
 
 <c:set var="canEdit" value="${TOP_CURRENT_STEP.showEdit}" scope="request"/>
+<c:set var="headingSign" value="completed"/>
 
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
