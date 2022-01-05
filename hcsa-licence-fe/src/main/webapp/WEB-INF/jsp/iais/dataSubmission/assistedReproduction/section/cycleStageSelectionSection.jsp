@@ -54,12 +54,7 @@
                 <iais:row cssClass="patientData">
                     <iais:field width="5" value="Last Stage Submitted"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="lastStage">
-                        <c:if test="${not empty selectionDto.lastStage && selectionDto.undergoingCycle}" var="hasLastStage">
-                            <iais:code code="${selectionDto.lastStage}" needEscapHtml="false" />
-                        </c:if>
-                        <c:if test="${not empty selectionDto.patientName && !hasLastStage}" >
-                            -
-                        </c:if>
+                        <iais:code code="${selectionDto.lastStage}" needEscapHtml="false" viewEmptyStr="true"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

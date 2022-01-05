@@ -105,7 +105,7 @@ public class ArAjaxController {
                 dto = dbDto;
             }
             dto.setHciCode(hicCode);
-            if (StringUtil.isNotEmpty(dto.getLastStage()) && dto.isUndergoingCycle()) {
+            if (StringUtil.isNotEmpty(dto.getLastStage())) {
                 dto.setLastStageDesc(MasterCodeUtil.getCodeDesc(dto.getLastStage()));
             } else {
                 dto.setLastStageDesc("-");

@@ -62,7 +62,9 @@
                 </div>
                 <div id="previousData" <c:if test="${!patient.previousIdentification}">style="display:none"</c:if> >
                     <iais:row>
-                        <p><strong>Previous Identification (if appliable)</strong></p>
+                        <iais:value cssClass="col-xs-10 col-md-10 col-sm-12" display="true">
+                            <strong>Previous Identification (if applicable)</strong>
+                        </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Name (as per NRIC/Passport)"/>
