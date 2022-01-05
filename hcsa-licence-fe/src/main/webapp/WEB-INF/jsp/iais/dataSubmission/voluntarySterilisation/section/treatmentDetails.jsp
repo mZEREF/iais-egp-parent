@@ -95,7 +95,7 @@
     <iais:row>
         <iais:field width="5" value="Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="sterilizationReason" firstOption="Please Select" codeCategory="VSS_STERILIZATION_REASON"
+            <iais:select name="sterilizationReason" firstOption="Please Select"  codeCategory="VSS_STERILIZATION_REASON"
                          value="${treatmentDto.sterilizationReason}"/>
         </iais:value>
     </iais:row>
@@ -109,6 +109,7 @@
         <iais:field width="5" value="Date of Birth of Last Child"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="lastChildBirthday" value="${treatmentDto.lastChildBirthday}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_lastChildBirthday"></span>
         </iais:value>
     </iais:row>
 </div>

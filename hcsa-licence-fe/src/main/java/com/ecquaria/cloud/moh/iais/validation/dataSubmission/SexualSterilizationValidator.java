@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 
@@ -22,12 +23,14 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();
         }
-        if(sexualSterilizationDto.isReviewedByHec() == true){
+        if(!StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec()) && sexualSterilizationDto.getReviewedByHec()==true){
             if(sexualSterilizationDto.getHecReviewDate() == null){
                 erMap.put("hecReviewDate", "GENERAL_ERR0006");
             }
         }
-
+        if(StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec())){
+            erMap.put("reviewedByHec", "GENERAL_ERR0006");
+        }
         return erMap;
     }
 }

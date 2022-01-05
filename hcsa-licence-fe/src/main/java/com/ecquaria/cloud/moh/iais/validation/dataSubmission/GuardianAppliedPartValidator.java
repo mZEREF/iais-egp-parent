@@ -5,13 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.GuardianApplie
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 
 public class GuardianAppliedPartValidator implements CustomizeValidator {
@@ -39,6 +43,15 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(guardianAppliedPartDto.getGuardianRelationship())){
                 errMap.put("guardianRelationship", "GENERAL_ERR0006");
             }
+           if(!StringUtil.isEmpty(guardianAppliedPartDto.getGuardianBirthday())){
+               try {
+                   if(Formatter.compareDateByDay(Formatter.formatDate(guardianAppliedPartDto.getGuardianBirthday())) >0){
+                       errMap.put("guardianBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                   }
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
+           }
         }
         if(treatmentDto.getSterilizationReason().equals(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartName())){
@@ -58,6 +71,15 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
             }
             if(StringUtil.isEmpty(guardianAppliedPartDto.getCourtOrderIssueDate())){
                 errMap.put("courtOrderIssueDate", "GENERAL_ERR0006");
+            }
+            if(!StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartBirthday())){
+                try {
+                    if(Formatter.compareDateByDay(Formatter.formatDate(guardianAppliedPartDto.getAppliedPartBirthday())) >0){
+                        errMap.put("appliedPartBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
 

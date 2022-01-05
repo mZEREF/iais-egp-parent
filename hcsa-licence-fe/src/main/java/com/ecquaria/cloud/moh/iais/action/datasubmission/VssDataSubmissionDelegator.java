@@ -135,6 +135,7 @@ public class VssDataSubmissionDelegator {
     private void prepareTreatment(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+
     }
 
     private int doTreatment(HttpServletRequest request) {
@@ -153,9 +154,8 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-
-
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -198,7 +198,8 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
 
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -239,7 +240,8 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
 
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        if(DataSubmissionHelper.isToNextAction(request)){
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());

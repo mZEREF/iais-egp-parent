@@ -2,11 +2,15 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -17,6 +21,7 @@ public class TreatmentValidator implements CustomizeValidator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION);
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        String lastChildBirthday = treatmentDto.getLastChildBirthday();
         if(treatmentDto == null){
             treatmentDto = new TreatmentDto();
         }
@@ -36,7 +41,7 @@ public class TreatmentValidator implements CustomizeValidator {
 
         if(StringUtil.isNotEmpty(livingChildrenNo) && StringUtil.isNumber(livingChildrenNo)){
             if(Integer.valueOf(livingChildrenNo) >=1){
-                if(StringUtil.isEmpty(treatmentDto.getLastChildBirthday())){
+                if(StringUtil.isEmpty(lastChildBirthday)){
                     errorMap.put("lastChildBirthday", "GENERAL_ERR0006");
                 }
             }
@@ -45,6 +50,17 @@ public class TreatmentValidator implements CustomizeValidator {
         if(!StringUtil.isEmpty(livingChildrenNo) && !StringUtil.isNumber(livingChildrenNo)){
             errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
         }
+
+        if(StringUtil.isNotEmpty(lastChildBirthday)){
+            try {
+                if(CommonValidator.isDate(lastChildBirthday) && Formatter.compareDateByDay(lastChildBirthday) >=0){
+                    errorMap.put("lastChildBirthday","Must be earlier then current date");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
         return errorMap;
     }
 }

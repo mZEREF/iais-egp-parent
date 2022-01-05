@@ -16,7 +16,7 @@
 <%@ include file="common/vssHeader.jsp" %>
 
 <c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
-
+<c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <div class="main-content">
@@ -40,9 +40,11 @@
                                         <%@ include file="section/particularsSterilizationSection.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'VSST010'}">
-                                        <%@ include file="section/previewTreatmentDetails.jsp" %>
-                                        <%@ include file="section/previewParticularsConsentOrCourtOrder.jsp" %>
-                                        <%@ include file="section/previewParticularsSterilizationSection.jsp" %>
+                                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                            <%@ include file="section/previewTreatmentDetails.jsp" %>
+                                            <%@ include file="section/previewParticularsConsentOrCourtOrder.jsp" %>
+                                            <%@ include file="section/previewParticularsSterilizationSection.jsp" %>
+                                        </div>
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/vssFooter.jsp" %>

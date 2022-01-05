@@ -54,12 +54,13 @@
                        name="reviewedByHec"
                        value="true"
                        id="genderMale"
-                       <c:if test="${!sexualSterilizationDto.reviewedByHec}">checked</c:if>
+                       <c:if test="${sexualSterilizationDto.reviewedByHec == true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="genderMale"><span
                         class="check-circle"></span>Yes</label>
             </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_reviewedByHec"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
             <div class="form-check">
@@ -68,7 +69,7 @@
                        name="reviewedByHec"
                        value="false"
                        id="genderFemale"
-                       <c:if test="${sexualSterilizationDto.reviewedByHec}">checked</c:if>
+                       <c:if test="${sexualSterilizationDto.reviewedByHec == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="genderFemale"><span
@@ -80,6 +81,7 @@
         <iais:field width="5" value="Date of HEC Review" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker id="" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewDate"></span>
         </iais:value>
     </iais:row>
 </div>
