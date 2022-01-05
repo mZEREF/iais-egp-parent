@@ -69,7 +69,7 @@
             contentType: false,
             success: function (data) {
                 if(data != null && data.description != null){
-                    if( data.msgType == "Y"){
+                    if (data.msgType == "Y") {
                         if(reloadIndex != -1){
                             $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
                             deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
@@ -81,7 +81,8 @@
                         }
                         $("#error_"+fileAppendId+"Error").html("");
                         cloneUploadFile();
-                    }else {
+                    } else {
+                        doActionWhenError(data);
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
                 }
@@ -126,5 +127,9 @@
         var fileId= '#selectedFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
+    }
+
+    function doActionWhenError(data) {
+        //nothing now
     }
 </script>

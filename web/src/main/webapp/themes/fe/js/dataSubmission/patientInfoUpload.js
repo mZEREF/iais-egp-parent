@@ -29,3 +29,11 @@ function deleteFileFeAjax(id,fileIndex) {
     $('#nextBtn').html('Preview');
     callAjaxDeleteFile(id,fileIndex);
 }
+
+function doActionWhenError(data) {
+    $('#uploadFileShowId div').hide();
+    var $btns = $('#uploadFileShowId').find('button');
+    if ($btns.length >= 0) {
+        $btns.trigger('click');
+    }
+}
