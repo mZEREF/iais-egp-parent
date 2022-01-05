@@ -21,13 +21,13 @@ public class LdtDataSubmissionServiceImpl implements LdtDataSubmissionService {
     private SystemAdminClient systemAdminClient;
 
     @Override
-    public LdtSuperDataSubmissionDto saveDpSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
-        return ldtFeClient.saveDpSuperDataSubmissionDto(ldtSuperDataSubmissionDto).getEntity();
+    public LdtSuperDataSubmissionDto saveLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
+        return ldtFeClient.saveLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto).getEntity();
     }
 
     @Override
-    public LdtSuperDataSubmissionDto getDpSuperDataSubmissionDto(String submissionNo) {
-        return ldtFeClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+    public LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDto(String submissionNo) {
+        return ldtFeClient.getLdtSuperDataSubmissionDto(submissionNo).getEntity();
     }
 
     @Override
@@ -45,7 +45,33 @@ public class LdtDataSubmissionServiceImpl implements LdtDataSubmissionService {
     }
 
     @Override
-    public LdtSuperDataSubmissionDto saveDataSubmissionDraft(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto){
+    public LdtSuperDataSubmissionDto saveDataSubmissionDraft(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
         return ldtFeClient.doUpdateDataSubmissionDraft(ldtSuperDataSubmissionDto).getEntity();
+    }
+
+    @Override
+    public LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDraftByConds(String orgId) {
+        if (StringUtil.isEmpty(orgId)) {
+            return null;
+        }
+        return ldtFeClient.getLdtSuperDataSubmissionDtoDraftByConds(orgId).getEntity();
+    }
+
+    @Override
+    public void deleteLdtSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        log.info(StringUtil.changeForLog("-----Draft Param: " + orgId + " : " + submissionType + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+            return;
+        }
+        ldtFeClient.deleteLdtSuperDataSubmissionDtoDraftByConds(orgId, submissionType);
+    }
+
+    @Override
+    public void updateDataSubmissionDraftStatus(String draftId, String status) {
+        log.info(StringUtil.changeForLog("------Draft ID: " + draftId + " - Status: " + status + "------"));
+        if (StringUtil.isEmpty(draftId) || StringUtil.isEmpty(status)) {
+            return;
+        }
+        ldtFeClient.updateDataSubmissionDraftStatus(draftId, status);
     }
 }

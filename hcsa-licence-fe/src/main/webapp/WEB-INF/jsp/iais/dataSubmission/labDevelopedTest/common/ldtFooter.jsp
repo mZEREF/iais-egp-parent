@@ -20,8 +20,12 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     $(document).ready(function () {
-        if($('#saveDraftSuccess').val()=='success'){
+        if ($('#saveDraftSuccess').val() == 'success') {
             $('#saveDraft').modal('show');
+        }
+
+        if ($('#_draftModal').length > 0) {
+            $('#_draftModal').modal('show');
         }
 
         let currPage = $('input[name="current_page"]').val();

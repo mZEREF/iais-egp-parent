@@ -86,6 +86,14 @@ public class LdtDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_RETURN);
             }
         }
+
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                .map(LoginContext::getOrgId).orElse("");
+        String submissionType = DataSubmissionConsts.DS_CYCLE_LDT;
+        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
+        if (dataSubmissionDraft != null) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+        }
     }
 
     /**
@@ -148,13 +156,12 @@ public class LdtDataSubmissionDelegator {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
         }
-        ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveDpSuperDataSubmissionDto(ldtSuperDataSubmissionDto);
+        ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto);
         //TODO save to Be
-        //TODO update draft
-//        if (!StringUtil.isEmpty(dpSuperDataSubmissionDto.getDraftId())) {
-//            dpDataSubmissionService.updateDataSubmissionDraftStatus(dpSuperDataSubmissionDto.getDraftId(),
-//                    DataSubmissionConsts.DS_STATUS_INACTIVE);
-//        }
+        if (!StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftId())) {
+            ldtDataSubmissionService.updateDataSubmissionDraftStatus(ldtSuperDataSubmissionDto.getDraftId(),
+                    DataSubmissionConsts.DS_STATUS_INACTIVE);
+        }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
@@ -190,6 +197,20 @@ public class LdtDataSubmissionDelegator {
         String crud_action_type = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
 
+        //draft
+        if (crud_action_type.equals("resume")) {
+            ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(ldtSuperDataSubmissionDto.getOrgId());
+            if (ldtSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                ldtSuperDataSubmissionDto = new LdtSuperDataSubmissionDto();
+            }
+            DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_PAGE);
+            return;
+        } else if (crud_action_type.equals("delete")) {
+            ldtDataSubmissionService.deleteLdtSuperDataSubmissionDtoDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.DS_CYCLE_LDT);
+        }
+
         if (crud_action_type.equals(ACTION_TYPE_CONFIRM)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
@@ -198,7 +219,7 @@ public class LdtDataSubmissionDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             crud_action_type = ACTION_TYPE_PAGE;
-        }else {
+        } else {
             CycleDto cycleDto = ldtSuperDataSubmissionDto.getCycleDto();
             String hciCode = dsLaboratoryDevelopTestDto.getHciCode();
             ldtSuperDataSubmissionDto.setHciCode(hciCode);
@@ -349,7 +370,7 @@ public class LdtDataSubmissionDelegator {
         ldtSuperDataSubmissionDto.setCycleDto(cycleDto);
 
         DataSubmissionDto dataSubmissionDto = new DataSubmissionDto();
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.LDT_TYPE_LDT);
+        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.DS_CYCLE_LDT);
         dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_LDT);
         ldtSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);

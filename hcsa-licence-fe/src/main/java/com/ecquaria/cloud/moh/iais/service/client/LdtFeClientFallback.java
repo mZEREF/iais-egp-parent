@@ -18,17 +18,32 @@ public class LdtFeClientFallback implements LdtFeClient {
     }
 
     @Override
-    public FeignResponseEntity<LdtSuperDataSubmissionDto> saveDpSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
+    public FeignResponseEntity<LdtSuperDataSubmissionDto> saveLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
         return getFeignResponseEntity(ldtSuperDataSubmissionDto);
     }
 
     @Override
-    public FeignResponseEntity<LdtSuperDataSubmissionDto> getDpSuperDataSubmissionDto(String submissionNo) {
+    public FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDto(String submissionNo) {
         return getFeignResponseEntity(submissionNo);
     }
 
     @Override
     public FeignResponseEntity<LdtSuperDataSubmissionDto> doUpdateDataSubmissionDraft(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
         return getFeignResponseEntity(ldtSuperDataSubmissionDto);
+    }
+
+    @Override
+    public FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByConds(String orgId) {
+        return getFeignResponseEntity(orgId);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> deleteLdtSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        return getFeignResponseEntity(orgId, submissionType);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
+        return getFeignResponseEntity(draftId, status);
     }
 }

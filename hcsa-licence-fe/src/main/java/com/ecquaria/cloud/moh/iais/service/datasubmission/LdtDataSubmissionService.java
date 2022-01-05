@@ -4,13 +4,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSu
 
 public interface LdtDataSubmissionService {
 
-    LdtSuperDataSubmissionDto saveDpSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto);
+    LdtSuperDataSubmissionDto saveLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto);
 
-    LdtSuperDataSubmissionDto getDpSuperDataSubmissionDto(String submissionNo);
+    LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDto(String submissionNo);
 
     String getSubmissionNo();
 
     String getDraftNo();
 
     LdtSuperDataSubmissionDto saveDataSubmissionDraft(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto);
+
+    LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDraftByConds(String orgId);
+
+    void deleteLdtSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
+
+    void updateDataSubmissionDraftStatus(String draftId, String status);
 }
