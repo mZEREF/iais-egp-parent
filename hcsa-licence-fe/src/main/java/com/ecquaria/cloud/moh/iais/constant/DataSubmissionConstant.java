@@ -70,6 +70,7 @@ public class DataSubmissionConstant {
 
     public static String LAB_SUPER_DATA_SUBMISSION          = "LdtSuperDataSubmissionDto";
     public static String LDT_PREMISS_OPTION                 = "premissOptions";
+    public static String LDT_CANOT_LDT                      = "cannotCLT";
 
     public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
 }

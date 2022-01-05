@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -71,7 +73,19 @@ public class LdtDataSubmissionDelegator {
     public void start(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
-        setSelectOptions(bpc);
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext != null) {
+            String licenseeId = loginContext.getLicenseeId();
+            List<LicenceDto> licenceDtos = licenceClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
+            boolean containCLB = containCLB(licenceDtos);
+            if (containCLB) {
+                setSelectOptions(bpc);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, "Y");
+                ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_RETURN);
+            }
+        }
     }
 
     /**
@@ -203,9 +217,11 @@ public class LdtDataSubmissionDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         log.info(" ----- DoReturn ------ ");
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
+        String cannotCLT = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-        if (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType())) {
+        if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
             target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
@@ -339,5 +355,24 @@ public class LdtDataSubmissionDelegator {
         ldtSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
 
         return ldtSuperDataSubmissionDto;
+    }
+
+    private boolean containCLB(List<LicenceDto> licenceDtos) {
+        log.info(StringUtil.changeForLog("The containCLB  start ..."));
+        boolean result = false;
+        if (!IaisCommonUtils.isEmpty(licenceDtos)) {
+            for (LicenceDto licenceDto : licenceDtos) {
+                if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(licenceDto.getSvcName())
+                        && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
+                    result = true;
+                    break;
+                }
+            }
+        } else {
+            log.info(StringUtil.changeForLog("The containCLB  licenceDtos is empty"));
+        }
+        log.info(StringUtil.changeForLog("The containCLB  result is -->:" + result));
+        log.info(StringUtil.changeForLog("The containCLB  end ..."));
+        return result;
     }
 }

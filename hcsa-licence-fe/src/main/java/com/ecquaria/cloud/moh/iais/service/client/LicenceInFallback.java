@@ -519,4 +519,9 @@ public class LicenceInFallback implements LicenceClient {
         return getFeignResponseEntity(licenceId, checkSpec);
     }
 
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(String licenseeId) {
+        return getFeignResponseEntity(licenseeId);
+    }
+
 }

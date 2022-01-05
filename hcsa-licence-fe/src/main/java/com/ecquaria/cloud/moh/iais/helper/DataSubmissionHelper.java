@@ -59,6 +59,7 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.TOP_PREMISES);
         session.removeAttribute(DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
+        session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {

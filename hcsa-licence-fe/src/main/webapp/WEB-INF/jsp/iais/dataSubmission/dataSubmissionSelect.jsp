@@ -67,5 +67,15 @@
 
 
 </form>
-
+<c:if test="${cannotCLT eq 'Y'}">
+  <iais:confirm msg="CANNOT_SUBMIT" callBack="$('#cannotCltDiv').modal('hide');" popupOrder="cannotCltDiv" yesBtnDesc="Close"
+                yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+</c:if>
 <link rel="stylesheet" href="<%=webrootDS%>css/data_submission.css">
+<script type="text/javascript">
+  $(document).ready(function () {
+    if ($('#cannotCltDiv').length > 0){
+      $('#cannotCltDiv').modal('show');
+    }
+  });
+</script>
