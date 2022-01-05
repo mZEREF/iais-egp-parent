@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 /**
@@ -600,6 +601,19 @@ public class MasterCodeDelegator {
                     cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue())
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
+                List<String> codeValueNewList = IaisCommonUtils.genNewArrayList();
+                AtomicInteger count= new AtomicInteger();
+                masterCodeToExcelDtoList.forEach(h -> {
+                    codeValueNewList.add(h.getCodeValue());
+                    if(masterCodeToExcelDto.getCodeValue().equals(h.getCodeValue())){
+                        count.getAndIncrement();
+                    }
+                });
+                if(count.get()>1){
+                    errItems.add(MessageUtil.getMessageDesc("CHKL_ERR047"));
+                    result = true;
+                }
+
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
