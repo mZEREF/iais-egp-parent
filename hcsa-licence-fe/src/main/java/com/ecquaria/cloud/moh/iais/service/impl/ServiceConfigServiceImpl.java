@@ -812,11 +812,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                               ack01Stfp = false;
                           }else {
                               log.info(StringUtil.changeForLog("--------ACK01 :" + ack01));
+                              saveAck(ack01,ApplicationConsts.GIRO_GET_ACK1_TYPE,tag);
+                              log.info(StringUtil.changeForLog("--------save ACK01 ok ,tag :" + tag+"------------------"));
                           }
                           if(StringUtil.isEmpty(ack02)){
                               ack02Stfp = false;
                           }else {
-                              log.info(StringUtil.changeForLog("--------ACK02 :" + ack01));
+                              log.info(StringUtil.changeForLog("--------ACK02 :" + ack02));
+                              saveAck(ack02,ApplicationConsts.GIRO_GET_ACK2_TYPE,tag);
+                              log.info(StringUtil.changeForLog("--------save ACK02 ok ,tag :" + tag+"------------------"));
                           }
                           //change get ack 01 ack 02
                           InputAck1Dto inputAck1Dto = new InputAck1Dto();
@@ -832,6 +836,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                           if( ack01Stfp && ack02Stfp){
                               String ack03 =  FileUtil.getContentByPostfixNotation(".ACK3",downPath,remoteFileNames);
                               log.info(StringUtil.changeForLog("--------ACK03 :" + ack03));
+                              saveAck(ack03,ApplicationConsts.GIRO_GET_ACK3_TYPE,tag);
+                              log.info(StringUtil.changeForLog("--------save ACK03 ok ,tag :" + tag+"------------------"));
                               //change get ack 03
                               InputAck2Or3Dto inputAck3Dto = new InputAck2Or3Dto();
                               String ack03Xml = inputAck3Dto.setDtoByStringAck(ack03, inputAck3Dto);
@@ -893,6 +899,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
           }
           sysnSaveGroupToBe();
         log.info("------------getGiroXmlFromSftpAndSaveXml end ----------");
+    }
+    private void saveAck(String ACK,String type,String tag){
+        GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
+        giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        giroPaymentXmlDto.setXmlData(ACK);
+        giroPaymentXmlDto.setXmlType(type);
+        giroPaymentXmlDto.setTag(tag+"_"+type);
+        giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
     }
     private void deleteListFileNameByAckTag( List<String> remoteFileNames,String ackTag){
         int index = 0;
