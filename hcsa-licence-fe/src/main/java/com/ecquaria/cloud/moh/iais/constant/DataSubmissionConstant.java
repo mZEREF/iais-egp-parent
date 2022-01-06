@@ -69,6 +69,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_ACKLDT                  = "ACKLDT";
     public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";
     public static String PRINT_FLAG_ACKVSS                  = "ACKVSS";
+    public static String PRINT_FLAG_ACKTOP                  = "ACKVSS";
 
     public static String LAB_SUPER_DATA_SUBMISSION          = "LdtSuperDataSubmissionDto";
     public static String LDT_PREMISS_OPTION                 = "premissOptions";
