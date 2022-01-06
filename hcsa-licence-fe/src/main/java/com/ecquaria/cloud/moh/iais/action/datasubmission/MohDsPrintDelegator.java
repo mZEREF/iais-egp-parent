@@ -35,7 +35,7 @@ public class MohDsPrintDelegator {
         log.info(StringUtil.changeForLog("--- Print prepareData ---"));
         String printflag = ParamUtil.getString(bpc.request, DataSubmissionConstant.PRINT_FLAG);
         if (StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_ACKART,
-                DataSubmissionConstant.PRINT_FLAG_ACKDRP})) {
+                DataSubmissionConstant.PRINT_FLAG_ACKDRP,DataSubmissionConstant.PRINT_FLAG_ACKLDT})) {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
                     DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
