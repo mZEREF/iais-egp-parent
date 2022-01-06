@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -25,7 +25,7 @@ public class ApplicationMiscDto extends BaseEntityDto {
 
     private String relateRecId;
 
-    private Date effectiveDate;
+    private LocalDate effectiveDate;
 
     private String reason;
 
@@ -39,17 +39,17 @@ public class ApplicationMiscDto extends BaseEntityDto {
 
     private String riskLevelComments;
 
-    private Date erpReportDt;
+    private LocalDate erpReportDt;
 
-    private Date redTeamingReportDt;
+    private LocalDate redTeamingReportDt;
 
-    private Date lentivirusReportDt;
+    private LocalDate lentivirusReportDt;
 
-    private Date internalInspectionReportDt;
+    private LocalDate internalInspectionReportDt;
 
-    private Date validityStartDt;
+    private LocalDate validityStartDt;
 
-    private Date validityEndDt;
+    private LocalDate validityEndDt;
 
     private String selectedAfc;
 
@@ -57,9 +57,9 @@ public class ApplicationMiscDto extends BaseEntityDto {
 
     private String suspensionType;
 
-    private Date suspensionStartDt;
+    private LocalDate suspensionStartDt;
 
-    private Date suspensionEndDt;
+    private LocalDate suspensionEndDt;
 
     private String additionalComments;
 }

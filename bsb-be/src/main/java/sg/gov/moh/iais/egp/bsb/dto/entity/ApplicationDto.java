@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JGlobalMap
 public class ApplicationDto extends BaseEntityDto {
-
     private String id;
 
     private List<ApplicationMiscDto> appMiscs;
@@ -31,7 +31,7 @@ public class ApplicationDto extends BaseEntityDto {
 
     private Date applicationDt;
 
-    private Date approvalDate;
+    private LocalDate approvalDate;
 
     private Date doVerifiedDt;
 
@@ -39,9 +39,9 @@ public class ApplicationDto extends BaseEntityDto {
 
     private Date hmVerifiedDt;
 
-    private String isAssigned;
+    private String assigned;
 
-    private Date effectiveDate;
+    private LocalDate effectiveDate;
 
     private ApprovalDto approval;
 
