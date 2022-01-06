@@ -10,11 +10,14 @@ public class SelfAssessmentConstants {
     public static final String KEY_DATA_DTO = "dataDto";
     public static final String KEY_ACTIONS = "actions";
     public static final String KEY_CURRENT_ACTION = "cur_action";
-    public static final String KEY_EDITABLE = "editable";
 
     public static final String KEY_SELF_ASSESSMENT_CHK_LST = "bsbSelfAssessmentCheckList";
     public static final String KEY_SELF_ASSESSMENT_CONFIG = "bsbSelfAssessmentConfig";
     public static final String KEY_SELF_ASSESSMENT_ANSWER_MAP = "bsbSelfAssessmentAnswerMap";
+
+    public static final String KEY_CHKL_CONFIG = "checklistConfigDto";
+    public static final String KEY_ANSWER_MAP = "answerMap";
+    public static final String KEY_EDITABLE = "editable";
 
     // actions for self assessment
     public static final String ACTION_FILL = "Fill";

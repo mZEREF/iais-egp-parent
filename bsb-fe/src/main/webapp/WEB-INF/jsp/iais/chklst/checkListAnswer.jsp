@@ -1,9 +1,9 @@
-<%--@elvariable id="bsbSelfAssessmentConfig" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto"--%>
-<%--@elvariable id="bsbSelfAssessmentAnswerMap" type="java.util.HashMap<java.lang.String, java.lang.String>"--%>
+<%--@elvariable id="checklistConfigDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto"--%>
+<%--@elvariable id="answerMap" type="java.util.HashMap<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="editable" type="java.lang.Boolean"--%>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants" %>
 
-<c:forEach var="section" items="${bsbSelfAssessmentConfig.sectionDtos}" varStatus="status">
+<c:forEach var="section" items="${checklistConfigDto.sectionDtos}" varStatus="status">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title">
@@ -38,17 +38,17 @@
                         </td>
                         <td>
                             <p><input name="${itemKey}" type="radio" <c:if test="${!editable}">disabled</c:if>
-                                      <c:if test="${ChecklistConstants.ANSWER_YES eq bsbSelfAssessmentAnswerMap.get(itemKey)}">checked="checked"</c:if>
+                                      <c:if test="${ChecklistConstants.ANSWER_YES eq answerMap.get(itemKey)}">checked="checked"</c:if>
                                       value="${ChecklistConstants.ANSWER_YES}"/></p>
                         </td>
                         <td>
                             <p><input name="${itemKey}" type="radio" <c:if test="${!editable}">disabled</c:if>
-                                      <c:if test="${ChecklistConstants.ANSWER_NO eq bsbSelfAssessmentAnswerMap.get(itemKey)}">checked="checked"</c:if>
+                                      <c:if test="${ChecklistConstants.ANSWER_NO eq answerMap.get(itemKey)}">checked="checked"</c:if>
                                       value="${ChecklistConstants.ANSWER_NO}"/></p>
                         </td>
                         <td>
                             <p><input name="${itemKey}" type="radio" <c:if test="${!editable}">disabled</c:if>
-                                      <c:if test="${ChecklistConstants.ANSWER_NA eq bsbSelfAssessmentAnswerMap.get(itemKey)}">checked="checked"</c:if>
+                                      <c:if test="${ChecklistConstants.ANSWER_NA eq answerMap.get(itemKey)}">checked="checked"</c:if>
                                       value="${ChecklistConstants.ANSWER_NA}"/></p>
                         </td>
                     </tr>

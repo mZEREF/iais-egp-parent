@@ -1,11 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
-
 import org.springframework.util.CollectionUtils;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class TableDisplayUtil {
     private TableDisplayUtil() {}
@@ -47,4 +44,18 @@ public class TableDisplayUtil {
         return String.join(",", admins);
     }
 
+
+    /**
+     * This method is intended for the initialization of index list in the 'add more' function.
+     * If the size is 4, the resutl is '0 1 2 3 '.
+     * @param size current section amount
+     * @return a string in the format '0 1 2 ...'
+     */
+    public static String indexes(int size) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            builder.append(i).append(' ');
+        }
+        return builder.toString();
+    }
 }

@@ -12,8 +12,8 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
-<%--@elvariable id="insFacInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
-<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.PreInsProcessDto"--%>
+<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
+<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -36,7 +36,7 @@
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
-                                            <li id="dynamicContent" role="presentation">
+                                            <li id="checkList" role="presentation">
                                                 <a href="#tabCheckList" id="doCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">Check List</a>
                                             </li>
                                             <li id="process" role="presentation">
@@ -46,7 +46,7 @@
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
-                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
@@ -82,7 +82,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${insFacInfo.appStatus}"/></p>
+                                                                        <p><iais:code code="${insInfo.appStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>

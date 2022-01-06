@@ -3,9 +3,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,13 +11,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInsProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.MASK_PARAM_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
 
 
 @Slf4j
@@ -45,40 +42,28 @@ public class PreInspectionDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String maskedAppId = request.getParameter(KEY_APP_ID);
-        String appId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedAppId);
-        if (!StringUtils.hasLength(appId) || appId.equals(maskedAppId)) {
-            throw new IaisRuntimeException("Invalid maskedAppId:" + LogUtil.escapeCrlf(maskedAppId));
-        }
-        String maskedTaskId = request.getParameter(KEY_TASK_ID);
-        String taskId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedTaskId);
-        if (!StringUtils.hasLength(taskId) || taskId.equals(maskedTaskId)) {
-            throw new IaisRuntimeException("Invalid maskedTaskId:" + LogUtil.escapeCrlf(maskedTaskId));
-        }
-
-        ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
-        ParamUtil.setSessionAttr(request, KEY_TASK_ID, taskId);
+        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_PRE_INSPECTION);
     }
 
     public void init(BaseProcessClass bpc) {
         HttpSession session = bpc.request.getSession();
-        session.removeAttribute(KEY_INS_FAC_INFO);
+        session.removeAttribute(KEY_INS_INFO);
         session.removeAttribute(KEY_INS_DECISION);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        InsFacInfoDto facInfoDto = (InsFacInfoDto) ParamUtil.getSessionAttr(request, KEY_INS_FAC_INFO);
+        InsFacInfoDto facInfoDto = (InsFacInfoDto) ParamUtil.getSessionAttr(request, KEY_INS_INFO);
         if (facInfoDto == null) {
             String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
             facInfoDto = inspectionClient.getInsFacInfo(appId);
-            ParamUtil.setSessionAttr(request, KEY_INS_FAC_INFO, facInfoDto);
+            ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
         }
-        PreInsProcessDto processDto = (PreInsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         if (processDto == null) {
-            processDto = new PreInsProcessDto();
+            processDto = new InsProcessDto();
             ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         }
     }
@@ -102,15 +87,15 @@ public class PreInspectionDelegator {
             answerMap.put(answerDto.getSectionId() + KEY_SEPARATOR + answerDto.getItemId(), answerDto.getAnswer());
         }
 
-        ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_CONFIG, configDto);
-        ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, answerMap);
+        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, configDto);
+        ParamUtil.setRequestAttr(request, KEY_ANSWER_MAP, answerMap);
         ParamUtil.setRequestAttr(request, KEY_EDITABLE, Boolean.FALSE);
     }
 
 
     public void validateSubmission(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        PreInsProcessDto processDto = (PreInsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         ValidationResultDto validationResultDto = inspectionClient.validatePreInsSubmission(processDto);
@@ -134,7 +119,7 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        PreInsProcessDto processDto = (PreInsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.changeInspectionStatusToReady(appId, taskId, processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }

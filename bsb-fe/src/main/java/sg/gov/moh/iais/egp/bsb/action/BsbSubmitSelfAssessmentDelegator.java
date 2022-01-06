@@ -200,6 +200,10 @@ public class BsbSubmitSelfAssessmentDelegator {
             }
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, String>) answerMap);
         }
+
+        // set DTOs needed by checklist page
+        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, configDto);
+        ParamUtil.setRequestAttr(request, KEY_ANSWER_MAP, answerMap);
     }
 
     public void save(BaseProcessClass bpc) throws JsonProcessingException {

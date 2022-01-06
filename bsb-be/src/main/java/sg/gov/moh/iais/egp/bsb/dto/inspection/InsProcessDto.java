@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 @Data
-public class PreInsProcessDto implements Serializable {
+public class InsProcessDto implements Serializable {
     private String remark;
     private String decision;
 
