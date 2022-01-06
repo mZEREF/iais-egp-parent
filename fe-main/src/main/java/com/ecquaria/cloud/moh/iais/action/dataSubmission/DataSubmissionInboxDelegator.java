@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
@@ -13,7 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +29,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -295,11 +304,18 @@ public class DataSubmissionInboxDelegator {
 	 * @param bpc
 	 * @throws
 	 */
-	public void withdraw(BaseProcessClass bpc){
+	public void withdraw(BaseProcessClass bpc)throws IOException {
 		setLog(WITHDRAW);
 		HttpServletRequest request = bpc.request;
 		HttpServletResponse response = bpc.response;
 		toShowMessage(request,response,WITHDRAW);
+		List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+		ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
+		StringBuilder url = new StringBuilder();
+		url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+				.append(InboxConst.URL_LICENCE_WEB_MODULE + "MohArWithdrawal");
+		String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+		IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 		setLog(WITHDRAW,false);
 	}
 

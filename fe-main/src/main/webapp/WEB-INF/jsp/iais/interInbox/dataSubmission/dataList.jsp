@@ -215,7 +215,6 @@
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
-            $('#ds-withdraw').addClass("disabled");
             $('#ds-unlock').addClass("disabled");
         }
     }
