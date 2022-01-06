@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -32,4 +33,8 @@ public class ApprovalDto extends BaseEntityDto {
     private String suspendedStatus;
 
     private String renewable;
+
+    private LocalDate suspendedStartDt;
+
+    private LocalDate reinstateEffectiveDt;
 }
