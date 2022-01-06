@@ -24,7 +24,7 @@ public class INTRANET___AOProcessingIncident___1 extends BaseProcessClass {
 
 	public void preProcessingData_OnStepProcess_0() throws Exception {
 	// 		PreProcessingData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preProcessingData", this);
+		EngineHelper.delegate(DELEGATOR, "preIncidentProcessingData", this);
 	}
 
 	public void preViewNotification_OnStepProcess_0() throws Exception {

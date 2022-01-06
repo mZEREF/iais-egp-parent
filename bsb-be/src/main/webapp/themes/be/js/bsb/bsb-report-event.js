@@ -23,10 +23,16 @@ $(function (){
         $("#mainForm").submit();
     })
 
-    $("#viewAppBtn").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("view");
-        $("#mainForm").submit();
-    })
 
 })
+
+
+function viewApp(module){
+    var url = "";
+    if(module === 'notification'){
+        url = "/bsb-be/eservice/INTRANET/ViewIncidentNotificaiton";
+    }else if(module === 'investigation'){
+        url = "/bsb-be/eservice/INTRANET/ViewInvestReport";
+    }
+    window.open(url);
+}

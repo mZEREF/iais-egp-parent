@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-report-event.js"></script>
 
@@ -90,7 +91,7 @@
                                                                             <label for="remarks${role}">${role} Remarks</label>
                                                                         </div>
                                                                         <div class="col-sm-6 col-md-7">
-                                                                            <label id="remarks${role}"><c:out value="${item.remark}"/></label>
+                                                                            <label id="remarks${role}" class="label-normal"><c:out value="${item.remark}"/></label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group ">
@@ -98,7 +99,7 @@
                                                                             <label for="decision${role}">${role} Decision</label>
                                                                         </div>
                                                                         <div class="col-sm-6 col-md-7">
-                                                                            <label id="decision${role}"><c:out value="${item.decision}"/></label>                                                                        </div>
+                                                                            <label id="decision${role}" class="label-normal"><iais:code code="${item.decision}"/></label>                                                                        </div>
                                                                     </div>
                                                                 </c:if>
                                                             </c:forEach>
@@ -107,7 +108,7 @@
                                                                     <label for="status">Current Status</label>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <label id="status"><iais:code code="${dto.currentStatus}"/></label>
+                                                                    <label id="status" class="label-normal"><iais:code code="${dto.currentStatus}"/></label>
                                                                     <span data-err-ind="status" class="error-msg"></span>
                                                                 </div>
                                                             </div>

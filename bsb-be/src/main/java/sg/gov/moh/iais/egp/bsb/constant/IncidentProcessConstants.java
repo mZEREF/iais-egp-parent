@@ -18,9 +18,6 @@ public class IncidentProcessConstants {
     public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM = "MOHPRO009";
 
 
-    public static final String KEY_APP_ID = "appId";
-    public static final String KEY_TASK_ID = "taskId";
-
     public static final String ACTION_TYPE_SUBMIT = "submit";
     public static final String ACTION_TYPE_BACK = "doBack";
     public static final String ACTION_TYPE_VIEW_APPLICATION = "view";

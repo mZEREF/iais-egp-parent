@@ -33,7 +33,7 @@
 </div>
 <div style="text-align: center;margin: 10px 0 20px 0">
     <a href="javascript:void(0);">
-        <button id="viewAppBtn" type="button" class="btn btn-primary">
+        <button id="viewAppBtn" type="button" class="btn btn-primary" onclick="viewApp('${module}')">
             View Application
         </button>
     </a>

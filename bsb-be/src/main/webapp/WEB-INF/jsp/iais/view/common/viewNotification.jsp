@@ -15,7 +15,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-report-event.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 
@@ -280,7 +280,7 @@
                                                                     <c:set var="persons" value="${view.personInvolvedInfos}"/>
                                                                     <c:forEach var="item" items="${persons}" varStatus="status">
                                                                         <div class="form-group">
-                                                                            <div class="col-10"><h3>Person ${status.index}</h3></div>
+                                                                            <div class="col-10"><h3>Person ${status.index+1}</h3></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
@@ -355,7 +355,7 @@
                                                                         </div>
 
                                                                         <div class="form-group" style="margin-top: 20px">
-                                                                            <div class="col-10"><h3>Details Related to Medical Consultation/Treatment</h3></div>
+                                                                            <div class="col-10"><strong>Details Related to Medical Consultation/Treatment</strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
 

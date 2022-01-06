@@ -19,4 +19,5 @@ public class IncidentNotificationDto implements Serializable {
     private IncidentPersonnelDto incidentPersonnelDto;
     private List<IncidentDocDto> incidentDocDtoList;
     private ProcessingDto processingDto;
+    private String flag;
 }
