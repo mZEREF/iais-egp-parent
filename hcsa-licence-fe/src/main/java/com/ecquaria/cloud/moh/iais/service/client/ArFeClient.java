@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -32,9 +33,19 @@ import java.util.List;
 public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/patient/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PatientDto> getPatientDto(@RequestParam(name = "idType") String idType,
+    FeignResponseEntity<List<PatientDto>> getPatientsByConds(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
-            @RequestParam(name = "orgId") String orgId);
+            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
+
+    @GetMapping(value = "/ar-common/patient/idnumber-nationality/active", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientDto> getActivePatientByConds(@RequestParam(name = "idType") String idType,
+            @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
+            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
+
+    @GetMapping(value = "/ar-common/patient/data-submission", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DataSubmissionDto> getPatientDataSubmissionByConds(@RequestParam(name = "idType") String idType,
+            @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
+            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
 
     @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idType") String idType,
@@ -170,4 +181,8 @@ public interface ArFeClient {
 
     @GetMapping(value = "/data-submission/data-submission-ar-cycle-count",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getArCycleStageCountByIdTypeAndIdNoAndNationality(@RequestParam("idType") String idType, @RequestParam("idNo") String idNo, @RequestParam("nationality") String nationality);
+
+    @GetMapping(value = "/ar-common/patient-info/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(@PathVariable("patientCode") String patientCode);
+
 }

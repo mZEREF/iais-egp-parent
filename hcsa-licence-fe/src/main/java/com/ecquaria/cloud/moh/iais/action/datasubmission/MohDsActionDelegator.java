@@ -168,6 +168,8 @@ public class MohDsActionDelegator {
             if (arSuper.getDataSubmissionDto() != null) {
                 DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
                 dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+                dataSubmissionDto.setAmendReason(null);
+                dataSubmissionDto.setAmendReasonOther(null);
                 if (arSuper.getSelectionDto() != null) {
                     CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
                     if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {

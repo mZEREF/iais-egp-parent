@@ -12,7 +12,11 @@
                 <c:set var="suffix" value="" />
                 <c:set var="person" value="${patient}" />
                 <%@include file="personSection.jsp" %>
-                <iais:row>
+                <c:if test="${showPrevious}">
+                    <c:set var="person" value="${previous}" />
+                    <%@include file="previewPatientPreviousSection.jsp" %>
+                </c:if>
+                <%--<iais:row>
                     <iais:field width="5" value="Is AR Centre aware of patient's previous identification?" mandatory="true"/>
                     <div class="form-check col-md-3 col-xs-3">
                         <input class="form-check-input" <c:if test="${patient.previousIdentification}">checked="checked"</c:if>
@@ -69,7 +73,7 @@
                             ${previous.birthDate}
                         </iais:value>
                     </iais:row>
-                </div>
+                </div>--%>
             </div>
         </div>
     </div>

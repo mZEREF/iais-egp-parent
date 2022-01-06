@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -36,6 +37,21 @@ public class PatientDelegator extends CommonDelegator {
 
     @Autowired
     private PatientService patientService;
+
+    @Override
+    public void start(BaseProcessClass bpc) {
+        super.start(bpc);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            // set current as previous at the beginning
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            PatientDto patient = patientInfoDto.getPatient();
+            patientInfoDto.setPrevious((PatientDto) CopyUtil.copyMutableObject(patient));
+            patient.setPreviousIdentification(true);
+            patientInfoDto.setPatient(patient);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        }
+    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -87,7 +103,7 @@ public class PatientDelegator extends CommonDelegator {
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
         // check previous
-        if (patient.isPreviousIdentification()) {
+        /*if (patient.isPreviousIdentification()) {
             String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
             patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
             PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
@@ -99,7 +115,7 @@ public class PatientDelegator extends CommonDelegator {
                 }
             }
             patientInfo.setPrevious(previous);
-        }
+        }*/
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
         if (StringUtil.isNotEmpty(husband.getName())) {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));

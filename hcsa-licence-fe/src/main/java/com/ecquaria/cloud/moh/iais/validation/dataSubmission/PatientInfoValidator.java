@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -51,6 +54,10 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (patient == null) {
             patient = new PatientDto();
         }
+        PatientDto previous = patientInfo.getPrevious();
+        if (previous == null) {
+            previous = new PatientDto();
+        }
         boolean isRfc = false;
         if ("rfc".equals(profile)) {
             isRfc = true;
@@ -59,18 +66,6 @@ public class PatientInfoValidator implements CustomizeValidator {
         ValidationResult result = WebValidationHelper.validateProperty(patient, profile);
         if (result != null) {
             map.putAll(result.retrieveAll());
-        }
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-        PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
-        PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
-                patient.getNationality(), orgId);
-        if (patientDto != null && !isRfc) {
-            map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-        }
-        if (patientDto != null && isRfc && (StringUtil.isEmpty(patient.getId())
-                || !Objects.equals(patientDto.getId(), patient.getId()))) {
-            map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
         }
         String birthDate = patient.getBirthDate();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
@@ -83,23 +78,22 @@ public class PatientInfoValidator implements CustomizeValidator {
             }
         }
         if (patient.isPreviousIdentification()) {
-            PatientDto previous = patientInfo.getPrevious();
-            if (previous == null) {
-                previous = new PatientDto();
-            }
             patientInfo.setPrevious(previous);
-            result = WebValidationHelper.validateProperty(previous, "ART");
-            if (result != null && result.isHasErrors()) {
-                map.putAll(result.retrieveAll("pre", ""));
+            if ("file".equals(profile)) {
+                result = WebValidationHelper.validateProperty(previous, "ART");
+                if (result != null && result.isHasErrors()) {
+                    map.putAll(result.retrieveAll("pre", ""));
+                }
             }
             if (!"file".equals(profile)) {
-                boolean retrievePrevious = patientInfo.isRetrievePrevious();
+                /*boolean retrievePrevious = patientInfo.isRetrievePrevious();
                 if (!retrievePrevious) {
                     //map.put("retrievePrevious", "DS_ERR005");
                 } else if (StringUtil.isEmpty(previous.getId())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
-                }
+                }*/
             } else {
+                isRfc = true;
                 if ("".equals(previous.getIdType())) {
                     map.put("preIdType", ERR_MSG_INVALID_DATA);
                 }
@@ -107,12 +101,12 @@ public class PatientInfoValidator implements CustomizeValidator {
                     map.put("preNationality", ERR_MSG_INVALID_DATA);
                 }
             }
-            if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
+            /*if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
                     && previous.getIdNumber().equals(patient.getIdNumber())
                     && Objects.equals(previous.getIdType(), patient.getIdType())
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
-            }
+            }*/
         }
         HusbandDto husband = patientInfo.getHusband();
         if (husband == null) {
@@ -139,18 +133,46 @@ public class PatientInfoValidator implements CustomizeValidator {
             }
         }
         //}
-        if (isRfc && map.isEmpty()) {
-            ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (!DsRfcHelper.isChangePatientInfoDto(patientInfo, oldArDataSubmission.getPatientInfoDto())) {
-                map.put(DataSubmissionConstant.RFC_NO_CHANGE_ERROR, "DS_ERR021");
-                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+        PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
+        if (isRfc) {
+            DataSubmissionDto dataSubmission = patientService.getPatientDataSubmissionByConds(patient.getIdType(),
+                    patient.getIdNumber(), patient.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
+            DataSubmissionDto previousDS = patientService.getPatientDataSubmissionByConds(previous.getIdType(),
+                    previous.getIdNumber(), previous.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
+            if (previousDS != null && dataSubmission != null
+                    && !Objects.equals(previousDS.getSubmissionNo(), dataSubmission.getSubmissionNo())) {
+                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+            }
+            if (map.isEmpty()) {
+                ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(request);
+                PatientInfoDto oldPatientInfo;
+                if (oldArDataSubmission == null || oldArDataSubmission.getPatientInfoDto() == null) {
+                    oldPatientInfo = patientService.getPatientInfoDto(previous.getPatientCode());
+                } else {
+                    oldPatientInfo = oldArDataSubmission.getPatientInfoDto();
+                }
+                if (!DsRfcHelper.isChangePatientInfoDto(patientInfo, oldPatientInfo)) {
+                    if ("file".equals(profile)) {
+                        map.put("preIdNumber", "DS_ERR021");
+                    } else {
+                        map.put(DataSubmissionConstant.RFC_NO_CHANGE_ERROR, "DS_ERR021");
+                        ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                    }
+                }
+            }
+        } else {
+            PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
+                    patient.getNationality(), orgId);
+            if (patientDto != null) {
+                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
             }
         }
         if ("file".equals(profile)) {
             if (StringUtil.isEmpty(patientInfo.getIsPreviousIdentification())) {
                 map.put("isPreviousIdentification", "GENERAL_ERR0006");
             }
-
             if ("".equals(patient.getIdType())) {
                 map.put("idType", ERR_MSG_INVALID_DATA);
             }

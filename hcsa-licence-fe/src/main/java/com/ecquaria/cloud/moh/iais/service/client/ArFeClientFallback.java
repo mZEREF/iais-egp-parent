@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Arrays;
@@ -36,8 +37,21 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<PatientDto> getPatientDto(String idType, String idNumber, String nationality, String orgId) {
-        return getFeignResponseEntity();
+    public FeignResponseEntity<List<PatientDto>> getPatientsByConds(String idType, String idNumber, String nationality, String orgId,
+            String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
+    }
+
+    @Override
+    public FeignResponseEntity<PatientDto> getActivePatientByConds(String idType, String idNumber, String nationality, String orgId,
+            String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
+    }
+
+    @Override
+    public FeignResponseEntity<DataSubmissionDto> getPatientDataSubmissionByConds(String idType, String idNumber, String nationality,
+            String orgId, String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
     }
 
     @Override
@@ -214,4 +228,10 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<Integer> getArCycleStageCountByIdTypeAndIdNoAndNationality(String idType, String idNo, String nationality) {
         return getFeignResponseEntity(idType,idNo,nationality);
     }
+
+    @Override
+    public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
+        return getFeignResponseEntity(patientCode);
+    }
+
 }

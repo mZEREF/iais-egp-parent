@@ -273,7 +273,8 @@ public class PatientUploadDelegate {
                 previous.setIdType(preIdType);
                 previous.setIdNumber(preIdNumber);
                 previous.setNationality(preNationality);
-                PatientDto db = patientService.getArPatientDto(preIdType, preIdNumber, preNationality, orgId);
+                PatientDto db = patientService.getActivePatientByConds(preIdType, preIdNumber, preNationality, orgId,
+                        DataSubmissionConsts.DS_PATIENT_ART);
                 if (db != null) {
                     previous = db;
                 }
