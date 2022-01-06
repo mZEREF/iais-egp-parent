@@ -640,6 +640,10 @@ function modifyClonedNode(node, idx, separator) {
     }
 }
 
+function openIncident(maskedEditId){
+    window.open("/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
+}
+
 //---------- END ----------
 
 

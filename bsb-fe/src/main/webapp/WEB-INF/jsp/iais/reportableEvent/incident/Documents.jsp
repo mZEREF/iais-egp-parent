@@ -20,7 +20,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="invest/common/dashboard.jsp"%>
+<%@include file="../invest/common/dashboard.jsp"%>
 
 <form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
-                        <%@ include file="invest/common/InnerNavTab.jsp" %>
+                        <%@ include file="common/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active" id="tabDocuments" role="tabpanel" style="background-color: rgba(255, 255, 255, 1);border-radius: 15px;box-shadow: 0 0 15px #00000059;">
                                 <div class="panel panel-default">
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <%@ include file="invest/common/InnerFooter.jsp" %>
+                            <%@ include file="common/InnerFooter.jsp" %>
                         </div>
                     </div>
                 </div>

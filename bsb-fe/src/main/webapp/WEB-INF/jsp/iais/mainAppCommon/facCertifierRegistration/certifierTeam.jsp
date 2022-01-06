@@ -139,7 +139,7 @@
 
             <div class="form-group ">
                 <div class="col-sm-5 control-label">
-                    <label for="certBSL3Exp--v--${status.index}">Experience in certification of a BSL-3 Facility.</label>
+                    <label for="certBSL3Exp--v--${status.index}">Experience in certification of a BSL-3 Facility</label>
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6 col-md-7">
@@ -205,7 +205,7 @@
 
             <div class="form-group ">
                 <div class="col-sm-5 control-label">
-                    <label for="facRelatedPub--v--${status.index}">Facility related publications\/researches</label>
+                    <label for="facRelatedPub--v--${status.index}">Facility related publications/researches</label>
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6 col-md-7">

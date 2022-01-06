@@ -46,7 +46,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <label id="referenceNo">
-                                                                            <a href="/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId=${maskedEditId}">${incidentDto.referenceNo}</a></label>
+                                                                            <a href="#" onclick="openIncident('${maskedEditId}')">${incidentDto.referenceNo}</a></label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
