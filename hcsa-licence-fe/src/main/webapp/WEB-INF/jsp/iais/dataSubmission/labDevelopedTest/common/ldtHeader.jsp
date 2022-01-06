@@ -14,6 +14,8 @@
 <webui:setLayout name="iais-internet"/>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ldt_common.js"></script>
 <input type="hidden" name="current_page" value="${ldt_current_page}"/>
+<input type="hidden" name="_contextPath" id="_contextPath" value="${pageContext.request.contextPath}"/>
+<input type="hidden" name="printflag" id="printflag" value="${printflag}">
 
 <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">

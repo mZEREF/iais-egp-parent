@@ -53,3 +53,49 @@ function submit(action) {
     showWaiting();
     mainForm.submit();
 }
+
+function printData() {
+    clearErrorMsg();
+    var url = $('#_contextPath').val() + '/eservice/INTERNET/MohDsPrint';
+    var token = $('input[name="OWASP_CSRFTOKEN"]').val();
+    if (!isEmpty(token)) {
+        url += '?OWASP_CSRFTOKEN=' + token;
+    }
+    var printflag = $('#printflag').val();
+    if (!isEmpty(printflag)) {
+        if (url.indexOf('?') < 0) {
+            url += '?printflag=' + printflag;
+        } else {
+            url += '&printflag=' + printflag;
+        }
+    }
+    var data = getDataForPrinting();
+    if (isEmpty(data)) {
+        window.open(url, '_blank');
+    } else {
+        $.ajax({
+            'url': $('#_contextPath').val() + '/ds/init-print',
+            'dataType': 'json',
+            'data': data,
+            'type': 'POST',
+            'success': function (data) {
+                window.open(url, '_blank');
+            },
+            'error': function (data) {
+                console.log("err: " + data);
+            }
+        });
+    }
+}
+
+function getDataForPrinting() {
+    var declaration = $('input[name="declaration"]:checked').val();
+    if (isEmpty(declaration)) {
+        return null;
+    }
+    var printflag = $('#printflag').val();
+    if (isEmpty(printflag)) {
+        printflag = '';
+    }
+    return {declaration: declaration, printflag: printflag};
+}
