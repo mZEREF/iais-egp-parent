@@ -51,7 +51,10 @@
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize, fileAppendId);
+        if(fileAppendId != 'uploadFile'){
+            fileAppendId = 'selectedFile';
+        }
+        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,fileAppendId);
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
