@@ -4,14 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -24,6 +20,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +49,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         ParamUtil.setSessionAttr(request, "iuiDeliverChildNumOption", (Serializable)DataSubmissionHelper.getNumsSelections(10));
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK003Message","<p>"+ MessageUtil.getMessageDesc("DS_ACK003")+"</p>");
+        ParamUtil.setRequestAttr(request,"iuiCycleStageInit",AppConsts.YES);
     }
 
 
@@ -71,6 +69,10 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         //init IuiCycleStageDto The default value
         DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission),request);
+        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"iuiCycleStageInit")) && isRfc(request)){
+            arSuperDataSubmission.getIuiCycleStageDto().setOldDonorDtos(IaisCommonUtils.isNotEmpty(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) ?(List<DonorDto>) CopyUtil.copyMutableObjectList(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) : null);
+            DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission),request);
+        }
     }
 
     @Override
@@ -148,6 +150,9 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
     protected void valRFC(HttpServletRequest request, IuiCycleStageDto iuiCycleStageDto){
         if( ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(IaisCommonUtils.isNotEmpty(iuiCycleStageDto.getSemenSources())){
+                Collections.sort(iuiCycleStageDto.getSemenSources());
+            }
             if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getIuiCycleStageDto()!= null && iuiCycleStageDto .equals(arOldSuperDataSubmissionDto.getIuiCycleStageDto())){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);

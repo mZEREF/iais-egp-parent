@@ -5,10 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
@@ -109,6 +106,9 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
             setEnhancedCounsellingTipShow(request,arCycleStageDto,false);
+            if(isRfc(request)){
+                arCycleStageDto.setOldDonorDtos(IaisCommonUtils.isNotEmpty(arDonorDtos) ? (List<DonorDto>) CopyUtil.copyMutableObjectList(arDonorDtos) : null);
+            }
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
