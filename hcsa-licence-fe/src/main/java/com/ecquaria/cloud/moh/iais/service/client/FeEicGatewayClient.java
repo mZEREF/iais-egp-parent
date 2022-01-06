@@ -4,7 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -12,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationTruckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -310,6 +318,15 @@ public class FeEicGatewayClient {
                 topSuperDataSubmissionDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), TopSuperDataSubmissionDto.class);
+    }
+
+    public FeignResponseEntity<LdtSuperDataSubmissionDto> saveBeLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/ldt-sync", HttpMethod.POST,
+                ldtSuperDataSubmissionDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), LdtSuperDataSubmissionDto.class);
     }
 
     public FeignResponseEntity<List> saveBeArSuperDataSubmissionDtoList(List<ArSuperDataSubmissionDto> arSuperList) {

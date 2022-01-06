@@ -19,4 +19,6 @@ public interface LdtDataSubmissionService {
     void deleteLdtSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
+
+    LdtSuperDataSubmissionDto saveLdtSuperDataSubmissionDtoToBE(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto);
 }

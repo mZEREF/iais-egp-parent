@@ -107,7 +107,7 @@ public class LdtDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, currentStage);
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
         if (ldtSuperDataSubmissionDto != null) {
-            if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftNo())){
+            if (StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftNo())) {
                 ldtSuperDataSubmissionDto.setDraftNo(ldtDataSubmissionService.getDraftNo());
             }
             ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveDataSubmissionDraft(ldtSuperDataSubmissionDto);
@@ -157,13 +157,17 @@ public class LdtDataSubmissionDelegator {
             dataSubmissionDto.setSubmitDt(new Date());
         }
         ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto);
-        //TODO save to Be
+        try {
+            ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveLdtSuperDataSubmissionDtoToBE(ldtSuperDataSubmissionDto);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveLdtSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
         if (!StringUtil.isEmpty(ldtSuperDataSubmissionDto.getDraftId())) {
             ldtDataSubmissionService.updateDataSubmissionDraftStatus(ldtSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
 
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_SUBMIT);
