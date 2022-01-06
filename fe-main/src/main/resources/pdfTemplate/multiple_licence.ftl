@@ -71,7 +71,7 @@
       /*padding: 10px 90px;*/
     }
     .licence_box  {
-      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
+      background-image: url("http://localhost:8080/main-web/img/license-mainbg.jpg");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
