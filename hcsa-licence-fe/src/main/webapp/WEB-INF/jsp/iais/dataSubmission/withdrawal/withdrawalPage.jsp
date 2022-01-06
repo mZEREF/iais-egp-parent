@@ -59,7 +59,7 @@
                                             <div class="withdraw-info-gp">
                                                 <div class="withdraw-info-row">
                                                     <div class="withdraw-info">
-                                                        <p><a href="javascript:void(0);" class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${wdList.applicationNo}"/>','${wdList.applicationNo}')">${wdList.applicationNo}</a></p>
+                                                        <p><a href="javascript:void(0);" class="appNo" onclick="toDsView('${wdList.dataSubmissionDto.submissionNo}',${wdList.cycleDto.dsType})">${wdList.dataSubmissionDto.submissionNo}</a></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,7 +83,7 @@
                                     <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="100" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                      maxlength="100" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawnRemarks}</textarea>
                                     </div>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -152,16 +152,11 @@
         window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
     }
 
-    function toApplicationView(appMaskNo, appNo) {
+    function toDsView(submissionNo,dsType) {
         let url = "";
-        console.log(appMaskNo);
-        var appNoStr = appNo.substr(0, 2);
-        console.log(appNoStr);
-        if ('AA' == appNoStr) {
-            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=ar";
-        } else {
-            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=an";
-        }
+        console.log(submissionNo);
+        console.log(dsType);
+        url = '${pageContext.request.contextPath}/eservice/INTERNET/MohDsAction?dsType='+dsType +"&type=preview"+"&submissionNo="+ submissionNo ;
         showPopupWindow(url);
     }
 
