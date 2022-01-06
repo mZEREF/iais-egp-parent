@@ -51,10 +51,7 @@
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         var maxFileSize = $("#fileMaxSize").val();
-        if(fileAppendId != 'uploadFile'){
-            fileAppendId = 'selectedFile';
-        }
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,fileAppendId);
+        var rslt = validateFileSizeMaxOrEmpty(maxFileSize);
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
@@ -108,8 +105,8 @@
         dismissWaiting();
     }
 
-    function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
-        var fileId= '#'+selectedFileId;
+    function validateFileSizeMaxOrEmpty(maxSize) {
+        var fileId= 'input[name="selectedFile"]';
         var fileV = $( fileId).val();
         var file = $(fileId).get(0).files[0];
         if(fileV == null || fileV == "" ||file==null|| file==undefined){
