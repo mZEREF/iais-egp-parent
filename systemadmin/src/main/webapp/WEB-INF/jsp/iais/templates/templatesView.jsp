@@ -80,9 +80,9 @@
         $("[name='templateName']").val("");
         $("[name='esd']").val("");
         $("[name='eed']").val("");
-        $("#tepProcess option:first").prop("selected", 'selected').val("Please Select");
-        $("#msgType option:first").prop("selected", 'selected').val("Please Select");
-        $("#deliveryMode option:first").prop("selected", 'selected').val("Please Select");
+        $("#tepProcess option:first").prop("selected", 'selected').val("");
+        $("#msgType option:first").prop("selected", 'selected').val("");
+        $("#deliveryMode option:first").prop("selected", 'selected').val("");
         $(".clearTep .current").text("Please Select");
         $(".error-msg").text("");
     });
