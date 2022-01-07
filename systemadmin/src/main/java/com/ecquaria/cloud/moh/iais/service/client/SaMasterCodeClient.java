@@ -75,7 +75,7 @@ public interface SaMasterCodeClient {
     FeignResponseEntity<List<String>> suggestCodeDescription(@RequestParam(value = "codeDescription") String codeDescription);
 
     @PostMapping(value = "/iais-mastercode/master-code/master-code-excel",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> saveMasterCodeExcel(@RequestBody List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
+    FeignResponseEntity<List<MasterCodeDto>> saveMasterCodeExcel(@RequestBody List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
 
     @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> inactiveMasterCode(@RequestBody AuditTrailDto auditTrailDto);

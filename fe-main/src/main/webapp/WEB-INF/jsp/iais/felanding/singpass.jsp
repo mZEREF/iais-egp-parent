@@ -99,6 +99,8 @@
       String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.appId"));
       String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.clientId"));
       String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.redirectUrl"));
+      String renderRedirectLink = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.renderRedirectLink", "true"));
+      String renderDownloadLink = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.renderDownloadLink", "true"));
       boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
 //      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
 //      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
@@ -113,7 +115,7 @@
 <%--    <script src="<%=ndiEmbedAuthJsUrl%>"></script>--%>
     <script language="JavaScript">
         async function init() {
-            await eic_init('qr-sp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','singpass');
+            await eic_init('qr-sp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','singpass', <%=renderRedirectLink%>, <%=renderDownloadLink%>);
         }
 
     </script>

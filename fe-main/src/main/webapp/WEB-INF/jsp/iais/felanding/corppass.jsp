@@ -124,38 +124,42 @@
     <head>
       <title>Corppass QRcode</title>
       <%
-        //      String nonce = UUID.randomUUID().toString();
-//      String state = UUID.randomUUID().toString();
+        String nonce = UUID.randomUUID().toString();
+        String state = UUID.randomUUID().toString();
 //      ParamUtil.setSessionAttr(request, "qrcode_state", state);
-//      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
-        String qrjsUrl = ConfigHelper.getString("corppass.oidc.js.url");
-        String mockjsUrl = ConfigHelper.getString("corppass.oidc.mockserver.js.url");
-        String ndijsUrl = ConfigHelper.getString("corppass.oidc.ndi.js.url");
-        String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.profileName"));
-        String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.appId"));
+        ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
+//        String qrjsUrl = ConfigHelper.getString("corppass.oidc.js.url");
+//        String mockjsUrl = ConfigHelper.getString("corppass.oidc.mockserver.js.url");
+//        String ndijsUrl = ConfigHelper.getString("corppass.oidc.ndi.js.url");
+//        String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.profileName"));
+//        String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.appId"));
         String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.clientId"));
         String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.redirectUrl"));
-        boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
+//        boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
+        String eicUri = ConfigHelper.getString("corppass.oidc.login.uri");
+        eicUri = eicUri + "&client_id=" + clientId + "&nonce=" + nonce + "&state=" + state + "&redirect_uri=" + redirectUrl;
 //      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
 //      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
       %>
-      <script src="<%=qrjsUrl%>"></script>
-      <% if (mockFlag) {  %>
-      <script src="<%=mockjsUrl%>"></script>
-      <% } else { %>
-      <script src="<%=ndijsUrl%>"></script>
-      <% }  %>
+<%--      <script src="<%=qrjsUrl%>"></script>--%>
+<%--      <% if (mockFlag) {  %>--%>
+<%--      <script src="<%=mockjsUrl%>"></script>--%>
+<%--      <% } else { %>--%>
+<%--      <script src="<%=ndijsUrl%>"></script>--%>
+<%--      <% }  %>--%>
 
         <%--    <script src="<%=ndiEmbedAuthJsUrl%>"></script>--%>
       <script language="JavaScript">
-          async function init() {
-              await eic_init('qr-cp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','corppass');
+          <%--async function init() {--%>
+          <%--    await eic_init('qr-cp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','corppass');--%>
+          <%--}--%>
+          function submitLink(url) {
+              document.location = url;
           }
-
       </script>
     </head>
-    <body onload="init();">
-    <div id="qr-cp-block"></div>
+    <body onload="submitLink('<%=eicUri%>');">
+<%--    <div id="qr-cp-block"></div>--%>
     </body>
     </html>
   </c:when>
@@ -164,6 +168,7 @@
     <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
     <%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+    <%@ page import="java.util.UUID" %>
     <script>
       try {
         location.href=<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>;

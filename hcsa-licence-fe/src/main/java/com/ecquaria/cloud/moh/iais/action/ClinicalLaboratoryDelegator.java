@@ -443,7 +443,6 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private List<AppSvcPersonnelDto> getSectionLeadersFromPage(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("Get Section Leader start ..."));
         String currentSvcId = getCurrentServiceId(request);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.APPSUBMISSIONDTO);
@@ -467,21 +466,25 @@ public class ClinicalLaboratoryDelegator {
             } else if (!StringUtil.isEmpty(indexNo) && oldSectionLeadList != null && !oldSectionLeadList.isEmpty()) {
                 fromOld = true;
             }
+            AppSvcPersonnelDto sectionLeader;
             if (fromPage) {
-                sectionLeaderList.add(getSectionLeaderFromPage(String.valueOf(i), request));
+                sectionLeader = getSectionLeaderFromPage(String.valueOf(i), request);
             } else if (fromOld) {
-                oldSectionLeadList.stream()
+                sectionLeader = oldSectionLeadList.stream()
                         .filter(dto -> indexNo.equals(dto.getIndexNo()))
                         .findAny()
-                        .ifPresent(dto -> sectionLeaderList.add(dto));
-            }else {
-                AppSvcPersonnelDto sectionLeader = new AppSvcPersonnelDto();
+                        .orElse(null);
+            } else {
+                sectionLeader = new AppSvcPersonnelDto();
                 sectionLeader.setIndexNo(UUID.randomUUID().toString());
+                sectionLeaderList.add(sectionLeader);
+            }
+            if (sectionLeader != null) {
+                sectionLeader.setSeqNum(i);
                 sectionLeaderList.add(sectionLeader);
             }
         }
         log.info(StringUtil.changeForLog("The Section Leader length: " + slLength + "; size: " + sectionLeaderList.size()));
-        log.debug(StringUtil.changeForLog("Get Section Leader end ..."));
         return sectionLeaderList;
     }
 
@@ -4012,6 +4015,7 @@ public class ClinicalLaboratoryDelegator {
                         //not click edit
                         if (AppConsts.NO.equals(isPartEdit[i])) {
                             appSvcPersonnelDto = getAppSvcPersonnelDtoByIndexNo(appSvcRelatedInfoDto, indexNo);
+                            appSvcPersonnelDto.setSeqNum(i);
                             appSvcPersonnelDtos.add(appSvcPersonnelDto);
                             //change arr
                             indexNos = removeArrIndex(indexNos, i);
@@ -4029,6 +4033,7 @@ public class ClinicalLaboratoryDelegator {
                 if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode) ||
                         AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                     if (StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)) {
+                        appSvcPersonnelDto.setSeqNum(i);
                         appSvcPersonnelDtos.add(appSvcPersonnelDto);
                         continue;
                     }
@@ -4092,6 +4097,7 @@ public class ClinicalLaboratoryDelegator {
                 } else {
                     appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
                 }
+                appSvcPersonnelDto.setSeqNum(i);
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);
             }
         }
