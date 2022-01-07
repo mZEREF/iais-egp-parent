@@ -582,7 +582,11 @@ public class RetriggerGiroPaymentDelegator {
             if(!IaisCommonUtils.isEmpty(appSubmissionDtoList)){
                 AppSubmissionDto targetDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDtoList.get(0));
                 targetDto.setPaymentMethod(paymentMethod);
-                targetDto.setAmount((double) (100 * appSubmissionDtoList.size()));
+                double rfcAmount = 100;
+                if(NewApplicationHelper.isCharity(bpc.request)){
+                    rfcAmount=12;
+                }
+                targetDto.setAmount( (rfcAmount * appSubmissionDtoList.size()));
                 targetDto.setAmountStr(Formatter.formatterMoney(targetDto.getAmount()));
                 oneSubmsonDtoList.add(targetDto);
             }
