@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -15,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -54,6 +58,8 @@ public class ArWithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal From");
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
+        DataSubmissionHelper.setCurrentArDataSubmission(null,bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
     }
 
@@ -76,23 +82,48 @@ public class ArWithdrawalDelegator {
     }
 
     public void withdrawalStep(BaseProcessClass bpc)  {
+        ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        String remarks=ParamUtil.getString(bpc.request, "withdrawnRemarks");
+        ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
 
         ParamUtil.setRequestAttr(bpc.request,"isValidate","Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if(StringUtil.isNotEmpty(remarks)){
+            if(remarks.length()>100){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","100");
+                repMap.put("fieldNo","Remarks");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMap.put("withdrawnRemarks", errMsg);
+            }
+        }else {
+            String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+            errorMap.put("withdrawnRemarks",errMsgErr006);
+        }
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request,"isValidate","N");
+            //
+            return;
+        }
+        arSuperDataSubmission.getDataSubmissionDto().setRemarks(remarks);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
 
     }
 
     public void saveDate(BaseProcessClass bpc)  {
-//        List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-//        for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
-//             ) {
-//            arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-//            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
-//            try {
-//                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
-//            } catch (Exception e) {
-//                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-//            }
-//        }
+        List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+        for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
+             ) {
+            arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
+            try {
+                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+            }
+        }
 
 
         ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
