@@ -65,6 +65,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_LDT                     = "LDT";
     public static String PRINT_FLAG_VSS                     = "VSS";
     public static String PRINT_FLAG_TOP                     = "TOP";
+    public static String PRINT_FLAG_WD                      = "AWD";
     public static String PRINT_FLAG_ACKART                  = "ACKART";
     public static String PRINT_FLAG_ACKLDT                  = "ACKLDT";
     public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";

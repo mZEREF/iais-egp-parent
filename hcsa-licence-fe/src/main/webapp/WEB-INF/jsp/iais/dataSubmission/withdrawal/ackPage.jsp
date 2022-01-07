@@ -1,81 +1,76 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
-<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
+    //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<%
-    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
-%>
 <webui:setLayout name="iais-internet"/>
-<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-    <div class="container">
-        <div class="navigation-gp">
-            <div class="row">
-                <%@ include file="../common/dashboardDropDown.jsp" %>
-            </div>
-        </div>
-    </div>
-    <div class=" steps-tab container">
-        <div class="tab-content">
-            <div class="tab-pane active" id="previewTab" role="tabpanel">
-                <h1 class="font-weight 0 ">Withdrawal Form</h1>
-                <c:if test="${rfiServiceName!=null }">
-                    <p style="font-size: 2.2rem">You are Withdrawing for <strong>${rfiServiceName }</strong></p>
-                </c:if>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="main-content">
-    <div class="container">
-        <br/>
-        <div class="row">
-            <div class="col-lg-12 col-xs-12 cesform-box">
-                <p><span style="font-size:2rem;">${WITHDRAW_ACKMSG}</span></p>
-                <div class="table-responsive">
-                    <table aria-describedby="" class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col" style="text-align:center">Application No.</th>
-                            <th scope="col" style="text-align:center">Service Name</th>
-                            <th scope="col" style="text-align:center">HCI Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${withdrawnDtoListAck}" var="confirm" varStatus="num">
-                            <tr style="text-align: center">
-                                <td>
-                                    <p><c:out value="${confirm.newApplicationNo}"></c:out></p>
-                                </td>
-                                <td>
-                                    <p><c:out value="${confirm.svcName}"></c:out></p>
-                                </td>
-                                <td>
-                                    <p><c:out value="${(confirm.hciName == null || confirm.hciName == '') ? 'N/A' : confirm.hciName}"></c:out></p>
-                                </td>
+
+<style>
+    .margin-btm {
+        margin-bottom: 30px;
+    }
+
+    .ack-font-16 {
+        font-size: 16px;
+    }
+</style>
+
+<%-- current page: ack --%>
+
+<%@ include file="../assistedReproduction/common/arHeader.jsp" %>
+
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="../common/formHidden.jsp" %>
+    <div class="main-content">
+        <div class="container center-content">
+            <div style="margin-top:-30px;">
+                <div class="col-xs-12 text-right">
+                    <p class="print ack-font-16">
+                        <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                    </p>
+                </div>
+                <label class="col-xs-12" style="font-size: 20px">Withdrawal successful</label>
+                <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
+                <div class="ack-font-16">
+                    <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
+                    <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>
+                </div>
+                <div class="ack-font-16">
+                    <p class="col-xs-12">Submission details:</p>
+                    <div class="col-xs-12 col-sm-12 margin-btm table-responsive">
+                        <table aria-describedby="" class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col" >Submission ID</th>
+                                <th scope="col" >Submitted By</th>
+                                <th scope="col" >Submission Date and Time</th>
                             </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
+                                <td>${submittedBy}</td>
+                                <td><fmt:formatDate value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content " style="padding-top: 10px">
-                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
-                            class="fa fa-angle-left"></em> Back</a>
+                <div class="col-xs-12 col-md-2 text-left">
+                    <a style="padding-left: 5px;" class="back" href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
+                        <em class="fa fa-angle-left">&nbsp;</em> Back
+                    </a>
+                </div>
+                <div class="col-xs-12 col-md-10 margin-bottom-10">
+                    <div class="text-right">
+                        <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to DashBoard</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <br/>
     </div>
-</div>
-
-
-
-
+</form>

@@ -30,6 +30,10 @@
                 <div class="col-lg-12 col-xs-12">
                     <div class="internet-content">
                         <div class="center-content">
+                            <p style="color: #ff0000">* Withdrawal of the target submission requires the withdrawal of all submissions in the cycle that were submitted after the target submission.</p>
+                            <p style="color: #ff0000">Please note that the submissions submitted after the target submission have been automatically submitted.</p>
+                        </div>
+                        <div class="center-content">
                             <h2>You are withdrawing for</h2>
                             <div class="row">
                                 <div class="col-lg-8 col-xs-12">
@@ -48,16 +52,12 @@
 
                             </div>
                         </div>
-                        <div style="padding: 0px 90px;">
-                            <div class="row">
-                                <label class="col-md-4" style="font-size:2rem">Remarks <span
-                                        style="color: #ff0000"> *</span> </label>
-                            </div>
-                        </div>
+
                         <div class="center-content">
+                            <h2>Remarks <span style="color: #ff0000"> *</span> </h2>
                             <div class="row">
                                 <div class="col-md-6">
-                                        <textarea name="withdrawnRemarks" cols="90" rows="3" id="withdrawnRemarks"
+                                        <textarea name="withdrawnRemarks" cols="80" rows="5" id="withdrawnRemarks"
                                                   title="content" maxlength="100" >${withdrawnRemarks}</textarea>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
