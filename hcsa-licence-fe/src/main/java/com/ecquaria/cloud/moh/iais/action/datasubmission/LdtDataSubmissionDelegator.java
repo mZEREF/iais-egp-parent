@@ -128,9 +128,6 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Do Submission -----"));
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
 
-        DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
-        dsLaboratoryDevelopTestDto.setLdtNo("LDT0000000000001");
-
         DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
         CycleDto cycle = ldtSuperDataSubmissionDto.getCycleDto();
         String cycleType = cycle.getCycleType();
@@ -140,16 +137,16 @@ public class LdtDataSubmissionDelegator {
             dataSubmissionDto.setSubmissionNo(submissionNo);
         }
 
-        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+        DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
+        dsLaboratoryDevelopTestDto.setLdtNo(dataSubmissionDto.getSubmissionNo());
+
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
 
-        String stage = dataSubmissionDto.getCycleStage();
-        String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-
-        cycle.setStatus(status);
-        log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
-                + " - Status: " + status + " -----"));
+        cycle.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
 
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
@@ -169,7 +166,6 @@ public class LdtDataSubmissionDelegator {
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_SUBMIT);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKLDT);
     }
@@ -213,7 +209,7 @@ public class LdtDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_PAGE);
             return;
         } else if (crud_action_type.equals("delete")) {
-            ldtDataSubmissionService.deleteLdtSuperDataSubmissionDtoDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.DS_CYCLE_LDT);
+            ldtDataSubmissionService.deleteLdtSuperDataSubmissionDtoDraftByConds(ldtSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.LDT_TYPE_SBT);
         }
 
         if (crud_action_type.equals(ACTION_TYPE_CONFIRM)) {
@@ -363,22 +359,13 @@ public class LdtDataSubmissionDelegator {
 
         ldtSuperDataSubmissionDto.setOrgId(orgId);
         ldtSuperDataSubmissionDto.setSubmissionMethod(DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY);
-        ldtSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.DS_CYCLE_LDT);
+        ldtSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.LDT_TYPE_SBT);
         ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
-        ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         ldtSuperDataSubmissionDto.setFe(true);
+        ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        CycleDto cycleDto = new CycleDto();
-        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_LDT);
-        cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_LDT);
-        ldtSuperDataSubmissionDto.setCycleDto(cycleDto);
-
-        DataSubmissionDto dataSubmissionDto = new DataSubmissionDto();
-        dataSubmissionDto.setSubmissionType(DataSubmissionConsts.DS_CYCLE_LDT);
-        dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        dataSubmissionDto.setCycleStage(DataSubmissionConsts.DS_CYCLE_LDT);
-        ldtSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
+        ldtSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(ldtSuperDataSubmissionDto, false));
+        ldtSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(ldtSuperDataSubmissionDto, false));
 
         return ldtSuperDataSubmissionDto;
     }

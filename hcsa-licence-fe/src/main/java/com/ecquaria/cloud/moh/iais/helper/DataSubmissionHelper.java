@@ -779,4 +779,33 @@ public final class DataSubmissionHelper {
         }
         return premisesMap;
     }
+
+    public static CycleDto initCycleDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto, boolean reNew) {
+        CycleDto cycleDto = ldtSuperDataSubmissionDto.getCycleDto();
+        if (cycleDto == null || reNew) {
+            cycleDto = new CycleDto();
+        }
+        cycleDto.setSvcName(ldtSuperDataSubmissionDto.getSvcName());
+        cycleDto.setHciCode(ldtSuperDataSubmissionDto.getHciCode());
+        cycleDto.setDsType(DataSubmissionConsts.DS_LDT);
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_LDT);
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        return cycleDto;
+    }
+
+    public static DataSubmissionDto initDataSubmission(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto, boolean reNew) {
+        DataSubmissionDto dataSubmission = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+        if (dataSubmission == null || reNew) {
+            dataSubmission = new DataSubmissionDto();
+        }
+        dataSubmission.setSubmissionType(ldtSuperDataSubmissionDto.getSubmissionType());
+        dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_LDT);
+        dataSubmission.setAppType(ldtSuperDataSubmissionDto.getAppType());
+        if (StringUtil.isEmpty(dataSubmission.getStatus())) {
+            dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        return dataSubmission;
+    }
 }
