@@ -9,14 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DOScreeningDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.Serializable;
+import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
@@ -33,16 +38,19 @@ public class MohDOScreeningDelegator {
     private static final String FUNCTION_NAME = "DO Screening";
 
     private final ProcessClient processClient;
+    private final RoutingHistoryClient routingHistoryClient;
 
     @Autowired
-    public MohDOScreeningDelegator(ProcessClient processClient) {
+    public MohDOScreeningDelegator(ProcessClient processClient, RoutingHistoryClient routingHistoryClient) {
         this.processClient = processClient;
+        this.routingHistoryClient = routingHistoryClient;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APP_VIEW_DTO);
+        request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -72,6 +80,9 @@ public class MohDOScreeningDelegator {
                     appViewDto.setProcessType(mohProcessDto.getSubmitDetailsDto().getProcessType());
                     appViewDto.setAppType(mohProcessDto.getSubmitDetailsDto().getAppType());
                     ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APP_VIEW_DTO, appViewDto);
+                    //show routingHistory list
+                    List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(mohProcessDto.getSubmitDetailsDto().getApplicationNo()).getEntity();
+                    ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
                 }
             }
             if (failLoadData) {

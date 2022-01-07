@@ -199,6 +199,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
