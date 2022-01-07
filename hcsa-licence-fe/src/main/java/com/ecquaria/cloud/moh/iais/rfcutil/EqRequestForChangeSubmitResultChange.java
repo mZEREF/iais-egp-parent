@@ -557,9 +557,6 @@ public class EqRequestForChangeSubmitResultChange {
         oldAppPremisesOperationalUnitDtos.add(getFirstOpeUnitDto(oldAppGrpPremisesDto));
         oldAppPremisesOperationalUnitDtos.addAll(oldAppGrpPremisesDto.getAppPremisesOperationalUnitDtos());
 
-        if (appPremisesOperationalUnitDtos == null || oldAppPremisesOperationalUnitDtos == null) {
-            return false;
-        }
         int n1 = appPremisesOperationalUnitDtos.size();
         int n2 = oldAppPremisesOperationalUnitDtos.size();
         if (n1 > n2) {

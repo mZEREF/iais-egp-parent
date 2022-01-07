@@ -438,7 +438,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
                         signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
-                if ("401".equals(entity.getStatusCode())) {
+                if (401 == entity.getStatusCode()) {
                     professionalResponseDto = new ProfessionalResponseDto();
                     professionalResponseDto.setStatusCode("401");
                 } else {
@@ -1468,7 +1468,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setCharity(isCharity);
                 if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     String licenceId = appSubmissionDto.getLicenceId();
-                    Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
+                    LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
+                    Date licExpiryDate = licenceDto.getExpiryDate();
                     licenceFeeDto.setExpiryDate(licExpiryDate);
                     licenceFeeDto.setLicenceId(licenceId);
                 }
@@ -1660,9 +1661,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setOldLicenceId(licenceDto.getId());
                                 licenceFeeDto.setMigrated(migrated);
                             }
+                            Date licExpiryDate = licenceDto.getExpiryDate();
+                            licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
-                        Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
-                        licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     //set bundle
@@ -1734,12 +1735,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 boolean flag = true;
                 String premisesType = dto.getPremisesType();
                 if(premises.size() == 0){
-                    premises.add(dto.getOldHciCode());
+                    premises.add(dto.getHciCode());
                     premisessTypes.add(premisesType);
                     flag = false;
                 }else{
                     for(String premisesCode : premises){
-                        if(premisesCode.equals(dto.getOldHciCode())){
+                        if(premisesCode.equals(dto.getHciCode())){
                             flag = false;
                             break;
                         }
@@ -1747,7 +1748,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if(flag){
                     premisessTypes.add(premisesType);
-                    premises.add(dto.getOldHciCode());
+                    premises.add(dto.getHciCode());
                 }
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1834,9 +1835,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setOldLicenceId(licenceDto.getId());
                                 licenceFeeDto.setMigrated(migrated);
                             }
+                            Date licExpiryDate = licenceDto.getExpiryDate();
+                            licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
-                        Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
-                        licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     linenceFeeQuaryDtos.add(licenceFeeDto);
@@ -2471,7 +2472,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto,
                 premisesHciList, isRfi, errorSvcConfig);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.CO_MAP);
         if (errorList.contains(NewApplicationConstant.SECTION_LICENSEE)) {
             coMap.put(NewApplicationConstant.SECTION_LICENSEE, "");
         } else {
@@ -3454,7 +3455,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-    private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
+    /*private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
         AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
 
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -3510,6 +3511,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
 
     }
+    */
+
     private void doCommomDocument(AppSubmissionDto appSubmissionDto, Map<String, String> documentMap, boolean isRfi) {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList;

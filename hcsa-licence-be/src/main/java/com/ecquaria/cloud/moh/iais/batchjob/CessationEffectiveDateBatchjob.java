@@ -11,8 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -26,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -37,16 +34,15 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author weilu
@@ -119,8 +115,8 @@ public class CessationEffectiveDateBatchjob {
                         boolean grpLic = applicationDtos.get(0).isGrpLic();
                         String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                        boolean flg=licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())|| licenceDto != null && IaisEGPHelper.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
-                        if (grpLic) {
+                        /*boolean flg=licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())|| licenceDto != null && IaisEGPHelper.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());*/
+                        if (grpLic) {/*
                             Set<String> statusSet = IaisCommonUtils.genNewHashSet();
                             for (ApplicationDto applicationDto : applicationDtos) {
                                 String status = applicationDto.getStatus();
@@ -207,7 +203,7 @@ public class CessationEffectiveDateBatchjob {
                                 applicationLicenceDto.setApplicationListDtoList(newApplicationListDtoLists);
                                 LicenceApproveBatchjob.GenerateResult groupGenerateResult = licenceApproveBatchjob.generateGroupLicence(applicationLicenceDto, hcsaServiceDtos);
                                 licenceApproveBatchjob.createCessLicence(applicationGroupDto, null, groupGenerateResult);
-                            }
+                            }*/
                         } else {
                             for (ApplicationDto applicationDto : applicationDtos) {
                                 String appId = applicationDto.getId();
@@ -215,11 +211,11 @@ public class CessationEffectiveDateBatchjob {
                                 if (appPremiseMiscDto != null&&originLicenceId!=null) {
                                     Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
                                     if (effectiveDate.compareTo(date) <= 0) {
-                                        if (flg) {
+                                        //if (flg) {
                                             applicationGroupDtosCesead.add(applicationGroupDto);
                                             licenceDtos.add(licenceDto);
                                             licGrpMap.put(originLicenceId, appGrpId);
-                                        }
+                                       // }
                                     }
                                 }
                             }

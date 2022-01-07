@@ -127,6 +127,7 @@ public class HcsaFileAjaxController {
         String deleteButtonString = "      <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:deleteFileFeAjax('replaceForDelete',indexReplace);\">\n" +
                 "                                                Delete</button>";
+<<<<<<< HEAD
         String reUploadButtonString = "";
         if (!AppConsts.NO.equals(needReUpload)) {
             reUploadButtonString = "  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +

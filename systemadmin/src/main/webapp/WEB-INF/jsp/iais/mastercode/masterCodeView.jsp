@@ -29,9 +29,12 @@
     }
 
     function doDeleteOrDeactivate(mcId){
-        showWaiting();
-        $("[name='crud_action_value']").val(mcId);
-        submit('doDelete');
+        var fangDuoJi = $('#fangDuoJi').val();
+        if(fangDuoJi != 'fangDuoJi'){
+            $('#fangDuoJi').val('fangDuoJi');
+            $("[name='crud_action_value']").val(mcId);
+            submit('doDelete');
+        }
     }
 
     function doCreate(){

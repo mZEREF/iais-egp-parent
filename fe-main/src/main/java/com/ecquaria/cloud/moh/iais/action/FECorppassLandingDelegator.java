@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.OidcCpAuthResponDto;
+import com.ecquaria.cloud.moh.iais.dto.OidcCpTokenReqDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -30,6 +31,7 @@ import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import ecq.commons.exception.BaseException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
@@ -117,7 +119,7 @@ public class FECorppassLandingDelegator {
                 return;
             }
 
-            if (loginInfo == null) {
+            if (loginInfo == null || !"S".equals(loginInfo.getStatus())) {
                 log.info("<== oLoginInfo is empty ==>");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
@@ -140,20 +142,36 @@ public class FECorppassLandingDelegator {
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();
         } else if (FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
-            String userInfoMsg = request.getParameter("userToken");
-            String eicCorrelationId = request.getParameter("ecquaria_correlationId");
+//            String userInfoMsg = request.getParameter("userToken");
+            String errorCode = request.getParameter("error");
+            if (!StringUtil.isEmpty(errorCode)) {
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                return;
+            }
+            String eicCorrelationId = UUID.randomUUID().toString();
+            String code = request.getParameter("code");
 
             //check the state against with the session attribute
             String token = ConfigHelper.getString("corppass.oidc.token");
             String postUrl = ConfigHelper.getString("corppass.oidc.postUrl");
+            String clientId = ConfigHelper.getString("corppass.oidc.clientId");
+            String redirectUrl = ConfigHelper.getString("corppass.oidc.redirectUrl");
+            String nonce = (String) ParamUtil.getSessionAttr(request, "qrcode_nonce");
+            ParamUtil.setSessionAttr(request, "qrcode_nonce", null);
+            OidcCpTokenReqDto octrDto = new OidcCpTokenReqDto();
+            octrDto.setNonce(nonce);
+            octrDto.setCode(code);
+            octrDto.setClientId(clientId);
+            octrDto.setRedirectUri(redirectUrl);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("ecquaria-correlationId", eicCorrelationId);
             headers.set("ecquaria-authToken", token);
 
-            HttpEntity entity = new HttpEntity(headers);
+            HttpEntity entity = new HttpEntity(octrDto, headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcCpAuthResponDto.class);
+            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(postUrl, HttpMethod.POST, entity, OidcCpAuthResponDto.class);
             if (HttpStatus.OK == respon.getStatusCode()) {
                 OidcCpAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
@@ -169,7 +187,11 @@ public class FECorppassLandingDelegator {
 
         if (StringUtil.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
+            if (!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(uen)) {
+                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
+            }
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
             return;
         }
 
