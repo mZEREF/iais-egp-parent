@@ -30,36 +30,36 @@
                 <div class="col-lg-12 col-xs-12">
                     <div class="internet-content">
                         <div class="center-content">
-                            <h2>You are withdrawing for </h2>
-                            <c:if test="${!empty addWithdrawnDtoList}">
-                                <c:forEach items="${addWithdrawnDtoList}" var="wdList">
-                                    <div class="withdraw-content-box">
-                                        <div class="withdraw-info-gp">
-                                            <div class="withdraw-info-row">
-                                                <div class="withdraw-info">
-                                                    <p><a class="appNo">${wdList.applicationNo}</a></p>
+                            <h2>You are withdrawing for</h2>
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-12">
+                                    <c:forEach items="${addWithdrawnDtoList}" var="wdList">
+                                        <div class="withdraw-content-box">
+                                            <div class="withdraw-info-gp">
+                                                <div class="withdraw-info-row">
+                                                    <div class="withdraw-info">
+                                                        <p><a href="javascript:void(0);" class="appNo" onclick="toDsView('${wdList.dataSubmissionDto.submissionNo}','${wdList.cycleDto.dsType}')">${wdList.dataSubmissionDto.submissionNo}</a></p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </c:forEach>
-                            </c:if>
-                        </div>
+                                    </c:forEach>
+                                </div>
 
-
-                        <div class="row">
-                            <div class="center-content">
-                                <label class="col-md-4" style="font-size:2rem">Remarks</label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="center-content">
+                        <div style="padding: 0px 90px;">
+                            <div class="row">
+                                <label class="col-md-4" style="font-size:2rem">Remarks <span
+                                        style="color: #ff0000"> *</span> </label>
+                            </div>
+                        </div>
+                        <div class="center-content">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <div class="file-upload-gp">
-                                    <textarea name="withdrawnRemarks" cols="90" rows="10" id="withdrawnRemarks"
-                                              title="content"
-                                              maxlength="100">${withdrawDtoView.withdrawnRemarks}</textarea>
-                                    </div>
+                                        <textarea name="withdrawnRemarks" cols="90" rows="3" id="withdrawnRemarks"
+                                                  title="content" maxlength="100" >${withdrawnRemarks}</textarea>
+                                    <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>

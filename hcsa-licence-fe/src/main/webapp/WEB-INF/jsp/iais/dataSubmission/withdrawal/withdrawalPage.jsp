@@ -30,7 +30,9 @@
         color: #a2d9e7;
     }
 
-
+    a {
+        text-decoration: none;
+    }
 </style>
 <div class="container">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -63,40 +65,34 @@
 
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="center-content">
+                        <div style="padding: 0px 90px;">
+                            <div class="row">
                                 <label class="col-md-4" style="font-size:2rem">Remarks <span
                                         style="color: #ff0000"> *</span> </label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="center-content">
+                        <div class="center-content">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <div class="file-upload-gp">
-                                            <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
-                                                      title="content"
-                                                      maxlength="100" >${withdrawnRemarks}</textarea>
-                                    </div>
+                                        <textarea name="withdrawnRemarks" cols="90" rows="3" id="withdrawnRemarks"
+                                                  title="content" maxlength="100" >${withdrawnRemarks}</textarea>
                                     <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="center-content">
-                            <div class="application-tab-footer">
-                                <div class="row" style="padding-top: 10px;">
-                                    <div class="col-xs-12 col-sm-6">
-                                            <span style="padding-right: 10%" class="components">
-                                                <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox"><em
-                                                        class="fa fa-angle-left"></em> Back</a>
-                                            </span>
-                                    </div>
-                                    <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
-                                       href="javascript:void(0);">Submit</a>
+                        <div class="application-tab-footer">
+                            <div class="row" style="padding-top: 10px;">
+                                <div class="col-xs-12 col-sm-6">
+                                    <span style="padding-right: 10%" class="components">
+                                        <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox"><em
+                                                class="fa fa-angle-left"></em> Back</a>
+                                    </span>
                                 </div>
+                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
+                                   href="javascript:void(0);">Submit</a>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -114,7 +110,7 @@
         $("#mainForm").submit();
     }
     function printWDPDF(){
-        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohArWithdrawal/1/printStep",'_blank');
     }
 
     function toDsView(submissionNo,dsType) {
