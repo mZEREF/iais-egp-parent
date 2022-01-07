@@ -154,7 +154,7 @@
                             <c:set var="disabledCssNoDraft" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
                             <a class="btn btn-primary ${disabledCssDraft}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                             <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                            <a class="btn btn-primary ${disabledCssDraft}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
                             <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>

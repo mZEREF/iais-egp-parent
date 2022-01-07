@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -304,18 +305,11 @@ public class DataSubmissionInboxDelegator {
 	 * @param bpc
 	 * @throws
 	 */
-	public void withdraw(BaseProcessClass bpc)throws IOException {
+	public void withdraw(BaseProcessClass bpc){
 		setLog(WITHDRAW);
 		HttpServletRequest request = bpc.request;
 		HttpServletResponse response = bpc.response;
 		toShowMessage(request,response,WITHDRAW);
-		List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
-		ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
-		StringBuilder url = new StringBuilder();
-		url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-				.append(InboxConst.URL_LICENCE_WEB_MODULE + "MohArWithdrawal");
-		String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-		IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 		setLog(WITHDRAW,false);
 	}
 
@@ -364,17 +358,15 @@ public class DataSubmissionInboxDelegator {
 				 List<InboxDataSubmissionQueryDto> actionInboxDataSubmissionQueryDtos  = IaisCommonUtils.genNewArrayList(inboxDataSubmissionQueryDtos.size());
 			 	inboxDataSubmissionQueryDtos.forEach( inboxDataSubmissionQueryDto -> {
 			 		boolean submissionSelect = false;
-
 					 for (String submissionNo : submissionNos) {
 						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
 							 submissionSelect = true;
-							  if(checkDataPassBySubmissionNo(submissionNo,actionValue)){
+							  if(checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto)){
 								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
 							  }
 							 break;
 						 }
 					 }
-
 					 inboxDataSubmissionQueryDto.setSubmissionSelect(submissionSelect);
 
 				 });
@@ -401,28 +393,40 @@ public class DataSubmissionInboxDelegator {
 				params.put("type","rfc");
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
-			}else if(WITHDRAW.equals(actionValue)){
-
 			}else if(UNLOCK.equals(actionValue)){
 
 			}
 		}
 
-		actionInboxDataSubmissionQueryDtos.forEach(obj->{
-			if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
-				licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo());
-			}
-		});
+		if(WITHDRAW.equals(actionValue)){
+			List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+			ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
+			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,null);
+		} else if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
+			actionInboxDataSubmissionQueryDtos.forEach(obj-> licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo()));
+		}
 	}
 
 	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
 		if(StringUtil.isEmpty(submissionNo) || submissionNo.length() <10 ){
 			return false;
 		}
-		String prefix = actionValue.equals(DELETE_DRAFT)? submissionNo.substring(0,2) : submissionNo.substring(0,3);
-		return StringUtil.isNotEmpty(FeInboxHelper.SUBMISSIONNO_STATUS.get(prefix));
+		if(actionValue.equals(DELETE_DRAFT)){
+			String prefix = submissionNo.substring(0,2);
+			return StringUtil.isNotEmpty(FeInboxHelper.SUBMISSIONNO_STATUS.get(prefix));
+		}else{
+			return true;
+		}
 	}
-
-
+	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
+		if(actionValue.equals(DELETE_DRAFT)){
+			return checkDataPassBySubmissionNo(submissionNo, actionValue);
+		}else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
+			//check x times
+			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
+			return true;
+		}
+		return true;
+	}
 
 }
