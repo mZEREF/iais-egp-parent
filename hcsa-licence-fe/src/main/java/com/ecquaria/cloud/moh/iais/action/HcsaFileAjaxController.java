@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +128,7 @@ public class HcsaFileAjaxController {
         String deleteButtonString = "      <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:deleteFileFeAjax('replaceForDelete',indexReplace);\">\n" +
                 "                                                Delete</button>";
-<<<<<<< HEAD
+<<<<<<<HEAD
         String reUploadButtonString = "";
         if (!AppConsts.NO.equals(needReUpload)) {
             reUploadButtonString = "  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
