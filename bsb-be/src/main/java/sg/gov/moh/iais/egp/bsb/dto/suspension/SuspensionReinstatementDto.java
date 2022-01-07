@@ -18,6 +18,7 @@ public class SuspensionReinstatementDto implements Serializable {
     private String approvalId;
     private String approvalNo;
     private String approvalStatus;
+    private String approvalProcessType;
     private String facName;
     private String facAddress;
     private String facClassification;

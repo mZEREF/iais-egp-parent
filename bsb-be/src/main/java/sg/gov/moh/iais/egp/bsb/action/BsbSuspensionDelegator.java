@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APPROVAL_STATUS_SUSPENDED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 
 /**
@@ -25,7 +27,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 @Slf4j
 @Delegator("bsbSuspensionDelegator")
 public class BsbSuspensionDelegator {
-    private static final String MODULE_NAME = "Suspension";
+    private static final String SUSPENSION_MODULE_NAME = "Suspension";
+    private static final String REINSTATEMENT_MODULE_NAME = "Reinstatement";
     private static final String ACTION_TYPE_SAVE = "doSave";
     private static final String ACTION_TYPE_PREPARE = "prepare";
     private static final String ACTION_TYPE_NEXT = "doNext";
@@ -43,7 +46,8 @@ public class BsbSuspensionDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+        AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, null);
+        AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, null);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, null);
         ParamUtil.setSessionAttr(request,BACK,null);
     }
@@ -55,12 +59,12 @@ public class BsbSuspensionDelegator {
         HttpServletRequest request = bpc.request;
         String from = ParamUtil.getRequestString(request, FROM);
         ParamUtil.setSessionAttr(request,FROM,null);
-        SuspensionReinstatementDto suspensionReinstatementDto = getSuspensionDto(request);
-        if (StringUtils.isEmpty(suspensionReinstatementDto.getApprovalId()) && StringUtils.isEmpty(suspensionReinstatementDto.getApplicationId())) {
+        SuspensionReinstatementDto dto = getSuspensionDto(request);
+        if (StringUtils.isEmpty(dto.getApprovalId()) && StringUtils.isEmpty(dto.getApplicationId())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
-                suspensionReinstatementDto = suspensionClient.getSuspensionDataByApprovalId(approvalId).getEntity();
+                dto = suspensionClient.getSuspensionDataByApprovalId(approvalId).getEntity();
             }
             if (from.equals(APP)) {
                 String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
@@ -73,12 +77,21 @@ public class BsbSuspensionDelegator {
                 if (taskId == null || taskId.equals(maskedTaskId)) {
                     throw new IaisRuntimeException("Invalid masked task ID");
                 }
-                suspensionReinstatementDto = suspensionClient.getSuspensionDataByApplicationId(appId).getEntity();
-                suspensionReinstatementDto.setTaskId(taskId);
+                dto = suspensionClient.getSuspensionDataByApplicationId(appId).getEntity();
+                dto.setTaskId(taskId);
             }
         }
+        setModuleType(dto);
         ParamUtil.setSessionAttr(request,BACK,from);
-        ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, suspensionReinstatementDto);
+        ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
+    }
+
+    private void setModuleType(SuspensionReinstatementDto dto){
+        if (dto.getApprovalStatus().equals(APPROVAL_STATUS_SUSPENDED)){
+            AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, REINSTATEMENT_MODULE_NAME);
+        }else {
+            AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, SUSPENSION_MODULE_NAME);
+        }
     }
 
     public void doSuspensionValidate(BaseProcessClass bpc) {
@@ -87,15 +100,19 @@ public class BsbSuspensionDelegator {
         SuspensionReinstatementDto dto = getSuspensionDto(request);
         dto.getDOSuspensionData(request);
         //validation
-        String actionType = "";
-        ValidationResultDto validationResultDto = suspensionClient.validateSuspensionDto(dto);
-        if (!validationResultDto.isPass()){
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
-            actionType = ACTION_TYPE_PREPARE;
+        if (dto.getApprovalProcessType().equals(PROCESS_TYPE_FAC_CERTIFIER_REG)){
+            validateData(dto,request);
         }else {
-            actionType = ACTION_TYPE_NEXT;
+            String actionType = "";
+            ValidationResultDto validationResultDto = suspensionClient.validateSuspensionDto(dto);
+            if (!validationResultDto.isPass()) {
+                ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+                actionType = ACTION_TYPE_PREPARE;
+            } else {
+                actionType = ACTION_TYPE_NEXT;
+            }
+            ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
         }
-        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
 

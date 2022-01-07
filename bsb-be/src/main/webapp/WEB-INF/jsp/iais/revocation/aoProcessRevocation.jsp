@@ -77,6 +77,7 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
+                                                                    <%--@elvariable id="revokeDto" type="sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
@@ -130,18 +131,20 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <iais:select name="aoDecision"
-                                                                                             id="aoDecision"
-                                                                                             value="${revokeDto.aoDecision}"
-                                                                                             codeCategory="CATE_ID_BSB_PROCESSING_DECISION"
-                                                                                             firstOption="Please Select"/>
+                                                                                <select name="aoDecision" id="aoDecision">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${revokeDto.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${revokeDto.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                    <option value="MOHPRO008" <c:if test="${revokeDto.aoDecision eq 'MOHPRO008'}">selected = 'selected'</c:if>>Route Back to DO</option>
+                                                                                    <option value="MOHPRO009" <c:if test="${revokeDto.aoDecision eq 'MOHPRO009'}">selected = 'selected'</c:if>>Route to HM</option>
+                                                                                </select>
                                                                                 <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
-                                                                <div align="right">
+                                                                <div style="text-align: right">
                                                                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>

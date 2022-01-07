@@ -10,7 +10,7 @@
                         <th scope="col" style="display: none"></th>
                     </tr>
                     <tr>
-                        <td class="col-xs-6" style="text-align: right">Active Approval No. to be revoked</td>
+                        <td class="col-xs-6" style="text-align: right">Approval No.</td>
                         <td style="padding-left : 20px">${suspensionReinstatementDto.approvalNo}</td>
                     </tr>
                     <tr>

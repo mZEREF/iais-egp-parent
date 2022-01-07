@@ -2,9 +2,12 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -13,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.*;
+import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -26,6 +30,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.action.AORevocationDelegator.setRevocationDoc;
@@ -58,19 +63,19 @@ public class DORevocationDelegator {
         AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
         ParamUtil.setSessionAttr(request,BACK,null);
+        ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
     }
 
     /**
      * AutoStep: prepareData
-     * Temporarily disabled
-     * enter from Biosafety enquiry
      * approval list
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
+        selectOption(request, "facilityName", facNames);
         EnquiryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
         // call API to get searched data
@@ -87,25 +92,55 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSearch
-     * Temporarily disabled
      */
-    public void doSearch(BaseProcessClass bpc) {
+    public void doSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
         EnquiryDto searchDto = getSearchDto(request);
         searchDto.clearAllFields();
-        String approvalStatus = ParamUtil.getString(request, PARAM_APPROVAL_STATUS);
-        String approvalNo = ParamUtil.getString(request, PARAM_APPROVAL_NO);
-        searchDto.setApprovalStatus(approvalStatus);
-        searchDto.setApprovalNo(approvalNo);
+        addApprovalFilter(request,searchDto);
         searchDto.setPage(0);
 
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
     }
 
+    private void addApprovalFilter(HttpServletRequest request, EnquiryDto enquiryDto) throws ParseException {
+        String facilityName = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_FACILITY_NAME);
+        String facilityAddress = ParamUtil.getString(request,"facilityAddress");
+        String[] facilityClassifications = ParamUtil.getStrings(request, BioSafetyEnquiryConstants.PARAM_FACILITY_CLASSIFICATION);
+        String approvalNo = ParamUtil.getString(request, PARAM_APPROVAL_NO);
+        String approvalStatus = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_STATUS);
+        String approvalType = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_TYPE);
+        Date approvedDateFrom = Formatter.parseDate(ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_FROM));
+        Date approvedDateTo = Formatter.parseDate(ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_TO));
+        if (StringUtil.isNotEmpty(facilityName)) {
+            enquiryDto.setFacilityName(facilityName);
+        }
+        if (StringUtil.isNotEmpty(facilityAddress)) {
+            enquiryDto.setFacilityAddress(facilityAddress);
+        }
+        if (facilityClassifications != null && facilityClassifications.length > 0) {
+            enquiryDto.setFacilityClassifications(Arrays.asList(facilityClassifications));
+        }
+        if (StringUtil.isNotEmpty(approvalNo)) {
+            enquiryDto.setApprovalNo(approvalNo);
+        }
+        if (StringUtil.isNotEmpty(approvalStatus)) {
+            enquiryDto.setApprovalStatus(approvalStatus);
+        }
+        if (StringUtil.isNotEmpty(approvalType)) {
+            enquiryDto.setApprovalType(approvalType);
+        }
+        if (approvedDateFrom != null) {
+            enquiryDto.setApprovedDateFrom(approvedDateFrom);
+        }
+        if (approvedDateTo != null) {
+            enquiryDto.setApprovedDateTo(approvedDateTo);
+        }
+    }
+
     /**
      * AutoStep: doPaging
-     * Temporarily disabled
      */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -130,7 +165,6 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSorting
-     * Temporarily disabled
      */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -303,5 +337,13 @@ public class DORevocationDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
         }
+    }
+
+    public void selectOption(HttpServletRequest request, String name, List<String> strings) {
+        List<SelectOption> selectModel = new ArrayList<>(strings.size());
+        for (String string : strings) {
+            selectModel.add(new SelectOption(string, string));
+        }
+        ParamUtil.setRequestAttr(request, name, selectModel);
     }
 }

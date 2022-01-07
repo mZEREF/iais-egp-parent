@@ -29,30 +29,62 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                                           data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>
                             <p></p>
+                            <%--@elvariable id="facilitySearch" type="sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto"--%>
                             <div id="beInboxFilter" class="collapse intranet-content">
                                 <iais:row>
-                                    <iais:field value="Approval Status"/>
-                                    <iais:value width="18">
-                                        <iais:select name="approvalStatus" id="approvalStatus"
-                                                     value="${facilitySearch.approvalStatus}"
-                                                     codeCategory="CATE_ID_BSB_APPROVAL_STATUS"
-                                                     firstOption="Please Select"/>
-                                    </iais:value>
+                                    <iais:field value="Facility Name"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select id="facilityName" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facilitySearch.facilityName}"/>
+                                    </div>
                                 </iais:row>
-
+                                <iais:row>
+                                    <iais:field value="Facility Address"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <input type="text" name="facilityAddress" id="facilityAddress" value="${facilitySearch.facilityAddress}">
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Facility Classification"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select id="facilityClassification" name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" multiSelect="true" multiValues="${facilitySearch.facilityClassifications}"/>
+                                    </div>
+                                </iais:row>
                                 <iais:row>
                                     <iais:field value="Approval No"/>
-                                    <iais:value width="18">
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
                                         <input type="text" name="approvalNo" id="approvalNo" value="${facilitySearch.approvalNo}">
-                                    </iais:value>
+                                    </div>
                                 </iais:row>
-
+                                <iais:row>
+                                    <iais:field value="Approval Status"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select name="approvalStatus" id="approvalStatus" value="${facilitySearch.approvalStatus}" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select"/>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Process Type"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${facilitySearch.approvalType}"/>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Approved Date From"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:datePicker name="approvedDateFrom" dateVal="${facilitySearch.approvedDateFrom}"></iais:datePicker>
+                                    </div >
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Approved Date To"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:datePicker name="approvedDateTo" dateVal="${facilitySearch.approvedDateTo}"></iais:datePicker>
+                                        <span id="error_approvedDateTo" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div >
+                                </iais:row>
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">
                                         Clear

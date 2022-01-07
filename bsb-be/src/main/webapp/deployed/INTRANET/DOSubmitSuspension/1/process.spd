@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="DOSubmitSuspension" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="preData" x="220" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preData_OnStepProcess_0" name="preData_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preData_OnStepProcess_0" name="preData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doValidate" x="500" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doValidate_OnStepProcess_0" name="doValidate_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doValidate_OnStepProcess_0" name="doValidate_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="submit" x="1060" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SubmitSuspensionPage" stageIndicator="" x="300" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1170" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="UpdateInventoryPage" stageIndicator="" x="740" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
    <position>{(120,120)(240,120)}</position>
@@ -83,23 +83,28 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(980,120)(243,230)(240,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(660,120)(1080,226)(1080,120)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="640" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preData" value="&quot;prepare&quot;"/>
-   <SwitchCase component="/Pages/WebPage/UpdateInventoryPage" value="&quot;doNext&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/preData" value="&quot;prepare&quot;" />
+   <SwitchCase component="/Pages/WebPage/UpdateInventoryPage" value="&quot;doNext&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSave&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="960" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSave&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preData" value="&quot;doBack&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSave&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/preData" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
- <Branches/>
- <Merges/>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

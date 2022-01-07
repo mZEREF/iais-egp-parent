@@ -7,7 +7,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author tangtang
@@ -40,4 +45,16 @@ public interface SuspensionClient {
 
     @PostMapping(value = "/bsbSuspension/hmReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> hmReinstatement(@RequestBody SuspensionReinstatementDto dto);
+
+    @GetMapping(value = "/bsbSuspension/job/needRemindApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, List<ApprovalDto>>> getNeedRemindApproval(@RequestBody Map<String, LocalDate> dateMap);
+
+    @GetMapping(value = "/bsbSuspension/job/needSuspendApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApprovalDto>> getNeedSuspendApprovals();
+
+    @GetMapping(value = "/bsbSuspension/job/needReinstateApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApprovalDto>> getNeedReinstateApprovals();
+
+    @PostMapping(value = "/bsbSuspension/job/allNeedUpdate", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateAllNeedUpdateApproval(@RequestBody Map<String, List<ApprovalDto>> map);
 }

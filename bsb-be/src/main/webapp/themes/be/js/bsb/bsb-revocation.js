@@ -31,8 +31,16 @@ $(function () {
     });
 
     $("#clearBtn").click(function () {
-        $("#approvalStatus option:first").prop("selected",'selected');
-        $("#approvalNo").val("");
+        $('input[type="text"]').val("");
+        $("#beInboxFilter input[type='checkbox']").prop('checked', false);
+        $("#beInboxFilter .multi-select-button").html("-- Select --");
+        $("#facilityClassification option").prop('selected',false);
+        $("select[name = 'facilityName'] option:first").prop("selected",'selected');
+        $("select[name = 'processType'] option:first").prop("selected",'selected');
+        $("select[name = 'approvalType'] option:first").prop("selected",'selected');
+        $("select[name = 'approvalStatus'] option:first").prop("selected",'selected');
+        $("input[name = 'approvedDateFrom']").val("");
+        $("input[name = 'approvedDateTo']").val("");
         $("#beInboxFilter .current").text("Please Select");
     });
     // DO submit revocation

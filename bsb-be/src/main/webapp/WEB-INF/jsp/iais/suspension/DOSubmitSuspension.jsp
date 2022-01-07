@@ -98,6 +98,22 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    <c:if test="${suspensionReinstatementDto.approvalProcessType eq 'PROTYPE005'}">
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Suspension Type" required="true"/>
+                                                                            <iais:value width="10">
+                                                                                <select id="suspensionType" name="suspensionType">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="SUSPTY002" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY002'}">selected="selected"</c:if>>Suspended (pending investigation)</option>
+                                                                                    <option value="SUSPTY004" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY004'}">selected="selected"</c:if>>Suspended (others)</option>
+                                                                                </select>
+                                                                                <span data-err-ind="suspensionType" class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    </c:if>
+                                                                    <c:if test="${suspensionReinstatementDto.approvalProcessType ne 'PROTYPE005'}">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Type" required="true"/>
@@ -113,6 +129,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Start Date" required="true"/>
@@ -176,7 +193,12 @@
                                                                             <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                         </c:if>
                                                                 <div style="text-align: right">
-                                                                    <button id="nextBtn" class="btn btn-primary">Update Inventory</button>
+                                                                    <c:if test="${suspensionReinstatementDto.approvalProcessType eq 'PROTYPE005'}">
+                                                                        <button id="submitBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                    </c:if>
+                                                                    <c:if test="${suspensionReinstatementDto.approvalProcessType ne 'PROTYPE005'}">
+                                                                        <button id="nextBtn" class="btn btn-primary">Update Inventory</button>
+                                                                    </c:if>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
