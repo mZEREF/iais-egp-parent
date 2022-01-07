@@ -1468,7 +1468,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setCharity(isCharity);
                 if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     String licenceId = appSubmissionDto.getLicenceId();
-                    Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
+                    LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
+                    Date licExpiryDate = licenceDto.getExpiryDate();
                     licenceFeeDto.setExpiryDate(licExpiryDate);
                     licenceFeeDto.setLicenceId(licenceId);
                 }
@@ -1660,9 +1661,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setOldLicenceId(licenceDto.getId());
                                 licenceFeeDto.setMigrated(migrated);
                             }
+                            Date licExpiryDate = licenceDto.getExpiryDate();
+                            licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
-                        Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
-                        licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     //set bundle
@@ -1834,9 +1835,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setOldLicenceId(licenceDto.getId());
                                 licenceFeeDto.setMigrated(migrated);
                             }
+                            Date licExpiryDate = licenceDto.getExpiryDate();
+                            licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
-                        Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
-                        licenceFeeDto.setExpiryDate(licExpiryDate);
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     linenceFeeQuaryDtos.add(licenceFeeDto);
