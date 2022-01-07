@@ -20,7 +20,7 @@
 </style>
 
 <%-- current page: ack --%>
-
+<c:set var="title" value="Withdrawal From" />
 <%@ include file="../assistedReproduction/common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <label class="col-xs-12" style="font-size: 20px">Withdrawal successful</label>
-                <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
+                <p class="col-xs-12 margin-btm"></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
                     <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>

@@ -65,12 +65,10 @@ public class ArWithdrawalDelegator {
         newDto.setOrgId(orgId);
         newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         DataSubmissionDto dataSubmissionDto = DataSubmissionHelper.initDataSubmission(newDto, true);
-        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
-            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
-        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
-            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
-        }
+        dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         dataSubmissionDto.setDeclaration(null);
+        dataSubmissionDto.setSubmissionType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+        dataSubmissionDto.setCycleStage("");
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
         DataSubmissionHelper.setCurrentArDataSubmission(newDto,bpc.request);
@@ -79,20 +77,22 @@ public class ArWithdrawalDelegator {
 
     public void withdrawalStep(BaseProcessClass bpc)  {
 
+        ParamUtil.setRequestAttr(bpc.request,"isValidate","Y");
+
     }
 
     public void saveDate(BaseProcessClass bpc)  {
-        List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-        for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
-             ) {
-            arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
-            try {
-                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-            }
-        }
+//        List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+//        for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
+//             ) {
+//            arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+//            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
+//            try {
+//                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
+//            } catch (Exception e) {
+//                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+//            }
+//        }
 
 
         ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -112,9 +112,9 @@ public class ArWithdrawalDelegator {
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
-        ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+        ParamUtil.setSessionAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_WD);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKWD);
     }
 
     public void printStep(BaseProcessClass bpc)  {
