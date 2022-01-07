@@ -236,7 +236,7 @@ public class ArCycleStagesManualDelegator {
         dataSubmission.setCycleStage(stage);
         currentSuper.setDataSubmissionDto(dataSubmission);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
-                hciCode);
+                hciCode, null);
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
