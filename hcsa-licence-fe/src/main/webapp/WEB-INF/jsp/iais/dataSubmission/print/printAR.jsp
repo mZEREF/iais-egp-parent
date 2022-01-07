@@ -97,6 +97,4 @@
 <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_002'}">
     <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
 </c:if>
-<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-    <%@include file="../assistedReproduction/common/dsAmendment.jsp" %>
-</c:if>
+<%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>

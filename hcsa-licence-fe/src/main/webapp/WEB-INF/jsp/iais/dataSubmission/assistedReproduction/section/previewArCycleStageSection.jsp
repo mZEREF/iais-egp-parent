@@ -137,7 +137,7 @@
                     </label>
                     </c:if>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.enhancedCounselling == null ? 'NA' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
+                        <c:out value="${arCycleStageDto.enhancedCounselling == null ? '' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
 
