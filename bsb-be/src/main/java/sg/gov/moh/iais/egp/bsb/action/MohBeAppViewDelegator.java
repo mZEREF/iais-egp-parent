@@ -11,12 +11,12 @@ import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ResponseConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -38,7 +38,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 @Delegator
 @Slf4j
 public class MohBeAppViewDelegator {
-    public static final String KEY_APPLICATION_DTO                           = "applicationDto";
+    public static final String KEY_APP_VIEW_DTO                              = "appViewDto";
 
     private static final String MODULE_NAME                                  = "MohBeAppView";
     private static final String FUNCTION_NAME                                = "MohBeAppView";
@@ -77,10 +77,10 @@ public class MohBeAppViewDelegator {
 
     public void prepareViewForm(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ApplicationDto applicationDto = (ApplicationDto) ParamUtil.getSessionAttr(request, KEY_APPLICATION_DTO);
-        if (applicationDto != null){
-            String applicationId = applicationDto.getId();
-            String processType = applicationDto.getProcessType();
+        AppViewDto appViewDto = (AppViewDto) ParamUtil.getSessionAttr(request, KEY_APP_VIEW_DTO);
+        if (appViewDto != null){
+            String applicationId = appViewDto.getApplicationId();
+            String processType = appViewDto.getProcessType();
             switch (processType) {
                 case PROCESS_TYPE_FAC_REG:
                     retrieveFacReg(request, applicationId);

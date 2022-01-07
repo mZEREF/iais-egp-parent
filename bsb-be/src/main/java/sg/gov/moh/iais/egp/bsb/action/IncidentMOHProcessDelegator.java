@@ -10,7 +10,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 
-import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.MODULE_NAME;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME;
 
 /**
  * @author YiMing

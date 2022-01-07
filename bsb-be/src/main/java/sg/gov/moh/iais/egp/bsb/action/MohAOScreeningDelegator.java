@@ -11,13 +11,19 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.process.AOScreeningDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
-import sg.gov.moh.iais.egp.bsb.dto.process.SubmitDetailsDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.YES;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_CRUD_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.MASK_PARAM_ID;
 
 /**
  * @author : LiRan
@@ -27,7 +33,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
 @Slf4j
 public class MohAOScreeningDelegator {
     private static final String FUNCTION_NAME = "AO Screening";
-    private static final String PROCESS_FLOW = "AOScreening";
 
     private final ProcessClient processClient;
 
@@ -38,49 +43,40 @@ public class MohAOScreeningDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_SUBMIT_DETAILS_DTO);
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
-        request.getSession().removeAttribute(KEY_APPROVAL_PROFILE_LIST);
-        request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
-        request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
-        request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
-        request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APPLICATION_DTO);
+        request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APP_VIEW_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String maskedAppId = request.getParameter(KEY_APP_ID);
-        String maskedTaskId = request.getParameter(KEY_TASK_ID);
+        String maskedAppId = request.getParameter(PARAM_NAME_APP_ID);
+        String maskedTaskId = request.getParameter(PARAM_NAME_TASK_ID);
         if (StringUtils.hasLength(maskedAppId) && StringUtils.hasLength(maskedTaskId)){
             if (log.isInfoEnabled()) {
                 log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
                 log.info("masked task ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedTaskId));
             }
-            boolean failLoadSubmitDetailsData = true;
-            String appId = MaskUtil.unMaskValue(KEY_ID, maskedAppId);
-            String taskId = MaskUtil.unMaskValue(KEY_ID, maskedTaskId);
+            boolean failLoadData = true;
+            String appId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedAppId);
+            String taskId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedTaskId);
             if (appId != null && taskId != null){
-                ResponseDto<SubmitDetailsDto> submitDetailsDtoResponseDto = processClient.getSubmitDetailsByAppId(appId);
-                if (submitDetailsDtoResponseDto.ok()){
-                    failLoadSubmitDetailsData = false;
-                    SubmitDetailsDto submitDetailsDto = submitDetailsDtoResponseDto.getEntity();
-                    ParamUtil.setSessionAttr(request, KEY_SUBMIT_DETAILS_DTO, submitDetailsDto);
-
-                    ParamUtil.setSessionAttr(request, LAST_DO_APPLICATION_MISC, submitDetailsDto.getApplicationMiscDtoMap().get("DO"));
-                    ParamUtil.setSessionAttr(request, LAST_HM_APPLICATION_MISC, submitDetailsDto.getApplicationMiscDtoMap().get("HM"));
-
-                    MohProcessDto mohProcessDto = new MohProcessDto();
-                    mohProcessDto.setProcessFlow(PROCESS_FLOW);
-                    mohProcessDto.setProcessType(submitDetailsDto.getApplicationDto().getProcessType());
-                    mohProcessDto.setAppId(appId);
+                ResponseDto<MohProcessDto> mohProcessDtoResponseDto = processClient.getAOScreeningDataByAppId(appId);
+                if (mohProcessDtoResponseDto.ok()){
+                    failLoadData = false;
+                    MohProcessDto mohProcessDto = mohProcessDtoResponseDto.getEntity();
                     mohProcessDto.setTaskId(taskId);
+                    mohProcessDto.setApplicationId(appId);
                     ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
-
-                    ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APPLICATION_DTO, submitDetailsDto.getApplicationDto());
+                    //view application process need an applicationDto
+                    AppViewDto appViewDto = new AppViewDto();
+                    appViewDto.setApplicationId(appId);
+                    appViewDto.setProcessType(mohProcessDto.getSubmitDetailsDto().getProcessType());
+                    appViewDto.setAppType(mohProcessDto.getSubmitDetailsDto().getAppType());
+                    ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APP_VIEW_DTO, appViewDto);
                 }
             }
-            if (failLoadSubmitDetailsData) {
+            if (failLoadData) {
                 throw new IaisRuntimeException(ERR_MSG_FAIL_LOAD_SUBMIT_DETAILS);
             }
         }
@@ -89,26 +85,29 @@ public class MohAOScreeningDelegator {
     public void prepareSwitch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
-        mohProcessDto.reqObjMapping(request);
+        AOScreeningDto aoScreeningDto = mohProcessDto.getAoScreeningDto();
+        aoScreeningDto.reqObjMapping(request);
+        mohProcessDto.setAoScreeningDto(aoScreeningDto);
 
         //validation
-        String crudActionType = "";
-        ValidationResultDto validationResultDto = processClient.validateMohProcessDto(mohProcessDto);
+        String crudActionType;
+        ValidationResultDto validationResultDto = processClient.validateAOScreeningDto(aoScreeningDto);
         if (!validationResultDto.isPass()){
-            String doProcess = "Y";
-            ParamUtil.setRequestAttr(request, MOH_PROCESS, doProcess);
+            ParamUtil.setRequestAttr(request, MOH_PROCESS_PAGE_VALIDATION, YES);
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             crudActionType = CRUD_ACTION_TYPE_PREPARE;
         }else {
             crudActionType = CRUD_ACTION_TYPE_PROCESS;
         }
-        ParamUtil.setRequestAttr(request, CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(request, KEY_CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
     }
 
     public void process(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
-        processClient.saveMohProcess(mohProcessDto);
+        //decision: SCREENED_BY_DO, REQUEST_FOR_INFORMATION, REJECT
+        processClient.saveAOScreening(mohProcessDto);
+        //If the processDecision is reject and the application is saved normally, send the notification to applicant
     }
 }

@@ -25,13 +25,13 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
-                                                    <c:if test="${applicationDto.appType eq 'BSBAPTY001' and applicationDto.processType eq 'PROTYPE001'}">
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE001'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/facility/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${applicationDto.appType eq 'BSBAPTY001' and (applicationDto.processType eq 'PROTYPE002' or applicationDto.processType eq 'PROTYPE003' or applicationDto.processType eq 'PROTYPE004')}">
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/approval/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${applicationDto.appType eq 'BSBAPTY001' and applicationDto.processType eq 'PROTYPE005'}">
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE005'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/afc/view.jsp" %>
                                                     </c:if>
                                                 </div>

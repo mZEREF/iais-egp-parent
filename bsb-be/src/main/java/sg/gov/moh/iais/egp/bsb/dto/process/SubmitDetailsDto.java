@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationMiscDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
@@ -11,9 +10,11 @@ import java.util.Map;
 
 @Data
 public class SubmitDetailsDto implements Serializable {
-    //submission details
-    private ApplicationDto applicationDto;
-
+    private String applicationNo;
+    private String appType;
+    private String processType;
+    private String applicationDate;
+    private String status;
     private String activityType;
     private String facilityName;
     private String blkNo;
