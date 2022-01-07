@@ -18,9 +18,14 @@
             <%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
         </c:if>
     </c:when>
+    <c:when test="${cycleStage == 'DONOR'}">
+        <%-- Donor Sample--%>
+        <%@include file="../assistedReproduction/section/previewArSubmitDonorSection.jsp" %>
+    </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
         <%@include file="../assistedReproduction/section/previewDonorSection.jsp" %>
     </c:when>
+
     <c:when test="${cycleStage == 'AR_CL001'}">
         <%-- AR_CYCLE_AR--%>
         <%@include file="../assistedReproduction/section/previewArCycleStageSection.jsp" %>
@@ -97,6 +102,7 @@
         <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
+
 </c:choose>
 <c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
