@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
@@ -27,8 +28,13 @@ public class TemplateValidate implements CustomizeValidator {
                 errMap.put("toRecipients", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
             }
         }
-        if(msgTemplateDto.getTemplateName() == null){
+        if(StringUtil.isEmpty(msgTemplateDto.getTemplateName())){
             errMap.put("templateName", MessageUtil.replaceMessage("GENERAL_ERR0006","Template Name","field"));
+        } else if(msgTemplateDto.getTemplateName().length()>500){
+            Map<String, String> repMap = IaisCommonUtils.genNewHashMap(3);
+            repMap.put("number","500");
+            repMap.put("fieldNo","Template Name");
+            errMap.put("templateName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(msgTemplateDto.getEffectiveFrom() == null){
             errMap.put("effectiveFrom", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
@@ -36,14 +42,6 @@ public class TemplateValidate implements CustomizeValidator {
         if(msgTemplateDto.getEffectiveTo() == null){
             errMap.put("effectiveTo", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
         }
-        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-
-        if(msgTemplateDto.getTemplateName().length()>500){
-            repMap.put("number","500");
-            repMap.put("fieldNo","Template Name");
-            errMap.put("templateName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-        }
-
         return errMap;
     }
 }

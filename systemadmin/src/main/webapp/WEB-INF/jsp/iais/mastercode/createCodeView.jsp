@@ -73,7 +73,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeCategoryRemarks">Remark</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeCategoryRemarks">Remarks</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <form><textarea style="width: 100%" rows="6" id="codeCategoryRemarks"  name="codeCategoryRemarks" maxlength="255">${param.codeCategoryRemarks}</textarea></form>
                             </div>

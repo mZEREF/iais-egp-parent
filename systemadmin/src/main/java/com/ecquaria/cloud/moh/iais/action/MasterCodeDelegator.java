@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
@@ -47,7 +48,14 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +75,8 @@ public class MasterCodeDelegator {
 
     private final MasterCodeService masterCodeService;
 
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService) {
@@ -104,7 +113,7 @@ public class MasterCodeDelegator {
         List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getAllCodeCategory();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
-                ) {
+        ) {
             mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCategoryDescription(), masterCodeCategoryDto.getCategoryDescription()));
         }
         ParamUtil.setRequestAttr(bpc.request, "allCodeCategory", mcCategorySelectList);
@@ -115,7 +124,7 @@ public class MasterCodeDelegator {
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
         List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
         for (MasterCodeQueryDto masterCodeQueryDto : masterCodeQueryDtoList
-                ) {
+        ) {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
@@ -242,7 +251,7 @@ public class MasterCodeDelegator {
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
@@ -375,7 +384,9 @@ public class MasterCodeDelegator {
         SearchResult<MasterCodeQueryDto> searchResult = masterCodeService.doQuery(searchParam);
         searchResult.getRows().forEach(h ->{
             MasterCodeToExcelDto mct = new MasterCodeToExcelDto();
-            mct.setCodeCategory(h.getCodeCategory());
+            String category = h.getCodeCategory();
+            MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            mct.setCodeCategory(masterCodeCategoryDto.getCategoryDescription());
             mct.setSequence(String.valueOf(h.getSequence() / 1000));
             mct.setCodeDescription(h.getCodeDescription());
             mct.setFilterValue(h.getFilterValue());
@@ -457,6 +468,20 @@ public class MasterCodeDelegator {
             boolean result = false;
             List<Map<String,Set<String>>> errResult = IaisCommonUtils.genNewArrayList();
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+                if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getRemakes())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getSequence())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getStatus())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getVersion())&&
+                        masterCodeToExcelDto.getEffectiveFrom()==null&&
+                        masterCodeToExcelDto.getEffectiveTo()==null
+                ){
+                    continue;
+                }
                 Map<String,Set<String>> errMap = IaisCommonUtils.genNewHashMap();
                 Set<String> errItems = IaisCommonUtils.genNewHashSet();
                 Date codeEffFrom = null;
@@ -470,6 +495,12 @@ public class MasterCodeDelegator {
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())){
                     String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Description","field");
                     errItems.add(errMsg);
+                    result = true;
+                }else if(masterCodeToExcelDto.getCodeDescription().length() >255) {
+                    Map<String,String> stringMap = new HashMap<>(2);
+                    stringMap.put("field","Code Description");
+                    stringMap.put("maxlength","255");
+                    errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
@@ -535,6 +566,20 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (codeEffFrom != null && codeEffTo != null){
+                    if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffFrom.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
+                    if ("Active".equals(masterCodeToExcelDto.getStatus())){
+                        if (codeEffTo.before(new Date())){
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
+                            errItems.add(errMsg);
+                            result = true;
+                        }
+                    }
                     if (codeEffFrom.compareTo(codeEffTo) >= 0) {
                         String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                         errItems.add(errMsg);
@@ -556,6 +601,19 @@ public class MasterCodeDelegator {
                     cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue())
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
+                List<String> codeValueNewList = IaisCommonUtils.genNewArrayList();
+                AtomicInteger count= new AtomicInteger();
+                masterCodeToExcelDtoList.forEach(h -> {
+                    codeValueNewList.add(h.getCodeValue());
+                    if(masterCodeToExcelDto.getCodeValue().equals(h.getCodeValue())){
+                        count.getAndIncrement();
+                    }
+                });
+                if(count.get()>1){
+                    errItems.add(MessageUtil.getMessageDesc("CHKL_ERR047"));
+                    result = true;
+                }
+
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
@@ -571,19 +629,18 @@ public class MasterCodeDelegator {
                             errItems.add(errMsg);
                             result = true;
                         }
-                    }else{
-                        List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                        masterCodeToExcelDtos.forEach(h -> {
-                            codeValueList.add(h.getCodeValue());
-                        });
-                        if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                            String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
-                            errItems.add(errMsg);
-                            result = true;
-                        }
+                    }
+
+                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                    masterCodeToExcelDtos.forEach(h -> {
+                        codeValueList.add(h.getCodeValue());
+                    });
+                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
+                        errItems.add(errMsg);
+                        result = true;
                     }
                 }
-                String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
@@ -593,14 +650,15 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        errItems.add(err0006Msg);
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR011");
+                        errItems.add(errMsg);
                         result = true;
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
                     String uploadVersion = masterCodeToExcelDto.getVersion();
                     if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                        errItems.add(err0006Msg);
+                        errItems.add(MessageUtil.getMessageDesc("GENERAL_ERR0027"));
                         result = true;
                     }else {
                         if(uploadVersion.length() > 4){
@@ -636,10 +694,10 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
-                if( !StringUtil.isEmpty(masterCodeToExcelDto.getRemakes()) && masterCodeToExcelDto.getRemakes().length() >256){
+                if( !StringUtil.isEmpty(masterCodeToExcelDto.getRemakes()) && masterCodeToExcelDto.getRemakes().length() >255){
                     Map<String,String> stringMap = new HashMap<>(2);
                     stringMap.put("field","Remarks");
-                    stringMap.put("maxlength","256");
+                    stringMap.put("maxlength","255");
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
@@ -658,9 +716,28 @@ public class MasterCodeDelegator {
                 Date date = new Date();
                 String dateStr = Formatter.formatDateTime(date);
                 String dateReplace = dateStr.replace(" "," at ");
-                String ackMsg = MessageUtil.replaceMessage("ACKMCM004","Date",dateReplace);
+                String ackMsg = MessageUtil.replaceMessage("ACKMCM004",dateReplace,"Date");
                 ParamUtil.setRequestAttr(request,"UPLOAD_ACKMSG",ackMsg);
-                masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                List<MasterCodeToExcelDto> masterCodeToExcelDtoSaveList=IaisCommonUtils.genNewArrayList();
+                for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+                    if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getRemakes())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getSequence())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getStatus())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getVersion())&&
+                            masterCodeToExcelDto.getEffectiveFrom()==null&&
+                            masterCodeToExcelDto.getEffectiveTo()==null
+                    ){
+                        continue;
+                    }
+                    masterCodeToExcelDtoSaveList.add(masterCodeToExcelDto);
+                }
+                List<MasterCodeDto> syncMasterCodeList =masterCodeService.saveMasterCodeList(masterCodeToExcelDtoSaveList);
+                masterCodeService.syncMasterCodeFe(syncMasterCodeList);
             }
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
@@ -677,8 +754,7 @@ public class MasterCodeDelegator {
 
     private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
         if (!StringUtil.isEmpty(originalFilename)) {
-            String[] split = originalFilename.split("\\.");
-            if (split[0].length() > 100) {
+            if (originalFilename.length() > 100) {
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
                 errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -764,7 +840,7 @@ public class MasterCodeDelegator {
         List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getCodeCategoryIsEdit();
         List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
         for (MasterCodeCategoryDto masterCodeCategoryDto : masterCodeCategoryDtoList
-                ) {
+        ) {
             mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCodeCategory(), masterCodeCategoryDto.getCategoryDescription()));
         }
         ParamUtil.setRequestAttr(bpc.request, "codeCategory", mcCategorySelectList);
@@ -848,7 +924,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
@@ -992,7 +1068,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
+                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
@@ -1220,7 +1296,8 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0022");
+            String errMsg= MessageUtil.replaceMessage("GENERAL_ERR0043", String.valueOf(systemParamConfig.getUploadFileLimit()),"configNum");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
