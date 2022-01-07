@@ -82,6 +82,9 @@
                     <c:when test="${printflag == 'LDT'}">
                         <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printLDT.jsp" />
                     </c:when>
+                    <c:when test="${printflag == 'TOP'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printTOP.jsp" />
+                    </c:when>
                     </c:choose>
 
                 </div>
