@@ -35,13 +35,13 @@
   </tr>
   <tr>
     <th scope="col">Current</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenOocytes}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedOocytes}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshOocytes}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenEmbryos}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedEmbryos}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshEmbryos}</th>
-    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenSperms}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeThawedOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeFreshOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeThawedEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeFreshEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenSperms + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenSperms}</th>
   </tr>
   </tbody>
 </table>
