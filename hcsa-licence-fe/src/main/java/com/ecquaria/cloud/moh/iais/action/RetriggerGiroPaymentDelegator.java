@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -369,6 +370,7 @@ public class RetriggerGiroPaymentDelegator {
                         List<AppGrpPremisesDto> onePremisesDto = getOnePremisesListById(appGrpPremisesDtos,appSvcRelatedInfoDto.getAlignPremisesId());
                         oneSvcSubmisonDto.setAppGrpPremisesDtoList(onePremisesDto);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                            oneSvcSubmisonDto.setAmountStr("$0");
                             rfcAppSubmissionDtos.add(oneSvcSubmisonDto);
                         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                             renewSubmisonDtos.add(oneSvcSubmisonDto);
@@ -386,6 +388,16 @@ public class RetriggerGiroPaymentDelegator {
                 }
                 List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
                 WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto,bpc);
+                List<FeeExtDto> gradualFeeList = IaisCommonUtils.genNewArrayList();
+                List<FeeExtDto> normalFeeList = IaisCommonUtils.genNewArrayList();
+                HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = WithOutRenewalDelegator.getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto(),gradualFeeList,normalFeeList);
+                ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
+                if(!IaisCommonUtils.isEmpty(gradualFeeList)){
+                    ParamUtil.setRequestAttr(bpc.request, "gradualFeeList", gradualFeeList);
+                }
+                if(!IaisCommonUtils.isEmpty(normalFeeList)){
+                    ParamUtil.setRequestAttr(bpc.request, "normalFeeList", normalFeeList);
+                }
 
                 renewDto.setAppSubmissionDtos(renewSubmisonDtos);
                 bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
