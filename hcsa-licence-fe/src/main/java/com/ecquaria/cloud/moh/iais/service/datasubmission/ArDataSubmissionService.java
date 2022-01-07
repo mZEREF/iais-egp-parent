@@ -17,7 +17,7 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde);
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde, String cycleId);
 
     ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission);
 

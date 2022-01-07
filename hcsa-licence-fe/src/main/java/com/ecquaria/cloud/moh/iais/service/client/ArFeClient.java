@@ -52,10 +52,18 @@ public interface ArFeClient {
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
             @RequestParam(name = "orgId") String orgId, @RequestParam(name = "hciCode") String hciCode);
 
+    @GetMapping(value = "/data-submission/cycle-stage-selection/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(
+            @PathVariable(name = "patientCode") String patientCode,
+            @RequestParam(name = "hciCode", required = false) String hciCode,
+            @RequestParam(name = "cycleId", required = false) String cycleId);
+
     @GetMapping(value = "/ar-common/ar-data-submission/patient-code-hci-code", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(@RequestParam(name = "patientCode") String patientCode,
-            @RequestParam(name = "hciCode", required = false) String hciCode);
+    FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(
+            @RequestParam(name = "patientCode") String patientCode,
+            @RequestParam(name = "hciCode", required = false) String hciCode,
+            @RequestParam(name = "cycleId", required = false) String cycleId);
 
     @GetMapping(value = "/ar-common/ar-data-submission/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(@PathVariable("submissionNo")String submissionNo);

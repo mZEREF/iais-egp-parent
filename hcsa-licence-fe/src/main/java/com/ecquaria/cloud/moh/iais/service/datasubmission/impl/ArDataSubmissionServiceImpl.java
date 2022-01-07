@@ -138,12 +138,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCode) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCode, String cycleId) {
         if (StringUtil.isEmpty(patientCode)) {
             log.warn("----- No Patient Code -----");
             return null;
         }
-        return arFeClient.getArSuperDataSubmissionDto(patientCode, hciCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDto(patientCode, hciCode, cycleId).getEntity();
     }
 
     @Override

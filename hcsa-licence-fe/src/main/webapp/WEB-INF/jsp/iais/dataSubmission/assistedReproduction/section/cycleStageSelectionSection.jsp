@@ -51,6 +51,13 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Cycle Start Date" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:select name="cycleStartDate" options="stage_options"
+                                     value="${selectionDto.stage}" cssClass="stageSel"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row cssClass="patientData">
                     <iais:field width="5" value="Last Stage Submitted"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="lastStage">

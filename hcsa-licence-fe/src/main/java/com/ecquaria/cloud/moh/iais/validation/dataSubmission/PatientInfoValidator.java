@@ -84,6 +84,10 @@ public class PatientInfoValidator implements CustomizeValidator {
                 if (result != null && result.isHasErrors()) {
                     map.putAll(result.retrieveAll("pre", ""));
                 }
+                //DS_MSG006
+                if (!map.containsKey("preIdNumber") && StringUtil.isEmpty(previous.getId())) {
+                    map.put("preIdNumber", "DS_MSG006");
+                }
             }
             if (!"file".equals(profile)) {
                 /*boolean retrievePrevious = patientInfo.isRetrievePrevious();
