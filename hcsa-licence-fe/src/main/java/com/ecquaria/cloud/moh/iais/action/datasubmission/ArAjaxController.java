@@ -46,8 +46,8 @@ public class ArAjaxController {
     private ArDataSubmissionService arDataSubmissionService;
 
     @PostMapping(value = "/retrieve-identification")
-    public @ResponseBody
-    Map<String, Object> retrieveIdentification(HttpServletRequest request) {
+    @ResponseBody
+    public Map<String, Object> retrieveIdentification(HttpServletRequest request) {
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
@@ -77,8 +77,8 @@ public class ArAjaxController {
     }
 
     @PostMapping(value = "/retrieve-valid-selection")
-    public @ResponseBody
-    Map<String, Object> retrieveValidSelection(HttpServletRequest request) {
+    @ResponseBody
+    public Map<String, Object> retrieveValidSelection(HttpServletRequest request) {
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
@@ -87,7 +87,7 @@ public class ArAjaxController {
         dto.setPatientIdType(idType);
         dto.setPatientIdNumber(idNo);
         dto.setPatientNationality(nationality);
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult vr = WebValidationHelper.validateProperty(dto, "ART");
         if (vr != null) {
@@ -98,13 +98,13 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            String hicCode = DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode();
+            String hciCode = DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode();
             CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idType, idNo, nationality, orgId,
-                    hicCode);
+                    hciCode);
             if (dbDto != null) {
                 dto = dbDto;
             }
-            dto.setHciCode(hicCode);
+            dto.setHciCode(hciCode);
             if (StringUtil.isNotEmpty(dto.getLastStage())) {
                 dto.setLastStageDesc(MasterCodeUtil.getCodeDesc(dto.getLastStage()));
             } else {
@@ -112,14 +112,16 @@ public class ArAjaxController {
             }
             result.put("selection", dto);
         }
-        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(dto)));
+        result.put("cycleStartHtmls", DataSubmissionHelper.genCycleStartHtmls(dto.getCycleDtos()));
+        result.put("stagHtmls",
+                DataSubmissionHelper.genOptionHtmlsWithFirst(DataSubmissionHelper.getNextStageForAR(dto)));
         result.put("stage", stage);
         return result;
     }
 
+    @ResponseBody
     @PostMapping(value = "/patient-age")
-    public @ResponseBody
-    Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
+    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
         String birthDate = ParamUtil.getString(request, "birthDate");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
         result.put("modalId", ParamUtil.getString(request, "modalId"));
@@ -132,6 +134,27 @@ public class ArAjaxController {
         if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
             result.put("showAgeMsg", true);
         }
+        return result;
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/retrieve-cycle-selection")
+    public Map<String, Object> retriveCycleStageSelection(HttpServletRequest request) {
+        String cycleId = StringUtil.clarify(ParamUtil.getString(request, "cycleStart"));
+        String patientCode = ParamUtil.getString(request, "patientCode");
+        String hciCode = DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode();
+        CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientCode,
+                hciCode, cycleId);
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap();
+        selectionDto.setHciCode(hciCode);
+        if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
+            selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
+        } else {
+            selectionDto.setLastStageDesc("-");
+        }
+        result.put("selection", selectionDto);
+        result.put("stagHtmls",
+                DataSubmissionHelper.genOptionHtmlsWithFirst(DataSubmissionHelper.getNextStageForAR(selectionDto)));
         return result;
     }
 

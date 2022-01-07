@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -173,7 +175,8 @@ public final class DataSubmissionHelper {
         String latestCycle = selectionDto.getLatestCycle();
         String latestStage = selectionDto.getLatestStage();
         String additionalStage = selectionDto.getAdditionalStage();
-        return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage, lastStatus);
+        return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage,
+                selectionDto.isUndergoingCycle(), lastStatus);
     }
 
     /**
@@ -190,10 +193,10 @@ public final class DataSubmissionHelper {
      * @return
      */
     private static List<String> getNextStageForAR(String latestCycle, String latestStage, String lastCycle, String lastStage,
-            String additionalStage, String lastStatus) {
+            String additionalStage, boolean undergoingCycle, String lastStatus) {
         log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
         log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + " : " + lastStage
-                + " : " + additionalStage + " : " + lastStatus + " -----"));
+                + " : " + additionalStage + " : " + undergoingCycle + " : " + lastStatus + " -----"));
         // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
         // available stages for selection will be based on the stage prior to it
         // disposal, donation
@@ -208,9 +211,11 @@ public final class DataSubmissionHelper {
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)) {
-            result.add(DataSubmissionConsts.AR_CYCLE_AR);
-            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+            if (!undergoingCycle) {
+                result.add(DataSubmissionConsts.AR_CYCLE_AR);
+                result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+                result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+            }
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
@@ -447,14 +452,46 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
-    public static String genOptionHtmls(List<String> options) {
-        return genOptionHtmls(options, "Please Select");
+    public static boolean isNormalCycle(String cycleType) {
+        return StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.DS_CYCLE_AR,
+                DataSubmissionConsts.DS_CYCLE_IUI, DataSubmissionConsts.DS_CYCLE_EFO});
     }
 
-    public static String genOptionHtmls(List<String> options, String firstOption) {
+    public static List<SelectOption> genCycleStartOptions(List<CycleDto> cycleDtos) {
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(cycleDtos)) {
+            return opts;
+        }
+        //reverse chronological order
+        Collections.sort(cycleDtos, Comparator.comparing(CycleDto::getCreatedAt).reversed());
+        for (CycleDto cycleDto : cycleDtos) {
+            if (!isNormalCycle(cycleDto.getCycleType())) {
+                continue;
+            }
+            opts.add(new SelectOption(StringUtil.obscured(cycleDto.getId()),
+                    Formatter.formatDate(cycleDto.getCreatedAt()) + ", " + MasterCodeUtil.getCodeDesc(cycleDto.getCycleType())));
+        }
+        return opts;
+    }
+
+    public static String genCycleStartHtmls(List<CycleDto> cycleDtos) {
+        if (IaisCommonUtils.isEmpty(cycleDtos)) {
+            return "-";
+        }
         StringBuilder data = new StringBuilder();
-        List<SelectOption> opts = genOptions(options, firstOption);
-        for (SelectOption opt : opts) {
+        data.append("<select name=\"cycleStart\" id=\"cycleStart\" class=\"stageSel\" onchange=\"retriveCycleStageSelection()\">")
+                .append(genOptionHtmls(genCycleStartOptions(cycleDtos)))
+                .append("</select>");
+        return data.toString();
+    }
+
+    public static String genOptionHtmlsWithFirst(List<String> options) {
+        return genOptionHtmls(genOptions(options, "Please Select"));
+    }
+
+    public static String genOptionHtmls(List<SelectOption> options) {
+        StringBuilder data = new StringBuilder();
+        for (SelectOption opt : options) {
             data.append("<option value=\"").append(opt.getValue()).append("\">").append(opt.getText()).append("</option>");
         }
         return data.toString();

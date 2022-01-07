@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -67,12 +68,15 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
-        List<String> nextStages = null;
         if (selectionDto != null) {
-            nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            List<String> nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
+            DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos());
+            if (!IaisCommonUtils.isEmpty(selectionDto.getCycleDtos())) {
+                bpc.request.setAttribute("cycleStart_options",
+                        DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos()));
+            }
         }
-        bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
-
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Assisted Reproduction</strong>");

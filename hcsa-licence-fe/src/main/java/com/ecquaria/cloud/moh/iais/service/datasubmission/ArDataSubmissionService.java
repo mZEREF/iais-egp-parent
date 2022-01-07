@@ -15,6 +15,8 @@ public interface ArDataSubmissionService {
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
 
+    CycleStageSelectionDto getCycleStageSelectionDtoByConds(String patientCode, String hciCode, String cycleId);
+
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde, String cycleId);
@@ -128,4 +130,5 @@ public interface ArDataSubmissionService {
     void sendIncompleteCycleNotificationPeriod();
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
+
 }
