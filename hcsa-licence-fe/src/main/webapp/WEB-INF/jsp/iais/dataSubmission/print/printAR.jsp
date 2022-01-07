@@ -13,9 +13,6 @@
         <%-- AR Patient--%>
         <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
-        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-            <%@include file="../assistedReproduction/common/dsAmendment.jsp" %>
-        </c:if>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
         <%@include file="../assistedReproduction/section/previewArSubmitDonorSection.jsp" %>
@@ -97,6 +94,9 @@
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
 </c:choose>
-<c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
+<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_002'}">
     <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
+</c:if>
+<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+    <%@include file="../assistedReproduction/common/dsAmendment.jsp" %>
 </c:if>
