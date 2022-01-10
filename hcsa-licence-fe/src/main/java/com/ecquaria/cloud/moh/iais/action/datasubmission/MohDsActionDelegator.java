@@ -2,13 +2,13 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -42,6 +43,9 @@ public class MohDsActionDelegator {
 
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
+
+    @Autowired
+    private LdtDataSubmissionService ldtDataSubmissionService;
 
     @Autowired
     private ArCycleStageDelegator arCycleStageDelegator;
@@ -87,9 +91,12 @@ public class MohDsActionDelegator {
                     submissionNo);
             initDataForView(arSuper, bpc.request);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
-        } else if (DataSubmissionConsts.DS_DRP.equals(dsType)){
+        } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
+        } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
+            LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
+            DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
@@ -127,6 +134,8 @@ public class MohDsActionDelegator {
             uri = prepareArRfc(submissionNo, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             uri = prepareDpRfc(submissionNo, bpc.request);
+        } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
+            uri = prepareArRfc(submissionNo, bpc.request);
         }
         log.info(StringUtil.changeForLog("------URI: " + uri));
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
@@ -151,6 +160,21 @@ public class MohDsActionDelegator {
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
+        return uri;
+    }
+
+    private String prepareLdtRfc(String submissionNo, HttpServletRequest request) {
+        String uri = "";
+        LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
+        if (ldtSuperDataSubmissionDto == null) {
+            uri = DEFAULT_URI;
+        } else {
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohLDTDataSubmission";
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION,
+                    CopyUtil.copyMutableObject(ldtSuperDataSubmissionDto));
+            ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        }
         return uri;
     }
 
