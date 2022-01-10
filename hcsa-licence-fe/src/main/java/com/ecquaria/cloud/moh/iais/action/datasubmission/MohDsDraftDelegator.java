@@ -106,7 +106,7 @@ public class MohDsDraftDelegator {
         if (ldtSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            uri = "MohLDTDataSubmission";
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohLDTDataSubmission";
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuper, request);
         return uri;
