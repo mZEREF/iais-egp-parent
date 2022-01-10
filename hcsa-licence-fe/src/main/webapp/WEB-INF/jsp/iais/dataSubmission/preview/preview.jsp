@@ -33,6 +33,9 @@
                         <c:when test="${dsType == 'ART'}">
                             <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/preview/previewAR.jsp" />
                         </c:when>
+                        <c:when test="${dsType == 'LDT'}">
+                            <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/labDevelopedTest/section/prviewLdtSection.jsp" />
+                        </c:when>
                     </c:choose>
                 </div>
                 <%@ include file="previewFooter.jsp" %>
