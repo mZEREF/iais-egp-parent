@@ -149,7 +149,7 @@ public class ArWithdrawalDelegator {
     }
 
     public void printStep(BaseProcessClass bpc)  {
-        String remarks=ParamUtil.getString(bpc.request, "withdrawnRemarks");
+        String remarks= ParamUtil.getString(bpc.request, "remarks");
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
     }
 }
