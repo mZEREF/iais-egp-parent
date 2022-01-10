@@ -46,4 +46,9 @@ public class LdtFeClientFallback implements LdtFeClient {
     public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
         return getFeignResponseEntity(draftId, status);
     }
+
+    @Override
+    public FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+        return getFeignResponseEntity(draftNo);
+    }
 }

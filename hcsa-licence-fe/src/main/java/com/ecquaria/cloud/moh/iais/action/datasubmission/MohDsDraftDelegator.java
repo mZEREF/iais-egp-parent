@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -38,6 +40,9 @@ public class MohDsDraftDelegator {
 
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
+
+    @Autowired
+    private LdtDataSubmissionService ldtDataSubmissionService;
 
     private static final String DEFAULT_URI = "/main-web/eservice/INTERNET/MohDataSubmissionsInbox";
 
@@ -68,6 +73,8 @@ public class MohDsDraftDelegator {
             uri = prepareAr(draftNo, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             uri = prepareDp(draftNo, bpc.request);
+        } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
+            uri = prepareLdt(draftNo, bpc.request);
         }
 
         log.info(StringUtil.changeForLog("------URI: " + uri));
@@ -90,6 +97,18 @@ public class MohDsDraftDelegator {
             }
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
+        return uri;
+    }
+
+    private String prepareLdt(String draftNo, HttpServletRequest request) {
+        String uri = "";
+        LdtSuperDataSubmissionDto ldtSuper = ldtDataSubmissionService.getLdtSuperDataSubmissionDtoByDraftNo(draftNo);
+        if (ldtSuper == null) {
+            uri = DEFAULT_URI;
+        } else {
+            uri = "MohLDTDataSubmission";
+        }
+        DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuper, request);
         return uri;
     }
 

@@ -29,6 +29,9 @@ public interface LdtFeClient {
     @GetMapping(value = "/data-submission/ldt-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId);
 
+    @GetMapping(value = "/data-submission/draft-ldt-data-submission/{draftNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LdtSuperDataSubmissionDto> getLdtSuperDataSubmissionDtoDraftByDraftNo(@PathVariable("draftNo") String draftNo);
+
     @DeleteMapping(value = "/data-submission/draft-ldt-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteLdtSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
                                                                           @RequestParam(name = "submissionType") String submissionType);

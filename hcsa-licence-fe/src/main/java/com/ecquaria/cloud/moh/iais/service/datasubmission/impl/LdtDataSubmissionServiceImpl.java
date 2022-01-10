@@ -106,4 +106,12 @@ public class LdtDataSubmissionServiceImpl implements LdtDataSubmissionService {
         log.info(StringUtil.changeForLog(" the saveLdtSuperDataSubmissionDtoToBE end ..."));
         return ldtSuperDataSubmissionDto;
     }
+
+    @Override
+    public LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        if (StringUtil.isEmpty(draftNo)) {
+            return null;
+        }
+        return ldtFeClient.getLdtSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
+    }
 }
