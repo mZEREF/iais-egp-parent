@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -70,7 +71,7 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            PatientDto db = patientService.getArPatientDto(idType, idNo, nationality, orgId);
+            PatientDto db = patientService.getActiveArPatientByConds(idType, idNo, nationality, orgId);
             result.put("patient", db);
         }
         return result;
@@ -110,6 +111,10 @@ public class ArAjaxController {
             } else {
                 dto.setLastStageDesc("-");
             }
+            // add current selection dto to super dto
+            ArSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            superDto.setSelectionDto(dto);
+            DataSubmissionHelper.setCurrentArDataSubmission(superDto, request);
             result.put("selection", dto);
         }
         result.put("cycleStartHtmls", DataSubmissionHelper.genCycleStartHtmls(dto.getCycleDtos()));

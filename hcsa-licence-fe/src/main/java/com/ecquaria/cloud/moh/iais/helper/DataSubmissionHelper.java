@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -210,7 +211,7 @@ public final class DataSubmissionHelper {
         // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
         // available stages for selection will be based on the stage prior to it
         // disposal, donation
-        if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && isSpecialStage(lastStage)) {
+        if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
             lastStage = additionalStage;
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
@@ -220,7 +221,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
-                || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)) {
+                || DsHelper.isCycleFinalStatus(lastStatus)) {
             if (!undergoingCycle) {
                 result.add(DataSubmissionConsts.AR_CYCLE_AR);
                 result.add(DataSubmissionConsts.AR_CYCLE_IUI);
@@ -297,18 +298,12 @@ public final class DataSubmissionHelper {
         return result;
     }
 
-    private static boolean isSpecialStage(String cycleStage) {
-        return StringUtil.isIn(cycleStage, new String[]{DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES,
-                DataSubmissionConsts.AR_STAGE_DISPOSAL, DataSubmissionConsts.AR_STAGE_DONATION,
-                DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT});
-    }
-
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
         String cycleId = null;
         CycleDto cycleDto = null;
-        if (selectionDto.isUndergoingCycle()) {
+        if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus())) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();
@@ -322,6 +317,10 @@ public final class DataSubmissionHelper {
             cycle = DataSubmissionConsts.DS_CYCLE_IUI;
         } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_EFO;
+        } else if (DsHelper.isSpecialFinalStatus(selectionDto.getLastStatus())) {
+            cycleDto = selectionDto.getLastCycleDto();
+            cycle = cycleDto.getCycleType();
+            cycleId = cycleDto.getId();
         } else {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
         }
@@ -336,7 +335,7 @@ public final class DataSubmissionHelper {
         cycleDto.setHciCode(hciCode);
         cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
-            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ONGOING);
         }
         return cycleDto;
     }

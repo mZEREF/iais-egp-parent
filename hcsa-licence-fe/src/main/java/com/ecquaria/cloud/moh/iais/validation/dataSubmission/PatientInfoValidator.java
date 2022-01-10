@@ -79,25 +79,21 @@ public class PatientInfoValidator implements CustomizeValidator {
         }
         if (patient.isPreviousIdentification()) {
             patientInfo.setPrevious(previous);
-            if ("file".equals(profile)) {
+            if (!isRfc) {
                 result = WebValidationHelper.validateProperty(previous, "ART");
                 if (result != null && result.isHasErrors()) {
                     map.putAll(result.retrieveAll("pre", ""));
                 }
-                //DS_MSG006
-                if (!map.containsKey("preIdNumber") && StringUtil.isEmpty(previous.getId())) {
-                    map.put("preIdNumber", "DS_MSG006");
-                }
             }
             if (!"file".equals(profile)) {
-                /*boolean retrievePrevious = patientInfo.isRetrievePrevious();
+                boolean retrievePrevious = patientInfo.isRetrievePrevious();
                 if (!retrievePrevious) {
-                    //map.put("retrievePrevious", "DS_ERR005");
+                    map.put("retrievePrevious", "DS_ERR005");
                 } else if (StringUtil.isEmpty(previous.getId())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
-                }*/
+                }
             } else {
-                isRfc = true;
+                //isRfc = true;
                 if ("".equals(previous.getIdType())) {
                     map.put("preIdType", ERR_MSG_INVALID_DATA);
                 }
@@ -105,12 +101,16 @@ public class PatientInfoValidator implements CustomizeValidator {
                     map.put("preNationality", ERR_MSG_INVALID_DATA);
                 }
             }
-            /*if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
+            if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
                     && previous.getIdNumber().equals(patient.getIdNumber())
                     && Objects.equals(previous.getIdType(), patient.getIdType())
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
-            }*/
+            }
+            //DS_MSG006
+            if (!map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
+                map.put("preIdNumber", "DS_MSG006");
+            }
         }
         HusbandDto husband = patientInfo.getHusband();
         if (husband == null) {

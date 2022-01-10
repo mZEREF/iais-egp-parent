@@ -52,19 +52,25 @@ function retrieveIdentification() {
 }
 
 function previousPatientCallback(data) {
-    clearErrorMsg();
     if (isEmpty(data) || isEmpty(data.patient) || !isEmpty(data.errorMsg)) {
-        $('#preName').find('p').text('');
-        $('#preBirthDate').find('p').text('');
-        $('[name="retrievePrevious"]').val('0');
+        clearPrevious();
         if (!isEmpty(data.errorMsg)) {
             doValidationParse(data.errorMsg);
         } else {
             $('#noPatientDiv').modal('show');
         }
         return;
+    } else {
+        clearErrorMsg();
     }
     $('[name="retrievePrevious"]').val('1');
     $('#preName').find('p').text(data.patient.name);
     $('#preBirthDate').find('p').text(data.patient.birthDate);
+}
+
+function clearPrevious() {
+    clearErrorMsg();
+    $('#preName').find('p').text('');
+    $('#preBirthDate').find('p').text('');
+    $('[name="retrievePrevious"]').val('0');
 }

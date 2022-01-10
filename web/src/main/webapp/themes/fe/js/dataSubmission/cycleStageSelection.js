@@ -4,7 +4,16 @@ $(document).ready(function() {
     } else if ("1" == $('#showValidatePT').val()) {
         $('#noFoundDiv').modal('show');
     }
+    checkCycleStart();
 });
+
+function checkCycleStart() {
+    var $target = $('#cycleStartLabel');
+    $target.find('.mandatory').remove();
+    if ($('#cycleStartDiv').find('select').length > 0) {
+        $target.append('<span class="mandatory">*</span>');
+    }
+}
 
 function clearSelection(){
     clearErrorMsg();
@@ -32,6 +41,10 @@ function retrieveValidatePatient() {
 
 function validatePatientCallback(data){
     clearErrorMsg();
+    // Cycle Start Date
+    $('#cycleStartDiv').html(data.cycleStartHtmls);
+    $('#cycleStartDiv').find('select').niceSelect();
+    checkCycleStart();
     // stage options
     $('#stage').html(data.stagHtmls);
     $('#stage').niceSelect("update");
@@ -63,9 +76,37 @@ function validatePatientCallback(data){
     $('#latestStageHidden').val(data.selection.latestStage);
     $('#additionalStageHidden').val(data.selection.additionalStage);
     $('#lastStatusHidden').val(data.selection.lastStatus);
-    if (!isEmpty(data.selection.lastCycleDto)) {
+    /*if (!isEmpty(data.selection.lastCycleDto)) {
         $('#cycleIdHidden').val(data.selection.lastCycleDto.id);
     } else {
         $('#cycleIdHidden').val('');
+    }*/
+}
+
+function retriveCycleStageSelection(){
+    showWaiting();
+    var cycleStart = $('#cycleStart').val();
+    var patientCode = $('[name="patientCode"]').val();
+    var url = $('#_contextPath').val() + '/ar/retrieve-cycle-selection';
+    var options = {
+        cycleStart: cycleStart,
+        patientCode: patientCode,
+        url: url
     }
+    callCommonAjax(options, retriveCycleStageSelectionCallback);
+}
+
+function retriveCycleStageSelectionCallback(data) {
+    clearErrorMsg();
+    // stage options
+    $('#stage').html(data.stagHtmls);
+    $('#stage').niceSelect("update");
+    $('#lastStage').find('p').text(data.selection.lastStageDesc);
+    $('[name="retrieveData"]').val('1');
+    $('[name="patientCode"]').val(data.selection.patientCode);
+    $('#patientNameHidden').val(data.selection.patientName);
+    $('#lastCycleHidden').val(data.selection.lastCycle);
+    $('#lastStageHidden').val(data.selection.lastStage);
+    $('#additionalStageHidden').val(data.selection.additionalStage);
+    $('#lastStatusHidden').val(data.selection.lastStatus);
 }

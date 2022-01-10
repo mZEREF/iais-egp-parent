@@ -103,19 +103,19 @@ public class PatientDelegator extends CommonDelegator {
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
         // check previous
-        /*if (patient.isPreviousIdentification()) {
+        if (patient.isPreviousIdentification() && !DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType())) {
             String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
             patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
             PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
             if (patientInfo.isRetrievePrevious()) {
-                PatientDto db = patientService.getArPatientDto(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
+                PatientDto db = patientService.getActiveArPatientByConds(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
                         patient.getOrgId());
                 if (db != null && !StringUtil.isEmpty(db.getId())) {
                     previous = db;
                 }
             }
             patientInfo.setPrevious(previous);
-        }*/
+        }
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
         if (StringUtil.isNotEmpty(husband.getName())) {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
@@ -164,12 +164,10 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void submission(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
-            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
-            patientInfoDto.getPatient().setId(null);
-            patientInfoDto.getHusband().setId(null);
-            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
-        }
+        PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+        patientInfoDto.getPatient().setId(null);
+        patientInfoDto.getHusband().setId(null);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
     }
 
 }

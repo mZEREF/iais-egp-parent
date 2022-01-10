@@ -268,7 +268,7 @@ public abstract class CommonDelegator {
                 if (!outcomeStageDto.getPregnancyDetected()) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
                 } else {//3.3.4.3
-                    //status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;

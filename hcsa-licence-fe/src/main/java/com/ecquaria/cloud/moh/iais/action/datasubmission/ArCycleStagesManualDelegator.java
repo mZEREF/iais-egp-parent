@@ -68,15 +68,15 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+        List<String> nextStages = null;
         if (selectionDto != null) {
-            List<String> nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
-            bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
-            DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos());
+            nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
             if (!IaisCommonUtils.isEmpty(selectionDto.getCycleDtos())) {
                 bpc.request.setAttribute("cycleStart_options",
                         DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos()));
             }
         }
+        bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Assisted Reproduction</strong>");
@@ -240,7 +240,7 @@ public class ArCycleStagesManualDelegator {
         dataSubmission.setCycleStage(stage);
         currentSuper.setDataSubmissionDto(dataSubmission);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
-                hciCode, null);
+                hciCode, selectionDto.getCycleId());
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
@@ -259,10 +259,16 @@ public class ArCycleStagesManualDelegator {
     }
 
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
-        CycleStageSelectionDto selectionDto = ControllerHelper.get(request, CycleStageSelectionDto.class);
+        ArSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        CycleStageSelectionDto selectionDto = superDto.getSelectionDto();
+        if (selectionDto == null) {
+            selectionDto = new CycleStageSelectionDto();
+        }
+        ControllerHelper.get(request, selectionDto);
+        selectionDto.setCycleId(null);
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         CycleDto cycleDto = new CycleDto();
-        cycleDto.setId(ParamUtil.getString(request, "cycleId"));
+        cycleDto.setId(selectionDto.getCycleId());
         cycleDto.setCycleType(ParamUtil.getString(request, "lastCycle"));
         selectionDto.setLastCycleDto(cycleDto);
         return selectionDto;

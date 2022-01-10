@@ -2,6 +2,7 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 
+<c:set var="isNew" value="${'DSTY_002' == arSuperDataSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'DSTY_005' == arSuperDataSubmissionDto.appType}" />
 <c:set var="showPrevious" value="${patient.previousIdentification && isRFC}" />
 
@@ -18,7 +19,15 @@
             <div class="panel-main-content form-horizontal ">
                 <c:set var="person" value="${patient}" />
                 <%@include file="previewPersonSection.jsp" %>
-                <c:if test="${showPrevious}">
+                <c:if test="${isNew}">
+                <div id="previousData" <c:if test="${patient.previousIdentification}">style="display:none"</c:if> >
+                    <iais:row>
+                        <iais:field width="5" value="Is AR Centre aware of patient's previous identification? "/>
+                        <iais:value width="7" display="true">No</iais:value>
+                    </iais:row>
+                </div>
+                </c:if>
+                <c:if test="${showPrevious || isNew}">
                     <c:set var="person" value="${previous}" />
                     <%@include file="previewPatientPreviousSection.jsp" %>
                 </c:if>

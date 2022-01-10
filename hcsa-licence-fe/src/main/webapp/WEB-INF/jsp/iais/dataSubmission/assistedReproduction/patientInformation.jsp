@@ -18,6 +18,7 @@
 <c:set var="husband" value="${patientInfoDto.husband}" />
 <c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
 
+<c:set var="isNew" value="${'DSTY_002' == arSuperDataSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'DSTY_005' == arSuperDataSubmissionDto.appType}" />
 <c:set var="showPrevious" value="${patient.previousIdentification && isRFC}" />
 
