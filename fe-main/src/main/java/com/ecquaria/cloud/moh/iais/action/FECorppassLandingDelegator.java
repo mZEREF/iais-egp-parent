@@ -119,7 +119,7 @@ public class FECorppassLandingDelegator {
                 return;
             }
 
-            if (loginInfo == null) {
+            if (loginInfo == null || !"S".equals(loginInfo.getStatus())) {
                 log.info("<== oLoginInfo is empty ==>");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
@@ -187,7 +187,11 @@ public class FECorppassLandingDelegator {
 
         if (StringUtil.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
+            if (!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(uen)) {
+                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
+            }
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
             return;
         }
 

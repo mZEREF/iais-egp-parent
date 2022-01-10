@@ -388,12 +388,12 @@ public class LicenceViewServiceDelegator {
         }
         String applicationId = appPremisesCorrelationDto.getApplicationId();
         AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
-        if(appSubmissionDto != null){
-            appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (appSubmissionDto == null) {
+            return appSubmissionDto;
         }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         HcsaServiceDto hcsaServiceDto = null;
-        if (appSvcRelatedInfoDtos!=null&&!appSvcRelatedInfoDtos.isEmpty()) {
+        if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
             String serviceId = appSvcRelatedInfoDtos.get(0).getServiceId();
             hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(serviceId);
             appSvcRelatedInfoDtos.get(0).setServiceCode(hcsaServiceDto.getSvcCode());
@@ -415,13 +415,12 @@ public class LicenceViewServiceDelegator {
                 String licenseeId = oldApplicationGroupDto.getLicenseeId();
                 LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                 request.setAttribute("oldLicenceDto", oldLicenceDto);
-                AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(applicationDto.getId()).getEntity();
-                if (appSubmissionDto != null) {
-                    if (hcsaServiceDto != null) {
-                        appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0).setServiceCode(hcsaServiceDto.getSvcCode());
-                    }
-                    appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
+                AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(
+                        applicationDto.getId()).getEntity();
+                if (hcsaServiceDto != null) {
+                    appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0).setServiceCode(hcsaServiceDto.getSvcCode());
                 }
+                appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
             }
         } else if (entity.getOriginLicenceId() != null) {
             LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(entity.getOriginLicenceId()).getEntity();
@@ -1085,6 +1084,7 @@ public class LicenceViewServiceDelegator {
                     for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
                         if (hciName.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())) {
                             appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                            break;
                         }
                     }
                 }

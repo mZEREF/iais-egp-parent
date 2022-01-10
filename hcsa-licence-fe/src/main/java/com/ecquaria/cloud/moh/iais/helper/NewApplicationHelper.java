@@ -1315,7 +1315,7 @@ public class NewApplicationHelper {
         if (oldAppSubmissionDto != null && oldAppSubmissionDto.getAppGrpPremisesDtoList() != null) {
             oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElseGet(() -> dto.getHciCode()))
                     .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
@@ -2340,7 +2340,6 @@ public class NewApplicationHelper {
             setPremSelect(premisesSelect, premiseType, addtional, appPremisesMap);
             ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
         });
-        log.info("##### Time B: " + (System.currentTimeMillis() - start));
     }
 
     private static void setPremSelect(List<SelectOption> premisesSelect, String premiseType, String addtional,
@@ -4563,7 +4562,7 @@ public class NewApplicationHelper {
             }
             title.append(getDupForPersonName(dupForPerson));
             if (num != null) {
-                title.append(" ").append(num);
+                title.append(' ').append(num);
             }
             title.append(": ").append(docTitle);
             result = title.toString();
@@ -4939,14 +4938,14 @@ public class NewApplicationHelper {
         }
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
-        msg.append("]");
+        msg.append(']');
         return msg;
     }
 
     private static String handleStepHames(List<String> errorList) {
         return errorList.stream()
                 .filter(s -> s.contains(":"))
-                .map(s -> s.substring(s.indexOf(":") + 1))
+                .map(s -> s.substring(s.indexOf(':') + 1))
                 .collect(Collectors.joining(", "));
     }
 
@@ -5243,27 +5242,24 @@ public class NewApplicationHelper {
             AppGrpPremisesDto tarDto = premiseEntry;
             List<String> relatedServices = entryList.stream()
                     .filter(entry -> checkPremises(entry, tarDto, check))
-                    .map(entry -> entry.getRelatedServices())
+                    .map(AppGrpPremisesDto::getRelatedServices)
                     .filter(Objects::nonNull)
                     .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+            AppGrpPremisesDto appGrpPremisesDto = newAppMap.remove(key);
+            if (appGrpPremisesDto != null) {
+                relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
+            }
             if (isLicence) {
-                if (newAppMap.containsKey(key)) {
-                    relatedServices.addAll(newAppMap.get(key).getRelatedServices());
-                    newAppMap.remove(key);
-                }
-                if (licAppGrpPremisesDtoMap.containsKey(key)) {
-                    relatedServices.addAll(licAppGrpPremisesDtoMap.get(key).getRelatedServices());
+                appGrpPremisesDto = licAppGrpPremisesDtoMap.get(key);
+                if (appGrpPremisesDto != null) {
+                    relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
                 }
                 premiseEntry.setRelatedServices(relatedServices);
                 licAppGrpPremisesDtoMap.put(key, premiseEntry);
             } else {
-                if (newAppMap.containsKey(key)) {
-                    relatedServices.addAll(newAppMap.get(key).getRelatedServices());
-                    newAppMap.remove(key);
-                }
-                if (licAppGrpPremisesDtoMap.containsKey(key)) {
-                    relatedServices.addAll(licAppGrpPremisesDtoMap.get(key).getRelatedServices());
-                    licAppGrpPremisesDtoMap.remove(key);
+                appGrpPremisesDto = licAppGrpPremisesDtoMap.remove(key);
+                if (appGrpPremisesDto != null) {
+                    relatedServices.addAll(appGrpPremisesDto.getRelatedServices());
                 }
                 premiseEntry.setRelatedServices(relatedServices);
                 newAppMap.put(key, premiseEntry);
@@ -5328,7 +5324,7 @@ public class NewApplicationHelper {
             newDto.setFromDB(false);
             // itself
             List<Map.Entry<String, AppGrpPremisesDto>> entryList = getPremisesFromMap(premises, allData);
-            log.info("The same premise index no size in Map: " + (entryList.size()));
+            log.info(StringUtil.changeForLog("The same premise index no size in Map: " + (entryList.size())));
             if (entryList.isEmpty()) {// not have
                 if (licAppGrpPremisesDtoMap.get(premisesSelect) == null && appPremisesMap.get(premisesSelect) == null) {
                     appPremisesMap.put(premisesSelect, newDto);
