@@ -73,6 +73,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_ACKTOP                  = "ACKTOP";
 
     public static String LAB_SUPER_DATA_SUBMISSION          = "LdtSuperDataSubmissionDto";
+    public static String LDT_OLD_DATA_SUBMISSION             = "LdtOldSuperDataSubmissionDto";
     public static String LDT_PREMISS_OPTION                 = "premissOptions";
     public static String LDT_CANOT_LDT                      = "cannotCLT";
 
