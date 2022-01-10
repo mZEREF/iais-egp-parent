@@ -63,7 +63,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
         }
         if(StringUtil.isEmpty(sampleKey)){
-            log.info(StringUtil.changeForLog("Generated a ned samplekey"));
+            log.info(StringUtil.changeForLog("Generated a new samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
         }else{
             donorSampleDto.setSampleKey(sampleKey);
