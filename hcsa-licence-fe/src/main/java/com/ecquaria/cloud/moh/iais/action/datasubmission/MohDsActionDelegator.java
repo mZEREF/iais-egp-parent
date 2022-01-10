@@ -135,7 +135,7 @@ public class MohDsActionDelegator {
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             uri = prepareDpRfc(submissionNo, bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
-            uri = prepareArRfc(submissionNo, bpc.request);
+            uri = prepareLdtRfc(submissionNo, bpc.request);
         }
         log.info(StringUtil.changeForLog("------URI: " + uri));
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
