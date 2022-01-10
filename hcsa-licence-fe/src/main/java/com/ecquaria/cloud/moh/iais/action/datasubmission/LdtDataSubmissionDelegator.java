@@ -362,6 +362,7 @@ public class LdtDataSubmissionDelegator {
         ldtSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.LDT_TYPE_SBT);
         ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         ldtSuperDataSubmissionDto.setFe(true);
+        ldtSuperDataSubmissionDto.setSvcName(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
         ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         ldtSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(ldtSuperDataSubmissionDto, false));
