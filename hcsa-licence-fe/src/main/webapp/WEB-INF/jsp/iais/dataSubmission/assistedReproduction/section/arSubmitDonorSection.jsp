@@ -243,10 +243,14 @@
     function showDonationYes(){
      $("#directedDonationYes").show();
      $("#directedDonationNo").hide();
+        clearFields($("#directedDonationNo"));
+        dikChange();
+        arCentreChange();
     }
     function showDonationNo(){
         $("#directedDonationNo").show();
         $("#directedDonationYes").hide();
+        clearFields($("#directedDonationYes"));
     }
     function addDonorAge(){
         var ageCount =  $("#ageCount").val();
@@ -281,6 +285,7 @@
             $("#sampleFromOthers").show();
         }else{
             $("#sampleFromOthers").hide();
+            clearFields($("#sampleFromOthers"));
         }
     }
 
@@ -288,9 +293,11 @@
         if($("#donorIdentityKnownId").val() == 'DIK001'){
            $("#donorDetail").show();
            $("#donorSampleCodeRow").hide();
+            clearFields($("#donorSampleCodeRow"));
         }else{
             $("#donorDetail").hide();
             $("#donorSampleCodeRow").show();
+            clearFields($("#donorDetail"));
         }
     }
 </script>
