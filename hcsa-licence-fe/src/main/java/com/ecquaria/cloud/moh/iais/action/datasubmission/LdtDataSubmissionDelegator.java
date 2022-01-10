@@ -89,7 +89,6 @@ public class LdtDataSubmissionDelegator {
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
-        String submissionType = DataSubmissionConsts.DS_CYCLE_LDT;
         LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
         if (dataSubmissionDraft != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
@@ -327,6 +326,10 @@ public class LdtDataSubmissionDelegator {
         if (StringUtil.isEmpty(currentAction)) {
             currentAction = ACTION_TYPE_PAGE;
             ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, currentAction);
+        }
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType)){
+            setSelectOptions(bpc);
         }
     }
 
