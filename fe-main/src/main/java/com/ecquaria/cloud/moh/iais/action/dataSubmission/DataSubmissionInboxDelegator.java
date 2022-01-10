@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
@@ -9,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -30,7 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -341,7 +340,10 @@ public class DataSubmissionInboxDelegator {
 
 	 private void setShowPopMsg(HttpServletRequest request,String actionValue){
         if(WITHDRAW.equalsIgnoreCase(actionValue) || AMENDED.equalsIgnoreCase(actionValue)){
-			ParamUtil.setSessionAttr(request,"showPopFailMsg","DS_ERR022");
+        	String msg=ParamUtil.getRequestString(request,"showPopFailMsg");
+        	if(StringUtil.isEmpty(msg)){
+				ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR022");
+			}
 		}
 	 }
 
@@ -369,10 +371,24 @@ public class DataSubmissionInboxDelegator {
 					 for (String submissionNo : submissionNos) {
 						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
 							 submissionSelect = true;
-							  if(checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto)){
-								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
-							  }
-							 break;
+							int switchResult =  checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto);
+							switch (switchResult){
+								case 1:actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);break;
+								case 2:
+									//Withdraw.Patient Information or Donor Sample
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR050");break;
+								case 3:
+									//Withdraw.RFC
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+								case 4:
+									//Withdraw.locked
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR052");break;
+								case 5:
+									//Withdraw.Withdraw
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR054");break;
+								default:
+							}
+							break;
 						 }
 					 }
 					 inboxDataSubmissionQueryDto.setSubmissionSelect(submissionSelect);
@@ -407,6 +423,7 @@ public class DataSubmissionInboxDelegator {
 		}
 
 		if(WITHDRAW.equals(actionValue)){
+
 			List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
 			ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
 			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,null);
@@ -426,16 +443,33 @@ public class DataSubmissionInboxDelegator {
 			return true;
 		}
 	}
-	private boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
+
+
+	private int checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
-			return checkDataPassBySubmissionNo(submissionNo, actionValue);
+			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
 		}else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
+			if(actionValue.equals(WITHDRAW)){
+				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+				if(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+					return 3;
+				}
+				if(arSuperDataSubmissionDto.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
+					return 5;
+				}
+				if(arSuperDataSubmissionDto.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
+					return 4;
+				}
+				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())||"PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+					return 2;
+				}
+			}
 			//check x times
 			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
 			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
-			return maxTimes >= maxCountFromDb;
+			return maxTimes >= maxCountFromDb?1:0;
 		}
-		return true;
+		return 1;
 	}
 
 }
