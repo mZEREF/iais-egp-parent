@@ -21,6 +21,8 @@ function cloneUploadFile() {
     $('#hasItems').val('0');
     $('#itemSize').html('0');
     $('#nextBtn').html('Preview');
+    clearErrorMsg();
+    $('.itemErrorTableDiv').remove();
 }
 
 function deleteFileFeAjax(id,fileIndex) {
