@@ -68,12 +68,12 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }else{
             donorSampleDto.setSampleKey(sampleKey);
         }
-        //countLive
-        if(countLive(donorSampleDtoFromDb) >3){
-            map.put("directedDonationYesDonorLive","DS_ERR053");
-            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
-            map.put("donorDetailDonorLive","DS_ERR053");
-        }
+        //countLive  77526
+//        if(countLive(donorSampleDtoFromDb) >3){
+//            map.put("directedDonationYesDonorLive","DS_ERR053");
+//            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
+//            map.put("donorDetailDonorLive","DS_ERR053");
+//        }
         if(donorSampleDto.isDirectedDonation()){
              result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationY");
         }else{
