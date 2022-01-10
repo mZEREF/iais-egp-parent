@@ -6,6 +6,7 @@
 <input type="hidden" id="section_repeat_header_title_prefix" value="Agent / Toxin " readonly disabled>
 <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
 <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
+<input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
 
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Biological Agent/Toxin</strong></div>

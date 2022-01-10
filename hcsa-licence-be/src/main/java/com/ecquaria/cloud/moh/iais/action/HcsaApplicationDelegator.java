@@ -286,6 +286,8 @@ public class HcsaApplicationDelegator {
         checkShowInspection(bpc, applicationViewDto, taskDto, applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
         //set recommendation show name
         checkRecommendationShowName(bpc, applicationViewDto);
+        //set verified dropdown value, 114456 from initData(bpc) function
+        setVerifiedDropdownValue(bpc.request, applicationViewDto, taskDto);
         //set session
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
@@ -550,6 +552,12 @@ public class HcsaApplicationDelegator {
                 }
             }
 
+            //114496
+            String ao1Ao2Approve = (String) ParamUtil.getSessionAttr(bpc.request, "Ao1Ao2Approve");
+            if (ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect) && "Y".equals(ao1Ao2Approve)) {
+                nextStage = approveSelect;
+            }
+
             log.debug(StringUtil.changeForLog("the nextStage is -->:" + nextStage));
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
 
@@ -721,6 +729,12 @@ public class HcsaApplicationDelegator {
             } else if (ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(nextStage)) {
                 successInfo = "LOLEV_ACK050";
             }
+        }
+
+        //114496
+        String ao1Ao2Approve = (String) ParamUtil.getSessionAttr(bpc.request, "Ao1Ao2Approve");
+        if (ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(nextStage) && "Y".equals(ao1Ao2Approve)) {
+            successInfo = "LOLEV_ACK020";
         }
         ParamUtil.setRequestAttr(bpc.request, "successInfo", successInfo);
     }
@@ -2556,6 +2570,7 @@ public class HcsaApplicationDelegator {
                 ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
                 ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                    appreturn.setSysClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
                     saveReturnFeeDtosStripe.add(appreturn);
                 }
             }
@@ -3230,8 +3245,6 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request, applicationViewDto);
-        //set verified dropdown value
-        setVerifiedDropdownValue(bpc.request, applicationViewDto, taskDto);
 
         //check broadcast role id
         AppPremisesRoutingHistoryDto userHistory = appPremisesRoutingHistoryService.getAppHistoryByAppNoAndActionBy(applicationViewDto.getApplicationDto().getApplicationNo(), taskDto.getUserId());
@@ -3791,7 +3804,7 @@ public class HcsaApplicationDelegator {
                 isBeCessationFlow = true;
             }
         }
-        nextStageList.add(new SelectOption("", "Please Select"));
+
         if (RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) && !finalStage) {
 //            nextStageList.add(new SelectOption("VERIFIED", "Support"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
@@ -3963,9 +3976,19 @@ public class HcsaApplicationDelegator {
                     HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationType, appStatus, serviceId);
                     boolean canApprove = checkCanApproveStage(canApproveStageDto);
                     if (canApprove) {
-                        routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                                "Approve"));
-                        ParamUtil.setSessionAttr(request, "Ao1Ao2Approve", "Y");
+                        //114496
+                        List<SelectOption> nextStageList = (List<SelectOption>)ParamUtil.getSessionAttr(request, "nextStages");
+                        if(!IaisCommonUtils.isEmpty(nextStageList)) {
+                            boolean noContainsFlag = applicationViewService.noContainsFlagByStageList(nextStageList);
+                            if(noContainsFlag) {
+                                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+                                        "Approve"));
+                                ParamUtil.setSessionAttr(request, "nextStages", (Serializable) nextStageList);
+                                ParamUtil.setSessionAttr(request, "Ao1Ao2Approve", "Y");
+                            }
+                        } else {
+                            ParamUtil.setSessionAttr(request, "Ao1Ao2Approve", "N");
+                        }
                     }
                 }
             } else {

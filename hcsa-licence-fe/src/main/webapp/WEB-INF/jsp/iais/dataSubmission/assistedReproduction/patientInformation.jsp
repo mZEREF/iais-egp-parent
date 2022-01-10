@@ -18,6 +18,9 @@
 <c:set var="husband" value="${patientInfoDto.husband}" />
 <c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
 
+<c:set var="isRFC" value="${'DSTY_005' == arSuperDataSubmissionDto.appType}" />
+<c:set var="showPrevious" value="${patient.previousIdentification && isRFC}" />
+
 <%@ include file="common/arHeader.jsp" %>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
@@ -31,7 +34,7 @@
                     <%@include file="section/patientDetailSection.jsp" %>
                     <%@include file="section/husbandDetailSection.jsp" %>
                     <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-                        <%@include file="section/patientAmendment.jsp" %>
+                        <%@include file="common/dsAmendment.jsp" %>
                     </c:if>
                 </div>
                 <%@include file="common/arFooter.jsp" %>

@@ -7,8 +7,6 @@ function deleteDonor(index){
     if($("#crud_action_value_donor_size").val()>1){
         $("#crud_action_value_ar_stage").val(index);
         submit("page");
-    }else {
-
     }
 }
 function addDonor(){
@@ -40,6 +38,9 @@ function showDonor(index){
     $("#otherSource"+index).val("");
     $("#donorSampleCode"+index).val("");
     $("#idNo"+index+"Row").show();
+    $("#relation"+index+"Row").hide();
+    $("#age"+index).val("");
+    $("#age"+index+"Row").hide();
 }
 function hideDonor(index){
     $("#source"+index+"Row").show();
@@ -47,6 +48,9 @@ function hideDonor(index){
     $("#idNo"+index+"Row").hide();
     $("#idType"+index).val("");
     $("#idNumber"+index).val("");
+    $("#age"+index).val("");
+    $("#age"+index+"Row").hide();
+    $("#relation"+index+"Row").hide();
 }
 
 function showUsedDonorOocyteControlClass(flag){
@@ -66,10 +70,10 @@ function hideUsedDonorOocyteControlClass(flag){
 }
 
 function removeAges(index){
-    $("#relation"+index+"Row").hide();
     $("#age"+index+"Row").hide();
     $("#age"+index).val("");
     $("#resetDonor"+index).val("1");
+    $("#relation"+index+"Row").hide();
 }
 
 function sourceChange(own,value,row,index){
@@ -77,3 +81,6 @@ function sourceChange(own,value,row,index){
     removeAges(index);
 }
 
+function DSERR019MessageTipClose(){
+    $('#DSERR019Tip').modal('hide');
+}

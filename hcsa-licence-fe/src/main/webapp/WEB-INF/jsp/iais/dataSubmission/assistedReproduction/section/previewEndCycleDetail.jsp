@@ -1,15 +1,19 @@
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a class="collapsed" data-toggle="collapse" href="#efoDetails">
                 End Cycle
             </a>
         </h4>
     </div>
-    <div id="efoDetails" class="panel-collapse collapse in">
+    <div id="efoDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
                     <iais:field width="6" value="Is Current Cycle Abandoned?"/>
@@ -34,6 +38,9 @@
                         </iais:row>
                     </div>
                 </div>
+                <span id="error_inventoryNoZero" name="iaisErrorMsg" class="error-msg col-md-12"
+                      style="padding: 0px;"></span>
+                <br><br>
                 <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>

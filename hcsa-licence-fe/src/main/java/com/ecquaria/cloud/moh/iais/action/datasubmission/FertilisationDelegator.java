@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -18,7 +17,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * FertilisationDelegator
@@ -46,10 +44,6 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
@@ -71,22 +65,12 @@ public class FertilisationDelegator extends CommonDelegator{
         int ThawedOocytesMicroinjectedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesMicroinjectedNum(),0);
         int ThawedOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesGiftNum(),0);
         int ThawedOocytesZiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesZiftNum(),0);
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
 
         int changeFreshOocytes =FreshOocytesInseminatedNum+ FreshOocytesMicroInjectedNum+FreshOocytesGiftNum+FreshOocytesZiftNu;
         int changeThawedOocytes = ThawedOocytesInseminatedNum+ThawedOocytesMicroinjectedNum+ThawedOocytesGiftNum+ThawedOocytesZiftNum;
         patientInventoryDto.setChangeFreshOocytes(-1*changeFreshOocytes);
         patientInventoryDto.setChangeThawedOocytes(-1*changeThawedOocytes);
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
     }
 
     @Override
@@ -113,9 +97,5 @@ public class FertilisationDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.setFertilisationDto(fertilisationDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, fertilisationDto,"save",ACTION_TYPE_CONFIRM);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 }

@@ -1,13 +1,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a class="collapsed" href="#pgtDetailsPreview" data-toggle="collapse">
                 Preimplantation Genetic Testing
             </a>
         </h4>
     </div>
-    <div id="pftDetailsPreview" class="panel-collapse collapse in">
+    <div id="pgtDetailsPreview" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
@@ -129,20 +129,22 @@
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${ count<6 }">style="display: none"</c:if>>
-                    <iais:field width="6" value="Is there an Appeal?"/>
-                    <iais:value width="6" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
-                            Yes
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
-                            No
-                        </c:if>
-                    </iais:value>
+                    <iais:row >
+                        <iais:field width="6" value="Is there an Appeal?"/>
+                        <iais:value width="6" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
+                                No
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${embryosBiospied}"/>
+                        <c:out value="${arSuperDataSubmissionDto.pgtStageDto.embryosBiopsiedLocal}"/>
                     </iais:value>
                 </iais:row>
                 <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal !='Others' }">style="display: none"</c:if> >

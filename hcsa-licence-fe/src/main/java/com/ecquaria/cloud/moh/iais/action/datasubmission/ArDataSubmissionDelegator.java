@@ -66,17 +66,7 @@ public class ArDataSubmissionDelegator {
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
-        Map<String, PremisesDto> premisesMap =
-                (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        if (premisesMap == null || premisesMap.isEmpty()) {
-            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-            String licenseeId = null;
-            if (loginContext != null) {
-                licenseeId = loginContext.getLicenseeId();
-            }
-            premisesMap = arDataSubmissionService.getArCenterPremises(licenseeId);
-            bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, premisesMap);
-        }
+        Map<String, PremisesDto> premisesMap = DataSubmissionHelper.setArPremisesMap(bpc.request);
         if (premisesMap.isEmpty()) {
             Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
             map.put(PREMISES, "There are no active Assisted Reproduction licences");

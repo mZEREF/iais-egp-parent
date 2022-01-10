@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -67,15 +68,18 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
-        List<String> nextStages = null;
         if (selectionDto != null) {
-            nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            List<String> nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
+            DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos());
+            if (!IaisCommonUtils.isEmpty(selectionDto.getCycleDtos())) {
+                bpc.request.setAttribute("cycleStart_options",
+                        DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos()));
+            }
         }
-        bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
-
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Assisted Reproduction</strong>");
     }
 
     /**
@@ -132,8 +136,8 @@ public class ArCycleStagesManualDelegator {
                     // To reNew super data submission
                     dataSubmissionDto.setCycleStage(null);
                 }
-                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
-                        currentSuper.getHciCode()));
+                /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
+                        currentSuper.getHciCode()));*/
                 DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
             } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
                     DataSubmissionConstant.CRUD_TYPE_RFC})) {
@@ -159,6 +163,7 @@ public class ArCycleStagesManualDelegator {
                     orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
                 stage = "current";
                 ParamUtil.setRequestAttr(request, "hasDraft", true);
@@ -192,8 +197,10 @@ public class ArCycleStagesManualDelegator {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode);
-            if (dataSubmissionDraft != null) {
+            if (dataSubmissionDraft != null && !Objects.equals(currentArDataSubmission.getDraftNo(),
+                    dataSubmissionDraft.getDraftNo())) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
                 stage = "current";
                 ParamUtil.setRequestAttr(request, "hasDraft", true);
@@ -233,7 +240,7 @@ public class ArCycleStagesManualDelegator {
         dataSubmission.setCycleStage(stage);
         currentSuper.setDataSubmissionDto(dataSubmission);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
-                hciCode);
+                hciCode, null);
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
@@ -254,6 +261,10 @@ public class ArCycleStagesManualDelegator {
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
         CycleStageSelectionDto selectionDto = ControllerHelper.get(request, CycleStageSelectionDto.class);
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setId(ParamUtil.getString(request, "cycleId"));
+        cycleDto.setCycleType(ParamUtil.getString(request, "lastCycle"));
+        selectionDto.setLastCycleDto(cycleDto);
         return selectionDto;
     }
 

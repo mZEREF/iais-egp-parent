@@ -11,11 +11,9 @@ public class Approval implements Serializable {
     private String processType;
     private String approveNo;
     private String status;
-    private Date approvalSubmissionDate;
+    private Date approvalDate;
     private Date approvalStartDate;
     private Date approvalExpiryDate;
-    private Date createdAt;
-    private String createdBy;
-    private Date modifiedAt;
-    private String modifiedBy;
+    private String suspendedStatus;
+    private String renewable;
 }

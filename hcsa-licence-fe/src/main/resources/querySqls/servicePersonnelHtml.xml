@@ -23,6 +23,7 @@
                 </tr>
                 <tr height="1">
                     <td class="" style="">
+                        <input type="hidden" name="isPartEdit" value="0"/>
                         <div id="control--runtime--2" class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal personnel-sel">
                                 <div class="col-sm-5 control-label formtext ">

@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.action.ApprovalAppDelegator;
-import sg.gov.moh.iais.egp.bsb.action.FacCertifierRegistrationDelegator;
-import sg.gov.moh.iais.egp.bsb.action.FacilityRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
@@ -20,9 +17,11 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static sg.gov.moh.iais.egp.bsb.action.WithdrawnAppDelegator.WITHDRAWN_APP_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
 
@@ -139,6 +140,20 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
     }
 
+    @GetMapping("/audit/repo/{id}")
+    public void downloadAuditSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::auditGetSavedFile);
+    }
+
+    @GetMapping("/audit/new/{id}")
+    public void downloadAuditNewFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::auditGetNewFile);
+    }
+
+    @GetMapping("/withdrawn/repo/{id}")
+    public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
+    }
 
 
     /**
@@ -159,7 +174,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegGetNewFile(HttpServletRequest request, String id) {
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
@@ -170,7 +185,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegGetSavedFile(HttpServletRequest request, String id) {
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
@@ -186,7 +201,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile approvalAppGetNewFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
         sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
@@ -197,7 +212,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile approvalAppGetSavedFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
         sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
@@ -213,7 +228,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetNewFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request,FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT,FacCertifierRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
     }
@@ -228,13 +243,13 @@ public class DocDownloadAjaxController {
         if(transferNotificationDto != null){
             return transferNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(consumeNotificationDto != null){
-            return consumeNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return consumeNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(disposalNotificationDto != null){
-            return disposalNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return disposalNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(exportNotificationDto != null){
-            return exportNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return exportNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(receiptNotificationDto != null){
-            return receiptNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return receiptNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else{
             return null;
         }
@@ -245,7 +260,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetSavedFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request,FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT,FacCertifierRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
@@ -258,6 +273,46 @@ public class DocDownloadAjaxController {
     public SimpleNode getSimpleNode(HttpServletRequest request,String nodeName,String rootName){
         NodeGroup facCertRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, rootName);
         return  (SimpleNode) facCertRegRoot.at(nodeName);
+    }
+
+    private MultipartFile withdrawnGetNewFile(HttpServletRequest request, String id) {
+        AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
+        MultipartFile multipartFile = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.withdrawn.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
+            if (newDocInfo.getTmpId().equals(id)) {
+                multipartFile = newDocInfo.getMultipartFile();
+                break;
+            }
+        }
+        return multipartFile;
+    }
+
+    private MultipartFile auditGetNewFile(HttpServletRequest request, String id) {
+        FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
+        MultipartFile multipartFile = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
+            if (newDocInfo.getTmpId().equals(id)) {
+                multipartFile = newDocInfo.getMultipartFile();
+                break;
+            }
+        }
+        return multipartFile;
+    }
+
+    private MultipartFile auditGetSavedFile(HttpServletRequest request, String id) {
+        FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
+        sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo info = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
+            if (docRecordInfo.getRepoId().equals(id)) {
+                info = docRecordInfo;
+                break;
+            }
+        }
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
     }
 
 }

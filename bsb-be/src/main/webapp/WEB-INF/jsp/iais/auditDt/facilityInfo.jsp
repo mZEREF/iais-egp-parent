@@ -3,9 +3,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                     <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                        <tr>
+                            <th scope="col" style="display: none"></th>
+                        </tr>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>
                             <td style="padding-left : 20px"><c:out value="${processData.facName}"/></td>
@@ -16,7 +19,7 @@
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px"><c:out value="${processData.facClassification}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${processData.facClassification}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Type</td>
@@ -24,7 +27,7 @@
                         </tr>
                         <tr>
                             <td align="right">Audit Type</td>
-                            <td style="padding-left : 20px"><c:out value="${processData.auditType}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${processData.auditType}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Audit Date</td>

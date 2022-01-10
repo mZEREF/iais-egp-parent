@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
@@ -59,4 +60,14 @@ public interface FacilityRegisterClient {
 
     @PostMapping(path = "/register/facility/rfc/amendment/saveFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAmendmentFacility(@RequestBody FacilityRegisterDto dto);
+
+    /*******************RENEWAL********************/
+    @GetMapping(path = "/register/facility/renewal/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityRegisterDto> getRenewalFacRegAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
+
+    @PostMapping(path = "/register/facility/renewal/validate/review", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateRenewalFacilityReview(@RequestBody FacilityRegistrationReviewDto dto);
+
+    @PostMapping(path = "/register/facility/renewal", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveRenewalRegisteredFacility(@RequestBody FacilityRegisterDto dto);
 }

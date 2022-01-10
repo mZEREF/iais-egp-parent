@@ -40,4 +40,11 @@ public class INTRANET___MohAOProcessingRevocation___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
+	}
+
+	public void preSwitch_OnStepProcess_0() throws Exception {
+	}
+
 }

@@ -56,8 +56,20 @@ $(function (){
         $("#mainForm").submit();
     });
 
-    $("#next").click(function (){
-        $("#mainForm").submit();
-    })
+    $("#next").click(function () {
+        var optionVal = $("#facSelect option:selected").val();
+        var dataSubVal = $("#dataSubNo option:selected").val();
+        if (optionVal === "") {
+            $("#facSelectError").html("This is Mandatory");
+        }if(dataSubVal === ""){
+            $("#dataSubNoError").html("This is Mandatory");
+        } else {
+            showWaiting();
+            $("[name='action_type']").val("doNext");
+            $("#facSelectError").html("");
+            $("#facId").val(optionVal);
+            $("#mainForm").submit();
+        }
+    });
 
 })

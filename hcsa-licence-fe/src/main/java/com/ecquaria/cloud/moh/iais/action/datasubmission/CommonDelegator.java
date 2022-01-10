@@ -3,7 +3,12 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -12,15 +17,19 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * CommonDelegator
@@ -36,7 +45,7 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_CONFIRM = "confirm";
     protected static final String ACTION_TYPE_DRAFT = "draft";
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
-
+    protected final static String  DONOR_SOURSE_OTHERS    = "Others";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
@@ -57,7 +66,10 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void start(BaseProcessClass bpc) {}
+    public void start(BaseProcessClass bpc) {
+        HttpSession session = bpc.request.getSession();
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
+    }
 
     /**
      * StartStep: PrepareSwitch
@@ -69,11 +81,6 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Switch -----"));
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
-        String stage = Optional.ofNullable(currentArDataSubmission.getSelectionDto())
-                .map(CycleStageSelectionDto::getStage)
-                .orElse("Cycle Stages");
-        stage = MasterCodeUtil.getCodeDesc(stage);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -81,6 +88,7 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Assisted Reproduction</strong>");
     }
 
     /**
@@ -98,16 +106,29 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doReturn(BaseProcessClass bpc) throws IOException {
+        log.info(StringUtil.changeForLog("The doReturn start ..."));
         returnStep(bpc);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (arSuperDataSubmission != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS)
-                    .append(bpc.request.getServerName())
-                    .append(InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        String uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+        if(arSuperDataSubmission != null){
+            if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+                uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+            }else {
+                if (StringUtil.stringsContainKey(arSuperDataSubmission.getSubmissionType(),DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO)) {
+                    uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/1/PrepareARSubmission";
+                }else {
+                    uri =  InboxConst.URL_LICENCE_WEB_MODULE+ "MohARCycleStagesManual";
+                }
+            }
         }
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(uri);
+        log.info(StringUtil.changeForLog("The url is -->:"+url));
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        log.info(StringUtil.changeForLog("The doReturn end ..."));
     }
 
     /**
@@ -159,8 +180,6 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void prepareConfim(BaseProcessClass bpc) {}
-
-    ;
 
     /**
      * StartStep: Draft
@@ -216,6 +235,7 @@ public abstract class CommonDelegator {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
         String stage = dataSubmissionDto.getCycleStage();
+        // Spec: 3.3.3.1.9
         String status = cycle.getStatus();
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
@@ -226,9 +246,17 @@ public abstract class CommonDelegator {
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED,
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN})) {
                     status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
+                } else if (StringUtil.isIn(outcomeStageDto, new String[]{
+                        DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY})) {//3.3.4.3
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {//3.3.4.3
+                OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
+                if (outcomeStageDto.getPregnancyDetected()) {
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
+                }
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(stage)) {
@@ -239,7 +267,11 @@ public abstract class CommonDelegator {
                 OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
                 if (!outcomeStageDto.getPregnancyDetected()) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
+                } else {//3.3.4.3
+                    //status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
+                status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
             }
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(cycleType)) {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
@@ -268,8 +300,10 @@ public abstract class CommonDelegator {
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
-        ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
+                DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
+                DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
     }
@@ -294,6 +328,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        getRfcCommon(bpc.request);
         pageAction(bpc);
     }
 
@@ -318,11 +353,11 @@ public abstract class CommonDelegator {
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         // declaration
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);*/
         // others
         pageConfirmAction(bpc);
     }
@@ -335,7 +370,7 @@ public abstract class CommonDelegator {
      */
     public void pageConfirmAction(BaseProcessClass bpc) {
         // validation
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -347,7 +382,7 @@ public abstract class CommonDelegator {
             log.error("------No checked for declaration-----");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
-        }
+        }*/
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
@@ -379,6 +414,7 @@ public abstract class CommonDelegator {
                 }
             }
         }
+        verifyRfcCommon(request,errorMap);
         if (!errorMap.isEmpty()) {
             log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -389,6 +425,40 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, passCrudActionType);
         }
         return true;
+    }
+
+    protected void verifyRfcCommon(HttpServletRequest request,Map<String,String> errorMap){
+      if(isRfc(request)){
+          ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+          DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+          if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
+              errorMap.put("amendReason","GENERAL_ERR0006");
+          }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+              errorMap.put("amendReasonOther","GENERAL_ERR0006");
+          }
+      }
+    }
+
+    protected void getRfcCommon(HttpServletRequest request){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
+            if(isOthers(dataSubmissionDto.getAmendReason())){
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+            }else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+    }
+
+    protected boolean isOthers(String others){
+        return StringUtil.isIn(others,new String[]{DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS,DataSubmissionConsts.DONOR_SAMPLE_AMEND_REASON_OTHERS,DataSubmissionConsts.PATIENT_AMENDMENT_OTHER});
+    }
+
+    protected boolean isRfc(HttpServletRequest request){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        return arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String... actionType) {
@@ -418,6 +488,13 @@ public abstract class CommonDelegator {
 
     private boolean needValidate(HttpServletRequest request, String... actionType) {
         return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE), actionType);
+    }
+
+    //TODO from ar center
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions(DataSubmissionHelper.setArPremisesMap(request));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
+        return selectOptions;
     }
 
 }

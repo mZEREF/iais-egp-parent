@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = FeMessageClientFallback.class)
@@ -31,4 +32,6 @@ public interface FeMessageClient {
     @GetMapping(value = "/iais-inter-inbox/inter-msgIds-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInterMsgIdsBySubjectLike(@RequestParam("subject") String subject, @RequestParam("status") String status);
 
+    @PostMapping(value = "/iais-inter-inbox/dates-by-subject-and-user-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<Date>> getLastSubjectDate(@RequestBody List<String> userIds, @RequestParam("subject") String subject);
 }

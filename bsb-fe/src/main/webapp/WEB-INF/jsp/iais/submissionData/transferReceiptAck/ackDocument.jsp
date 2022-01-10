@@ -3,7 +3,7 @@
 <div class = "row">
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
-            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
+            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 100%;padding: 10px">
                 <div class="document-upload-list--v--${status.index}">
                     <c:set var="newFiles" value="${keyMap.get(status.index)}"/>
                     <h3>

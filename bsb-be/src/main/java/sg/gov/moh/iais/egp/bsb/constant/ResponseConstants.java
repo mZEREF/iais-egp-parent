@@ -13,4 +13,6 @@ public class ResponseConstants {
     public static final String ERROR_CODE_VALIDATION_FAIL = "VALIDATION_FAIL";
 
     public static final String ERROR_INFO_ERROR_MSG = "errorMsg";
+
+    public static final String ERR_MSG_FAIL_RETRIEVAL = "Fail to retrieve data";
 }

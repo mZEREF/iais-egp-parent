@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="AOProcessingIncident" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="60" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreProcessingData" x="160" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preProcessingData_OnStepProcess_0" name="preProcessingData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleAOProcessing" x="520" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAOProcessing_OnStepProcess_0" name="handleAOProcessing_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoProcessing" x="660" y="310">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreViewNotification" x="530" y="290">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewNotification_OnStepProcess_0" name="preViewNotification_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="IncidentAOProcessing" stageIndicator="" x="340" y="190">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PocessingSuccess" stageIndicator="" x="660" y="420">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewNotification" stageIndicator="" x="400" y="290">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(80,210)(180,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/IncidentAOProcessing" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreProcessingData" style="rectanular">
+   <position>{(180,210)(360,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleAOProcessing" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/IncidentAOProcessing" style="rectanular">
+   <position>{(360,210)(540,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleAOProcessing" style="rectanular">
+   <position>{(540,210)(690,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoProcessing" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,210)(680,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PocessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoProcessing" style="rectanular">
+   <position>{(680,330)(680,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,210)(213,88)(180,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewNotification" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,210)(550,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewNotification" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreViewNotification" style="rectanular">
+   <position>{(550,310)(420,310)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="670" y="190">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/DoProcessing" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreViewNotification" value="&quot;view&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

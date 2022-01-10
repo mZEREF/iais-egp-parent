@@ -1,30 +1,30 @@
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
-<c:set var="headingSign" value="completed"/>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto" %>
+<%
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+    OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
+%>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a href="#cycleDetails" data-toggle="collapse" >
+            <a class="collapsed" href="#cycleDetails" data-toggle="collapse" >
                 Oocyte Retrieval
             </a>
         </h4>
     </div>
-    <div id="cycleDetails" class="panel-collapse collapse in">
+    <div id="cycleDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-                <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                        <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                        <c:out value="${patientDto.idNumber}"/>
-                        ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                </p>
-                <hr/>
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>
@@ -54,7 +54,7 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${totalRetrievedNum}"/>
+                        <c:out value="<%=oocyteRetrievalStageDto.getTotalNum()%>"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

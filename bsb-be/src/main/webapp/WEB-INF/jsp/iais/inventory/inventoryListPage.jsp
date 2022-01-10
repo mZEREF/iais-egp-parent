@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -8,6 +9,8 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inventory.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -45,43 +48,46 @@
                                                     <div class="row">
                                                         <div class="col-xs-12" style="height: 100%">
                                                             <div class="table-gp">
-                                                                <table class="table table-bordered">
+                                                                <table aria-describedby="" class="table table-bordered">
                                                                     <tbody>
                                                                     <tr>
-                                                                        <td class="col-xs-6" align="right">S/N</td>
+                                                                        <th scope="col" style="display: none"></th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="col-xs-6">S/N</td>
                                                                         <td class="col-xs-6" style="padding-left: 15px;">1</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Biological Agent/Toxin</td>
-                                                                        <td style="padding-left: 15px;">Biological Agent</td>
+                                                                        <td >Biological Agent/Toxin</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.bat}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Type of Transfer</td>
-                                                                        <td style="padding-left: 15px;">import</td>
+                                                                        <td >Type of Transfer</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.transferType}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Quantity Transferred</td>
-                                                                        <td style="padding-left: 15px;">impective</td>
+                                                                        <td >Quantity Transferred</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.transferredQTY}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Sending Facility</td>
-                                                                        <td style="padding-left: 15px;">gciuty</td>
+                                                                        <td >Sending Facility</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.sendFacility}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Receiving Facility</td>
-                                                                        <td style="padding-left: 15px;">receortty</td>
+                                                                        <td >Receiving Facility</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.recFacility}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Date of Transfer</td>
-                                                                        <td style="padding-left: 15px;">06/17/2021</td>
+                                                                        <td >Date of Transfer</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.transferDate}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Expected Arrival time at receiving facility</td>
-                                                                        <td style="padding-left: 15px;">06/18/2021</td>
+                                                                        <td >Expected Arrival time at receiving facility</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.exceptedArrivalDate}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Name of Courier of Service Provider</td>
-                                                                        <td style="padding-left: 15px;">james</td>
+                                                                        <td >Name of Courier of Service Provider</td>
+                                                                        <td style="padding-left: 15px;">${historyDto.providerName}</td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -198,8 +204,11 @@
                                                                                      result="SearchResult"/>
                                                                     <div class="table-responsive">
                                                                     <div class="table-gp">
-                                                                        <table class="table">
+                                                                        <table aria-describedby="" class="table">
                                                                             <thead>
+                                                                            <tr>
+                                                                                <th scope="col" style="display: none"></th>
+                                                                            </tr>
                                                                             <tr align="center">
                                                                                 <iais:sortableHeader needSort="false"
                                                                                                      field="S/N"
@@ -244,7 +253,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <a onclick="javascript:doBack()"><em
+                                    <a onclick="doBack()"><em
                                             class="fa fa-angle-left"> </em> Back</a>
                                 </div>
                             </iais:body>
@@ -255,6 +264,3 @@
         </div>
     </form>
 </div>
-<script type="text/javascript">
-
-</script>

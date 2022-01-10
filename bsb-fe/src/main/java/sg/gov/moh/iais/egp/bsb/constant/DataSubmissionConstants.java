@@ -56,10 +56,12 @@ public final class DataSubmissionConstants {
     public static final String KEY_FAC_LIST_DTO = "facListDto";
     public static final String KEY_DO_SETTINGS = "doSettings";
     public static final String KEY_DOC_META = "docMeta";
+    public static final String KEY_OTHER_DOC = "otherDocs";
     public static final String KEY_SCHEDULE_TYPE = "scheduleType";
     public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
     public static final String KEY_EMPTY_LIST_ERROR = "you have not key your consumeList";
     public static final String KEY_SUBMISSION_TYPE = "submissionType";
+    public static final String KEY_DOC_TYPE_OF_OTHER = "others";
 
     public static final String KEY_DATA_SUBMISSION_TYPE_CONSUME = "DATTYPE001";
     public static final String KEY_DATA_SUBMISSION_TYPE_DISPOSAL = "DATTYPE002";

@@ -33,7 +33,7 @@ public class ByteArrayMultipartFile implements MultipartFile, Serializable {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream(){
         return new ByteArrayInputStream(bytes);
     }
 

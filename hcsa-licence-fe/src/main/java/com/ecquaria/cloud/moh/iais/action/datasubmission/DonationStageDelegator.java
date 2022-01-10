@@ -52,7 +52,7 @@ public class DonationStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Donation</strong>");
 
         List<SelectOption> donatedTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATED_TYPE);
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);
@@ -104,6 +104,8 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setDonatedForResearch(1);
             Integer donResForTreatNum =  null;
             try {
+                String donResForTreatNumString=ParamUtil.getString(request, "donResForTreatNum");
+                donationStageDto.setDonResForTreatNumStr(donResForTreatNumString);
                 donResForTreatNum =  ParamUtil.getInt(request, "donResForTreatNum");
                 donationStageDto.setDonResForTreatNum(donResForTreatNum);
                 totalNum+=donResForTreatNum;
@@ -112,6 +114,8 @@ public class DonationStageDelegator extends CommonDelegator{
             }
             Integer donResForCurCenNotTreatNum =  null;
             try {
+                String donResForCurCenNotTreatNumString=ParamUtil.getString(request, "donResForCurCenNotTreatNum");
+                donationStageDto.setDonResForCurCenNotTreatNumStr(donResForCurCenNotTreatNumString);
                 donResForCurCenNotTreatNum =  ParamUtil.getInt(request, "donResForCurCenNotTreatNum");
                 donationStageDto.setDonResForCurCenNotTreatNum(donResForCurCenNotTreatNum);
                 totalNum+=donResForCurCenNotTreatNum;
@@ -144,6 +148,8 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setDonatedForTraining(1);
             Integer trainingNum = null;
             try {
+                String trainingNumString=ParamUtil.getString(request, "trainingNum");
+                donationStageDto.setTrainingNumStr(trainingNumString);
                 trainingNum = ParamUtil.getInt(request, "trainingNum");
                 donationStageDto.setTrainingNum(trainingNum);
                 totalNum+=trainingNum;
@@ -152,6 +158,8 @@ public class DonationStageDelegator extends CommonDelegator{
             }
             Integer treatNum = null;
             try {
+                String treatNumString=ParamUtil.getString(request, "treatNum");
+                donationStageDto.setTreatNumStr(treatNumString);
                 treatNum =  ParamUtil.getInt(request, "treatNum");
                 donationStageDto.setTreatNum(treatNum);
                 totalNum+=treatNum;
@@ -205,7 +213,6 @@ public class DonationStageDelegator extends CommonDelegator{
                 break;
             default:
         }
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
 
         List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
         String hciCode=donationStageDto.getDonatedCentre();
@@ -216,7 +223,10 @@ public class DonationStageDelegator extends CommonDelegator{
                 value=so.getText();
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "donatedCentre", value);
+        donationStageDto.setDonatedCentreAddress(value);
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
     }
 
 }

@@ -18,7 +18,7 @@
   <div class="main-content">
     <div class="container center-content">
       <div class="col-xs-12">
-        <h3 style="font-size: 36px">New Assisted Reproduction Submission</h3>
+        <h3 style="font-size: 36px">New Data Submission</h3>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <%@include file="section/arSubmissionSection.jsp" %>
         </div>
@@ -27,13 +27,18 @@
     </div>
   </div>
 </form>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP001'}">
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
   <iais:confirm msg="DS_MSG001" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                 cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                 cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete')" needFungDuoJi="false"/>
 </c:if>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP002'}">
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">
   <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
+                cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" needFungDuoJi="false"/>
+</c:if>
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP003'}">
+  <iais:confirm msg="DS_MSG008" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                 cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                 cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" needFungDuoJi="false"/>
 </c:if>

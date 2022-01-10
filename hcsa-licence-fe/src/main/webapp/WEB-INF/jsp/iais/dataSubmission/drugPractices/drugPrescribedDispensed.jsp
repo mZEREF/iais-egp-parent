@@ -11,9 +11,10 @@
     }
 %>
 <webui:setLayout name="iais-internet"/>
-<c:set var="drugPrescribedDispensedDto" value="${DpSuperDataSubmissionDto.DrugPrescribedDispensedDto}" />
+<c:set var="drugPrescribedDispensedDto" value="${dpSuperDataSubmissionDto.drugPrescribedDispensedDto}" />
 <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
 <c:set var="drugMedication" value="${drugPrescribedDispensedDto.drugMedication}" />
+<c:set var="drugMedicationDtos" value="${drugPrescribedDispensedDto.drugMedicationDtos}"/>
 
 <%@ include file="common/dpHeader.jsp" %>
 
@@ -31,3 +32,9 @@
         </div>
     </div>
 </form>
+<iais:confirm msg="DS_MSG003" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close"
+              cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+              cancelFunc="submit('patient', 'patient');" needFungDuoJi="false"/>
+<iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+<input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>

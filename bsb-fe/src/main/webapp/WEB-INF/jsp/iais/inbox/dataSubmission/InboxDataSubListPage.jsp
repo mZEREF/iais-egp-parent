@@ -90,10 +90,11 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
                                                 <%-- need to use new tag in future --%>
+                                                <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="submissionNo" value="Submission ID" isFE="true" style="width: 15%"/>
                                                 <iais:sortableHeader needSort="true" field="type" value="Type" isFE="true" style="width: 18%"/>
                                                 <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true" style="width: 15%"/>
@@ -168,13 +169,14 @@
                                                             </td>
                                                             <td>
                                                                 <c:if test="${item.status ne 'DATASTA002'}">
-                                                                    <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                     <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
-                                                                        <option value="#">
-                                                                            Withdrawn
-                                                                        </option>
+                                                                        <%--The application will be in a “non-approved” or “non-rejected” stage--%>
+                                                                        <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' and item.applicationStatus ne 'BSBAPST009')}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>&from=dataSubmission">Withdrawn</option>
+                                                                        </c:if>
                                                                     </select>
+                                                                    <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 </c:if>
                                                             </td>
                                                         </tr>

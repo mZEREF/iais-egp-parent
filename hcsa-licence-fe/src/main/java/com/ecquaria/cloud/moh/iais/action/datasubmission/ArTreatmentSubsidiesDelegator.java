@@ -63,20 +63,6 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
     }
 
     @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto();
-        String coFunding = arTreatmentSubsidiesStageDto.getCoFunding();
-        int freshCount = ParamUtil.getInt(bpc.request,"freshCount");
-        int frozenCount = ParamUtil.getInt(bpc.request,"frozenCount");
-        boolean isDisplayAppeal = ("ATSACF002".equals(coFunding) && freshCount >= 3) ||
-                ("ATSACF003".equals(coFunding) && frozenCount >= 3);
-        ParamUtil.setRequestAttr(bpc.request, "isDisplayAppeal",isDisplayAppeal);
-
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
-    }
-
-    @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>AR Treatment Co-funding Stage</strong>");
     }

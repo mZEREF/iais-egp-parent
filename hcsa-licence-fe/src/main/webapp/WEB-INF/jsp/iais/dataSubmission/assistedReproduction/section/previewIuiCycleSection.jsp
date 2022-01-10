@@ -1,58 +1,69 @@
-<c:set var="headingSign" value="completed"/>
+<c:set var="headingSign" value="${currentPageStage eq 'preview' ?'completed':''}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
       <h4 class="panel-title" >
-        <a href="#viewIuiCycleStage" data-toggle="collapse" >
+        <a class="collapsed" href="#viewIuiCycleStage" data-toggle="collapse" >
           Intrauterine Insemination Cycle
         </a>
       </h4>
     </div>
-  <div id="viewIuiCycleStage" class="panel-collapse collapse in">
+  <div id="viewIuiCycleStage" class="panel-collapse collapse">
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
         <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
-        <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-        <h3>
-          <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-        </h3>
+        <c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
+        <%@include file="patientCommon.jsp"%>
         <iais:row>
-          <iais:field value="Premises where IUI is Performed" mandatory="false"/>
+          <iais:field width="5" value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
-         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out>
+         <c:out value="${iuiCycleStageDto.ownPremises ? 'Own premises' : 'Others'}"></c:out>
           </iais:value>
         </iais:row>
+        <c:if test="${!iuiCycleStageDto.ownPremises}">
         <iais:row>
-          <iais:field value="Date Started" mandatory="false"/>
+          <iais:field width="5" value="IUI Treatment performed in Other Premises" mandatory="false"/>
+          <iais:value width="7" cssClass="col-md-7" display="true" >
+            <c:out value="${iuiCycleStageDto.otherPremises}"/>
+          </iais:value>
+        </iais:row>
+        </c:if>
+        <iais:row>
+          <iais:field width="5" value="Date Started" mandatory="false"/>
           <iais:value  width="7" cssClass="col-md-7" display="true" >
           <fmt:formatDate value='${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' />
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Patient's Age as of This Treatment" />
+          <iais:field width="5" value="Patient's Age as of This Treatment" />
           <iais:value  width="7" cssClass="col-md-7" display="true">
            <c:out value="${iuiCycleStageDto.userAgeShow}"></c:out>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children with Current Marriage" mandatory="false"/>
+          <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.curMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children with Previous Marriage" mandatory="false"/>
+          <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
          <c:out value="${iuiCycleStageDto.prevMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Total No. of Children Delivered under IUI" mandatory="false"/>
+          <label class="col-xs-4 col-md-4 control-label">No. of Children Delivered under IUI
+            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+               title="${DSACK003Message}"
+               style="z-index: 10"
+               data-original-title="">i</a>
+          </label>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Source of Semen" mandatory="false"/>
+          <iais:field  width="5" value="Source of Semen" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
             <c:forEach items="${iuiCycleStageDto.semenSources}" var="semenSources" varStatus="status">
               <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${semenSources}"/>
@@ -60,20 +71,23 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were extracted" mandatory="false"/>
+          <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
           <c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were used in this cycle" mandatory="false"/>
+          <iais:field  width="5" value="How many vials of sperm were used in this cycle?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true" >
           <c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/>
           </iais:value>
         </iais:row>
       </div>
+      <c:if test="${empty donorDtos}">
+        <%@include file="../common/patientInventoryTable.jsp" %>
+      </c:if>
     </div>
   </div>
 </div>
-<c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
+<c:set var="donorFrom" value="iui"/>
 <%@include file="previewDonorSection.jsp"%>

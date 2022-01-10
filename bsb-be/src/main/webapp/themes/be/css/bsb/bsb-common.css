@@ -1,3 +1,12 @@
+label.label-normal {
+    font-weight: normal;
+}
+
+label.label-bold {
+    font-weight: bold;
+}
+
+
 .table-info-display {
     margin: 20px 15px 25px 12px;
     background: #efefef;

@@ -43,6 +43,9 @@
             width: 30%;
         }
     }
+    .panel-group .panel.panel-default > .panel-heading h4 a {
+        text-decoration: none;
+    }
 </style>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
@@ -51,6 +54,15 @@
             <c:choose>
             <c:when test="${printflag == 'ACKART'}">
                 <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckAR.jsp" %>
+            </c:when>
+            <c:when test="${printflag == 'ACKDRP'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckDP.jsp" %>
+            </c:when>
+            <c:when test="${printflag == 'ACKLDT'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckLdt.jsp" %>
+            </c:when>
+            <c:when test="${printflag == 'ACKWD'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckWd.jsp" %>
             </c:when>
             <c:otherwise>
             <div class="col-xs-12">
@@ -66,6 +78,18 @@
                     </c:when>
                     <c:when test="${printflag == 'ART'}">
                         <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printAR.jsp" />
+                    </c:when>
+                    <c:when test="${printflag == 'DRP'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printDP.jsp" />
+                    </c:when>
+                    <c:when test="${printflag == 'LDT'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printLDT.jsp" />
+                    </c:when>
+                    <c:when test="${printflag == 'TOP'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printTOP.jsp" />
+                    </c:when>
+                    <c:when test="${printflag == 'VSS'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printVSS.jsp" />
                     </c:when>
                     </c:choose>
 

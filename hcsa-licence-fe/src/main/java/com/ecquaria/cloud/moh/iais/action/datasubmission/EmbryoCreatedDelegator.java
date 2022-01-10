@@ -74,6 +74,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         int totalNum =0;
         Integer transEmbrFreshOccNum =  null;
         try {
+            String transEmbrFreshOccNumString=ParamUtil.getString(request, "transEmbrFreshOccNum");
+            embryoCreatedStageDto.setTransEmbrFreshOccNumStr(transEmbrFreshOccNumString);
             transEmbrFreshOccNum =  ParamUtil.getInt(request, "transEmbrFreshOccNum");
             totalNum+=transEmbrFreshOccNum;
         }catch (Exception e){
@@ -81,6 +83,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }
         Integer poorDevFreshOccNum = null;
         try {
+            String poorDevFreshOccNumString=ParamUtil.getString(request, "poorDevFreshOccNum");
+            embryoCreatedStageDto.setPoorDevFreshOccNumStr(poorDevFreshOccNumString);
             poorDevFreshOccNum = ParamUtil.getInt(request, "poorDevFreshOccNum");
             totalNum+=poorDevFreshOccNum;
         }catch (Exception e){
@@ -88,6 +92,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }
         Integer transEmbrThawOccNum = null;
         try {
+            String transEmbrThawOccNumString=ParamUtil.getString(request, "transEmbrThawOccNum");
+            embryoCreatedStageDto.setTransEmbrThawOccNumStr(transEmbrThawOccNumString);
             transEmbrThawOccNum =  ParamUtil.getInt(request, "transEmbrThawOccNum");
             totalNum+=transEmbrThawOccNum;
         }catch (Exception e){
@@ -95,6 +101,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }
         Integer poorDevThawOccNum = null;
         try {
+            String poorDevThawOccNumString=ParamUtil.getString(request, "poorDevThawOccNum");
+            embryoCreatedStageDto.setPoorDevThawOccNumStr(poorDevThawOccNumString);
             poorDevThawOccNum =  ParamUtil.getInt(request, "poorDevThawOccNum");
             totalNum+=poorDevThawOccNum;
         }catch (Exception e){
@@ -134,7 +142,5 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 //        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
 
         patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getTotalNum());
-
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }

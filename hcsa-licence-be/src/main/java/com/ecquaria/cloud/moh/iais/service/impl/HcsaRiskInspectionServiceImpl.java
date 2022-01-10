@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -34,9 +33,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     @Override
     public InspectionShowDto getInspectionShowDto() {
-        List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
-        InspectionShowDto showDto = hcsaConfigClient.getInspectionshow(serviceDtoList).getEntity();
-        return showDto;
+        return hcsaConfigClient.getInspectionshow(hcsaRiskSupportBeService.getNameSortHcsaServiceDtos()).getEntity();
     }
 
     @Override

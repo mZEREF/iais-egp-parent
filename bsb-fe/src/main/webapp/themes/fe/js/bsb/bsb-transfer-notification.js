@@ -33,15 +33,18 @@ $(function (){
 function stChange(obj){
     var num = $(obj).attr("name").split("--v--")[1];
     var scheduleType = $("#scheduleType"+"--v--"+num).val();
-    if(scheduleType !== 'SCHTYPE006'){
+    if(scheduleType !== 'SCHTYPE006' && scheduleType !== ''){
         $("#agentFifth"+"--v--"+num).hide();
         $("#agentEpFifth"+"--v--"+num).show();
+        $("#batDocument--v--"+ num).show();
     } else if(scheduleType === "SCHTYPE006"){
         $("#agentEpFifth"+"--v--"+num).hide();
         $("#agentFifth"+"--v--"+num).show();
+        $("#batDocument--v--"+ num).show();
     } else{
-        $("#agentEpFifth" + meta.separator + num).hide();
-        $("#agentFifth" + meta.separator + num).hide();
+        $("#agentEpFifth--v--"+ num).hide();
+        $("#agentFifth--v--"+ num).hide();
+        $("#batDocument--v--"+ num).hide();
     }
     if (scheduleType === 'Please Select' || scheduleType === '') {
         var bat = $("#batCode"+"--v--"+num);
@@ -77,10 +80,9 @@ function stChange(obj){
     //empty all new saved  file
     list.find(".file-upload-gp").find("div").empty();
     var deleteList = $("#existFiles"+"--v--"+num).val();
-    var deleteSplit = deleteList.split(",");
     // add id into the delete list
     var deleteNewFiles = document.getElementById("deleteNewFiles");
-    deleteNewFiles.value = deleteList;
+    appendInputValue(deleteNewFiles,deleteList);
 
     var docH3 = list.find("h3");
     addHtml(docH3,scheduleType);
@@ -102,6 +104,14 @@ function addHtml(docH3,sType){
         }
     }
 
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
 }
 
 

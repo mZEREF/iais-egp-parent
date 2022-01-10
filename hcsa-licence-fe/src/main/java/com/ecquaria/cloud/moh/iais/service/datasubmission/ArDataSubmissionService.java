@@ -1,13 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import java.io.File;
 import java.util.Date;
@@ -21,9 +15,11 @@ public interface ArDataSubmissionService {
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
 
+    CycleStageSelectionDto getCycleStageSelectionDtoByConds(String patientCode, String hciCode, String cycleId);
+
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde);
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde, String cycleId);
 
     ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission);
 
@@ -37,7 +33,7 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo);
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
@@ -86,25 +82,7 @@ public interface ArDataSubmissionService {
       */
     PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto);
 
-    DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
-
-    /**
-      * @author: shicheng
-      * @Date 2021/11/15
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getSourceOfSemenOption
-      */
-    List<SelectOption> getSourceOfSemenOption();
-
-    /**
-     * @author: shicheng
-     * @Date 2021/11/15
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: getChildNumOption
-     */
-    List<SelectOption> getChildNumOption();
+    DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCodeType,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
 
     /**
       * @author: shicheng
@@ -114,16 +92,6 @@ public interface ArDataSubmissionService {
       * @Descripation: setIuiCycleStageDtoDefaultVal
       */
     ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
-
-    /**
-      * @author: shicheng
-      * @Date 2021/11/16
-      * @Param: numberStr
-      * @return: Integer
-      * @Descripation: stringTransferInteger
-      */
-    Integer stringTransferInteger(String numberStr);
-
     /**
       * @author: shicheng
       * @Date 2021/11/16
@@ -142,4 +110,25 @@ public interface ArDataSubmissionService {
     List<String> saveFileRepo(List<File> files);
 
     PatientInventoryDto getPatientInventory(String patientCode, String HciCode);
+
+    List<DonorDto> getAllDonorDtoByCycleId(String cycleId);
+
+    Date getCycleStartDate(String cycleId);
+
+    boolean flagOutEnhancedCounselling(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean flagOutEmbryoTransferAgeAndCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean flagOutEmbryoTransferCountAndPatAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean haveStimulationCycles(String patientCode);
+
+    int embryoTransferCount(String cycleDtoId);
+
+    boolean haveEmbryoTransferGreaterFiveDay(String cycleId);
+
+    void sendIncompleteCycleNotificationPeriod();
+
+    int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
+
 }

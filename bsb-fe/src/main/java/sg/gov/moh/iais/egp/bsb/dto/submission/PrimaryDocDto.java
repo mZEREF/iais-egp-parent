@@ -17,12 +17,8 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
-import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -56,7 +52,7 @@ public class PrimaryDocDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class NewDocInfo implements Serializable {
-        private String index;
+        private Integer index;
         private String tmpId;
         private String docType;
         private String filename;
@@ -188,12 +184,10 @@ public class PrimaryDocDto implements Serializable {
     private static final String SEPARATOR               = "--v--";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
-    public void reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
-        //delete new files
-        deleteNewFiles(mulReq);
-
+    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
+        List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
         Date currentDate = new Date();
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
@@ -207,16 +201,19 @@ public class PrimaryDocDto implements Serializable {
                 if(StringUtils.hasLength(index) && index.equals(amt)){
                     //upload document toxins and bats
                     List<MultipartFile> files = mulReq.getFiles(inputName);
-                    filedNewFiles(files,inputName,docType,currentDate,loginContext);
+                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list,allNewDocInfos);
+
                 }
             }
         }
+        return list;
     }
 
-    public void reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType){
+    public static List<PrimaryDocDto.NewDocInfo> reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
 
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
+        List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
         Date currentDate = new Date();
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
@@ -224,12 +221,13 @@ public class PrimaryDocDto implements Serializable {
             if(StringUtils.hasLength(inputName) && docType.equals(inputName)){
                 //upload other document
                 List<MultipartFile> files = mulReq.getFiles(inputName);
-                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext);
+                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list,allNewDocInfos);
             }
         }
+        return list;
     }
 
-    private void deleteNewFiles(MultipartHttpServletRequest mulReq){
+    public static void deleteNewFiles(MultipartHttpServletRequest mulReq,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
         if (log.isInfoEnabled()) {
             log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
@@ -238,11 +236,11 @@ public class PrimaryDocDto implements Serializable {
             List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
                     .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
                     .collect(Collectors.toList());
-            deleteFileTmpIds.forEach(this.newDocMap::remove);
+            deleteFileTmpIds.forEach(allNewDocInfos::remove);
         }
     }
 
-    private void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext){
+    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         for (MultipartFile f : files) {
             if (log.isInfoEnabled()) {
                 log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
@@ -251,14 +249,14 @@ public class PrimaryDocDto implements Serializable {
                 log.warn("File is empty, ignore it");
             } else {
                 String tmpId = inputName + f.getSize() + System.nanoTime();
-                this.newDocMap.put(tmpId, filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+                newDocInfos.add(filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+                allNewDocInfos.put(tmpId,filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
             }
         }
     }
 
-    private NewDocInfo filedOneNewFiles(String inputName,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
+    private static NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
         NewDocInfo newDocInfo = new NewDocInfo();
-        String tmpId = inputName + f.getSize() + System.nanoTime();
         newDocInfo.setTmpId(tmpId);
         newDocInfo.setDocType(docType);
         newDocInfo.setFilename(f.getOriginalFilename());

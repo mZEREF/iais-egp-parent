@@ -13,12 +13,12 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="15%">Document</th>
-                    <th width="15%">Document Type</th>
-                    <th width="15%">File</th>
-                    <th width="15%">Size</th>
-                    <th width="15%">Submitted By</th>
-                    <th width="15%">Date Submitted</th>
+                    <th scope="col" width="15%">Document</th>
+                    <th scope="col" width="15%">Document Type</th>
+                    <th scope="col" width="15%">File</th>
+                    <th scope="col" width="15%">Size</th>
+                    <th scope="col" width="15%">Submitted By</th>
+                    <th scope="col" width="15%">Date Submitted</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,12 +26,14 @@
                     <c:forEach var="docTypes" items="${docTypes}">
                         <c:forEach var="info" items="${savedFiles.get(docTypes)}">
                             <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                            <td>${info.filename}</td>
-                            <td>${info.docType}</td>
-                            <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
-                            <td>${String.format("%.1f", info.size/1024.0)}KB</td>
-                            <td>${info.submitBy}</td>
-                            <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                            <tr>
+                                <td>${info.filename}</td>
+                                <td>${info.docType}</td>
+                                <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
+                                <td>${String.format("%.1f", info.size/1024.0)}KB</td>
+                                <td>${info.submitBy}</td>
+                                <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                            </tr>
                         </c:forEach>
                     </c:forEach>
                 </c:if>
@@ -47,13 +49,13 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="15%">Document</th>
-                    <th width="15%">Document Type</th>
-                    <th width="15%">File</th>
-                    <th width="15%">Size</th>
-                    <th width="15%">Submitted By</th>
-                    <th width="15%">Date Submitted</th>
-                    <th width="15%">Action</th>
+                    <th scope="col" width="15%">Document</th>
+                    <th scope="col" width="15%">Document Type</th>
+                    <th scope="col" width="15%">File</th>
+                    <th scope="col" width="15%">Size</th>
+                    <th scope="col" width="15%">Submitted By</th>
+                    <th scope="col" width="15%">Date Submitted</th>
+                    <th scope="col" width="15%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">

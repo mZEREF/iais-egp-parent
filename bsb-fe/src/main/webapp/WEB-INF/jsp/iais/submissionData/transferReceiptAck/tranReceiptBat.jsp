@@ -1,3 +1,5 @@
+<input type="hidden" id="section_repeat_section_id_prefix" value="ackSection" readonly disabled>
+
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Biological Agent/Toxin</strong></div>
     <div class="row form-horizontal">

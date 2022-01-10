@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,7 @@ import java.util.List;
  * @Auther chenlei on 11/18/2021.
  */
 @Slf4j
-public class DpFeClientFallback implements DpFeClient{
+public class DpFeClientFallback implements DpFeClient {
 
     private FeignResponseEntity getFeignResponseEntity(Object... params) {
         log.warn("--------Params: " + Arrays.toString(params) + "-----------");
@@ -37,11 +39,6 @@ public class DpFeClientFallback implements DpFeClient{
     }
 
     @Override
-    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
-        return getFeignResponseEntity(draftNo);
-    }
-
-    @Override
     public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
         return getFeignResponseEntity(draftId, status);
     }
@@ -57,6 +54,16 @@ public class DpFeClientFallback implements DpFeClient{
     }
 
     @Override
+    public FeignResponseEntity<PatientDto> getDpPatientDto(String idType, String idNumber, String nationality, String orgId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        return getFeignResponseEntity(draftNo);
+    }
+
+    @Override
     public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type,
             String svcName, String hciCode) {
         return getFeignResponseEntity(orgId, type, svcName, hciCode);
@@ -68,7 +75,8 @@ public class DpFeClientFallback implements DpFeClient{
     }
 
     @Override
-    public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+    public FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        return getFeignResponseEntity(orgId, type, hciCode);
     }
 
 }

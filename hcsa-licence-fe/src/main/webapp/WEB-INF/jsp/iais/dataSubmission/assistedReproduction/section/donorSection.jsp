@@ -54,7 +54,7 @@
                  <iais:row>
                      <iais:field width="5" value="Is this a Directed Donation?" mandatory="true"/>
                      <iais:value width="3" cssClass="col-md-3">
-                         <div class="form-check" style="padding-left: 0px;" onclick="showDonor('${arDonorIndex}')">
+                         <div class="form-check" style="padding-left: 0px;" onchange="showDonor('${arDonorIndex}')">
                              <input class="form-check-input"
                                     type="radio"
                                     name="directedDonation${arDonorIndex}"
@@ -68,7 +68,7 @@
                          </div>
                      </iais:value>
                      <iais:value width="3" cssClass="col-md-3">
-                         <div class="form-check" style="padding-left: 0px;" onclick="hideDonor('${arDonorIndex}')">
+                         <div class="form-check" style="padding-left: 0px;" onchange="hideDonor('${arDonorIndex}')">
                              <input class="form-check-input" type="radio"
                                     name="directedDonation${arDonorIndex}"
                                     value="0"
@@ -133,15 +133,6 @@
                      </iais:value>
                  </iais:row>
 
-                 <c:if test="${not empty donorDto.relation}">
-                 <iais:row id="relation${arDonorIndex}Row">
-                     <iais:field width="5" value="Donor relation to patient" />
-                     <iais:value width="7" cssClass="col-md-7" label="true">
-                        <iais:code code="${donorDto.relation}"/>
-                     </iais:value>
-                 </iais:row>
-                 </c:if>
-
                  <c:if test="${not empty donorDto.ageList}">
                  <iais:row id="age${arDonorIndex}Row">
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
@@ -151,11 +142,48 @@
                      </iais:value>
                  </iais:row>
                  </c:if>
+
+                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
+                         <iais:field width="5" value="Donor relation to patient" mandatory="true" />
+                         <iais:value width="3" cssClass="col-md-3" >
+                             <div class="form-check" style="padding-left: 0px;">
+                                 <input class="form-check-input"
+                                        type="radio"
+                                        name="relation${arDonorIndex}"
+                                        value="${DataSubmissionConsts.DONOR_RELATION_TO_PATIENT_FRIEND}"
+                                        id="ownPremisesRadioYes"
+                                        <c:if test="${donorDto.relation eq DataSubmissionConsts.DONOR_RELATION_TO_PATIENT_FRIEND}">checked</c:if>
+                                        aria-invalid="false" >
+                                 <label class="form-check-label"
+                                        for="relation${arDonorIndex}RadioYes"><span
+                                         class="check-circle"></span>Friend</label>
+                             </div>
+                         </iais:value>
+                         <iais:value width="4" cssClass="col-md-4" >
+                             <div class="form-check" style="padding-left: 0px;">
+                                 <input class="form-check-input" type="radio"
+                                        name="relation${arDonorIndex}"
+                                        value="${DataSubmissionConsts.DONOR_RELATION_TO_PATIENT_RELATIVE}"
+                                        id="relation${arDonorIndex}RadioNo"
+                                        <c:if test="${donorDto.relation eq DataSubmissionConsts.DONOR_RELATION_TO_PATIENT_RELATIVE}">checked</c:if>
+                                        aria-invalid="false" >
+                                 <label class="form-check-label"
+                                        for="relation${arDonorIndex}RadioNo"><span
+                                         class="check-circle"></span>Relative</label>
+                             </div>
+                         </iais:value>
+                         <iais:value width="4" cssClass="col-md-4"/>
+                         <iais:value width="3" cssClass="col-md-3">
+                             <span id="error_relation${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                         </iais:value>
+                     </iais:row>
+
+
                  <input type="hidden" name="resetDonor${arDonorIndex}" id="resetDonor${arDonorIndex}" value="${donorDto.resetDonor}"/>
                  <h3></h3>
              </div>
         </c:forEach>
-             <c:if test="${donorDtos.size()<4}">
+             <c:if test="${donorDtos.size()< arAddDonorMaxSize}">
          <iais:row >
              <iais:value width="5" cssClass="col-md-3" display="true">
                  <a class="addDonor"   onclick="addDonor()"style="text-decoration:none;">+ Add Another Donor</a>
@@ -165,3 +193,6 @@
      </div>
      </div>
 </div>
+<input type="hidden" name="DSERR019TipShow" value="${empty DS_ERR019Message ? '' : 1}" id="DSERR019TipShow">
+<iais:confirm msg="${DS_ERR019Message}" needCancel="false" popupOrder="DSERR019Tip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="DSERR019MessageTipClose()" />
+

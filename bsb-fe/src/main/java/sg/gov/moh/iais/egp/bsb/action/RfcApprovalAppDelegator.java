@@ -5,12 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -23,10 +21,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
@@ -34,11 +30,10 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
+import sg.gov.moh.iais.egp.bsb.service.ApprovalAppService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -58,48 +53,28 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 @Slf4j
 @Delegator("rfcApprovalAppDelegator")
 public class RfcApprovalAppDelegator {
-    public static final String MODULE_NAME = "New Approval Application";
-    private static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
-
-    private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_PROCESS_TYPE = "processType";
-    private static final String KEY_ACTION_TYPE = "action_type";
-    private static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_VALIDATION_ERRORS = "errorMsg";
-
-    private static final String KEY_NAV_NEXT = "next";
-    private static final String KEY_NAV_BACK = "back";
-
-    private static final String KEY_ACTION_SUBMIT = "submit";
-    private static final String KEY_ACTION_JUMP = "jump";
-    private static final String KEY_JUMP_DEST_NODE = "destNode";
-    private static final String KEY_DEST_NODE_ROUTE = "nodeRoute";
-
-    private static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
-
-    private static final String ERR_MSG_BAT_NOT_NULL = "Biological Agent/Toxin node group must not be null!";
-    private static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
-    private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
-    private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
-
-    private static final String FACILITY_ID_SELECT = "facilityIdSelect";
-    private static final String ACTIVITY_ID_SELECT_DTO = "activityIdSelectDto";
-
-    //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
-    private static final String KEY_OLD_APPROVAL_APP_DTO = "oldApprovalAppDto";
+    public static final String MODULE_NAME = "Rfc Approval Application";
 
     private final ApprovalAppClient approvalAppClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
-
-    private static final String KEY_COUNTRY_OPTIONS = "countryOps";
+    private final ApprovalAppService approvalAppService;
 
     @Autowired
-    public RfcApprovalAppDelegator(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public RfcApprovalAppDelegator(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient,
+                                   BsbFileClient bsbFileClient, ApprovalAppService approvalAppService) {
         this.approvalAppClient = approvalAppClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.approvalAppService = approvalAppService;
+    }
+
+    public void start(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
+        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        request.getSession().removeAttribute(KEY_OLD_APPROVAL_APP_DTO);
+        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -133,14 +108,6 @@ public class RfcApprovalAppDelegator {
         ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, processType);
     }
 
-    public void start(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-        request.getSession().removeAttribute(KEY_OLD_APPROVAL_APP_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
-    }
-
     public void preCompInfo(BaseProcessClass bpc){
         // do nothing now, need to prepare company info in the future
     }
@@ -151,7 +118,7 @@ public class RfcApprovalAppDelegator {
         Node compInfoNode = approvalAppRoot.getNode(NODE_NAME_COMPANY_INFO);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, approvalAppRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
+            approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -212,7 +179,7 @@ public class RfcApprovalAppDelegator {
         if (activityNode.isValidated()) {
             //replace new approvalProfileGroup to approvalAppRoot by scheduleList
             NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
-            changeApprovalProfileNodeGroup(approvalProfileGroup, activityDto);
+            ApprovalAppService.changeApprovalProfileNodeGroup(approvalProfileGroup, activityDto);
             //get primaryDocDto(facility registration upload doc) by current facilityId
             Collection<DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
             PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
@@ -227,7 +194,7 @@ public class RfcApprovalAppDelegator {
             approvalAppRoot.replaceNode(previewSubmitNode);
         }
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
+            approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -261,7 +228,7 @@ public class RfcApprovalAppDelegator {
             }
         }
         ParamUtil.setRequestAttr(request, "batIdOps", batIdOps);
-        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
+        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, ApprovalAppService.tmpCountryOps());
     }
 
     public void handleApprovalProfile(BaseProcessClass bpc){
@@ -274,7 +241,7 @@ public class RfcApprovalAppDelegator {
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, approvalAppRoot, currentNodePath, approvalProfileNode);
+            approvalAppService.jumpHandler(request, approvalAppRoot, currentNodePath, approvalProfileNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -292,7 +259,7 @@ public class RfcApprovalAppDelegator {
         }
         Nodes.needValidation(approvalAppRoot, NODE_NAME_PRIMARY_DOC);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", approvalAppService.getApprovalAppDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -309,7 +276,7 @@ public class RfcApprovalAppDelegator {
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, approvalAppRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+            approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -321,10 +288,10 @@ public class RfcApprovalAppDelegator {
         NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
 
         NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
-        List<ApprovalProfileDto> batList = getApprovalProfileList(approvalProfileGroup);
+        List<ApprovalProfileDto> batList = ApprovalAppService.getApprovalProfileList(approvalProfileGroup);
         ParamUtil.setRequestAttr(request, "approvalProfileList", batList);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", approvalAppService.getApprovalAppDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -345,9 +312,9 @@ public class RfcApprovalAppDelegator {
                 //rfc compare to decision flowType
                 ApprovalAppDto oldApprovalAppDto = (ApprovalAppDto)ParamUtil.getSessionAttr(request,KEY_OLD_APPROVAL_APP_DTO);
                 DecisionFlowType flowType = new DecisionFlowTypeImpl();
-                RfcFlowType rfcFlowType = flowType.approvalAppFlowType(compareTwoDto(oldApprovalAppDto,finalAllDataDto));
+                RfcFlowType rfcFlowType = flowType.approvalAppFlowType(approvalAppService.compareTwoDto(oldApprovalAppDto,finalAllDataDto));
                 ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
-                if (rfcFlowType.equals(RfcFlowType.AMENDMENT)){
+                if (rfcFlowType == RfcFlowType.AMENDMENT){
                     // save docs
                     SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
@@ -389,7 +356,7 @@ public class RfcApprovalAppDelegator {
                 }
                 ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
             } else {
-                jumpHandler(request, approvalAppRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
+                approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
@@ -414,7 +381,7 @@ public class RfcApprovalAppDelegator {
     public void jumpFilter(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String destNode = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        destNode = approvalProfileNodeSpecialHandle(destNode);
+        destNode = approvalAppService.approvalProfileNodeSpecialHandle(destNode);
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
 
@@ -424,179 +391,5 @@ public class RfcApprovalAppDelegator {
 
     public void doSubmit(BaseProcessClass bpc){
         // do nothing now
-    }
-
-    public static NodeGroup initApprovalProfileNodeGroup(Node[] dependNodes) {
-        return new NodeGroup.Builder().name(NODE_NAME_APPROVAL_PROFILE)
-                .dependNodes(dependNodes)
-                .addNode(new Node("error", new Node[0]))
-                .build();
-    }
-
-    /**
-     * change new approvalProfileGroup to approvalAppRoot by scheduleList
-     */
-    public static void changeApprovalProfileNodeGroup(NodeGroup approvalProfileNodeGroup, ActivityDto activityDto) {
-        Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
-        Node[] subNodes = new Node[activityDto.getSchedules().size()];
-        List<String> schedules = activityDto.getSchedules();
-        for (int i = 0; i < schedules.size(); i++) {
-            subNodes[i] = new SimpleNode(new ApprovalProfileDto(schedules.get(i)), schedules.get(i), new Node[0]);
-        }
-        approvalProfileNodeGroup.reorganizeNodes(subNodes);
-    }
-
-    /**
-     * Compute the destiny node path we will go to.
-     * @param approvalAppRoot the root NodeGroup
-     * @param actionValue the value we received, it can be next, back, or a value specified by tab
-     * @return the destiny node path, return null if we can't go the next or previous node
-     */
-    public String computeDestNodePath(NodeGroup approvalAppRoot, String actionValue) {
-        String destNode;
-        switch (actionValue) {
-            case KEY_NAV_NEXT:
-                destNode = Nodes.getNextNodePath(approvalAppRoot);
-                break;
-            case KEY_NAV_BACK:
-                destNode = Nodes.getPreviousNodePath(approvalAppRoot);
-                break;
-            default:
-                Assert.hasText(actionValue, "Action value should be a node path");
-                destNode = Nodes.expandNode(approvalAppRoot, actionValue);
-                break;
-        }
-        return destNode;
-    }
-
-    /**
-     * common actions when we do 'jump'
-     * decide the routing logic
-     * will set a dest node in the request attribute;
-     * will set a flag if we need to show the error messages.
-     * @param approvalAppRoot root data structure of this flow
-     */
-    public void jumpHandler(HttpServletRequest request, NodeGroup approvalAppRoot, String currentPath, Node currentNode) {
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        Assert.hasText(actionValue, "Invalid action value");
-        boolean currentLetGo = true;  // if false, we have to stay current node
-        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
-            currentLetGo = currentNode.doValidation();
-            if (currentLetGo) {
-                Nodes.passValidation(approvalAppRoot, currentPath);
-            }
-        }
-        if (currentLetGo) {
-            String destNode = computeDestNodePath(approvalAppRoot, actionValue);
-            String checkedDestNode = Nodes.jump(approvalAppRoot, destNode);
-            if (!checkedDestNode.equals(destNode)) {
-                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-            }
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
-        } else {
-            ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
-        }
-    }
-
-    public String approvalProfileNodeSpecialHandle(String destNode) {
-        return destNode.startsWith(NODE_NAME_APPROVAL_PROFILE) ? NODE_NAME_APPROVAL_PROFILE : destNode;
-    }
-
-    /**
-     * Compute the class name for the nav tab.
-     * The result will be active, complete or incomplete
-     * @param group the node group of the approvalAppRoot
-     * @return the class name
-     */
-    public static String computeTabClassname(NodeGroup group, String name) {
-        Assert.notNull(group, ERR_MSG_NULL_GROUP);
-        Assert.notNull(name, ERR_MSG_NULL_NAME);
-        String className;
-        if (name.equals(group.getActiveNodeKey())) {
-            className = "active";
-        } else {
-            Node node = group.getNode(name);
-            Assert.notNull(node, name + " node does not exist!");
-            className = node.isValidated() ? "complete" : "incomplete";
-        }
-        return className;
-    }
-
-    /**
-     * Same logic as {@link #computeTabClassname(NodeGroup, String)}, but will not throw exception.
-     * And give a default classname when exception occur.
-     * This behaviour is intended for the usage in the JSP, we don't want the JSP throw an exception.
-     */
-    public static String computeTabClassnameForJsp(NodeGroup group, String name) {
-        String classname = "incomplete";
-        try {
-            classname = computeTabClassname(group, name);
-        } catch (Exception e) {
-            log.error("Fail to compute the class name", e);
-        }
-        return classname;
-    }
-
-    /**
-     *
-     * @param group the node group of the approvalAppRoot
-     */
-    public static boolean ifNodeSelected(NodeGroup group, String name) {
-        Assert.notNull(group, ERR_MSG_NULL_GROUP);
-        Assert.notNull(name, ERR_MSG_NULL_NAME);
-        return name.equals(group.getActiveNodeKey());
-    }
-
-    public static boolean ifNodeSelectedForJsp(NodeGroup group, String name) {
-        boolean selected = false;
-        try {
-            selected = ifNodeSelected(group, name);
-        } catch (Exception e) {
-            log.error("Fail to judge if the node selected", e);
-        }
-        return selected;
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getApprovalAppDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
-    }
-
-    public static List<ApprovalProfileDto> getApprovalProfileList(NodeGroup approvalProfileNodeGroup) {
-        Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
-        List<ApprovalProfileDto> approvalProfileList = new ArrayList<>(approvalProfileNodeGroup.count());
-        for (Node node : approvalProfileNodeGroup.getAllNodes()) {
-            assert node instanceof SimpleNode;
-            approvalProfileList.add((ApprovalProfileDto) ((SimpleNode) node).getValue());
-        }
-        return approvalProfileList;
-    }
-
-    //rfc compare
-    public List<DiffContent> compareTwoDto(ApprovalAppDto oldApprovalAppDto, ApprovalAppDto newApprovalAppDto){
-        List<DiffContent> diffContentList = new ArrayList<>();
-        CompareTwoObject.diff(oldApprovalAppDto.getActivityDto(), newApprovalAppDto.getActivityDto(), diffContentList);
-        CompareTwoObject.diffMap(oldApprovalAppDto.getApprovalProfileMap(), newApprovalAppDto.getApprovalProfileMap(), diffContentList, ApprovalProfileDto.BATInfo.class);
-        //docRecordInfos don't process
-        return diffContentList;
-    }
-
-    /* Will be removed in future, will get this from master code */
-    private static List<SelectOption> tmpCountryOps() {
-        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
-        List<SelectOption> ops = new ArrayList<>(views.size());
-        if(!org.springframework.util.CollectionUtils.isEmpty(views)){
-            for (MasterCodeView view : views) {
-                ops.add(new SelectOption(view.getCode(), view.getCodeValue()));
-            }
-        }
-        return ops;
     }
 }

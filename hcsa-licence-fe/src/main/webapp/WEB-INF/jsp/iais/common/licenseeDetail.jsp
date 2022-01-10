@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
 <c:set var="soloType" value="LICT002" />
@@ -5,8 +7,8 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
-<c:set var="showClaimFields"
-       value="${isRFC && !isRfi && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
+<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi
+       && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
 
 <div class="form-horizontal licenseeContent">
     <iais:row>
@@ -22,13 +24,35 @@
             </c:if>
         </iais:value>
     </iais:row>
-
+    <c:if test="${showClaimFields}">
+        <label>If you intend to transfer this licence to your corporate entity, please provide the UEN no. and Name of your Corporate Entity below:</label>
+        <br><br>
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
+            </iais:value>
+        </iais:row>
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
+                            value="${dto.claimCompanyName}"/>
+            </iais:value>
+        </iais:row>
+        <hr>
+    </c:if>
+    <c:if test="${canEdit}">
+        <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
+        <br><br>
+    </c:if>
     <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" cssClass="assignSel"/>
+                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}"
+                                 cssClass="assignSel"/>
                 </iais:value>
             </iais:row>
         </c:if>
@@ -50,21 +74,6 @@
         <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
     <%@include file="previewLicenseeCom.jsp"%>
-    <c:if test="${showClaimFields}">
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
-            </iais:value>
-        </iais:row>
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
-                            value="${dto.claimCompanyName}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"

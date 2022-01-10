@@ -43,7 +43,7 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
         private String email;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.employmentStartDate")
-        private String employmentStartDate;
+        private String employmentStartDt;
     }
 
     @RfcAttributeDesc
@@ -102,7 +102,7 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_DESIGNATION = "designation";
     private static final String KEY_PREFIX_CONTACT_NO = "contactNo";
     private static final String KEY_PREFIX_EMAIL = "email";
-    private static final String KEY_PREFIX_EMP_START_DATE = "employmentStartDate";
+    private static final String KEY_PREFIX_EMP_START_DATE = "employmentStartDt";
 
     private static final String KEY_SUFFIX_MAIN_ADMIN = "M";
     private static final String KEY_SUFFIX_ALTERNATIVE_ADMIN = "A";
@@ -123,7 +123,7 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
         adminInfo.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + suffix));
         adminInfo.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + suffix));
         adminInfo.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + suffix));
-        adminInfo.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DATE + suffix));
+        adminInfo.setEmploymentStartDt(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DATE + suffix));
         return adminInfo;
     }
 

@@ -181,7 +181,7 @@
     var fillPsnForm = function ($CurrentPsnEle,data,psnType) {
         <!--salutation-->
         var salutation  = data.salutation;
-        if( salutation == null || salutation =='undefined' || salutation == ''){
+        if( salutation == null || salutation =='undefined' || salutation == '' || salutation == '-'){
             salutation = '';
         }
         $CurrentPsnEle.find('select[name="salutation"]').val(salutation);

@@ -1,5 +1,6 @@
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_patientInfomation.js"></script>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
             <strong>
                 Patient Details
@@ -18,6 +19,7 @@
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
                         <iais:input maxLength="20" type="text" name="idNumber" value="${patientDto.idNumber}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -162,5 +164,4 @@
     $(document).ready(function () {
         toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
     });
-
 </script>

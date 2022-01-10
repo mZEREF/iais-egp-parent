@@ -1,7 +1,7 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/donationSection.js"></script>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
                 Donation
@@ -73,7 +73,7 @@
                     </div>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Which AR Centre was Gamete(s) / Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
+                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="donatedCentre" id="donatedCentre">
                             <c:forEach items="${curCenDonatedSelectOption}" var="selectOption">
@@ -93,9 +93,9 @@
                 </iais:row>
                 <div id="otherDonationReasonDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donationReason!='DONRES004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Reasons" mandatory="true"/>
+                        <iais:field width="6" value="Other Reason for Donation" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
+                            <input type="text" maxlength="100"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherDonationReason"></span>
                         </iais:value>
                     </iais:row>
@@ -151,14 +151,14 @@
                     <iais:row>
                         <iais:field width="6" value="No. Donated for Research (Usable for Treatment)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="donResForTreatNum" name="donResForTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForTreatNum}" >
+                            <iais:input maxLength="2" type="text"  id="donResForTreatNum" name="donResForTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForTreatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_donResForTreatNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. Donated to current AR centre for Research (Not Usable for Treatment)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"   name="donResForCurCenNotTreatNum" id="donResForCurCenNotTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForCurCenNotTreatNum}" >
+                            <iais:input maxLength="2" type="text"   name="donResForCurCenNotTreatNum" id="donResForCurCenNotTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForCurCenNotTreatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_donResForCurCenNotTreatNum"></span>
                         </iais:value>
                     </iais:row>
@@ -206,7 +206,7 @@
                         <iais:row>
                             <iais:field width="6" value="Other Type of Research Donated for" />
                             <iais:value width="6" cssClass="col-md-6">
-                                <input type="text" maxlength="19"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
+                                <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
                             </iais:value>
                         </iais:row>
@@ -217,7 +217,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. Used for Training" mandatory="false"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="trainingNum" name="trainingNum" value="${arSuperDataSubmissionDto.donationStageDto.trainingNum}" >
+                            <iais:input maxLength="2" type="text"  id="trainingNum" name="trainingNum" value="${arSuperDataSubmissionDto.donationStageDto.trainingNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_trainingNum"></span>
                         </iais:value>
                     </iais:row>
@@ -225,7 +225,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. Donated For Treatment" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="treatNum" name="treatNum" value="${arSuperDataSubmissionDto.donationStageDto.treatNum}" >
+                            <iais:input maxLength="2" type="text"  id="treatNum" name="treatNum" value="${arSuperDataSubmissionDto.donationStageDto.treatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_treatNum"></span>
                         </iais:value>
                     </iais:row>

@@ -16,6 +16,8 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-approval-app.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-rfc-approval-app.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -39,13 +41,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
+                        <%@ include file="../../mainAppCommon/approvalapp/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="approvalProfilePanel" role="tabpanel">
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
-                                            <%@include file="sideNavTab.jsp"%>
+                                            <%@include file="../../mainAppCommon/approvalapp/sideNavTab.jsp"%>
                                             <div class="tab-content">
                                                 <div role="tabpanel">
                                                     <div class="form-horizontal">
@@ -227,7 +229,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <input maxLength="15" type="text" name="transferPostalCode--v--${status.index}" id="transferPostalCode--v--${status.index}" value="${info.transferPostalCode}">
+                                                                                <input maxLength="15" type="text" name="transferPostalCode--v--${status.index}" id="transferPostalCode--v--${status.index}" value="${info.transferPostalCode}" oninput="value=value.replace(/[^\d]/g,'')">
                                                                                 <span data-err-ind="transferPostalCode--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>

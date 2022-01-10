@@ -14,17 +14,11 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <c:if test="${'Y' == rfiSuccessInfo}">
-                            <h2><span><c:out value="${successInfo}"></c:out></span></h2>
-                        </c:if>
-                        <c:if test="${'Y' != rfiSuccessInfo}">
-                            <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
-                        </c:if>
                         <h2><span><c:out value="You have successfully dealt with it"></c:out></span></h2>
                     </div>
                 </div>
                 <div align="left">
-                    <span><a id="backFromAckPage" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back To Process</a></span>
+                    <span><a href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back To Process</a></span>
                 </div>
             </div>
         </div>

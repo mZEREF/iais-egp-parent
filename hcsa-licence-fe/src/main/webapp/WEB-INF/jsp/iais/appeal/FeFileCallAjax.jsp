@@ -51,7 +51,7 @@
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize, fileAppendId);
+        var rslt = validateFileSizeMaxOrEmpty(maxFileSize);
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
@@ -69,7 +69,7 @@
             contentType: false,
             success: function (data) {
                 if(data != null && data.description != null){
-                    if( data.msgType == "Y"){
+                    if (data.msgType == "Y") {
                         if(reloadIndex != -1){
                             $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
                             deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
@@ -81,7 +81,8 @@
                         }
                         $("#error_"+fileAppendId+"Error").html("");
                         cloneUploadFile();
-                    }else {
+                    } else {
+                        doActionWhenError(data);
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
                 }
@@ -104,8 +105,8 @@
         dismissWaiting();
     }
 
-    function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
-        var fileId= '#'+selectedFileId;
+    function validateFileSizeMaxOrEmpty(maxSize) {
+        var fileId= 'input[name="selectedFile"]';
         var fileV = $( fileId).val();
         var file = $(fileId).get(0).files[0];
         if(fileV == null || fileV == "" ||file==null|| file==undefined){
@@ -126,5 +127,9 @@
         var fileId= '#selectedFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
+    }
+
+    function doActionWhenError(data) {
+        //nothing now
     }
 </script>

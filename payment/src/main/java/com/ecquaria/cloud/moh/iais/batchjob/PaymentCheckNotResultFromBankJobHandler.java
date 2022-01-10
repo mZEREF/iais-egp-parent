@@ -4,6 +4,7 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
@@ -37,7 +38,8 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws Exception {
         try {
 
-            List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
+            List<PaymentRequestDto> paymentRequestDtos=paymentClient
+                    .getAllPayingPaymentRequestDto(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY).getEntity();
             for (PaymentRequestDto payReq:paymentRequestDtos
             ) {
                 try {
@@ -50,11 +52,13 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
                         paymentService.retrievePayNowPayment(payReq);
                     }else {
                         payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                        payReq.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
                         paymentClient.updatePaymentResquset(payReq);
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
                     payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                    payReq.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
                     paymentClient.updatePaymentResquset(payReq);
                 }
             }

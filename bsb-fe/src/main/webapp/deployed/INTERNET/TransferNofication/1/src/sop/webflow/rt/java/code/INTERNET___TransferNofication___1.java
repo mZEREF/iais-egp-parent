@@ -17,7 +17,7 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="transferNotificationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-		// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {

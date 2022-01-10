@@ -61,27 +61,41 @@
               <c:set var="oldAppSvcChckListDtoList"
                      value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList}" />
               <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
+                <c:set var="oldCheckList" value="${oldAppSvcChckListDtoList[statuss.index]}"/>
                 <div class="form-check ">
                   <div class="form-check-label col-xs-12 col-md-12" aria-label="premise-1-cytology" style="padding-left:0px;">
                     <div class="col-xs-6 col-md-6">
-                        <span class="newVal " attr="${checkList.chkName}${checkList.check}">
-                          <c:if test="${checkList.check}">
-                            <input style="cursor: default;" class="form-check-input" checked type="checkbox" disabled>
-                            <label class="form-check-label" style="color: #212529;"><span class="check-square"></span>${checkList.chkName}</label>
-                          </c:if>
-                        </span>
+                    <span class="newVal " attr="${checkList.chkName}${checkList.check}<c:out value="${checkList.otherScopeName}"/>">
+                      <c:if test="${checkList.check}">
+                        <input style="cursor: default;" class="form-check-input" checked type="checkbox" disabled>
+                        <label class="form-check-label" style="color: #212529;">
+                          <span class="check-square"></span>
+                            <c:if test="${'Please indicate' == checkList.chkName}" var="showOtherScopeName">
+                              <c:out value="${checkList.otherScopeName}"/>
+                            </c:if>
+                            <c:if test="${!showOtherScopeName}">
+                              ${checkList.chkName}
+                            </c:if>
+                        </label>
+                      </c:if>
+                    </span>
                     </div>
                     <div class="col-xs-6 col-md-6">
-                        <span class="oldVal "
-                              attr="${oldAppSvcChckListDtoList[statuss.index].chkName}${oldAppSvcChckListDtoList[statuss.index].check}" style="display: none">
-                              <c:if test="${oldAppSvcChckListDtoList[statuss.index].check}">
-                                <input style="cursor: default" class="form-check-input" checked type="checkbox" disabled>
-                                <label class="form-check-label" style="color: #212529;">
-                                    <span class="check-square"></span>
-                                      ${oldAppSvcChckListDtoList[statuss.index].chkName}
-                                  </label>
-                              </c:if>
-                        </span>
+                      <span class="oldVal "
+                            attr="${oldCheckList.chkName}${oldCheckList.check}<c:out value="${oldCheckList.otherScopeName}"/>" style="display: none">
+                        <c:if test="${oldCheckList.check}">
+                          <input style="cursor: default" class="form-check-input" checked type="checkbox" disabled>
+                          <label class="form-check-label" style="color: #212529;">
+                              <span class="check-square"></span>
+                                <c:if test="${'Please indicate' == oldCheckList.chkName}" var="showOtherScopeName">
+                                  <c:out value="${oldCheckList.otherScopeName}"/>
+                                </c:if>
+                                <c:if test="${!showOtherScopeName}">
+                                  ${oldCheckList.chkName}
+                                </c:if>
+                            </label>
+                        </c:if>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -575,13 +589,17 @@
               <td>
                 <div class="">
                   <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
+                    <c:if test="${disciplineAllocation.check}">
                       <c:out value="${disciplineAllocation.chkLstName}"/>
+                    </c:if>
                   </span>
                   <br>
                   <span class="oldVal "
                     attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"
                     style="display: none">
-                    <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                    <c:if test="${reloadOld[oldReloadMapValue][stat.index].check}">
+                      <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                    </c:if>
                   </span>
                 </div>
               </td>

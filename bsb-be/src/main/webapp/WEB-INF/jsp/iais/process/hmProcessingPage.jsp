@@ -13,7 +13,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcess}">
+        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -78,31 +78,31 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevel}</p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.riskLevel}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevelComments}</p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.riskLevelComments}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Recommendation" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.processDecision}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.doRecommendation}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Review Decision" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${lastAOApplicationMisc.processDecision}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.aoReviewDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.remarks}</p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.aoRemarks}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -111,7 +111,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.remarks}"></c:out></textarea>
+                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.hmScreeningDto.hmRemarks}"></c:out></textarea>
                                                                                         <span data-err-ind="remarks" class="error-msg"></span>
                                                                                     </div>
                                                                                 </div>
@@ -123,8 +123,9 @@
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
                                                                                 <select name="processingDecision" id="processingDecision">
-                                                                                    <option value="MOHPRO011" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO011'}">selected="selected"</c:if>>approve</option>
-                                                                                    <option value="MOHPRO012" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO012'}">selected="selected"</c:if>>reject</option>
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${mohProcessDto.hmScreeningDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${mohProcessDto.hmScreeningDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
                                                                                 </select>
                                                                                 <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                             </iais:value>
@@ -133,23 +134,24 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><fmt:formatDate value='${lastAOApplicationMisc.validityStartDt}' pattern='dd/MM/yyyy'/></p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.validityStartDate}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><fmt:formatDate value='${lastAOApplicationMisc.validityEndDt}' pattern='dd/MM/yyyy'/></p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.validityEndDate}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <div align="right">
+                                                                <div style="text-align: right">
                                                                     <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

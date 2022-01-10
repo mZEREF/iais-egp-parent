@@ -29,17 +29,22 @@ $(function () {
 
 function isHidden() {
     var meta = readSectionRepeatMetaData();
-    var idxInput = $("input[name=" + meta.idxInputName +"]");
-    var curIdxes = idxInput.val();
-    var idxArr = curIdxes.trim().split(/ +/);
-    for (var i of idxArr) {
-        var schedule = $("#scheduleType--v--"+i).val();
-        if (schedule !== 'SCHTYPE006' && schedule !== '') {
-            $("#agentFifth--v--" + i).hide();
-            $("#agentEpFifth--v--" + i).show();
-        } else if (schedule === "SCHTYPE006") {
-            $("#agentEpFifth--v--" + i).hide();
-            $("#agentFifth--v--" + i).show();
+    var prefix  =  meta.sectionIdPrefix;
+    if(prefix !== 'ackSection'){
+        var idxInput = $("input[name=" + meta.idxInputName +"]");
+        var curIdxes = idxInput.val();
+        var idxArr = curIdxes.trim().split(/ +/);
+        for (var i of idxArr) {
+            var schedule = $("#scheduleType--v--"+i).val();
+            if (schedule !== 'SCHTYPE006' && schedule !== '') {
+                $("#agentFifth--v--" + i).hide();
+                $("#agentEpFifth--v--" + i).show();
+                $("#batDocument--v--"+i).show();
+            } else if (schedule === "SCHTYPE006") {
+                $("#agentEpFifth--v--" + i).hide();
+                $("#agentFifth--v--" + i).show();
+                $("#batDocument--v--"+i).show();
+            }
         }
     }
 }
@@ -49,12 +54,15 @@ function isHidden2(i) {
     if (schedule !== 'SCHTYPE006' && schedule !== '') {
         $("#agentFifth--v--" + i).hide();
         $("#agentEpFifth--v--" + i).show();
+        $("#batDocument--v--"+i).show();
     } else if (schedule === "SCHTYPE006") {
         $("#agentEpFifth--v--" + i).hide();
         $("#agentFifth--v--" + i).show();
+        $("#batDocument--v--"+i).show();
     } else {
         $("#agentFifth--v--" + i).hide();
         $("#agentEpFifth--v--" + i).hide();
+        $("#batDocument--v--"+i).hide();
     }
 }
 
@@ -137,10 +145,9 @@ function deleteNewFile(id) {
     appendInputValue(deleteSavedInput, id);
 }
 
-function reloadNewFile(id) {
+function reloadNewFile(id,index) {
     deleteNewFile(id);
-    var ids = id.split("--v--");
-    var text = ids[0]+"--v--"+ids[1].charAt(0);
+    var text = "upload--v--"+index;
     $("a[data-upload-file=" + text + "]")[0].click();
 }
 
@@ -175,6 +182,16 @@ function changeH3(sectionIdPrefix, num, titlePrefix, separator) {
 
 function removeBtnEventHandler() {
     var idx = $(this).attr("data-current-idx");
+    var secIdx = $("#existIdx--v--"+idx).val();
+    var existId = $("#existFiles--v--"+idx).val();
+    var deleteNewFiles = document.getElementById("deleteNewFiles");
+    var deleteIdx = document.getElementById("deleteIdx");
+    if(existId !== "" && deleteNewFiles !== null){
+        appendInputValue(deleteNewFiles,existId);
+    }
+    if(secIdx !== "" && deleteIdx !== null){
+        appendInputValue(deleteIdx,secIdx);
+    }
     var meta = readSectionRepeatMetaData();
     if (meta) {
         removeSection(idx, meta.idxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);

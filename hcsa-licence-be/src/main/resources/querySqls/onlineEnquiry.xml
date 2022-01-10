@@ -6,23 +6,23 @@
             from
             (
             select
-            t3.id,
+            p.id,
             t1.licence_id as licence_id,
             t2.name as name,
-            t3.prof_reg_no as prof_reg_no,
+            p.prof_reg_no as prof_reg_no,
             t2.designation as designation,
             t1.psn_type as psn_type,
             t4.licence_no,
             t4.svc_name
             from lic_key_personnel t1
             join  key_personnel t2 on t1.person_id = t2.id
-            join key_personnel_ext t3 on t1.psn_ext_id = t3.id and t3.person_id = t2.id
+            join key_personnel_ext t3 on t1.psn_ext_id = p.id and p.person_id = t2.id
             join licence t4 on t1.licence_id = t4.id) a,
             (
             select distinct
-            t3.id,
-            t3.licence_no,
-            t3.svc_name as service_name,
+            p.id,
+            p.licence_no,
+            p.svc_name as service_name,
             t2.hci_code as hci_code,
             t2.postal_code as postal_code,
             t2.hci_name as hci_name,
@@ -59,9 +59,9 @@
               ) as practice_location
             from lic_premises t1
             join premises t2 on t1.premises_id = t2.id
-            join licence t3 on t1.licence_id = t3.id
+            join licence t3 on t1.licence_id = p.id
             join (select licence_no,
-            max(version) as version from licence group by licence_no) inner_lic on inner_lic.licence_no = t3.licence_no and inner_lic.version = t3.version
+            max(version) as version from licence group by licence_no) inner_lic on inner_lic.licence_no = p.licence_no and inner_lic.version = p.version
             ) b
             where a.licence_id = b.id
             <#if id??> AND a.id = :id >0 </#if>
@@ -82,16 +82,53 @@
 
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,lp.BUSINESS_NAME ,dc.PATIENT_CODE
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID
-                join premises p on dc.HCI_CODE =p.HCI_CODE
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-
                 where 1=1
-            <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
+            <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
          ]]>
@@ -100,13 +137,13 @@
 
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,null CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
-                join premises p on dc.HCI_CODE =p.HCI_CODE
+                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.DS_TYPE = 'ART'
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where 1=1
-            <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
             <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
             <#if patient_id_types??> AND  ${patient_id_types}</#if>
@@ -115,12 +152,240 @@
      </sql>
 
 
+    <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
+        <![CDATA[
+           SELECT distinct ajax.* FROM (
+            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_008'
+
+                UNION ALL
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_009'
+                UNION ALL
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_010'
+                UNION ALL
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'-' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_011'
+            ) ajax
+            where 1=1
+            <#if patientCode??> AND  :patientCode = ajax.patient_code</#if>
+
+        ]]>
+    </sql>
+
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,lp.BUSINESS_NAME,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
+           CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
-                join premises p on dc.HCI_CODE =p.HCI_CODE
+                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 join ds_data_submission dds on dds.CYCLE_ID=dc.ID
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
@@ -149,14 +414,15 @@
                 <#if husbandIdType??> AND  charindex(:husbandIdType, dh.ID_TYPE) >0</#if>
                 <#if husbandIdNumber??> AND  charindex(:husbandIdNumber, dh.ID_NUMBER) >0</#if>
 
-                <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
-                <#if cycleStagesStatus??> AND  charindex(:cycleStagesStatus, dc.STATUS) >0</#if>
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
                 <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
-                <#if arOrIui??> AND  charindex(:arOrIui, dc.DS_TYPE) >0</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
@@ -168,10 +434,8 @@
 
                 <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
                 <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
-                <#if FROM_DONOR??> AND  :FROM_DONOR = dfs.IS_FROM_DONOR </#if>
-                <#if FROM_DONOR_TISSUE??> AND  :FROM_DONOR_TISSUE = dfs.IS_FROM_DONOR_TISSUE </#if>
-                <#if FROM_HUSBAND??> AND  :FROM_HUSBAND = dfs.IS_FROM_HUSBAND </#if>
-                <#if FROM_HUSBAND_TISSUE??> AND  :FROM_HUSBAND_TISSUE = dfs.IS_FROM_HUSBAND_TISSUE </#if>
+                <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
+                <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
                 <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
                 <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
@@ -182,9 +446,12 @@
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
                 <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(date,:deliveryDateTo)</#if>
-                <#if patientART??> AND  :patientART = datss.ART_CO_FUNDING </#if>
-                <#if patientIUI??> AND  :patientIUI = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPGT??> AND  :patientPGT = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND  'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND  1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtNo??> AND  0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
@@ -210,11 +477,185 @@
         ]]>
     </sql>
 
+    <sql key = "searchTransactionHistoryByAssistedReproduction" remarks="search Transaction History">
+        <![CDATA[
+            SELECT distinct dds.ID ,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+            dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID)  cycle_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID
+
+                where 1=1
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
+
+    <sql key = "searchCycleStageByPatientCode" remarks="search Cycle Stage">
+        <![CDATA[
+            SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
+            from ds_cycle dc
+            join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
+
+    <sql key = "searchDonorSampleByAssistedReproduction" remarks="search Donor Sample">
+        <![CDATA[
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+           		 dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+           		CONCAT(case dds2lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dds2lp.BUSINESS_NAME + ', ' end ,
+                  case dds2p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+dds2p.BLK_NO end ,
+               case dds2p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+dds2p.STREET_NAME end
+               , case dds2p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+dds2p.BUILDING_NAME end
+               , case dds2p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+dds2p.FLOOR_NO end
+               , case dds2p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+dds2p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =dds2p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case dds2p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+dds2p.POSTAL_CODE end
+              ) AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'DRP'
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
+                left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
+
+                where dc.CYCLE_TYPE ='DSCL_003'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY) in( :birthEventsTotalList) </#if>
+
+
+         ]]>
+    </sql>
+
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[
-            <div class="arQuickView">
-                <div class="row">Co-funding History</div>
+            <div class="col-md-12">
+                <div class="row">
+                    <b class="col-md-12" style="font-size:2.0rem">
+                        Co-funding History
+                    </b>
+                </div>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
@@ -229,7 +670,7 @@
                         Total No. of Co-funded ART Fresh Cycles
                     </div>
                     <div class="col-md-6">
-                        FreshCyclesNumber
+                        ARTFreshCyclesNumber
                     </div>
                 </div>
                 <div class="row">
@@ -237,7 +678,7 @@
                         Total No. of Co-funded ART Frozen Cycles
                     </div>
                     <div class="col-md-6">
-                        FrozenCyclesNumber
+                        ARTFrozenCyclesNumber
                     </div>
                 </div>
                 <div class="row">
@@ -249,7 +690,11 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row">Total Inventory</div>
+                <div class="row">
+                    <b class="col-md-12" style="font-size:2.0rem">
+                        Total Inventory
+                    </b>
+                </div>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
@@ -294,7 +739,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-12">
-                        <a href="#" onclick="fullDetailsView('patientId')">View Full Details</a>
+                        <a href="#" onclick="fullDetailsView('patientCode')">View Full Details</a>
                     </div>
                 </div>
 

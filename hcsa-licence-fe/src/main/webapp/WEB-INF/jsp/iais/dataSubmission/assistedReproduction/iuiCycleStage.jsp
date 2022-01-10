@@ -20,6 +20,7 @@
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/iuiCycleStageSection.jsp" %>
+                    <%@include file="common/dsAmendment.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>

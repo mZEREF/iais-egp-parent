@@ -45,7 +45,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         private String email;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employmentStartDate")
-        private String employmentStartDate;
+        private String employmentStartDt;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.expertiseArea")
         private String expertiseArea;
@@ -131,7 +131,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_DESIGNATION = "designation";
     private static final String KEY_PREFIX_CONTACT_NO = "contactNo";
     private static final String KEY_PREFIX_EMAIL = "email";
-    private static final String KEY_PREFIX_EMP_START_DT = "employmentStartDate";
+    private static final String KEY_PREFIX_EMP_START_DT = "employmentStartDt";
     private static final String KEY_PREFIX_EXPERTISE_AREA = "expertiseArea";
     private static final String KEY_PREFIX_ROLE = "role";
     private static final String KEY_PREFIX_IS_EMPLOYEE = "employee";
@@ -151,7 +151,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
             personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR +idx));
             personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR +idx));
             personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR +idx));
-            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR +idx));
+            personnel.setEmploymentStartDt(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR +idx));
             personnel.setExpertiseArea(ParamUtil.getString(request, KEY_PREFIX_EXPERTISE_AREA + SEPARATOR +idx));
             personnel.setRole(ParamUtil.getString(request, KEY_PREFIX_ROLE + SEPARATOR +idx));
             personnel.setEmployee(ParamUtil.getString(request, KEY_PREFIX_IS_EMPLOYEE + SEPARATOR +idx));

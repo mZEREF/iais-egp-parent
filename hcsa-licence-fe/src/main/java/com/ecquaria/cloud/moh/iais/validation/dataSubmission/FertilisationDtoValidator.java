@@ -105,7 +105,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         if(totalFreshSum>freshMaxNum){
             errorMap.put("freshOocytesZiftNum", errMsgFresh);
         }
-        if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) ||StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
+        if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) &&StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
             Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
             Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
 

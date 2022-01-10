@@ -117,6 +117,17 @@ public class MasterCodeConstants {
     public static final String FAC_CLASSIFICATION_UF = "FACCLA003";
     public static final String FAC_CLASSIFICATION_LSPF = "FACCLA004";
     public static final String FAC_CLASSIFICATION_RF = "FACCLA005";
+    public static final Set<String> VALID_FAC_CLASSIFICATION;
+
+    static {
+        Set<String> facClassification = Sets.newHashSetWithExpectedSize(5);
+        facClassification.add(FAC_CLASSIFICATION_BSL3);
+        facClassification.add(FAC_CLASSIFICATION_BSL4);
+        facClassification.add(FAC_CLASSIFICATION_UF);
+        facClassification.add(FAC_CLASSIFICATION_LSPF);
+        facClassification.add(FAC_CLASSIFICATION_RF);
+        VALID_FAC_CLASSIFICATION = Collections.unmodifiableSet(facClassification);
+    }
 
     public static final String ACTIVI_FIRST_SECOND_SCHEDULE_BA = "ACTVITY001";
     public static final String ACTIVI_FIRST_SCHEDULE_BA = "ACTVITY002";
@@ -202,4 +213,25 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_REVOKED = "APPRSTA003";
     public static final String APPROVAL_STATUS_SUSPENDED = "APPRSTA004";
     public static final String APPROVAL_STATUS_EXPIRED = "APPRSTA005";
+
+    public static final String REPORTING_OF_INCIDENT_ADVERSE_INCIDENT = "REPORT001";
+    public static final String REPORTING_OF_INCIDENT_NEAR_MISS = "REPORT002";
+
+    public static final String INCIDENT_TYPE_BIO_SAFETY = "INDTYPE001";
+    public static final String INCIDENT_TYPE_BIO_SECURITY = "INDTYPE002";
+    public static final String INCIDENT_TYPE_GENERAL_SAFETY = "INDTYPE003";
+
+    public static final String CAUSE_OF_INCIDENT_POLICY_AND_PROCEDURES = "INCAUSE001";
+    public static final String CAUSE_OF_INCIDENT_TRAINING = "INCAUSE002";
+    public static final String CAUSE_OF_INCIDENT_EQUIPMENT_FAILURE = "INCAUSE003";
+    public static final String CAUSE_OF_INCIDENT_ENGINEERING = "INCAUSE004";
+    public static final String CAUSE_OF_INCIDENT_PERSONAL_PROTECTIVE_EQUIPMENT = "INCAUSE005";
+    public static final String CAUSE_OF_INCIDENT_INADEQUATE_EQUIPMENT = "INCAUSE006";
+    public static final String CAUSE_OF_INCIDENT_ENVIRONMENT_FACTORS = "INCAUSE007";
+    public static final String CAUSE_OF_INCIDENT_HUMAN_BEHAVIOURAL_FACTORS = "INCAUSE008";
+    public static final String CAUSE_OF_INCIDENT_HUMAN_PERFORMANCE = "INCAUSE009";
+    public static final String CAUSE_OF_INCIDENT_OTHERS = "INCAUSE010";
+
+
+
 }

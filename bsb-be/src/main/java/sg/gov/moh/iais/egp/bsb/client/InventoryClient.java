@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inventory.FacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryAgentResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDtResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDto;
@@ -22,8 +23,8 @@ import java.util.List;
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface InventoryClient {
-    @GetMapping(path = "/fac_info/facName")
-    FeignResponseEntity<List<String>> queryDistinctFN();
+    @GetMapping(path = "/fac_info/info")
+    List<FacilityDto> queryAllFacilityInfo();
 
     @GetMapping(path = "/bio_info/bioName")
     FeignResponseEntity<List<String>> queryDistinctFA();

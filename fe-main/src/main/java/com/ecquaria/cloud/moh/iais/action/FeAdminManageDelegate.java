@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -182,14 +183,18 @@ public class FeAdminManageDelegate {
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+            String id = feUserDto.getId();
             ControllerHelper.get(request,feUserDto);
-            if(feUserDto.isCorpPass()){
-                feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-            }else{
-                feUserDto.setUserId(idNo);
+            if(StringUtil.isEmpty(id)){
+                if(feUserDto.isCorpPass()){
+                    feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
+                }else{
+                    feUserDto.setUserId(idNo);
+                }
+                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
+                feUserDto.setIdentityNo(idNo);
             }
-            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
-            feUserDto.setIdentityNo(idNo);
+            feUserDto.setId(id);
             feUserDto.setRoles(roles);
             feUserDto.setOfficeTelNo(officeNo);
             if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
@@ -220,6 +225,7 @@ public class FeAdminManageDelegate {
                 log.debug("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
                 ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{

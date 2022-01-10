@@ -1,5 +1,12 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/embryoTransferStage.js"></script>
 <c:set var="embryoTransferStageDto" value="${arSuperDataSubmissionDto.embryoTransferStageDto}"/>
+<input type="hidden" id="age" value="${age}">
+<input type="hidden" id="haveStimulationCycles" value="${haveStimulationCycles}">
+<input type="hidden" id="embryoTransferCount" value="${embryoTransferCount}">
+<input type="hidden" id="totalEmbryos" value="${totalEmbryos}">
+<input type="hidden" id="haveEmbryoTransferGreaterFiveDay" value="${haveEmbryoTransferGreaterFiveDay}">
+<div id="flagTwoMessage" hidden><iais:message key="DS_ERR047"/> </div>
+<div id="flagThreeMessage" hidden><iais:message key="DS_ERR049"/> </div>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
@@ -11,30 +18,25 @@
     <div id="cycleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-                <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                        <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                        <c:out value="${patientDto.idNumber}"/>
-                        ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                </p>
-                <hr/>
-                <span id="error_embryoTransferPage" name="iaisErrorMsg" class="error-msg col-md-12" style="padding: 0px;"></span>
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="6" value="No. Transferred" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select cssClass="transferNumSelect" name="transferNum" options="transferNumSelectOption"
                                      value="${embryoTransferStageDto.transferNum}"/>
+                        <span id="error_FreshEmbryosNum" name="iaisErrorMsg" class="error-msg col-md-12" style="padding-left: 0px"></span>
+                        <span id="error_thawedEmbryosNum" name="iaisErrorMsg" class="error-msg col-md-12" style="padding-left: 0px"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Age of 1st Embryo Transferred" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="firstEmbryoAge" firstOption="Please Select"
-                                     options="firstEmbryoAgeSelectOption"
+                                     options="firstEmbryoAgeSelectOption" cssClass="ageSelect"
                                      value="${embryoTransferStageDto.firstEmbryoAge}"/>
                     </iais:value>
                 </iais:row>
@@ -78,7 +80,7 @@
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="secondEmbryoAge" firstOption="Please Select"
-                                         options="secondEmbryoAgeSelectOption"
+                                         options="secondEmbryoAgeSelectOption" cssClass="ageSelect"
                                          value="${embryoTransferStageDto.secondEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
@@ -123,7 +125,7 @@
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="thirdEmbryoAge" firstOption="Please Select"
-                                         options="thirdEmbryoAgeSelectOption"
+                                         options="thirdEmbryoAgeSelectOption" cssClass="ageSelect"
                                          value="${embryoTransferStageDto.thirdEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
@@ -179,3 +181,5 @@
         </div>
     </div>
 </div>
+<iais:confirm msg="DS_ERR047" callBack="$('#flagOutDiv').modal('hide');" popupOrder="flagOutDiv" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>

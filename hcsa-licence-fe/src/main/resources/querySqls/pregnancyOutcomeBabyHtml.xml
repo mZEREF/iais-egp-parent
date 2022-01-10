@@ -55,7 +55,6 @@
                 <div name="defectTypeSectionName" style="display:none;">
                     <div class="form-group">
                         <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Defect Type
-                            &nbsp;<span class="mandatory">*</span>
                         </label>
                         <div class="col-sm-7 col-md-6 col-xs-7 col-md-6">
                             <div class="form-check col-xs-12">
@@ -143,7 +142,6 @@
                     <div name="otherDefectTypeDivName" style="display:none;">
                         <div class="form-group">
                             <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Defect Type (Others)
-                                &nbsp;<span class="mandatory">*</span>
                             </label>
                             <div class="col-sm-7 col-md-6 col-xs-7 col-md-6">
                                 <input type="text" class="otherDefectType" id="otherDefectType${babyIndex}" name="otherDefectType${babyIndex}" maxlength="20" autocomplete="off">

@@ -17,25 +17,21 @@ public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
 	private static final String DELEGATOR = "cancelAuditDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareDOCancelAuditData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		prepareSwitch->OnStepProcess
 	}
 
 	public void doSubmit_OnStepProcess_0() throws Exception {
-	// 		doSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSubmitCancelAudit", this);
 	}
 
 	public void preConfirm_OnStepProcess_0() throws Exception {
-		// 		preConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preDOConfirm", this);
 	}
 }

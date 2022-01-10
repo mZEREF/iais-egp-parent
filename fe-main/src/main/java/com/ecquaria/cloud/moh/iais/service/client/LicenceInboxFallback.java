@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
@@ -21,7 +22,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +36,7 @@ import java.util.List;
  * @Program: iais-egp
  * @Create: 2019-11-29 13:20
  **/
+@Slf4j
 @Component
 public class LicenceInboxFallback implements LicenceInboxClient {
 
@@ -42,6 +46,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         entity.setHeaders(headers);
         return entity;
     }
+
     @Override
     public FeignResponseEntity<SearchResult<InboxLicenceQueryDto>> searchResultFromLicence(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -243,6 +248,11 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
+    public FeignResponseEntity<LicenceDto> getFirstLicenceDtosByLicenseeId(String licenseeId) {
+        return getEntity();
+    }
+
+    @Override
     public FeignResponseEntity<List<MenuLicenceDto>> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -318,5 +328,13 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     @Override
     public FeignResponseEntity<List<LicenceDto>> getActiveLicencesByLicenseeId(String licenseeId) {
         return getEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

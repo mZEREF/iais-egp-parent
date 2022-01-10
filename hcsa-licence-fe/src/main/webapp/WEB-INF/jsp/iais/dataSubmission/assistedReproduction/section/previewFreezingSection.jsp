@@ -6,45 +6,46 @@
   To change this template use File | Settings | File Templates.
 --%>
 <div class="panel panel-default">
-  <div class="panel-heading">
+  <div class="panel-heading ${headingSign}">
     <h4 class="panel-title">
-      <strong>
+      <a class="collapsed" href="#freezingDetails" data-toggle="collapse">
         Freezing
-      </strong>
+      </a>
     </h4>
   </div>
-  <div id="patientDetails" class="panel-collapse collapse in">
+  <div id="freezingDetails" class="panel-collapse collapse">
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
-        <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-        <p>
-          <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-            <c:out value="${patientDto.name}"/>&nbsp
-          </label>
-          <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-            <c:out value="${patientDto.idNumber}"/>
-            ${empty patientDto.idNumber ? "" : ")"}
-          </label>
-        </p>
-        <hr/>
+
+        <h3>
+          <label><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+          <span style="font-weight:normal"><c:out
+                  value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+          </span>
+        </h3>
+
         <iais:row>
-          <iais:field value="What was cryopreserved?"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/></span>
+          <iais:field width="6" value="What was cryopreserved?" cssClass="col-md-6"/>
+          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+            <iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/>
           </iais:value>
         </iais:row>
+
         <iais:row>
-          <iais:field value="No. Cryopreserved"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/></span>
+          <iais:field width="6" value="No. Cryopreserved" cssClass="col-md-6"/>
+          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+            <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
           </iais:value>
         </iais:row>
+
         <iais:row>
-          <iais:field value="Cryopreservation Date"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}' pattern='dd/MM/yyyy' /></span>
+          <iais:field width="6" value="Cryopreservation Date" cssClass="col-md-6"/>
+          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+            <fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}'
+                            pattern='dd/MM/yyyy'/>
           </iais:value>
         </iais:row>
+
         <%@include file="../common/patientInventoryTable.jsp" %>
       </div>
     </div>

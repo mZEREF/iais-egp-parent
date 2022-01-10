@@ -2,7 +2,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
-                Patient Details
+                Submission Details
             </a>
         </h4>
     </div>
@@ -14,31 +14,31 @@
                 <iais:row>
                     <iais:field width="5" value="Patient's ID Type" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:code code="${patientDto.idType}" />
+                        <iais:code code="${drugSubmission.idType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's ID No." />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${patientDto.idNumber}"/>
+                        <c:out value="${drugSubmission.idNumber}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Patient’s Name" />
+                    <iais:field width="5" value="Patient's Name" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value=""/>
+                        <c:out value="${drugSubmission.name}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Doctor’s Professional Registration No" />
+                    <iais:field width="5" value="Doctor's Professional Registration No" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${drugSubmission.doctorReignNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Doctor’s Name" />
+                    <iais:field width="5" value="Doctor's Name" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value=""/>
+                        <c:out value="${drugSubmission.doctorName}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -47,18 +47,22 @@
                         <iais:code code="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Date of Prescription" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${drugSubmission.prescriptionDate}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Date of Dispensing" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${drugSubmission.dispensingDate}"/>
-                    </iais:value>
-                </iais:row>
+                <div class="" <c:if test="${drugSubmission.drugType != 'DPD001'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Date of Prescription" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${drugSubmission.prescriptionDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div class="" <c:if test="${drugSubmission.drugType != 'DPD002'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Date of Dispensing" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${drugSubmission.dispensingDate}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Medication" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7"  display="true">

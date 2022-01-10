@@ -84,6 +84,21 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.16.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>hcsa-licence-web</finalName>
@@ -126,8 +141,8 @@
                             <targetPath>WEB-INF/classes/docTemplate</targetPath>
                         </resource>
                     </webResources>
-                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</packagingExcludes>
-                    <warSourceExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</warSourceExcludes>
+                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar,WEB-INF/lib/log4j-to-slf4j-2.13.3.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar,WEB-INF/lib/log4j-to-slf4j-2.13.3.jar</dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -141,6 +156,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <!--you should hold the properties and xlsx files in separate directories.-->
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
             </plugin>
         </plugins>
     </build>

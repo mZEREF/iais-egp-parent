@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto" %>
-<% PatientInventoryDto patientInventoryDto = (PatientInventoryDto) request.getAttribute("patientInventoryDto");%>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<% PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(request);%>
 <h3>Patient's Inventory</h3>
 <table aria-describedby="" class="table discipline-table">
   <thead>
@@ -34,13 +35,13 @@
   </tr>
   <tr>
     <th scope="col">Current</th>
-    <th scope="col">${patientInventoryDto.currentFrozenOocytes}</th>
-    <th scope="col">${patientInventoryDto.currentThawedOocytes}</th>
-    <th scope="col">${patientInventoryDto.currentFreshOocytes}</th>
-    <th scope="col">${patientInventoryDto.currentFrozenEmbryos}</th>
-    <th scope="col">${patientInventoryDto.currentThawedEmbryos}</th>
-    <th scope="col">${patientInventoryDto.currentFreshEmbryos}</th>
-    <th scope="col">${patientInventoryDto.currentFrozenSperms}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeThawedOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshOocytes + arSuperDataSubmissionDto.patientInventoryDto.changeFreshOocytes}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentThawedEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeThawedEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFreshEmbryos + arSuperDataSubmissionDto.patientInventoryDto.changeFreshEmbryos}</th>
+    <th scope="col">${arSuperDataSubmissionDto.patientInventoryDto.currentFrozenSperms + arSuperDataSubmissionDto.patientInventoryDto.changeFrozenSperms}</th>
   </tr>
   </tbody>
 </table>

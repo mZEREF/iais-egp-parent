@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -28,16 +29,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author weilu
@@ -247,6 +247,10 @@ public class LicenceExpiredBatchJob {
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             try {
+                if(IaisEGPHelper.isActiveMigrated() && licenceDto.isMigrated()){
+                    log.info(StringUtil.changeForLog("The Migrated Data ..."+licenceDto.getId()));
+                    continue;
+                }
                 licenceDto.setAuditTrailDto(auditTrailDto);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
                 updateLicenceDtos.add(licenceDto);

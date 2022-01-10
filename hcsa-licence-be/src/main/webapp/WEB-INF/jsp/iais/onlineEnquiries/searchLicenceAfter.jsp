@@ -99,15 +99,16 @@
 
     function licSearch() {
         showWaiting();
-
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        $("[name='crud_action_type']").val('search');
+        $('#mainForm').submit();
 
     }
 
     function doLicBack() {
         showWaiting();
         $('input[name="pageJumpNoTextchangePage"]').val(1);
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        $("[name='crud_action_type']").val('back');
+        $('#mainForm').submit();
     }
 
     function doLicClear() {
@@ -137,15 +138,16 @@
 
     function doLicInfo(licenceId) {
         showWaiting();
-
-        SOP.Crud.cfxSubmit("mainForm", "details", licenceId);
-
+        $("[name='crud_action_value']").val(licenceId);
+        $("[name='crud_action_type']").val('details');
+        $('#mainForm').submit();
     }
 
     function doAppInfo(appCorrId) {
         showWaiting();
-
-        SOP.Crud.cfxSubmit("mainForm", "appDetails", appCorrId);
+        $("[name='crud_action_value']").val(appCorrId);
+        $("[name='crud_action_type']").val('appDetails');
+        $('#mainForm').submit();
     }
 
     function doCessation() {
@@ -176,7 +178,8 @@
             }
         }
         if (flog) {
-            SOP.Crud.cfxSubmit("mainForm", "cessation");
+            $("[name='crud_action_type']").val('cessation');
+            $('#mainForm').submit();
         } else {
             dismissWaiting();
         }
@@ -206,7 +209,8 @@
             }
         }
         if (flog) {
-            SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
+            $("[name='crud_action_type']").val('reqForInfo');
+            $('#mainForm').submit();
         } else {
             $("#selectDecisionMsgActive").show();
             dismissWaiting();

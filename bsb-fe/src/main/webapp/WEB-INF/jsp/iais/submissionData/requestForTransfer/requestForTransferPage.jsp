@@ -18,6 +18,8 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-request-for-transfer.js"></script>
 
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
+
 <%@include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -81,7 +83,7 @@
     <div class="row" style="margin-bottom: 20px">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-md-6 text-right">
                 <button class="btn btn-secondary save" id="saveDraft">Save as Draft</button>
@@ -90,4 +92,3 @@
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>

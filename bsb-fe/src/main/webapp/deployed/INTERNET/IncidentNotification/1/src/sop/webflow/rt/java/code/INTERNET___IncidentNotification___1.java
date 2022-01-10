@@ -11,67 +11,85 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___IncidentNotification___1 extends BaseProcessClass {
 
+	private static final String DELEGATOR ="incidentNotificationDelegator";
+
 	public void init_OnStepProcess_0() throws Exception {
 	// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 	
 	public void jumpFilter_OnStepProcess_0() throws Exception {
 		// 		JumpFilter->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "jumpFilter", this);
 	}
 
 	public void start_OnStepProcess_0() throws Exception {
 		// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void preIncidentInfo_OnStepProcess_0() throws Exception {
 	// 		PreIncidentInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preIncidentInfo", this);
 	}
 
 	public void handleIncidentInfo_OnStepProcess_0() throws Exception {
 	// 		HandleIncidentInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleIncidentInfo", this);
 	}
 
 	public void prePersonReportingInfo_OnStepProcess_0() throws Exception {
 	// 		PrePersonReportingInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePersonReportingInfo", this);
 	}
 
 	public void handlePersonReportingInfo_OnStepProcess_0() throws Exception {
 	// 		HandlePersonReportingInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handlePersonReportingInfo", this);
 	}
 
 	public void preInvolvedPersonInfo_OnStepProcess_0() throws Exception {
 	// 		PreInvolvedPersonInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preInvolvedPersonInfo", this);
 	}
 
 	public void handleInvolvedPersonInfo_OnStepProcess_0() throws Exception {
 	// 		HandleInvolvedPersonInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleInvolvedPersonInfo", this);
 	}
 
 	public void preDocuments_OnStepProcess_0() throws Exception {
 	// 		PreDocuments->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preDocuments", this);
 	}
 
 	public void handleDocuments_OnStepProcess_0() throws Exception {
 	// 		HandleDocuments->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleDocuments", this);
 	}
 
 	public void preSubmit_OnStepProcess_0() throws Exception {
 	// 		PreSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSubmit", this);
 	}
 
 	public void handleSubmit_OnStepProcess_0() throws Exception {
 	// 		HandleSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
 	public void actionFilter_OnStepProcess_0() throws Exception {
 	// 		ActionFilter->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "actionFilter", this);
 	}
 
 	public void preAckonwledge_OnStepProcess_0() throws Exception {
 	// 		PreAckonwledge->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preAcknowledge", this);
 	}
 
 }

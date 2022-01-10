@@ -22,6 +22,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>

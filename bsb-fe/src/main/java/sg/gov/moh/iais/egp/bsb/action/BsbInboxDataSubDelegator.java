@@ -135,7 +135,7 @@ public class BsbInboxDataSubDelegator {
 
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = inboxClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facNames.size());
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));
         }

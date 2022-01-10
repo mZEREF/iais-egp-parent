@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,6 +100,7 @@ public class BsbReportInventoryDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,inventoryDto.retrieveValidationResult());
         }
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY);
     }
 
     public void preSwitch(BaseProcessClass bpc){
@@ -207,7 +207,7 @@ public class BsbReportInventoryDelegator {
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facLists.size());
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(MaskUtil.maskValue("id",fac.getFacId()), fac.getFacName()));
         }

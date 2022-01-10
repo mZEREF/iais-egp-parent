@@ -40,14 +40,12 @@
                                         required="false"/>
                             <iais:value width="10">
                                 <p style="font-size: large">Yes</p>
-                                <%--<span class="error-msg" name="errorMsg" id="error_displayName"></span>--%>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Physical Possession of Agent (Current state)" width="15"
                                         required="false"/>
                             <iais:value width="10">
-                                <%--                                <iais:select name="currentState" value="currentState" firstOption="Please Select"/>--%>
                                 <select id="stateSelect">
                                     <option>Please Select</option>
                                     <option>Yes</option>
@@ -59,29 +57,26 @@
                             <iais:field value="Initial Quantity" width="15" required="false"/>
                             <iais:value width="10">
                                 <p style="font-size: large">550</p>
-                                <%--<span class="error-msg" name="errorMsg" id="error_idNo"></span>--%>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Qty to Change" width="15" required="false"/>
                             <iais:value width="10">
                                 <input type="number" id="number" name="changeNumber"/>
-                                <%--                                <span class="error-msg" name="errorMsg" id="error_designation"></span>--%>
                             </iais:value>
                         </iais:row>
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <c:if test="${back eq 'revocationFacility'}">
-<%--                                    <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
+                                <c:if test="${from eq 'fac'}">
                                     <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                 </c:if>
-                                <c:if test="${back eq 'revocationTaskList'}">
+                                <c:if test="${from eq 'app'}">
                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                 </c:if>
                             </div>
-                            <div align="right">
-                                <button name="submitBtn3" id="submitButton3" type="button" class="btn btn-primary">
+                            <div style="text-align: right">
+                                <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -91,6 +86,4 @@
             </div>
         </div>
     </form>
-<%--    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>--%>
-<%--    <%@include file="/WEB-INF/jsp/include/utils.jsp" %>--%>
 </div>

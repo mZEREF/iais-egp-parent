@@ -1,0 +1,433 @@
+<div class="preview-gp">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading completed">
+                        <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Facility Informations</a>
+                        </h4>
+                    </div>
+                    <div id="previewFacInfo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="text-right app-font-size-16"><a href="#" data-step-key="facInfo_facProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Facility Profile</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facProfile.facName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${TableDisplayUtil.getOneLineAddress(facProfile.block, facProfile.streetName, facProfile.floor, facProfile.unitNo, facProfile.postalCode)}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facProfile.isFacilityProtected}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Facility Operator</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Facility Operator</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.facOperator}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Facility Operator Designee Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.designeeName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.idNumber}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.nationality}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.designation}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.contactNo}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Email</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.email}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.employmentStartDt}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <c:forEach var="personnel" items="${facAuth.facAuthPersonnelList}" varStatus="status">
+                                    <div>
+                                        <c:if test="${facAuth.facAuthPersonnelList.size() > 1}">
+                                            <div class="form-group">
+                                                <label class="col-xs-5 col-md-4 control-label">Personnel ${status.index + 1}</label>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </c:if>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.name}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.idNumber}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.nationality}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.designation}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.contactNo}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.email}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDt}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Employment Period</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentPeriod}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Security Clearance Date</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.securityClearanceDt}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Area of Work</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.workArea}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Facility Administrator</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Main Administrator</label>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.adminName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.idNumber}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.nationality}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.designation}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.contactNo}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.email}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.employmentStartDt}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Alternative Administrator</label>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.adminName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.idNumber}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.nationality}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.designation}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.contactNo}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.email}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.employmentStartDt}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Facility Officer</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.officerName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.idNumber}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.nationality}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.designation}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.contactNo}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.email}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.employmentStartDt}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Biosafety Committee</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <c:forEach var="personnel" items="${facCommittee.facCommitteePersonnelList}" varStatus="status">
+                                    <div>
+                                        <c:if test="${facCommittee.facCommitteePersonnelList.size() > 1}">
+                                            <div class="form-group">
+                                                <label class="col-xs-5 col-md-4 control-label">Committee ${status.index + 1}</label>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </c:if>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.name}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.idNumber}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.nationality}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.designation}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.contactNo}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.email}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDt}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Area of Expertise</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.expertiseArea}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Role</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.role}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-5 col-md-4 control-label">Is this person is Employee of the Company?</label>
+                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employee}</p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading completed">
+                        <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#previewBatInfo">Biological Agents &amp; Toxins</a>
+                        </h4>
+                    </div>
+                    <div id="previewBatInfo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="text-right app-font-size-16"><a href="#" data-step-key="batInfo"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <c:forEach var="bat" items="${batList}">
+                                <div class="panel-main-content form-horizontal min-row">
+                                    <div class="form-group">
+                                        <div class="col-10"><strong><iais:code code="${bat.activityType}"/></strong></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <c:forEach var="info" items="${bat.batInfos}">
+                                        <div>
+                                            <div class="form-group">
+                                                <label class="col-xs-5 col-md-4 control-label"><iais:code code="${info.schedule}"/></label>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-5 col-md-4 control-label">Name of Biological Agent/Toxin</label>
+                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${info.batName}</p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-5 col-md-4 control-label">Types of samples that will be handled</label>
+                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${info.sampleType}</p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading completed">
+                        <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#previewDocs">Primary Documents</a>
+                        </h4>
+                    </div>
+                    <div id="previewDocs" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="panel-main-content form-horizontal min-row">
+                                <c:forEach var="doc" items="${docSettings}">
+                                    <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
+                                    <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
+                                    <c:set var="newFileList" value="${newFiles.get(doc.type)}" />
+                                    <c:if test="${not empty savedFileList or not empty newFileList}">
+                                        <div class="form-group">
+                                            <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div>
+                                            <c:forEach var="file" items="${savedFileList}">
+                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', file.repoId)}"/>
+                                                <div class="form-group">
+                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:forEach>
+                                            <c:forEach var="file" items="${newFileList}">
+                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', file.tmpId)}"/>
+                                                <div class="form-group">
+                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

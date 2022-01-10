@@ -1,17 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.io.Serializable;
 import java.util.List;
@@ -35,24 +35,32 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private final static String  NUMBER_ARC_PREVIOUSLY_DROP_DOWN = "numberArcPreviouslyDropDown";
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
-    private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
 
+    private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
+    private final static String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
+    private final static String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        init(request);
+    }
+
+    public void init(HttpServletRequest request){
         ParamUtil.setSessionAttr(request,CURRENT_AR_TREATMENT_SESSION,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CURRENT_AR_TREATMENT));
         ParamUtil.setSessionAttr(request, NO_CHILDREN_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
+        ParamUtil.setSessionAttr(request, UNDERGONE_OVERSEAS_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
         //21 : Unknown
         List<SelectOption> selectOptions =  DataSubmissionHelper.getNumsSelections(20);
         selectOptions.add(new SelectOption("21","Unknown"));
         ParamUtil.setSessionAttr(request, NUMBER_ARC_PREVIOUSLY_DROP_DOWN,(Serializable) selectOptions);
         ParamUtil.setSessionAttr(request, PRACTITIONER_DROP_DOWN,(Serializable) getPractitioner());
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
-        ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
-        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
-        ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
+        setDonorUserSession(request);
+        ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
+        ParamUtil.setRequestAttr(request,INIT_IN_ARCYCLE_STAGE,AppConsts.YES);
+        ParamUtil.clearSession(request,ENHANCEDCOUNSELLING_NO_SHOW);
     }
 
     @Override
@@ -96,10 +104,31 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         }
         arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
+        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
+            setEnhancedCounsellingTipShow(request,arCycleStageDto,false);
+            if(isRfc(request)){
+                arCycleStageDto.setOldDonorDtos(IaisCommonUtils.isNotEmpty(arDonorDtos) ? (List<DonorDto>) CopyUtil.copyMutableObjectList(arDonorDtos) : null);
+            }
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
-    private void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
+    public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){
+        if((arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0)
+                || arCycleStageDto.getCountForEnhancedCounselling() >10){
+            if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
+                if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
+                    ParamUtil.setSessionAttr(request,ENHANCEDCOUNSELLING_NO_SHOW,AppConsts.YES);
+                    ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
+                }
+                if(needTip){
+                    ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
+                }
+            }
+        }
+    }
+
+    public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
             PatientDto patientDto = patientInfoDto.getPatient();
             List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
@@ -112,6 +141,8 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             }
             List<CycleDto> cycleDtos = arDataSubmissionService.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(patientDto.getPatientCode(),hciCode, DataSubmissionConsts.AR_CYCLE_AR);
             arCycleStageDto.setNumberOfCyclesUndergoneLocally(IaisCommonUtils.isNotEmpty(cycleDtos) ? cycleDtos.size() : 0);
+            //set ar count for EnhancedCounselling
+            arCycleStageDto.setCountForEnhancedCounselling(arDataSubmissionService.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto));
         }
     }
 
@@ -127,8 +158,24 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
+        if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
+        setEnhancedCounsellingTipShow(request,arCycleStageDto,true);
+        checkDonorsVerifyPass(donorDtos,request);
+        valRFC(request,arCycleStageDto);
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
+
+    protected void valRFC(HttpServletRequest request, ArCycleStageDto arCycleStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto()!= null && arCycleStageDto .equals(arOldSuperDataSubmissionDto.getArCycleStageDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
+    }
+
 
 
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){

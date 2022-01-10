@@ -57,4 +57,9 @@ public class INTRANET___MohOnlineEnquiryAssistedReproduction___1 extends BasePro
 		EngineHelper.delegate(DELEGATOR, "start", this);// 		start->OnStepProcess
 	}
 
+	public void perNext_OnStepProcess_0() throws Exception {
+	// 		perNext->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "perNext", this);
+	}
+
 }

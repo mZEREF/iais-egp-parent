@@ -137,18 +137,18 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select name="doDecision"
-                                                                                                 id="doDecision" onchange="decisionChange(this)"
-                                                                                                 value="${processData.doDecision}"
-                                                                                                 codeCategory="CATE_ID_BSB_CHANGE_DATE_DO"
-                                                                                                 firstOption="Please Select"/>
+                                                                                    <select name="doDecision" id="doDecision">
+                                                                                        <option value="">Please Select</option>
+                                                                                        <option value="MOHPRO010" <c:if test="${processData.doDecision eq 'MOHPRO010'}">selected = 'selected'</c:if>>Verified</option>
+                                                                                        <option value="MOHPRO003" <c:if test="${processData.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                    </select>
                                                                                     <span data-err-ind="doDecision" class="error-msg"></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </iais:section>
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
-                                                                    <div align="right">
+                                                                    <div style="text-align: right">
                                                                         <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                     </div>
                                                                     <div>&nbsp;</div>

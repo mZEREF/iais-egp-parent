@@ -15,18 +15,14 @@ import java.util.List;
 public class Approval extends BaseEntity {
 
     private String id;
-
     private String processType;
-
     private String approveNo;
-
     private String status;
-
     private Date approvalDate;
-
     private Date approvalStartDate;
-
     private Date approvalExpiryDate;
+    private String suspendedStatus;
+    private String renewable;
 
     private List<FacilityActivity> facilityActivities;
     private List<FacilityBiologicalAgent> facilityBiologicalAgents;

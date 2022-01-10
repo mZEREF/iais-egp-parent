@@ -8,7 +8,7 @@
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
-        <div class="panel-body">
+        <div class="panel-body" style="padding-left: 50px">
             <div class="panel-main-content form-horizontal">
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <h3>
@@ -16,11 +16,10 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <span id="error_endCyclePage" name="iaisErrorMsg" class="error-msg col-md-12" style="padding: 0px;"></span>
                 <iais:row>
                     <iais:field width="6" value="Is Current Cycle Abandoned?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="cycleAbandoned"
@@ -61,7 +60,7 @@
                         <iais:row>
                             <iais:field width="5" value="Reason for Abandonment (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
+                                <iais:input maxLength="20" type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
                             </iais:value>
                         </iais:row>

@@ -10,6 +10,10 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<%
+    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -62,12 +66,8 @@
                             <iais:row>
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <select name="arCentre" id="arCentre">
-                                        <option value="" <c:if test="${empty assistedReproductionEnquiryFilterDto.arCentre}">selected="selected"</c:if>>Please Select</option>
-                                        <c:forEach items="${arCentreSelectOption}" var="selectOption">
-                                            <option value="${selectOption.value}" <c:if test="${assistedReproductionEnquiryFilterDto.arCentre ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
-                                        </c:forEach>
-                                    </select>
+                                    <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption" cssClass="clearSel"
+                                                 value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
                                 </iais:value>
                             </iais:row>
                             <div id="patientInformationFilter" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
@@ -103,12 +103,12 @@
                                     <iais:field width="4" value="Submission Type"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="submissionType" id="submissionType" firstOption="Please Select" options="submissionTypeOptions"
-                                                     value="${assistedReproductionEnquiryFilterDto.submissionType}" cssClass="idTypeSel" />
+                                                     value="${assistedReproductionEnquiryFilterDto.submissionType}" cssClass="clearSel" />
                                     </iais:value>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <div id="cycleStageDisplay" <c:if test="${assistedReproductionEnquiryFilterDto.submissionType!='AR_TP002'}">style="display: none"</c:if> >
-                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" codeCategory="CATE_ID_DS_STAGE_TYPE"
-                                                         value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="idTypeSel" />
+                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" options="stageTypeSelectOption" needSort="true"
+                                                         value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="clearSel" />
                                         </div>
                                     </iais:value>
                                 </iais:row>
@@ -130,11 +130,11 @@
                                     <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
                                     </button>
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="javascript:doSearch();">Search
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="javascript:doAdvancedSearch();">Advanced Search
                                     </button>
                                     <button type="button" class="btn btn-primary"
-                                            onclick="javascript:doAdvancedSearch();">Advanced Search
+                                            onclick="javascript:doSearch();">Search
                                     </button>
                                 </iais:action>
                             </div>
@@ -142,10 +142,7 @@
                     </div>
                     <br>
 
-                    <div id="u82" class="ax_default" data-label="Data Quick View" style="visibility: inherit;" data-left="591" data-top="586" data-width="569" data-height="810">
 
-
-                    </div>
 
                     <div id="patientResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
@@ -158,16 +155,16 @@
                                             <thead>
                                             <tr >
 
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="false"
                                                                      field="ID_TYPE"
                                                                      value="Patient ID Type"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
                                                                      value="Patient ID No"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="false"
@@ -190,6 +187,11 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
+                                                    <style>
+                                                        .form-horizontal p {
+                                                            line-height: 23px;
+                                                        }
+                                                    </style>
                                                     <c:forEach var="patient"
                                                                items="${patientResult.rows}"
                                                                varStatus="status">
@@ -198,7 +200,7 @@
                                                             <td style="vertical-align:middle;">
 
                                                                 <p style="width: 165px;"><c:out value="${patient.patientName}"/>
-                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientId('${patient.patientId}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                                                                     </a>
                                                                 </p>
                                                             </td>
@@ -218,11 +220,11 @@
                                                             </td>
 
                                                             <td >
-                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientId}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
+                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
                                                                     Quick View
                                                                 </button>
                                                                 <br>
-                                                                <button type="button" onclick="fullDetailsView('${patient.patientId}')" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
@@ -232,12 +234,12 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
-                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
+                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:100px">
                                             <div class="col-md-8"  role="document" style="float:right ">
                                                 <div class="modal-content">
                                                     <div class="row">
                                                         <div class="col-md-1" >
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"><</span></button>
+                                                            <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> > </span></button>
                                                         </div>
                                                         <div class="col-md-11 " >
                                                             <div class="quickBodyDiv"></div>
@@ -252,7 +254,7 @@
 
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
                                 </iais:action>
                             </div>
                         </div>
@@ -269,10 +271,10 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="SUBMISSION_NO"
                                                                      value="Submission ID"/>
                                                 <iais:sortableHeader needSort="false"
@@ -281,7 +283,7 @@
                                                 <iais:sortableHeader needSort="false"
                                                                      field="CYCLE_STAGE"
                                                                      value="Submission Subtype"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="SUBMIT_DT"
                                                                      value="Submission Date"/>
                                             </tr>
@@ -302,20 +304,20 @@
                                                                varStatus="status">
                                                         <tr>
 
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
-                                                            <td>
-                                                                <a href="#" onclick="fullDetailsView('${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                            <td style="vertical-align:middle;">
+                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${submission.submissionType}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${submission.submissionSubtype}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <fmt:formatDate
                                                                         value="${submission.submissionDate}"
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
@@ -330,7 +332,10 @@
                                     </div>
 
                                 </div>
-
+                                <iais:action style="text-align:right;">
+                                    <a class="btn btn-secondary"
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/SubmissionID-SearchResults-Download">Download</a>
+                                </iais:action>
                             </div>
                         </div>
                     </div>
@@ -342,192 +347,3 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-<script type="text/javascript">
-    var dividajaxlist = [];
-
-    $(document).ready(function () {
-        quickView();
-
-        $('#searchByPatient').change(function () {
-            if($(this).is(':checked')){
-                $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResultDisplay').attr("style","display: block");
-                $('#submissionFilter').attr("style","display: none");
-                $('#submissionResultDisplay').attr("style","display: none");
-            }else {
-                $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResultDisplay').attr("style","display: none");
-                $('#submissionFilter').attr("style","display: block");
-                $('#submissionResultDisplay').attr("style","display: block");
-            }
-        });
-
-        $('#searchBySubmission').change(function () {
-            if($(this).is(':checked')){
-                $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResultDisplay').attr("style","display: none");
-                $('#submissionFilter').attr("style","display: block");
-                $('#submissionResultDisplay').attr("style","display: block");
-            }else {
-                $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResultDisplay').attr("style","display: block");
-                $('#submissionFilter').attr("style","display: none");
-                $('#submissionResultDisplay').attr("style","display: none");
-            }
-        });
-
-        $('#submissionType').change(function () {
-
-            var reason= $('#submissionType option:selected').val();
-
-            if("AR_TP002"==reason){
-                $('#cycleStageDisplay').attr("style","display: block");
-            }else {
-                $('#cycleStageDisplay').attr("style","display: none");
-            }
-
-        });
-    })
-
-
-    var getPatientByPatientId = function (applicationGroupId, divid) {
-        if (!isInArray(dividajaxlist,divid)) {
-            groupAjax(applicationGroupId, divid);
-        } else {
-            var display = $('#advfilterson' + divid).css('display');
-            if (display == 'none') {
-                $('#advfilterson' + divid).show();
-            } else {
-                $('#advfilterson' + divid).hide();
-            }
-        }
-    };
-    function isInArray(arr,value){
-        for(var i = 0; i < arr.length; i++){
-            if(value === arr[i]){
-                return true;
-            }
-        }
-        return false;
-    };
-    var groupAjax = function (applicationGroupId, divid) {
-        dividajaxlist.push(divid);
-        $.post(
-            '/hcsa-licence-web/hcsa/intranet/ar/patientDetail.do',
-            {patientId: applicationGroupId},
-            function (data) {
-                let result = data.result;
-                if('Success' == result) {
-                    let res = data.ajaxResult;
-                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="7" class="hiddenRow">' +
-                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
-                        '<thead>' +
-                        '<tr>';
-
-
-                    html += '<th width="10%">AR/IUI/EFO</th>' +
-                        '<th width="20%">AR Treatment Cycle Type</th>' +
-                        '<th width="25%">AR Centre</th>' +
-                        '<th width="15%">Cycle Start Date</th>' +
-                        '<th width="20%">Co-funding Claimed</th>' +
-                        '<th width="15%">Status</th>'  +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    for (let i = 0; i < 0; i++) {
-                        var color = "black";
-
-                        html += '<tr style = "color : ' + color + ';">';
-
-                        html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].serviceName + '<p></td>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
-
-                        html += '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].slaDays + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
-                            '</tr>';
-                    }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
-                }
-            }
-        )
-    };
-
-    function doClear() {
-        $('input[type="text"]').val("");
-        $('input[type="radio"]').prop("checked", false);
-        $('input[type="checkbox"]').prop("checked", false);
-    }
-
-    function doAdvancedSearch() {
-        showWaiting();
-        $("[name='base_action_type']").val('advanced');
-        $('#mainForm').submit();
-    }
-
-    function jumpToPagechangePage() {
-        search();
-    }
-
-    function doSearch() {
-        $('input[name="pageJumpNoTextchangePage"]').val(1);
-        search();
-    }
-
-    function search() {
-        showWaiting();
-        $("[name='base_action_type']").val('search');
-        $('#mainForm').submit();
-    }
-
-    function sortRecords(sortFieldName, sortType) {
-        $("[name='crud_action_value']").val(sortFieldName);
-        $("[name='crud_action_additional']").val(sortType);
-        $("[name='base_action_type']").val('search');
-        submit('search');
-    }
-
-    var quickView = function (submissionIdNo) {
-
-        var jsonData={
-            'submissionIdNo': submissionIdNo
-        };
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/ar-quick-view',
-            'dataType':'text',
-            'data':jsonData,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
-                    return;
-                }
-                $('.quickBodyDiv').html(data);
-
-
-            },
-            'error':function () {
-            }
-        });
-    }
-
-    var fullDetailsView = function (submissionIdNo) {
-
-        showWaiting();
-        $("[name='crud_action_value']").val(submissionIdNo);
-        $("[name='base_action_type']").val('viewFull');
-        $('#mainForm').submit();
-    }
-
-    var fullStagesView = function (submissionIdNo) {
-
-        showWaiting();
-        $("[name='crud_action_value']").val(submissionIdNo);
-        $("[name='base_action_type']").val('viewStage');
-        $('#mainForm').submit();
-    }
-</script>

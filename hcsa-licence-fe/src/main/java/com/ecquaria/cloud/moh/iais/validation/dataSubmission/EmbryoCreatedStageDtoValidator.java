@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -34,11 +35,14 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         }
         int totalThawedNum =0;
         int totalFreshNum =0;
-
+        String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        String errMsgErr002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
 
         if (embryoCreatedStageDto.getTransEmbrFreshOccNum()==null) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
-            errorMap.put("othersReason", errMsg);
+            errorMap.put("transEmbrFreshOccNum", errMsgErr006);
+            if(StringUtil.isNotEmpty(embryoCreatedStageDto.getTransEmbrFreshOccNumStr())){
+                errorMap.put("transEmbrFreshOccNum", errMsgErr002);
+            }
         }else if(embryoCreatedStageDto.getTransEmbrFreshOccNum()>99||embryoCreatedStageDto.getTransEmbrFreshOccNum()<0){
 
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -52,8 +56,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         }
 
         if (embryoCreatedStageDto.getPoorDevFreshOccNum()==null) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
-            errorMap.put("poorDevFreshOccNum", errMsg);
+            errorMap.put("poorDevFreshOccNum", errMsgErr006);
+            if(StringUtil.isNotEmpty(embryoCreatedStageDto.getPoorDevFreshOccNumStr())){
+                errorMap.put("poorDevFreshOccNum", errMsgErr002);
+            }
         }else if(embryoCreatedStageDto.getPoorDevFreshOccNum()>99||embryoCreatedStageDto.getPoorDevFreshOccNum()<0){
 
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -67,8 +73,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         }
 
         if (embryoCreatedStageDto.getTransEmbrThawOccNum() == null) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
-            errorMap.put("transEmbrThawOccNum", errMsg);
+            errorMap.put("transEmbrThawOccNum", errMsgErr006);
+            if(StringUtil.isNotEmpty(embryoCreatedStageDto.getTransEmbrThawOccNumStr())){
+                errorMap.put("transEmbrThawOccNum", errMsgErr002);
+            }
         }else if(embryoCreatedStageDto.getTransEmbrThawOccNum()>99||embryoCreatedStageDto.getTransEmbrThawOccNum()<0){
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
@@ -81,8 +89,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         }
 
         if (embryoCreatedStageDto.getPoorDevThawOccNum() == null) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
-            errorMap.put("poorDevThawOccNum", errMsg);
+            errorMap.put("poorDevThawOccNum", errMsgErr006);
+            if(StringUtil.isNotEmpty(embryoCreatedStageDto.getPoorDevThawOccNumStr())){
+                errorMap.put("poorDevThawOccNum", errMsgErr002);
+            }
         }else if(embryoCreatedStageDto.getPoorDevThawOccNum()>99||embryoCreatedStageDto.getPoorDevThawOccNum()<0){
 
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -98,11 +108,11 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
         String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
 
-        if(totalThawedNum>totalThawedMax){
+        if(totalThawedNum>totalThawedMax&&!errorMap.containsKey("poorDevThawOccNum")){
             errorMap.put("poorDevThawOccNum", errMsgThawed);
 
         }
-        if(totalFreshNum>totalFreshMax){
+        if(totalFreshNum>totalFreshMax&&!errorMap.containsKey("poorDevFreshOccNum")){
             errorMap.put("poorDevFreshOccNum", errMsgFresh);
 
         }

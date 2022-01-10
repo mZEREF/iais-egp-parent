@@ -67,10 +67,8 @@
                                         <span data-err-ind="consumeType--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <%@include file="../common/batDocument.jsp" %>
-                                </div>
                             </div>
+
                             <div id="agentFifth--v--${status.index}" style="display: none">
                                 <div class="form-group">
                                     <div class="col-sm-5 control-label">
@@ -99,7 +97,10 @@
                                         <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                            </div>
+
+                            <div id="batDocument--v--${status.index}" style="display: none">
+                                <div class="form-group" >
                                     <%@include file="../common/batDocument.jsp" %>
                                 </div>
                             </div>
@@ -132,6 +133,9 @@
                                       maxlength="500">${consumeNotification.remarks}</textarea>
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
+                    </div>
+                    <div class = "form-group" id="others">
+                        <%@include file="../common/docOtherCondition.jsp" %>
                     </div>
                 </div>
             </div>

@@ -1,13 +1,13 @@
-<div class="panel panel-default" style="${arCycleStageDto.usedDonorOocyte ?  '' : 'display: none;'}">
+<div class="panel panel-default" style="${!empty donorDtos ?  '' : 'display: none;'}">
      <div class="panel-heading ${headingSign}">
          <h4  class="panel-title" >
-        <a href="#donorDtoDetails" data-toggle="collapse"  >
+        <a class="collapsed" href="#donorDtoDetails" data-toggle="collapse"  >
             Details of Donor(s)
           </a>
        </h4>
     </div>
 
-     <div id="donorDtoDetails" class="panel-collapse collapse in">
+     <div id="donorDtoDetails" class="panel-collapse collapse">
          <div class="panel-body">
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
@@ -53,18 +53,20 @@
 
                      <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
                          <iais:field width="5" value="Donor Sample Code / ID" />
-                         <iais:value width="3" cssClass="col-md-3" display="true">
-                             <iais:code code="${donorDto.idType}"/>
+                         <iais:value width="7" cssClass="col-md-3" display="true">
+                             <iais:optionText value="${donorDto.idType}" selectionOptions="donorSampleDropDown"/>
                          </iais:value>
-                         <iais:value width="4" cssClass="col-md-4" display="true">
+                     </iais:row>
+                     <iais:row>
+                         <iais:field width="5" value="" />
+                         <iais:value width="7" cssClass="col-md-4" display="true">
                              <c:out value="${donorDto.donorSampleCode}" />
                          </iais:value>
                      </iais:row>
-
                  <iais:row  cssClass="usedDonorOocyteControlClass" id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
-                         <iais:code code="${donorDto.source}"/>
+                         <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
                      </iais:value>
                  </iais:row>
 
@@ -78,14 +80,6 @@
                  </c:if>
                  </c:if>
 
-                 <c:if test="${not empty donorDto.relation}">
-                     <iais:row id="relation${arDonorIndex}Row">
-                         <iais:field width="5" value="Donor relation to patient" />
-                         <iais:value width="7" cssClass="col-md-7" label="true">
-                             <iais:code code="${donorDto.relation}"/>
-                         </iais:value>
-                     </iais:row>
-                 </c:if>
                  <c:if test="${not empty donorDto.ageList}">
                  <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
                      <iais:field width="5" value="Donor's Age at Donation" />
@@ -98,9 +92,22 @@
                      </iais:value>
                  </iais:row>
                  </c:if>
+
+
+                 <c:if test="${donorDto.directedDonation}">
+                     <iais:row id="relation${arDonorIndex}Row">
+                         <iais:field width="5" value="Donor relation to patient" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <iais:code code="${donorDto.relation}"/>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
                  <h3></h3>
              </div>
         </c:forEach>
+             <c:if test="${!empty donorDtos}">
+             <%@include file="../common/patientInventoryTable.jsp" %>
+             </c:if>
      </div>
      </div>
 </div>

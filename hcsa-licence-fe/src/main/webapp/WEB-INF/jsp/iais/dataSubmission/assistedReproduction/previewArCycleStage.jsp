@@ -12,14 +12,18 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Preview and Submit</h3>
+            <%@include file="common/viewTitle.jsp" %>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewArCycleStageSection.jsp" %>
-                    <%@include file="common/arDeclaration.jsp" %>
+                    <%@include file="common/previewDsAmendment.jsp" %>
+                      <c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
+                        <%@include file="common/arDeclaration.jsp" %>
+                      </c:if>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>

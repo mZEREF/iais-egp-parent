@@ -76,12 +76,13 @@ public class AckOfReceiptOfTransferDelegator {
         FacListDto.FacList facList = subCommon.getFacInfo(request);
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
         AckTransferReceiptDto dto= getTransferReceipt(request);
-        Map<String,List<PrimaryDocDto.NewDocInfo>> keyNewDocDto  = dto.getExistNewDocInfoIndexMap();
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewDocDto  = dto.getExistNewDocInfoIndexMap();
         ParamUtil.setRequestAttr(request,"keyMap",keyNewDocDto);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
         }
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER);
     }
 
     public void saveAndPreConfirm(BaseProcessClass bpc){
@@ -135,8 +136,7 @@ public class AckOfReceiptOfTransferDelegator {
     }
 
     public void saveDraft(BaseProcessClass bpc){
-        log.info("this model will do in the future ");
-
+        // this model will do in the future
     }
 
     public void prepareSwitch1(BaseProcessClass bpc){
@@ -178,7 +178,8 @@ public class AckOfReceiptOfTransferDelegator {
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facLists.size()+1);
+        selectModel.add(new SelectOption("","Please Select"));
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
         }

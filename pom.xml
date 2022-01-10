@@ -13,12 +13,12 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>20.04.3</version>
+        <version>20.04.5</version>
     </parent>
 
     <properties>
         <revision>0.2</revision>
-        <engine-version>20.04.3</engine-version>
+        <engine-version>20.04.5</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
         <jacoco.version>0.8.6</jacoco.version>
@@ -130,7 +130,7 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.43</version>
+                <version>0.45</version>
             </dependency>
             <dependency>
                 <groupId>com.ncs.secureconnect</groupId>
@@ -188,7 +188,7 @@
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>
-                <version>0.25</version>
+                <version>0.26</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

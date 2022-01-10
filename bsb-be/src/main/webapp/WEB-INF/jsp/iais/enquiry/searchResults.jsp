@@ -10,8 +10,11 @@
             <div class="table-responsive">
                 <div class="table-gp">
                     <c:if test="${count=='app'}">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
+                            <tr>
+                                <th scope="col" style="display: none"></th>
+                            </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
                                                      value="S/N"/>
@@ -112,8 +115,11 @@
                         </table>
                     </c:if>
                     <c:if test="${count=='fn'}">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
+                            <tr>
+                                <th scope="col" style="display: none"></th>
+                            </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
                                                      value="S/N"/>
@@ -200,8 +206,11 @@
                         </table>
                     </c:if>
                     <c:if test="${count=='an'}">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
+                            <tr>
+                                <th scope="col" style="display: none"></th>
+                            </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
                                                      value="S/N"/>
@@ -289,8 +298,11 @@
                         </table>
                     </c:if>
                     <c:if test="${count=='on'}">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
+                            <tr>
+                                <th scope="col" style="display: none"></th>
+                            </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
                                                      value="S/N"/>

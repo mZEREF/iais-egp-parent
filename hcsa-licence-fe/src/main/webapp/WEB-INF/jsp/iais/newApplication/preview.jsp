@@ -1,4 +1,6 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -11,6 +13,11 @@
 
 <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
+
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
+<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi && specialSubLic}"
+       scope="request"/>
 
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -157,10 +164,6 @@
 <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-<%--            <div class="modal-header">--%>
-<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                <div class="modal-title" style="font-size:2rem;">Confirmation Box</div>--%>
-<%--            </div>--%>
             <div class="modal-body" >
                 <div class="row">
                     <div class="col-md-12" ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
@@ -173,20 +176,10 @@
         </div>
     </div>
 </div>
-<%--<div class="modal fade" id="rfc_ERROR" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">${RFC_ERROR_NO_CHANGE}</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>--%>
+
+<iais:confirm msg="${rfcInvalidLic}" callBack="$('#rfcInvalidLic').modal('hide');" popupOrder="rfcInvalidLic"
+              needCancel="false" needEscapHtml="false"/>
+<input type="hidden" value="${not empty rfcInvalidLic? '1' : ''}" id="showInvalidLic">
 <iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
               needCancel="false" needEscapHtml="false"/>
 <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
@@ -197,9 +190,11 @@
 <input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
 <script type="text/javascript">
-
     $(document).ready(function() {
         //Binding method
+        if(!isEmpty($('#showInvalidLic').val())){
+            $('#rfcInvalidLic').modal('show');
+        }
         if($('#showOtherErrorCheck').val()!=''){
             $('#showOtherError').modal('show');
         }

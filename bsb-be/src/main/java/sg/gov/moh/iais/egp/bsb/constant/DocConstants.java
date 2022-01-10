@@ -25,6 +25,8 @@ public class DocConstants {
     public static final String DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE= "REPTYPE07";
     public static final String DOC_REPORT_UPLOAD = "report";
     public static final String DOC_TYPE_OTHERS = "others";
+    public static final String DOC_INCIDENT_REPORT = "incidentReport";
+    public static final String DOC_INCIDENT_ACTION_REPORT = "incidentActionReport";
 
     public static final String DOC_TYPE_RISK_ASSESSMENT = "riskAssessment";
     public static final String DOC_TYPE_APPROVAL_DOCUMENT_FROM_MOH = "approvalDocumentFromMoh";

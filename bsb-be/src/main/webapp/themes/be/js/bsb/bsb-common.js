@@ -50,4 +50,22 @@ function clearAllErrMsg() {
 }
 
 
+/* append comma separated input value */
+function appendCSInputVal(input, value) {
+    appendInputVal(input, value, ",");
+}
+
+/* append space separated input value */
+function appendSSInputVal(input, value) {
+    appendInputVal(input, value, " ");
+}
+
+/* append input value with specific separator */
+function appendInputVal(input, value, separator) {
+    if (input.value) {
+        input.value = input.value + separator + value;
+    } else {
+        input.value = value;
+    }
+}
 

@@ -42,10 +42,12 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         String sampleKey = donorSampleDto.getSampleKey();
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator sampleKey is -->:"+sampleKey));
         if(StringUtil.isEmpty(sampleKey)){
+            String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(donorSampleDto.getIdType(),new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC,DataSubmissionConsts.AR_ID_TYPE_BLUE_IC,DataSubmissionConsts.AR_ID_TYPE_FIN_NO,DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
              donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(
                      donorSampleDto.getIdType()
                     ,donorSampleDto.getIdNumber()
-                    ,donorSampleDto.getDonorSampleCode()
+                     ,donorSampleCodeType
+                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber()
                     ,donorSampleDto.getSampleFromHciCode()
                     ,donorSampleDto.getSampleFromOthers());
 
@@ -57,14 +59,14 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         if(donorSampleDtoFromDb != null){
             sampleKey = donorSampleDtoFromDb.getSampleKey();
-        }
-        if(StringUtil.isNotEmpty(sampleKey)){
             List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
             donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
-            donorSampleDto.setSampleKey(sampleKey);
-        }else{
+        }
+        if(StringUtil.isEmpty(sampleKey)){
             log.info(StringUtil.changeForLog("Generated a ned samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
+        }else{
+            donorSampleDto.setSampleKey(sampleKey);
         }
         //countLive
         if(countLive(donorSampleDtoFromDb) >3){
@@ -76,14 +78,13 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
              result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationY");
         }else{
             result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationN");
-
+            String sampleFromHciCode = donorSampleDto.getSampleFromHciCode();
+            if(DataSubmissionConsts.AR_SOURCE_OTHER.equals(sampleFromHciCode)){
+                sampleFromOthersResult = WebValidationHelper.validateProperty(donorSampleDto, "sampleFromOthers");
+            }
             String donorIdentityKnown = donorSampleDto.getDonorIdentityKnown();
             if(DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorIdentityKnown)){
                 donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityKnown");
-                String sampleFromHciCode = donorSampleDto.getSampleFromHciCode();
-                if("other".equals(sampleFromHciCode)){
-                    sampleFromOthersResult = WebValidationHelper.validateProperty(donorSampleDto, "sampleFromOthers");
-                }
             }else{
                 donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityAnonymous");
             }
@@ -99,37 +100,56 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         //validate the ages
         String[] ages = donorSampleDto.getAges();
-        for(int i =0 ;i<ages.length;i++){
-            String age = ages[i];
-            log.info(StringUtil.changeForLog("The age is -->:"+age));
-            boolean repetition = isRepetition(age,ages,donorSampleDtoFromDb);
-            //empty
-            if(StringUtil.isEmpty(age)){
-                map.put("ages"+i,"GENERAL_ERR0006");
-            //Number
-            }else if(!StringUtil.isNumber(age)){
-                map.put("ages"+i,"GENERAL_ERR0002");
-            //length
-            }else if(age.length()>2){
-                map.put("ages"+i,"GENERAL_ERR0041");
-            //donor sample
-            }else if(!donorSampleDto.isDirectedDonation()){
-                String sampleType = donorSampleDto.getSampleType();
-                log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-                int ageInt = Integer.valueOf(age);
-                if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
-                    if(ageInt<=21 || ageInt>=40 ){
-                        map.put("ages"+i,"DS_ERR044");
-                    }
-                }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
-                        ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
-                    if(ageInt<=21 || ageInt>=35 ){
-                        map.put("ages"+i,"DS_ERR045");
+        if(ages != null){
+            for(int i =0 ;i<ages.length;i++){
+                String age = ages[i];
+                log.info(StringUtil.changeForLog("The age is -->:"+age));
+                //empty
+                if(StringUtil.isEmpty(age)){
+                    map.put("ages"+i,"GENERAL_ERR0006");
+                    //Number
+                }else if(!StringUtil.isNumber(age)){
+                    map.put("ages"+i,"GENERAL_ERR0002");
+                    //length
+                }else if(age.length()>2){
+                    map.put("ages"+i,"GENERAL_ERR0041");
+                    //donor sample
+                }else if(!donorSampleDto.isDirectedDonation()){
+                    String sampleType = donorSampleDto.getSampleType();
+                    log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
+                    int ageInt = Integer.valueOf(age);
+                    if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
+                        if(ageInt<21 || ageInt>40 ){
+                            map.put("ages"+i,"DS_ERR044");
+                        }
+                    }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
+                            ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
+                        if(ageInt<21 || ageInt>35 ){
+                            map.put("ages"+i,"DS_ERR045");
+                        }
                     }
                 }
-             //Repetition
-            }else if(repetition){
-                map.put("ages"+i,"DS_ERR046");
+                //Repetition
+                if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
+                    map.put("ages"+i,"DS_ERR046");
+                }
+            }
+        }else{
+//            map.put("oldAges","GENERAL_ERR0006");
+//            log.info(StringUtil.changeForLog("The Ages is null"));
+        }
+
+        //RFC
+        if(DataSubmissionConsts.DS_APP_TYPE_RFC .equals(donorSampleDto.getAppType())){
+            ValidationResult amendReasonResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFC");
+            if (amendReasonResult != null) {
+                map.putAll(amendReasonResult.retrieveAll());
+            }
+            if(DataSubmissionConsts.DONOR_SAMPLE_AMEND_REASON_OTHERS.equals(donorSampleDto.getAmendReason())){
+                ValidationResult amendReasonOtherResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFCOther");
+                if (amendReasonOtherResult != null) {
+                    map.putAll(amendReasonOtherResult.retrieveAll());
+                }
             }
         }
 
@@ -170,7 +190,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
             if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
                 for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
-                    if(Integer.parseInt(age) == donorSampleAgeDto.getAge()){
+                    if(StringUtil.isNotEmpty(age) && Integer.parseInt(age) == donorSampleAgeDto.getAge()){
                         result = true;
                         log.info(StringUtil.changeForLog("The isRepetition exit in the old DonorSampleAgeDto"));
                         break;

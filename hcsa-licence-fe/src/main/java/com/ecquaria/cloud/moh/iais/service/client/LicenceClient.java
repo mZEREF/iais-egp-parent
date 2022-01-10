@@ -218,5 +218,10 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence-rfc/premises-for-business-name", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(@RequestParam("licenceId") String licenceId);
 
+    @GetMapping(value = "/hcsa-licence-rfc/align-licence/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(@PathVariable("licenceId") String licenceId,
+            @RequestParam("checkSpec") Boolean checkSpec);
 
+    @GetMapping(value = "/hcsa-licence/licence-dto-licensee-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(@RequestParam("licenseeId") String licenseeId);
 }

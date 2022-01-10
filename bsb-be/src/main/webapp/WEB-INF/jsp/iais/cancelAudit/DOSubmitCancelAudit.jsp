@@ -9,6 +9,8 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -22,10 +24,10 @@
                         <div class="bg-title">
                             <h2>Cancel Audit</h2>
                         </div>
-                        <%--@elvariable id="auditList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto.FacInfo>"--%>
-                        <c:forEach var="item" items="${auditList}" varStatus="status">
+                        <%--@elvariable id="cancelAuditDto" type="sg.gov.moh.iais.egp.bsb.dto.audit.CancelAuditDto"--%>
+                        <c:forEach var="item" items="${cancelAuditDto.auditDtos}" varStatus="status">
                             <section id="conSection--v--${status.index}">
-                                <c:if test="${auditList.size() > 1}">
+                                <c:if test="${cancelAuditDto.auditDtos.size() > 1}">
                                     <div class="form-group">
                                         <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Facility ${status.index + 1}</h3>
                                     </div>
@@ -36,7 +38,7 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Activity Type" width="15" required="false"/>
-                                    <iais:value width="10"><iais:code code="${item.activityType}"/></iais:value>
+                                    <iais:value width="10"><c:out value="${item.activityType}"/></iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Audit Date" width="15" required="false"/>
@@ -51,24 +53,18 @@
                         <iais:row>
                             <iais:field value="Cancellation Reasons" width="15" required="true"/>
                             <iais:value width="10">
-                                <textarea id="reasons"
-                                          name="reason"
+                                <textarea id="cancelReason"
+                                          name="cancelReason"
                                           cols="70"
                                           rows="4"
-                                          maxlength="300"></textarea>
-                                <span id="error_reasons"
-                                      name="iaisErrorMsg"
-                                      class="error-msg"></span>
+                                          maxlength="300">${cancelReason}</textarea>
+                                <span data-err-ind="cancelReason" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <a class="back" href="/bsb-be/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a>
-                            </div>
+                            <div class="col-xs-12 col-sm-6"><a class="back" href="/bsb-be/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a></div>
                             <div align="right">
-                                <button name="submitBtn3" id="submitCancelAudit" type="button" class="btn btn-primary">
-                                    Submit
-                                </button>
+                                <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>

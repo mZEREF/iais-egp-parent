@@ -42,10 +42,10 @@ public interface ApprovalAppClient {
     FeignResponseEntity<List<Facility>> getAllMainActApprovalFac();
 
     @GetMapping(path = "/approvalApp/approvalToPossess/getApprovalFAByFacId/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<FacilityActivity>> getApprovalFAByFacId(@RequestParam("facilityId") String facilityId);
+    FeignResponseEntity<List<FacilityActivity>> getApprovalFAByFacId(@PathVariable("facilityId") String facilityId);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/getBiologicalBySchedule/{schedule}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<Biological>> getBiologicalBySchedule(@RequestParam("schedule") String schedule);
+    FeignResponseEntity<List<Biological>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
 
     @PostMapping(path = "/approvalApp/approvalToPossess/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewApprovalApp(@RequestBody ApprovalAppDto approvalAppDto);

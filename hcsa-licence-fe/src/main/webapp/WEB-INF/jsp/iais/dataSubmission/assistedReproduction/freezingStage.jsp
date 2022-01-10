@@ -40,22 +40,16 @@
             <div id="patientDetails" class="panel-collapse collapse in">
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
-                  <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
-                  <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                      <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                      <c:out value="${patientDto.idNumber}"/>
-                      ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                  </p>
-                  <hr/>
+                  <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                  </h3>
                   <iais:row>
                     <iais:field value="What was cryopreserved?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-7">
                       <c:forEach items="${arFreeCryoOptions}" var="freeCryo" varStatus="index">
-                        <div class="form-check" col-xs-7 style="padding-left: 0px;">
+                        <div class="form-check col-md-6" style="padding-left: 0px;">
                           <input class="form-check-input"
                                  <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
                                  type="radio" name="freeCryoRadio" value="<c:out value="${freeCryo.value}"/>"
@@ -73,8 +67,9 @@
                   <iais:row>
                     <iais:field value="No. Cryopreserved" mandatory="true"/>
                     <iais:value cssClass="col-md-7">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
-                      <br><span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedNum"></span>
+                      <iais:input maxLength="2" type="text" name="cryopreservedNum"
+                                  id="cryopreservedNum"
+                                  value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
                     </iais:value>
                   </iais:row>
                   <iais:row>

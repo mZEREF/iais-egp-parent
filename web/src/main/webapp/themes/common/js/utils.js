@@ -80,7 +80,6 @@ function gotoFirstMsg() {
     if ($('span.error-msg').not(':empty').length <= 0) {
         return;
     }
-
     $target = $('span.error-msg').not(':empty').first();
     if ($target.is(':hidden')) {
         if ($target.closest('.panel-collapse').length > 0) {
@@ -89,7 +88,11 @@ function gotoFirstMsg() {
             return;
         }
     }
-    var correlationId = $target.attr('id').replace('error_', '');
+    var correlationId = $target.attr('id');
+    if (isEmpty(correlationId)) {
+        return;
+    }
+    correlationId = correlationId.replace('error_', '');
     var errorTop = 0;
     if ($(':input[name="' + correlationId + '"]').length > 0) {
         errorTop = $(':input[name="' + correlationId + '"]').offset().top;
@@ -648,10 +651,12 @@ function refreshIndex(targetSelector) {
         var $ele = $(v);
         var $selector = $ele.find(':input');
         if ($selector.length == 0) {
-            $ele.text(k + 1);
             return;
         }
         $selector.each(function () {
+            if ($(this).hasClass('not-refresh')) {
+                return;
+            }
             var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
             var orgName = $input.attr('name');
             var orgId = $input.attr('id');

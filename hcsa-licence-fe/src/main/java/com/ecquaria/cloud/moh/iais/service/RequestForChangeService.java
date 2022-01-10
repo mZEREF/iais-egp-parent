@@ -24,6 +24,7 @@ import java.util.Map;
  *   @author zixian
  */
 public interface RequestForChangeService {
+
     List<PremisesListQueryDto> getPremisesList(String licenseeId);
 
     AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
@@ -35,7 +36,7 @@ public interface RequestForChangeService {
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto);
 
     String getApplicationGroupNumber(String appType);
-    
+
     void upDateLicStatus(LicenceDto licenceDto);
 
     void saveLicence(LicenceDto licenceDto);
@@ -77,6 +78,9 @@ public interface RequestForChangeService {
 
     List<LicenceDto> getLicenceDtoByHciCode(String hciCode,String licenseeId);
 
+    List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto,
+            String... excludeNos);
+
     List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
 
     List<String> getPersonnelIdsByIdNo(String idNo);
@@ -93,9 +97,11 @@ public interface RequestForChangeService {
     List<String> getAdminEmail(String orgId);
 
     Boolean isOtherOperation(String licenceId);
-    // need delete
-     Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
-     void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
+
+    Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            List<String> premisesHciList, boolean isRfi, boolean checkOthers);
+
+    void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
     void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
     void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
@@ -110,11 +116,13 @@ public interface RequestForChangeService {
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
 
-    boolean checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-            AppGrpPremisesDto oldAppGrpPremisesDto, double amount, String draftNo, String appGroupNo,
-            AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception;
+    Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
+            double amount, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
+            List<AppSubmissionDto> appSubmissionDtos) throws Exception;
 
-    boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
-            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
-            HttpServletRequest request);
+    Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
+
+    List<AppSubmissionDto> getAlginAppSubmissionDtos(String licenceId, boolean checkSpec);
+
 }

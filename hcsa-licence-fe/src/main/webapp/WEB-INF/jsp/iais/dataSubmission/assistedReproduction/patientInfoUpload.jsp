@@ -13,15 +13,9 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}" />
-<c:set var="patient" value="${patientInfoDto.patient}" />
-<c:set var="previous" value="${patientInfoDto.previous}" />
-<c:set var="husband" value="${patientInfoDto.husband}" />
-<c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
-
 <c:set var="hasError" value="${not empty errorMsg}" />
-<c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 <c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
+<c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 
 <%@ include file="common/arHeader.jsp" %>
 
@@ -56,9 +50,11 @@
                             (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
                             records uploaded)
                         </h3>
-                        <%--<h4>Patient Information (1,000 records uploaded)</h4>--%>
+                        <div class="col-xs-12">
+                            <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
                         <c:if test="${not empty fileItemErrorMsgs}">
-                        <div class="col-xs-12 col-sm-12 margin-btm table-responsive">
+                        <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
                             <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
                             <table aria-describedby="" class="table">
                                 <thead>
@@ -72,7 +68,7 @@
                                 <c:forEach var="item" items="${fileItemErrorMsgs}">
                                 <tr>
                                     <td>${item.row}</td>
-                                    <td>${item.fieldName}</td>
+                                    <td>${item.cellName} (${item.colHeader})</td>
                                     <td>${item.message}</td>
                                 </tr>
                                 </c:forEach>
@@ -80,13 +76,11 @@
                             </table>
                         </div>
                         </c:if>
-                        <div name="uploadFileShowId" id="uploadFileShowId">
-                            <c:if test="${not empty pageShowFileDto && !hasError}">
-                            <div id="${pageShowFileDto.fileMapId}">
-                                <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                    <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${pageShowFileDto.fileUploadUrl}" docName="${pageShowFileDto.fileName}"/>
-                                </span>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
+                        <div id="uploadFileShowId">
+                            <c:if test="${not empty showPatientFile && !hasError}">
+                            <div id="${showPatientFile.fileMapId}">
+                                <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${showPatientFile.fileUploadUrl}" docName="${showPatientFile.fileName}"/>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('uploadFile',${showPatientFile.index});">Delete</button>
                             </div>
                             </c:if>
                         </div>
@@ -99,7 +93,6 @@
                         <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
                         <input type="hidden" id="hasItems" name="hasItems" value="${hasItems}" />
                     </div>
-                    <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
                 <br/><br/>
                 <%@include file="common/arFooter.jsp" %>
@@ -109,27 +102,3 @@
     <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX, CSV");
-    });
-
-    function cloneUploadFile() {
-        var fileId= '#uploadFile';
-        $(fileId).after( $( fileId).clone().val(""));
-        $(fileId).remove();
-        var $btns = $('#uploadFileShowId').find('button');
-        if ($btns.length >= 2) {
-            $btns.not(':last').trigger('click');
-        }
-        $('#hasItems').val('0');
-        $('#itemSize').html('0');
-    }
-
-    function deleteFileFeAjax(id,fileIndex) {
-        $('#hasItems').val('0');
-        $('#itemSize').html('0');
-        callAjaxDeleteFile(id,fileIndex);
-    }
-</script>

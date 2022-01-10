@@ -10,6 +10,6 @@
         </script>
     </c:when>
     <c:otherwise>
-        <%@include file="/WEB-INF/jsp/iais/interInbox/msgPageView.jsp"%>
+        <%@include file="/WEB-INF/jsp/iais/interInbox/msg/msgViewPage.jsp"%>
     </c:otherwise>
 </c:choose>

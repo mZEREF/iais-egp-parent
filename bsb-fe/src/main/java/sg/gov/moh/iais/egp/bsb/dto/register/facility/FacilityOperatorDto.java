@@ -39,7 +39,7 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     private String email;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.employmentStartDate")
-    private String employmentStartDate;
+    private String employmentStartDt;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -127,15 +127,15 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
         this.email = email;
     }
 
-    public String getEmploymentStartDate() {
-        return employmentStartDate;
+    public String getEmploymentStartDt() {
+        return employmentStartDt;
     }
 
-    public void setEmploymentStartDate(String employmentStartDate) {
-        this.employmentStartDate = employmentStartDate;
+    public void setEmploymentStartDt(String employmentStartDt) {
+        this.employmentStartDt = employmentStartDt;
     }
 
-//    ---------------------------- request -> object ----------------------------------------------
+    //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_FAC_OPERATOR = "facOperator";
     private static final String KEY_OP_NAME = "operatorName";
     private static final String KEY_ID_TYPE = "idType";
@@ -144,7 +144,7 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     private static final String KEY_DESIGNATION = "designation";
     private static final String KEY_CONTACT_NO = "contactNo";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_EMP_START_DATE = "employmentStartDate";
+    private static final String KEY_EMP_START_DATE = "employmentStartDt";
 
     public void reqObjMapping(HttpServletRequest request) {
         setFacOperator(ParamUtil.getString(request, KEY_FAC_OPERATOR));
@@ -155,6 +155,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
         setDesignation(ParamUtil.getString(request, KEY_DESIGNATION));
         setContactNo(ParamUtil.getString(request, KEY_CONTACT_NO));
         setEmail(ParamUtil.getString(request, KEY_EMAIL));
-        setEmploymentStartDate(ParamUtil.getString(request, KEY_EMP_START_DATE));
+        setEmploymentStartDt(ParamUtil.getString(request, KEY_EMP_START_DATE));
     }
 }

@@ -2,6 +2,9 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -9,27 +12,30 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.ViewSelectedRevokeApplicationDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.*;
 
-import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.KEY_PAGE_INFO;
+import static sg.gov.moh.iais.egp.bsb.action.AORevocationDelegator.setRevocationDoc;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 
 /**
@@ -38,16 +44,17 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 @Delegator(value = "DORevocationDelegator")
 @Slf4j
 public class DORevocationDelegator {
-    @Autowired
-    private RevocationClient revocationClient;
+    private final RevocationClient revocationClient;
+    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
 
-    @Autowired
-    private BiosafetyEnquiryClient biosafetyEnquiryClient;
-
-    @Autowired
-    private DocClient docClient;
-    @Autowired
-    FeApplicationClient feApplicationClient;
+    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient,FileRepoClient fileRepoClient,BsbFileClient bsbFileClient) {
+        this.revocationClient = revocationClient;
+        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+        this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
+    }
 
     /**
      * StartStep: startStep
@@ -56,30 +63,23 @@ public class DORevocationDelegator {
         AuditTrailHelper.auditFunction(MODULE_REVOCATION, FUNCTION_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
-        ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
+        ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
+        ParamUtil.setSessionAttr(request,BACK,null);
+        ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
     }
 
     /**
      * AutoStep: prepareData
-     * Temporarily disabled
-     * enter from Biosafety enquiry
      * approval list
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
+        selectOption(request, "facilityName", facNames);
         EnquiryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
         // call API to get searched data
-
-        ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(searchDto).getEntity();
-        ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, approvalResultDto.getBsbApproval());
-        ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_SEARCH, searchDto);
-        ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, approvalResultDto.getPageInfo());
-        log.info(StringUtil.changeForLog(approvalResultDto.getBsbApproval().toString() + "==========facility"));
-
-
         ResponseDto<ApprovalResultDto> searchResult = biosafetyEnquiryClient.getApproval(searchDto);
-
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, searchResult.getEntity().getBsbApproval());
@@ -92,25 +92,55 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSearch
-     * Temporarily disabled
      */
-    public void doSearch(BaseProcessClass bpc) {
+    public void doSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
         EnquiryDto searchDto = getSearchDto(request);
         searchDto.clearAllFields();
-        String approvalStatus = ParamUtil.getString(request, PARAM_APPROVAL_STATUS);
-        String approvalNo = ParamUtil.getString(request, PARAM_APPROVAL_NO);
-        searchDto.setApprovalStatus(approvalStatus);
-        searchDto.setApprovalNo(approvalNo);
+        addApprovalFilter(request,searchDto);
         searchDto.setPage(0);
 
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
     }
 
+    private void addApprovalFilter(HttpServletRequest request, EnquiryDto enquiryDto) throws ParseException {
+        String facilityName = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_FACILITY_NAME);
+        String facilityAddress = ParamUtil.getString(request,"facilityAddress");
+        String[] facilityClassifications = ParamUtil.getStrings(request, BioSafetyEnquiryConstants.PARAM_FACILITY_CLASSIFICATION);
+        String approvalNo = ParamUtil.getString(request, PARAM_APPROVAL_NO);
+        String approvalStatus = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_STATUS);
+        String approvalType = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_TYPE);
+        Date approvedDateFrom = Formatter.parseDate(ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_FROM));
+        Date approvedDateTo = Formatter.parseDate(ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_TO));
+        if (StringUtil.isNotEmpty(facilityName)) {
+            enquiryDto.setFacilityName(facilityName);
+        }
+        if (StringUtil.isNotEmpty(facilityAddress)) {
+            enquiryDto.setFacilityAddress(facilityAddress);
+        }
+        if (facilityClassifications != null && facilityClassifications.length > 0) {
+            enquiryDto.setFacilityClassifications(Arrays.asList(facilityClassifications));
+        }
+        if (StringUtil.isNotEmpty(approvalNo)) {
+            enquiryDto.setApprovalNo(approvalNo);
+        }
+        if (StringUtil.isNotEmpty(approvalStatus)) {
+            enquiryDto.setApprovalStatus(approvalStatus);
+        }
+        if (StringUtil.isNotEmpty(approvalType)) {
+            enquiryDto.setApprovalType(approvalType);
+        }
+        if (approvedDateFrom != null) {
+            enquiryDto.setApprovedDateFrom(approvedDateFrom);
+        }
+        if (approvedDateTo != null) {
+            enquiryDto.setApprovedDateTo(approvedDateTo);
+        }
+    }
+
     /**
      * AutoStep: doPaging
-     * Temporarily disabled
      */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -135,7 +165,6 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSorting
-     * Temporarily disabled
      */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -147,111 +176,100 @@ public class DORevocationDelegator {
     }
 
     /**
+     * when officer need to update inventory of bat , use this method
+     * Inventory update is now required by default
+     */
+    public void preInventory(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String from = ParamUtil.getRequestString(request, FROM);
+        String maskedApprovalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
+        String maskedAppId = ParamUtil.getRequestString(request, KEY_APP_ID);
+        String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
+
+        ParamUtil.setSessionAttr(request, FROM, from);
+        ParamUtil.setSessionAttr(request, PARAM_APPROVAL_ID, maskedApprovalId);
+        ParamUtil.setSessionAttr(request, KEY_APP_ID, maskedAppId);
+        ParamUtil.setSessionAttr(request, KEY_TASK_ID, maskedTaskId);
+    }
+
+    /**
      * AutoStep: prepareData
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY, null);
-        ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
-        ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, null);
-        ParamUtil.setSessionAttr(request, FLAG, null);
-        ParamUtil.setSessionAttr(request, BACK, null);
-        ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, null);
-        ParamUtil.setSessionAttr(request, APPROVAL, null);
+        ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
 
         String from = ParamUtil.getRequestString(request, FROM);
-
-        if (StringUtil.isNotEmpty(from)) {
-            if (from.equals(APP)) {
-                String appId = ParamUtil.getRequestString(request, PARAM_APP_ID);
-                appId = MaskUtil.unMaskValue("id", appId);
-                ViewSelectedRevokeApplicationDto dto = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
-                Application application = dto.getApplication();
-                String processType = application.getProcessType();
-                Facility facility = new Facility();
-                Approval approval;
-                String address = "";
-                if (processType.equals(PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-                    //join with activity
-                    approval = dto.getActivity().getApproval();
-                    approval.setActiveType(dto.getActivity().getActivityType());
-                    facility = dto.getActivity().getFacility();
-                    facility.setActiveType(dto.getActivity().getActivityType());
-                    if (!StringUtils.isEmpty(facility)) {
-                        address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                                facility.getUnitNo(), facility.getPostalCode());
-                        facility.setFacilityAddress(address);
-                    }
-                } else if (processType.equals(PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-                    //join with bsb_facility_certifier_reg
-                    approval = dto.getFacilityCertifierReg().getApproval();
-                } else {
-                    //join with BA/T
-                    approval = dto.getFacilityBiologicalAgent().getApproval();
-                    approval.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
-                    facility = dto.getFacilityBiologicalAgent().getFacility();
-                    facility.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
-                    if (!StringUtils.isEmpty(facility)) {
-                        address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                                facility.getUnitNo(), facility.getPostalCode());
-                        facility.setFacilityAddress(address);
-                    }
-                }
-                approval.setFacility(facility);
-                AuditDocDto auditDocDto = new AuditDocDto();
-                if (!StringUtils.isEmpty(facility.getId())) {
-                    List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
-                    List<FacilityDoc> docList = new ArrayList<>();
-                    if (!CollectionUtils.isEmpty(facilityDocList)) {
-                        for (FacilityDoc facilityDoc : facilityDocList) {
-                            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-                            facilityDoc.setSubmitByName(submitByName);
-                            docList.add(facilityDoc);
-                        }
-                    }
-                    auditDocDto.setFacilityDocs(docList);
-                }
-
-                ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, auditDocDto);
-                ParamUtil.setSessionAttr(request, PARAM_APPLICATION, application);
-                ParamUtil.setSessionAttr(request, FACILITY, facility);
-                ParamUtil.setSessionAttr(request, APPROVAL, approval);
-                ParamUtil.setSessionAttr(request, FLAG, APP);
-                ParamUtil.setSessionAttr(request, BACK, REVOCATION_TASK_LIST);
-            }
+        ParamUtil.setSessionAttr(request, FROM, null);
+        SubmitRevokeDto revokeDto = getRevokeDto(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        if (Boolean.TRUE.equals(needShowError)) {
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, revokeDto.retrieveValidationResult());
+        }
+        if (!StringUtils.hasLength(revokeDto.getModule())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
-                Approval approval = revocationClient.getApprovalById(approvalId).getEntity();
-                Facility facility = new Facility();
-                if (approval.getProcessType().equals(PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-                    //join with activity
-                    List<FacilityActivity> activities = approval.getFacilityActivities();
-                    if (!CollectionUtils.isEmpty(activities)) {
-                        facility = activities.get(0).getFacility();
-                    }
-                } else if (approval.getProcessType().equals(PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-                    //join with bsb_facility_certifier_reg
-                } else {
-                    //join with BA/T
-                    List<FacilityBiologicalAgent> agents = approval.getFacilityBiologicalAgents();
-                    if (!CollectionUtils.isEmpty(agents)) {
-                        facility = agents.get(0).getFacility();
-                    }
+                revokeDto = revocationClient.getSubmitRevokeDtoByApprovalId(approvalId).getEntity();
+            }
+            if (from.equals(APP)) {
+                String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+                String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
+                String appId = MaskUtil.unMaskValue("id", maskedAppId);
+                String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+                if (appId == null || appId.equals(maskedAppId)) {
+                    throw new IaisRuntimeException("Invalid masked application ID");
                 }
-                if (!StringUtils.isEmpty(facility)) {
-                    String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                            facility.getUnitNo(), facility.getPostalCode());
-                    facility.setFacilityAddress(address);
+                if (taskId == null || taskId.equals(maskedTaskId)) {
+                    throw new IaisRuntimeException("Invalid masked task ID");
                 }
-                approval.setFacility(facility);
-
-                ParamUtil.setSessionAttr(request, APPROVAL, approval);
-                ParamUtil.setSessionAttr(request, FLAG, FAC);
-                ParamUtil.setSessionAttr(request, FACILITY, facility);
-                ParamUtil.setSessionAttr(request, BACK, REVOCATION_FACILITY);
+                revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
+                revokeDto.setTaskId(taskId);
+                setRevocationDoc(request, revokeDto);
             }
         }
+        ParamUtil.setSessionAttr(request,BACK,from);
+        ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
+    }
+
+    public void preConfirm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String reason = ParamUtil.getString(request, PARAM_REASON);
+        String remarks = ParamUtil.getString(request, PARAM_DO_REMARKS);
+        String from = (String) ParamUtil.getSessionAttr(request, FROM);
+        SubmitRevokeDto revokeDto = getRevokeDto(request);
+        //get user name
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        revokeDto.setLoginUser(loginContext.getUserName());
+        revokeDto.setApplicationDt(new Date());
+        revokeDto.setReason(PARAM_REASON_TYPE_DO);
+        revokeDto.setReasonContent(reason);
+        revokeDto.setRemarks(remarks);
+        revokeDto.setModule("doRevoke");
+        if (from.equals(FAC)) {
+            revokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
+            revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
+        }
+        if (from.equals(APP)) {
+            revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
+            setRevocationDoc(request,revokeDto);
+        }
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.reqObjMapping(mulReq,request,"Revocation");
+        revokeDto.setPrimaryDocDto(primaryDocDto);
+        revokeDto.setDocType("Revocation");
+
+        //joint repoId exist
+        String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
+        revokeDto.setRepoIdNewString(newRepoId);
+        //set newDocFiles
+        revokeDto.setNewDocInfos(primaryDocDto.getNewDocTypeList());
+        //set need Validation value
+        revokeDto.setDocMetas(primaryDocDto.doValidation());
+        doValidation(revokeDto, request);
+        ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
     /**
@@ -259,41 +277,32 @@ public class DORevocationDelegator {
      */
     public void save(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        SubmitRevokeDto submitRevokeDto = getRevokeDto(request);
+        PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
+        List<NewFileSyncDto> newFilesToSync = null;
+        if(primaryDocDto != null){
+            //complete simple save file to db and save data to dto for show in jsp
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
 
-        String reason = ParamUtil.getString(request, PARAM_REASON);
-        String remarks = ParamUtil.getString(request, PARAM_DOREMARKS);
-        String flag = (String) ParamUtil.getSessionAttr(request, FLAG);
-        SubmitRevokeDto submitRevokeDto = new SubmitRevokeDto();
-        //get user name
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        submitRevokeDto.setLoginUser(loginContext.getUserName());
-        if (flag.equals(FAC)) {
-            Approval approval = (Approval) ParamUtil.getSessionAttr(request, APPROVAL);
-            String processType = approval.getProcessType();
-            submitRevokeDto.setProcessType(processType);
-            submitRevokeDto.setReasonContent(reason);
-            submitRevokeDto.setReason(PARAM_REASON_TYPE_DO);
-            submitRevokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
-            submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
-            submitRevokeDto.setApplicationDt(new Date());
-            submitRevokeDto.setRemarks(remarks);
-            submitRevokeDto.setApprovalId(approval.getId());
-            revocationClient.saveRevokeApplication(submitRevokeDto);
+            //newFile change to saved File and save info to db
+            newFilesToSync = new ArrayList<>(primaryDocDto.newFileSaved(repoIds));
+            submitRevokeDto.setSavedInfos(primaryDocDto.getExistDocTypeList());
+        }else{
+            log.info(KEY_NON_OBJECT_ERROR);
         }
-        if (flag.equals(APP)) {
-            Application application = (Application) ParamUtil.getSessionAttr(request, PARAM_APPLICATION);
-            submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
-            submitRevokeDto.setApplicationDt(new Date());
-            submitRevokeDto.setAppId(application.getId());
-            revocationClient.saveRevokeApplication(submitRevokeDto);
+        revocationClient.saveRevokeApplication(submitRevokeDto);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                NewFileSyncDto[] newFileSyncDtoList = newFilesToSync.toArray(new NewFileSyncDto[0]);
+                bsbFileClient.syncFiles(newFileSyncDtoList);
+            }
+        } catch (Exception e) {
+            log.error("Fail to sync files to FE", e);
         }
-    }
-
-    /**
-     * AutoStep: updateNum
-     */
-    public void updateInventory(BaseProcessClass bpc) {
-        //TODO update inventory method
     }
 
     private EnquiryDto getSearchDto(HttpServletRequest request) {
@@ -306,5 +315,35 @@ public class DORevocationDelegator {
         dto.clearAllFields();
         dto.defaultPaging();
         return dto;
+    }
+
+    private SubmitRevokeDto getRevokeDto(HttpServletRequest request) {
+        SubmitRevokeDto searchDto = (SubmitRevokeDto) ParamUtil.getSessionAttr(request, PARAM_REVOKE_DTO);
+        return searchDto == null ? getDefaultRevokeDto() : searchDto;
+    }
+
+    private SubmitRevokeDto getDefaultRevokeDto() {
+        return new SubmitRevokeDto();
+    }
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     */
+    private void doValidation(SubmitRevokeDto dto, HttpServletRequest request) {
+        if (dto.doValidation()) {
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.YES);
+        } else {
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+        }
+    }
+
+    public void selectOption(HttpServletRequest request, String name, List<String> strings) {
+        List<SelectOption> selectModel = new ArrayList<>(strings.size());
+        for (String string : strings) {
+            selectModel.add(new SelectOption(string, string));
+        }
+        ParamUtil.setRequestAttr(request, name, selectModel);
     }
 }

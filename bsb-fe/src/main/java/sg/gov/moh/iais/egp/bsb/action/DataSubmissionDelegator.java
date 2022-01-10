@@ -6,14 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -32,14 +34,20 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 @Slf4j
 @Delegator("dataSubmissionDelegator")
 public class DataSubmissionDelegator {
+    private static final String DATA_SYNC_ERROR_MSG = "Fail to sync files to BE";
+    private static final String PARAM_KEY_MAP = "keyMap";
+
+
     private final DataSubmissionClient dataSubmissionClient;
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
+    private final BsbFileClient bsbFileClient;
 
-    public DataSubmissionDelegator(DataSubmissionClient dataSubmissionClient,FileRepoClient fileRepoClient,BsbSubmissionCommon subCommon){
+    public DataSubmissionDelegator(DataSubmissionClient dataSubmissionClient,FileRepoClient fileRepoClient,BsbSubmissionCommon subCommon,BsbFileClient bsbFileClient){
         this.dataSubmissionClient = dataSubmissionClient;
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;
+        this.bsbFileClient = bsbFileClient;
     }
 
     /**
@@ -53,6 +61,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,null);
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
@@ -86,7 +95,6 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
     }
 
-    //consume notification code
     /**
      * StartStep: prepareConsumeData
      * Prepare data for the callback and facility info
@@ -107,6 +115,8 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_CONSUME);
     }
 
@@ -130,13 +140,14 @@ public class DataSubmissionDelegator {
         //get value from jsp and bind value to dto
         ConsumeNotificationDto notificationDto = getConsumeNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doConsumeValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveConsumeNot
      * save consume notification
@@ -144,37 +155,29 @@ public class DataSubmissionDelegator {
     public void saveConsumeNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ConsumeNotificationDto dto = getConsumeNotification(request);
-        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
-        if (ensure == null){
-            dto.setEnsure("");
-        }else {
-            dto.setEnsure(ensure);
-        }
-        doConsumeValidation(dto,request);
-        doConsumeValidation(dto,request);
-        List<ConsumeNotificationDto.ConsumptionNot> consumeNotList = dto.getConsumptionNotList();
-        if(!CollectionUtils.isEmpty(consumeNotList)){
-            for (ConsumeNotificationDto.ConsumptionNot not : consumeNotList) {
-                PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
-                if(primaryDocDto != null){
-                    //complete simple save file to db and save data to dto for show in jsp
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-                    //newFile change to saved File and save info to db
-                    not.setSavedInfos(primaryDocDto.getExistDocTypeList());
-                }else{
-                    log.info(KEY_NON_OBJECT_ERROR);
-                }
-            }
-        }else{
-            log.info(KEY_EMPTY_LIST_ERROR);
+        List<NewFileSyncDto> newFilesToSync = null;
+        if(!dto.getAllNewDocInfos().isEmpty()){
+            //complete simple save file to db and save data to dto for show in jsp
+            MultipartFile[] files = dto.getAllNewDocInfos().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
         ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = dto.getConsumeNotNeedR();
         dataSubmissionClient.saveConsumeNot(consumeNotNeedR);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error(DATA_SYNC_ERROR_MSG, e);
+        }
     }
 
-    //disposal notification code
     /**
      * StartStep: prepareDisposalData
      */
@@ -191,11 +194,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -204,13 +210,14 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         DisposalNotificationDto notificationDto = getDisposalNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doDisposalValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveDisposalNot
      * save consume notification
@@ -218,31 +225,29 @@ public class DataSubmissionDelegator {
     public void saveDisposalNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         DisposalNotificationDto dto = getDisposalNotification(request);
-        List<DisposalNotificationDto.DisposalNot> disposalNotList = dto.getDisposalNotList();
-        if(!CollectionUtils.isEmpty(disposalNotList)){
-            for (DisposalNotificationDto.DisposalNot not : disposalNotList) {
-                PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
-                if(primaryDocDto != null){
-                    //complete simple save file to db and save data to dto for show in jsp
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-                    //newFile change to saved File and save info to db
-                    not.setSavedInfos(primaryDocDto.getExistDocTypeList());
-                }else{
-                    log.info(KEY_NON_OBJECT_ERROR);
-                }
-            }
-        }else{
-            log.info(KEY_EMPTY_LIST_ERROR);
+        List<NewFileSyncDto> newFilesToSync = null;
+        if(!dto.getAllNewDocInfos().isEmpty()){
+            //complete simple save file to db and save data to dto for show in jsp
+            MultipartFile[] files = dto.getAllNewDocInfos().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request,KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR = dto.getDisposalNotNeedR();
         dataSubmissionClient.saveDisposalNot(disposalNotNeedR);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error(DATA_SYNC_ERROR_MSG, e);
+        }
     }
 
-    //export notification code
     /**
      * StartStep: prepareExportData
      */
@@ -259,11 +264,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_EXPORT);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -272,13 +280,14 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ExportNotificationDto notificationDto = getExportNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doExportValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveExportNot
      * save consume notification
@@ -286,31 +295,29 @@ public class DataSubmissionDelegator {
     public void saveExportNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ExportNotificationDto dto = getExportNotification(request);
-        List<ExportNotificationDto.ExportNot> disposalNotList = dto.getExportNotList();
-        if(!CollectionUtils.isEmpty(disposalNotList)){
-            for (ExportNotificationDto.ExportNot not : disposalNotList) {
-                PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
-                if(primaryDocDto != null){
-                    //complete simple save file to db and save data to dto for show in jsp
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-                    //newFile change to saved File and save info to db
-                    not.setSavedInfos(primaryDocDto.getExistDocTypeList());
-                }else{
-                    log.info(KEY_NON_OBJECT_ERROR);
-                }
-            }
-        }else{
-            log.info(KEY_EMPTY_LIST_ERROR);
+        List<NewFileSyncDto> newFilesToSync = null;
+        if(!dto.getAllNewDocInfos().isEmpty()){
+            //complete simple save file to db and save data to dto for show in jsp
+            MultipartFile[] files = dto.getAllNewDocInfos().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request,KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ExportNotificationDto.ExportNotNeedR exportNotNeedR = dto.getExportNotNeedR();
         dataSubmissionClient.saveExportNot(exportNotNeedR);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error(DATA_SYNC_ERROR_MSG, e);
+        }
     }
 
-    //receive notification code
     /**
      * StartStep: prepareReceiptData
      */
@@ -327,11 +334,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_RECEIPT);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -340,13 +350,14 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ReceiptNotificationDto notificationDto = getReceiptNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doReceiptValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveReceiptNot
      * save consume notification
@@ -354,28 +365,27 @@ public class DataSubmissionDelegator {
     public void saveReceiptNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ReceiptNotificationDto dto = getReceiptNotification(request);
-        List<ReceiptNotificationDto.ReceiptNot> disposalNotList = dto.getReceiptNotList();
-        if(!CollectionUtils.isEmpty(disposalNotList)){
-            for (ReceiptNotificationDto.ReceiptNot not : disposalNotList) {
-                PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
-                if(primaryDocDto != null){
-                    //complete simple save file to db and save data to dto for show in jsp
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-                    //newFile change to saved File and save info to db
-                    not.setSavedInfos(primaryDocDto.getExistDocTypeList());
-                }else{
-                    log.info(KEY_NON_OBJECT_ERROR);
-                }
-            }
-        }else{
-            log.info(KEY_EMPTY_LIST_ERROR);
+        List<NewFileSyncDto> newFilesToSync = null;
+        if(!dto.getAllNewDocInfos().isEmpty()){
+            //complete simple save file to db and save data to dto for show in jsp
+            MultipartFile[] files = dto.getAllNewDocInfos().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request,KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR = dto.getReceiptNotNeedR();
         dataSubmissionClient.saveReceiptNot(receiptNotNeedR);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error(DATA_SYNC_ERROR_MSG, e);
+        }
     }
 
     /**
@@ -387,7 +397,7 @@ public class DataSubmissionDelegator {
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facLists.size());
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(MaskUtil.maskValue("id",fac.getFacId()), fac.getFacName()));
         }
@@ -493,7 +503,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = new HashMap<>();
         settingMap.put(KEY_DOC_TYPE_INVENTORY_BAT,new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
         settingMap.put(KEY_DOC_TYPE_INVENTORY_TOXIN,new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
-        settingMap.put(KEY_DOC_TYPE_OTHERS,new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
+        settingMap.put(KEY_DOC_TYPE_OTHERS,new DocSetting(DocConstants.DOC_TYPE_OTHERS,KEY_DOC_TYPE_OF_OTHER,true));
         return settingMap;
     }
 

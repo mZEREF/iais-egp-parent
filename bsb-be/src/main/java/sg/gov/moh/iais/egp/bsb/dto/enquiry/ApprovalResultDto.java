@@ -4,7 +4,6 @@ import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 
 
-
 import java.util.List;
 
 
@@ -13,26 +12,9 @@ import java.util.List;
  * @version 2021/10/15 14:16
  **/
 @Data
-public class ApprovalResultDto {
+public class ApprovalResultDto{
 
     private PageInfo pageInfo;
 
-    private List<ApprovalInfo> bsbApproval;
-
-    @Data
-    public static class ApprovalInfo {
-        private String id;
-        private String apprNo;
-        private String type;
-        private String status;
-        private String facClassification;
-        private String facType;
-        private String facName;
-        private String facAddress;
-        private String facStatus;
-        private String bat;
-        private String sampleName;
-        private String riskLevel;
-    }
-
+    private List<ApprovalInfoDto> bsbApproval;
 }

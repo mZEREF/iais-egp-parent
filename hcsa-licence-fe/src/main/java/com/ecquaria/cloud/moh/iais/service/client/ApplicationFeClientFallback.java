@@ -38,9 +38,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +51,17 @@ import java.util.Map;
  * @author Wenkang
  * @date 2019/11/26 14:29
  */
+@Slf4j
 public class ApplicationFeClientFallback implements ApplicationFeClient {
+
+    private <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -401,6 +414,11 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
+        return getFeignResponseEntity(licenceIds, excludeDraftNo);
     }
 
     @Override
@@ -1025,4 +1043,10 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
+        return getFeignResponseEntity(licenseeId);
+    }
+
 }

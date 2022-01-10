@@ -425,6 +425,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row col-xs-12">
+                                            <span id="error_conflictError${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
                                         <div class="row">
                                             <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
                                                 <div class=" form-group form-horizontal formgap">
@@ -435,7 +438,6 @@
                                                     <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                                                         <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>
                                                         <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                                        <span id="error_conflictError${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -617,7 +619,6 @@
         </div>
     </div>
 </div>
-<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <input type="hidden" name="pageCon" value="prinOffice" >
 <script>
     var init;

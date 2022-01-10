@@ -44,7 +44,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         private String email;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentStartDate")
-        private String employmentStartDate;
+        private String employmentStartDt;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentPeriod")
         private String employmentPeriod;
@@ -53,7 +53,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         private String workArea;
 
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.securityClearanceDate")
-        private String securityClearanceDate;
+        private String securityClearanceDt;
     }
 
     private String inputMethod;
@@ -137,9 +137,9 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_DESIGNATION = "designation";
     private static final String KEY_PREFIX_CONTACT_NO = "contactNo";
     private static final String KEY_PREFIX_EMAIL = "email";
-    private static final String KEY_PREFIX_EMP_START_DT = "employmentStartDate";
+    private static final String KEY_PREFIX_EMP_START_DT = "employmentStartDt";
     private static final String KEY_PREFIX_EMP_PERIOD = "employmentPeriod";
-    private static final String KEY_PREFIX_SEC_CL_DT = "securityClearanceDate";
+    private static final String KEY_PREFIX_SEC_CL_DT = "securityClearanceDt";
     private static final String KEY_PREFIX_WORK_AREA = "workArea";
 
 
@@ -158,9 +158,9 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
             personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR + idx));
             personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR + idx));
             personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR + idx));
-            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR + idx));
+            personnel.setEmploymentStartDt(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR + idx));
             personnel.setEmploymentPeriod(ParamUtil.getString(request, KEY_PREFIX_EMP_PERIOD + SEPARATOR + idx));
-            personnel.setSecurityClearanceDate(ParamUtil.getString(request, KEY_PREFIX_SEC_CL_DT + SEPARATOR + idx));
+            personnel.setSecurityClearanceDt(ParamUtil.getString(request, KEY_PREFIX_SEC_CL_DT + SEPARATOR + idx));
             personnel.setWorkArea(ParamUtil.getString(request, KEY_PREFIX_WORK_AREA + SEPARATOR + idx));
             addAuthPersonnel(personnel);
         }

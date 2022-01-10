@@ -87,6 +87,8 @@
                 oev.STREET_NAME,oev.lic_STREET_NAME,
                 oev.BUILDING_NAME,oev.lic_BUILDING_NAME,
                 oev.POSTAL_CODE,oev.lic_postal_code,
+                oev.EMAIL,oev.LIC_EMAIL,
+                oev.PREM_TYPE,oev.LIC_PREM_TYPE,
                 oev.APP_LICENSEE_ID as APP_LICENSEE_ID,
                 oev.LIC_APP_ID as LIC_APP_ID,
                 oev.LICENCE_ID as LICENCE_ID,
@@ -97,7 +99,8 @@
                 oev.expiry_date as expiry_date,
                 oev.lic_licensee_id as lic_licensee_id,
                 oev.RISK_SCORE ,oev.LAST_IS_NC ,oev.SEC_IS_NC,
-                oev.APP_LICENSEE_NAME , oev.LIC_LICENSEE_NAME
+                oev.APP_LICENSEE_NAME , oev.LIC_LICENSEE_NAME,
+                oev.app_uen_no,oev.lic_uen_no
             FROM onlineEnquiryViewForCommPool oev
             WHERE 1=1
             <#if licence_status??> AND oev.LicSTATUS = :licence_status</#if>

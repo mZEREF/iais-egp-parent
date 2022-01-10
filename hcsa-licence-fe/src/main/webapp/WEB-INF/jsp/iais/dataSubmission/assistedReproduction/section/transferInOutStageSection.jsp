@@ -1,13 +1,13 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
             <strong>
                 Transfer In And Out
             </strong>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse in">
+    <div id="transferInOutDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
@@ -17,7 +17,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" value="Is this a Transfer In or Out?" mandatory="true"/>
+                    <iais:field width="5" value="Is this a Transfer In or Out?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -34,7 +34,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_transferType"></span>
                     </iais:value>
 
-                    <iais:value width="3" cssClass="col-md-3">
+                    <iais:value width="4" cssClass="col-md-4">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -77,22 +77,22 @@
                         <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
-                                       name="oocyteNum" value="${transferInOutStageDto.oocyteNum}"/>
+                                <iais:input maxLength="2" type="text" name="oocyteNum"  value="${transferInOutStageDto.oocyteNo}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_oocyteNum"></span>
                             </iais:value>
                         </iais:row>
                     <iais:row id="transferred1">
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
-                                   name="embryoNum" value="${transferInOutStageDto.embryoNum}"/>
+                            <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNo}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_embryoNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row id="transferred2">
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
-                                   name="spermVialsNum" value="${transferInOutStageDto.spermVialsNum}"/>
+                            <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNo}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_spermVialsNum"></span>
                         </iais:value>
                     </iais:row>
                 <iais:row>

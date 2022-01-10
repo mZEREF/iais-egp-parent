@@ -60,7 +60,7 @@
                                                 </div>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Assign Role" width="5" required="true" />
+                                                <iais:field value="Roles" width="5" required="true" />
                                                  <c:forEach var="role" items="${SESSION_NAME_ROLES}">
                                                          <c:set var="value" value="${role.value}"/>
                                                          <c:set var="roles" value="${inter_user_attr.roles}"/>

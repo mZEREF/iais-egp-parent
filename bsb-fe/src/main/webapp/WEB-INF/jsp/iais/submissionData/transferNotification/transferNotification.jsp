@@ -82,7 +82,7 @@
     <div class="row" style="margin-bottom: 20px">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-md-6 text-right">
                 <button class="btn btn-secondary save" id="saveDraft">Save as Draft</button>

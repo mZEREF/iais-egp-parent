@@ -50,6 +50,8 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
+        int totalLiveBirthNum = getInt(pregnancyOutcomeStageDto.getMaleLiveBirthNum()) + getInt(pregnancyOutcomeStageDto.getFemaleLiveBirthNum());
+        ParamUtil.setRequestAttr(bpc.request, "totalLiveBirthNum", totalLiveBirthNum);
 
         List<SelectOption> transferNumSelectOption = DataSubmissionHelper.getNumsSelections(0, 6);
         ParamUtil.setRequestAttr(bpc.request, "transferNumSelectOption", transferNumSelectOption);
@@ -57,14 +59,20 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         List<SelectOption> defectTypeOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_POS_BABY_DEFECT);
         ParamUtil.setRequestAttr(bpc.request, "defectTypeOptions", defectTypeOptions);
 
+        List<SelectOption> wasSelFoeReduCarryOutOptions = IaisCommonUtils.genNewArrayList();
+        wasSelFoeReduCarryOutOptions.add(new SelectOption("0","Yes"));
+        wasSelFoeReduCarryOutOptions.add(new SelectOption("1","No"));
+        wasSelFoeReduCarryOutOptions.add(new SelectOption("2","Unknown"));
+        ParamUtil.setRequestAttr(bpc.request, "wasSelFoeReduCarryOutOptions", wasSelFoeReduCarryOutOptions);
+
         initBabyDefect(arSuperDataSubmissionDto.getPregnancyOutcomeStageDto(), bpc.request);
     }
 
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-        DataSubmissionHelper.initPatientInventoryTable(bpc.request);
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        initBabyDefect(arSuperDataSubmissionDto.getPregnancyOutcomeStageDto(), bpc.request);
+    private int getInt(String s) {
+        if (StringUtil.isNumber(s)) {
+            return Integer.parseInt(s);
+        }
+        return 0;
     }
 
     @Override

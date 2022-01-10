@@ -113,11 +113,19 @@ public final class FileUtils {
     }
 
     public static <T> List<T> transformCsvToJavaBean(final File file, final Class<T> clz) {
-        return SimpleCsvReader.readToBean(file, clz);
+        return SimpleCsvReader.readToBean(file, clz, false);
+    }
+    public static <T> List<T> transformCsvToJavaBean(final File file, final Class<T> clz, boolean defaultValueNull) {
+        return SimpleCsvReader.readToBean(file, clz, defaultValueNull);
     }
 
     public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
         List<?> objects = ExcelReader.readerToBean(file, clz);
+        return (List<T>) objects;
+    }
+
+    public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz, boolean defaultValueNull) throws Exception {
+        List<?> objects = ExcelReader.readerToBean(file, clz, defaultValueNull);
         return (List<T>) objects;
     }
 

@@ -8,18 +8,43 @@
             </div>
             <div id="iuiStageDetails" class="panel-collapse collapse in">
               <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}"/>
-              <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
-                  <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-                  </h3>
+                  <%@include file="patientCommon.jsp"%>
                   <iais:row>
-                    <iais:field  width="5" value="Premises where IUI is Performed" mandatory="false"/>
+                    <iais:field  width="5" value="Premises where IUI is Performed" mandatory="true"/>
+                    <iais:value width="3" cssClass="col-md-3" >
+                      <div class="form-check" style="padding-left: 0px;">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="ownPremises"
+                               value="1"
+                               id="ownPremisesRadioYes"
+                               <c:if test="${iuiCycleStageDto.ownPremises}">checked</c:if>
+                               aria-invalid="false" onchange="showOtherPremises(1)">
+                        <label class="form-check-label"
+                               for="ownPremisesRadioYes"><span
+                                class="check-circle"></span>Own premises</label>
+                      </div>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4" >
+                      <div class="form-check" style="padding-left: 0px;">
+                        <input class="form-check-input" type="radio"
+                               name="ownPremises"
+                               value="0"
+                               id="ownPremisesRadioNo"
+                               <c:if test="${!iuiCycleStageDto.ownPremises}">checked</c:if>
+                               aria-invalid="false" onchange="showOtherPremises(0)">
+                        <label class="form-check-label"
+                               for="ownPremisesRadioNo"><span
+                                class="check-circle"></span>Others</label>
+                      </div>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row id="otherPremisesRow">
+                    <iais:field  width="5" value="IUI Treatment performed in Other Premises" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <span >
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
-                      </span>
+                      <iais:input type="text" maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -36,22 +61,26 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="No. of Children with Current Marriage" mandatory="true"/>
+                    <iais:field width="5" value="No. of Children from Current Marriage" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
                       <iais:select name="curMarrChildNum" firstOption="Please Select" options="curMarrChildNumOption" value="${iuiCycleStageDto.curMarrChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="No. of Children with Previous Marriage" mandatory="true"/>
+                    <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                       <iais:select name="prevMarrChildNum" firstOption="Please Select" options="prevMarrChildNumOption" value="${iuiCycleStageDto.prevMarrChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="Total No. of Children Delivered under IUI" mandatory="true"/>
+                    <label class="col-xs-4 col-md-4 control-label">No. of Children Delivered under IUI <span class="mandatory">*</span>
+                      <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                         title="${DSACK003Message}"
+                         style="z-index: 10"
+                         data-original-title="">i</a>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="iuiDeliverChildNum" value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
-                      <span class="error-msg" name="iaisErrorMsg" id="error_iuiDeliverChildNum"></span>
+                      <iais:select name="iuiDeliverChildNum" firstOption="Please Select" options="iuiDeliverChildNumOption" value="${iuiCycleStageDto.iuiDeliverChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -75,16 +104,16 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field  width="5" value="How many vials of sperm were extracted" mandatory="true"/>
+                    <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value  width="7" cssClass="col-md-7" >
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${iuiCycleStageDto.extractVialsOfSperm}"/>
+                      <input type="text" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${iuiCycleStageDto.extractVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_extractVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="How many vials of sperm were used in this cycle" mandatory="true"/>
+                    <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${iuiCycleStageDto.usedVialsOfSperm}"/>
+                      <input type="text" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${iuiCycleStageDto.usedVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_usedVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>

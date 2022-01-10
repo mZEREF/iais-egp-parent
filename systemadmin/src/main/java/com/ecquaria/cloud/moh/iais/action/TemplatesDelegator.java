@@ -201,7 +201,6 @@ public class TemplatesDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;
         }
-        msgTemplateDto.setProcess("test");
         getValueFromPage(msgTemplateDto, request);
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
         if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null) {
@@ -270,17 +269,17 @@ public class TemplatesDelegator {
         String templateEndDate = Formatter.formatDateTime(endDate,SystemAdminBaseConstants.DATE_FORMAT);
         SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,MsgTemplateConstants.MSG_SEARCH_PARAM,
                 MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,true);
-        if (!StringUtil.isEmpty(process) && !"Please Select".equals(msgType)){
+        if (!StringUtil.isEmpty(process)){
             searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process,true);
         }else{
             searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
         }
-        if (!StringUtil.isEmpty(msgType) && !"Please Select".equals(msgType)){
+        if (!StringUtil.isEmpty(msgType)){
             searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType,true);
         }else{
             searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         }
-        if(!StringUtil.isEmpty(deliveryMode) && !"Please Select".equals(deliveryMode)){
+        if(!StringUtil.isEmpty(deliveryMode)){
             searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode,true);
         }else{
             searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
@@ -297,7 +296,7 @@ public class TemplatesDelegator {
             }else{
                 searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
                 searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
-                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Effective Start Date cannot be later than Effective End Date");
+                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, MessageUtil.getMessageDesc("EMM_ERR004"));
             }
         }else{
             if (!StringUtil.isEmpty(templateStartDate)){

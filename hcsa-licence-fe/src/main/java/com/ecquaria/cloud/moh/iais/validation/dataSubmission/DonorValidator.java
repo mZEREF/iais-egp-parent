@@ -32,6 +32,9 @@ public class DonorValidator {
                              && !SgNoValidator.validateIdNoForDataSubmission(arDonorDto.getIdType(),arDonorDto.getDonorSampleCode())){
                          errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");
                      }
+                     if(!arDonorDto.validateRelation()){
+                         errorMap.put("relation"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                     }
                  }
          );
      }

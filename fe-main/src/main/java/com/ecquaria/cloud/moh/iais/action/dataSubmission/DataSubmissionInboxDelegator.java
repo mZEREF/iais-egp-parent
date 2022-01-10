@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -13,7 +15,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +30,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +53,7 @@ public class DataSubmissionInboxDelegator {
 	private final static  String UNLOCK                 = "unlock";
 	private final static  String DS_TYPES               = "dsTypes";
 	private final static  String DS_STATUSES            = "dsStatuses";
+	private final static  String SORT_INIT              = "UPDATED_DT";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
     @Autowired
@@ -113,10 +124,10 @@ public class DataSubmissionInboxDelegator {
 		interInboxDelegator.setNumInfoToRequest(request,interInboxUserDto);
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId())){
-				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
-				QueryHelp.setMainSql( InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
+				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 			}else {
@@ -155,12 +166,30 @@ public class DataSubmissionInboxDelegator {
 		setLog("search",false);
 	}
 
-	private void setSearchParam(HttpServletRequest request){
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+	private void setSearchParam(HttpServletRequest request)  {
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
+		setSearchParamDate(request,searchParam);
+	}
+
+	private void setSearchParamDate(HttpServletRequest request,SearchParam searchParam){
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateStart","lastDateStart");
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateEnd","lastDateEnd");
+		Map<String, Object>  stringObjectHashMap = searchParam.getParams();
+		if(IaisCommonUtils.isNotEmpty(stringObjectHashMap)){
+			String dateStart = (String) stringObjectHashMap.get("lastDateStart");
+			String dateEnd = (String) stringObjectHashMap.get("lastDateEnd");
+			if(dateStart !=null && dateEnd != null && dateStart.compareTo(dateEnd) > 0){
+					ParamUtil.setRequestAttr(request,"lastUpdateINBOX_ERR011",MessageUtil.getMessageDesc("INBOX_ERR011"));
+					searchParam = null;
+					log.info("------setSearchParamDate is no------------");
+			}else {
+					log.info("------setSearchParamDate is ok------------");
+			}
+		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 	}
 
@@ -174,7 +203,7 @@ public class DataSubmissionInboxDelegator {
 	public void page(BaseProcessClass bpc){
 		setLog("page");
 		HttpServletRequest request = bpc.request;
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doPage(request,searchParam);
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("page",false);
@@ -189,8 +218,13 @@ public class DataSubmissionInboxDelegator {
 	public void sort(BaseProcessClass bpc){
 		setLog("sort");
 		HttpServletRequest request = bpc.request;
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doSort(request,searchParam);
+		if(searchParam.getSortMap().containsKey("typeDesc".toUpperCase())){
+			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"type","typeDesc",MasterCodeUtil.DATA_SUBMISSION_TYPE);
+		}else if(searchParam.getSortMap().containsKey("statusDesc".toUpperCase())){
+			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"status","statusDesc",MasterCodeUtil.DATA_SUBMISSION_STATUS);
+		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("sort",false);
 	}
@@ -297,6 +331,10 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+		  }else {
+	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
+				ParamUtil.setRequestAttr(request,"deleteDraftOk",AppConsts.YES);
+			}
 		  }
 	 }
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
@@ -320,17 +358,15 @@ public class DataSubmissionInboxDelegator {
 				 List<InboxDataSubmissionQueryDto> actionInboxDataSubmissionQueryDtos  = IaisCommonUtils.genNewArrayList(inboxDataSubmissionQueryDtos.size());
 			 	inboxDataSubmissionQueryDtos.forEach( inboxDataSubmissionQueryDto -> {
 			 		boolean submissionSelect = false;
-
 					 for (String submissionNo : submissionNos) {
 						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
 							 submissionSelect = true;
-							  if(checkDataPassBySubmissionNo(submissionNo,actionValue)){
+							  if(checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto)){
 								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
 							  }
 							 break;
 						 }
 					 }
-
 					 inboxDataSubmissionQueryDto.setSubmissionSelect(submissionSelect);
 
 				 });
@@ -357,28 +393,40 @@ public class DataSubmissionInboxDelegator {
 				params.put("type","rfc");
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
-			}else if(WITHDRAW.equals(actionValue)){
-
 			}else if(UNLOCK.equals(actionValue)){
 
 			}
 		}
 
-		actionInboxDataSubmissionQueryDtos.forEach(obj->{
-			if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
-				licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo());
-			}
-		});
+		if(WITHDRAW.equals(actionValue)){
+			List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+			ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
+			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,null);
+		} else if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
+			actionInboxDataSubmissionQueryDtos.forEach(obj-> licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo()));
+		}
 	}
 
 	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
 		if(StringUtil.isEmpty(submissionNo) || submissionNo.length() <10 ){
 			return false;
 		}
-		String prefix = actionValue.equals(DELETE_DRAFT)? submissionNo.substring(0,2) : submissionNo.substring(0,3);
-		return StringUtil.isNotEmpty(FeInboxHelper.SUBMISSIONNO_STATUS.get(prefix));
+		if(actionValue.equals(DELETE_DRAFT)){
+			String prefix = submissionNo.substring(0,2);
+			return StringUtil.isNotEmpty(FeInboxHelper.SUBMISSIONNO_STATUS.get(prefix));
+		}else{
+			return true;
+		}
 	}
-
-
+	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
+		if(actionValue.equals(DELETE_DRAFT)){
+			return checkDataPassBySubmissionNo(submissionNo, actionValue);
+		}else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
+			//check x times
+			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
+			return true;
+		}
+		return true;
+	}
 
 }

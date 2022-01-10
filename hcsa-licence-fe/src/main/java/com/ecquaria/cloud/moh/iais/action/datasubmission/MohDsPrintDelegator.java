@@ -35,17 +35,19 @@ public class MohDsPrintDelegator {
         log.info(StringUtil.changeForLog("--- Print prepareData ---"));
         String printflag = ParamUtil.getString(bpc.request, DataSubmissionConstant.PRINT_FLAG);
         if (StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_ACKART,
-                DataSubmissionConstant.PRINT_FLAG_ACKDRP})) {
-            ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
-            ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+                DataSubmissionConstant.PRINT_FLAG_ACKDRP,DataSubmissionConstant.PRINT_FLAG_ACKLDT,DataSubmissionConstant.PRINT_FLAG_ACKTOP,DataSubmissionConstant.PRINT_FLAG_ACKVSS})) {
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
+                    DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
+                    DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
     }
 
     @RequestMapping(value = "/ds/init-print", method = RequestMethod.POST)
-    public @ResponseBody
-    String initPrint(HttpServletRequest request) {
+    @ResponseBody
+    public String initPrint(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("--- Print init data ---"));
         String printflag = ParamUtil.getString(request, DataSubmissionConstant.PRINT_FLAG);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));

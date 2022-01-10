@@ -153,7 +153,8 @@
             $("#selectSearchChkMsg").show();
             dismissWaiting();
         } else {
-            SOP.Crud.cfxSubmit("mainForm", "advSearch");
+            $("[name='crud_action_type']").val('advSearch');
+            $('#mainForm').submit();
         }
     }
 
@@ -177,27 +178,30 @@
             $("#selectSearchChkMsg").show();
             dismissWaiting();
         } else {
-            SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+            $("[name='crud_action_type']").val('basicSearch');
+            $('#mainForm').submit();
         }
     }
 
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        submit('licSort');
+        $("[name='crud_action_type']").val('licSort');
+        $('#mainForm').submit();
     }
 
     function doLicInfo(licenceId) {
         showWaiting();
-
-        SOP.Crud.cfxSubmit("mainForm", "details", licenceId);
-
+        $("[name='crud_action_value']").val(licenceId);
+        $("[name='crud_action_type']").val('details');
+        $('#mainForm').submit();
     }
 
     function doAppInfo(appCorrId) {
         showWaiting();
-
-        SOP.Crud.cfxSubmit("mainForm", "appDetails", appCorrId);
+        $("[name='crud_action_value']").val(appCorrId);
+        $("[name='crud_action_type']").val('appDetails');
+        $('#mainForm').submit();
     }
 
     function checkAll(isAso) {
@@ -250,7 +254,8 @@
             }
         }
         if (flog) {
-            SOP.Crud.cfxSubmit("mainForm", "cessation");
+            $("[name='crud_action_type']").val('cessation');
+            $('#mainForm').submit();
         } else {
             dismissWaiting();
         }
@@ -273,7 +278,8 @@
             }
         }
         if (flog) {
-            SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
+            $("[name='crud_action_type']").val('reqForInfo');
+            $('#mainForm').submit();
         } else {
             $("#selectDecisionMsgActive").show();
             dismissWaiting();

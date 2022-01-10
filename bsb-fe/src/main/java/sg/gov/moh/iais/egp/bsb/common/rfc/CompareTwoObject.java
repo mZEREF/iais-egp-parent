@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.common.rfc;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
@@ -146,15 +147,15 @@ public class CompareTwoObject {
     private static <T> void addingDiff(List<DiffContent> diffs, Field declaredField, T beforeInvoke, T afterInvoke, Class<?>... customerClass) {
         //adding string diff
         if (beforeInvoke instanceof String){
-            addingStringDiff(diffs,declaredField,beforeInvoke,afterInvoke);
+            addingStringDiff(diffs, declaredField, (String)beforeInvoke, (String) afterInvoke);
         }
         //adding integer diff
         if (beforeInvoke instanceof Integer){
-            addingIntegerDiff(diffs,declaredField,beforeInvoke,afterInvoke);
+            addingIntegerDiff(diffs, declaredField, (Integer) beforeInvoke, (Integer) afterInvoke);
         }
         //adding long diff
         if (beforeInvoke instanceof Long){
-            addingLongDiff(diffs,declaredField,beforeInvoke,afterInvoke);
+            addingLongDiff(diffs, declaredField, (Long)beforeInvoke, (Long)afterInvoke);
         }
         //adding customer class diff
         if (customerClass != null && customerClass.length > 0) {
@@ -166,11 +167,11 @@ public class CompareTwoObject {
         }
     }
 
-    private static <T> void addingStringDiff(List<DiffContent> diffs, Field declaredField, T beforeInvoke, T afterInvoke){
+    private static void addingStringDiff(List<DiffContent> diffs, Field declaredField, String beforeInvoke, String afterInvoke){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        String beforeField = beforeInvoke == null ? "" : (String) beforeInvoke;
-        String afterField = afterInvoke == null ? "" : (String) afterInvoke;
+        String beforeField = StringUtils.hasLength(beforeInvoke) ? "" : beforeInvoke;
+        String afterField = StringUtils.hasLength(afterInvoke) ? "" : afterInvoke;
         if (!beforeField.equals(afterField)) {
             DiffContent diff = new DiffContent();
             diff.setModifyField(annotation.aliasName().equals("") ? declaredField.getName() : annotation.aliasName());
@@ -180,12 +181,10 @@ public class CompareTwoObject {
         }
     }
 
-    private static <T> void addingIntegerDiff(List<DiffContent> diffs, Field declaredField, T beforeInvoke, T afterInvoke){
+    private static void addingIntegerDiff(List<DiffContent> diffs, Field declaredField, Integer beforeInvoke, Integer afterInvoke){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        Integer beforeField = beforeInvoke == null ? 0 : (Integer) beforeInvoke;
-        Integer afterField = afterInvoke == null ? 0 : (Integer) afterInvoke;
-        if (!beforeField.equals(afterField)) {
+        if (!beforeInvoke.equals(afterInvoke)) {
             DiffContent diff = new DiffContent();
             diff.setModifyField(annotation.aliasName().equals("") ? declaredField.getName() : annotation.aliasName());
             diff.setOldValue(String.valueOf(beforeInvoke));
@@ -194,12 +193,10 @@ public class CompareTwoObject {
         }
     }
 
-    private static <T> void addingLongDiff(List<DiffContent> diffs, Field declaredField, T beforeInvoke, T afterInvoke){
+    private static void addingLongDiff(List<DiffContent> diffs, Field declaredField, Long beforeInvoke, Long afterInvoke){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        Long beforeField = Objects.isNull(beforeInvoke) ? 0 : (Long) beforeInvoke;
-        Long afterField = Objects.isNull(afterInvoke) ? 0 : (Long) afterInvoke;
-        if (!Objects.equals(beforeField, afterField)) {
+        if (!Objects.equals(beforeInvoke, afterInvoke)) {
             DiffContent diff = new DiffContent();
             diff.setModifyField(annotation.aliasName().equals("") ? declaredField.getName() : annotation.aliasName());
             diff.setOldValue(String.valueOf(beforeInvoke));

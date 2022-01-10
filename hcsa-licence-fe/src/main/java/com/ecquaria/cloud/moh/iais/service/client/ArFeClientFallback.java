@@ -6,11 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Arrays;
@@ -35,8 +37,21 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<PatientDto> getPatientDto(String idType, String idNumber, String nationality, String orgId) {
-        return getFeignResponseEntity();
+    public FeignResponseEntity<List<PatientDto>> getPatientsByConds(String idType, String idNumber, String nationality, String orgId,
+            String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
+    }
+
+    @Override
+    public FeignResponseEntity<PatientDto> getActivePatientByConds(String idType, String idNumber, String nationality, String orgId,
+            String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
+    }
+
+    @Override
+    public FeignResponseEntity<DataSubmissionDto> getPatientDataSubmissionByConds(String idType, String idNumber, String nationality,
+            String orgId, String patientType) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, patientType);
     }
 
     @Override
@@ -47,8 +62,15 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(String patientCode, String hciCode) {
-        return getFeignResponseEntity(patientCode, hciCode);
+    public FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(String patientCode, String hciCode,
+            String cycleId) {
+        return getFeignResponseEntity(patientCode, hciCode, cycleId);
+    }
+
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(String patientCode, String hciCode,
+            String cycleId) {
+        return getFeignResponseEntity(patientCode, hciCode, cycleId);
     }
 
     @Override
@@ -94,7 +116,7 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoByDraftNo(String draftNo) {
         return getFeignResponseEntity(draftNo);
     }
 
@@ -137,8 +159,8 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<DonorSampleDto> getDonorSampleDto(String idType, String idNumber, String donorSampleCode,String sampleFromHciCode,String sampleFromOthers) {
-        return  getFeignResponseEntity(idType,idNumber,donorSampleCode,sampleFromHciCode,sampleFromOthers);
+    public FeignResponseEntity<DonorSampleDto> getDonorSampleDto(String idType, String idNumber, String donorSampleCodeType,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers) {
+        return  getFeignResponseEntity(idType,idNumber,donorSampleCodeType,donorSampleCode,sampleFromHciCode,sampleFromOthers);
     }
 
     @Override
@@ -168,4 +190,55 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(String cycleId) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<List<DonorDto>> getAllDonorDtoByCycleId(String cycleId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Date> getCycleStartDate(String cycleId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveEmbryoTransferGreaterFiveDay(String cycleId) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveEnhancedCounselling(String patientCode, String hciCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> treatmentCycleCount(String patientCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> embryoTransferCount(String patientCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveStimulationCycles(String patientCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(Integer day) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> getArCycleStageCountByIdTypeAndIdNoAndNationality(String idType, String idNo, String nationality) {
+        return getFeignResponseEntity(idType,idNo,nationality);
+    }
+
+    @Override
+    public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
+        return getFeignResponseEntity(patientCode);
+    }
+
 }

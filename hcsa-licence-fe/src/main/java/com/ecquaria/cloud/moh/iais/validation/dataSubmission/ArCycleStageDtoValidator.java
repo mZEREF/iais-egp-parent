@@ -32,7 +32,7 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
 
-        if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() == 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
+        if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() != 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
             errorMap.put("cyclesUndergoneOverseas" ,"GENERAL_ERR0006");
         }
 
@@ -53,8 +53,8 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
                 + IaisCommonUtils.getIntByNum(arCycleStageDto. getPreviousMarriageChildren(),0) ) < IaisCommonUtils.getIntByNum(arCycleStageDto.getDeliveredThroughChildren(),0) ){
             Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
             stringStringMap.put("field1","");
-            stringStringMap.put("field2","No. of Children with Current Marriage");
-            stringStringMap.put("field3","No. of Children with Previous Marriage");
+            stringStringMap.put("field2","No. of Children from Current Marriage");
+            stringStringMap.put("field3","No. of Children from Previous Marriage");
             errorMap.put("deliveredThroughChildren", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
         }
         DonorValidator.validateDonors(arCycleStageDto.getDonorDtos(),errorMap,arCycleStageDto.isUsedDonorOocyte());

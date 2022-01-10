@@ -1,4 +1,11 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto" %>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/oocyteRectrievalSection.js"></script>
+<%
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+    OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
+%>
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
@@ -11,17 +18,11 @@
     <div id="cycleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
-                <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                        <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                        <c:out value="${patientDto.idNumber}"/>
-                        ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                </p>
-                <hr/>
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
@@ -75,34 +76,28 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="matureRetrievedNum" name="matureRetrievedNum"
-                               value="${oocyteRetrievalStageDto.matureRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_matureRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="matureRetrievedNum" id="matureRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="immatureRetrievedNum" name="immatureRetrievedNum"
-                               value="${oocyteRetrievalStageDto.immatureRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_immatureRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="immatureRetrievedNum" id="immatureRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Others)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="otherRetrievedNum" name="otherRetrievedNum"
-                               value="${oocyteRetrievalStageDto.otherRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_otherRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="otherRetrievedNum" id="otherRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <p id="totalRetrievedNum">${totalRetrievedNum}</p>
+                        <p id="totalRetrievedNum"><%=oocyteRetrievalStageDto.getTotalNum()%></p>
                     </iais:value>
                 </iais:row>
                 <iais:row>

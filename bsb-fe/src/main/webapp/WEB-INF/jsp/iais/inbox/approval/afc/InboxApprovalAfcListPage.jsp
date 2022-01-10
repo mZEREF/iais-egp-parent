@@ -103,10 +103,11 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
                                                 <%-- need to use new tag in future --%>
+                                                <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="approveNo" value="Approval No." isFE="true" style="width:12%"/>
                                                 <iais:sortableHeader needSort="false" field="processType" value="Process Type" isFE="true" style="width:12%"/>
                                                 <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true" style="width:10%"/>
@@ -174,6 +175,14 @@
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 <select id="approvalAction${status.index}" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
+                                                                    <c:choose>
+                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
+                                                                        </c:when>
+                                                                        <c:when test="${approval.status eq 'APPRSTA004' and approval.renewable eq 'Y'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohDelayRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
+                                                                        </c:when>
+                                                                    </c:choose>
                                                                 </select>
                                                             </td>
                                                         </tr>

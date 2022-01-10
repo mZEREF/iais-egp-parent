@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -37,8 +38,20 @@ public class PatientDelegator extends CommonDelegator {
     @Autowired
     private PatientService patientService;
 
-    @Autowired
-    private GenerateIdClient generateIdClient;
+    @Override
+    public void start(BaseProcessClass bpc) {
+        super.start(bpc);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            // set current as previous at the beginning
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            PatientDto patient = patientInfoDto.getPatient();
+            patientInfoDto.setPrevious((PatientDto) CopyUtil.copyMutableObject(patient));
+            patient.setPreviousIdentification(true);
+            patientInfoDto.setPatient(patient);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        }
+    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -84,14 +97,13 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        String patientCode = Optional.ofNullable(patientInfo.getPatient())
-                .map(dto -> dto.getPatientCode())
-                .orElseGet(() -> generateIdClient.getSeqId().getEntity());
-        patient.setPatientCode(patientCode);
+        // for oval validation
+        patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
+        patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
         // check previous
-        if (patient.isPreviousIdentification()) {
+        /*if (patient.isPreviousIdentification()) {
             String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
             patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
             PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
@@ -103,15 +115,13 @@ public class PatientDelegator extends CommonDelegator {
                 }
             }
             patientInfo.setPrevious(previous);
-        }
+        }*/
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
         if (StringUtil.isNotEmpty(husband.getName())) {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
         // for oval validation
-        if (StringUtil.isEmpty(husband.getEthnicGroup())) {
-            husband.setEthnicGroup("");
-        }
+        husband.setEthnicGroupOther(StringUtil.getNonNull(husband.getEthnicGroupOther()));
         patientInfo.setHusband(husband);
         String amendReason = ParamUtil.getString(request, "amendReason");
         String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
@@ -149,6 +159,17 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConsts.DS_PATIENT_ART);
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            patientInfoDto.getPatient().setId(null);
+            patientInfoDto.getHusband().setId(null);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
+        }
     }
 
 }

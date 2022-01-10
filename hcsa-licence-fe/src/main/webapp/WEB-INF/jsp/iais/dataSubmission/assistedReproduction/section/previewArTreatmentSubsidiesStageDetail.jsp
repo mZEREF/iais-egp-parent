@@ -1,27 +1,46 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.service.client.ArFeClient" %>
+<%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
+<%@ page import="java.util.List" %>
+<%
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+    ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto();
+    String coFunding = arTreatmentSubsidiesStageDto.getCoFunding();
+    CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+    ArFeClient arFeClient = SpringContextHelper.getContext().getBean(ArFeClient.class);
+    List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos = arFeClient.getArTreatmentSubsidiesStagesByPatientInfo(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
+    int freshCount = 0;
+    int frozenCount = 0;
+    for (ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto1 : oldArTreatmentSubsidiesStageDtos) {
+        if ("ATSACF002".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+            freshCount++;
+        } else if ("ATSACF003".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+            frozenCount++;
+        }
+    }
+    boolean isDisplayAppeal = ("ATSACF002".equals(coFunding) && freshCount >= 3) ||
+            ("ATSACF003".equals(coFunding) && frozenCount >= 3);
+    ParamUtil.setRequestAttr(request, "isDisplayAppeal", isDisplayAppeal);
+%>
 <c:set var="arTreatmentSubsidiesStageDto" value="${arSuperDataSubmissionDto.arTreatmentSubsidiesStageDto}"/>
-<c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign} ">
         <h4 class="panel-title">
-            <a href="#cycleDetails" data-toggle="collapse">
+            <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
                 AR Treatment Co-funding
             </a>
         </h4>
     </div>
-    <div id="cycleDetails" class="panel-collapse collapse in">
+    <div id="cycleDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
-                <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                        <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                        <c:out value="${patientDto.idNumber}"/>
-                        ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                </p>
-                <hr/>
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="6" value="Please indicate ART Co-funding" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">

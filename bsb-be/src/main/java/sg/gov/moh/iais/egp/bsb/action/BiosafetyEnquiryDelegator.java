@@ -12,14 +12,12 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
-import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
@@ -36,7 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.CommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 
 /**
@@ -57,15 +55,16 @@ public class BiosafetyEnquiryDelegator {
     private static final String PARAM_BIOLOGICAL_NAME = "bioName";
     private static final String PARAM_BIO_SAFETY_ENQUIRY = "bioSafetyDto";
 
-    @Autowired
-    private BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
 
+    public BiosafetyEnquiryDelegator(BiosafetyEnquiryClient biosafetyEnquiryClient) {
+        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+    }
 
-    public void start(BaseProcessClass bpc) throws IllegalAccessException {
+    public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, FUNCTION_BIOSATETY_ENQUIRY);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_ENQUIRY_SEARCH_DTO,null);
-        IaisEGPHelper.clearSessionAttr(request, ProcessContants.class);
     }
 
 
@@ -136,7 +135,7 @@ public class BiosafetyEnquiryDelegator {
         HttpServletRequest request = bpc.request;
         EnquiryDto enquiryDto = getSearchDto(request);
         String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
         enquiryDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO, enquiryDto);
     }
@@ -424,7 +423,7 @@ public class BiosafetyEnquiryDelegator {
         ValidationResult vResult = WebValidationHelper.validateProperty(object, type);
         if (vResult != null && vResult.isHasErrors()) {
             Map<String, String> errorMap = vResult.retrieveAll();
-            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, WebValidationHelper.generateJsonStr(errorMap));
             return Boolean.FALSE;
         } else {
             return Boolean.TRUE;
@@ -452,9 +451,9 @@ public class BiosafetyEnquiryDelegator {
                     break;
                 }
                 case CHOOSE_MARK_APPROVAL: {
-                    List<ApprovalResultDto.ApprovalInfo> bioSafetyDto = (List<ApprovalResultDto.ApprovalInfo>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
+                    List<ApprovalInfoDto> bioSafetyDto = (List<ApprovalInfoDto>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedApprovalInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedApprovalInfo(bioSafetyDto), ApprovalInfoDto.class, "Approval Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>approval fileHandler  error >>>>>", e);
                     }
@@ -463,7 +462,7 @@ public class BiosafetyEnquiryDelegator {
                 case CHOOSE_MARK_APPROVED_CERTIFIER_FACILITY: {
                     List<FacilityCertifierReg> bioSafetyDto = (List<FacilityCertifierReg>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedFacilityCertifierInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedFacilityCertifierInfo(bioSafetyDto), ApprovedFacilityCertifierInfoDto.class, "Approved Facility Certifier Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>facility certifier fileHandler  error >>>>>", e);
                     }
@@ -472,7 +471,7 @@ public class BiosafetyEnquiryDelegator {
                 case CHOOSE_MARK_FACILITY: {
                     List<FacilityActivity> bioSafetyDto = (List<FacilityActivity>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedFacilityInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedFacilityInfo(bioSafetyDto), FacilityInfoDto.class, "Facility Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>facility fileHandler  error >>>>>", e);
                     }
@@ -508,28 +507,18 @@ public class BiosafetyEnquiryDelegator {
         return bsbApp;
     }
 
-    public List<ApprovalInfoDto> filedApprovalInfo(List<ApprovalResultDto.ApprovalInfo> bsbAppr){
+    public List<ApprovalInfoDto> filedApprovalInfo(List<ApprovalInfoDto> bsbAppr){
         if(CollectionUtils.isEmpty(bsbAppr)){
             log.info("empty list approvalInfo");
             return Collections.emptyList();
         }
-        List<ApprovalInfoDto> infos = new ArrayList<>(bsbAppr.size());
-        for (ApprovalResultDto.ApprovalInfo info : bsbAppr) {
-            ApprovalInfoDto dto = new ApprovalInfoDto();
-            dto.setFacilityAddress(info.getFacAddress());
-            dto.setAgent(info.getBat());
-            dto.setApprovalStatus(info.getStatus());
-            dto.setApprovalType(info.getType());
-            dto.setFacilityName(info.getFacName());
-            dto.setFacilityClassification(info.getFacClassification());
-            dto.setNatureOfTheSample(info.getSampleName());
-            dto.setRiskLevelOfTheBiologicalAgent(info.getRiskLevel());
-            dto.setFacilityStatus(info.getFacStatus());
-            dto.setApprovalStatus(info.getStatus());
-            infos.add(dto);
+        for (ApprovalInfoDto dto : bsbAppr) {
+            dto.setType(MasterCodeUtil.getCodeDesc(dto.getType()));
+            dto.setFacStatus(MasterCodeUtil.getCodeDesc(dto.getFacStatus()));
+            dto.setStatus(MasterCodeUtil.getCodeDesc(dto.getStatus()));
         }
 
-        return infos;
+        return bsbAppr;
     }
 
     public List<ApprovedFacilityCertifierInfoDto> filedFacilityCertifierInfo(List<FacilityCertifierReg> regs){

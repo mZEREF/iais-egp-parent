@@ -1,12 +1,14 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a class="collapsed" href="#efoDetails" data-toggle="collapse">
                 Egg Freezing Only Cycle
             </a>
         </h4>
     </div>
-    <div id="efoDetails" class="panel-collapse collapse in">
+    <div id="efoDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
@@ -17,7 +19,7 @@
                 <iais:row>
                     <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
+                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -29,7 +31,8 @@
                 <iais:row>
                     <iais:field width="6" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.yearNum} Years and ${arSuperDataSubmissionDto.efoCycleStageDto.monthNum} Months"/>
+                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -42,7 +45,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Reasons" mandatory="false"/>
+                    <iais:field width="6" value="Reason" mandatory="false"/>
                     <iais:value width="6" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>

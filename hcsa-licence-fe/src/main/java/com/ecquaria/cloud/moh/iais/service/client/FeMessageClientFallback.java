@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.Date;
 import java.util.List;
 
 public class FeMessageClientFallback implements FeMessageClient{
@@ -41,6 +42,14 @@ public class FeMessageClientFallback implements FeMessageClient{
 
     @Override
     public FeignResponseEntity<List<String>> getInterMsgIdsBySubjectLike(String subject, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<Date>> getLastSubjectDate(List<String> userIds, String subject) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

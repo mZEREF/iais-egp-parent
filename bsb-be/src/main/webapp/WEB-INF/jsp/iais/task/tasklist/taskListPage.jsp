@@ -87,6 +87,7 @@
                     <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                         <thead>
                         <tr>
+                            <th scope="col" style="display: none"></th>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
                             <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
                             <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>
@@ -116,7 +117,7 @@
                                             <p>
                                                 <c:choose>
                                                     <c:when test="${not empty entity.processUrl}">
-                                                        <a href="${entity.processUrl}?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.application.applicationNo}"/></a>
+                                                        <a href="${entity.processUrl}?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:out value="${entity.application.applicationNo}"/>

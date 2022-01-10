@@ -1,13 +1,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a class="collapsed" href="#donationDetails" data-toggle="collapse">
                 Donation
             </a>
         </h4>
     </div>
-    <div id="donationDetails" class="panel-collapse collapse in">
+    <div id="donationDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
@@ -22,20 +22,20 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Which AR Centre was Gamete(s) / Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
+                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${donatedCentre}"/>
+                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Reason for Donation" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donationReason}"/>
+                        <iais:code code="${arSuperDataSubmissionDto.donationStageDto.donationReason}"/>
                     </iais:value>
                 </iais:row>
                 <div id="otherDonationReasonDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donationReason!='DONRES004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Reasons" mandatory="false"/>
+                        <iais:field width="6" value="Other Reason for Donation" mandatory="false"/>
                         <iais:value width="6" display="true">
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}"/>
                         </iais:value>

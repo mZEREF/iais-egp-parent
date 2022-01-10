@@ -337,7 +337,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 clientUser.setPassword(pwd);
                 userClient.updateClientUser(clientUser);
                 //delete egp role
-                IaisEGPHelper.getRoles().stream().forEach( role -> feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN));
+                IaisEGPHelper.getRoles().stream().forEach( role -> feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),role));
             } else {
                 clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
                 clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
@@ -685,7 +685,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
         List<String> strings = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(licenceDtos)){
-            licenceDtos.stream().forEach(licenceDto -> strings.add(licenceDto.getSvcName()));
+            licenceDtos.stream().forEach(licenceDto ->{
+                if(!strings.contains(licenceDto.getSvcName())){
+                    strings.add(licenceDto.getSvcName());
+                }
+            } );
         }
         return IaisEGPHelper.getRoleSelection(strings);
     }

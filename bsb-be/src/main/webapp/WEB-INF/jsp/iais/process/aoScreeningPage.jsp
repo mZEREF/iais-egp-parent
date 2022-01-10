@@ -13,7 +13,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcess}">
+        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -78,25 +78,25 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Remarks" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.remarks}</p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.aoScreeningDto.doRemarks}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.riskLevel}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.aoScreeningDto.riskLevel}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevelComments}</p></iais:value>
+                                                                            <iais:value width="10"><p>${mohProcessDto.aoScreeningDto.riskLevelComments}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Processing Decision" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.processDecision}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.aoScreeningDto.doProcessingDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -105,8 +105,8 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.remarks}"></c:out></textarea>
-                                                                                        <span data-err-ind="remarks" class="error-msg"></span>
+                                                                                        <textarea name="aoRemarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.aoScreeningDto.aoRemarks}"></c:out></textarea>
+                                                                                        <span data-err-ind="aoRemarks" class="error-msg"></span>
                                                                                     </div>
                                                                                 </div>
                                                                             </iais:value>
@@ -116,13 +116,14 @@
                                                                         <iais:row>
                                                                             <iais:field value="Reviewing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="processingDecision" id="processingDecision">
-                                                                                    <option value="MOHPRO006" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO006'}">selected="selected"</c:if>>approve for inspection</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>reject</option>
-                                                                                    <option value="MOHPRO008" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>route back to duty officer</option>
-                                                                                    <option value="MOHPRO009" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO009'}">selected="selected"</c:if>>route to higher management</option>
+                                                                                <select name="reviewingDecision" id="reviewingDecision">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <option value="MOHPRO006" <c:if test="${mohProcessDto.aoScreeningDto.reviewingDecision eq 'MOHPRO006'}">selected="selected"</c:if>>Approve for Inspection</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${mohProcessDto.aoScreeningDto.reviewingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                                    <option value="MOHPRO008" <c:if test="${mohProcessDto.aoScreeningDto.reviewingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>Route Back to Duty Officer</option>
+                                                                                    <option value="MOHPRO009" <c:if test="${mohProcessDto.aoScreeningDto.reviewingDecision eq 'MOHPRO009'}">selected="selected"</c:if>>Route to Higher Management</option>
                                                                                 </select>
-                                                                                <span data-err-ind="processingDecision" class="error-msg" ></span>
+                                                                                <span data-err-ind="reviewingDecision" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -130,8 +131,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="ERP Report" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="erpReportDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.erpReportDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="erpReportDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="erpReportDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.erpReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="erpReportDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -139,8 +140,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Red Teaming Report" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="redTeamingReportDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.redTeamingReportDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="redTeamingReportDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="redTeamingReportDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.redTeamingReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="redTeamingReportDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -148,8 +149,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Lentivirus Report" required="false"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="lentivirusReportDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.lentivirusReportDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="lentivirusReportDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="lentivirusReportDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.lentivirusReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="lentivirusReportDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -157,8 +158,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Internal Inspection Report" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="internalInspectionReportDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.internalInspectionReportDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="internalInspectionReportDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="internalInspectionReportDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.internalInspectionReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="internalInspectionReportDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -166,7 +167,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedAfc" codeCategory="CATE_ID_BSB_SELECTED_APPROVED_FACILITY_CERTIFER" firstOption="Please Select" value="${mohProcessDto.selectedAfc}"></iais:select>
+                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedAfc" codeCategory="CATE_ID_BSB_SELECTED_APPROVED_FACILITY_CERTIFER" firstOption="Please Select" value="${mohProcessDto.aoScreeningDto.selectedAfc}"></iais:select>
                                                                                 <span data-err-ind="selectedAfc" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -175,8 +176,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="validityStartDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.validityStartDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="validityStartDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="validityStartDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.validityStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="validityStartDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -184,8 +185,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="validityEndDt" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.validityEndDt}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="validityEndDt" class="error-msg" ></span>
+                                                                                <input type="text" autocomplete="off" name="validityEndDate" data-date-start-date="01/01/1900" value="<c:out value="${mohProcessDto.aoScreeningDto.validityEndDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                                                <span data-err-ind="validityEndDate" class="error-msg" ></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -194,24 +195,25 @@
                                                                             <iais:field value="Final Remarks" required="false"></iais:field>
                                                                             <iais:value width="10">
                                                                                 <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${mohProcessDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${mohProcessDto.aoScreeningDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
                                                                                     <label for="finalRemarksYes" class="form-check-label"><span class="check-square"></span>Yes</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${mohProcessDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${mohProcessDto.aoScreeningDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
                                                                                     <label for="finalRemarksNo" class="form-check-label"><span class="check-square"></span>No</label>
                                                                                 </div>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <div align="right">
+                                                                <div style="text-align: right">
                                                                     <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

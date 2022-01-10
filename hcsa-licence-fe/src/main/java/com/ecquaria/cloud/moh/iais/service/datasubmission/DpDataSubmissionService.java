@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 
 import java.util.Map;
 
@@ -29,5 +30,11 @@ public interface DpDataSubmissionService {
             String hciCode);
 
     void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+
+    ProfessionalResponseDto retrievePrsInfo(String doctorReignNo);
+
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDto(String submissionNo);
+
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoByDraftNo(String draftNo);
 
 }

@@ -285,4 +285,8 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/premises/{premisedId}/floor-units", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getPremisesFloorUnits(@PathVariable("premisedId") String premisedId);
+
+
+
+
 }

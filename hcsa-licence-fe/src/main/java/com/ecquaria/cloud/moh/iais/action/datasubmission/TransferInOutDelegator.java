@@ -3,17 +3,16 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.xerces.xs.StringList;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +32,6 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void preparePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
@@ -48,30 +42,25 @@ public class TransferInOutDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
         List<String> transferredList = transferInOutStageDto.getTransferredList();
         for (String transferred : transferredList){
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)){
                 if(transferInOutStageDto.getOocyteNum() !=null){
-                    patientInventoryDto.setChangeFrozenOocytes(transferInOutStageDto.getOocyteNum());
+                    patientInventoryDto.setChangeFrozenOocytes(-1*transferInOutStageDto.getOocyteNum());
                 }
             }
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)){
                 if(transferInOutStageDto.getEmbryoNum() !=null){
-                    patientInventoryDto.setChangeFrozenEmbryos(transferInOutStageDto.getEmbryoNum());
+                    patientInventoryDto.setChangeFrozenEmbryos(-1*transferInOutStageDto.getEmbryoNum());
                 }
             }
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)){
                 if(transferInOutStageDto.getSpermVialsNum() !=null){
-                    patientInventoryDto.setChangeFrozenSperms(transferInOutStageDto.getSpermVialsNum());
+                    patientInventoryDto.setChangeFrozenSperms(-1*transferInOutStageDto.getSpermVialsNum());
                 }
             }
         }
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
 
     }
 
@@ -87,10 +76,16 @@ public class TransferInOutDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto() == null ? new TransferInOutStageDto() : arSuperDataSubmissionDto.getTransferInOutStageDto();
+        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
+        String oocyteNo =  ParamUtil.getString(request,"oocyteNum");
+        String embryoNo =  ParamUtil.getString(request,"embryoNum");
+        String spermVialsNo =  ParamUtil.getString(request,"spermVialsNum");
         ControllerHelper.get(request,transferInOutStageDto);
+        transferInOutStageDto.setOocyteNo(oocyteNo);
+        transferInOutStageDto.setEmbryoNo(embryoNo);
+        transferInOutStageDto.setSpermVialsNo(spermVialsNo);
         String fromDonor = ParamUtil.getString(request,"fromDonor");
         transferInOutStageDto.setFromDonor("true".equalsIgnoreCase(fromDonor));
         if( !IaisCommonUtils.isEmpty(transferredList)){
@@ -102,9 +97,5 @@ public class TransferInOutDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, transferInOutStageDto,"save",ACTION_TYPE_CONFIRM);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 }

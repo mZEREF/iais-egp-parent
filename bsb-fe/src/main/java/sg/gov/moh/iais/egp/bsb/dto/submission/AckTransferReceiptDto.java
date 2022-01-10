@@ -146,7 +146,7 @@ public class AckTransferReceiptDto implements Serializable {
      * these docs have not been saved into DB, if user wants to show it
      * @return a map, the key is the doc index, the value is the new doc info list
      */
-    public Map<String,List<PrimaryDocDto.NewDocInfo>> getExistNewDocInfoIndexMap(){
+    public Map<Integer,List<PrimaryDocDto.NewDocInfo>> getExistNewDocInfoIndexMap(){
         if(CollectionUtils.isEmpty(this.newDocInfoMap)){
             return Collections.emptyMap();
         }
@@ -294,7 +294,7 @@ public class AckTransferReceiptDto implements Serializable {
                     } else {
                         PrimaryDocDto.NewDocInfo newDocInfo = new PrimaryDocDto.NewDocInfo();
                         String tmpId = inputName + f.getSize() + System.nanoTime();
-                        newDocInfo.setIndex(index);
+                        newDocInfo.setIndex(Integer.valueOf(index));
                         newDocInfo.setTmpId(tmpId);
                         newDocInfo.setDocType(docType);
                         newDocInfo.setFilename(f.getOriginalFilename());

@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 public class SimpleCsvReader {
 
-    public static <T> List<T> readToBean(final File file, final Class<T> clz) {
+    public static <T> List<T> readToBean(final File file, final Class<T> clz, boolean defaultValueNull) {
         if (file == null || !file.exists()) {
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -39,7 +39,7 @@ public class SimpleCsvReader {
             Map<Integer, Method> methods = setMethods(clz);
             int min = methods.keySet().stream().min(Integer::compareTo).orElse(0);
             for (CSVRecord record : csvRecord) {
-                T obj = readToBean(record, methods, clz, min);
+                T obj = readToBean(record, methods, clz, min, defaultValueNull);
                 if (obj != null) {
                     result.add(obj);
                 }
@@ -52,7 +52,7 @@ public class SimpleCsvReader {
         return result;
     }
 
-    private static <T> T readToBean(CSVRecord record, Map<Integer, Method> methods, Class<T> clz, int i) {
+    private static <T> T readToBean(CSVRecord record, Map<Integer, Method> methods, Class<T> clz, int i, boolean defaultValueNull) {
         T obj;
         try {
             obj = clz.newInstance();
@@ -66,7 +66,7 @@ public class SimpleCsvReader {
                 continue;
             }
             try {
-                method.invoke(obj, val);
+                method.invoke(obj, defaultValueNull ? StringUtil.getStringEmptyToNull(val) : val);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog(e.getMessage()), e);
             }

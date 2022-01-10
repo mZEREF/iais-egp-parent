@@ -73,7 +73,7 @@
                                            name="donorRelation"
                                            value="F"
                                            id = "donorRelationF"
-                                           <c:if test="${donorSampleDto.donorRelation == 'F'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donorRelation eq 'F'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationF"><span
@@ -87,7 +87,7 @@
                                            name="donorRelation"
                                            value="R"
                                            id = "donorRelationR"
-                                           <c:if test="${!donorSampleDto.donorRelation == 'R'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donorRelation eq 'R'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationR" ><span
@@ -113,25 +113,13 @@
                         </iais:row>
                         <div id="donorSampleCodeRow"  style="${donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}">
                             <iais:row   >
-                                <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
+                                <iais:field width="5" value="Donor Sample Code" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
+                                    <iais:input maxLength="20" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
                                 </iais:value>
                                 <span id="error_donorSampleCodeRowDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
-                            <iais:row>
-                            <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
-                                             cssClass="sampleFromOthers"/>
-                            </iais:value>
-                            </iais:row>
-                            <iais:row id ="sampleFromOthers" style="display:none">
-                                <label class="col-xs-5 col-md-4 control-label"></label>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" name="sampleFromOthers"  value="${donorSampleDto.sampleFromOthers}" />
-                                </iais:value>
-                            </iais:row>
+
                         </div>
 
                         <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
@@ -156,23 +144,57 @@
                                 </iais:value>
                             </iais:row>
                         </div>
+                        <iais:row>
+                            <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode"   value="${donorSampleDto.sampleFromHciCode}"
+                                             cssClass="sampleFromOthers"/>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row id ="sampleFromOthers" style="display:none">
+                            <label class="col-xs-5 col-md-4 control-label"></label>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:input maxLength="100" type="text" name="sampleFromOthers"  value="${donorSampleDto.sampleFromOthers}" />
+                            </iais:value>
+                        </iais:row>
                     </div>
 
                     <c:choose>
+                        <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
+                            <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
+                                <iais:row id = "donorAge0">
+                                    <label class="col-xs-5 col-md-4 control-label">
+                                        <c:if test="${idxStatus.first==true}">
+                                            Donor's Age when Sample was Collected
+                                            <span class="mandatory">*</span>
+                                        </c:if>
+                                    </label>
+                                    <iais:value width="7" cssClass="col-md-7">
+                                        <input type="text" name="oldAges" value="${donorSampleAgeDto.age}" maxlength="2" autocomplete="off" disabled =true>
+                                        <span id="error_oldAges" name="iaisErrorMsg" class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
+                            </c:forEach>
+                        </c:when>
+                    </c:choose>
+
+                    <c:choose>
                         <c:when test="${donorSampleDto.ages == null}">
-                            <iais:row  id = "donorAge0">
-                                <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="2" type="text" name="ages" value="" />
-                                    <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
-                                </iais:value>
-                            </iais:row>
+                            <c:if test="${donorSampleDto.donorSampleAgeDtos == null}">
+                                <iais:row  id = "donorAge0">
+                                    <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
+                                    <iais:value width="7" cssClass="col-md-7">
+                                        <iais:input maxLength="2" type="text" name="ages" value="" />
+                                        <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
+                            </c:if>
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
                                 <iais:row id = "donorAge${idxStatus.index}">
                                     <label class="col-xs-5 col-md-4 control-label">
-                                        <c:if test="${idxStatus.first==true}">
+                                        <c:if test="${idxStatus.first==true && donorSampleDto.donorSampleAgeDtos == null}">
                                             Donor's Age when Sample was Collected
                                             <span class="mandatory">*</span>
                                         </c:if>
@@ -183,7 +205,9 @@
                                     </iais:value>
                                     <c:if test="${idxStatus.first!=true}">
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
-                                            <a class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')" style="text-decoration:none;" href="javascript:void(0)">X</a>
+                                            <h4 class="text-danger">
+                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')"></em>
+                                            </h4>
                                         </div>
                                     </c:if>
                                 </iais:row>
@@ -243,8 +267,9 @@
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +
             "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
-            "                                <a class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index +
-            "')\" style=\"text-decoration:none;\" href=\"javascript:void(0)\">X</a>\n" +
+            "                               <h4 class=\"text-danger\">"+
+            "<em class=\"fa fa-times-circle del-size-36 removeBtn cursorPointer\" class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index+ "')\"></em>"+
+            "</h4>" +
             "                            </div>\n" +
             "                            <div class=\"clear\"></div>\n" +
             "                        </div>";
@@ -252,7 +277,7 @@
     }
 
     function arCentreChange(){
-        if($("#sampleFromHciCode").val() == 'others'){
+        if($("#sampleFromHciCode").val()== 'AR_SC_001'){
             $("#sampleFromOthers").show();
         }else{
             $("#sampleFromOthers").hide();

@@ -1,7 +1,7 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ecSection.js"></script>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
                 Embryo Created
@@ -19,28 +19,28 @@
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
+                        <iais:input maxLength="2" type="text" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="poorDevFreshOccNum" name="poorDevFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
+                        <iais:input maxLength="2" type="text" id="poorDevFreshOccNum" name="poorDevFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="transEmbrThawOccNum" name="transEmbrThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
+                        <iais:input maxLength="2" type="text" id="transEmbrThawOccNum" name="transEmbrThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrThawOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="poorDevThawOccNum" name="poorDevThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
+                        <iais:input maxLength="2" type="text" id="poorDevThawOccNum" name="poorDevThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevThawOccNum"></span>
                     </iais:value>
                 </iais:row>

@@ -1,11 +1,13 @@
 $(document).ready(function (){
     toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
-    toggleOnSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
+    toggleOnSelectNoSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
     if($("#usedDonorOocyteRadioYes").is(':checked')){
         showUsedDonorOocyteControlClass(0);
     }else {
         hideUsedDonorOocyteControlClass(0);
     }
+    showPopCommon('#enhancedCounsellingTipShow','#enhancedCounsellingTip',1);
+    showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
 });
@@ -40,3 +42,28 @@ function doEnhancedCounsellingMandatory(key){
         }
     }
 }
+
+function enhancedCounsellingTipClose(){
+    $('#enhancedCounsellingTip').modal('hide');
+}
+
+
+function showEnhancedCounsellingTipNo(){
+    if($("#enhancedCounsellingRadioNo").is(':checked')){
+        $('#enhancedCounsellingTip').modal('show');
+    }
+}
+
+function toggleOnSelectNoSelect(sel, value, area){
+    var valueK = $(sel).val();
+    if(valueK != null && valueK != '' && valueK != value){
+        toggleOnSelect(sel,valueK,area);
+    }else {
+        toggleOnSelect(sel,'-1',area);
+    }
+}
+
+
+
+
+

@@ -145,7 +145,7 @@ public final class IaisEGPHelper extends EGPHelper {
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
 
 
-    private static  Map<String,String> SVC_ROLE_MAP = getSvcRoleMap();
+    private static  Map<String,List<String>> SVC_ROLE_MAP = getSvcRoleMap();
     private static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
     private static  List<String> ROLES = IaisCommonUtils.genNewArrayList(3);
     /**
@@ -949,9 +949,16 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
 
-    private  static  Map<String,String> getSvcRoleMap(){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(8);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,RoleConsts.USER_ROLE_DS_AR);
+    private  static  Map<String,List<String>> getSvcRoleMap(){
+        Map<String,List<String>> stringStringMap = IaisCommonUtils.genNewHashMap(8);
+        List<String> onlyDp = Arrays.asList(RoleConsts.USER_ROLE_DS_DP);
+        List<String> onlyTop = Arrays.asList(RoleConsts.USER_ROLE_DS_TOP);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,Arrays.asList(RoleConsts.USER_ROLE_DS_AR));
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL,onlyDp);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_NURSING_HOME,onlyDp);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_MEDICAL_CLINIC,onlyTop);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL,onlyTop);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL,Arrays.asList(RoleConsts.USER_ROLE_DS_DP,RoleConsts.USER_ROLE_DS_TOP));
         return stringStringMap;
     }
     private  static  Map<String,SelectOption> getRoleRoleRoleNameMap(){
@@ -959,6 +966,10 @@ public final class IaisEGPHelper extends EGPHelper {
         stringStringMap.put(RoleConsts.USER_ROLE_DS_AR,new SelectOption(RoleConsts.USER_ROLE_DS_AR,RoleConsts.SHOW_USER_ROLE_DS_AR));
         stringStringMap.put(RoleConsts.USER_ROLE_ORG_USER,new SelectOption(RoleConsts.USER_ROLE_ORG_USER,RoleConsts.SHOW_USER_ROLE_ORG_USER));
         stringStringMap.put(RoleConsts.USER_ROLE_ORG_ADMIN,new SelectOption(RoleConsts.USER_ROLE_ORG_ADMIN,RoleConsts.SHOW_USER_ROLE_ORG_ADMIN));
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_DP,new SelectOption(RoleConsts.USER_ROLE_DS_DP,RoleConsts.SHOW_USER_ROLE_DS_DP));
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_TOP,new SelectOption(RoleConsts.USER_ROLE_DS_TOP,RoleConsts.SHOW_USER_ROLE_DS_TOP));
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_VSS,new SelectOption(RoleConsts.USER_ROLE_DS_VSS,RoleConsts.SHOW_USER_ROLE_DS_VSS));
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_LDT,new SelectOption(RoleConsts.USER_ROLE_DS_LDT,RoleConsts.SHOW_USER_ROLE_DS_LDT));
         return stringStringMap;
     }
     public static List<SelectOption> getRoleSelection(List<String> svcNames) {
@@ -967,10 +978,15 @@ public final class IaisEGPHelper extends EGPHelper {
        if(IaisCommonUtils.isEmpty(svcNames) && IaisCommonUtils.isEmpty(SVC_ROLE_MAP)){
            return selectOptions;
        }
-        svcNames.stream().forEach( o-> {
-            String value = SVC_ROLE_MAP.get(o);
-            if(StringUtil.isNotEmpty(value)){
-                selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(value));
+        svcNames.stream().forEach( s-> {
+            List<String> value = SVC_ROLE_MAP.get(s);
+            if(IaisCommonUtils.isNotEmpty(value)){
+                value.forEach( v->{
+                    SelectOption selectOption = ROLE_ROLE_ROLE_NAME_MAP.get(v);
+                    if(!selectOptions.contains(selectOption)){
+                        selectOptions.add(selectOption);
+                    }
+                });
             }
         });
         selectOptions.sort(SelectOption::compareTo);

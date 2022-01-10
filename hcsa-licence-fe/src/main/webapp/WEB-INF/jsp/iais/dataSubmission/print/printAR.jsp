@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%--<c:set var="headingSign" value="completed"/>--%>
-
 <c:set var="cycleType" value="${arSuperDataSubmissionDto.cycleDto.cycleType}"/>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
@@ -14,12 +13,9 @@
         <%-- AR Patient--%>
         <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
-        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-            <%@include file="../assistedReproduction/section/patientAmendment.jsp" %>
-        </c:if>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
-        <%@include file="../assistedReproduction/section/previewDonorSection.jsp" %>
+        <%@include file="../assistedReproduction/section/previewArSubmitDonorSection.jsp" %>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL001'}">
         <%-- AR_CYCLE_AR--%>
@@ -98,6 +94,7 @@
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
 </c:choose>
-<c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
+<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_002'}">
     <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
 </c:if>
+<%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>

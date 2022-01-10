@@ -34,12 +34,12 @@
         </div>
     </div>
 </form>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP002'}">
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">
     <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
                   cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" />
 </c:if>
-<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP001'}">
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
     <iais:confirm msg="DS_MSG001" callBack="submit('patient', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
                   cancelBtnDesc="Delete" cancelFunc="submit('patient', 'delete')" />

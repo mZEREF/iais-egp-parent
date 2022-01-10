@@ -20,8 +20,12 @@ import java.util.List;
         fallback = FileRepoClientFallback.class)
 public interface FileRepoClient {
     @PostMapping(produces =  MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    FeignResponseEntity<String> saveFiles(@RequestPart("selectedFile") MultipartFile file,
+    FeignResponseEntity<String> saveFile(@RequestPart("selectedFile") MultipartFile file,
                                           @RequestParam("filerepoInfo") String fileRepoInfo);
+
+    @PostMapping(value = "/saveFiles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    FeignResponseEntity<List<String>> saveFiles(@RequestPart("selectedFiles") MultipartFile[] files);
+
     @GetMapping(value = "/{guid}")
     FeignResponseEntity<byte[]> getFileFormDataBase(@PathVariable(name = "guid") String guid);
 

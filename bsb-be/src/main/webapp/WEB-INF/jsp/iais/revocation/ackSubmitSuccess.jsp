@@ -6,10 +6,8 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div>
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -20,10 +18,13 @@
                                 <h2>You have successfully submit.</h2>
                             </div>
                         </div>
-                        <div align="left">
-                            <span>
-                                <a href="#" id="backFromAckPage"><em class="fa fa-angle-left"></em> Back</a>
-                            </span>
+                        <div style="text-align: left">
+                            <c:if test="${from eq 'fac'}">
+                                <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                            </c:if>
+                            <c:if test="${from eq 'app'}">
+                                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -31,4 +32,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

@@ -3,14 +3,14 @@
 <div class = "row">
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
-            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
+            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 100%">
                 <div class="document-upload-list">
-                    <c:set var="newFiles" value="${transferNotDto.otherNewInfos}"/>
+                    <c:set var="newFiles" value="${otherDocs}"/>
                     <h3>Others</h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
                             <c:forEach var="info" items="${newFiles}">
-                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
+                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.id)}"/>
                                 <div id="${tmpId}FileDiv">
                                     <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span>
                                     <button type="button" class="btn btn-secondary btn-sm"
@@ -25,7 +25,7 @@
                                             onclick="downloadFile('new', '${tmpId}')">
                                         Download
                                     </button>
-                                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                    <span data-err-ind="${info.id}" class="error-msg"></span>
                                 </div>
                             </c:forEach>
                         </c:if>

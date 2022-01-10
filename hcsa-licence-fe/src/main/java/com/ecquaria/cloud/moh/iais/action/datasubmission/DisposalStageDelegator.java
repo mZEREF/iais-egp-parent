@@ -51,7 +51,7 @@ public class DisposalStageDelegator extends CommonDelegator{
     }
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Disposal</strong>");
 
         List<SelectOption> disposalTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DISPOSAL_TYPE);
         ParamUtil.setRequestAttr(bpc.request,"disposalTypeSelectOption",disposalTypeSelectOption);
@@ -85,6 +85,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     disposalStageDto.setDisposedTypeDisplay(1);
                     Integer immature =  null;
                     try {
+                        String immatureString=ParamUtil.getString(request, "immature");
+                        disposalStageDto.setImmatureString(immatureString);
                         immature =  ParamUtil.getInt(request, "immature");
                         totalNum+=immature;
                         disposalStageDto.setImmature(immature);
@@ -93,6 +95,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     Integer abnormallyFertilised = null;
                     try {
+                        String abnormallyFertilisedString=ParamUtil.getString(request, "abnormallyFertilised");
+                        disposalStageDto.setAbnormallyFertilisedString(abnormallyFertilisedString);
                         abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
                         totalNum+=abnormallyFertilised;
                         disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
@@ -101,6 +105,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     Integer unfertilised = null;
                     try {
+                        String unfertilisedString=ParamUtil.getString(request, "unfertilised");
+                        disposalStageDto.setUnfertilisedString(unfertilisedString);
                         unfertilised =  ParamUtil.getInt(request, "unfertilised");
                         totalNum+=unfertilised;
                         disposalStageDto.setUnfertilised(unfertilised);
@@ -109,6 +115,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     Integer atretic = null;
                     try {
+                        String atreticString=ParamUtil.getString(request, "atretic");
+                        disposalStageDto.setAtreticString(atreticString);
                         atretic =  ParamUtil.getInt(request, "atretic");
                         totalNum+=atretic;
                         disposalStageDto.setAtretic(atretic);
@@ -117,6 +125,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     Integer damaged = null;
                     try {
+                        String damagedString=ParamUtil.getString(request, "damaged");
+                        disposalStageDto.setDamagedString(damagedString);
                         damaged =  ParamUtil.getInt(request, "damaged");
                         totalNum+=damaged;
                         disposalStageDto.setDamaged(damaged);
@@ -125,6 +135,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }
                     Integer lysedOrDegenerated = null;
                     try {
+                        String lysedOrDegeneratedString=ParamUtil.getString(request, "lysedOrDegenerated");
+                        disposalStageDto.setLysedOrDegeneratedString(lysedOrDegeneratedString);
                         lysedOrDegenerated =  ParamUtil.getInt(request, "lysedOrDegenerated");
                         totalNum+=lysedOrDegenerated;
                         disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
@@ -138,6 +150,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                     disposalStageDto.setDisposedTypeDisplay(2);
                     Integer unhealthyNum = null;
                     try {
+                        String unhealthyNumString=ParamUtil.getString(request, "unhealthyNum");
+                        disposalStageDto.setUnhealthyNumString(unhealthyNumString);
                         unhealthyNum =  ParamUtil.getInt(request, "unhealthyNum");
                         totalNum+=unhealthyNum;
                         disposalStageDto.setUnhealthyNum(unhealthyNum);
@@ -154,6 +168,8 @@ public class DisposalStageDelegator extends CommonDelegator{
 
         Integer otherDiscardedNum = null;
         try {
+            String otherDiscardedNumString=ParamUtil.getString(request, "otherDiscardedNum");
+            disposalStageDto.setOtherDiscardedNumString(otherDiscardedNumString);
             otherDiscardedNum =  ParamUtil.getInt(request, "otherDiscardedNum");
             totalNum+=otherDiscardedNum;
             disposalStageDto.setOtherDiscardedNum(otherDiscardedNum);
@@ -209,7 +225,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                 break;
             default:
         }
-
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
     }
 }

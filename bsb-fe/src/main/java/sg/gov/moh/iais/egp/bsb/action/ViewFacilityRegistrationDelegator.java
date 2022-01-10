@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +26,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Delegator(value = "bsbViewFacRegAppDelegator")
 @Slf4j
 public class ViewFacilityRegistrationDelegator {
-    private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
-    private static final String KEY_APP_ID = "appId";
-    private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
+    private static final String MODULE_NAME = "Facility Registration";
+    private static final String FUNCTION_NAME = "View Application";
 
     private final FacilityRegisterClient facRegClient;
 
@@ -38,7 +37,7 @@ public class ViewFacilityRegistrationDelegator {
     }
 
     public void start(BaseProcessClass bpc) { // NOSONAR
-        AuditTrailHelper.auditFunction("Facility Registration", "View Application");
+        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -76,7 +75,7 @@ public class ViewFacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-            List<BiologicalAgentToxinDto> batList = FacilityRegistrationDelegator.getBatInfoList(batNodeGroup);
+            List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");

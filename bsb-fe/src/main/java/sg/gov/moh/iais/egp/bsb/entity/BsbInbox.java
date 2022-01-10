@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 public class BsbInbox implements Serializable {
-    private long id;
+    private String id;
 
     private String userId;
 

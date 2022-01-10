@@ -1132,9 +1132,14 @@ public class InsRepServiceImpl implements InsRepService {
                 listUserId.add(lead);
             }
             List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-            String leadName = leadList.get(0).getDisplayName();
+            if (!IaisCommonUtils.isEmpty(leadList)) {
+                String leadName = leadList.get(0).getDisplayName();
+                reportDtoForAo.setReportNoteBy(leadName);
+            } else {
+                reportDtoForAo.setReportNoteBy(AppConsts.EMPTY_STR);
+            }
             reportDtoForAo.setReportedBy(reportBy);
-            reportDtoForAo.setReportNoteBy(leadName);
+
             Set<String> inspectiors = taskService.getInspectiors(applicationNo, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
             List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for (String inspector : inspectiors) {

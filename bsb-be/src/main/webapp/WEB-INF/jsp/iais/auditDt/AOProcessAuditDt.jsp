@@ -122,7 +122,7 @@
                                                                             <iais:row>
                                                                                 <iais:field value="DO Decision" required="false" width="12"/>
                                                                                 <iais:value width="10">
-                                                                                    <p><c:out value="${processData.doDecision}"/></p>
+                                                                                    <p><iais:code code="${processData.doDecision}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -165,18 +165,18 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select name="aoDecision"
-                                                                                                 id="aoDecision" onchange="decisionChange(this)"
-                                                                                                 value="${processData.aoDecision}"
-                                                                                                 codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
-                                                                                                 firstOption="Please Select"/>
+                                                                                    <select name="aoDecision" id="aoDecision">
+                                                                                        <option value="">Please Select</option>
+                                                                                        <option value="MOHPRO007" <c:if test="${processData.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
+                                                                                        <option value="MOHPRO003" <c:if test="${processData.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                    </select>
                                                                                     <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </iais:section>
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
-                                                                    <div align="right">
+                                                                    <div style="text-align: right">
                                                                         <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                     </div>
                                                                     <div>&nbsp;</div>

@@ -1,12 +1,3 @@
-//DO submit revocation process entrance
-// function doProcess(fac){
-//     showWaiting();
-    // $("#appId").val(id);
-    // $("#from").val(fac);
-    // $("[name='action_type']").val("doProcess");
-    // $("#mainForm").submit();
-// }
-
 function doRevoke(id,fac){
     showWaiting();
     $("#approvalId").val(id);
@@ -23,6 +14,9 @@ function checkEndTime(startTime,endTime){
 }
 
 $(function () {
+    $("select[data-action-select]").change(function () {
+        window.location = this.value;
+    });
     //Facility list
     $("#searchBtn").click(function (){
         var optionValue = $("#auditType option:selected").val();
@@ -37,8 +31,16 @@ $(function () {
     });
 
     $("#clearBtn").click(function () {
-        $("#approvalStatus option:first").prop("selected",'selected');
-        $("#approvalNo").val("");
+        $('input[type="text"]').val("");
+        $("#beInboxFilter input[type='checkbox']").prop('checked', false);
+        $("#beInboxFilter .multi-select-button").html("-- Select --");
+        $("#facilityClassification option").prop('selected',false);
+        $("select[name = 'facilityName'] option:first").prop("selected",'selected');
+        $("select[name = 'processType'] option:first").prop("selected",'selected');
+        $("select[name = 'approvalType'] option:first").prop("selected",'selected');
+        $("select[name = 'approvalStatus'] option:first").prop("selected",'selected');
+        $("input[name = 'approvedDateFrom']").val("");
+        $("input[name = 'approvedDateTo']").val("");
         $("#beInboxFilter .current").text("Please Select");
     });
     // DO submit revocation
@@ -47,21 +49,9 @@ $(function () {
         $('#remark').val("");
     });
 
-    $("#submitButton1").click(function () {
-        var reasonValue = $("#reason").val();
-        var isUpload = $("#have").val();
-        if (reasonValue == "" || reasonValue == null) {
-            $("#error_reason").html("Please enter the reason");
-        }else{
-            // if (isUpload!=null) {
-                $("#error_reason").html("");
-                showWaiting();
-                $("[name='action_type']").val("doSubmit");
-                $("#mainForm").submit();
-            // }else {
-            //     alert("Please upload file");
-            // }
-        }
+    $("#nextBtn").click(function () {
+        showWaiting();
+        $("#mainForm").submit();
     });
 
     // revocationList
@@ -101,51 +91,28 @@ $(function () {
         $("#clearSelect .current").text("Please Select");
     });
 
-    $("#submitButton3").click(function () {
+    $("#submitRevoke").click(function (){
         showWaiting();
-        $("[name='action_type']").val("doUpdate");
+        $("[name='action_type']").val("doSubmit");
         $("#mainForm").submit();
     });
 
     //AO process revocation application
     $("#submitButton").click(function () {
-        var optionValue = $("#decision option:selected").val();
+        showWaiting();
+        var optionValue = $("#aoDecision").val();
         if (optionValue == "BSBAOPD001") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "approve");
+            $("[name='action_type']").val("approve");
         }
         if (optionValue == "BSBAOPD002") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "reject");
+            $("[name='action_type']").val("reject");
         }
         if (optionValue == "BSBAOPD003") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "routeBack");
+            $("[name='action_type']").val("routeBack");
         }
         if (optionValue == "BSBAOPD004") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "submit");
+            $("[name='action_type']").val("submit");
         }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options!");
-        }
-    });
-
-    //back
-    $("#backToTask").click(function (){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
-    });
-
-    $("#backToSubmit2").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doBack");
-        $("#mainForm").submit();
-    });
-
-    //back from ackPage
-    $("#backFromAckPage").click(function (){
-        showWaiting();
         $("#mainForm").submit();
     });
 
@@ -153,17 +120,5 @@ $(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
-    })
-
-    $("#backFromDoc").click(function (){
-        $('#documenta').removeClass("active");
-        $('#infoa').click();
-        $('#infoa').addClass("active");
-    })
-
-    $("#backFromProcess").click(function (){
-        $('#processa').removeClass("active");
-        $('#documenta').click();
-        $('#documenta').addClass("active");
     })
 });

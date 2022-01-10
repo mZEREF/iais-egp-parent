@@ -2,8 +2,11 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -26,30 +29,62 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                                           data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>
                             <p></p>
+                            <%--@elvariable id="facilitySearch" type="sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto"--%>
                             <div id="beInboxFilter" class="collapse intranet-content">
                                 <iais:row>
-                                    <iais:field value="Approval Status"/>
-                                    <iais:value width="18">
-                                        <iais:select name="approvalStatus" id="approvalStatus"
-                                                     value="${facilitySearch.approvalStatus}"
-                                                     codeCategory="CATE_ID_BSB_APPROVAL_STATUS"
-                                                     firstOption="Please Select"/>
-                                    </iais:value>
+                                    <iais:field value="Facility Name"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select id="facilityName" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facilitySearch.facilityName}"/>
+                                    </div>
                                 </iais:row>
-
+                                <iais:row>
+                                    <iais:field value="Facility Address"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <input type="text" name="facilityAddress" id="facilityAddress" value="${facilitySearch.facilityAddress}">
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Facility Classification"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select id="facilityClassification" name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" multiSelect="true" multiValues="${facilitySearch.facilityClassifications}"/>
+                                    </div>
+                                </iais:row>
                                 <iais:row>
                                     <iais:field value="Approval No"/>
-                                    <iais:value width="18">
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
                                         <input type="text" name="approvalNo" id="approvalNo" value="${facilitySearch.approvalNo}">
-                                    </iais:value>
+                                    </div>
                                 </iais:row>
-
+                                <iais:row>
+                                    <iais:field value="Approval Status"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select name="approvalStatus" id="approvalStatus" value="${facilitySearch.approvalStatus}" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select"/>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Process Type"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${facilitySearch.approvalType}"/>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Approved Date From"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:datePicker name="approvedDateFrom" dateVal="${facilitySearch.approvedDateFrom}"></iais:datePicker>
+                                    </div >
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Approved Date To"/>
+                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <iais:datePicker name="approvedDateTo" dateVal="${facilitySearch.approvedDateTo}"></iais:datePicker>
+                                        <span id="error_approvedDateTo" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div >
+                                </iais:row>
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">
                                         Clear
@@ -68,9 +103,10 @@
                         <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
                         <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-gp">
-                            <table class="table application-group" style="border-collapse:collapse;">
+                            <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
+                                    <th scope="col" style="display: none"></th>
                                     <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                     <iais:sortableHeader needSort="false" field="Approval No" value="Approval No"/>
                                     <iais:sortableHeader needSort="false" field="Approval Type" value="Approval Type"/>
@@ -104,15 +140,19 @@
                                                 <td><iais:code code="${items.facName}"/></td>
                                                 <td><c:out value="${items.facAddress}"/></td>
                                                 <td><iais:code code="${items.facStatus}"/></td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
-                                                            <a href="/bsb-be/eservicecontinue/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">revoke</a>
-                                                        </c:when>
-                                                        <c:otherwise>
-
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                <td style="width: 13%">
+                                                    <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                        <option value="#" selected="selected">Select</option>
+                                                        <c:if test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
+                                                            <option value="/bsb-be/eservice/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&from=fac">Revoke</option>
+                                                        </c:if>
+                                                        <c:if test="${items.status eq 'APPRSTA001'}">
+                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitSuspension?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Suspend</option>
+                                                        </c:if>
+                                                        <c:if test="${items.status eq 'APPRSTA004'}">
+                                                            <option value="/bsb-be/eservicecontinue/INTRANET/DOSubmitReinstatement?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">Reinstate</option>
+                                                        </c:if>
+                                                    </select>
                                                 </td>
                                             </tr>
                                         </c:forEach>

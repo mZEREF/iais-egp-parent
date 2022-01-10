@@ -147,7 +147,7 @@
                             <textarea id="sourceFacilityContactPerson"
                                       style="width: 100%;margin-bottom: 15px;" rows="6"
                                       name="sourceFacilityContactPerson"
-                                      maxlength="300">${receiveNotification.sourceFacilityContactPerson}</textarea>
+                                      maxlength="250">${receiveNotification.sourceFacilityContactPerson}</textarea>
                             <span data-err-ind="sourceFacilityContactPerson" class="error-msg"></span>
                         </div>
                     </div>
@@ -184,11 +184,9 @@
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
                             <label for="flightNo">Flight No.</label>
-                            <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
                             <input type="text" name="flightNo" id="flightNo" maxlength="20" value="${receiveNotification.flightNo}">
-                            <span data-err-ind="flightNo" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -197,7 +195,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <iais:datePicker id="actualArrivalDate" name="actualArrivalDate" dateVal="${receiveNotification.actualArrivalDate}"></iais:datePicker>
+                            <input type="text" autocomplete="off" name="actualArrivalDate" id="actualArrivalDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${receiveNotification.actualArrivalDate}"/>
                             <span data-err-ind="actualArrivalDate" class="error-msg"></span>
                         </div>
                     </div>
@@ -214,15 +212,16 @@
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
                             <label for="remarks">Remarks</label>
-                            <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
                                       rows="6"
                                       name="remarks"
                                       maxlength="300">${receiveNotification.remarks}</textarea>
-                            <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
+                    </div>
+                    <div class = "form-group" id="others">
+                        <%@include file="../common/docOtherCondition.jsp" %>
                     </div>
                 </div>
             </div>

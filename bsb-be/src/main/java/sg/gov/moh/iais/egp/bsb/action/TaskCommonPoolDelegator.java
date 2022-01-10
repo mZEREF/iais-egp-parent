@@ -29,26 +29,16 @@ import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
 
 
 @Slf4j
 @Delegator("bsbTaskCommonPoolDelegator")
 public class TaskCommonPoolDelegator {
     private static final String MODULE_NAME = "BSB Task Pool";
-    private static final String KEY_ROLE_OPTIONS = "BsbRoleOptions";
-    private static final String KEY_CUR_ROLE = "bsbCurRole";
-    private static final String KEY_ROLE_ID = "commonRoleId";
-
-    private static final String KEY_TASK_LIST_SEARCH_DTO = "taskListSearchDto";
-    private static final String KEY_TASK_LIST_PAGE_INFO = "pageInfo";
-    private static final String KEY_TASK_LIST_DATA_LIST = "dataList";
-    private static final String KEY_PICK_UP_TASK = "pickTaskIds";
-    private static final String KEY_ASSIGN_RESULT = "assignResult";
-
-    private static final String KEY_ACTION_VALUE = "action_value";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final UserRoleService userRoleService;
     private final BsbTaskClient bsbTaskClient;

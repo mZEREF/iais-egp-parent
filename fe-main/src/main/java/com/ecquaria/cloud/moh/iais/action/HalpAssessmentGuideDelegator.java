@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -66,13 +68,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -2367,17 +2364,14 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private static String getPremisesHci(AppAlignLicQueryDto item){
-        String premisesHci = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        String additional = item.getPremisesType() + ApplicationConsts.DELIMITER + item.getHciName();
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
+            additional += ApplicationConsts.DELIMITER + item.getVehicleNo();
         }
-        return premisesHci;
+        return MiscUtil.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
+                item.getBuildingName(), item.getFloorNo(), item.getUnitNo(),
+                MiscUtil.transferEntityDtos(item.getPremisesOperationalUnitDtos(),
+                        AppPremisesOperationalUnitDto.class));
     }
 
     private static List<AppSvcRelatedInfoDto> sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
@@ -2402,14 +2396,13 @@ public class HalpAssessmentGuideDelegator {
             }
 
             if(!IaisCommonUtils.isEmpty(baseDtos)){
-                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                baseDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(baseDtos);
             }
             if(!IaisCommonUtils.isEmpty(specDtos)){
-                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                specDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(specDtos);
             }
-            appSvcRelatedInfoDtos = newAppSvcDto;
         }
         return newAppSvcDto;
     }
@@ -2568,7 +2561,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public static void setParamByField(SearchParam searchParam,String key,List<String> values){
-       if(IaisCommonUtils.isEmpty(values)){
+       if(IaisCommonUtils.isNotEmpty(values)){
            StringBuilder sb = new StringBuilder("(");
            for (int i = 0; i < values.size(); i++) {
                sb.append(":").append(key)
@@ -2581,6 +2574,26 @@ public class HalpAssessmentGuideDelegator {
        }else {
            searchParam.removeFilter(key);
        }
+    }
+
+    public static void setParamForDate(HttpServletRequest request,SearchParam searchParam,String key,String value){
+        try {
+            String dateString = ParamUtil.getDate(request, value);
+            Date lastDateStart = Formatter.parseDate(dateString);
+            if(lastDateStart!=null){
+                log.info(StringUtil.changeForLog("---------"+ lastDateStart));
+                dateString = Formatter.formatDateTime(lastDateStart,"yyyy-MM-dd HH:mm:ss");
+                log.info(StringUtil.changeForLog("----- dateString : " + dateString));
+                searchParam.addFilter(key,dateString,true);
+            }else {
+                searchParam.removeFilter(key);
+                searchParam.removeParam(key);
+            }
+        }catch (ParseException parseException){
+            log.error(parseException.getMessage(),parseException);
+            searchParam.removeFilter(key);
+            searchParam.removeParam(key);
+        }
     }
 
 }

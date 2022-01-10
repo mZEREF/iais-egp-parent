@@ -11,17 +11,11 @@
     <div id="cycleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
-                <p>
-                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
-                        <c:out value="${patientDto.name}"/>&nbsp
-                    </label>
-                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
-                        <c:out value="${patientDto.idNumber}"/>
-                        ${empty patientDto.idNumber ? "" : ")"}
-                    </label>
-                </p>
-                <hr/>
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
@@ -55,44 +49,35 @@
                     <iais:row>
                         <iais:field width="6" value="No. of Oocytes Thawed" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedOocytesNum" name="thawedOocytesNum"
-                                   value="${thawingStageDto.thawedOocytesNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="error_thawedOocytesNum" name="iaisErrorMsg" class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedOocytesNum" id="thawedOocytesNum"
+                                        value="${thawingStageDto.thawedOocytesNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Oocytes Survived after Thawing (Mature)" mandatory="true"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedOocytesSurvivedMatureNum"
-                                   name="thawedOocytesSurvivedMatureNum"
-                                   value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="error_thawedOocytesSurvivedMatureNum" name="iaisErrorMsg"
-                                  class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedMatureNum"
+                                        id="thawedOocytesSurvivedMatureNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Oocytes Survived after Thawing (Immature)" mandatory="true"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedOocytesSurvivedImmatureNum"
-                                   name="thawedOocytesSurvivedImmatureNum"
-                                   value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="error_thawedOocytesSurvivedImmatureNum" name="iaisErrorMsg"
-                                  class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedImmatureNum"
+                                        id="thawedOocytesSurvivedImmatureNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Oocytes Survived after Thawing (Others)" mandatory="true"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedOocytesSurvivedOtherNum" name="thawedOocytesSurvivedOtherNum"
-                                   value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="thawedOocytesSurvivedOtherNum" name="iaisErrorMsg" class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedOtherNum"
+                                        id="thawedOocytesSurvivedOtherNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -100,20 +85,17 @@
                     <iais:row>
                         <iais:field width="6" value="No. of Embryos Thawed" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedEmbryosNum" name="thawedEmbryosNum"
-                                   value="${thawingStageDto.thawedEmbryosNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="error_thawedEmbryosNum" name="iaisErrorMsg" class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedEmbryosNum" id="thawedEmbryosNum"
+                                        value="${thawingStageDto.thawedEmbryosNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Embryos Survived after Thawing" mandatory="true"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" id="thawedEmbryosSurvivedNum" name="thawedEmbryosSurvivedNum"
-                                   value="${thawingStageDto.thawedEmbryosSurvivedNum}"
-                                   oninput="if(value.length>2)value=value.slice(0,2)">
-                            <span id="error_thawedEmbryosSurvivedNum" name="iaisErrorMsg" class="error-msg"></span>
+                            <iais:input maxLength="2" type="text" name="thawedEmbryosSurvivedNum"
+                                        id="thawedEmbryosSurvivedNum"
+                                        value="${thawingStageDto.thawedEmbryosSurvivedNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>

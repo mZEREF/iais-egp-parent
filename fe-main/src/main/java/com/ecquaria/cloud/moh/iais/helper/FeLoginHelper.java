@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.security.AuthenticationConfig;
@@ -71,11 +72,10 @@ public final class FeLoginHelper {
         String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
         String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
         String designationOther = ParamUtil.getString(request, UserConstants.DESIGNATION_OTHER);
-        String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
+        String idNo = StringUtil.isEmpty(userSession.getIdentityNo()) ? ParamUtil.getString(request, UserConstants.ID_NUMBER) : userSession.getIdentityNo();
         String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
         String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
         String email = ParamUtil.getString(request, UserConstants.EMAIL);
-
         userSession.setDisplayName(name);
         userSession.setDesignation(designation);
         userSession.setDesignationOther(designationOther);

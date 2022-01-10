@@ -1236,4 +1236,30 @@
       <rtexprvalue>false</rtexprvalue>
     </attribute>
   </tag>
+  <tag>
+    <description>Select Option Text Show</description>
+    <name>optionText</name>
+    <tag-class>com.ecquaria.cloud.moh.iais.tags.SelectOptionTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>selectionOptions</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 </taglib>

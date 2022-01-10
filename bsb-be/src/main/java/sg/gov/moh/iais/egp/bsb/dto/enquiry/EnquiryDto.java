@@ -102,7 +102,8 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
     private Date approvedDateTo;
 
     private String action;
-
+    private List<String> facilityClassifications;
+    private String facilityAddress;
 
     public void clearAllFields() {
         id = "";
@@ -142,6 +143,8 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
         afcStatus = "";
         teamMemberName = "";
         teamMemberID = "";
+        facilityClassifications = null;
+        facilityAddress = "";
     }
     private boolean checkSubDtToAfterFrom(Date applicationSubmissionDateTo) {
         if (applicationSubmissionDateTo == null || applicationSubmissionDateFrom == null){

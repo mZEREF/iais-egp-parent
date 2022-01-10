@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -34,7 +36,7 @@
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:field value="UEN" width="12" required="true"/>
                                     <iais:value width="12">
-                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" />
+                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" maxlength="20" onblur="checkUen(this.value)" />
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
@@ -59,22 +61,20 @@
                         <iais:row>
                             <iais:field value="Name" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
-                                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+                                <iais:input type="text" name="name" maxLength="66" value="${inter_user_attr.displayName}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Salutation" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:select cssClass="Salutation" name="salutation" id="salutation" value="${inter_user_attr.salutation}"
+                                <iais:select cssClass="Salutation" name="salutation" value="${inter_user_attr.salutation}"
                                              codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
-                                <span class="error-msg" name="errorMsg" id="error_salutation"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="solo">
                             <iais:field value="ID Type" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
+                                <iais:select name="idType"  value="${inter_user_attr.idType}"
                                              codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
                                 <span class="error-msg" name="errorMsg" id="error_idType"></span>
                             </iais:value>
@@ -99,8 +99,7 @@
                         <iais:row>
                             <iais:field value="Mobile No" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}" />
-                                <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
+                                <iais:input type="text" name="mobileNo"  maxLength="8" value="${inter_user_attr.mobileNo}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -119,12 +118,14 @@
                         </iais:row>
                         <iais:row  style="margin-bottom:0px">
                             <iais:field value="Is Administrator" id="userRole" width="12"/>
+                            <c:choose>
+                            <c:when test="${!('Edit' eq feusertitle && empty inter_user_attr.uenNo)}">
                             <div class="col-md-3" style="padding-left: 0px;">
-                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="${RoleConsts.USER_ROLE_ORG_ADMIN}" name="role" <c:if test="${inter_user_attr.userRole== RoleConsts.USER_ROLE_ORG_ADMIN}">checked</c:if>></div>
                                 <label class="col-md-2 control-label" >Yes</label>
                             </div>
                             <div class="col-md-3" style="padding-left: 0px;">
-                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!= RoleConsts.USER_ROLE_ORG_ADMIN}">checked</c:if>></div>
                                 <label class="col-md-2 control-label" >No</label>
                             </div>
                             <br>
@@ -132,6 +133,37 @@
                             <div class="col-md-3" style="padding-left: 0px;">
                                 <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
                             </div>
+                            </c:when>
+                                <c:otherwise>
+                                    <iais:value width="12">
+                                        <p>No</p>
+                                        <input type="hidden" value="user" name="role" id="role" oninput="doChangeUserRole()" readonly>
+                                    </iais:value>
+                                </c:otherwise>
+                            </c:choose>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Roles" width="5" required="true" id="assignRoleTitle" />
+                            <c:forEach var="role" items="${SESSION_NAME_ROLES}" >
+                                <c:set var="value" value="${role.value}"/>
+                                <c:set var="roles" value="${inter_user_attr.roles}"/>
+                                <div class="form-check col-xs-7  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="roles"
+                                           value="${value}"
+                                           id="role${value}"
+                                           <c:if test="${StringUtil.stringContain(roles,value)}">checked</c:if>
+                                           aria-invalid="false" >
+                                    <label class="form-check-label"
+                                           for="role${value}"><span
+                                            class="check-square"></span>
+                                        <c:out value="${role.text}"/></label>
+                                </div>
+                            </c:forEach>
+                            <iais:value width="4" cssClass="col-md-4"/>
+                            <iais:value width="3" cssClass="col-md-3">
+                                <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:value>
                         </iais:row>
                         <p></p>
                         <iais:row>
@@ -166,7 +198,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        <c:if test="${'Create' != feusertitle && empty inter_user_attr.uenNo}">
+        <c:if test="${'Create' != feusertitle && inter_user_attr.solo}">
         disableContent('.solo');
         </c:if>
     });
@@ -180,6 +212,55 @@
         $("#action").val("back");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
+    }
+
+    function checkUen(value){
+        if(value == null || value == '' || value.length < 5){
+            clearCheckBoxArea();
+        }else {
+            showWaiting();
+            var data = {"uenNo":value};
+            $.post(
+                "${pageContext.request.contextPath}/checkUenAndRoleData",
+                data,
+                function (data) {
+                    $('.oneClearRoleCheckbox').remove();
+                    clearCheckBoxArea();
+                    var s = '';
+                  for(let i =0 ; i< data.length; i++){
+                    s += '<div class="form-check col-xs-7 ';
+                    if(data[i].value =='ORG_USER'){
+                        s+= ' oneClearRoleCheckbox" >'
+                    }else {
+                        s+= ' clearRoleCheckbox" > ';
+                    }
+                    s+= '<input class="form-check-input" type="checkbox" name="roles" value="';
+                    s+= data[i].value;
+                    s+= '" id="role';
+                    s+= data[i].value;
+                    s+= '"';
+                    s+= 'aria-invalid="false" >';
+                    s+= '   <label class="form-check-label"'
+                    s+= '  for="role';
+                    s+=data[i].value;
+                    s+='">';
+                    s+= ' <span class="check-square"></span>';
+                    s+= data[i].text;
+                    s+='</label>';
+                  }
+                    $('#assignRoleTitle').after(s);
+                   dismissWaiting();
+                }
+            )
+        }
+    }
+
+    function clearCheckBoxArea(){
+        $('.clearRoleCheckbox').remove();
+    }
+
+    function doChangeUserRole(){
+       $('#role').val('user');
     }
 
 </script>
