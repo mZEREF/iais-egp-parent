@@ -212,25 +212,53 @@
                                                         <c:out value="${transaction.cycle}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeFrozenOocytes}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFrozenOocytes }">-</c:when>
+                                                            <c:when test="${transaction.changeFrozenOocytes == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFrozenOocytes}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeThawedOocytes}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeThawedOocytes }">-</c:when>
+                                                            <c:when test="${transaction.changeThawedOocytes == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeThawedOocytes}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeFreshOocytes}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFreshOocytes }">-</c:when>
+                                                            <c:when test="${transaction.changeFreshOocytes == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFreshOocytes}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeFrozenEmbryos}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFrozenEmbryos }">-</c:when>
+                                                            <c:when test="${transaction.changeFrozenEmbryos == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFrozenEmbryos}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeThawedEmbryos}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeThawedEmbryos }">-</c:when>
+                                                            <c:when test="${transaction.changeThawedEmbryos == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeThawedEmbryos}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeFreshEmbryos}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFreshEmbryos }">-</c:when>
+                                                            <c:when test="${transaction.changeFreshEmbryos == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFreshEmbryos}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <c:out value="${transaction.changeFrozenSperms}"/>
+                                                        <c:choose>
+                                                            <c:when test="${empty transaction.changeFrozenSperms }">-</c:when>
+                                                            <c:when test="${transaction.changeFrozenSperms == 0}">-</c:when>
+                                                            <c:otherwise><c:out value="${transaction.changeFrozenSperms}"/></c:otherwise>
+                                                        </c:choose>
                                                     </td>
 
                                                 </tr>
