@@ -117,12 +117,12 @@ public class ArWithdrawalDelegator {
         for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
-            try {
-                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-            }
+        }
+        addWithdrawnDtoList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(addWithdrawnDtoList);
+        try {
+            arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(addWithdrawnDtoList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
 
 
@@ -149,6 +149,7 @@ public class ArWithdrawalDelegator {
     }
 
     public void printStep(BaseProcessClass bpc)  {
-
+        String remarks=ParamUtil.getString(bpc.request, "withdrawnRemarks");
+        ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
     }
 }
