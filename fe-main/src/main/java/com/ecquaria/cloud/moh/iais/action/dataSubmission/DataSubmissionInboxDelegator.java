@@ -331,12 +331,20 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	setShowPopMsg(request,actionValue);
 		  }else {
 	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
 				ParamUtil.setRequestAttr(request,"deleteDraftOk",AppConsts.YES);
 			}
 		  }
 	 }
+
+	 private void setShowPopMsg(HttpServletRequest request,String actionValue){
+        if(WITHDRAW.equalsIgnoreCase(actionValue) || AMENDED.equalsIgnoreCase(actionValue)){
+			ParamUtil.setSessionAttr(request,"showPopFailMsg","DS_ERR022");
+		}
+	 }
+
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
 		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
@@ -407,7 +415,7 @@ public class DataSubmissionInboxDelegator {
 		}
 	}
 
-	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
+	private boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
 		if(StringUtil.isEmpty(submissionNo) || submissionNo.length() <10 ){
 			return false;
 		}
@@ -418,13 +426,14 @@ public class DataSubmissionInboxDelegator {
 			return true;
 		}
 	}
-	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
+	private boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
 			return checkDataPassBySubmissionNo(submissionNo, actionValue);
 		}else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			//check x times
 			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
-			return true;
+			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
+			return maxTimes >= maxCountFromDb;
 		}
 		return true;
 	}

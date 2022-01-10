@@ -150,4 +150,7 @@ public interface LicenceInboxClient {
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
                                                                                                  @PathVariable("originLicenceId") String originLicenceId);
 
+    @GetMapping(value = "/data-submission/data-submission-rfc-withdrawn-count-cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getRfcCountByCycleId(@RequestParam("cycleId") String cycleId);
+
 }

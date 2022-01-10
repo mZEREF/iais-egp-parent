@@ -337,4 +337,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Integer> getRfcCountByCycleId(String cycleId) {
+        return getEntity();
+    }
 }

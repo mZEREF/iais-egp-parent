@@ -129,7 +129,7 @@ public class PatientUploadDelegate {
 
     private void preapreDate(String pageStage, HttpServletRequest request) {
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"));
+        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"));
         ParamUtil.setRequestAttr(request, "maxCountMap", maxCountMap);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
@@ -169,9 +169,9 @@ public class PatientUploadDelegate {
                 fileItemSize = patientInfoExcelDtoList.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumbe()) {
+                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"), "maxCount"));
+                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);

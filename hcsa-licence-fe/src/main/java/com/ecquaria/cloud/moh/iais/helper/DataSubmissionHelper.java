@@ -562,7 +562,7 @@ public final class DataSubmissionHelper {
         return genOptions(map);
     }
 
-    public static int getFileRecordMaxNumbe() {
+    public static int getFileRecordMaxNumber() {
         return SystemParamUtil.getSystemParamConfig().getArFileRecordMaxNumber();
     }
 

@@ -165,7 +165,7 @@
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
-        <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
+        <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
 </form>
