@@ -56,11 +56,3 @@
         </iais:value>
     </iais:row>
 </div>
-<script>
-function clearPrevious() {
-    clearErrorMsg();
-    $('#preName').find('p').text('');
-    $('#preBirthDate').find('p').text('');
-    $('[name="retrievePrevious"]').val('0');
-}
-</script>
