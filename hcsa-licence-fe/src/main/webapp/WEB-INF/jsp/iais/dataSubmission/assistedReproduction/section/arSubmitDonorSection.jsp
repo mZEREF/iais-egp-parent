@@ -64,7 +64,7 @@
                                 <iais:input maxLength="66" type="text" name="donorName" value="${donorSampleDto.donorName}" />
                             </iais:value>
                         </iais:row>
-                        <iais:row>
+                       <%-- <iais:row>
                             <iais:field width="5" value="Donor relation to patient" mandatory="true"/>
                             <iais:value width="3" cssClass="col-md-3">
                                 <div class="form-check" >
@@ -94,7 +94,7 @@
                                             class="check-circle"></span>Relative</label>
                                 </div>
                             </iais:value>
-                        </iais:row>
+                        </iais:row>--%>
                     </div>
                     <div id="directedDonationNo" style="${donorSampleDto.directedDonation ? 'display: none;' : ''}">
                         <iais:row id="sampleType" >
