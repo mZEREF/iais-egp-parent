@@ -9,12 +9,11 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -51,12 +50,19 @@
                         <iais:row>
                             <iais:field value="Cancellation Reasons" width="15" required="true"/>
                             <iais:value width="10">
-                                <p><c:out value="${cancelReason}"/></p>
+                                <textarea id="cancelReason"
+                                          name="cancelReason"
+                                          cols="70"
+                                          rows="4"
+                                          maxlength="300">${cancelReason}</textarea>
+                                <span data-err-ind="cancelReason" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6"><a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a></div>
-                            <div align="right"><button id="submitCancelAudit" type="button" class="btn btn-primary">Submit</button></div>
+                            <div class="col-xs-12 col-sm-6"><a class="back" href="/bsb-be/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a></div>
+                            <div style="text-align: right">
+                                <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                            </div>
                         </div>
                     </div>
                 </div>

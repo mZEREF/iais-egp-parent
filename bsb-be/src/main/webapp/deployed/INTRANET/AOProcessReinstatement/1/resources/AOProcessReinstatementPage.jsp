@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/suspension/reinstatement/AOProcessReinstatement.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/suspension/reinstatement/aoProcessReinstatement.jsp"%>

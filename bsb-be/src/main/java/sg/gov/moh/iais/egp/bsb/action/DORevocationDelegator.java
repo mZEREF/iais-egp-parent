@@ -21,8 +21,10 @@ import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
@@ -30,6 +32,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
@@ -37,6 +40,7 @@ import static sg.gov.moh.iais.egp.bsb.action.AORevocationDelegator.setRevocation
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
  * @author Zhu Tangtang
@@ -44,16 +48,22 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 @Delegator(value = "DORevocationDelegator")
 @Slf4j
 public class DORevocationDelegator {
+    private static final String ACTION_TYPE_SUBMIT = "doSubmit";
+    private static final String ACTION_TYPE_PREPARE = "prepare";
+    private static final String ACTION_TYPE = "action_type";
+
     private final RevocationClient revocationClient;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
+    private final RoutingHistoryClient routingHistoryClient;
 
-    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient,FileRepoClient fileRepoClient,BsbFileClient bsbFileClient) {
+    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, RoutingHistoryClient routingHistoryClient) {
         this.revocationClient = revocationClient;
         this.biosafetyEnquiryClient = biosafetyEnquiryClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.routingHistoryClient = routingHistoryClient;
     }
 
     /**
@@ -202,10 +212,6 @@ public class DORevocationDelegator {
         String from = ParamUtil.getRequestString(request, FROM);
         ParamUtil.setSessionAttr(request, FROM, null);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
-        if (Boolean.TRUE.equals(needShowError)) {
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, revokeDto.retrieveValidationResult());
-        }
         if (!StringUtils.hasLength(revokeDto.getModule())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
@@ -226,19 +232,21 @@ public class DORevocationDelegator {
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
                 setRevocationDoc(request, revokeDto);
+                //show routingHistory list
+                List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
+                ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
             }
         }
         ParamUtil.setSessionAttr(request,BACK,from);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
-    public void preConfirm(BaseProcessClass bpc) {
+    public void doValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String reason = ParamUtil.getString(request, PARAM_REASON);
         String remarks = ParamUtil.getString(request, PARAM_DO_REMARKS);
-        String from = (String) ParamUtil.getSessionAttr(request, FROM);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         //get user name
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -248,14 +256,9 @@ public class DORevocationDelegator {
         revokeDto.setReasonContent(reason);
         revokeDto.setRemarks(remarks);
         revokeDto.setModule("doRevoke");
-        if (from.equals(FAC)) {
-            revokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
-            revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
-        }
-        if (from.equals(APP)) {
-            revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
-            setRevocationDoc(request,revokeDto);
-        }
+        revokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
+        revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
+        setRevocationDoc(request,revokeDto);
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
         primaryDocDto.reqObjMapping(mulReq,request,"Revocation");
         revokeDto.setPrimaryDocDto(primaryDocDto);
@@ -268,7 +271,7 @@ public class DORevocationDelegator {
         revokeDto.setNewDocInfos(primaryDocDto.getNewDocTypeList());
         //set need Validation value
         revokeDto.setDocMetas(primaryDocDto.doValidation());
-        doValidation(revokeDto, request);
+        validateData(revokeDto, request);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
@@ -326,24 +329,24 @@ public class DORevocationDelegator {
         return new SubmitRevokeDto();
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     */
-    private void doValidation(SubmitRevokeDto dto, HttpServletRequest request) {
-        if (dto.doValidation()) {
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.YES);
-        } else {
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-        }
-    }
-
     public void selectOption(HttpServletRequest request, String name, List<String> strings) {
         List<SelectOption> selectModel = new ArrayList<>(strings.size());
         for (String string : strings) {
             selectModel.add(new SelectOption(string, string));
         }
         ParamUtil.setRequestAttr(request, name, selectModel);
+    }
+
+    private void validateData(SubmitRevokeDto dto, HttpServletRequest request){
+        //validation
+        String actionType;
+        ValidationResultDto validationResultDto = revocationClient.validateRevoke(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            actionType = ACTION_TYPE_SUBMIT;
+        }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
 }

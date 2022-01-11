@@ -3,9 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.withdrawn;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +36,6 @@ public class AppSubmitWithdrawnDto implements Serializable {
     private String module;
     //
     private Collection<DocRecordInfo> docRecordInfos;
-
-    @JsonIgnore
-    private ValidationResultDto validationResultDto;
 
     private static final String KEY_DO_REMARKS = "doRemarks";
     private static final String KEY_DO_DECISION = "doDecision";

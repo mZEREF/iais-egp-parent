@@ -32,7 +32,7 @@ public class INTRANET___MohAOCheckAuditDt___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "aoApprovalAuditDate", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "aoValidate", this);
 	}
 }

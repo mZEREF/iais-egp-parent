@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
@@ -35,6 +36,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 @Slf4j
 @Delegator(value = "selfAuditDelegator")
 public class SelfAuditDelegator {
+    private static final String ACTION_TYPE_VERIFIED = "doVerified";
+    private static final String ACTION_TYPE_PREPARE = "prepare";
+    private static final String ACTION_TYPE_APPROVE = "doApprove";
+    private static final String ACTION_TYPE_REJECT = "doReject";
+    private static final String ACTION_TYPE_INTERNAL = "doRouteBack";
+    private static final String ACTION_TYPE_RFI = "doRequestInfo";
+    private static final String ACTION_TYPE = "action_type";
 
     private final AuditClientBE auditClientBE;
 
@@ -88,31 +96,49 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
-    public void preConfirm(BaseProcessClass bpc) {
+    public void doValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         OfficerProcessAuditDto dto = getProcessDto(request);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
         String doRemark = ParamUtil.getRequestString(request,PARAM_DO_REMARKS);
-        String aoRemark = ParamUtil.getRequestString(request,AO_REMARKS);
         String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
-        String moduleType = ParamUtil.getRequestString(request,PARAM_MODULE_TYPE);
         String doDecision = ParamUtil.getRequestString(request,PARAM_DO_DECISION);
-        String aoDecision = ParamUtil.getRequestString(request,PARAM_AO_DECISION);
         //
         dto.setAuditOutCome(auditOutCome);
         dto.setDoRemarks(doRemark);
-        dto.setAoRemarks(aoRemark);
         dto.setDoDecision(doDecision);
-        dto.setAoDecision(aoDecision);
         dto.setActionBy(loginContext.getUserName());
-        dto.setModule(moduleType);
+        dto.setModule("doProcessSelfAudit");
         if (finalRemark==null) {
             dto.setFinalRemarks("No");
         }else {
             dto.setFinalRemarks("Yes");
         }
-        doValidation(dto,request);
+        doValidateData(dto,request);
+        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
+    }
+
+    public void aoValidate(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        OfficerProcessAuditDto dto = getProcessDto(request);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
+        String aoRemark = ParamUtil.getRequestString(request,AO_REMARKS);
+        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
+        String aoDecision = ParamUtil.getRequestString(request,PARAM_AO_DECISION);
+        //
+        dto.setAuditOutCome(auditOutCome);
+        dto.setAoRemarks(aoRemark);
+        dto.setAoDecision(aoDecision);
+        dto.setActionBy(loginContext.getUserName());
+        dto.setModule("aoProcessSelfAudit");
+        if (finalRemark==null) {
+            dto.setFinalRemarks("No");
+        }else {
+            dto.setFinalRemarks("Yes");
+        }
+        aoValidateData(dto,request);
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
@@ -173,19 +199,6 @@ public class SelfAuditDelegator {
         return new OfficerProcessAuditDto();
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     * */
-    private void doValidation(OfficerProcessAuditDto dto, HttpServletRequest request){
-        if(dto.doValidation()){
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
-        }else{
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
-        }
-    }
-
     public static void setSelfAuditDoc(HttpServletRequest request, OfficerProcessAuditDto auditDto) {
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
         primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(auditDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
@@ -194,5 +207,41 @@ public class SelfAuditDelegator {
         ParamUtil.setRequestAttr(request, "docTypes", docTypes);
         ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
         ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
+    }
+
+    private void doValidateData(OfficerProcessAuditDto dto, HttpServletRequest request){
+        //validation
+        String actionType = null;
+        ValidationResultDto validationResultDto = auditClientBE.validateOfficerAuditDt(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            if (dto.getAoDecision().equals("MOHPRO003")){
+                actionType = ACTION_TYPE_REJECT;
+            } else if (dto.getAoDecision().equals("MOHPRO002")){
+                actionType = ACTION_TYPE_RFI;
+            } else if (dto.getAoDecision().equals("MOHPRO010")){
+                actionType = ACTION_TYPE_VERIFIED;
+            }
+        }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
+    }
+
+    private void aoValidateData(OfficerProcessAuditDto dto, HttpServletRequest request){
+        //validation
+        String actionType = null;
+        ValidationResultDto validationResultDto = auditClientBE.validateOfficerAuditDt(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            if (dto.getAoDecision().equals("MOHPRO011")){
+                actionType = ACTION_TYPE_INTERNAL;
+            } else if (dto.getAoDecision().equals("MOHPRO007")){
+                actionType = ACTION_TYPE_APPROVE;
+            }
+        }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
 }

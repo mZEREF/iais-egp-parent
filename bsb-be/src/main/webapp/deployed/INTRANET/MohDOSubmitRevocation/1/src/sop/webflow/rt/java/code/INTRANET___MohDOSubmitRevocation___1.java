@@ -29,13 +29,6 @@ public class INTRANET___MohDOSubmitRevocation___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
-	}
-
-	public void preSwitch_OnStepProcess_0() throws Exception {
-	}
-
 	public void preInventory_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preInventory", this);
 	}
@@ -44,4 +37,7 @@ public class INTRANET___MohDOSubmitRevocation___1 extends BaseProcessClass {
 		// 		saveDraftInventoryData->OnStepProcess
 	}
 
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
+	}
 }

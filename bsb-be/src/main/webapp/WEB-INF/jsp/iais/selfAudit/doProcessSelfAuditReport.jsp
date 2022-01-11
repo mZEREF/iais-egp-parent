@@ -14,10 +14,6 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="aoProcessSelfAudit">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -90,36 +86,23 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="DO remarks" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p><c:out value="${processData.doRemarks}"/></p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Audit Outcome" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="auditOutcome"
-                                                                                          name="auditOutcome"
-                                                                                          cols="70"
-                                                                                          rows="5"
-                                                                                          maxlength="300">${processData.auditOutCome}</textarea>
+                                                                                <textarea id="auditOutcome" name="auditOutcome" cols="70" rows="5" maxlength="300">${processData.auditOutCome}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="AO Remarks" width="15" required="false"/>
+                                                                            <iais:field value="Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="aoRemarks"
-                                                                                          name="aoRemarks"
+                                                                                <textarea id="doRemarks"
+                                                                                          name="doRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300">${processData.aoRemarks}</textarea>
+                                                                                          maxlength="300">${processData.doRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -131,17 +114,17 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
                                                                     <div id="processingDecision">
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="aoDecision" id="aoDecision">
+                                                                                <select name="doDecision" id="doDecision">
                                                                                     <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${processData.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
-                                                                                    <option value="MOHPRO011" <c:if test="${processData.aoDecision eq 'MOHPRO011'}">selected = 'selected'</c:if>>Internal Clarifications</option>
+                                                                                    <option value="MOHPRO010" <c:if test="${processData.doDecision eq 'MOHPRO010'}">selected = 'selected'</c:if>>Verified</option>
+                                                                                    <option value="MOHPRO002" <c:if test="${processData.doDecision eq 'MOHPRO002'}">selected = 'selected'</c:if>>Request for Information</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${processData.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
                                                                                 </select>
-                                                                                <span data-err-ind="aoDecision" class="error-msg"></span>
+                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

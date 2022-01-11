@@ -14,10 +14,6 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="aoProcessAuditDt">
         <div class="main-content">
             <div class="container">
                 <div class="row">
@@ -33,10 +29,10 @@
                                                        id="infoa"
                                                        aria-controls="tabInfo"
                                                        role="tab"
-                                                       data-toggle="tab">Info</a></li>
+                                                       data-toggle="tab">Info</a>
+                                                </li>
                                                 <li class="incomplete" id="process" role="presentation">
-                                                    <a href="#tabProcessing"
-                                                       id="processa"
+                                                    <a href="#tabProcessing" id="processa"
                                                        aria-controls="tabProcessing" role="tab"
                                                        data-toggle="tab">Processing</a></li>
                                             </ul>
@@ -64,7 +60,8 @@
                                                         <strong><h4>Processing Audit Date</h4></strong>
                                                     </div>
                                                     <form method="post" action=<%=process.runtime.continueURL()%>>
-                                                        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+                                                        <input type="hidden" name="sopEngineTabRef"
+                                                               value="<%=process.rtStatus.getTabRef()%>">
                                                         <div class="row">
                                                             <div class="col-xs-12">
                                                                 <div class="table-gp">
@@ -98,48 +95,19 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
-                                                                        <c:if test="${(processData.doReason!=null && processData.doReason!='')}">
-                                                                            <div>
-                                                                                <iais:row>
-                                                                                    <iais:field value="DO Reason for rejection" required="false" width="12"/>
-                                                                                    <iais:value width="10">
-                                                                                        <p><c:out value="${processData.doReason}"/></p>
-                                                                                    </iais:value>
-                                                                                </iais:row>
-                                                                            </div>
-                                                                        </c:if>
-                                                                        <c:if test="${(processData.doRemarks!=null && processData.doRemarks!='')}">
-                                                                            <div>
-                                                                                <iais:row>
-                                                                                    <iais:field value="DO Remarks" required="false" width="12"/>
-                                                                                    <iais:value width="10">
-                                                                                        <p><c:out value="${processData.doRemarks}"/></p>
-                                                                                    </iais:value>
-                                                                                </iais:row>
-                                                                            </div>
-                                                                        </c:if>
-                                                                        <div>
-                                                                            <iais:row>
-                                                                                <iais:field value="DO Decision" required="false" width="12"/>
-                                                                                <iais:value width="10">
-                                                                                    <p><iais:code code="${processData.doDecision}"/></p>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
-
                                                                         <div id="rejectReason">
                                                                             <iais:row>
                                                                                 <%--Required if decision is reject--%>
-                                                                                <iais:field value="AO Reason for rejection" required="true" width="12"/>
+                                                                                <iais:field value="Reason for rejection" required="true" width="12"/>
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                        <textarea id="aoReason"
-                                                                                                  name="aoReason"
+                                                                                        <textarea id="doReason"
+                                                                                                  name="doReason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="300">${processData.aoReason}</textarea>
-                                                                                            <span data-err-ind="aoReason" class="error-msg"></span>
+                                                                                                  maxlength="300">${processData.doReason}</textarea>
+                                                                                            <span data-err-ind="doReason" class="error-msg"></span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </iais:value>
@@ -147,15 +115,15 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="AO Remarks" required="false" width="12"/>
+                                                                                <div><iais:field value="Remarks" required="false" width="12"/></div>
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                        <textarea id="aoRemarks"
-                                                                                                  name="aoRemarks"
+                                                                                        <textarea id="doRemarks"
+                                                                                                  name="doRemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="300">${processData.aoRemarks}</textarea>
+                                                                                                  maxlength="300">${processData.doRemarks}</textarea>
                                                                                         </div>
                                                                                     </div>
                                                                                 </iais:value>
@@ -165,12 +133,12 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <iais:value width="10">
-                                                                                    <select name="aoDecision" id="aoDecision">
+                                                                                    <select name="doDecision" id="doDecision">
                                                                                         <option value="">Please Select</option>
-                                                                                        <option value="MOHPRO007" <c:if test="${processData.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
-                                                                                        <option value="MOHPRO003" <c:if test="${processData.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
+                                                                                        <option value="MOHPRO010" <c:if test="${processData.doDecision eq 'MOHPRO010'}">selected = 'selected'</c:if>>Verified</option>
+                                                                                        <option value="MOHPRO003" <c:if test="${processData.doDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>
                                                                                     </select>
-                                                                                    <span data-err-ind="aoDecision" class="error-msg"></span>
+                                                                                    <span data-err-ind="doDecision" class="error-msg"></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>

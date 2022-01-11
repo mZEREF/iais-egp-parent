@@ -100,19 +100,6 @@ $(function () {
     //AO process revocation application
     $("#submitButton").click(function () {
         showWaiting();
-        var optionValue = $("#aoDecision").val();
-        if (optionValue == "BSBAOPD001") {
-            $("[name='action_type']").val("approve");
-        }
-        if (optionValue == "BSBAOPD002") {
-            $("[name='action_type']").val("reject");
-        }
-        if (optionValue == "BSBAOPD003") {
-            $("[name='action_type']").val("routeBack");
-        }
-        if (optionValue == "BSBAOPD004") {
-            $("[name='action_type']").val("submit");
-        }
         $("#mainForm").submit();
     });
 

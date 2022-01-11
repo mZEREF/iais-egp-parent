@@ -28,8 +28,8 @@ public class INTRANET___CreateAuditList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
 	}
 
 }

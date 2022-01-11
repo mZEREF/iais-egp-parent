@@ -24,14 +24,11 @@ public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareDOCancelAuditData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	}
-
 	public void doSubmit_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doSubmitCancelAudit", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preDOConfirm", this);
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
 	}
 }

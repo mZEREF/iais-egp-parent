@@ -7,19 +7,25 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.client.SuspensionClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.Serializable;
+import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APPROVAL_STATUS_SUSPENDED;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
  * @author : tangtang
@@ -39,9 +45,11 @@ public class BsbSuspensionDelegator {
     private static final String AO_HM_SUSPEND_ACK_MSG = "You have successfully approved the application.";
 
     private final SuspensionClient suspensionClient;
+    private final RoutingHistoryClient routingHistoryClient;
 
-    public BsbSuspensionDelegator(SuspensionClient suspensionClient) {
+    public BsbSuspensionDelegator(SuspensionClient suspensionClient, RoutingHistoryClient routingHistoryClient) {
         this.suspensionClient = suspensionClient;
+        this.routingHistoryClient = routingHistoryClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -50,6 +58,7 @@ public class BsbSuspensionDelegator {
         AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, null);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, null);
         ParamUtil.setSessionAttr(request,BACK,null);
+        request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
     }
 
     /**
@@ -79,6 +88,9 @@ public class BsbSuspensionDelegator {
                 }
                 dto = suspensionClient.getSuspensionDataByApplicationId(appId).getEntity();
                 dto.setTaskId(taskId);
+                //show routingHistory list
+                List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(dto.getApplicationNo()).getEntity();
+                ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
             }
         }
         setModuleType(dto);

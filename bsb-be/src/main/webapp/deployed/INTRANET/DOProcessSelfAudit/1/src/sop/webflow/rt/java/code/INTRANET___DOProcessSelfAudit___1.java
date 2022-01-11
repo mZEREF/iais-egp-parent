@@ -24,9 +24,6 @@ public class INTRANET___DOProcessSelfAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareProcessSelfAuditData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	}
-
 	public void verified_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doVerified", this);
 	}
@@ -39,8 +36,8 @@ public class INTRANET___DOProcessSelfAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doRequestForInformation", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
 	}
 
 }

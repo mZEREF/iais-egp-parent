@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
@@ -31,6 +32,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
 @Slf4j
 @Delegator(value = "auditCreationDelegator")
 public class AuditCreationDelegator {
+    private static final String ACTION_TYPE_SUBMIT = "doSubmit";
+    private static final String ACTION_TYPE_PREPARE = "prepare";
+    private static final String ACTION_TYPE = "action_type";
 
     private final AuditClientBE auditClientBE;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
@@ -139,7 +143,7 @@ public class AuditCreationDelegator {
         ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto);
     }
 
-    public void preConfirm(BaseProcessClass bpc){
+    public void doValidate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SaveAuditDto dto = getSaveAuditDto(request);
         List<SaveAuditDto.SaveAudit> saveAudits = dto.getSaveAudits();
@@ -151,7 +155,7 @@ public class AuditCreationDelegator {
                 saveAudit.setStatus(PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT);
             }
         }
-        doValidation(dto,request);
+        validateData(dto,request);
         ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto);
     }
 
@@ -221,17 +225,17 @@ public class AuditCreationDelegator {
         ParamUtil.setRequestAttr(request, PARAM_FACILITY_NAME, selectModel);
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     * */
-    private void doValidation(SaveAuditDto dto,HttpServletRequest request){
-        if(dto.doValidation()){
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
-        }else{
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+    private void validateData(SaveAuditDto dto, HttpServletRequest request){
+        //validation
+        String actionType;
+        ValidationResultDto validationResultDto = auditClientBE.validateManualAudit(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            actionType = ACTION_TYPE_SUBMIT;
         }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
 
 }

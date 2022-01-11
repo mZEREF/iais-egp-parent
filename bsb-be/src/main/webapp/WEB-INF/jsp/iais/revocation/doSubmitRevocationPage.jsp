@@ -15,9 +15,6 @@
 <div class="dashboard">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
 
         <div class="main-content">
             <div class="row">
@@ -65,7 +62,7 @@
                                                 <%@include file="revocationDetailInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="../doDocument/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -104,19 +101,20 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <c:if test="${from eq 'fac'}">
+                                                                <c:if test="${back eq 'fac'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
-                                                                <c:if test="${from eq 'app'}">
+                                                                <c:if test="${back eq 'app'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
                                                                 <div style="text-align: right">
-                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
@@ -129,3 +127,4 @@
         </div>
     </form>
 </div>
+<%@include file="../doDocument/ajaxUpload.jsp" %>

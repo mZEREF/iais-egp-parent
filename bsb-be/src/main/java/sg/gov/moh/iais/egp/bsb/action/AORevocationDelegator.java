@@ -9,9 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
@@ -19,11 +23,13 @@ import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
  * @author Zhu Tangtang
@@ -31,10 +37,19 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 @Slf4j
 @Delegator(value = "AORevocationDelegator")
 public class AORevocationDelegator {
-    private final RevocationClient revocationClient;
+    private static final String ACTION_TYPE_ROUTE_BACK = "routeBack";
+    private static final String ACTION_TYPE_ROUTE_TO_HM = "routeToHM";
+    private static final String ACTION_TYPE_REJECT = "reject";
+    private static final String ACTION_TYPE_APPROVE = "approve";
+    private static final String ACTION_TYPE_PREPARE = "prepare";
+    private static final String ACTION_TYPE = "action_type";
 
-    public AORevocationDelegator(RevocationClient revocationClient) {
+    private final RevocationClient revocationClient;
+    private final RoutingHistoryClient routingHistoryClient;
+
+    public AORevocationDelegator(RevocationClient revocationClient, RoutingHistoryClient routingHistoryClient) {
         this.revocationClient = revocationClient;
+        this.routingHistoryClient = routingHistoryClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -52,10 +67,6 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
 
         SubmitRevokeDto revokeDto = getRevokeDto(request);
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
-        if (Boolean.TRUE.equals(needShowError)) {
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, revokeDto.retrieveValidationResult());
-        }
         if (!StringUtils.hasLength(revokeDto.getAppId())) {
             String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
             String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
@@ -73,6 +84,9 @@ public class AORevocationDelegator {
             }
             revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
             revokeDto.setTaskId(taskId);
+            //show routingHistory list
+            List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
+            ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
         }
         setRevocationDoc(request,revokeDto);
         ParamUtil.setSessionAttr(request, FROM, REVOCATION_TASK_LIST);
@@ -106,7 +120,7 @@ public class AORevocationDelegator {
         revokeDto.setAoDecision(aoDecision);
         revokeDto.setModule("aoRevoke");
         setRevocationDoc(request,revokeDto);
-        doValidation(revokeDto, request);
+        validateData(revokeDto, request);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
@@ -143,27 +157,37 @@ public class AORevocationDelegator {
         return new SubmitRevokeDto();
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     */
-    private void doValidation(SubmitRevokeDto dto, HttpServletRequest request) {
-        if (dto.doValidation()) {
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.YES);
-        } else {
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+    public static void setRevocationDoc(HttpServletRequest request, SubmitRevokeDto revokeDto) {
+        if (!CollectionUtils.isEmpty(revokeDto.getDocRecordInfos())) {
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(revokeDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            Set<String> docTypes = saveFiles.keySet();
+            ParamUtil.setRequestAttr(request, "docTypes", docTypes);
+            ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
+            ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
         }
     }
 
-    public static void setRevocationDoc(HttpServletRequest request, SubmitRevokeDto revokeDto) {
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(revokeDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-        Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-        Set<String> docTypes = saveFiles.keySet();
-        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
+    private void validateData(SubmitRevokeDto dto, HttpServletRequest request){
+        //validation
+        String actionType = null;
+        ValidationResultDto validationResultDto = revocationClient.validateRevoke(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            if (dto.getAoDecision().equals("MOHPRO008")){
+                actionType = ACTION_TYPE_ROUTE_BACK;
+            } else if (dto.getAoDecision().equals("MOHPRO009")){
+                actionType = ACTION_TYPE_ROUTE_TO_HM;
+            } else if (dto.getAoDecision().equals("MOHPRO003")){
+                actionType = ACTION_TYPE_REJECT;
+            } else if (dto.getAoDecision().equals("MOHPRO007")){
+                actionType = ACTION_TYPE_APPROVE;
+            }
+        }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
 
 }
