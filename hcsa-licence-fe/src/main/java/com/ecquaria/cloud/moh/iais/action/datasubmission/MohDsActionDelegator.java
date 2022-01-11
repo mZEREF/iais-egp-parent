@@ -170,6 +170,11 @@ public class MohDsActionDelegator {
             uri = DEFAULT_URI;
         } else {
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohLDTDataSubmission/PrepareSwitch?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION,
+                    CopyUtil.copyMutableObject(ldtSuperDataSubmissionDto));
+            ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            ldtSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
         return uri;

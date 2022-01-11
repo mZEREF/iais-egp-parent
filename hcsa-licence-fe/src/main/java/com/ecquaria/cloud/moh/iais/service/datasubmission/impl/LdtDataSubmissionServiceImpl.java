@@ -33,6 +33,7 @@ public class LdtDataSubmissionServiceImpl implements LdtDataSubmissionService {
 
     @Override
     public LdtSuperDataSubmissionDto saveLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
+        ldtSuperDataSubmissionDto.setFe(true);
         return ldtFeClient.saveLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto).getEntity();
     }
 
