@@ -50,7 +50,7 @@ $(document).ready(function() {
     }
 
     if ($('#saveDraftBtn').length > 0) {
-        if ('dp-submission' == currPage || 'page' == currPage) {
+        if ('vss-submission' == currPage || 'page' == currPage) {
             $('#saveDraftBtn').remove();
         } else {
             $('#saveDraftBtn').click(function () {
