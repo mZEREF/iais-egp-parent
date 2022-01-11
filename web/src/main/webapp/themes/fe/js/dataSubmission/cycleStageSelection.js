@@ -53,6 +53,8 @@ function validatePatientCallback(data){
         clearSelection();
         if (!isEmpty(data.errorMsg)) {
             doValidationParse(data.errorMsg);
+        } else if (2 == data.selection.patientStatus) {
+            $('#previousMdl').modal('show');
         } else {
             $('#noFoundDiv').modal('show');
         }

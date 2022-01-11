@@ -107,7 +107,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
             }
-            //DS_MSG006
+            //DS_MSG006 - Patient does not exist in the system, please check entered ID Type, ID No. and Nationality.
             if (!map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
                 map.put("preIdNumber", "DS_MSG006");
             }
@@ -124,7 +124,8 @@ public class PatientInfoValidator implements CustomizeValidator {
                 && husband.getIdNumber().equals(patient.getIdNumber())
                 && Objects.equals(husband.getIdType(), patient.getIdType())
                 && Objects.equals(husband.getNationality(), patient.getNationality())) {
-            map.put("idNumberHbd", ERR_MSG_INVALID_DATA);
+            // The Husband and Patient ID Number should not be the same.
+            map.put("idNumberHbd", "DS_ERR055");
         }
         birthDate = husband.getBirthDate();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {

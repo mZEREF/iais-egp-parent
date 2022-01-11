@@ -103,7 +103,11 @@ public class ArAjaxController {
             CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idType, idNo, nationality, orgId,
                     hciCode);
             if (dbDto != null) {
-                dto = dbDto;
+                if (StringUtil.isEmpty(dbDto.getPatientCode())) {
+                    dto.setPatientStatus(dbDto.getPatientStatus());
+                } else {
+                    dto = dbDto;
+                }
             }
             dto.setHciCode(hciCode);
             if (StringUtil.isNotEmpty(dto.getLastStage())) {
