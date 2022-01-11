@@ -112,6 +112,8 @@ public class FESingpassLandingDelegator {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
             if (oLoginInfo == null){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid login.");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 return;
             }
 
@@ -137,6 +139,9 @@ public class FESingpassLandingDelegator {
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
                     identityNo = oiRepon.getUserInfo().getNricFin();
                 }
+            } else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid login.");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
             }
         } else {
             identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
