@@ -124,7 +124,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                 && husband.getIdNumber().equals(patient.getIdNumber())
                 && Objects.equals(husband.getIdType(), patient.getIdType())
                 && Objects.equals(husband.getNationality(), patient.getNationality())) {
-            // The Husband and Patient ID Number should not be the same.
+            // The Husband and Patient ID Number should not be the same. (DS_ERR055)
             map.put("idNumberHbd", "DS_ERR055");
         }
         birthDate = husband.getBirthDate();

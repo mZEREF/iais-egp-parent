@@ -19,10 +19,10 @@ function clearSelection(){
     clearErrorMsg();
     $('#patientName').find('p').text('');
     $('#undergoingCycleCycle').find('p').text('');
-    $('#lastStage').find('p').text('');
     clearFields('.selectionHidden');
     clearFields('#stage');
-    $('#cycleStartDiv').html('');
+    $('#cycleStartDiv').html('-');
+    $('#lastStage').find('p').text('-');
     checkCycleStart();
 }
 

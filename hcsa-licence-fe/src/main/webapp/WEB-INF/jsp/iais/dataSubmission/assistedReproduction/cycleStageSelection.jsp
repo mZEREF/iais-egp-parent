@@ -50,6 +50,7 @@
 <%-- ID Number entered belongs to a patient's previous identity, please use latest patient ID. --%>
 <iais:confirm msg="DS_MSG009" callBack="$('#previousMdl').modal('hide');" popupOrder="previousMdl" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+<%-- Please click on "Validate Patient" and select a stage to continue. (DS_MSG007) --%>
 <iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
 <input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>
