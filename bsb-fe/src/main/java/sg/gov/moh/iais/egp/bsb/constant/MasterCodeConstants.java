@@ -232,6 +232,24 @@ public class MasterCodeConstants {
     public static final String CAUSE_OF_INCIDENT_HUMAN_PERFORMANCE = "INCAUSE009";
     public static final String CAUSE_OF_INCIDENT_OTHERS = "INCAUSE010";
 
-
-
+    //Reason(s) for Facility Deregistration
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_2 = "BSBRFFD002";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_3 = "BSBRFFD003";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_4 = "BSBRFFD004";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_5 = "BSBRFFD005";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_6 = "BSBRFFD006";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_7 = "BSBRFFD007";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_8 = "BSBRFFD008";
+    //Reason(s) for Approval Cancellation
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_1 = "BSBRFAC001";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_2 = "BSBRFAC002";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_3 = "BSBRFAC003";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_4 = "BSBRFAC004";
+    //Reason(s) for AFC Deregistration
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_1 = "BSBRFAD001";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_2 = "BSBRFAD002";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_3 = "BSBRFAD003";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD001";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD001";
 }
