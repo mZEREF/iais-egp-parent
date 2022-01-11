@@ -448,7 +448,7 @@ public class DataSubmissionInboxDelegator {
 	private int checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
 			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
-		}else if(checkDataPassBySubmissionNo(submissionNo, DELETE_DRAFT)&&(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
+		}else if(!checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT) && (actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
 				if(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
@@ -469,7 +469,7 @@ public class DataSubmissionInboxDelegator {
 			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
 			return maxTimes >= maxCountFromDb?1:0;
 		}
-		return 1;
+		return 0;
 	}
 
 }
