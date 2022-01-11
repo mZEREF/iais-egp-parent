@@ -104,6 +104,7 @@ public class ArAjaxController {
                     hciCode);
             if (dbDto != null) {
                 if (StringUtil.isEmpty(dbDto.getPatientCode())) {
+                    // 2: DS_MSG009 - ID Number entered belongs to a patient's previous identity, please use latest patient ID.
                     dto.setPatientStatus(dbDto.getPatientStatus());
                 } else {
                     dto = dbDto;
