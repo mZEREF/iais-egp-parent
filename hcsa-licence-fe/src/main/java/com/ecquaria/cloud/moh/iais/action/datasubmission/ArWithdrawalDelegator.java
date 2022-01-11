@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -47,14 +48,32 @@ public class ArWithdrawalDelegator {
     @Autowired
     private SystemAdminClient systemAdminClient;
 
+    @Autowired
+    private AssistedReproductionService assistedReproductionService;
+
     public void start(BaseProcessClass bpc)  {
         List<String> submissionNos = (List<String>) ParamUtil.getSessionAttr(bpc.request,"submissionWithdrawalNos");
         List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
+        Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+
         for (String submissionNo:submissionNos
              ) {
             ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
-            addWithdrawnDtoList.add(arSuper);
+            List<DataSubmissionDto> dataSubmissionDtoList=assistedReproductionService.allDataSubmissionByCycleId(arSuper.getDataSubmissionDto().getCycleId());
+
+            for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+            ) {
+                if(!dataSubmissionDto.getSubmitDt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                    ArSuperDataSubmissionDto arSuperDataSubmissionDto = assistedReproductionService.getArSuperDataSubmissionDto(
+                            dataSubmissionDto.getSubmissionNo());
+                    dataSubmissionDtoMap.put(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo(),arSuperDataSubmissionDto);
+                }
+            }
+        }
+        for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
+        ) {
+            addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
         }
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal From");
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
