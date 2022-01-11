@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -460,8 +462,23 @@ public class DataSubmissionInboxDelegator {
 				if(arSuperDataSubmissionDto.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
 					return 4;
 				}
-				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())||"PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					return 2;
+				if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+					List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
+					for (DataSubmissionDto ds:dataSubmissionDtoList
+					) {
+						if(!ds.getCycleStage().equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())&&ds.getSubmitDt().after(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt())){
+							return 2;
+						}
+					}
+				}
+				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+					List<DonorSampleAgeDto> donorSampleAgeDtos=arSuperDataSubmissionDto.getDonorSampleDto().getDonorSampleAgeDtos();
+					for (DonorSampleAgeDto age:donorSampleAgeDtos
+						 ) {
+						if(!age.getStatus().equals(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE)){
+							return 2;
+						}
+					}
 				}
 			}
 			//check x times
