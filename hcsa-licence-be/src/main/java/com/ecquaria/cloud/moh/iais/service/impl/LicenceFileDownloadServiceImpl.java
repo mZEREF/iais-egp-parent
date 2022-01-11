@@ -955,8 +955,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(entity==null ?  AppConsts.USER_ID_SYSTEM:entity.getSubmitBy() == null ?
-                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
+        appPremisesRoutingHistoryDto.setActionby(entity==null ?  AppConsts.USER_ID_SYSTEM:applicationDto.getModifiedBy() == null ?
+                AppConsts.USER_ID_SYSTEM : applicationDto.getModifiedBy());
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
