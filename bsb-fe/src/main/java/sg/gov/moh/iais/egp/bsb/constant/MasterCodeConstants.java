@@ -45,6 +45,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_APPROVED                      = "BSBAPST009";
     public static final String APP_STATUS_REGISTERED                    = "BSBAPST010";
     public static final String APP_STATUS_DRAFT                         = "BSBAPST011";
+    public static final String APP_STATUS_REMOVED                       = "BSBAPST012";
     public static final String APP_STATUS_PEND_APPOINTMENT_SCHEDULE     = "BSBAPST021";
     public static final String APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT   = "BSBAPST022";
     public static final String APP_STATUS_PEND_INSPECTION_READINESS     = "BSBAPST023";
@@ -62,6 +63,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_EXTENSION_REVIEW         = "BSBAPST035";
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
+    public static final Set<String> UNAVAILABLE_APP_STATUS;
 
     static {
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(10);
@@ -94,6 +96,10 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW);
         inspectionAppStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
+
+        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
+        unavailableAppStatus.add(APP_STATUS_REMOVED);
+        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
     }
 
 

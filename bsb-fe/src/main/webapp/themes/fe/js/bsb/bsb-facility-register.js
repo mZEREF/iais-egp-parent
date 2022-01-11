@@ -13,6 +13,12 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#saveDraft").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("draft");
+        $("#mainForm").submit();
+    });
+
     $("a[data-step-key]").click(jumpToStep);
     $("li.tracker-item[data-step-key]").click(jumpToStep);
 

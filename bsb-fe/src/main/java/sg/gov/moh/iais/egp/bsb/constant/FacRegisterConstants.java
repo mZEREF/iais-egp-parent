@@ -30,6 +30,7 @@ public class FacRegisterConstants {
 
     public static final String KEY_ACTION_SUBMIT = "submit";
     public static final String KEY_ACTION_JUMP = "jump";
+    public static final String KEY_ACTION_SAVE_AS_DRAFT = "draft";
     public static final String KEY_JUMP_DEST_NODE = "destNode";
     public static final String KEY_DEST_NODE_ROUTE = "nodeRoute";
 

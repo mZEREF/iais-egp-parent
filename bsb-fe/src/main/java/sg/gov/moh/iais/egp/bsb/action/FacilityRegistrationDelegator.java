@@ -42,16 +42,11 @@ public class FacilityRegistrationDelegator {
     private static final String MODULE_NAME = "Facility Registration";
 
     private final FacilityRegisterClient facRegClient;
-    private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final FacilityRegistrationService facilityRegistrationService;
 
     @Autowired
-    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient,
-                                         BsbFileClient bsbFileClient, FacilityRegistrationService facilityRegistrationService) {
+    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
         this.facRegClient = facRegClient;
-        this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
         this.facilityRegistrationService = facilityRegistrationService;
     }
 
@@ -202,12 +197,7 @@ public class FacilityRegistrationDelegator {
                     // save docs
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    List<NewFileSyncDto> newFilesToSync = null;
-                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
-                    }
+                    List<NewFileSyncDto> newFilesToSync = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
 
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
@@ -217,24 +207,10 @@ public class FacilityRegistrationDelegator {
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
                     try {
-                        // sync files to BE file-repo (save new added files, delete useless files)
-                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                            /* Ignore the failure of sync files currently.
-                             * We should add a mechanism to retry synchronization of files in the future */
-                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                            syncDto.setNewFiles(newFilesToSync);
-                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                            bsbFileClient.saveFiles(syncDto);
-                        }
-
-                        // delete docs in FE file-repo
-                        /* Ignore the failure when try to delete FE files because this is not a big issue.
-                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                            FileRepoDto fileRepoDto = new FileRepoDto();
-                            fileRepoDto.setId(id);
-                            fileRepoClient.removeFileById(fileRepoDto);
-                        }
+                        // delete docs
+                        List<String> toBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto);
+                        // sync docs
+                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
                     } catch (Exception e) {
                         log.error("Fail to sync files to BE", e);
                     }
@@ -247,6 +223,9 @@ public class FacilityRegistrationDelegator {
             } else {
                 facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }

@@ -23,6 +23,10 @@ $(function () {
     $('#pageJumpNoPageSize').change(function () {
         paginationOperation('changeSize');
     })
+
+    if ($("#afterSaveAsDraft").val() === 'true') {
+        $('#afterSaveDraft').modal('show');
+    }
 });
 
 
@@ -49,6 +53,8 @@ function clearAllErrMsg() {
     });
 }
 
+
+
 function resetNiceSelect(selector) {
     $(selector).find("div.nice-select").each(function () {
         var firstOp = $(this).find("ul.list > li:first");
@@ -56,6 +62,16 @@ function resetNiceSelect(selector) {
         firstOp.trigger('click'); firstOp.trigger('click');
     });
 }
+
+
+/* function for save as draft */
+function cancelJumpAfterDraft() {
+    $('#afterSaveDraft').modal('hide');
+}
+function jumpAfterDraft() {
+    window.location.href = "/bsb-fe/eservice/INTERNET/MohBSBInboxApp";
+}
+
 
 
 /* append comma separated input value */

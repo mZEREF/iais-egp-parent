@@ -47,6 +47,13 @@
     <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DeleteDraft" x="700" y="480">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteDraft_OnStepProcess_0" name="deleteDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxAppListPage" stageIndicator="" x="400" y="220">
@@ -94,6 +101,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/MergeToRefresh" style="rectanular">
    <position>{(900,310)(420,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DeleteDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(570,360)(720,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/MergeToRefresh" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DeleteDraft" style="oblique">
+   <position>{(720,500)(900,310)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -102,6 +115,7 @@
    <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/DeleteDraft" value="&quot;deleteDraft&quot;" />
   </Switch>
  </Switches>
  <Branches />

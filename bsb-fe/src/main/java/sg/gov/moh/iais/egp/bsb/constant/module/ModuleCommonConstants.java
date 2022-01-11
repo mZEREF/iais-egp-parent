@@ -18,4 +18,7 @@ public class ModuleCommonConstants {
     public static final String KEY_MESSAGE                          = "message";
     public static final String KEY_WARN_MESSAGE                     = "warn_message";
     public static final String KEY_ERROR_MESSAGE                    = "error_message";
+
+    // draft
+    public static final String KEY_IND_AFTER_SAVE_AS_DRAFT          = "AFTER_SAVE_AS_DRAFT";
 }
