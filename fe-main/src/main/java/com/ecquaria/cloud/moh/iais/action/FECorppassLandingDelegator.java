@@ -152,6 +152,7 @@ public class FECorppassLandingDelegator {
             //check the state against with the session attribute
             String token = ConfigHelper.getString("corppass.oidc.token");
             String postUrl = ConfigHelper.getString("corppass.oidc.postUrl");
+            String authInfoScope = ConfigHelper.getString("corppass.oidc.authInfoScope", "all");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("ecquaria-correlationId", eicCorrelationId);
@@ -159,7 +160,8 @@ public class FECorppassLandingDelegator {
 
             HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcCpAuthResponDto.class);
+            String requestUrl = postUrl + userInfoMsg + "?authInfoScope=" + authInfoScope;
+            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(requestUrl, HttpMethod.GET, entity, OidcCpAuthResponDto.class);
             if (HttpStatus.OK == respon.getStatusCode()) {
                 OidcCpAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
