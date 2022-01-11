@@ -92,11 +92,13 @@
                      <iais:value width="3" cssClass="col-md-3">
                          <iais:input maxLength="20" type="text" name="idNumber${arDonorIndex}" value="${donorDto.idNumber}" onchange="removeAges('${arDonorIndex}')" />
                      </iais:value>
-                     <iais:value width="2" cssClass="col-md-2" display="true">
+                     <iais:value width="2" cssClass="col-md-3" display="true">
                          <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
                              Validate Donor
                          </a>
+                          <div>
                          <span id="error_validateDonorYes${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                          </div>
                      </iais:value>
                  </iais:row>
 
@@ -109,13 +111,14 @@
                      <iais:value width="3" cssClass="col-md-3">
                          <iais:input maxLength="20" type="text" name="donorSampleCode${arDonorIndex}" id="donorSampleCode${arDonorIndex}" value="${donorDto.donorSampleCode}" onchange="removeAges('${arDonorIndex}')" />
                      </iais:value>
-                     <iais:value width="2" cssClass="col-md-2" display="true">
+                     <iais:value width="2" cssClass="col-md-3" display="true">
                          <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
                              Validate Donor
                          </a>
+                         <div>
                          <span id="error_validateDonorNo${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                         </div>
                      </iais:value>
-
                  </iais:row>
 
                  <iais:row id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
