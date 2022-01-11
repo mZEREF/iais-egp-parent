@@ -2,28 +2,51 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Delegator("transferInOutDelegator")
 @Slf4j
 public class TransferInOutDelegator extends CommonDelegator {
     public static final String WHAT_WAS_TRANSFERREDs = "transferreds";
+
+    @Autowired
+    CessationFeService cessationFeService;
+    @Autowired
+    RequestForChangeService requestForChangeService;
+    @Autowired
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+    @Autowired
+    NotificationHelper notificationHelper;
+
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -97,5 +120,58 @@ public class TransferInOutDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, transferInOutStageDto,"save",ACTION_TYPE_CONFIRM);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+        //3.3.3.3.2 local transfer Notification
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        String hciCode = getReceivedHciCode(transferInOutStageDto);
+        if (StringUtil.isNotEmpty(hciCode)) {
+            String licenseeId = getLicenseeId(hciCode);
+            sendNeedTransferInNotification(licenseeId);
+        }
+    }
+
+    @SneakyThrows
+    private void sendNeedTransferInNotification(String licenseeId) {
+        //TODO need EN-DSN-001 notification Template
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setSubject(msgSubject);
+        msgParam.setQueryCode(licenseeId);
+        msgParam.setReqRefNum(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(licenseeId);
+        notificationHelper.sendNotification(msgParam);
+    }
+
+    private String getReceivedHciCode(TransferInOutStageDto transferInOutStageDto) {
+        if (transferInOutStageDto == null || "in".equals(transferInOutStageDto.getTransferType())) {
+            return null;
+        }
+        //TODO getTransOutToHciCode
+//        return transferInOutStageDto.getTransOutToHciCode();
+        return null;
+    }
+
+    private String getLicenseeId(String hciCode) {
+        String result = null;
+        PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(hciCode);
+        if (premisesDto != null) {
+            String organizationId = premisesDto.getOrganizationId();
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(organizationId);
+            if (licenseeDto != null) {
+                result = licenseeDto.getId();
+            }
+        }
+        return result;
     }
 }
