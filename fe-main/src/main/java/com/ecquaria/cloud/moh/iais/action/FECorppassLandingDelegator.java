@@ -115,14 +115,14 @@ public class FECorppassLandingDelegator {
                 loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
             } catch (Exception e) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
-                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 return;
             }
 
             if (loginInfo == null || !"S".equals(loginInfo.getStatus())) {
                 log.info("<== oLoginInfo is empty ==>");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
-                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 return;
             }
 
@@ -132,7 +132,7 @@ public class FECorppassLandingDelegator {
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
-                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 return;
             }
@@ -145,7 +145,7 @@ public class FECorppassLandingDelegator {
 //            String userInfoMsg = request.getParameter("userToken");
             String errorCode = request.getParameter("error");
             if (!StringUtil.isEmpty(errorCode)) {
-                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 return;
             }
