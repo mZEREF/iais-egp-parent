@@ -201,6 +201,11 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_REVOKED = "APPRSTA003";
     public static final String APPROVAL_STATUS_SUSPENDED = "APPRSTA004";
     public static final String APPROVAL_STATUS_EXPIRED = "APPRSTA005";
+    public static final String APPROVAL_STATUS_SUSPENDED_NC = "APPRSTA006";
+    public static final String APPROVAL_STATUS_SUSPENDED_OTHERS = "APPRSTA007";
+    public static final String APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION = "APPRSTA008";
+    public static final String APPROVAL_STATUS_SUSPENDED_CONDITIONAL_INVENTORY_MOVEMENT = "APPRSTA009";
+    public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
 
     //BE DECISION VALUE
     public static final String MOH_PROCESSING_DECISION_SCREENED_BY_DO = "MOHPRO001";
