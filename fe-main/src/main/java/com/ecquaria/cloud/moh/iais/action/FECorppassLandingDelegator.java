@@ -190,7 +190,7 @@ public class FECorppassLandingDelegator {
             if (!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(uen)) {
                 AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
             }
-            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+            ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
             return;
         }
