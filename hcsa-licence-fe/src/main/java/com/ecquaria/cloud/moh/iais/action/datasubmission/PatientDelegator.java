@@ -99,9 +99,9 @@ public class PatientDelegator extends CommonDelegator {
         }
         // for oval validation
         patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
-        patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
+        String patientCode = patient.getPatientCode();
         // check previous
         if (patient.isPreviousIdentification() && !DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType())) {
             String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
@@ -115,7 +115,9 @@ public class PatientDelegator extends CommonDelegator {
                 }
             }
             patientInfo.setPrevious(previous);
+            patientCode = previous.getPatientCode();
         }
+        patient.setPatientCode(patientService.getPatientCode(patientCode));
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
         if (StringUtil.isNotEmpty(husband.getName())) {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
