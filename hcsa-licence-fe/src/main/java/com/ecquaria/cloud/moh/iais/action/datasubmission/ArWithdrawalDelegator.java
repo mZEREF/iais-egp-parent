@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsWithdrawCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -65,7 +66,7 @@ public class ArWithdrawalDelegator {
 
     public void prepareDate(BaseProcessClass bpc)  {
         ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
-        newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         newDto.setOrgId(orgId);
@@ -114,9 +115,13 @@ public class ArWithdrawalDelegator {
 
     public void saveDate(BaseProcessClass bpc)  {
         List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+        List<DsWithdrawCorrelationDto> list=IaisCommonUtils.genNewArrayList();
         for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+            DsWithdrawCorrelationDto dsWithdrawCorrelationDto=new DsWithdrawCorrelationDto();
+            dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
+            list.add(dsWithdrawCorrelationDto);
         }
         addWithdrawnDtoList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(addWithdrawnDtoList);
         try {
@@ -128,6 +133,7 @@ public class ArWithdrawalDelegator {
 
         ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
+        arSuperDataSubmission.setDsWithdrawCorrelationDtoList(list);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
