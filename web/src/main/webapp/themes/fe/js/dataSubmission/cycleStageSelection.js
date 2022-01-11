@@ -22,6 +22,8 @@ function clearSelection(){
     $('#lastStage').find('p').text('');
     clearFields('.selectionHidden');
     clearFields('#stage');
+    $('#cycleStartDiv').html('');
+    checkCycleStart();
 }
 
 function retrieveValidatePatient() {

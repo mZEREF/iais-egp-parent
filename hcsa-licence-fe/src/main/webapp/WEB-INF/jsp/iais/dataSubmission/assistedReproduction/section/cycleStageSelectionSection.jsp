@@ -58,7 +58,7 @@
                             <iais:select name="cycleStart" options="cycleStart_options" cssClass="cycleStartSel"
                                          value="${selectionDto.cycleStart}" onchange="retriveCycleStageSelection()" />
                         </c:if>
-                        <c:if test="${not hasCycleStartOpts}">
+                        <c:if test="${not hasCycleStartOpts && not empty selectionDto.patientName}">
                             -
                         </c:if>
                     </iais:value>
