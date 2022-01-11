@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.OidcCpAuthResponDto;
-import com.ecquaria.cloud.moh.iais.dto.OidcCpTokenReqDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -31,7 +30,6 @@ import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import ecq.commons.exception.BaseException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
@@ -115,14 +113,14 @@ public class FECorppassLandingDelegator {
                 loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
             } catch (Exception e) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
 
             if (loginInfo == null || !"S".equals(loginInfo.getStatus())) {
                 log.info("<== oLoginInfo is empty ==>");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
 
@@ -132,7 +130,7 @@ public class FECorppassLandingDelegator {
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 return;
             }
@@ -142,36 +140,28 @@ public class FECorppassLandingDelegator {
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();
         } else if (FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
-//            String userInfoMsg = request.getParameter("userToken");
+            String userInfoMsg = request.getParameter("userToken");
+            String eicCorrelationId = request.getParameter("ecquaria_correlationId");
             String errorCode = request.getParameter("error");
+            ParamUtil.setSessionAttr(request, "qrcode_state", null);
             if (!StringUtil.isEmpty(errorCode)) {
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 return;
             }
-            String eicCorrelationId = UUID.randomUUID().toString();
-            String code = request.getParameter("code");
-
             //check the state against with the session attribute
             String token = ConfigHelper.getString("corppass.oidc.token");
             String postUrl = ConfigHelper.getString("corppass.oidc.postUrl");
-            String clientId = ConfigHelper.getString("corppass.oidc.clientId");
-            String redirectUrl = ConfigHelper.getString("corppass.oidc.redirectUrl");
-            String nonce = (String) ParamUtil.getSessionAttr(request, "qrcode_nonce");
-            ParamUtil.setSessionAttr(request, "qrcode_nonce", null);
-            OidcCpTokenReqDto octrDto = new OidcCpTokenReqDto();
-            octrDto.setNonce(nonce);
-            octrDto.setCode(code);
-            octrDto.setClientId(clientId);
-            octrDto.setRedirectUri(redirectUrl);
+            String authInfoScope = ConfigHelper.getString("corppass.oidc.authInfoScope", "all");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("ecquaria-correlationId", eicCorrelationId);
             headers.set("ecquaria-authToken", token);
 
-            HttpEntity entity = new HttpEntity(octrDto, headers);
+            HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(postUrl, HttpMethod.POST, entity, OidcCpAuthResponDto.class);
+            String requestUrl = postUrl + userInfoMsg + "?authInfoScope=" + authInfoScope;
+            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(requestUrl, HttpMethod.GET, entity, OidcCpAuthResponDto.class);
             if (HttpStatus.OK == respon.getStatusCode()) {
                 OidcCpAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
@@ -226,6 +216,7 @@ public class FECorppassLandingDelegator {
     public void validatePwd(BaseProcessClass bpc){
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
+        String pwdValid = ParamUtil.getRequestString(bpc.request, UserConstants.SCP_ERROR);
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)) {
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
@@ -235,7 +226,10 @@ public class FECorppassLandingDelegator {
                 return;
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
+        if (StringUtil.isEmpty(pwdValid)) {
+            ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
+        }
+
     }
 
 

@@ -951,12 +951,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
-        ApplicationGroupDto entity = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(entity==null ?  AppConsts.USER_ID_SYSTEM:entity.getSubmitBy() == null ?
-                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
+        appPremisesRoutingHistoryDto.setActionby(applicationDto.getModifiedBy());
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;

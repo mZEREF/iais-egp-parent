@@ -126,18 +126,19 @@
       <%
         String nonce = UUID.randomUUID().toString();
         String state = UUID.randomUUID().toString();
-//      ParamUtil.setSessionAttr(request, "qrcode_state", state);
-        ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
+        ParamUtil.setSessionAttr(request, "qrcode_state", state);
+//        ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
 //        String qrjsUrl = ConfigHelper.getString("corppass.oidc.js.url");
 //        String mockjsUrl = ConfigHelper.getString("corppass.oidc.mockserver.js.url");
 //        String ndijsUrl = ConfigHelper.getString("corppass.oidc.ndi.js.url");
-//        String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.profileName"));
-//        String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.appId"));
+        String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.profileName"));
+        String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.appId"));
         String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.clientId"));
         String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.redirectUrl"));
 //        boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
         String eicUri = ConfigHelper.getString("corppass.oidc.login.uri");
-        eicUri = eicUri + "&client_id=" + clientId + "&nonce=" + nonce + "&state=" + state + "&redirect_uri=" + redirectUrl;
+        eicUri = eicUri + "?profile=" + profileName + "&client_id=" + clientId + "&app_id=" + oidcAppId
+                + "&gateway=corppass&redirect_uri=" + redirectUrl + "&ecquaria_correlationId=" + nonce + "&eic_state=" + state;
 //      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
 //      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
       %>
