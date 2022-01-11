@@ -472,13 +472,13 @@ public final class DataSubmissionHelper {
             return opts;
         }
         //reverse chronological order
-        Collections.sort(cycleDtos, Comparator.comparing(CycleDto::getCreatedAt).reversed());
+        Collections.sort(cycleDtos, Comparator.comparing(CycleDto::getCreatedDate).reversed());
         for (CycleDto cycleDto : cycleDtos) {
             if (!isNormalCycle(cycleDto.getCycleType())) {
                 continue;
             }
             opts.add(new SelectOption(StringUtil.obscured(cycleDto.getId()),
-                    Formatter.formatDate(cycleDto.getCreatedAt()) + ", " + MasterCodeUtil.getCodeDesc(cycleDto.getCycleType())));
+                    Formatter.formatDate(cycleDto.getCreatedDate()) + ", " + MasterCodeUtil.getCodeDesc(cycleDto.getCycleType())));
         }
         return opts;
     }

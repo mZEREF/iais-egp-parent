@@ -420,7 +420,11 @@ public class PatientUploadDelegate {
                     dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
                     PatientDto patient = dto.getPatient();
-                    patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
+                    String patientCode = patient.getPatientCode();
+                    if (dto.getPrevious() != null && !StringUtil.isEmpty(dto.getPatient().getPatientCode())) {
+                        patientCode = dto.getPatient().getPatientCode();
+                    }
+                    patient.setPatientCode(patientService.getPatientCode(patientCode));
                     patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
                     dto.setPatient(patient);
                     newDto.setPatientInfoDto(dto);
