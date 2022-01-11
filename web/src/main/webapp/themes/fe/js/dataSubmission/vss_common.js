@@ -37,7 +37,7 @@ $(document).ready(function() {
     if ($draft.length > 0) {
         $draft.modal('show');
     }
-    var currPage = $('input[name="ar_page"]').val();
+    var currPage = $('input[name="vss_page"]').val();
     console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {
         currPage = "";
@@ -50,9 +50,7 @@ $(document).ready(function() {
     }
 
     if ($('#saveDraftBtn').length > 0) {
-        if ('vss-submission' == currPage || 'page' == currPage) {
-            $('#saveDraftBtn').remove();
-        } else {
+        if ( 'page' == currPage) {
             $('#saveDraftBtn').click(function () {
                 showWaiting();
                 submit(currPage, 'draft');
