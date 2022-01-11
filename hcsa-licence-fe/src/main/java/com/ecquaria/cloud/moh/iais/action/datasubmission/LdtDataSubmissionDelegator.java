@@ -328,7 +328,7 @@ public class LdtDataSubmissionDelegator {
             ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, currentAction);
         }
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType)){
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType) || DataSubmissionConstant.CRUD_TYPE_RFC.equals(crudType)) {
             setSelectOptions(bpc);
         }
     }
