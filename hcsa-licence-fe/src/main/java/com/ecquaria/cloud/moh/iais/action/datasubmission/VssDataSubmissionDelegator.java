@@ -120,7 +120,7 @@ public class VssDataSubmissionDelegator {
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
-        int status = 0;// 0: current page; -1: back / previous; 1: next
+        int status = 0;// 0: current page; -1: back / previous; 1: next; 2: submission
         if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
             status = doTreatment(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
@@ -355,6 +355,8 @@ public class VssDataSubmissionDelegator {
                 actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
             } else if (1 == status) { // next
                 actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_VSS, bpc.request);
+            } else if (2 == status) {// to submission
+                actionType = "submission";
             }
         } else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
