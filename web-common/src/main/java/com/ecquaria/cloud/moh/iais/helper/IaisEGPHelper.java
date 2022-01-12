@@ -51,12 +51,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -147,6 +142,12 @@ public final class IaisEGPHelper extends EGPHelper {
     };
 
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
+
+    private static Map<String,String> giroBankCodeSWIFTBICMap;
+
+    static {
+        giroBankCodeSWIFTBICMap = giroBankCodeSWIFTBICMap();
+    }
 
     /**
      * @author: Shicheng on 2021/07/16 15:03
@@ -924,5 +925,48 @@ public final class IaisEGPHelper extends EGPHelper {
     public static String generateDummyVehicleNum(int index) {
         String timeStr = String.valueOf(System.currentTimeMillis()) + index;
         return timeStr.substring(timeStr.length() - 10);
+    }
+
+    public static String getGiroSWIFTBICByBankCode(String bankCode){
+        return StringUtil.isEmpty(bankCode) ? "" : giroBankCodeSWIFTBICMap().getOrDefault(bankCode,bankCode);
+    }
+
+    private static Map<String,String> giroBankCodeSWIFTBICMap(){
+        if(IaisCommonUtils.isEmpty(giroBankCodeSWIFTBICMap)){
+            Map<String,String> map = IaisCommonUtils.genNewHashMap();
+            List<String> keys = Arrays.asList(
+                    "7931", "7047", "7065", "7083",
+                    "7092", "7108", "7126", "7418",
+                    "9353", "7986", "7214", "9201",
+                    "8606", "7135", "7171", "7463",
+                    "7737", "7764", "7287", "7232",
+                    "9548", "9186", "7241", "7250",
+                    "8712", "8350", "7153", "7490",
+                    "9636", "7302", "7621", "8077",
+                    "8518", "7339", "7056", "9326",
+                    "7366", "8527", "7852", "9496",
+                    "7791", "7472", "8493", "7685",
+                    "7357", "8855", "7375");
+            List<String> values =  Arrays.asList(
+                    "ANZBSGSXXXX", "BKKBSGSGXXX", "BOFASG2XXXX", "BKCHSGSGXXX",
+                    "BEASSGSGXXX", "BKIDSGSGXXX", "BOTKSGSXXXX", "BNPASGSGXXX",
+                    "CTCBSGSGXXX", "CIBBSGSGXXX", "CITISGSGXXX", "CITISGSLXXX",
+                    "COBASGSXXXX", "CRLYSGSGXXX", "DBSSSGSGXXX", "DEUTSGSGXXX",
+                    "DNBASGSGXXX", "FCBKSGSGXXX", "HLBBSGSGXXX", "HSBCSGSGXXX",
+                    "HSBCSGS2XXX", "ICICSGSGXXX", "IDIBSGSGXXX", "IOBASGSGXXX",
+                    "ICBKSGSGXXX", "BCITSGSGXXX", "CHASSGSGXXX", "KOEXSGSGXXX",
+                    "MBBESGSGXXX", "MBBESGS2XXX", "MHCBSGSGXXX", "NATASGSGXXX",
+                    "NDEASGSGXXX", "OCBCSGSGXXX", "BNINSGSGXXX", "QNBASGSGXXX",
+                    "RHBBSGSGXXX", "ESSESGSGXXX", "SOGESGSGXXX", "SCBLSG22XXX",
+                    "SBINSGSGXXX", "SMBCSGSGXXX", "HANDSGSGXXX", "UBSWSGSGXXX",
+                    "UCBASGSGXXX", "BVBESGSGXXX", "UOVBSGSGXXX");
+
+            for (int i = 0; i < keys.size(); i++) {
+                map.put(keys.get(i),values.get(i));
+            }
+            return Collections.unmodifiableMap(map);
+        }else {
+            return giroBankCodeSWIFTBICMap;
+        }
     }
 }

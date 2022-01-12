@@ -826,7 +826,7 @@ public class InterInboxDelegator {
             if(result){
                 result = checkIsBaseRenew(licIdValue);
                 if(!result){
-                    ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",false);
+                    ParamUtil.setRequestAttr(bpc.request,"licIsRenewed", Boolean.FALSE);
                     ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"Special Service Licence need to renew together with Base Service Licence.");
                     return;
                 }
@@ -840,7 +840,7 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }else{
-                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",false);
+                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed", Boolean.FALSE);
                 if(StringUtil.isEmpty(errorMessage.toString())){
                     String errorMessage2 = errorMap.get("errorMessage2");
                     if(StringUtil.isEmpty(errorMessage2)){

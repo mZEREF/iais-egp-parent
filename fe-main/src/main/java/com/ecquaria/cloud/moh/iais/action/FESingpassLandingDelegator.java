@@ -111,9 +111,9 @@ public class FESingpassLandingDelegator {
         } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-            if (oLoginInfo == null){
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid login.");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+            if (oLoginInfo == null || !"S".equals(oLoginInfo.getStatus())){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
                 return;
             }
 
@@ -140,8 +140,9 @@ public class FESingpassLandingDelegator {
                     identityNo = oiRepon.getUserInfo().getNricFin();
                 }
             } else {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid login.");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+                return;
             }
         } else {
             identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
@@ -168,6 +169,7 @@ public class FESingpassLandingDelegator {
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
         //get active flag and active role flag
         String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        String pwdValid = ParamUtil.getRequestString(bpc.request, UserConstants.SCP_ERROR);
         if(AppConsts.FALSE.equals(userAndRoleFlag)) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
@@ -183,8 +185,10 @@ public class FESingpassLandingDelegator {
                 return;
             }
         }
+        if (StringUtil.isEmpty(pwdValid)) {
+            ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
+        }
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-        ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.NO);
         log.info(StringUtil.changeForLog("SingPass Login service [validatePwd] END ...."));
     }
 
@@ -202,7 +206,9 @@ public class FESingpassLandingDelegator {
         if (loginFlag){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.YES);
-            AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);
+            if (!StringUtil.isEmpty(identityNo)) {
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);
+            }
         }else {
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
