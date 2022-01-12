@@ -123,27 +123,24 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        if(selectedFile != null) {
-            String originalFileName = selectedFile.getOriginalFilename();
-            if(originalFileName != null) {
-                String[] fileSplit = originalFileName.split("\\.");
-                //name
-                String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
-                String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-                String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-                fileName = url + fileName + "</a>";
-                stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                        append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
-                                .replace("replaceFileAppendIdDown", fileAppendId)
-                                .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
-                        .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
-                        replace("indexReplace", String.valueOf(size)))
-                        .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
-                                replace("replaceForUpload", fileAppendId).
-                                replace("indexReplace", String.valueOf(size))
-                        ).append("</Div>")
-                ;
-            }
+        String originalFileName = selectedFile.getOriginalFilename();
+        if(originalFileName != null) {
+            String[] fileSplit = originalFileName.split("\\.");
+            //name
+            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+            fileName = url + fileName + "</a>";
+            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                            .replace("replaceFileAppendIdDown", fileAppendId)
+                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
+                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
+                    replace("indexReplace", String.valueOf(size)))
+                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
+                            replace("replaceForUpload", fileAppendId).
+                            replace("indexReplace", String.valueOf(size))
+                    ).append("</Div>");
         }
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
@@ -151,7 +148,7 @@ public class HcsaFileAjaxController {
     }
 
     private  String getErrorMessage(MultipartFile selectedFile){
-        if(selectedFile.isEmpty()){
+        if(selectedFile == null || selectedFile.isEmpty()){
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
         }
         int maxSize = systemParamConfig.getUploadFileLimit();

@@ -5058,6 +5058,7 @@ public class ClinicalLaboratoryDelegator {
                 countDownLatch.await();
             } catch (InterruptedException e) {
                 log.error(StringUtil.changeForLog(e.getMessage()), e);
+                Thread.currentThread().interrupt();
             }
         }
     }

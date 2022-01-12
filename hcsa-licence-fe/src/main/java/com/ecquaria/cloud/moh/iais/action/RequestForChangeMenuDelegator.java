@@ -1653,32 +1653,6 @@ public class RequestForChangeMenuDelegator {
 
     }
 
-    private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))) {
-                    return false;
-                }
-            }
-        }
-        //is same
-        return true;
-    }
-
-    private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        String hciName = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-        }
-        return hciName;
-    }
-
     /**
      * @param bpc
      * @Decription doRequestForInformationSubmit

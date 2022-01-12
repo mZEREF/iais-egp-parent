@@ -267,7 +267,7 @@
                 mt.effective_to,
                 mt.STATUS,
                 (SELECT DISTINCT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process
-            FROM message_template AS mt) AS T1
+            FROM message_template AS mt WHERE STATUS = 'CMSTAT001') AS T1
             CROSS APPLY
 			(
 				SELECT RECIPIENT + ', '
@@ -289,7 +289,7 @@
 				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'TO'
 				FOR XML PATH('')
 			) C (REC)
-            WHERE 1=1 AND T1.STATUS = 'CMSTAT001'
+            WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND T1.message_type = :msgType</#if>
             <#if templateName??> AND charindex(:templateName, T1.template_name) >0 </#if>
