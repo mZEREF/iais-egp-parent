@@ -12,7 +12,11 @@ import java.util.Objects;
 public final class DsRfcHelper {
 
     public static boolean isChangePatientInfoDto(PatientInfoDto patientInfoDto, PatientInfoDto oldPatientInfoDto) {
-        return !Objects.equals(patientInfoDto, oldPatientInfoDto);
+        if (patientInfoDto == null || oldPatientInfoDto == null) {
+            return true;
+        }
+        return !Objects.equals(patientInfoDto.getPatient(), oldPatientInfoDto.getPatient())
+                || !Objects.equals(patientInfoDto.getHusband(), oldPatientInfoDto.getHusband());
     }
 
 }

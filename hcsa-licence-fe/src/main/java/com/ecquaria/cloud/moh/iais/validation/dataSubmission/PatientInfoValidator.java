@@ -101,7 +101,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                     map.put("preNationality", ERR_MSG_INVALID_DATA);
                 }
             }
-            if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
+            if (!isRfc && !map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
                     && previous.getIdNumber().equals(patient.getIdNumber())
                     && Objects.equals(previous.getIdType(), patient.getIdType())
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
@@ -142,12 +142,17 @@ public class PatientInfoValidator implements CustomizeValidator {
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
         if (isRfc) {
-            DataSubmissionDto dataSubmission = patientService.getPatientDataSubmissionByConds(patient.getIdType(),
+            /*DataSubmissionDto dataSubmission = patientService.getPatientDataSubmissionByConds(patient.getIdType(),
                     patient.getIdNumber(), patient.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
             DataSubmissionDto previousDS = patientService.getPatientDataSubmissionByConds(previous.getIdType(),
                     previous.getIdNumber(), previous.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
             if (previousDS != null && dataSubmission != null
                     && !Objects.equals(previousDS.getSubmissionNo(), dataSubmission.getSubmissionNo())) {
+                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+            }*/
+            PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
+                    patient.getNationality(), orgId);
+            if (patientDto != null && !Objects.equals(patientDto.getPatientCode(), previous.getPatientCode())) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
             }
             if (map.isEmpty()) {

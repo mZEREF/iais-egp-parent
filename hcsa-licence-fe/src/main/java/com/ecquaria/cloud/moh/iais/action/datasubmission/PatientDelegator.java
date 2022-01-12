@@ -48,7 +48,9 @@ public class PatientDelegator extends CommonDelegator {
             PatientDto patient = patientInfoDto.getPatient();
             patientInfoDto.setPrevious((PatientDto) CopyUtil.copyMutableObject(patient));
             patient.setPreviousIdentification(true);
+            patientInfoDto.setRetrievePrevious(true);
             patientInfoDto.setPatient(patient);
+            patientInfoDto.setAppType(arSuperDataSubmission.getAppType());
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
         }
     }
@@ -103,19 +105,25 @@ public class PatientDelegator extends CommonDelegator {
         patientInfo.setPatient(patient);
         String patientCode = patient.getPatientCode();
         // check previous
-        if (patient.isPreviousIdentification() && !DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType())) {
-            String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
-            patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
-            PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
-            if (patientInfo.isRetrievePrevious()) {
-                PatientDto db = patientService.getActiveArPatientByConds(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
-                        patient.getOrgId());
-                if (db != null && !StringUtil.isEmpty(db.getId())) {
-                    previous = db;
-                }
-            }
-            patientInfo.setPrevious(previous);
+        if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(currentArDataSubmission.getAppType())) {
+            patient.setPreviousIdentification(true);
+            PatientDto previous = patientInfo.getPrevious();
             patientCode = previous.getPatientCode();
+        } else {
+            if (patient.isPreviousIdentification()) {
+                String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
+                patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
+                PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
+                if (patientInfo.isRetrievePrevious()) {
+                    PatientDto db = patientService.getActiveArPatientByConds(previous.getIdType(), previous.getIdNumber(),
+                            previous.getNationality(), patient.getOrgId());
+                    if (db != null && !StringUtil.isEmpty(db.getId())) {
+                        previous = db;
+                    }
+                }
+                patientInfo.setPrevious(previous);
+                patientCode = previous.getPatientCode();
+            }
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
