@@ -50,12 +50,10 @@ $(document).ready(function() {
     }
 
     if ($('#saveDraftBtn').length > 0) {
-        if ( 'page' == currPage) {
-            $('#saveDraftBtn').click(function () {
-                showWaiting();
-                submit(currPage, 'draft');
-            });
-        }
+        $('#saveDraftBtn').click(function () {
+            showWaiting();
+            submit(currPage, 'draft');
+        });
     }
 
     if ($('#nextBtn').length > 0) {
