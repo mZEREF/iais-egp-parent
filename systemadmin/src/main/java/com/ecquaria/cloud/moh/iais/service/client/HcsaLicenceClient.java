@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -29,4 +30,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/lic-common/lic-licenseeId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getActiveLicencesByLicenseeId(@RequestParam("licenseeId") String licenseeId);
+
+    @GetMapping(value = "/lic-common/ds-center-organizationId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrganizationId(@RequestParam("organizationId") String organizationId);
 }

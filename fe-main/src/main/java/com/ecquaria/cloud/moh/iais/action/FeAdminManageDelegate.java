@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -98,7 +99,7 @@ public class FeAdminManageDelegate {
                 }
             });
             CrudHelper.doPaging(searchParam,bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId()));
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);

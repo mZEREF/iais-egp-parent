@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -162,7 +163,7 @@ public class FeUserManagement {
         } else {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) intranetUserService.getRoleSelection(feUserDto.getLicenseeId()));
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) intranetUserService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),feUserDto.getLicenseeId(),feUserDto.getOrganization()));
         ParamUtil.setSessionAttr(bpc.request, "feusertitle", "Edit");
         ParamUtil.setRequestAttr(bpc.request,FeUserConstants.SESSION_USER_UEN_NAME,feUserDto.getUenNo());
         ParamUtil.setRequestAttr(bpc.request,"organizationId",feUserDto.getOrgId());
@@ -370,9 +371,7 @@ public class FeUserManagement {
         if(organizationDto == null){
             return  intranetUserService.getRoleSelection(null);
         }
-        if(organizationDto.getLicenseeDto() == null){
-            return  intranetUserService.getRoleSelection(null);
-        }
-        return intranetUserService.getRoleSelection(organizationDto.getLicenseeDto().getId());
+        return intranetUserService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),
+                organizationDto.getLicenseeDto() == null ? "" : organizationDto.getLicenseeDto().getId(),organizationDto.getId());
     }
 }

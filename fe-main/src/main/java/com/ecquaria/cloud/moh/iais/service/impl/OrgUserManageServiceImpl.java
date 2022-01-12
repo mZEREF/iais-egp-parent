@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
@@ -681,16 +682,33 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<SelectOption> getRoleSelection(String licenseeId) {
-        List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+    public List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId) {
         List<String> strings = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isNotEmpty(licenceDtos)){
-            licenceDtos.stream().forEach(licenceDto ->{
-                if(!strings.contains(licenceDto.getSvcName())){
-                    strings.add(licenceDto.getSvcName());
+        if(fromDsCenter){
+            if(StringUtil.isNotEmpty(orgId)){
+                List<DsCenterDto> dsCenterDtos = licenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+                if(IaisCommonUtils.isNotEmpty(dsCenterDtos)){
+                    dsCenterDtos.stream().forEach(dsCenterDto -> {
+                        if(!strings.contains(dsCenterDto.getCenterType())){
+                            strings.add(dsCenterDto.getCenterType());
+                        }
+                    });
                 }
-            } );
+                return IaisEGPHelper.getRoleSelectionByDsCenter(strings);
+            }
+        }else {
+            if(StringUtil.isNotEmpty(licenseeId)){
+            List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+            if(IaisCommonUtils.isNotEmpty(licenceDtos)){
+                licenceDtos.stream().forEach(licenceDto ->{
+                    if(!strings.contains(licenceDto.getSvcName())){
+                        strings.add(licenceDto.getSvcName());
+                    }
+                } );
+            }
+            return IaisEGPHelper.getRoleSelection(strings);
+          }
         }
-        return IaisEGPHelper.getRoleSelection(strings);
+        return IaisEGPHelper.getRoleSelection(null);
     }
 }

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -147,7 +148,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
     private static  Map<String,List<String>> SVC_ROLE_MAP = getSvcRoleMap();
     private static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
-    private static  List<String> ROLES = IaisCommonUtils.genNewArrayList(3);
+    private static  Map<String,String> CENTER_TYPE_ROLE_MAP = getCenterTypeRoleMap();
     /**
      * @author: Shicheng on 2021/07/16 15:03
      */
@@ -975,7 +976,7 @@ public final class IaisEGPHelper extends EGPHelper {
     public static List<SelectOption> getRoleSelection(List<String> svcNames) {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(RoleConsts.USER_ROLE_ORG_USER));
-       if(IaisCommonUtils.isEmpty(svcNames) && IaisCommonUtils.isEmpty(SVC_ROLE_MAP)){
+       if(IaisCommonUtils.isEmpty(svcNames) || IaisCommonUtils.isEmpty(SVC_ROLE_MAP)){
            return selectOptions;
        }
         svcNames.stream().forEach( s-> {
@@ -994,8 +995,42 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static List<String> getRoles(){
-        ROLES.clear();
-        ROLES.addAll(ROLE_ROLE_ROLE_NAME_MAP.keySet());
-        return ROLES;
+        List<String> stringList = IaisCommonUtils.genNewArrayList();
+        stringList.addAll(ROLE_ROLE_ROLE_NAME_MAP.keySet());
+        return stringList;
+    }
+
+    public static List<SelectOption> getRoleSelectionByDsCenter(List<String> centerTypes){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(RoleConsts.USER_ROLE_ORG_USER));
+        if(IaisCommonUtils.isEmpty(centerTypes) || IaisCommonUtils.isEmpty(CENTER_TYPE_ROLE_MAP)){
+            return selectOptions;
+        }
+        centerTypes.stream().forEach( s-> {
+            String value = CENTER_TYPE_ROLE_MAP.get(s);
+            if(StringUtil.isNotEmpty(value)){
+                SelectOption selectOption = ROLE_ROLE_ROLE_NAME_MAP.get(value);
+                if(!selectOptions.contains(selectOption)){
+                        selectOptions.add(selectOption);
+                }
+            }
+        });
+        selectOptions.sort(SelectOption::compareTo);
+        return selectOptions;
+    }
+
+
+    private static Map<String,String> getCenterTypeRoleMap(){
+        if(IaisCommonUtils.isNotEmpty(CENTER_TYPE_ROLE_MAP)){
+            return CENTER_TYPE_ROLE_MAP;
+        }else {
+            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(8);
+            stringStringMap.put(DataSubmissionConsts.DS_AR,RoleConsts.USER_ROLE_DS_AR);
+            stringStringMap.put(DataSubmissionConsts.DS_DRP,RoleConsts.USER_ROLE_DS_DP);
+            stringStringMap.put(DataSubmissionConsts.DS_LDT,RoleConsts.USER_ROLE_DS_LDT);
+            stringStringMap.put(DataSubmissionConsts.DS_VSS,RoleConsts.USER_ROLE_DS_VSS);
+            stringStringMap.put(DataSubmissionConsts.DS_TOP,RoleConsts.USER_ROLE_DS_TOP);
+            return Collections.unmodifiableMap(stringStringMap);
+        }
     }
 }
