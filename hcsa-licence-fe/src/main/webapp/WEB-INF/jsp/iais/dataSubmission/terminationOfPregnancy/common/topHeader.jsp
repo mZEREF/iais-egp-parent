@@ -9,7 +9,7 @@
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/top_common.js"></script>
 
-<input type="hidden" name="ar_page" value="${currentPageStage}"/>
+<input type="hidden" name="top_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">
 
