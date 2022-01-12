@@ -10,15 +10,12 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-
+        <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -165,4 +162,3 @@
         </div>
     </form>
 </div>
-<%@include file="../doDocument/uploadFile.jsp" %>

@@ -1,25 +1,24 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
+import sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,10 +45,12 @@ public class AORevocationDelegator {
 
     private final RevocationClient revocationClient;
     private final RoutingHistoryClient routingHistoryClient;
+    private final FileRepoClient fileRepoClient;
 
-    public AORevocationDelegator(RevocationClient revocationClient, RoutingHistoryClient routingHistoryClient) {
+    public AORevocationDelegator(RevocationClient revocationClient, RoutingHistoryClient routingHistoryClient, FileRepoClient fileRepoClient) {
         this.revocationClient = revocationClient;
         this.routingHistoryClient = routingHistoryClient;
+        this.fileRepoClient = fileRepoClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -88,38 +89,24 @@ public class AORevocationDelegator {
             List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
             ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
         }
-        setRevocationDoc(request,revokeDto);
         ParamUtil.setSessionAttr(request, FROM, REVOCATION_TASK_LIST);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 
-    public void preConfirm(BaseProcessClass bpc) {
+    public void doValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SubmitRevokeDto revokeDto = getRevokeDto(request);
-        String reason = ParamUtil.getString(request, PARAM_REASON);
-        String remarks = ParamUtil.getString(request, PARAM_AO_REMARKS);
-        String aoDecision = ParamUtil.getString(request, PARAM_AO_DECISION);
-
-        String[] strArr = reason.split(";");
-        String a = strArr[strArr.length - 1];
-        char[] charStr = a.toCharArray();
-        StringBuilder sb = new StringBuilder();
-        for (char c : charStr) {
-            sb.append(c);
+        revokeDto.aoReqObjMapping(request);
+        //
+        PrimaryDocDto primaryDocDto;
+        if (revokeDto.getPrimaryDocDto() != null) {
+            primaryDocDto = revokeDto.getPrimaryDocDto();
+        } else {
+            primaryDocDto = new PrimaryDocDto();
         }
-        boolean contains = reason.contains(sb.toString());
-        //get user name
-        if (!contains) {
-            revokeDto.setReason(PARAM_REASON_TYPE_AO);
-            revokeDto.setReasonContent(reason);
-        }
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        revokeDto.setLoginUser(loginContext.getUserName());
-        revokeDto.setRemarks(remarks);
-        revokeDto.setAoRemarks(remarks);
-        revokeDto.setAoDecision(aoDecision);
-        revokeDto.setModule("aoRevoke");
-        setRevocationDoc(request,revokeDto);
+        primaryDocDto.reqObjMapping(request, "Revocation");
+        revokeDto.setPrimaryDocDto(primaryDocDto);
+        //
         validateData(revokeDto, request);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
@@ -127,24 +114,44 @@ public class AORevocationDelegator {
     public void approve(BaseProcessClass bpc) {
         SubmitRevokeDto submitRevokeDto = getRevokeDto(bpc.request);
         submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_APPROVED);
+        PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
+        if (primaryDocDto != null && !CollectionUtils.isEmpty(primaryDocDto.getToBeDeletedRepoIds())) {
+            deleteUnwantedDoc(primaryDocDto);
+            submitRevokeDto.setToBeDeletedDocIds(primaryDocDto.getToBeDeletedRepoIds());
+        }
         revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
     public void reject(BaseProcessClass bpc) {
         SubmitRevokeDto submitRevokeDto = getRevokeDto(bpc.request);
         submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_REJECTED);
+        PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
+        if (primaryDocDto != null && !CollectionUtils.isEmpty(primaryDocDto.getToBeDeletedRepoIds())) {
+            deleteUnwantedDoc(primaryDocDto);
+            submitRevokeDto.setToBeDeletedDocIds(primaryDocDto.getToBeDeletedRepoIds());
+        }
         revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
     public void routebackToDO(BaseProcessClass bpc) {
         SubmitRevokeDto submitRevokeDto = getRevokeDto(bpc.request);
         submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_DO);
+        PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
+        if (primaryDocDto != null && !CollectionUtils.isEmpty(primaryDocDto.getToBeDeletedRepoIds())) {
+            deleteUnwantedDoc(primaryDocDto);
+            submitRevokeDto.setToBeDeletedDocIds(primaryDocDto.getToBeDeletedRepoIds());
+        }
         revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
     public void routeToHM(BaseProcessClass bpc) {
         SubmitRevokeDto submitRevokeDto = getRevokeDto(bpc.request);
         submitRevokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_HM);
+        PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
+        if (primaryDocDto != null && !CollectionUtils.isEmpty(primaryDocDto.getToBeDeletedRepoIds())) {
+            deleteUnwantedDoc(primaryDocDto);
+            submitRevokeDto.setToBeDeletedDocIds(primaryDocDto.getToBeDeletedRepoIds());
+        }
         revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
@@ -155,18 +162,6 @@ public class AORevocationDelegator {
 
     private SubmitRevokeDto getDefaultRevokeDto() {
         return new SubmitRevokeDto();
-    }
-
-    public static void setRevocationDoc(HttpServletRequest request, SubmitRevokeDto revokeDto) {
-        if (!CollectionUtils.isEmpty(revokeDto.getDocRecordInfos())) {
-            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(revokeDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-            Set<String> docTypes = saveFiles.keySet();
-            ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-            ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-            ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
-        }
     }
 
     private void validateData(SubmitRevokeDto dto, HttpServletRequest request){
@@ -189,5 +184,21 @@ public class AORevocationDelegator {
         }
         ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
-
+    /** Delete unwanted documents in FE file repo.
+     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of repo IDs deleted in FE file repo
+     */
+    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
+        /* Ignore the failure when try to delete FE files because this is not a big issue.
+         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+        }
+        return toBeDeletedRepoIds;
+    }
 }

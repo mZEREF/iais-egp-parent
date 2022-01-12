@@ -10,12 +10,13 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-
+        <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
+        <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -62,7 +63,7 @@
                                                 <%@include file="revocationDetailInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="../doDocument/tabDocuments.jsp" %>
+                                                <%@include file="tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -74,6 +75,7 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
+                                                                    <%--@elvariable id="revokeDto" type="sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
@@ -83,7 +85,7 @@
                                                                                           name="reason"
                                                                                           cols="70"
                                                                                           rows="7"
-                                                                                          maxlength="500"></textarea>
+                                                                                          maxlength="500">${revokeDto.doReason}</textarea>
                                                                                 <span data-err-ind="reasonContent" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -96,7 +98,7 @@
                                                                                           name="DORemarks"
                                                                                           cols="70"
                                                                                           rows="7"
-                                                                                          maxlength="500"></textarea>
+                                                                                          maxlength="500">${revokeDto.doRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -127,4 +129,3 @@
         </div>
     </form>
 </div>
-<%@include file="../doDocument/ajaxUpload.jsp" %>

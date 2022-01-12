@@ -1,20 +1,19 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
@@ -25,10 +24,9 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
-import sop.servlet.webflow.HttpHandler;
+import sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,6 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
-import static sg.gov.moh.iais.egp.bsb.action.AORevocationDelegator.setRevocationDoc;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
@@ -55,14 +52,12 @@ public class DORevocationDelegator {
     private final RevocationClient revocationClient;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
     private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final RoutingHistoryClient routingHistoryClient;
 
-    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, RoutingHistoryClient routingHistoryClient) {
+    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, RoutingHistoryClient routingHistoryClient) {
         this.revocationClient = revocationClient;
         this.biosafetyEnquiryClient = biosafetyEnquiryClient;
         this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
         this.routingHistoryClient = routingHistoryClient;
     }
 
@@ -231,7 +226,6 @@ public class DORevocationDelegator {
                 }
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
-                setRevocationDoc(request, revokeDto);
                 //show routingHistory list
                 List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
                 ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
@@ -243,34 +237,19 @@ public class DORevocationDelegator {
 
     public void doValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String reason = ParamUtil.getString(request, PARAM_REASON);
-        String remarks = ParamUtil.getString(request, PARAM_DO_REMARKS);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
-        //get user name
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        revokeDto.setLoginUser(loginContext.getUserName());
-        revokeDto.setApplicationDt(new Date());
-        revokeDto.setReason(PARAM_REASON_TYPE_DO);
-        revokeDto.setReasonContent(reason);
-        revokeDto.setRemarks(remarks);
-        revokeDto.setModule("doRevoke");
-        revokeDto.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
-        revokeDto.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
-        setRevocationDoc(request,revokeDto);
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.reqObjMapping(mulReq,request,"Revocation");
+        revokeDto.doReqObjMapping(request);
+        //
+        PrimaryDocDto primaryDocDto;
+        if (revokeDto.getPrimaryDocDto()!=null) {
+            primaryDocDto = revokeDto.getPrimaryDocDto();
+        }else {
+            primaryDocDto = new PrimaryDocDto();
+        }
+        primaryDocDto.reqObjMapping(request,"Revocation");
         revokeDto.setPrimaryDocDto(primaryDocDto);
-        revokeDto.setDocType("Revocation");
-
-        //joint repoId exist
-        String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
-        revokeDto.setRepoIdNewString(newRepoId);
-        //set newDocFiles
-        revokeDto.setNewDocInfos(primaryDocDto.getNewDocTypeList());
-        //set need Validation value
-        revokeDto.setDocMetas(primaryDocDto.doValidation());
+        //
+        revokeDto.setDocMetas(primaryDocDto.doValidation("doRevoke"));
         validateData(revokeDto, request);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
@@ -282,30 +261,20 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
         SubmitRevokeDto submitRevokeDto = getRevokeDto(request);
         PrimaryDocDto primaryDocDto = submitRevokeDto.getPrimaryDocDto();
-        List<NewFileSyncDto> newFilesToSync = null;
-        if(primaryDocDto != null){
-            //complete simple save file to db and save data to dto for show in jsp
-            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+        if (primaryDocDto!=null){
+            if (!CollectionUtils.isEmpty(primaryDocDto.getToBeDeletedRepoIds())) {
+                deleteUnwantedDoc(primaryDocDto);
+                submitRevokeDto.setToBeDeletedDocIds(primaryDocDto.getToBeDeletedRepoIds());
+            }
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-
             //newFile change to saved File and save info to db
-            newFilesToSync = new ArrayList<>(primaryDocDto.newFileSaved(repoIds));
-            submitRevokeDto.setSavedInfos(primaryDocDto.getExistDocTypeList());
-        }else{
+            primaryDocDto.newFileSaved(repoIds);
+            submitRevokeDto.setSavedInfos(new ArrayList<>(primaryDocDto.getSavedDocMap().values()));
+        }else {
             log.info(KEY_NON_OBJECT_ERROR);
         }
         revocationClient.saveRevokeApplication(submitRevokeDto);
-        try {
-            // sync files to BE file-repo (save new added files, delete useless files)
-            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
-                /* Ignore the failure of sync files currently.
-                 * We should add a mechanism to retry synchronization of files in the future */
-                NewFileSyncDto[] newFileSyncDtoList = newFilesToSync.toArray(new NewFileSyncDto[0]);
-                bsbFileClient.syncFiles(newFileSyncDtoList);
-            }
-        } catch (Exception e) {
-            log.error("Fail to sync files to FE", e);
-        }
     }
 
     private EnquiryDto getSearchDto(HttpServletRequest request) {
@@ -348,5 +317,23 @@ public class DORevocationDelegator {
             actionType = ACTION_TYPE_SUBMIT;
         }
         ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
+    }
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of repo IDs deleted in FE file repo
+     */
+    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
+        /* Ignore the failure when try to delete FE files because this is not a big issue.
+         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+        }
+        return toBeDeletedRepoIds;
     }
 }
