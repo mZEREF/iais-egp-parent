@@ -928,7 +928,7 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static String getGiroSWIFTBICByBankCode(String bankCode){
-        return StringUtil.isEmpty(bankCode) ? "" : StringUtil.getNonNull(giroBankCodeSWIFTBICMap().get(bankCode));
+        return StringUtil.isEmpty(bankCode) ? "" : giroBankCodeSWIFTBICMap().getOrDefault(bankCode,bankCode);
     }
 
     private static Map<String,String> giroBankCodeSWIFTBICMap(){
