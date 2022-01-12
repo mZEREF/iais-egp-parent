@@ -79,6 +79,7 @@ public class ArWithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", null);
         DataSubmissionHelper.setCurrentArDataSubmission(null,bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
     }
@@ -97,12 +98,12 @@ public class ArWithdrawalDelegator {
         dataSubmissionDto.setCycleStage("");
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
-        DataSubmissionHelper.setCurrentArDataSubmission(newDto,bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);
 
     }
 
     public void withdrawalStep(BaseProcessClass bpc)  {
-        ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arSuperDataSubmission= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arWdDto");
         String remarks=ParamUtil.getString(bpc.request, "withdrawnRemarks");
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
 
@@ -128,7 +129,7 @@ public class ArWithdrawalDelegator {
             return;
         }
         arSuperDataSubmission.getDataSubmissionDto().setRemarks(remarks);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", arSuperDataSubmission);
 
     }
 
@@ -149,8 +150,7 @@ public class ArWithdrawalDelegator {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
 
-
-        ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arSuperDataSubmission= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arWdDto");
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         arSuperDataSubmission.setDsWithdrawCorrelationDtoList(list);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
