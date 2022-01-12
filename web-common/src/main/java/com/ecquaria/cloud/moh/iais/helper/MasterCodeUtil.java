@@ -134,6 +134,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
     public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
+    public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
     /**
      * @description: refresh the master codes into cache
      *
@@ -426,6 +427,16 @@ public final class MasterCodeUtil {
         }
         list.add(mc);
         rch.set(CACHE_NAME_FILTER, mc.getFilterValue(), list);
+    }
+
+    public static String getDecByCateIdAndCodeValue(String cateId,String codeValue){
+        if(StringUtil.isEmpty(codeValue)){ return "";}
+        for (MasterCodeView masterCodeView : retrieveCateSource(cateId)) {
+            if(codeValue.equalsIgnoreCase(masterCodeView.getCodeValue())){
+                return StringUtil.isEmpty(masterCodeView.getDescription()) ? codeValue : masterCodeView.getDescription();
+            }
+        }
+        return codeValue;
     }
 
     private MasterCodeUtil() {throw new IllegalStateException("Util class");}
