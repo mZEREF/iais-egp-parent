@@ -525,14 +525,17 @@ public class NotificationHelper {
 		dto.setDtoObject(JsonUtil.parseToJson(interMessageDto));
 		dto.setRefNo(interMessageDto.getRefNo());
 		dto.setModuleName(moduleName);
-		eicClient.saveEicTrack(dto);
-		callEicInterMsg(interMessageDto);
-		dto = eicClient.getPendingRecordByReferenceNumber(interMessageDto.getRefNo()).getEntity();
+		dto = eicClient.saveEicTrack(dto).getEntity();
 		Date now = new Date();
 		dto.setProcessNum(1);
 		dto.setFirstActionAt(now);
 		dto.setLastActionAt(now);
-		dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+		try {
+			callEicInterMsg(interMessageDto);
+			dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+		} catch (Throwable e) {
+			log.error(e.getMessage(), e);
+		}
 		List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
 		list.add(dto);
 		eicClient.updateStatus(list);

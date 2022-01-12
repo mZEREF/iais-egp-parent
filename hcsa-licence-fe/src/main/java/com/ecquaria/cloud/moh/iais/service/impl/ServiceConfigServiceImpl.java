@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -44,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -772,7 +770,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
             }
             if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
-                 return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),IaisEGPHelper.getGiroSWIFTBICByBankCode(orgGiroAccountInfoDto.getBankCode()));
+                 return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()));
             }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
                log.info(StringUtil.changeForLog("-------- groupNo :"+ groupNo +" ,giro account is null------------"));
             }else {
