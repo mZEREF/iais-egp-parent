@@ -196,6 +196,7 @@
                                                                             <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                         </c:if>
                                                                 <div style="text-align: right">
+                                                                    <a href="/bsb-be/eservice/INTRANET/MohBsbTaskList" class="btn btn-secondary">Cancel</a>
                                                                     <c:if test="${suspensionReinstatementDto.approvalProcessType eq 'PROTYPE005'}">
                                                                         <button id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                                     </c:if>

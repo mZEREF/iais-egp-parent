@@ -161,9 +161,8 @@
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
                                                                 <div style="text-align: right">
-                                                                    <button id="submitBtn" class="btn btn-primary">
-                                                                        Submit
-                                                                    </button>
+                                                                    <a href="/bsb-be/eservice/INTRANET/MohBsbTaskList" class="btn btn-secondary">Cancel</a>
+                                                                    <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
