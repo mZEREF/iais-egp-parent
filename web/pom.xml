@@ -14,7 +14,7 @@
         <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>web</artifactId>
-            <version>20.04.6</version>
+            <version>20.04.7</version>
             <type>war</type>
         </dependency>
     </dependencies>
