@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.PatientInfoExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -252,17 +253,13 @@ public class PatientUploadDelegate {
         for (PatientInfoExcelDto patientInfoExcelDto : patientInfoExcelDtoList) {
             PatientInfoDto dto = new PatientInfoDto();
             PatientDto patient = MiscUtil.transferEntityDto(patientInfoExcelDto, PatientDto.class);
-            if (StringUtil.isNotEmpty(patient.getName())) {
-                patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
-            }
             patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
-            // for oval validation
-            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
+            DsRfcHelper.handlePatient(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
             if (patient.isPreviousIdentification()) {
@@ -280,16 +277,13 @@ public class PatientUploadDelegate {
                 dto.setPrevious(previous);
             }
             HusbandDto husbandDto = new HusbandDto();
-            if (StringUtil.isNotEmpty(patientInfoExcelDto.getNameHbd())) {
-                husbandDto.setName(patientInfoExcelDto.getNameHbd().toUpperCase(AppConsts.DFT_LOCALE));
-            }
+            husbandDto.setName(patientInfoExcelDto.getNameHbd());
             husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            // for oval validation
-            husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
+            DsRfcHelper.handleHusband(husbandDto);
             dto.setHusband(husbandDto);
             result.add(dto);
         }

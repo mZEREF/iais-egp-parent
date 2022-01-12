@@ -121,6 +121,7 @@ public class PatientInfoValidator implements CustomizeValidator {
             map.putAll(result.retrieveAll("", "Hbd"));
         }
         if (!map.containsKey("idNumberHbd") && !StringUtil.isEmpty(husband.getIdNumber())
+                && !StringUtil.isEmpty(husband.getIdType()) && !StringUtil.isEmpty(husband.getNationality())
                 && husband.getIdNumber().equals(patient.getIdNumber())
                 && Objects.equals(husband.getIdType(), patient.getIdType())
                 && Objects.equals(husband.getNationality(), patient.getNationality())) {
@@ -183,22 +184,22 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(patientInfo.getIsPreviousIdentification())) {
                 map.put("isPreviousIdentification", "GENERAL_ERR0006");
             }
-            if ("".equals(patient.getIdType())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getIdType())) {
                 map.put("idType", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(patient.getNationality())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getNationality())) {
                 map.put("nationality", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(patient.getEthnicGroup())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getEthnicGroup())) {
                 map.put("ethnicGroup", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getIdType())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getIdType())) {
                 map.put("idTypeHbd", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getNationality())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getNationality())) {
                 map.put("nationalityHbd", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getEthnicGroup())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getEthnicGroup())) {
                 map.put("ethnicGroupHbd", ERR_MSG_INVALID_DATA);
             }
         }

@@ -81,4 +81,6 @@ public class DataSubmissionConstant {
 
 
     public static String RFC_NO_CHANGE_ERROR               = "RFC_NO_CHANGE_ERROR";
+
+    public static String DFT_ERROR_MC                      = "-1";
 }

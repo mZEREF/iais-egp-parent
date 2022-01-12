@@ -651,7 +651,7 @@ public final class DataSubmissionHelper {
                 .filter(dto -> codeValue.equals(dto.getCodeValue()))
                 .map(MasterCodeView::getCode)
                 .findAny()
-                .orElse("");
+                .orElse(DataSubmissionConstant.DFT_ERROR_MC);
     }
 
     private boolean validateCodeValue(String codeValue, List<MasterCodeView> masterCodes) {

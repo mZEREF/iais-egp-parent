@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -88,20 +89,11 @@ public class PatientDelegator extends CommonDelegator {
             patient.setId(null);
         }
         ControllerHelper.get(request, patient);
-        if (StringUtil.isNotEmpty(patient.getName())) {
-            patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
-        }
-        // for oval validation
-        if (StringUtil.isEmpty(patient.getEthnicGroup())) {
-            patient.setEthnicGroup("");
-        }
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        // for oval validation
-        patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
-        patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
+        DsRfcHelper.handlePatient(patient);
         patientInfo.setPatient(patient);
         String patientCode = patient.getPatientCode();
         // check previous
@@ -127,11 +119,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
-        if (StringUtil.isNotEmpty(husband.getName())) {
-            husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
-        }
-        // for oval validation
-        husband.setEthnicGroupOther(StringUtil.getNonNull(husband.getEthnicGroupOther()));
+        DsRfcHelper.handleHusband(husband);
         patientInfo.setHusband(husband);
         String amendReason = ParamUtil.getString(request, "amendReason");
         String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
