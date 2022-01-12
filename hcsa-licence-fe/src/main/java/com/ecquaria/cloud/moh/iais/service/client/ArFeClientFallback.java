@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Arrays;
 import java.util.Date;
@@ -241,4 +242,8 @@ public class ArFeClientFallback implements ArFeClient {
         return getFeignResponseEntity(patientCode);
     }
 
+    @Override
+    public FeignResponseEntity<TransferInOutStageDto> getOutStageByPatientAndHciCode(String patientCode, String receiveHciCode) {
+        return getFeignResponseEntity(patientCode, receiveHciCode);
+    }
 }

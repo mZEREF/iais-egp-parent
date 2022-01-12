@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -817,5 +818,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
         return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
                 0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
+    }
+
+    @Override
+    public TransferInOutStageDto getCorrespondOutStageDto(String patientCode, String ReceiveHciCode){
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(ReceiveHciCode)){
+            log.info(StringUtil.changeForLog("------ No patientCode or ReceiveHciCode -----"));
+            return null;
+        }
+        return arFeClient.getOutStageByPatientAndHciCode(patientCode, ReceiveHciCode).getEntity();
     }
 }

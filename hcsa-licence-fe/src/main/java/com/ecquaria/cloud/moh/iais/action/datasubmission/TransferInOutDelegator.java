@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,8 @@ public class TransferInOutDelegator extends CommonDelegator {
     LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     NotificationHelper notificationHelper;
+    @Autowired
+    ArDataSubmissionService arDataSubmissionService;
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -84,7 +88,16 @@ public class TransferInOutDelegator extends CommonDelegator {
                 }
             }
         }
-
+        //3.3.3.3.4 flag discrepancy
+        if (transferInOutStageDto.getTransferType().equals("in")){
+            CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+            if (cycleDto != null) {
+                TransferInOutStageDto outStageDto = arDataSubmissionService.getCorrespondOutStageDto(cycleDto.getPatientCode(), cycleDto.getHciCode());
+                if (outStageDto != null) {
+                    flagInAndOutDiscrepancy(bpc.request, transferInOutStageDto, outStageDto);
+                }
+            }
+        }
     }
 
     @Override
@@ -173,5 +186,21 @@ public class TransferInOutDelegator extends CommonDelegator {
             }
         }
         return result;
+    }
+
+    private void flagInAndOutDiscrepancy(HttpServletRequest request, TransferInOutStageDto inStageDto, TransferInOutStageDto outStageDto) {
+        boolean diffWas = !inStageDto.getTransferredList().equals(outStageDto.getTransferredList());
+        boolean diffOocyte = !inStageDto.getOocyteNum().equals(outStageDto.getOocyteNum());
+        boolean diffEmbryo = !inStageDto.getEmbryoNum().equals(outStageDto.getEmbryoNum());
+        boolean diffSpermVial = !inStageDto.getSpermVialsNum().equals(outStageDto.getSpermVialsNum());
+        boolean diffIsDonor = inStageDto.isFromDonor() != outStageDto.isFromDonor();
+        boolean diffDate = inStageDto.getTransferDate().equals(outStageDto.getTransferDate());
+
+        ParamUtil.setRequestAttr(request, "diffWas", diffWas);
+        ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
+        ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
+        ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
+        ParamUtil.setRequestAttr(request, "diffIsDonor", diffIsDonor);
+        ParamUtil.setRequestAttr(request, "diffDate", diffDate);
     }
 }
