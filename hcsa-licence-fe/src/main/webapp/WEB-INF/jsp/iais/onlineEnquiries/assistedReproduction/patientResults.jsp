@@ -224,10 +224,10 @@
                                                         </td>
 
                                                         <td >
-                                                            <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
-                                                                Quick View
-                                                            </button>
-                                                            <br>
+<%--                                                            <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">--%>
+<%--                                                                Quick View--%>
+<%--                                                            </button>--%>
+<%--                                                            <br>--%>
                                                             <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
