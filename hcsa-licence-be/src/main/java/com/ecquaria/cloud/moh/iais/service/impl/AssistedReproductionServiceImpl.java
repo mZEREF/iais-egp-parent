@@ -41,8 +41,6 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Autowired
     private AssistedReproductionClient assistedReproductionClient;
 
-
-
     @Override
     public SearchResult<AssistedReproductionEnquiryResultsDto> searchPatientByParam(SearchParam searchParam) {
         return assistedReproductionClient.searchPatientByParam(searchParam).getEntity();
