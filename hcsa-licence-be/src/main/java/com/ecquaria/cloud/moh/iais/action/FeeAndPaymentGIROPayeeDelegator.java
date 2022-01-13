@@ -315,14 +315,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String branchCode =ParamUtil.getString(request,"branchCode");
         String bankName= ParamUtil.getString(request,"bankName");
         String bankAccountNo =ParamUtil.getString(request,"bankAccountNo");
-        //String cusRefNo =ParamUtil.getString(request,"cusRefNo");
+        String cusRefNo =ParamUtil.getString(request,"cusRefNo");
         String remarks =ParamUtil.getString(request,"remarks");
         ParamUtil.setSessionAttr(request,"acctName",acctName);
         ParamUtil.setSessionAttr(request,"bankCode",bankCode);
         ParamUtil.setSessionAttr(request,"branchCode",branchCode);
         ParamUtil.setSessionAttr(request,"bankName",bankName);
         ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
-        //ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
+        ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
         ParamUtil.setSessionAttr(request,"remarks",remarks);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
@@ -387,18 +387,18 @@ public class FeeAndPaymentGIROPayeeDelegator {
 //                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
 //            }
 //        }
-//        if(StringUtil.isEmpty(cusRefNo)){//35
-//            errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
-//        }else {
-//            if(cusRefNo.length()>35){
-//                repMap.put("number","35");
-//                repMap.put("fieldNo","Customer Reference No");
-//                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-//            }
-//            if(!isAlphanumeric(cusRefNo)){
-//                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
-//            }
-//        }
+        if(StringUtil.isEmpty(cusRefNo)){//35
+            errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
+        }else {
+            if(cusRefNo.length()>35){
+                repMap.put("number","35");
+                repMap.put("fieldNo","DDA Ref No");
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumericSpaceChar(cusRefNo)){
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
+        }
         if(!StringUtil.isEmpty(remarks)){//4000
             if(remarks.length()>4000){
                 repMap.put("number","4000");
@@ -498,7 +498,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setAcctName(acctName);
             giroAccountInfoDto.setAcctNo(bankAccountNo);
             giroAccountInfoDto.setBranchCode(branchCode);
-            //giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
+            giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
             //giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
