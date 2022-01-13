@@ -601,7 +601,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String newDateString   = Formatter.formatDateTime(new Date(),Formatter.DATE_CMS_INTERFACE);
         String receivingPartyName = ConfigHelper.getString( "col.giro.dbs.data.receiving.party.name","client 1");
         String transactionCode = ConfigHelper.getString( "col.giro.dbs.data.transaction.code","30");
-        String ddaReference = ConfigHelper.getString("col.giro.dbs.data.dda.reference","TM199206031W");
         String paymentDetails =ConfigHelper.getString("col.giro.dbs.data.payment.details","M Log Trust");
         String purposeofPayment = ConfigHelper.getString("col.giro.dbs.data.purposeofpayment","SUPP");
         String deliveryMode = ConfigHelper.getString("col.giro.dbs.data.delivery.mode","");
@@ -634,8 +633,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setReceivingAccountNumber(giroAccount);
                 inputDetailDto.setCountrySpecific("");
                 inputDetailDto.setReceivingBankCode("");
-                inputDetailDto. setReceivingBranchCode("");
-                inputDetailDto. setClearingCode("");
+                inputDetailDto.setReceivingBranchCode("");
+                inputDetailDto.setClearingCode("");
                 inputDetailDto.setBeneficiaryBankSWIFTBIC(accountBicList.get(1));
                 inputDetailDto.setBeneficiaryBankName("");
                 inputDetailDto.setBeneficiaryBankAddress("");
@@ -650,7 +649,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setAmounttobeUtilized2 ("");
                 inputDetailDto.setTransactionCode(transactionCode);
                 inputDetailDto.setParticulars(giroGroupDataDto.getAppGroupNo()+ giroPaymentXmlDto.getBatchId());
-                inputDetailDto.setDdaReference(ddaReference);
+                inputDetailDto.setDdaReference(accountBicList.get(2));
                 inputDetailDto.setPaymentDetails(paymentDetails);
                 inputDetailDto.setInstructiontoOrderingBank("");
                 inputDetailDto.setBeneficiaryResidentStatus("");
@@ -770,7 +769,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
             }
             if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
-                 return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()));
+                  // index 2 : dda refNo
+                 return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()),StringUtil.getNonNull(orgGiroAccountInfoDto.getCustomerReferenceNo()));
             }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
                log.info(StringUtil.changeForLog("-------- groupNo :"+ groupNo +" ,giro account is null------------"));
             }else {

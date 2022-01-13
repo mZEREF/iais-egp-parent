@@ -124,7 +124,12 @@
                                             <c:out value="${bankAccountNo}"/>
                                         </div>
                                     </iais:row>
-
+                                    <iais:row>
+                                        <label class="col-xs-0 col-md-4 ">DDA Ref No. <span class="mandatory">*</span></label>
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
+                                            <c:out value="${cusRefNo}"/>
+                                        </div>
+                                    </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">GIRO Form </label>
                                         <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
