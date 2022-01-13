@@ -25,7 +25,7 @@
         <c:set var="appTab" value="1"/>
         <c:set var="licTab" value="1"/>
     </c:if>
-    <c:if test="${privilege.id eq 'HALP_MOH_DS_ART'}">
+    <c:if test="${privilege.id gt 'HALP_MOH_DS_'}">
         <c:set var="msgTab" value="1"/>
         <c:set var="dssTab" value="1"/>
     </c:if>

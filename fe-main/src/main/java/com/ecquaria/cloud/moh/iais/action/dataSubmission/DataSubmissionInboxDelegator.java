@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.privilege.Privilege;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -35,8 +36,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wangyu
@@ -76,9 +77,7 @@ public class DataSubmissionInboxDelegator {
 
 	public void initData(HttpServletRequest request){
 		clearSession(request);
-		LoginContext loginContext = AccessUtil.getLoginUser(request);
-		List<String> types = FeInboxHelper.getDsTypes(loginContext.getRoleIds());
-		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
+		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 	}
 
