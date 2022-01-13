@@ -105,7 +105,7 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(ApplicationLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("start_date").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("LIC_APP_KEY_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
 
     private static final Set<String> appStatuses = ImmutableSet.of(
