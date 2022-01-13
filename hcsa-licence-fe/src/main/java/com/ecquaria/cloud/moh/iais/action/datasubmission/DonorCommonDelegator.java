@@ -255,6 +255,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     protected String checkDonorsVerifyPass(List<DonorDto> arDonorDtos,HttpServletRequest request){
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && IaisCommonUtils.isNotEmpty(arDonorDtos)){
             Map<String, String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP);
+            if(IaisCommonUtils.isEmpty(errorMap)){
+                return AppConsts.YES;
+            }
             for(String key : errorMap.keySet()){
                 if(!(key.contains("age") || key.contains("relation"))){
                     return AppConsts.YES;
