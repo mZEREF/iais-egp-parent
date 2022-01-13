@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -80,9 +81,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     FeMessageClient feMessageClient;
 
     @Autowired
-    private LicenceClient licenceClient;
-
-    @Autowired
     private ArFeClient arFeClient;
 
     @Autowired
@@ -97,26 +95,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
+    @Autowired
+    private DsLicenceService dsLicenceService;
+
     private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
-            return IaisCommonUtils.genNewHashMap();
-        }
-        List<String> svcNames = new ArrayList<>();
-        //TODO
-        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
-        List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
-        if (premisesDtos == null || premisesDtos.isEmpty()) {
-            return premisesDtoMap;
-        }
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto, DataSubmissionConsts.DS_AR),
-                    premisesDto);
-        }
-        return premisesDtoMap;
+        return dsLicenceService.getArCenterPremises(licenseeId);
     }
 
     @Override

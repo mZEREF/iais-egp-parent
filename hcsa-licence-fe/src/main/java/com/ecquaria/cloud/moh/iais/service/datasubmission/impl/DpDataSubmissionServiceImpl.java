@@ -7,18 +7,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,24 +48,12 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     @Autowired
     private AppSubmissionService appSubmissionService;
 
+    @Autowired
+    private DsLicenceService dsLicenceService;
 
     @Override
     public Map<String, PremisesDto> getDpCenterPremises(String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
-            return IaisCommonUtils.genNewHashMap();
-        }
-        List<String> svcNames = new ArrayList<>();
-        //TODO
-        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
-        List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
-        if (premisesDtos == null || premisesDtos.isEmpty()) {
-            return premisesDtoMap;
-        }
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto), premisesDto);
-        }
-        return premisesDtoMap;
+        return dsLicenceService.getDpCenterPremises(licenseeId);
     }
 
     @Override
