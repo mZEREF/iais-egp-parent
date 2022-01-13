@@ -129,13 +129,13 @@
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                                 <c:choose>
-                                                                    <c:when test="${app.processType eq 'PROTYPE001'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
-                                                                    <c:when test="${app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004')}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohViewApprovalPossessApplication?appId=<iais:mask name='id' value='${app.id}'/>&processType=${app.processType}<c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
-                                                                    <c:when test="${app.processType eq 'PROTYPE005'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -164,16 +164,19 @@
                                                                 <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
                                                                     <c:choose>
-                                                                        <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
-                                                                        <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
-                                                                        <c:when test="${(app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationFacility?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Edit</option>
                                                                         </c:when>
-                                                                        <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
                                                                     </c:choose>
