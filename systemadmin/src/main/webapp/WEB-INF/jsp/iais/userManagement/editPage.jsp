@@ -144,6 +144,7 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Roles" width="5" required="true" id="assignRoleTitle" />
+                            <iais:value width="7" cssClass="col-md-7">
                             <c:forEach var="role" items="${SESSION_NAME_ROLES}" >
                                 <c:set var="value" value="${role.value}"/>
                                 <c:set var="roles" value="${inter_user_attr.roles}"/>
@@ -160,6 +161,7 @@
                                         <c:out value="${role.text}"/></label>
                                 </div>
                             </c:forEach>
+                            </iais:value>
                             <iais:value width="4" cssClass="col-md-4"/>
                             <iais:value width="3" cssClass="col-md-3">
                                 <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
