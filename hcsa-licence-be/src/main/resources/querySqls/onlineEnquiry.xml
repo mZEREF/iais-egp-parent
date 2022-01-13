@@ -518,12 +518,12 @@
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
             dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
-                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID)  cycle_no
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002')  cycle_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
 
                 where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
@@ -538,7 +538,7 @@
 
     <sql key = "searchCycleStageByPatientCode" remarks="search Cycle Stage">
         <![CDATA[
-            SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
+            SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002') cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
              where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011') and dds.STATUS != 'DS002'
