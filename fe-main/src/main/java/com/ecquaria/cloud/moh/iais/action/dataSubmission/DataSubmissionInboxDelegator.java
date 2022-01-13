@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
@@ -454,15 +455,34 @@ public class DataSubmissionInboxDelegator {
 		}else if(!checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT) && (actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
-				if(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
-					return 3;
+				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
+				List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
+				Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+				for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+				) {
+					if(!dataSubmissionDto.getSubmitDt().before(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt())){
+						ArSuperDataSubmissionDto arSuperData = licenceInboxClient.getArSuperDataSubmissionDto(
+								dataSubmissionDto.getSubmissionNo()).getEntity();
+						dataSubmissionDtoMap.put(arSuperData.getDataSubmissionDto().getSubmissionNo(),arSuperData);
+					}
 				}
-				if(arSuperDataSubmissionDto.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
-					return 5;
+				for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
+				) {
+					addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
 				}
-				if(arSuperDataSubmissionDto.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
-					return 4;
+				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
+					 ) {
+					if(arWd.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+						return 3;
+					}
+					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
+						return 5;
+					}
+					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
+						return 4;
+					}
 				}
+
 				if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
 					PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
 					List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();

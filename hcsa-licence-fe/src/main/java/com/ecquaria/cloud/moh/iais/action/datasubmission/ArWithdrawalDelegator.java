@@ -64,7 +64,7 @@ public class ArWithdrawalDelegator {
 
             for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
             ) {
-                if(!dataSubmissionDto.getSubmitDt().before(arSuper.getDataSubmissionDto().getSubmitDt())&&!dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)&&!dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
+                if(!dataSubmissionDto.getSubmitDt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
                     ArSuperDataSubmissionDto arSuperDataSubmissionDto = assistedReproductionService.getArSuperDataSubmissionDto(
                             dataSubmissionDto.getSubmissionNo());
                     dataSubmissionDtoMap.put(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo(),arSuperDataSubmissionDto);
