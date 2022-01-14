@@ -819,6 +819,9 @@ public class OfficerOnlineEnquiriesDelegator {
             String appAddress=rfiApplicationQueryDto.getPremType();
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=hcsaLicenceClient.getPremisesFloorUnits(premisesDto.getId()).getEntity();
             String licAddress=MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
+            if(StringUtil.isEmpty(premisesDto.getBlkNo())){
+                licAddress=" "+licAddress;
+            }
             if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                 reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                 reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
