@@ -53,4 +53,9 @@ public class INTERNET___FE_Singpass_Landing___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "hasMohIssueUen", this);
 	}
 
+	public void redirectToInbox_OnStepProcess_0() throws Exception {
+	// 		redirectToInbox->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "redirectToInbox", this);
+	}
+
 }
