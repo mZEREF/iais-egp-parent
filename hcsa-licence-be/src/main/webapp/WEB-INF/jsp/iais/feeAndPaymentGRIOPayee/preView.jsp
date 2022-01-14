@@ -125,7 +125,7 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">DDA Ref No. <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">DDA Ref No. </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${cusRefNo}"/>
                                         </div>
