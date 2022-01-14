@@ -23,4 +23,6 @@ public class ModuleCommonConstants {
 
     // draft
     public static final String KEY_IND_AFTER_SAVE_AS_DRAFT          = "AFTER_SAVE_AS_DRAFT";
+
+    public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
 }
