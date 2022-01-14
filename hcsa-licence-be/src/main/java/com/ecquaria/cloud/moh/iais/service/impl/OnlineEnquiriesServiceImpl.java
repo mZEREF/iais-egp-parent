@@ -894,6 +894,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 HcsaServiceSubTypeDto hcsaServiceSubTypeDto=hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity();
                 if(hcsaServiceSubTypeDto!=null&&hcsaServiceSubTypeDto.getSubtypeName()!=null){
                     a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());
+                    if("Please indicate".equals(a.getScopeName())){
+                        a.setScopeName(a.getOtherScopeName());
+                    }
                 }
             }
         }
