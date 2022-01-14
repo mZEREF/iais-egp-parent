@@ -66,4 +66,11 @@ public class INTERNET___FE_Corppass_Landing___1 extends BaseProcessClass {
 	public void receiveEntityFormEDH_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "receiveEntityFormEDH", this);
 	}
+
+
+
+	public void redirectToInbox_OnStepProcess_0() throws Exception {
+	// 		redirectToInbox->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "redirectToInbox", this);
+	}
 }

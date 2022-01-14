@@ -89,10 +89,7 @@ public class FESingpassLandingDelegator {
         UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
         if (us != null && lc != null && "Active".equals(us.getStatus())
                 && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/main-web/eservice/INTERNET/MohInternetInbox");
-            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+            redirectToInbox(bpc);
 
             return;
         }
@@ -297,6 +294,20 @@ public class FESingpassLandingDelegator {
             log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] END ...."));
         }
     }
+
+    /**
+     * AutoStep: redirectToInbox
+     *
+     * @param bpc
+     * @throws
+     */
+    public void redirectToInbox(BaseProcessClass bpc) {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/main-web/eservice/INTERNET/MohInternetInbox");
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+    }
+
     private void clearInfo(HttpServletRequest request){
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);
