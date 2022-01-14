@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,6 +191,7 @@ public class FeUserManagement {
             String name = ParamUtil.getString(request,"name");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
             String active = ParamUtil.getString(request,"active");
+            //admin role
             String role   = ParamUtil.getString(request,"role");
             String roles = ParamUtil.getStringsToString(request, "roles");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");

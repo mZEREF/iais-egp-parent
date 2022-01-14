@@ -179,12 +179,14 @@ public class FeAdminManageDelegate {
             String name = ParamUtil.getString(request,"name");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
             String active = ParamUtil.getString(request,"active");
+            //admin role
             String role   = ParamUtil.getString(request,"role");
             String roles = ParamUtil.getStringsToString(request, "roles");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String id = feUserDto.getId();
+            String oldRoles = feUserDto.getRoles();
             ControllerHelper.get(request,feUserDto);
             if(StringUtil.isEmpty(id)){
                 if(feUserDto.isCorpPass()){
@@ -216,7 +218,8 @@ public class FeAdminManageDelegate {
                 feUserDto.setUserRole(role);
             }else{
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                feUserDto.setUserRole(role);
+                feUserDto.setUserRole("user");
+                feUserDto.setRoles(oldRoles);
             }
 
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);

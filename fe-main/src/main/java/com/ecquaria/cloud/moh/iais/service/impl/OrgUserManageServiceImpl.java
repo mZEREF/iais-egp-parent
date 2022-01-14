@@ -369,15 +369,16 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
             //assign role
             if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
-                EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-                String roleName = feUserDto.getUserRole();
-                egpUserRole.setUserId(feUserDto.getUserId());
-                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                egpUserRole.setRoleId(roleName);
-                egpUserRole.setPermission("A");
-                //assign role
-                feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
+                if(RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(feUserDto.getUserRole())){
+                    EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                    String roleName = feUserDto.getUserRole();
+                    egpUserRole.setUserId(feUserDto.getUserId());
+                    egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                    egpUserRole.setRoleId(roleName);
+                    egpUserRole.setPermission("A");
+                    //assign role
+                    feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+                }
                 if(StringUtil.isNotEmpty(feUserDto.getRoles())){
                     List<String> roles = Arrays.asList(feUserDto.getRoles().split("#"));
                     roles.stream().forEach(o ->{
