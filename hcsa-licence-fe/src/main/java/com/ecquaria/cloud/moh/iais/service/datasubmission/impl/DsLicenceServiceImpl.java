@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,14 +32,15 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     @Autowired
     private LicenceClient licenceClient;
 
-    private static boolean tempCenterEnable;
-
-    static {
-        tempCenterEnable = ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false);
-    }
+    @Value("${halp.ds.tempCenter.enable:false}")
+    private boolean tempCenterEnable;
 
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
+
+    static {
+        System.out.println("-------------------tempCenterEnable---------------------");
+    }
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {

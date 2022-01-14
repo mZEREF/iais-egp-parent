@@ -226,7 +226,7 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/licence-dto-licensee-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(@RequestParam("licenseeId") String licenseeId);
 
-    @GetMapping(value = "/ds-center/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/ds-center/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrgIdAndCentreType(@PathVariable("orgId") String orgId,
             @RequestParam("centerType") String centerType);
 }
