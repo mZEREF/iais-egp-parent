@@ -672,7 +672,7 @@ public class ServiceMenuDelegator {
                             appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                             appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                             appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
-                            if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                            if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                                 List<HcsaServiceDto> baseServiceDtos =  getBaseBySpc(hcsaServiceCorrelationDtoList,hcsaServiceDto.getId());
                                 for(HcsaServiceDto hcsaServiceDto1:baseServiceDtos){
                                     if(svcIds.contains(hcsaServiceDto.getId())){
@@ -944,7 +944,7 @@ public class ServiceMenuDelegator {
                             chkBase.add(hcsaServiceDto.getId());
                         }
                         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                                 chkBase.add(appSvcRelatedInfoDto.getServiceId());
                             }
                         }
@@ -1131,12 +1131,12 @@ public class ServiceMenuDelegator {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                 if(hcsaServiceDto != null){
-                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcIds.add(hcsaServiceDto.getId());
                         if(appSelectSvcDto.isAlign()){
                             appSvcRelatedInfoDto.setAlignFlag(alignFlag);
                         }
-                    }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                    }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                         speSvcIds.add(hcsaServiceDto.getId());
                     }
                 }
