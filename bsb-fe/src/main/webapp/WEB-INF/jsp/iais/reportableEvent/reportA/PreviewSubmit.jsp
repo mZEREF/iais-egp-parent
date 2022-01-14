@@ -16,11 +16,12 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-incident.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-followup.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="common/dashboard.jsp" %>
+<%@include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -36,24 +37,81 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="form-horizontal">
-                                       <h3 style="margin: 10px 0;border-bottom: 0px">Preview Investigation Report</h3>
                                         <div class="form-group">
                                             <div class="col-sm-5 control-label">
                                                 <label for="referNo">Incident Reference No.</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <label id="referNo">${incidentDto.referenceNo}</label>
+                                                <label id="referNo">${previewA.referenceNo}</label>
                                             </div>
                                         </div>
 
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Type of Incident(s)</label>
+                                        <c:forEach var="item" items="${followup1A.infoADtoList}">
+                                            <h3 style="margin: 10px 0"><iais:code code="${item.incidentCause}"/></h3>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Explanation of cause</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.explainCause}"/></label>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${incidentDto.incidentType}</label>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Corrective measures and/or preventive measures to address the probable cause</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.measure}"/></label>
+                                                </div>
                                             </div>
-                                        </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Due date for implementation of corrective and/or preventive measures</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.implementEntityDate}"/></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Have all the identified corrective and preventive measures been implemented?</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.isImplemented}"/></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Elaborate on the reason(s) for the delay</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.delayReason}"/></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Specify expected date where all corrective and/or preventive measures will be implemented</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label><c:out value="${item.correctiveDate}"/></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label>Remarks</label>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label>${incidentDto.remarks}</label>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+
                                         <h3 style="margin: 10px 0;border-bottom: 0px">Incident Information</h3>
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
@@ -64,41 +122,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Facility Type(s)</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${incidentDto.facType}</label>
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Date of Incident</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${incidentDto.incidentDate}</label>
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Location</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${incidentDto.location}</label>
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Name of Agent or Toxin Involved</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${incidentDto.batNames}</label>
-                                            </div>
-                                        </div>
+
 
                                         <h3 style="margin: 10px 0;border-bottom: 0px">Investigation Team</h3>
                                         <div class="form-group ">
@@ -185,117 +212,6 @@
                                             </div>
 
                                         </c:forEach>
-                                        <h3 style="margin: 10px 0;border-bottom: 0px">Details of Medical Investigation</h3>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Name of Personnel</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.personnelName}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Updates on medical follow-up</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.medicalUpdate}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Interpretation of test results</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.testResult}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Is further medical follow-up advised/expected</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <c:if test="${medicalInvest.medicalFollowup eq 'Y'}"><label>Yes</label></c:if>
-                                                <c:if test="${medicalInvest.medicalFollowup eq 'N'}"><label>No</label></c:if>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Estimated duration and frequency of follow-up</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.fpDuration}</label>
-                                            </div>
-                                        </div>
-                                        <h3 style="margin: 10px 0;border-bottom: 0px">Additional Personnel Identified for Medical Investigation/Follow-up</h3>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Were there persons who were not identified during Notification of Incident but were subsequently identified during the course of investigation?</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <c:if test="${medicalInvest.isIdentified eq 'Y'}"><label>Yes</label></c:if>
-                                                <c:if test="${medicalInvest.isIdentified eq 'N'}"><label>No</label></c:if>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Name of Personnel</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.addPersonnelName}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Description of involvement</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.involvementDesc}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Description</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.description}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Interpretation of test results</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.addTestResult}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Is further medical follow-up advised/expected</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <c:if test="${medicalInvest.addMedicalFollowup eq 'Y'}"><label>Yes</label></c:if>
-                                                <c:if test="${medicalInvest.addMedicalFollowup eq 'N'}"><label>No</label></c:if>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label>Estimated duration and frequency of follow-up</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <label>${medicalInvest.addFpDuration}</label>
-                                            </div>
-                                        </div>
 
                                         <h3 style="margin: 10px 0;border-bottom: 0px">Attachments</h3>
                                         <c:forEach var="doc" items="${docSettings}">

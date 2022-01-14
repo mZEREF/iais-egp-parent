@@ -56,44 +56,50 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="expectedBatQty--v--${status.index}">Expected Quantity of Biological
-                                        Agent</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <input type="text" name="expectedBatQty--v--${status.index}"
-                                           id="expectedBatQty--v--${status.index}"
-                                           maxlength="66" value="${reqT.expectedBatQty}">
-                                    <span data-err-ind="expectedBatQty--v--${status.index}" class="error-msg"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="expReceivedQty--v--${status.index}">Expected Quantity to Receive</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <input type="number" name="expReceivedQty--v--${status.index}"
-                                           id="expReceivedQty--v--${status.index}" value="${reqT.expReceivedQty}"
-                                           maxlength="11"
-                                           οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
-                                    <span data-err-ind="expReceivedQty--v--${status.index}" class="error-msg"></span>
+                            <div id="agentEpFifth--v--${status.index}" style="display: none">
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="expectedBatQty--v--${status.index}">Expected Quantity of Biological
+                                            Agent</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <input type="text" name="expectedBatQty--v--${status.index}"
+                                               id="expectedBatQty--v--${status.index}"
+                                               maxlength="66" value="${reqT.expectedBatQty}">
+                                        <span data-err-ind="expectedBatQty--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="meaUnit--v--${status.index}">Unit of Measurement</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
+
+                            <div id="agentFifth--v--${status.index}" style="display: none">
+                                    <%--display for fifth schedule--%>
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="expReceivedQty--v--${status.index}">Expected Quantity to Receive</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <input type="number" name="expReceivedQty--v--${status.index}"
+                                               id="expReceivedQty--v--${status.index}" value="${reqT.expReceivedQty}"
+                                               maxlength="11"
+                                               οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
+                                        <span data-err-ind="expReceivedQty--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <iais:select name="meaUnit--v--${status.index}"
-                                                 id="meaUnit--v--${status.index}"
-                                                 value="${reqT.meaUnit}"
-                                                 codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                 firstOption="Please Select"/>
-                                    <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="meaUnit--v--${status.index}">Unit of Measurement</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <iais:select name="meaUnit--v--${status.index}"
+                                                     id="meaUnit--v--${status.index}"
+                                                     value="${reqT.meaUnit}"
+                                                     codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
+                                                     firstOption="Please Select"/>
+                                        <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
                         </section>

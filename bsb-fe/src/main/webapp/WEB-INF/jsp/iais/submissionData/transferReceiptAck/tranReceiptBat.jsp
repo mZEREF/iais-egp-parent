@@ -127,7 +127,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="actualReceiptDate">Date of Expected Transfer</label>
+                            <label for="actualReceiptDate">Actual Date of Receipt</label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
@@ -139,7 +139,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="actualReceiptTime">Expected Arrival Time at Receiving Facility </label>
+                            <label for="actualReceiptTime">Actual Time of Receipt</label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">

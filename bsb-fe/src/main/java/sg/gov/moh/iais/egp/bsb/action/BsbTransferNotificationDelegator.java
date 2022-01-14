@@ -41,7 +41,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
  **/
 
 @Slf4j
-@Delegator(value = "transferNotificationDelegator")
+@Delegator("transferNotificationDelegator")
 public class BsbTransferNotificationDelegator {
     public static final String KEY_TRANSFER_NOTIFICATION_DTO = "transferNotDto";
     public static final String KEY_FAC_LIST_DTO = "facListDto";
