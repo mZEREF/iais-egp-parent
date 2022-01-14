@@ -408,7 +408,7 @@ public class LicenceApproveBatchjob {
                 String applicationNo = licenceDto.getApplicationNo();
                 log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  svcType is -->:"+svcType));
                 log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  applicationNo is -->:"+applicationNo));
-                if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)
+                if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)
                         && baseApplicationNo.equals(applicationNo)){
                     result = licenceDto;
                     break;

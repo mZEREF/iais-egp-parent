@@ -243,7 +243,7 @@ public class RetriggerGiroPaymentDelegator {
             //set svc info
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(appSvcRelatedInfoDto.getServiceId());
-                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE)){
+                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_TYPE_BASE)){
                     appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                 }
                 appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
@@ -646,9 +646,9 @@ public class RetriggerGiroPaymentDelegator {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getServiceId());
                 if(hcsaServiceDto != null){
-                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcNames.add(hcsaServiceDto.getSvcName());
-                    }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                    }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                         specifiedSvcNames.add(hcsaServiceDto.getSvcName());
                     }else{
                         otherSvcNames.add(hcsaServiceDto.getSvcName());

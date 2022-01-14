@@ -861,8 +861,8 @@ public class InterInboxDelegator {
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
             log.info(StringUtil.changeForLog("----- service svc type : "+ serviceDto.getSvcType()+"-------------"));
-            if(!ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType())){
-                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licId).getEntity();
+            if(!ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType())){
+                List<LicBaseSpecifiedCorrelationDto> entity = licenceInboxClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licId).getEntity();
                 if(IaisCommonUtils.isEmpty(entity)){
                     log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id ------------------"));
                     return false;
