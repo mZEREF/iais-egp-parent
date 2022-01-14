@@ -96,6 +96,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
 
     private PremisesDto transfer(DsCenterDto dsCenterDto, String orgId) {
         PremisesDto premisesDto = new PremisesDto();
+        premisesDto.setId(dsCenterDto.getId());
         premisesDto.setSvcName(dsCenterDto.getCenterName());
         premisesDto.setBusinessName(dsCenterDto.getCenterName());
         premisesDto.setHciCode(dsCenterDto.getHciCode());
