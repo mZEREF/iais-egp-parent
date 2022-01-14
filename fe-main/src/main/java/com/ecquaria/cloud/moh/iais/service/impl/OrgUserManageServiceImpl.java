@@ -646,7 +646,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                                 if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
                                     for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                                         if (orgUserRoleDto != null) {
-                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
+                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && !RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(orgUserRoleDto.getRoleName()) && IaisEGPHelper.getRoles().contains(orgUserRoleDto.getRoleName())) {
                                                 //account active
                                                 return AppConsts.TRUE;
                                             }
