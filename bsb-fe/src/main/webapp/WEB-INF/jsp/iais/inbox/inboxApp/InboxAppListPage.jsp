@@ -179,6 +179,9 @@
                                                                         <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE006' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/JudgeDataSubmissionType?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
                                                                     </c:choose>
 
                                                                     <c:if test="${app.status eq 'BSBAPST011'}">
