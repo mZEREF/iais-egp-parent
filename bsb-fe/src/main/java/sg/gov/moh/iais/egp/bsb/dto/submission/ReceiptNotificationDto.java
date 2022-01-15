@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.googlecode.jmapper.annotations.JMap;
 import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,9 +33,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 public class ReceiptNotificationDto implements Serializable {
     @Data
     public static class ReceiptNot implements Serializable {
+        @JMap
         private String scheduleType;
+        @JMap
         private String bat;
+        @JMap
         private String receiveQty;
+        @JMap
         private String meaUnit;
 
         @JsonIgnore
@@ -57,20 +62,38 @@ public class ReceiptNotificationDto implements Serializable {
         }
     }
 
+    @JMap
     private String facId;
+    @JMap
     private String modeProcurement;
+    @JMap
     private String sourceFacilityName;
+    @JMap
     private String sourceFacilityAddress;
+    @JMap
     private String sourceFacilityContactPerson;
+    @JMap
     private String contactPersonEmail;
+    @JMap
     private String contactPersonTel;
+    @JMap
     private String provider;
+    @JMap
     private String flightNo;
+    @JMap
     private String actualArrivalDate;
+    @JMap
     private String actualArrivalTime;
+    @JMap
     private String remarks;
+    @JMap
     private String ensure;
+    @JMap
+    private String draftAppNo;
+    @JMap
+    private String dataSubmissionType;
 
+    @JMap("needList")
     private List<ReceiptNot> receiptNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
     private Map<Integer,List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
@@ -106,6 +129,8 @@ public class ReceiptNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class ReceiptNotNeedR {
+        private String dataSubmissionType;
+        private String draftAppNo;
         private List<ReceiptNotNeed> needList;
         private String facId;
         private String modeProcurement;
@@ -122,6 +147,22 @@ public class ReceiptNotificationDto implements Serializable {
         private String ensure;
         private List<PrimaryDocDto.DocRecordInfo> docInfos;
         private List<DocMeta> docMetas;
+    }
+
+    public String getDataSubmissionType() {
+        return dataSubmissionType;
+    }
+
+    public void setDataSubmissionType(String dataSubmissionType) {
+        this.dataSubmissionType = dataSubmissionType;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
     }
 
     public String getFacId() {
@@ -433,60 +474,62 @@ public class ReceiptNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(request);
-        clearReceiptLists();
-        String[] idxArr = idxes.trim().split(" +");
-        int keyFlag = 0;
-        for (String idx : idxArr) {
-            ReceiptNot receiptNot = new ReceiptNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
-            receiptNot.setScheduleType(scheduleType);
-            receiptNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
-            receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
-            receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+        if (StringUtils.hasLength(idxes)) {
+            //When a section is deleted, all files corresponding to it are deleted
+            removeTempIdByKeyMap(request);
+            clearReceiptLists();
+            String[] idxArr = idxes.trim().split(" +");
+            int keyFlag = 0;
+            for (String idx : idxArr) {
+                ReceiptNot receiptNot = new ReceiptNot();
+                String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
+                receiptNot.setScheduleType(scheduleType);
+                receiptNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
+                receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
+                receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
-            receiptNot.setDocType(getDocType(scheduleType));
-            receiptNot.setNewDocInfos(newDocInfoList);
-            // NewRepoId is a String used to concatenate all the ids in the current list
-            String newRepoId = "";
-            //keyMap is deal with problem document is not show in page
-            if(!CollectionUtils.isEmpty(newDocInfoList)){
-                this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
-                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
-            }else{
-                keyFlag++;
-                //Check whether the previous file data exists
-                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.oldKeyNewInfos.get(Integer.valueOf(idx));
-                if(!CollectionUtils.isEmpty(oldDocInfo)){
-                    //Populate the list with previous data if it exists
-                    receiptNot.setNewDocInfos(oldDocInfo);
-                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
+                List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos,keyFlag++);
+                receiptNot.setDocType(getDocType(scheduleType));
+                receiptNot.setNewDocInfos(newDocInfoList);
+                // NewRepoId is a String used to concatenate all the ids in the current list
+                String newRepoId = "";
+                //keyMap is deal with problem document is not show in page
+                if (!CollectionUtils.isEmpty(newDocInfoList)) {
+                    this.newKeyNewInfos.put(keyFlag++, newDocInfoList);
+                    newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                } else {
+                    keyFlag++;
+                    //Check whether the previous file data exists
+                    List<PrimaryDocDto.NewDocInfo> oldDocInfo = this.oldKeyNewInfos.get(Integer.valueOf(idx));
+                    if (!CollectionUtils.isEmpty(oldDocInfo)) {
+                        //Populate the list with previous data if it exists
+                        receiptNot.setNewDocInfos(oldDocInfo);
+                        newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    }
                 }
+                receiptNot.setRepoIdNewString(newRepoId);
+                //set need Validation value
+                addReceiptLists(receiptNot);
             }
-            receiptNot.setRepoIdNewString(newRepoId);
-            //set need Validation value
-            addReceiptLists(receiptNot);
+            List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq, request, "others", this.allNewDocInfos);
+            this.setOtherNewInfos(newOtherList);
+            //get all new doc
+            PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
+            //get all
+            getDocMetaInfoFromNew();
+            this.setModeProcurement(ParamUtil.getString(request, KEY_PREFIX_MODE_PROCUREMENT));
+            this.setSourceFacilityName(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_NAME));
+            this.setSourceFacilityAddress(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_ADDRESS));
+            this.setSourceFacilityContactPerson(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_CONTACT_PERSON));
+            this.setContactPersonEmail(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL));
+            this.setContactPersonTel(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_TEL));
+            this.setFlightNo(ParamUtil.getString(request, KEY_PREFIX_FLIGHT_NO));
+            this.setProvider(ParamUtil.getString(request, KEY_PREFIX_PROVIDER));
+            this.setActualArrivalDate(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_DATE));
+            this.setActualArrivalTime(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_TIME));
+            this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
+            this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
-        this.setOtherNewInfos(newOtherList);
-        //get all new doc
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
-        //get all
-        getDocMetaInfoFromNew();
-        this.setModeProcurement(ParamUtil.getString(request, KEY_PREFIX_MODE_PROCUREMENT));
-        this.setSourceFacilityName(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_NAME));
-        this.setSourceFacilityAddress(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_ADDRESS));
-        this.setSourceFacilityContactPerson(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_CONTACT_PERSON));
-        this.setContactPersonEmail(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL));
-        this.setContactPersonTel(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_TEL));
-        this.setFlightNo(ParamUtil.getString(request, KEY_PREFIX_FLIGHT_NO));
-        this.setProvider(ParamUtil.getString(request, KEY_PREFIX_PROVIDER));
-        this.setActualArrivalDate(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_DATE));
-        this.setActualArrivalTime(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_TIME));
-        this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
-        this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
     }
 
     public String getDocType(String scheduleType) {

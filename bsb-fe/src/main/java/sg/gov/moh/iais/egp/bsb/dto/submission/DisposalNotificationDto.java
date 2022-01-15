@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.googlecode.jmapper.annotations.JMap;
 import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,11 +33,17 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 public class DisposalNotificationDto implements Serializable {
     @Data
     public static class DisposalNot implements Serializable {
+        @JMap
         private String scheduleType;
+        @JMap
         private String bat;
+        @JMap
         private String disposedQty;
+        @JMap
         private String meaUnit;
+        @JMap
         private String destructMethod;
+        @JMap
         private String destructDetails;
 
         @JsonIgnore
@@ -59,10 +66,18 @@ public class DisposalNotificationDto implements Serializable {
         }
     }
 
+    @JMap
     private String facId;
+    @JMap
     private String remarks;
+    @JMap
     private String ensure;
+    @JMap
+    private String draftAppNo;
+    @JMap
+    private String dataSubmissionType;
 
+    @JMap("needList")
     private List<DisposalNot> disposalNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
     private Map<Integer,List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
@@ -100,12 +115,30 @@ public class DisposalNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class DisposalNotNeedR {
+        private String dataSubmissionType;
+        private String draftAppNo;
         private List<DisposalNotNeed> needList;
         private String facId;
         private String remarks;
         private String ensure;
         private List<PrimaryDocDto.DocRecordInfo> docInfos;
         private List<DocMeta> docMetas;
+    }
+
+    public String getDataSubmissionType() {
+        return dataSubmissionType;
+    }
+
+    public void setDataSubmissionType(String dataSubmissionType) {
+        this.dataSubmissionType = dataSubmissionType;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
     }
 
     public String getFacId() {
@@ -331,52 +364,54 @@ public class DisposalNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(request);
-        clearDisposalLists();
-        String[] idxArr = idxes.trim().split(" +");
-        int keyFlag = 0;
-        for (String idx : idxArr) {
-            DisposalNot disposalNot = new DisposalNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
-            disposalNot.setScheduleType(scheduleType);
-            disposalNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
-            disposalNot.setDisposedQty(ParamUtil.getString(request, KEY_PREFIX_DISPOSE_QTY + SEPARATOR + idx));
-            disposalNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
-            disposalNot.setDestructMethod(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_METHOD + SEPARATOR + idx));
-            disposalNot.setDestructDetails(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_DETAILS + SEPARATOR + idx));
+        if (StringUtils.hasLength(idxes)) {
+            //When a section is deleted, all files corresponding to it are deleted
+            removeTempIdByKeyMap(request);
+            clearDisposalLists();
+            String[] idxArr = idxes.trim().split(" +");
+            int keyFlag = 0;
+            for (String idx : idxArr) {
+                DisposalNot disposalNot = new DisposalNot();
+                String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
+                disposalNot.setScheduleType(scheduleType);
+                disposalNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
+                disposalNot.setDisposedQty(ParamUtil.getString(request, KEY_PREFIX_DISPOSE_QTY + SEPARATOR + idx));
+                disposalNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+                disposalNot.setDestructMethod(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_METHOD + SEPARATOR + idx));
+                disposalNot.setDestructDetails(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_DETAILS + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
-            disposalNot.setDocType(getDocType(scheduleType));
-            disposalNot.setNewDocInfos(newDocInfoList);
-            // NewRepoId is a String used to concatenate all the ids in the current list
-            String newRepoId = "";
-            //keyMap is deal with problem document is not show in page
-            if(!CollectionUtils.isEmpty(newDocInfoList)){
-                this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
-                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
-            }else{
-                keyFlag++;
-                //Check whether the previous file data exists
-                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.oldKeyNewInfos.get(Integer.valueOf(idx));
-                if(!CollectionUtils.isEmpty(oldDocInfo)){
-                    //Populate the list with previous data if it exists
-                    disposalNot.setNewDocInfos(oldDocInfo);
-                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
+                List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos,keyFlag++);
+                disposalNot.setDocType(getDocType(scheduleType));
+                disposalNot.setNewDocInfos(newDocInfoList);
+                // NewRepoId is a String used to concatenate all the ids in the current list
+                String newRepoId = "";
+                //keyMap is deal with problem document is not show in page
+                if (!CollectionUtils.isEmpty(newDocInfoList)) {
+                    this.newKeyNewInfos.put(keyFlag++, newDocInfoList);
+                    newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                } else {
+                    keyFlag++;
+                    //Check whether the previous file data exists
+                    List<PrimaryDocDto.NewDocInfo> oldDocInfo = this.oldKeyNewInfos.get(Integer.valueOf(idx));
+                    if (!CollectionUtils.isEmpty(oldDocInfo)) {
+                        //Populate the list with previous data if it exists
+                        disposalNot.setNewDocInfos(oldDocInfo);
+                        newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    }
                 }
+                disposalNot.setRepoIdNewString(newRepoId);
+                //set need Validation value
+                addDisposalLists(disposalNot);
             }
-            disposalNot.setRepoIdNewString(newRepoId);
-            //set need Validation value
-            addDisposalLists(disposalNot);
+            List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq, request, "others", this.allNewDocInfos);
+            this.setOtherNewInfos(newOtherList);
+            //get all new doc
+            PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
+            //get all
+            getDocMetaInfoFromNew();
+            this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
+            this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
-        this.setOtherNewInfos(newOtherList);
-        //get all new doc
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
-        //get all
-        getDocMetaInfoFromNew();
-        this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
-        this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
     }
 
     public String getDocType(String scheduleType) {

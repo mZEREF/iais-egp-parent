@@ -17,46 +17,43 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="dataSubmissionDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareConsumeData", this);
 	}
 
-	public void prepareSwitch1_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch1->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
-	}
-
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
-	// 		saveAndPrepareConfirm->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareConsumeConfirm", this);
 	}
 
-	public void prepareSwitch2_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch2->OnStepProcess
-	}
-
 	public void save_OnStepProcess_0() throws Exception {
-	// 		save->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveConsumeNot", this);
 	}
 
-	public void saveDraft_OnStepProcess_0() throws Exception {
-		// 		saveDraft->OnStepProcess
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
+	}
+
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+//		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
 	}
 
 	public void preFacSelect_OnStepProcess_0() throws Exception {
-		// 		preFacSelect->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPrepareFacilitySelect", this);
 	}
 
 	public void preSwitch0_OnStepProcess_0() throws Exception {
-		// 		preSwitch0->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPrepareSwitch0", this);
+	}
+
+	public void formPageSaveDraft_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "saveDraftConsume", this);
+	}
+
+	public void confirmPageSaveDraft_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "saveDraftConsume", this);
 	}
 
 }

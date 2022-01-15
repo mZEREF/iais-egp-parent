@@ -39,6 +39,7 @@ public class PrimaryDocDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class DocRecordInfo implements Serializable {
+        private Integer index;
         private String docEntityId;
         private String docType;
         private String filename;
@@ -75,6 +76,7 @@ public class PrimaryDocDto implements Serializable {
     private final Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
+    private final Set<String> toBeDeletedDocIds;
 
 
     @JsonIgnore
@@ -84,6 +86,7 @@ public class PrimaryDocDto implements Serializable {
         savedDocMap = new LinkedHashMap<>();
         newDocMap = new LinkedHashMap<>();
         toBeDeletedRepoIds = new HashSet<>();
+        toBeDeletedDocIds = new HashSet<>();
     }
 
     /**
@@ -179,12 +182,16 @@ public class PrimaryDocDto implements Serializable {
         return toBeDeletedRepoIds;
     }
 
+    public Set<String> getToBeDeletedDocIds() {
+        return toBeDeletedDocIds;
+    }
 
     private static final String MASK_PARAM              = "file";
     private static final String SEPARATOR               = "--v--";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
+    private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
 
-    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
+    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos,int keyFlag){
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
@@ -201,7 +208,7 @@ public class PrimaryDocDto implements Serializable {
                 if(StringUtils.hasLength(index) && index.equals(amt)){
                     //upload document toxins and bats
                     List<MultipartFile> files = mulReq.getFiles(inputName);
-                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list,allNewDocInfos);
+                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list,allNewDocInfos,keyFlag);
 
                 }
             }
@@ -221,7 +228,7 @@ public class PrimaryDocDto implements Serializable {
             if(StringUtils.hasLength(inputName) && docType.equals(inputName)){
                 //upload other document
                 List<MultipartFile> files = mulReq.getFiles(inputName);
-                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list,allNewDocInfos);
+                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list,allNewDocInfos,0);
             }
         }
         return list;
@@ -240,7 +247,24 @@ public class PrimaryDocDto implements Serializable {
         }
     }
 
-    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
+    public void deleteSavedFiles(MultipartHttpServletRequest mulReq,Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos){
+        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
+        }
+        if (StringUtils.hasLength(deleteSavedFilesString)) {
+            List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                    .collect(Collectors.toList());
+            deleteFileRepoIds.forEach(it -> {
+//                toBeDeletedDocIds.add(savedDocInfos.get(it).getDocEntityId());
+                savedDocInfos.remove(it);
+                toBeDeletedRepoIds.add(it);
+            });
+        }
+    }
+
+    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos,int keyFlag){
         for (MultipartFile f : files) {
             if (log.isInfoEnabled()) {
                 log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
@@ -249,14 +273,15 @@ public class PrimaryDocDto implements Serializable {
                 log.warn("File is empty, ignore it");
             } else {
                 String tmpId = inputName + f.getSize() + System.nanoTime();
-                newDocInfos.add(filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
-                allNewDocInfos.put(tmpId,filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+                newDocInfos.add(filedOneNewFiles(tmpId,f,docType,currentDate,loginContext,keyFlag));
+                allNewDocInfos.put(tmpId,filedOneNewFiles(tmpId,f,docType,currentDate,loginContext,keyFlag));
             }
         }
     }
 
-    private static NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
+    private static NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext,int keyFlag){
         NewDocInfo newDocInfo = new NewDocInfo();
+        newDocInfo.setIndex(keyFlag);
         newDocInfo.setTmpId(tmpId);
         newDocInfo.setDocType(docType);
         newDocInfo.setFilename(f.getOriginalFilename());

@@ -1,4 +1,9 @@
 $(function () {
+    $("#saveDraft").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("saveDraft");
+        $("#mainForm").submit();
+    });
     isHidden();
     $("#addNewSection").click(function () {
         var meta = readSectionRepeatMetaData();

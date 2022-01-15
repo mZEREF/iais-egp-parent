@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.List;
 /**
  * @author Zhu Tangtang
  */
-
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "dataSubmission")
 public interface DataSubmissionClient {
     @GetMapping(path = "/dataSubmission/{schedule}")
@@ -52,4 +52,19 @@ public interface DataSubmissionClient {
 
     @GetMapping(value = "/dataSubmission/view/{id}")
     ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable(name = "id") String id);
+
+    @PostMapping(value = "/dataSubmission/draft/consume", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftConsume(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
+
+    @PostMapping(value = "/dataSubmission/draft/disposal", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftDisposal(@RequestBody DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR);
+
+    @PostMapping(value = "/dataSubmission/draft/export", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftExport(@RequestBody ExportNotificationDto.ExportNotNeedR exportNotNeedR);
+
+    @PostMapping(value = "/dataSubmission/draft/receipt", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftReceipt(@RequestBody ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR);
+
+    @GetMapping(value = "/dataSubmission/draft/getDraftDto", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DraftDto> getDraftDto(@RequestParam("appId") String appId);
 }

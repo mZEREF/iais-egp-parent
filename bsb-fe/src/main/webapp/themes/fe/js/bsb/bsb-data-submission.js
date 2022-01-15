@@ -119,17 +119,12 @@ $(function () {
         }
     });
 
-    // $("#saveDraft").click(function (){
-    //     showWaiting();
-    //     $("[name='action_type']").val("saveDraft");
-    //     $("#mainForm").submit();
-    // });
-
     $("#back").click(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
+
     $("#edit").click(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");
