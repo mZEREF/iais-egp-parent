@@ -548,7 +548,7 @@
               ) AS SAMPLE_FROM_HCI_CODE ,
            		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'DRP'
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
