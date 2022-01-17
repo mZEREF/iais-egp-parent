@@ -142,7 +142,8 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setSvcName(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
         vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto, false));
+        vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto,
+                DataSubmissionHelper.getLicenseeId(request),false));
         vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto, false));
 
         return vssSuperDataSubmissionDto;

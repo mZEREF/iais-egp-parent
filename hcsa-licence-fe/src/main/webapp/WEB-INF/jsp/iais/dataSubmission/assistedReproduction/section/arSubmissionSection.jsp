@@ -12,10 +12,10 @@
                         <p>${premisesLabel}</p>
                         </c:if>
                         <c:if test="${not empty premisesOpts && premisesOpts.size() > 1}">
-                        <iais:select name="premises" options="premisesOpts" needErrorSpan="false"
-                                     value="${arSuperDataSubmissionDto.premisesDto.hciCode}"/>
+                        <iais:select name="centreSel" options="premisesOpts" needErrorSpan="false"
+                                     value="${arSuperDataSubmissionDto.centreSel}"/>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_premises"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_centreSel"></span>
                     </div>
                 </iais:row>
                 <iais:row>

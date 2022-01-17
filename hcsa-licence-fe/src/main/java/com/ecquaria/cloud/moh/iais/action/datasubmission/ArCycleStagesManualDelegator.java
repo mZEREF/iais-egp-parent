@@ -245,7 +245,8 @@ public class ArCycleStagesManualDelegator {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
-            CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode);
+            CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode,
+                    DataSubmissionHelper.getLicenseeId(request));
             currentSuper.setCycleDto(cycleDto);
             currentSuper.setSelectionDto(selectionDto);
             currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
@@ -303,7 +304,7 @@ public class ArCycleStagesManualDelegator {
         currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
         currentArDataSubmission.setSubmissionMethod(DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY);
         currentArDataSubmission.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission, true));
-        currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, true));
+        currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, null,true));
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
     }
 
