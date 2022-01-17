@@ -120,7 +120,6 @@
                     <label class="col-xs-5 col-md-4 control-label">
                         <c:if test="${index.first==true && donorSampleDto.donorSampleAgeDtos == null}">
                             Donor's Age when Sample was Collected
-                            <span class="mandatory">*</span>
                         </c:if>
                     </label>
                     <iais:value width="7" cssClass="col-md-7"  display="true">
