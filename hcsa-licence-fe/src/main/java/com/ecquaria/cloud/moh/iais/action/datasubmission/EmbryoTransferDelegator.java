@@ -21,9 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -42,8 +40,6 @@ import java.util.Map;
 @Delegator("embryoTransferDelegator")
 @Slf4j
 public class EmbryoTransferDelegator extends CommonDelegator {
-    @Autowired
-    ArDataSubmissionService arDataSubmissionService;
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -62,9 +58,9 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         }
 
         List<SelectOption> transferNumSelectOption = IaisCommonUtils.genNewArrayList();
-        String[] options = new String[]{"1", "2", "3"};
-        for (String item : options) {
-            transferNumSelectOption.add(new SelectOption(item, item));
+        for (int i = 1; i < 4; i++) {
+            String key = String.valueOf(i);
+            transferNumSelectOption.add(new SelectOption(key,key));
         }
         ParamUtil.setRequestAttr(bpc.request, "transferNumSelectOption", transferNumSelectOption);
 

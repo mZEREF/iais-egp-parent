@@ -91,7 +91,7 @@ public class LdtDataSubmissionDelegator {
                 .map(LoginContext::getOrgId).orElse("");
         LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
         if (dataSubmissionDraft != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
     }
 

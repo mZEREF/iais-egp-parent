@@ -11,9 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +29,6 @@ import java.util.Map;
 @Slf4j
 public class OocyteRetrievalDelegator extends CommonDelegator {
 
-    @Autowired
-    ArDataSubmissionService arDataSubmissionService;
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {

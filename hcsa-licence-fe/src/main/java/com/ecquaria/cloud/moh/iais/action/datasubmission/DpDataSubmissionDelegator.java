@@ -145,15 +145,19 @@ public class DpDataSubmissionDelegator {
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
-            String hciCode = premisesDto.getHciCode();
-            String svcName = premisesDto.getSvcName();
+            String hciCode = null;
+            String svcName = null;
+            if(premisesDto != null){
+                hciCode = premisesDto.getHciCode();
+                svcName = premisesDto.getSvcName();
+            }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {
                 DpSuperDataSubmissionDto dataSubmissionDraft = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
                         orgId, submissionType, svcName, hciCode);
                 if (dataSubmissionDraft != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "back";
                 }
             } else if ("resume".equals(actionValue)) {

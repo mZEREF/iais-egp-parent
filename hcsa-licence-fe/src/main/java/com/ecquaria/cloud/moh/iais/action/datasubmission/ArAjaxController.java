@@ -142,7 +142,7 @@ public class ArAjaxController {
         String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
         int age = Formatter.getAge(birthDate);
         if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
-            result.put("showAgeMsg", true);
+            result.put("showAgeMsg", Boolean.TRUE);
         }
         return result;
     }

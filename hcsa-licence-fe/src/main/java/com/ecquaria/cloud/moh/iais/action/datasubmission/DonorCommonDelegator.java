@@ -31,8 +31,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
     private final static String ADD_DONOR_MAX_SIZE               ="arAddDonorMaxSize";
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
 
     protected void setDonorUserSession(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
@@ -266,7 +264,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             StringBuilder stringBuilder = new StringBuilder();
             for (DonorDto donorDto : arDonorDtos) {
                 if (StringUtil.isEmpty(donorDto.getDonorSampleKey())) {
-                    stringBuilder.append(" Donor ").append(donorDto.getArDonorIndex()+1).append(",");
+                    stringBuilder.append(" Donor ").append(donorDto.getArDonorIndex()+1).append(',');
                 }
             }
             if(StringUtil.isEmpty(stringBuilder.toString())){

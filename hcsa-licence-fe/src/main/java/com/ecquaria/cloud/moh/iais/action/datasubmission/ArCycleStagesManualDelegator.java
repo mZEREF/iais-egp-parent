@@ -166,7 +166,7 @@ public class ArCycleStagesManualDelegator {
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
                 stage = "current";
-                ParamUtil.setRequestAttr(request, "hasDraft", true);
+                ParamUtil.setRequestAttr(request, "hasDraft", Boolean.TRUE);
             }
         } else if ("resume".equals(actionValue)) {
             ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
@@ -203,7 +203,7 @@ public class ArCycleStagesManualDelegator {
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
                 stage = "current";
-                ParamUtil.setRequestAttr(request, "hasDraft", true);
+                ParamUtil.setRequestAttr(request, "hasDraft", Boolean.TRUE);
             } else {
                 handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
             }

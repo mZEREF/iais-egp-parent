@@ -77,7 +77,7 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
             String pleaseIndicateIui = ParamUtil.getString(bpc.request, "pleaseIndicateIui");
             String thereAppeal=ParamUtil.getRequestString(bpc.request,"thereAppeal");
             iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
-            iuiTreatmentSubsidiesDto.setThereAppeal(Boolean.valueOf(thereAppeal));
+            iuiTreatmentSubsidiesDto.setThereAppeal(Boolean.parseBoolean(thereAppeal));
             arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
 

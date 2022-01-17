@@ -47,7 +47,7 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
     protected final static String  DONOR_SOURSE_OTHERS    = "Others";
     @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
+    protected ArDataSubmissionService arDataSubmissionService;
 
     /**
      * StartStep: Start
