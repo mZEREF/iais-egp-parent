@@ -2,33 +2,39 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
+import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.PRINT_FLAG_VSS;
 
 /**
  * Process: MohVSSDataSubmission
@@ -43,6 +49,8 @@ public class VssDataSubmissionDelegator {
     @Autowired
     private VssDataSubmissionService vssDataSubmissionService;
 
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
     /**
      * Step: Start
      *
@@ -52,6 +60,12 @@ public class VssDataSubmissionDelegator {
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.initVssConfig(bpc.request);
+        DataSubmissionHelper.clearSession(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "vssFiles", null);
+        ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile",null);
+        ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
+        ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
+                + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
     }
 
     /**
@@ -88,6 +102,12 @@ public class VssDataSubmissionDelegator {
      */
     public void prepareStepData(BaseProcessClass bpc) {
         log.info(" -----PrepareStepData ------ ");
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
+        if(vssSuperDataSubmissionDto == null){
+            vssSuperDataSubmissionDto = initVssSuperDataSubmissionDto(bpc.request);
+        }
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
@@ -103,7 +123,29 @@ public class VssDataSubmissionDelegator {
             prepareConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
+        }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
+            preparePreview(bpc.request);
         }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, PRINT_FLAG_VSS);
+    }
+
+    private VssSuperDataSubmissionDto initVssSuperDataSubmissionDto(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
+
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
+                .map(LoginContext::getOrgId).orElse("");
+
+        vssSuperDataSubmissionDto.setOrgId(orgId);
+        vssSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+        vssSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        vssSuperDataSubmissionDto.setFe(true);
+        vssSuperDataSubmissionDto.setSvcName(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
+        vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+        vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto, false));
+        vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto, false));
+
+        return vssSuperDataSubmissionDto;
     }
 
     /**
@@ -121,19 +163,40 @@ public class VssDataSubmissionDelegator {
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
         int status = 0;// 0: current page; -1: back / previous; 1: next; 2: submission
+        if("previous".equals(crudType)){
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+        }
         if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
             status = doTreatment(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
             status = doConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             status = doTfsspParticulars(bpc.request);
+        }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
+            status = doPreview(bpc.request);
         }
+        if("next".equals(crudType)||DataSubmissionHelper.isToNextAction(bpc.request)){
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+        }else {
+            status = 0;
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, bpc.request);
+        }
+
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
     }
 
     private void prepareTreatment(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        treatmentDto.setSterilizationReason(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS);
+        vssTreatmentDto.setTreatmentDto(treatmentDto);
+        vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
 
     }
@@ -192,6 +255,8 @@ public class VssDataSubmissionDelegator {
         } catch (Exception e) {
            e.printStackTrace();
         }
+        guardianAppliedPartDto.setVssDocumentDto( IaisCommonUtils.isNotEmpty(guardianAppliedPartDto.getVssDocumentDto()) ? guardianAppliedPartDto.getVssDocumentDto() : IaisCommonUtils.genNewArrayList());
+        setFiles(guardianAppliedPartDto,request);
         vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
 
@@ -222,6 +287,7 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request,sexualSterilizationDto);
         String operationDate = ParamUtil.getString(request,"operationDate");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
@@ -232,6 +298,11 @@ public class VssDataSubmissionDelegator {
             sexualSterilizationDto.setHecReviewDate(hDate);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(StringUtil.isNotEmpty(sexualSterilizationDto.getSterilizationMethod())){
+            if(sexualSterilizationDto.getSterilizationMethod().equals(DataSubmissionConsts.METHOD_OF_STERILIZATION_TUBAL_LIGATION) && treatmentDto.getGender().equals(DataSubmissionConsts.GENDER_MALE)){
+                sexualSterilizationDto.setUnreasonable(true);
+            }
         }
 
         vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
@@ -253,19 +324,71 @@ public class VssDataSubmissionDelegator {
         }
         return 1;
     }
+
+    private void setFiles(GuardianAppliedPartDto guardianAppliedPartDto,HttpServletRequest request){
+        List<VssDocumentDto> vssDoc = guardianAppliedPartDto.getVssDocumentDto();
+        vssDoc.clear();
+        log.info("-----------ajax-upload-file start------------");
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX+"selectedVssFile");
+        IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+        if(IaisCommonUtils.isNotEmpty(map)){
+            Date date = new Date();
+            List<File> files =IaisCommonUtils.genNewArrayList(1);
+            String mapKey = "selectedVssFile";
+            map.forEach( (k, v)->{
+                if (v != null) {
+                    VssDocumentDto vssDocumentDto = new VssDocumentDto();
+                    vssDocumentDto.setDocName(v.getName());
+                    long size = v.length() / 1024;
+                    vssDocumentDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                    String md5Code = SingeFileUtil.getInstance().getFileMd5(v);
+                    vssDocumentDto.setMd5Code(md5Code);
+                    vssDocumentDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+                    vssDocumentDto.setSubmitDt(date);
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setFileName(v.getName());
+                    fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fileRepoDto.setRelativePath(AppConsts.FALSE);
+                    files.add(v);
+                    //save file to file DB
+                    String repoId = comFileRepoClient.saveFileRepo(files).get(0);
+                    files.clear();
+                    vssDocumentDto.setFileRepoId(repoId);
+                    vssDocumentDto.setSeqNum(Integer.valueOf(k.replace(mapKey,"")));
+                    vssDoc.add(vssDocumentDto);
+                }
+
+            });
+            vssDoc.sort(Comparator.comparing(VssDocumentDto :: getSeqNum));
+        }
+        request.getSession().setAttribute("vssFiles", (Serializable)vssDoc);
+        request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile", map);
+        request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile_MaxIndex", vssDoc.size());
+
+    }
+
+    private void preparePreview(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+    }
+
+    private int doPreview(HttpServletRequest request) {
+
+        return 2;
+    }
     /**
      * Step: DoSubmission
      *
      * @param bpc
      */
-    public void doSubmission(BaseProcessClass bpc) {
+    public void doSubmission(BaseProcessClass bpc){
         log.info(" ----- DoSubmission ------ ");
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
-        vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto,
-                false));
-        vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto, false));
-        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
+
         DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
+        CycleDto cycle = vssSuperDataSubmissionDto.getCycleDto();
+        String cycleType = cycle.getCycleType();
+
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = vssDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_VSS);
             dataSubmissionDto.setSubmissionNo(submissionNo);
@@ -273,15 +396,31 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
-
+        cycle.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
         }
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
+        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
+
+        if(sexualSterilizationDto.getOperationDate() != null ) {
+            try {
+                if(Formatter.compareDateByDay(dataSubmissionDto.getSubmitDt(),sexualSterilizationDto.getOperationDate())>30){
+                    sexualSterilizationDto.setLateSubmit(true);
+                }
+            }catch (ParseException e){
+                e.printStackTrace();
+            }
+
+        }
+        vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
+        vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+
         vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
         try {
-            /* vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);*/
+             vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
@@ -292,7 +431,6 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
     }
@@ -368,6 +506,8 @@ public class VssDataSubmissionDelegator {
             }
         }else if ("previous".equals(crudType)) {
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
+        } else if ("preview".equals(crudType)) {
+                actionType = crudType;
         } else {
             actionType = crudType;
             DsConfigHelper.setActiveConfig(actionType, bpc.request);
