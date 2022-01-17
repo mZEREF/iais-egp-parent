@@ -6,6 +6,7 @@ import java.util.List;
 
 public class DocConstants {
     private DocConstants() {}
+    public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
 
     public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "bsfCoordinatorCert";
     public static final String DOC_TYPE_INVENTORY_FILE = "inventoryFile";
