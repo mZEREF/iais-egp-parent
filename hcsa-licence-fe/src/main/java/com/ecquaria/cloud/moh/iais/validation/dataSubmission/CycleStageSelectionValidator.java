@@ -38,7 +38,7 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
             CycleStageSelectionDto selectionDto = (CycleStageSelectionDto) obj;
             if (StringUtil.isNotEmpty(selectionDto.getStage())) {
                 //3.3.3.1(4)
-                CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, null, null);
+                CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, null, null, null);
                 if (DsHelper.isNormalCycle(cycleDto.getCycleType())) {
                     ArDataSubmissionService service = SpringHelper.getBean(ArDataSubmissionService.class);
                     Date lastStartDate = service.getLastCompletedCycleStartDate(selectionDto.getPatientCode(),

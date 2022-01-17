@@ -177,7 +177,8 @@ public class DpDataSubmissionDelegator {
             dpSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(dpSuperDataSubmissionDto,
                     false));
-            dpSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(dpSuperDataSubmissionDto, false));
+            dpSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(dpSuperDataSubmissionDto,
+                    DataSubmissionHelper.getLicenseeId(bpc.request), false));
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
         if (StringUtil.isEmpty(actionType)) {

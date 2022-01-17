@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -67,7 +68,20 @@ public final class DataSubmissionHelper {
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
+        if (request == null) {
+            log.info("------Request is null------");
+            return null;
+        }
         return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+    }
+
+    public static String getLicenseeId(HttpServletRequest request) {
+        LoginContext loginContext = getLoginContext(request);
+        String licenseeId = "";
+        if (loginContext != null) {
+            licenseeId = loginContext.getLicenseeId();
+        }
+        return licenseeId;
     }
 
     public static ArSuperDataSubmissionDto getCurrentArDataSubmission(HttpServletRequest request) {
@@ -95,6 +109,7 @@ public final class DataSubmissionHelper {
 
     public static ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentSuper) {
         ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
+        newDto.setCentreSel(currentSuper.getCentreSel());
         newDto.setAppType(currentSuper.getAppType());
         newDto.setOrgId(currentSuper.getOrgId());
         newDto.setSubmissionType(currentSuper.getSubmissionType());
@@ -112,7 +127,7 @@ public final class DataSubmissionHelper {
         }
         dataSubmissionDto.setDeclaration(null);
         newDto.setDataSubmissionDto(dataSubmissionDto);
-        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, true));
+        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, getLicenseeId(MiscUtil.getCurrentRequest()), true));
         return newDto;
     }
 
@@ -298,7 +313,7 @@ public final class DataSubmissionHelper {
         return result;
     }
 
-    public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
+    public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode, String licenseeId) {
         String stage = selectionDto.getStage();
         String cycle;
         String cycleId = null;
@@ -333,6 +348,7 @@ public final class DataSubmissionHelper {
         cycleDto.setPatientCode(selectionDto.getPatientCode());
         cycleDto.setSvcName(serviceName);
         cycleDto.setHciCode(hciCode);
+        cycleDto.setLicenseeId(licenseeId);
         cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ONGOING);
@@ -340,7 +356,7 @@ public final class DataSubmissionHelper {
         return cycleDto;
     }
 
-    public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
+    public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, String licenseeId, boolean reNew) {
         CycleDto cycleDto = currentArDataSubmission.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -360,6 +376,9 @@ public final class DataSubmissionHelper {
         cycleDto.setCycleType(cycleType);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        if (StringUtil.isEmpty(licenseeId)) {
+            cycleDto.setLicenseeId(licenseeId);
         }
         return cycleDto;
     }
@@ -384,7 +403,7 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
-    public static CycleDto initCycleDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto, boolean reNew) {
+    public static CycleDto initCycleDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = dpSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -402,6 +421,9 @@ public final class DataSubmissionHelper {
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        if (StringUtil.isEmpty(licenseeId)) {
+            cycleDto.setLicenseeId(licenseeId);
         }
         cycleDto.setCycleType(cycleType);
         return cycleDto;
@@ -426,7 +448,7 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
-    public static CycleDto initCycleDto(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, boolean reNew) {
+    public static CycleDto initCycleDto(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = vssSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -439,6 +461,9 @@ public final class DataSubmissionHelper {
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        if (StringUtil.isEmpty(licenseeId)) {
+            cycleDto.setLicenseeId(licenseeId);
         }
         cycleDto.setCycleType(cycleType);
         return cycleDto;
@@ -827,7 +852,7 @@ public final class DataSubmissionHelper {
         return premisesMap;
     }
 
-    public static CycleDto initCycleDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto, boolean reNew) {
+    public static CycleDto initCycleDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = ldtSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -838,6 +863,9 @@ public final class DataSubmissionHelper {
         cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_LDT);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        if (StringUtil.isEmpty(licenseeId)) {
+            cycleDto.setLicenseeId(licenseeId);
         }
         return cycleDto;
     }
