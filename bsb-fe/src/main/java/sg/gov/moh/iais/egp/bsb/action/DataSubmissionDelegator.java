@@ -14,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
@@ -172,6 +171,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, null);
         //
         ConsumeNotificationDto notificationDto = getConsumeNotification(request);
+        notificationDto.draftDocToMap(new ArrayList<>(notificationDto.getSavedDocInfos().values()));
         //prepare facility info
         getFacInfoAndSchType(request);
 
@@ -216,7 +216,7 @@ public class DataSubmissionDelegator {
         doConsumeValidation(notificationDto, request);
         //use to show file information
         ParamUtil.setRequestAttr(request, KEY_DO_SETTINGS, getDocSettingMap());
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request, KEY_DOC_META, notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request, KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
     }
@@ -284,6 +284,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, null);
         //
         DisposalNotificationDto notificationDto = getDisposalNotification(request);
+        notificationDto.draftDocToMap(new ArrayList<>(notificationDto.getSavedDocInfos().values()));
         //prepare facility info
         getFacInfoAndSchType(request);
 
@@ -316,7 +317,7 @@ public class DataSubmissionDelegator {
         doDisposalValidation(notificationDto, request);
         //use to show file information
         ParamUtil.setRequestAttr(request, KEY_DO_SETTINGS, getDocSettingMap());
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request, KEY_DOC_META, notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request, KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
     }
@@ -384,6 +385,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, null);
         //
         ExportNotificationDto notificationDto = getExportNotification(request);
+        notificationDto.draftDocToMap(new ArrayList<>(notificationDto.getSavedDocInfos().values()));
         //prepare facility info
         getFacInfoAndSchType(request);
 
@@ -416,7 +418,7 @@ public class DataSubmissionDelegator {
         doExportValidation(notificationDto, request);
         //use to show file information
         ParamUtil.setRequestAttr(request, KEY_DO_SETTINGS, getDocSettingMap());
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request, KEY_DOC_META, notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request, KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
     }
@@ -484,6 +486,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, null);
         //
         ReceiptNotificationDto notificationDto = getReceiptNotification(request);
+        notificationDto.draftDocToMap(new ArrayList<>(notificationDto.getSavedDocInfos().values()));
         //prepare facility info
         getFacInfoAndSchType(request);
 
@@ -516,7 +519,7 @@ public class DataSubmissionDelegator {
         doReceiptValidation(notificationDto, request);
         //use to show file information
         ParamUtil.setRequestAttr(request, KEY_DO_SETTINGS, getDocSettingMap());
-        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request, KEY_DOC_META, notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request, KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
     }

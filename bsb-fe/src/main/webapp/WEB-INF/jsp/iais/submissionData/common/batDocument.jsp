@@ -51,7 +51,7 @@
                                             onclick="downloadFile('saved', '${tmpId}')">
                                         Download
                                     </button>
-                                    <span data-err-ind="${tmpId}" class="error-msg"></span>
+                                    <span data-err-ind="${savedFile.repoId}" class="error-msg"></span>
                                 </div>
                             </c:forEach>
                         </c:if>

@@ -96,7 +96,6 @@ public class ExportNotificationDto implements Serializable {
     private List<DocMeta> docMetaInfos;
     //key is index
     private Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos;
-    private Map<Integer, List<PrimaryDocDto.DocRecordInfo>> newKeySavedInfos;
     private List<PrimaryDocDto.DocRecordInfo> otherSavedInfos;
 
     @JsonIgnore
@@ -115,7 +114,6 @@ public class ExportNotificationDto implements Serializable {
         savedDocInfos = new LinkedHashMap<>();
         //
         oldKeySavedInfos = new LinkedHashMap<>();
-        newKeySavedInfos = new LinkedHashMap<>();
         otherSavedInfos = new ArrayList<>();
     }
 
@@ -162,14 +160,6 @@ public class ExportNotificationDto implements Serializable {
 
     public void setOldKeySavedInfos(Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos) {
         this.oldKeySavedInfos = oldKeySavedInfos;
-    }
-
-    public Map<Integer, List<PrimaryDocDto.DocRecordInfo>> getNewKeySavedInfos() {
-        return newKeySavedInfos;
-    }
-
-    public void setNewKeySavedInfos(Map<Integer, List<PrimaryDocDto.DocRecordInfo>> newKeySavedInfos) {
-        this.newKeySavedInfos = newKeySavedInfos;
     }
 
     public List<PrimaryDocDto.DocRecordInfo> getOtherSavedInfos() {
@@ -342,10 +332,14 @@ public class ExportNotificationDto implements Serializable {
         }
     }
 
-    public void getDocMetaInfoFromNew() {
+    public void getDocMetaInfoToValidate() {
         this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
+        this.savedDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);
         });
     }
@@ -414,6 +408,9 @@ public class ExportNotificationDto implements Serializable {
             newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
             newFileSyncDtoList.add(newFileSyncDto);
         }
+        allNewDocInfos.clear();
+        newKeyNewInfos.clear();
+        otherNewInfos.clear();
         return newFileSyncDtoList;
     }
 
@@ -509,7 +506,7 @@ public class ExportNotificationDto implements Serializable {
             //Reassign to savedDocMap
             draftDocToMap(new ArrayList<>(this.savedDocInfos.values()));
             //get all
-            getDocMetaInfoFromNew();
+            getDocMetaInfoToValidate();
             this.setReceivedFacility(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_FACILITY));
             this.setReceivedCountry(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_COUNTRY));
             this.setExportDate(ParamUtil.getString(request, KEY_PREFIX_EXPORT_DATE));

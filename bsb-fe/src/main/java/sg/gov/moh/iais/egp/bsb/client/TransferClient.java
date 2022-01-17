@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.AckTransferReceiptDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.ReportInventoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.TransferRequestDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 
 
 /**
@@ -50,4 +47,6 @@ public interface TransferClient {
     @GetMapping(path = "/transfer//get/{facId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AckTransferReceiptDto> getReceiptDataSubNoMap(@PathVariable("facId") String facId);
 
+    @PostMapping(value = "/transfer/draft/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftTransfer(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
 }
