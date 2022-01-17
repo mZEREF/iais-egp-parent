@@ -17,13 +17,13 @@
 <c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
 <c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
 
-<%@ include file="common/arHeader.jsp" %>
+<%@ include file="common/dpHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please upload patient information file</h3>
+                <h3>Please upload Sovenor Inventory file</h3>
                 <div class="tab-pane active" id="tabInbox" role="tabpanel">
                     <div class="document-info-list">
                         <ul>
@@ -34,19 +34,17 @@
                                 <p>Acceptable file formats are XLSX, CSV.</p>
                             </li>
                             <li>
-                                <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/ds/ar/patient-info-file" >here</a>.</p>
+                                <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/ds/dp/si-file" >here</a>.</p>
                             </li>
                             <li>
                                 <p><iais:message key="GENERAL_ERR0052" params="maxCountMap" /></p>
                             </li>
-                            <li>
-                                <p>Records uploaded will be available in Online Enquiry after successful submission.</p>
-                            </li>
+
                         </ul>
                     </div>
                     <div class="file-upload-gp" style="background-color: rgba(242, 242, 242, 1);padding: 20px;">
                         <h3 style="font-size: 16px;">
-                            Patient Information
+                            Sovenor Inventory
                             (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
                             records uploaded)
                         </h3>
@@ -95,7 +93,7 @@
                     </div>
                 </div>
                 <br/><br/>
-                <%@include file="common/arFooter.jsp" %>
+                <%@include file="common/dpFooter.jsp" %>
             </div>
         </div>
     </div>

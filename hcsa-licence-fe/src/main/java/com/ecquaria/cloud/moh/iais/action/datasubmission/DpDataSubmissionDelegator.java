@@ -113,7 +113,7 @@ public class DpDataSubmissionDelegator {
         } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(submissionType)) {
             actionType = "dp";
         } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(submissionType)) {
-            actionType = "di";
+            actionType = "si";
         }
         // check premises
         HttpSession session = bpc.request.getSession();

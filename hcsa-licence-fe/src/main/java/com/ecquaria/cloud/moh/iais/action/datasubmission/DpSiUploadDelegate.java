@@ -53,10 +53,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
- * Process: MohARPatientInfoUpload
+ * Process: MohDpSIUpload
  *
  * @Description DpSiUploadDelegate
- * @Auther suocheng on 11/23/2021.
+ * @Auther suocheng on 01/17/2020.
  */
 @Delegator("dpSiUploadDelegate")
 @Slf4j
@@ -84,7 +84,7 @@ public class DpSiUploadDelegate {
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("-----PatientUploadDelegate Start -----"));
+        log.info(StringUtil.changeForLog("-----DpSiUploadDelegate Start -----"));
         clearSession(bpc.request);
     }
 
@@ -104,7 +104,7 @@ public class DpSiUploadDelegate {
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PrepareSwitch -----"));
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionConstant.DS_TITLE_NEW);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
