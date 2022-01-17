@@ -13,11 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
-
+@Slf4j
 public class GuardianAppliedPartValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {

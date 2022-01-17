@@ -11,11 +11,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Map;
-
+@Slf4j
 public class SexualSterilizationValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -42,7 +43,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                     erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation");
                 }
             }catch (ParseException e){
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
             }
         }
         return erMap;

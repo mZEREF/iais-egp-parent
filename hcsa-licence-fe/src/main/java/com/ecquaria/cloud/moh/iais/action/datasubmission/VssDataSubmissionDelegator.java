@@ -411,7 +411,7 @@ public class VssDataSubmissionDelegator {
                     sexualSterilizationDto.setLateSubmit(true);
                 }
             }catch (ParseException e){
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
             }
 
         }
