@@ -263,7 +263,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "save");
     }
-    static String[] code ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
+    static String[] code ={ApplicationConsts.SERVICE_TYPE_BASE,ApplicationConsts.SERVICE_TYPE_SUBSUMED,ApplicationConsts.SERVICE_TYPE_SPECIFIED};
 
     @Override
     public void addNewService(HttpServletRequest request) {
@@ -603,12 +603,12 @@ public class ConfigServiceImpl implements ConfigService {
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
-        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_TYPE_SUBSUMED.equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
                 errorMap.put("Subsumption",MessageUtil.replaceMessage("GENERAL_ERR0006","Base Service Subsumed Under","field"));
             }
-        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
                 errorMap.put("Prerequisite",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre-requisite Base Service","field"));
@@ -617,7 +617,7 @@ public class ConfigServiceImpl implements ConfigService {
             if(StringUtil.isEmpty(categoryId)){
                 errorMap.put("serviceCategory",service_category_error);
             }
-        }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
+        }else if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
             String categoryId = hcsaServiceDto.getCategoryId();
             if(StringUtil.isEmpty(categoryId)){
                 errorMap.put("serviceCategory",service_category_error);
@@ -685,7 +685,7 @@ public class ConfigServiceImpl implements ConfigService {
                 String schemeType = v.get(i).getSchemeType();
                 String stageId = v.get(i).getStageId();
                 if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)||HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
-                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
@@ -721,7 +721,7 @@ public class ConfigServiceImpl implements ConfigService {
                 String stringManhourCount = v.get(i).getStringManhourCount();
                 String stageId = v.get(i).getStageId();
                 if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)||HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
-                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)||ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                         if(!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(k)&&
                         !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
@@ -1115,7 +1115,7 @@ public class ConfigServiceImpl implements ConfigService {
         return personnelDto;
     }
 
-    static String[] codeSvc ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
+    static String[] codeSvc ={ApplicationConsts.SERVICE_TYPE_BASE,ApplicationConsts.SERVICE_TYPE_SUBSUMED,ApplicationConsts.SERVICE_TYPE_SPECIFIED};
 
 
     private void view(HttpServletRequest request, String crud_action_value) {

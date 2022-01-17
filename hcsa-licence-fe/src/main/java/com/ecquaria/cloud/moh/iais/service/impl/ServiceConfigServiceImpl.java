@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -44,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -59,11 +57,8 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -605,9 +600,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String originatingAccountNumber = ConfigHelper.getString("col.giro.dbs.data.account.originatingAccountNumber","0010521098");
         String newDateString   = Formatter.formatDateTime(new Date(),Formatter.DATE_CMS_INTERFACE);
         String receivingPartyName = ConfigHelper.getString( "col.giro.dbs.data.receiving.party.name","client 1");
-        String beneficiaryBankSWIFTBIC = ConfigHelper.getString( "col.giro.dbs.data.beneficiar.bank","OCBCSGSGXXX");
         String transactionCode = ConfigHelper.getString( "col.giro.dbs.data.transaction.code","30");
-        String ddaReference = ConfigHelper.getString("col.giro.dbs.data.dda.reference","TM199206031W");
         String paymentDetails =ConfigHelper.getString("col.giro.dbs.data.payment.details","M Log Trust");
         String purposeofPayment = ConfigHelper.getString("col.giro.dbs.data.purposeofpayment","SUPP");
         String deliveryMode = ConfigHelper.getString("col.giro.dbs.data.delivery.mode","");
@@ -616,8 +609,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
             GiroGroupDataDto giroGroupDataDto = JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(),GiroGroupDataDto.class);
-            String giroAccount = getGiroAccountByGroupNo(giroGroupDataDto.getAppGroupNo());
-            if(!StringUtil.isEmpty(giroAccount)){
+            List<String> accountBicList = getGiroAccountAndBICByGroupNo(giroGroupDataDto.getAppGroupNo());
+            if(IaisCommonUtils.isNotEmpty(accountBicList) && StringUtil.isNotEmpty(accountBicList.get(1))){
+                String giroAccount = accountBicList.get(0);
                 InputDetailDto inputDetailDto = new InputDetailDto();
                 inputDetailDto.setAppGroupNo(giroGroupDataDto.getAppGroupNo());
                 inputDetailDto.setRecordType(recordTypeData);
@@ -639,9 +633,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setReceivingAccountNumber(giroAccount);
                 inputDetailDto.setCountrySpecific("");
                 inputDetailDto.setReceivingBankCode("");
-                inputDetailDto. setReceivingBranchCode("");
-                inputDetailDto. setClearingCode("");
-                inputDetailDto.setBeneficiaryBankSWIFTBIC(beneficiaryBankSWIFTBIC);
+                inputDetailDto.setReceivingBranchCode("");
+                inputDetailDto.setClearingCode("");
+                inputDetailDto.setBeneficiaryBankSWIFTBIC(accountBicList.get(1));
                 inputDetailDto.setBeneficiaryBankName("");
                 inputDetailDto.setBeneficiaryBankAddress("");
                 inputDetailDto.setBeneficiaryBankCountry("");
@@ -655,7 +649,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setAmounttobeUtilized2 ("");
                 inputDetailDto.setTransactionCode(transactionCode);
                 inputDetailDto.setParticulars(giroGroupDataDto.getAppGroupNo()+ giroPaymentXmlDto.getBatchId());
-                inputDetailDto.setDdaReference(ddaReference);
+                inputDetailDto.setDdaReference(accountBicList.get(2));
                 inputDetailDto.setPaymentDetails(paymentDetails);
                 inputDetailDto.setInstructiontoOrderingBank("");
                 inputDetailDto.setBeneficiaryResidentStatus("");
@@ -713,7 +707,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 totalTransactionAmount = Calculator.add(totalTransactionAmount,giroGroupDataDto.getResidualPayment());
             }else {
                  totalNoOfTransactions--;
-                log.info(StringUtil.changeForLog("----------appgroupno :"+ giroGroupDataDto.getAppGroupNo() + " is no grio accout -------------"));
+                log.info(StringUtil.changeForLog("----------appgroupno :"+ giroGroupDataDto.getAppGroupNo() + " is no grio accout or bankcode is illegal-------------"));
             }
         }
         grioXmlPaymentDto.setINPUT_DETAIL(INPUT_DETAIL);
@@ -745,8 +739,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             return "";
         }
         if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
-            List<String> licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add(applicationDto.getOriginLicenceId());
+            List<String> licIds = Arrays.asList(applicationDto.getOriginLicenceId());
             List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
@@ -761,6 +754,30 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
 
         return "";
+    }
+
+    private List<String> getGiroAccountAndBICByGroupNo(String groupNo){
+        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        if( applicationDto == null){
+            return null;
+        }
+        if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
+            List<String> licIds = Arrays.asList(applicationDto.getOriginLicenceId());
+            List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
+            GiroAccountInfoDto orgGiroAccountInfoDto = null;
+            if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
+                orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
+            }
+            if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
+                  // index 2 : dda refNo
+                 return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()),StringUtil.getNonNull(orgGiroAccountInfoDto.getCustomerReferenceNo()));
+            }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+               log.info(StringUtil.changeForLog("-------- groupNo :"+ groupNo +" ,giro account is null------------"));
+            }else {
+                log.info(StringUtil.changeForLog("-------- groupNo :"+ groupNo +" ,giro account status is inactive or null-----------"));
+            }
+        }
+        return null;
     }
 
 

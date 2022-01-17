@@ -56,6 +56,7 @@
             todayHighlight:true,
             orientation:'bottom'
         });
+        $('input[type="text"]').attr('autocomplete', 'off');
     });
     function popup(url){
         window.open(url,"_blank");

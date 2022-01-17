@@ -89,10 +89,7 @@ public class FESingpassLandingDelegator {
         UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
         if (us != null && lc != null && "Active".equals(us.getStatus())
                 && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/main-web/eservice/INTERNET/MohInternetInbox");
-            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+            redirectToInbox(bpc);
 
             return;
         }
@@ -169,6 +166,7 @@ public class FESingpassLandingDelegator {
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
         //get active flag and active role flag
         String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        String pwdValid = ParamUtil.getRequestString(bpc.request, UserConstants.SCP_ERROR);
         if(AppConsts.FALSE.equals(userAndRoleFlag)) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
@@ -184,8 +182,10 @@ public class FESingpassLandingDelegator {
                 return;
             }
         }
+        if (StringUtil.isEmpty(pwdValid)) {
+            ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
+        }
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-        ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.NO);
         log.info(StringUtil.changeForLog("SingPass Login service [validatePwd] END ...."));
     }
 
@@ -294,6 +294,20 @@ public class FESingpassLandingDelegator {
             log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] END ...."));
         }
     }
+
+    /**
+     * AutoStep: redirectToInbox
+     *
+     * @param bpc
+     * @throws
+     */
+    public void redirectToInbox(BaseProcessClass bpc) {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/main-web/eservice/INTERNET/MohInternetInbox");
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+    }
+
     private void clearInfo(HttpServletRequest request){
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);

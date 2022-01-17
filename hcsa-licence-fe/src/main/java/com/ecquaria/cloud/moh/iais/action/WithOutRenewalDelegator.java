@@ -917,7 +917,7 @@ public class WithOutRenewalDelegator {
 
     private void setBaseEffServiceSubInNoAutoAppSubmissionDtos(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos,List<AppSubmissionDto> autoAppSubmissionDtos){
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
-        boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
+        boolean checkSpec = ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType());
         List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
         if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
@@ -1186,7 +1186,7 @@ public class WithOutRenewalDelegator {
                     appSubmissionDto.setIsBundledFee(1);
                     isBundledFee=true;
                 }
-                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED)){
+                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_TYPE_SPECIFIED)){
                     appSubmissionDto.setIsSpecifiedFee(1);
                 }
             }catch (Exception e){

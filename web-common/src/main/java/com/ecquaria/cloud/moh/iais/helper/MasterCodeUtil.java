@@ -242,7 +242,7 @@ public final class MasterCodeUtil {
     public static final String TOP_TYPE_TERMINATION_PREGNANCY            ="7589A046-2D14-49C0-8AC7-FA141E53058C";
     public static final String TOP_TYPE_OF_DRUG                          ="94B44592-5DD6-4998-8498-2EA284148113";
 
-
+    public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 
     /**
      * @description: refresh the master codes into cache
@@ -536,6 +536,16 @@ public final class MasterCodeUtil {
         }
         list.add(mc);
         rch.set(CACHE_NAME_FILTER, mc.getFilterValue(), list);
+    }
+
+    public static String getDecByCateIdAndCodeValue(String cateId,String codeValue){
+        if(StringUtil.isEmpty(codeValue)){ return "";}
+        for (MasterCodeView masterCodeView : retrieveCateSource(cateId)) {
+            if(codeValue.equalsIgnoreCase(masterCodeView.getCodeValue())){
+                return StringUtil.isEmpty(masterCodeView.getDescription()) ? codeValue : masterCodeView.getDescription();
+            }
+        }
+        return codeValue;
     }
 
     private MasterCodeUtil() {throw new IllegalStateException("Util class");}
