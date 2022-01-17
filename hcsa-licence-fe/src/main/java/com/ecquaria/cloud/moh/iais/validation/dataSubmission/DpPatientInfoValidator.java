@@ -36,11 +36,8 @@ public class DpPatientInfoValidator implements CustomizeValidator {
     public Map<String, String> validate( HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
-        PatientDto patientDto = dpSuperDataSubmissionDto.getPatientDto();
+        PatientDto patientDto = dpSuperDataSubmissionDto.getPatientDto() == null ? new PatientDto() :dpSuperDataSubmissionDto.getPatientDto();
         String birthDate = patientDto.getBirthDate();
-        if (patientDto == null) {
-            patientDto = new PatientDto();
-        }
 
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
@@ -77,7 +74,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                     errorMap.put("birthDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
             }
         }
         String postalCode = patientDto.getPostalCode();

@@ -117,7 +117,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 }else if(!donorSampleDto.isDirectedDonation()){
                     String sampleType = donorSampleDto.getSampleType();
                     log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-                    int ageInt = Integer.valueOf(age);
+                    int ageInt = Integer.parseInt(age);
                     if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
                         if(ageInt<21 || ageInt>40 ){
                             map.put("ages"+i,"DS_ERR044");

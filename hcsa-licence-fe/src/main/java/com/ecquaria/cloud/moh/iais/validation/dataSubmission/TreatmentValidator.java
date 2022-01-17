@@ -57,7 +57,7 @@ public class TreatmentValidator implements CustomizeValidator {
                     errorMap.put("lastChildBirthday","Must be earlier then current date");
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
             }
         }
 

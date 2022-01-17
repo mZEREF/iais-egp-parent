@@ -123,7 +123,7 @@ public final class ControllerHelper {
     }
 
     private static boolean isFieldExist(HttpServletRequest request,String name){
-        return request != null && request.getParameterMap() != null && request.getParameterMap().keySet().contains(name);
+        return request != null && request.getParameterMap() != null && request.getParameterMap().containsKey(name);
     }
 
     private static Object getValue(HttpServletRequest request, String shortName, String id, Field field) {
@@ -131,7 +131,7 @@ public final class ControllerHelper {
             return null;
         }
 
-        log.info("ControllerHelper - Getting value for field: " + StringUtil.changeForLog(
+        log.info(StringUtil.changeForLog("ControllerHelper - Getting value for field: " +
                 field.getName()) + " (" + StringUtil.changeForLog(String.valueOf(field.getType())) + ")");
         Class<?> type = field.getType();
         String name = getParamName(shortName, field.getName(), id);
@@ -180,7 +180,7 @@ public final class ControllerHelper {
     }
 
     public static String getParamName(String shortName, String name, String suffix) {
-        StringBuffer param = new StringBuffer();
+        StringBuilder param = new StringBuilder();
         if (!StringUtil.isEmpty(shortName)) {
             param.append(shortName).append(StringUtil.capitalize(name));
         } else {

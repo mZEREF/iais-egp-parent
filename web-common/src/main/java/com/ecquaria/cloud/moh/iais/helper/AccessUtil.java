@@ -168,7 +168,7 @@ public class AccessUtil {
                 }
                 return true;
             }else {
-                log.error("--------loginContext roleIds is null--------",loginContext);
+                log.error("--------loginContext {} roleIds is null--------",loginContext);
             }
         }
         return false;

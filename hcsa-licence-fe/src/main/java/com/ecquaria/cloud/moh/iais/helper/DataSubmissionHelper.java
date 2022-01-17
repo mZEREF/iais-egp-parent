@@ -599,7 +599,8 @@ public final class DataSubmissionHelper {
     }
 
     public static PatientInventoryDto getCurrentPatientInventory(HttpServletRequest request) {
-        return getCurrentArDataSubmission(request).getPatientInventoryDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
+        return  arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getPatientInventoryDto() : null;
     }
 
     public static String getLicenseeEmailAddrs(HttpServletRequest request) {
@@ -624,11 +625,11 @@ public final class DataSubmissionHelper {
     }
 
     public static String getMainTitle(ArSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : null);
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
     }
 
     public static String getMainTitle(DpSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : null);
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
     }
 
     public static String getMainTitle(String type) {
@@ -754,7 +755,7 @@ public final class DataSubmissionHelper {
         }
         List<DsConfig> configs = DsConfigHelper.initDsConfig(dsType, request);
         return configs.stream()
-                .filter(config -> config.isActive())
+                .filter(DsConfig::isActive)
                 .map(DsConfig::getCode)
                 .filter(Objects::nonNull)
                 .findAny()

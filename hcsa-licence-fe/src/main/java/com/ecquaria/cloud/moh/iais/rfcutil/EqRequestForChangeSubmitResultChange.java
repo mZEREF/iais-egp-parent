@@ -182,7 +182,7 @@ public class EqRequestForChangeSubmitResultChange {
         return result;
     }*/
 
-    public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) throws Exception {
+    public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList)  {
         return eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
     }
 
@@ -707,7 +707,7 @@ public class EqRequestForChangeSubmitResultChange {
         return !Objects.equals(subLicenseeDto, oldSbLicenseeDto);
     }
 
-    public static AppEditSelectDto rfcChangeModuleEvaluationDto(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto) throws Exception {
+    public static AppEditSelectDto rfcChangeModuleEvaluationDto(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();

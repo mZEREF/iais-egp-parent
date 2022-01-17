@@ -49,7 +49,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
                        errMap.put("guardianBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
                    }
                }catch (Exception e){
-                   e.printStackTrace();
+                   log.error(e.getMessage(),e);
                }
            }
         }
@@ -78,7 +78,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
                         errMap.put("appliedPartBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error(e.getMessage(),e);
                 }
             }
         }

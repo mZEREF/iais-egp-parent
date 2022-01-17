@@ -165,9 +165,9 @@ public final class IaisEGPHelper extends EGPHelper {
         try {
             if(IaisCommonUtils.isNotEmpty(params)){
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(url).append("?");
+                stringBuilder.append(url).append('?');
                 params.forEach((key,value) ->{
-                    stringBuilder.append(key).append("=").append(value).append("&");
+                    stringBuilder.append(key).append('=').append(value).append('&');
                 });
                 url = stringBuilder.toString();
                 url = url.substring(0,url.length()-1);
@@ -952,9 +952,9 @@ public final class IaisEGPHelper extends EGPHelper {
 
     private  static  Map<String,List<String>> getSvcRoleMap(){
         Map<String,List<String>> stringStringMap = IaisCommonUtils.genNewHashMap(8);
-        List<String> onlyDp = Arrays.asList(RoleConsts.USER_ROLE_DS_DP);
-        List<String> onlyTop = Arrays.asList(RoleConsts.USER_ROLE_DS_TOP);
-        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,Arrays.asList(RoleConsts.USER_ROLE_DS_AR));
+        List<String> onlyDp = Collections.singletonList(RoleConsts.USER_ROLE_DS_DP);
+        List<String> onlyTop = Collections.singletonList(RoleConsts.USER_ROLE_DS_TOP);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,Collections.singletonList(RoleConsts.USER_ROLE_DS_AR));
         stringStringMap.put(AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL,onlyDp);
         stringStringMap.put(AppServicesConsts.SERVICE_NAME_NURSING_HOME,onlyDp);
         stringStringMap.put(AppServicesConsts.SERVICE_NAME_MEDICAL_CLINIC,onlyTop);
@@ -1033,4 +1033,13 @@ public final class IaisEGPHelper extends EGPHelper {
             return Collections.unmodifiableMap(stringStringMap);
         }
     }
+
+    public static FeignResponseEntity getFeignResponseEntity(Object... params) {
+        log.warn(StringUtil.changeForLog("--------Params: " + Arrays.toString(params) + "-----------"));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

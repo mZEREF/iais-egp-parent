@@ -262,8 +262,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
             String orgId, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
-                + nationality + " -----");
+        log.info(StringUtil.changeForLog("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
+                + nationality + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
                 || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
             return;
@@ -273,7 +273,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + submissionType + " -----");
+        log.info(StringUtil.changeForLog("----- Delete Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return;
         }

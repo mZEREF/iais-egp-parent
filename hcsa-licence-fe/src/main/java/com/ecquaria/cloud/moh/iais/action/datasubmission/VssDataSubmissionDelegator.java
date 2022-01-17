@@ -211,7 +211,7 @@ public class VssDataSubmissionDelegator {
            int age= -Formatter.compareDateByDay(treatmentDto.getBirthData());
             treatmentDto.setAge(age/365);
         }catch (Exception e){
-            e.printStackTrace();
+           log.error(e.getMessage(),e);
         }
         vssTreatmentDto.setTreatmentDto(treatmentDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
@@ -253,7 +253,7 @@ public class VssDataSubmissionDelegator {
             guardianAppliedPartDto.setGuardianBirthday(gDate);
             guardianAppliedPartDto.setCourtOrderIssueDate(cDate);
         } catch (Exception e) {
-           e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         guardianAppliedPartDto.setVssDocumentDto( IaisCommonUtils.isNotEmpty(guardianAppliedPartDto.getVssDocumentDto()) ? guardianAppliedPartDto.getVssDocumentDto() : IaisCommonUtils.genNewArrayList());
         setFiles(guardianAppliedPartDto,request);
@@ -297,7 +297,7 @@ public class VssDataSubmissionDelegator {
             sexualSterilizationDto.setOperationDate(oDate);
             sexualSterilizationDto.setHecReviewDate(hDate);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         if(StringUtil.isNotEmpty(sexualSterilizationDto.getSterilizationMethod())){
             if(sexualSterilizationDto.getSterilizationMethod().equals(DataSubmissionConsts.METHOD_OF_STERILIZATION_TUBAL_LIGATION) && treatmentDto.getGender().equals(DataSubmissionConsts.GENDER_MALE)){

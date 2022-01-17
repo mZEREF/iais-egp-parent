@@ -30,8 +30,6 @@ import java.util.Map;
 @Service
 public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
 
-    @Autowired
-    private LicenceClient licenceClient;
 
     @Autowired
     private SystemAdminClient systemAdminClient;

@@ -44,7 +44,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         PregnancyOutcomeStageDto pregnancyOutcomeStageDto = arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
         if (pregnancyOutcomeStageDto == null) {
             pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
-            pregnancyOutcomeStageDto.setBabyDetailsUnknown(false);
+            pregnancyOutcomeStageDto.setBabyDetailsUnknown(Boolean.FALSE);
             pregnancyOutcomeStageDto.setBirthPlace("POSBP001");
             pregnancyOutcomeStageDto.setWasSelFoeReduCarryOut(1);
             arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);

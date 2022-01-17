@@ -46,7 +46,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
                 for (DonorDto donorDto : arDonorDtoList) {
                     if (donorDto.isDirectedDonation()) {
-                        oocyteRetrievalStageDto.setIsFromDonor(true);
+                        oocyteRetrievalStageDto.setIsFromDonor(Boolean.TRUE);
                         break;
                     }
                 }

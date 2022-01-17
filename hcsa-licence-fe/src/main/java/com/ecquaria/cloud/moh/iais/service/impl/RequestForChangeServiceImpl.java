@@ -1838,7 +1838,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
-            log.info("No submissions to send email.");
+            log.info("No submissions to send email.");return;
         }
         appSubmissionDtos.stream()
                 .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))

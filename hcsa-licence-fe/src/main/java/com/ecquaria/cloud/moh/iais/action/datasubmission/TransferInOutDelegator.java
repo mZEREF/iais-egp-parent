@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +47,6 @@ public class TransferInOutDelegator extends CommonDelegator {
     LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     NotificationHelper notificationHelper;
-    @Autowired
-    ArDataSubmissionService arDataSubmissionService;
 
     @Override
     public void start(BaseProcessClass bpc) {

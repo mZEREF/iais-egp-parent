@@ -51,13 +51,7 @@ public class OutcomeDelegator extends CommonDelegator{
         OutcomeStageDto outcomeStageDto =
                 arSuperDataSubmissionDto.getOutcomeStageDto() == null ? new OutcomeStageDto() : arSuperDataSubmissionDto.getOutcomeStageDto();
             String pregnancyDetected = ParamUtil.getString(bpc.request, "pregnancyDetected");
-            Boolean pregnancyDetectedb = null;
-            if ("true".equals(pregnancyDetected)){
-                pregnancyDetectedb = true;
-            }else if ("false".equals(pregnancyDetected)){
-                pregnancyDetectedb = false;
-            }
-            outcomeStageDto.setPregnancyDetected(pregnancyDetectedb);
+            outcomeStageDto.setPregnancyDetected(Boolean.valueOf(pregnancyDetected));
             arSuperDataSubmissionDto.setOutcomeStageDto(outcomeStageDto);
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(outcomeStageDto, "save");

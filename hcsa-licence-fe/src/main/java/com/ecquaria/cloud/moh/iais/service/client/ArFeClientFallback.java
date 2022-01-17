@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Arrays;
 import java.util.Date;
@@ -30,11 +32,7 @@ import org.springframework.http.HttpHeaders;
 public class ArFeClientFallback implements ArFeClient {
 
     private FeignResponseEntity getFeignResponseEntity(Object... params) {
-        log.warn("--------Params: " + Arrays.toString(params) + "-----------");
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return IaisEGPHelper.getFeignResponseEntity(params);
     }
 
     @Override

@@ -3149,7 +3149,7 @@ public class NewApplicationHelper {
      * show others
      */
     public static List<AppSvcChckListDto> handlerPleaseIndicateLab(List<AppSvcChckListDto> appSvcChckListDtos,
-            Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap) throws CloneNotSupportedException {
+            Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap){
         List<AppSvcChckListDto> newAppSvcChckListDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcChckListDtos) && svcScopeAlignMap != null) {
             AppSvcChckListDto targetDto = getScopeDtoByRecursiveTarNameUpward(appSvcChckListDtos, svcScopeAlignMap,
@@ -4932,7 +4932,7 @@ public class NewApplicationHelper {
             msg.append(NewApplicationConstant.TITLE_SVCINFO);
             String s = handleStepHames(errorList);
             if (!StringUtil.isEmpty(s)) {
-                msg.append(" (").append(s).append(")");
+                msg.append(" (").append(s).append(')');
             }
             msg.append(", ");
         }
@@ -5180,7 +5180,9 @@ public class NewApplicationHelper {
         request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
         request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
-        allData.putAll(licAppGrpPremisesDtoMap);
+        if(licAppGrpPremisesDtoMap != null){
+            allData.putAll(licAppGrpPremisesDtoMap);
+        }
         allData.putAll(newAppMap);
         if (withCurrent) {
             reSetCurrentPremises(allData, request);

@@ -30,18 +30,17 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
         if(cycleAbandoned ==null){
             errorMap.put("cycleAbandoned" ,"GENERAL_ERR0006");
         }
-
-        if (Boolean.valueOf(cycleAbandoned)==true) {
+        String errMsg006 = null;
+        if (Boolean.parseBoolean(cycleAbandoned)) {
             if ( abandonReason == null){
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
-                errorMap.put("abandonReason", errMsg);
+                 errMsg006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
+                errorMap.put("abandonReason", errMsg006);
             }
         }
-        if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason) && Boolean.valueOf(cycleAbandoned)==true) {
+        if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason) && Boolean.parseBoolean(cycleAbandoned)) {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
-                errorMap.put("otherAbandonReason", errMsg);
+                errorMap.put("otherAbandonReason", errMsg006 == null ? MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field") :  errMsg006);
             }else if (otherAbandonReason.length() > 20) {
                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                 repMap.put("maxlength", "20");
