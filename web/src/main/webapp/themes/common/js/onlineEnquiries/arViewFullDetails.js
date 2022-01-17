@@ -1,4 +1,3 @@
-var preActiveHidden=$("[name='preActiveHidden']").val();
 
 var dividajaxlist = [];
 
@@ -44,6 +43,8 @@ function searchInventory() {
 }
 
 function jumpToPagechangePage() {
+    var preActiveHidden=$("[name='preActiveHidden']").val();
+
     if(preActiveHidden==='1'){
         showWaiting();
         $("[name='crud_action_type']").val('searchInv');
@@ -61,6 +62,8 @@ function jumpToPagechangePage() {
 function sortRecords(sortFieldName, sortType) {
     $("[name='crud_action_value']").val(sortFieldName);
     $("[name='crud_action_additional']").val(sortType);
+    var preActiveHidden=$("[name='preActiveHidden']").val();
+
     if(preActiveHidden==='1'){
         $("[name='crud_action_type']").val('searchInv');
     }
