@@ -16,6 +16,8 @@ public interface TopDataSubmissionService {
 
     TopSuperDataSubmissionDto saveDataSubmissionDraft(TopSuperDataSubmissionDto topSuperDataSubmissionDto);
 
+    TopSuperDataSubmissionDto getTopSuperDataSubmissionDto(String submissionNo);
+
     String getSubmissionNo(String dsType);
 
     TopSuperDataSubmissionDto saveTopSuperDataSubmissionDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto);
@@ -27,4 +29,6 @@ public interface TopDataSubmissionService {
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName, String hciCode);
 
     void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+
+    TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo);
 }

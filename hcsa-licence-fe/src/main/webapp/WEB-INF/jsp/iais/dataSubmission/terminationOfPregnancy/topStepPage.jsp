@@ -47,6 +47,15 @@
                                         <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
+                                        <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
+                                            <div class="col-xs-12 col-md-10">
+                                            </div>
+                                            <div class="col-xs-12 col-md-2 text-right">
+                                                <p class="print" style="font-size: 16px;">
+                                                    <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                                                </p>
+                                            </div>
+                                        </div>
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                             <%@ include file="section/previewPatientDetails.jsp" %>
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
@@ -65,3 +74,10 @@
         </div>
     </div>
 </form>
+<c:if test="${hasDraft}">
+    <iais:confirm
+            msg="There is an existing draft for the Laboratory Developed Test. Please either continue the draft submission or delete the draft if you wish to submit a different patient"
+            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
+            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
+</c:if>

@@ -21,6 +21,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
         if("TOPSCTP009".equals(familyPlanDto.getSubRopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherSubTopReason())){
             errorMap.put("otherSubTopReason", "GENERAL_ERR0006");
         }
+
         return errorMap;
     }
 }

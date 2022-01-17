@@ -85,12 +85,6 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Gender of Living Children (by Order)"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.livingChildrenGenders}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
                     <iais:field width="5" value="Activity Status" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.activityStatus}"/>
@@ -116,7 +110,18 @@
                         <c:out value="${patientInformationDto.gender}"/>
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Gender of Living Children (by Order)"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <%--<c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders">--%>
+                            <c:out value="${patientInformationDto.livingChildrenGenders}"/>
+                        <%--</c:forEach>--%>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
+</div>
+<div id="cleanpage">
+    <input type="hidden" name="cleanPage" value="${terminationOfPregnancyDto.patientInformationDto}">
 </div>

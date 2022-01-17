@@ -71,8 +71,12 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
 
     @Override
     public TopSuperDataSubmissionDto saveDataSubmissionDraft(TopSuperDataSubmissionDto topSuperDataSubmissionDto) {
-        log.info(StringUtil.changeForLog("do the saveTopSuperDataSubmissionDto ..."));
         return topFeClient.doUpdateDataSubmissionDraft(topSuperDataSubmissionDto).getEntity();
+    }
+
+    @Override
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDto(String submissionNo) {
+        return topFeClient.getTopSuperDataSubmissionDto(submissionNo).getEntity();
     }
 
     @Override
@@ -139,5 +143,14 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
             return;
         }
         topFeClient.deleteTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+    }
+
+    @Override
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        log.info(StringUtil.changeForLog("----- Param - Draft No.: " + draftNo));
+        if (StringUtil.isEmpty(draftNo) ) {
+            return null;
+        }
+        return topFeClient.getTopSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
     }
 }

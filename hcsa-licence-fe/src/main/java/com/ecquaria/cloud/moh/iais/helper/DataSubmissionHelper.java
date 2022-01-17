@@ -234,6 +234,9 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+            result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+            result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
+            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || DsHelper.isCycleFinalStatus(lastStatus)) {
@@ -483,6 +486,41 @@ public final class DataSubmissionHelper {
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         dataSubmission.setAppType(vssSuperDataSubmissionDto.getAppType());
+        return dataSubmission;
+    }
+
+    public static CycleDto initCycleDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto, boolean reNew) {
+        CycleDto cycleDto = topSuperDataSubmissionDto.getCycleDto();
+        if (cycleDto == null || reNew) {
+            cycleDto = new CycleDto();
+        }
+        cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
+        cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
+        String cycleType = cycleDto.getCycleType();
+        if (DataSubmissionConsts.LDT_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_TOP;
+        }
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        cycleDto.setCycleType(cycleType);
+        return cycleDto;
+    }
+
+    public static DataSubmissionDto initDataSubmission(TopSuperDataSubmissionDto topSuperDataSubmissionDto, boolean reNew) {
+        DataSubmissionDto dataSubmission = topSuperDataSubmissionDto.getDataSubmissionDto();
+        if (dataSubmission == null || reNew) {
+            dataSubmission = new DataSubmissionDto();
+            topSuperDataSubmissionDto.setDataSubmissionDto(dataSubmission);
+        }
+        dataSubmission.setSubmissionType(topSuperDataSubmissionDto.getSubmissionType());
+        String cycleStage = null;
+        if (DataSubmissionConsts.TOP_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOP;
+        }
+        dataSubmission.setCycleStage(cycleStage);
+        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        dataSubmission.setAppType(topSuperDataSubmissionDto.getAppType());
         return dataSubmission;
     }
 

@@ -18,7 +18,7 @@ public class PreTerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto();
-        if (preTerminationDto.getCounsellingGiven()==true) {
+        if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true) {
             if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
                 errorMap.put("patientSign", "GENERAL_ERR0006");
             }
