@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
@@ -164,6 +165,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/followup/repo/{id}")
     public void downloadSavedFollowupFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::followupGetSavedFile);
+    }
+
+    @GetMapping("/commonDoc/new/{id}")
+    public void downloadNotSavedCommonDocFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::commonDocGetNewFile);
+    }
+
+    @GetMapping("/commonDoc/repo/{id}")
+    public void downloadSavedCommonDocFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::commonDocGetSavedFile);
     }
 
 
@@ -349,4 +360,18 @@ public class DocDownloadAjaxController {
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
     }
 
+    private MultipartFile commonDocGetNewFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO);
+        return followupDoc.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile commonDocGetSavedFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request,DocConstants.KEY_COMMON_DOC_DTO);
+        DocRecordInfo info = followupDoc.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
 }

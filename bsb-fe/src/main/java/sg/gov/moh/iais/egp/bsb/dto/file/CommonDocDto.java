@@ -18,10 +18,8 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
-import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,8 +75,19 @@ public class CommonDocDto extends ValidatableNodeValue {
     public void clearValidationResult() {
         this.validationResultDto = null;
     }
-    
 
+    public List<DocMeta> convertToDocMetaList(String module) {
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+        this.savedDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), module);
+            metaDtoList.add(docMeta);
+        });
+        this.newDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), module);
+            metaDtoList.add(docMeta);
+        });
+        return metaDtoList;
+    }
 
     /**
      * get a structure used to display the already saved docs
@@ -167,6 +176,7 @@ public class CommonDocDto extends ValidatableNodeValue {
             newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
             newFileSyncDtoList.add(newFileSyncDto);
         }
+        newDocMap.clear();
         return newFileSyncDtoList;
     }
 
