@@ -392,8 +392,8 @@ public class TaskServiceImpl implements TaskService {
     public int remainDays(TaskDto taskDto) {
         int result = 0;
         //todo: wait count kpi
-        String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-        log.debug(StringUtil.changeForLog("The resultStr is -->:" + resultStr));
+        /*String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+        log.debug(StringUtil.changeForLog("The resultStr is -->:" + resultStr));*/
         return  result;
     }
 
