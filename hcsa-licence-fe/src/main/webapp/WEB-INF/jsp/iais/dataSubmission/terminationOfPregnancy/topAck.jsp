@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <label class="col-xs-12" style="font-size: 20px">Submission successful</label>
-                <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
+                <p class="col-xs-12 margin-btm">- <strong><iais:code code="${topSuperDataSubmissionDto.submissionType}"/></strong></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
                     <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>
@@ -52,9 +52,9 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
+                                <td>${topSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
                                 <td>${submittedBy}</td>
-                                <td><fmt:formatDate value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                <td><fmt:formatDate value="${topSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
                             </tr>
                             </tbody>
                         </table>
@@ -67,7 +67,7 @@
                 </div>
                 <div class="col-xs-12 col-md-10 margin-bottom-10">
                     <div class="text-right">
-                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohARDataSubmission">Start Another Submission</a>
+                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohTOPDataSubmission">Start Another Submission</a>
                         <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to DashBoard</a>
                     </div>
                 </div>
