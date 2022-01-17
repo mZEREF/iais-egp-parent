@@ -156,20 +156,21 @@ function reloadNewFile(id,index) {
     $("a[data-upload-file=" + text + "]")[0].click();
 }
 
-function reloadFile(id) {
+function reloadFile(id,index) {
+    deleteFile(id);
     // trigger click on the input file
-    var inputEl = document.getElementById(id);
-    inputEl.click();
+    var text = "upload--v--"+index;
+    $("a[data-upload-file=" + text + "]")[0].click();
 }
 
 function deleteFile(id) {
-    // delete input
-    var inputEl = document.getElementById(id);
-    inputEl.parentNode.removeChild(inputEl);
-
     // delete delete button, reload button
     var fileDiv = document.getElementById(id + "FileDiv");
     fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteExistFiles");
+    appendInputValue(deleteSavedInput, id);
 }
 
 function appendInputValue(input, value) {
@@ -302,7 +303,13 @@ function genFileInfo(fileInputEl) {
 }
 
 function downloadFile(cond, id) {
-    var url = "/bsb-fe/ajax/doc/download/dataSub/new/" + id;
+    var url;
+    if (cond === 'new') {
+        url = "/bsb-fe/ajax/doc/download/dataSub/new/" + id;
+    }
+    if (cond === 'saved') {
+        url = "/bsb-fe/ajax/doc/download/dataSub/repo/" + id;
+    }
     window.open(url);
 }
 

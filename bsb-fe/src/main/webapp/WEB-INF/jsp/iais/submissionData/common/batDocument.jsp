@@ -9,6 +9,7 @@
                 <div class="document-upload-list--v--${status.index}">
                     <c:set var="doc" value="${doSettings.get(item.docType)}"/>
                     <c:set var="newFiles" value="${keyMap.get(status.index)}"/>
+                    <c:set var="savedFiles" value="${savedKeyMap.get(status.index)}"/>
                     <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
@@ -29,6 +30,28 @@
                                         Download
                                     </button>
                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+
+                        <c:if test="${savedFiles ne null}">
+                            <c:forEach var="savedFile" items="${savedFiles}">
+                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', savedFile.repoId)}"/>
+                                <div id="${tmpId}FileDiv">
+                                    <span id="${tmpId}Span">${savedFile.filename}(${String.format("%.1f", savedFile.size/1024.0)}KB)</span>
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            onclick="deleteFile('${tmpId}')">Delete
+                                    </button>
+                                    <button
+                                            type="button" class="btn btn-secondary btn-sm"
+                                            onclick="reloadFile('${tmpId}','${status.index}')">Reload
+                                    </button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            onclick="downloadFile('saved', '${tmpId}')">
+                                        Download
+                                    </button>
+                                    <span data-err-ind="${tmpId}" class="error-msg"></span>
                                 </div>
                             </c:forEach>
                         </c:if>

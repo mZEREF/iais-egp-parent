@@ -127,9 +127,15 @@ public class DocDownloadAjaxController {
     public void downloadCertSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCertGetSavedFile);
     }
+
     @GetMapping("/dataSub/new/{id}")
     public void downloadDataSubNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetNewFile);
+    }
+
+    @GetMapping("/dataSub/repo/{id}")
+    public void downloadDataSubSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetSavedFile);
     }
 
     @GetMapping("/approvalApp/new/{id}")
@@ -275,6 +281,38 @@ public class DocDownloadAjaxController {
         } else{
             return null;
         }
+    }
+
+    /**
+     * Follow-up report get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile dataSubGetSavedFile(HttpServletRequest request, String id) {
+        TransferNotificationDto transferNotificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,"transferNotDto");
+        ConsumeNotificationDto consumeNotificationDto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO);
+        DisposalNotificationDto disposalNotificationDto = (DisposalNotificationDto) ParamUtil.getSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO);
+        ExportNotificationDto exportNotificationDto = (ExportNotificationDto) ParamUtil.getSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO);
+        ReceiptNotificationDto receiptNotificationDto = (ReceiptNotificationDto) ParamUtil.getSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO);
+
+        sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto.DocRecordInfo docRecordInfo;
+        if(transferNotificationDto != null){
+            docRecordInfo = transferNotificationDto.getSavedDocInfos().get(id);
+        } else if(consumeNotificationDto != null){
+            docRecordInfo = consumeNotificationDto.getSavedDocInfos().get(id);
+        } else if(disposalNotificationDto != null){
+            docRecordInfo = disposalNotificationDto.getSavedDocInfos().get(id);
+        } else if(exportNotificationDto != null){
+            docRecordInfo = exportNotificationDto.getSavedDocInfos().get(id);
+        } else if(receiptNotificationDto != null){
+            docRecordInfo = receiptNotificationDto.getSavedDocInfos().get(id);
+        } else{
+            return null;
+        }
+        if (docRecordInfo == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
     }
 
     /**

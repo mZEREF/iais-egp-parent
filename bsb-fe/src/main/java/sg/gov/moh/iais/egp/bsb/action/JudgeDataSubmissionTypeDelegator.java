@@ -7,11 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
-import sg.gov.moh.iais.egp.bsb.entity.Draft;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +50,7 @@ public class JudgeDataSubmissionTypeDelegator {
         }
     }
 
-    public void prepareData(BaseProcessClass bpc) throws JsonProcessingException {
+    public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter("editId");
         String applicationId = MaskUtil.unMaskValue("editId", maskedAppId);
@@ -59,13 +58,17 @@ public class JudgeDataSubmissionTypeDelegator {
             throw new IaisRuntimeException("Invalid Application ID");
         }
         DraftDto draftDto = dataSubmissionClient.getDraftDto(applicationId).getEntity();
-        assert draftDto != null;
-        JMapper<Draft, DraftDto> draftJMapper = new JMapper<>(Draft.class,DraftDto.class);
-        Draft draft = draftJMapper.getDestinationWithoutControl(draftDto);
+        Assert.notNull(draftDto,"Queried draft by applicationId is null");
         ObjectMapper mapper = new ObjectMapper();
-        Map<String,Object> draftMap = mapper.readValue(draft.getDraftData(), new TypeReference<Map<String, Object>>() {});
-        String dataSubmissionType = (String) draftMap.get("dataSubmissionType");
-        //
+        Map<String,Object> draftMap;
+        String dataSubmissionType = null;
+        try {
+            draftMap = mapper.readValue(draftDto.getDraftData(), new TypeReference<Map<String, Object>>() {});
+            dataSubmissionType = (String) draftMap.get("dataSubmissionType");
+        } catch (JsonProcessingException e) {
+            log.error("translate draftData to Map error");
+        }
+        Assert.notNull(dataSubmissionType,"dataSubmissionType is null");
         String actionType;
         switch (dataSubmissionType) {
             case KEY_DATA_SUBMISSION_TYPE_CONSUME:
@@ -96,7 +99,7 @@ public class JudgeDataSubmissionTypeDelegator {
                 throw new IllegalStateException("Unexpected dataSubmissionType: " + dataSubmissionType);
         }
         ParamUtil.setSessionAttr(request, KEY_ACTION_TYPE, actionType);
-        ParamUtil.setSessionAttr(request,KEY_DRAFT,draft);
+        ParamUtil.setSessionAttr(request,KEY_DRAFT,draftDto);
         ParamUtil.setSessionAttr(request,KEY_BACK,"app");
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,dataSubmissionType);
     }

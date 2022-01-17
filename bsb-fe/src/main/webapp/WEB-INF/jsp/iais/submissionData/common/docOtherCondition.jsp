@@ -6,6 +6,7 @@
             <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 100%">
                 <div class="document-upload-list">
                     <c:set var="newFiles" value="${otherDocs}"/>
+                    <c:set var="savedFiles" value="${savedOthersDoc}"/>
                     <h3>Others</h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
@@ -26,6 +27,28 @@
                                         Download
                                     </button>
                                     <span data-err-ind="${info.id}" class="error-msg"></span>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+
+                        <c:if test="${savedFiles ne null}">
+                            <c:forEach var="savedFile" items="${savedFiles}">
+                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', savedFile.repoId)}"/>
+                                <div id="${tmpId}FileDiv">
+                                    <span id="${tmpId}Span">${savedFile.filename}(${String.format("%.1f", savedFile.size/1024.0)}KB)</span>
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            onclick="deleteFile('${tmpId}')">Delete
+                                    </button>
+                                    <button
+                                            type="button" class="btn btn-secondary btn-sm"
+                                            onclick="reloadFile('${tmpId}')">Reload
+                                    </button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            onclick="downloadFile('saved', '${tmpId}')">
+                                        Download
+                                    </button>
+                                    <span data-err-ind="${tmpId}" class="error-msg"></span>
                                 </div>
                             </c:forEach>
                         </c:if>

@@ -257,7 +257,6 @@ public class PrimaryDocDto implements Serializable {
                     .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
                     .collect(Collectors.toList());
             deleteFileRepoIds.forEach(it -> {
-//                toBeDeletedDocIds.add(savedDocInfos.get(it).getDocEntityId());
                 savedDocInfos.remove(it);
                 toBeDeletedRepoIds.add(it);
             });
