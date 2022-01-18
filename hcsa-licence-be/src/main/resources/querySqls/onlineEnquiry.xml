@@ -650,100 +650,97 @@
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[
-            <div class="col-md-12">
-                <div class="row">
-                    <b class="col-md-12" style="font-size:2.0rem">
-                        Co-funding History
-                    </b>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        Total No. of Co-funded IUI Cycles
+
+            <div class="row">
+                <h4>Co - Funding History</h4>
+                <div class="quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Total No. of Co-funded  </p>
+                        <p class="cycname"> IUI Cycles</p>
                     </div>
-                    <div class="col-md-6">
-                        IUICyclesNumber
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">IUICyclesNumber</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Total No. of Co-funded ART Fresh Cycles
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Total No. of Co-funded  </p>
+                        <p class="cycname"> ART Fresh Cycles</p>
                     </div>
-                    <div class="col-md-6">
-                        ARTFreshCyclesNumber
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Total No. of Co-funded ART Frozen Cycles
-                    </div>
-                    <div class="col-md-6">
-                        ARTFrozenCyclesNumber
+                    <div class="col-xs-4 col-md-2 ">
+                        <p class="number">ARTFreshCyclesNumber</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Total No. of Co-funded PGT Cycles
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Total No. of Co-funded  </p>
+                        <p class="cycname"> ART Frozen Cycles</p>
                     </div>
-                    <div class="col-md-6">
-                        PGTCyclesNumber
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <b class="col-md-12" style="font-size:2.0rem">
-                        Total Inventory
-                    </b>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        Fresh Oocytes
-                    </div>
-                    <div class="col-md-6">
-                        FreshOocytesNumber
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">ARTFrozenCyclesNumber</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Frozen Oocytes
+                <div class="quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Total Number of co-funded  </p>
+                        <p class="cycname"> PGT Cycles</p>
                     </div>
-                    <div class="col-md-6">
-                        FrozenOocytesNumber
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Fresh Embryos
-                    </div>
-                    <div class="col-md-6">
-                        FreshEmbryosNumber
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">PGTCyclesNumber</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Frozen Embryos
+            </div>
+
+            <div class="row">
+                <h4>Total Inventory</h4>
+                <div class="quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Fresh Oocytes  </p>
                     </div>
-                    <div class="col-md-6">
-                        FrozenEmbryosNumber
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        Frozen Sperms
-                    </div>
-                    <div class="col-md-6">
-                        FrozenSpermsNumber
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">FreshOocytesNumber</p>
                     </div>
                 </div>
-                <hr>
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Frozen Oocytes  </p>
+                    </div>
+                    <div class="col-xs-4 col-md-2 ">
+                        <p class="number">FrozenOocytesNumber</p>
+                    </div>
+                </div>
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Fresh Embryos  </p>
+                    </div>
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">FreshEmbryosNumber</p>
+                    </div>
+                </div>
+
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Frozen Embryos  </p>
+                    </div>
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">FrozenEmbryosNumber</p>
+                    </div>
+                </div>
+                <div class=" quickview-row">
+                    <div class="col-xs-10 col-md-10">
+                        <p class="">  Frozen Sperms  </p>
+                    </div>
+                    <div class="col-xs-2 col-md-2">
+                        <p class="number">FrozenSpermsNumber</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <a href="#" onclick="fullDetailsView('patientCode')">View Full Details</a>
                     </div>
                 </div>
-
             </div>
+
 
 
         ]]>
