@@ -15,7 +15,7 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb_followup.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-followup.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Incident Reference No.</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>N210205INC001</p>
+                                <p><c:out value="${previewB.referenceNo}"/></p>
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -46,40 +46,59 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Name of Personnel</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>Suspected exposure to biological agent or toxin</p>
+                                <p><c:out value="${previewB.addPersonnelName}"/></p>
                             </div>
                             <div class="clear"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-5 col-md-4 control-label">Description of medical follow-up</label>
-                            <span class="mandatory otherQualificationSpan">*</span>
+                            <div class="col-xs-5 col-md-4 control-label">
+                                <label for="followupDes">Description of medical follow-up</label>
+                                <span class="mandatory otherQualificationSpan">*</span>
+                            </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>Suspected exposure to biological agent or toxin</p>
+                                <input maxLength="500" type="text" autocomplete="off" name="followupDes" id="followupDes" value='<c:out value="${followup1B.followupDes}"/>'/>
+                                <span data-err-ind="followupDes" class="error-msg"></span>
                             </div>
                             <div class="clear"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-5 col-md-4 control-label">Interpretation of test results</label>
+                            <div class="col-xs-5 col-md-4 control-label">
+                                <label for="testResult">Interpretation of test results</label>
+                            </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>Test01</p>
+                                <input maxLength="400" type="text" autocomplete="off" name="testResult" id="testResult" value='<c:out value="${followup1B.testResult}"/>'/>
+                                <span data-err-ind="testResult" class="error-msg"></span>
                             </div>
                             <div class="clear"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-5 col-md-4 control-label">Is further medical follow-up is advised/expected</label>
+                            <div class="col-xs-5 col-md-4 control-label">
+                                <label for="testResult">Is further medical follow-up is advised/expected</label>
+                            </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>Yes</p>
+                                <div class="col-sm-5" style="margin-top: 8px">
+                                    <input type="radio" name="isExpected" id="isExpectedY" value="Y" <c:if test="${followup1B.isExpected eq 'Y'}">checked="checked"</c:if> />
+                                    <label for="isExpectedY">Yes</label>
+                                </div>
+                                <div class="col-sm-5" style="margin-top: 8px">
+                                    <input type="radio" name="isExpected" id="isExpectedN" value="N" <c:if test="${followup1B.isExpected eq 'N'}">checked="checked"</c:if> />
+                                    <label for="isExpectedN">No</label>
+                                </div>
+                                <span data-err-ind="isExpected" class="error-msg"></span>
                             </div>
                             <div class="clear"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-5 col-md-4 control-label">Estimated duration and frequency of follow-up</label>
+                            <div class="col-xs-5 col-md-4 control-label">
+                                <label for="followupDuration">Estimated duration and frequency of follow-up</label>
+                            </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p>689</p>
+                                <input maxLength="100" type="text" autocomplete="off" name="followupDuration" id="followupDuration" value='<c:out value="${followup1B.followupDuration}"/>'/>
+                                <span data-err-ind="followupDuration" class="error-msg"></span>
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -90,18 +109,18 @@
                                 <span class="mandatory otherQualificationSpan">*</span>
                             </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <input type="text" autocomplete="off" name="followupDate" id="followupDate" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                <input type="text" autocomplete="off" name="followupDate" id="followupDate" data-date-start-date="01/01/1900" value='<c:out value="${followup1B.followupDate}"/>' placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
                                 <span data-err-ind="followupDate" class="error-msg"></span>
                             </div>
                         </div>
 
                         <div class="form-group ">
                             <div class="col-xs-5 col-md-4 control-label">
-                                <label for="remark">Remarks</label>
+                                <label for="remarks">Remarks</label>
                                 <span class="mandatory otherQualificationSpan">*</span>
                             </div>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <input maxLength="132" type="text" autocomplete="off" name="remark" id="remark" value=''/>
+                                <input maxLength="132" type="text" autocomplete="off" name="remarks" id="remarks" value='<c:out value="${followup1B.remarks}"/>'/>
                                 <span data-err-ind="remark" class="error-msg"></span>
                             </div>
                         </div>

@@ -17,6 +17,11 @@ public class INTERNET___IncidentFollowUPReport1A___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="followUPReportDelegator";
 
+	public void init_OnStepProcess_0() throws Exception {
+		// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "initFollowup1A", this);
+	}
+
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "startFollowup1A", this);
@@ -45,6 +50,11 @@ public class INTERNET___IncidentFollowUPReport1A___1 extends BaseProcessClass {
 	public void preViewReport1A_OnStepProcess_0() throws Exception {
 	// 		PreViewReport1A->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "preViewReport1A", this);
+	}
+
+	public void handleViewReport1A_OnStepProcess_0() throws Exception {
+		// 		HandleViewReport1A->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleViewReport1A", this);
 	}
 
 	public void submitReport1A_OnStepProcess_0() throws Exception {

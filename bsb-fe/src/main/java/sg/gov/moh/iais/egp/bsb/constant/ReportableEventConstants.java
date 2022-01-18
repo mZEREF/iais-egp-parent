@@ -44,4 +44,8 @@ public class ReportableEventConstants {
     public static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
     public static final String KEY_VALIDATION_ERRORS = "errorMsg";
 
+    public static final String KEY_PROCESS_TYPE_NOTIFICATION = "notification";
+    public static final String KEY_PROCESS_TYPE_INVESTIGATION = "investigation";
+    public static final String KEY_PROCESS_TYPE_FOLLOW_UP_1A = "followup1A";
+
 }

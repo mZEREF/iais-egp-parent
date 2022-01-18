@@ -15,6 +15,7 @@ import java.util.Map;
  **/
 @Data
 public class FollowupReport1BDto implements Serializable {
+    private String processType;
     private FollowupInfoBDto infoBDto;
     private Collection<DocRecordInfo> docRecordInfos;
 
@@ -22,6 +23,7 @@ public class FollowupReport1BDto implements Serializable {
     public static FollowupReport1BDto from(FollowupInfoBDto followupInfoBDto, CommonDocDto dto){
         //retrieve followupInfoA Data
         FollowupReport1BDto report1BDto = new FollowupReport1BDto();
+        report1BDto.setProcessType("followup1B");
         report1BDto.setInfoBDto(followupInfoBDto);
         Map<String, DocRecordInfo> savedDocMap = dto.getSavedDocMap();
         if(CollectionUtils.isEmpty(savedDocMap)){

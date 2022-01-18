@@ -15,6 +15,10 @@ import java.util.List;
  * @version 2022/1/10 17:11
  **/
 public class FollowupInfoADto implements Serializable {
+    private String entityId;
+
+    private String referenceNo;
+
     private String draftAppNo;
 
     private String incidentId;
@@ -27,7 +31,7 @@ public class FollowupInfoADto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class InfoADto implements Serializable {
-        private String entityId;
+        private String followupCauseId;
 
         private String incidentCause;
 
@@ -44,6 +48,22 @@ public class FollowupInfoADto implements Serializable {
         private String correctiveDate;
 
         private String remarks;
+    }
+
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public String getReferenceNo() {
+        return referenceNo;
+    }
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
     public String getDraftAppNo() {

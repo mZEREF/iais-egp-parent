@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
@@ -19,17 +21,16 @@ import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.*;
 import sg.gov.moh.iais.egp.bsb.dto.followup.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sg.gov.moh.iais.egp.bsb.entity.Draft;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
@@ -46,10 +47,12 @@ public class FollowUPReportDelegator{
     private static final String KEY_FOLLOW_UP_DOCUMENT = "followupDoc";
     private static final String KEY_MODULE_CHOOSE = "choose";
     private static final String PARAM_REFERENCE_NO = "refNo";
+    public static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_MODULE_CHOOSE_REFERENCE_NO_1A = "referNo1A";
     private static final String KEY_MODULE_CHOOSE_REFERENCE_NO_1B = "referNo1B";
     private static final String KEY_FOLLOW_UP_1A_PREVIEW = "previewA";
     private static final String KEY_FOLLOW_UP_1B_PREVIEW = "previewB";
+    private static final String KEY_PROCESS_KEY = "processKey";
     private static final String KEY_NEW_FILE_MAP = "newFiles";
     private static final String KEY_SAVED_FILE_MAP = "savedFiles";
     private static final String PARAM_DOC_SETTINGS = "docSettings";
@@ -83,6 +86,62 @@ public class FollowUPReportDelegator{
         AuditTrailHelper.auditFunction(ReportableEventConstants.MODULE_NAME_INCIDENT_FOLLOW_UP, "Incident Follow-up Report 1B");
     }
 
+    public void initFollowup1B(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        //draft edit
+        Draft draft = (Draft) ParamUtil.getSessionAttr(request,"draft");
+        if(draft != null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                FollowupReport1BDto report1BDto = mapper.readValue(draft.getDraftData(),FollowupReport1BDto.class);
+                retrieveByFollowupReport1BDto(request,report1BDto);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //follow-up 1B edit
+        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
+        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
+        if(StringUtils.hasLength(maskedAppId) && !StringUtils.hasLength(key)){
+            String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
+            if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
+                FollowupReport1BDto report1BDto  = followupClient.retrieveFollowup1BByApplicationId(appId).getEntity();
+                retrieveByFollowupReport1BDto(request,report1BDto);
+            }
+        }
+    }
+
+    public void initFollowup1A(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        // Obtain the current stored draft information based on the Application ID
+        // check if we are doing editing
+       Draft draft = (Draft) ParamUtil.getSessionAttr(request,"draft");
+       if(draft != null){
+           ObjectMapper mapper = new ObjectMapper();
+           try {
+              FollowupReport1ADto report1ADto = mapper.readValue(draft.getDraftData(),FollowupReport1ADto.class);
+              retrieveByFollowupReport1ADto(request,report1ADto);
+           } catch (JsonProcessingException e) {
+               e.printStackTrace();
+           }
+       }
+
+       //------------------------------------------------------------------------------------
+
+        //follow-up 1A edit
+        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
+        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
+        if(StringUtils.hasLength(maskedAppId) && !StringUtils.hasLength(key)){
+            //If there is no draft entry key and the value of appId is displayed, the user is entered from the Edit page
+            String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
+            if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
+                FollowupReport1ADto report1ADto  = followupClient.retrieveFollowup1AByApplicationId(appId).getEntity();
+                retrieveByFollowupReport1ADto(request,report1ADto);
+            }
+        }
+    }
+
     public void preReferenceNo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String choose = (String) ParamUtil.getSessionAttr(request,KEY_MODULE_CHOOSE);
@@ -92,7 +151,7 @@ public class FollowUPReportDelegator{
             case KEY_MODULE_CHOOSE_REFERENCE_NO_1A:
                 referNoList = followupClient.queryAll1ARefNo();
                 break;
-            case KEY_FOLLOW_UP_1B:
+            case KEY_MODULE_CHOOSE_REFERENCE_NO_1B:
                 referNoList = followupClient.queryAll1BRefNo();
                 break;
             default:
@@ -106,7 +165,14 @@ public class FollowUPReportDelegator{
         String maskedReferNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
         String referNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskedReferNo);
         FollowupPreviewADto followupPreviewADto = followupClient.queryFollowupInfoAByRefNo(referNo).getEntity();
-        retrieveFollowupInfoA(request,followupPreviewADto);
+        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1A_PREVIEW,followupPreviewADto);
+        if(!StringUtils.hasLength(key)){
+            retrieveFollowupInfoA(request,followupPreviewADto);
+        }else {
+            //process key is used to identified is draft or edit,Values in the session are released to avoid residual session values on secondary entries
+            request.getSession().removeAttribute(KEY_PROCESS_KEY);
+        }
     }
 
     public void handleReferenceNo1B(BaseProcessClass bpc){
@@ -114,7 +180,13 @@ public class FollowUPReportDelegator{
         String maskedReferNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
         String referNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskedReferNo);
         FollowupPreviewBDto followupPreviewBDto = followupClient.queryFollowupInfoBByRefNo(referNo).getEntity();
-        retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentInvestId());
+        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B_PREVIEW,followupPreviewBDto);
+        if(!StringUtils.hasLength(key)){
+            retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentId(),followupPreviewBDto.getReferenceNo());
+        }else {
+            request.getSession().removeAttribute(KEY_PROCESS_KEY);
+        }
     }
 
     public void preFollowUPReport1A(BaseProcessClass bpc){
@@ -156,11 +228,26 @@ public class FollowUPReportDelegator{
     public void preViewReport1A(BaseProcessClass bpc){
         log.info("may do something in future");
         HttpServletRequest request = bpc.request;
-        CommonDocDto commonDocDto = getFollowupDoc(request);
-        ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
-        ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getSavedDocMap());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
+        preFollowupDocView(request);
     }
+
+    public void handleViewReport1A(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String actionType = ParamUtil.getString(request,ModuleCommonConstants.KEY_ACTION_TYPE);
+        if(ModuleCommonConstants.KEY_SUBMIT.equals(actionType)){
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_SUBMIT);
+        }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_BACK);
+        }else if(ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)){
+            //2.save data into draft db
+            FollowupInfoADto infoADto = getFollowupInfoADto(request);
+            CommonDocDto followupDoc = getFollowupDoc(request);
+            saveFollow1ADraft(request,followupDoc,infoADto);
+            //1.Set the action_type value to prepare
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
+        }
+    }
+
 
     public void submitReport1A(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -182,6 +269,10 @@ public class FollowUPReportDelegator{
 
     public void preFollowUPReport1B(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        CommonDocDto commonDocDto = getFollowupDoc(request);
+        ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
+        ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getExistDocTypeMap());
+        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
         ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
     }
 
@@ -215,13 +306,28 @@ public class FollowUPReportDelegator{
     }
 
     public void preViewReport1B(BaseProcessClass bpc){
-        log.info("may do something in future");
         HttpServletRequest request = bpc.request;
-        CommonDocDto commonDocDto = getFollowupDoc(request);
-        ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
-        ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getSavedDocMap());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
+        preFollowupDocView(request);
     }
+
+    public void handleViewReport1B(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String actionType = ParamUtil.getString(request,ModuleCommonConstants.KEY_ACTION_TYPE);
+        if(ModuleCommonConstants.KEY_SUBMIT.equals(actionType)){
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_SUBMIT);
+        }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_BACK);
+        }else if(ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)){
+            //2.save data into draft db
+            FollowupInfoBDto infoBDto = getFollowupInfoBDto(request);
+            CommonDocDto followupDoc = getFollowupDoc(request);
+            saveFollow1BDraft(request,followupDoc,infoBDto);
+            //1.Set the action_type value to prepare
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
+        }
+    }
+
+
 
     public void submitReport1B(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -249,7 +355,7 @@ public class FollowUPReportDelegator{
         List<SelectOption> referNoOps = new ArrayList<>(referNoList.size()+1);
         referNoOps.add(new SelectOption("","Please Select"));
         for (String refNo : referNoList) {
-            referNoOps.add(new SelectOption(MaskUtil.maskValue(PARAM_REFERENCE_NO,refNo),refNo));
+            referNoOps.add(new SelectOption(refNo,refNo));
         }
         return referNoOps;
     }
@@ -268,12 +374,14 @@ public class FollowUPReportDelegator{
         FollowupInfoADto infoADto = getFollowupInfoADto(request);
         String incidentId = previewADto.getIncidentId();
         String incidentInvestId = previewADto.getIncidentInvestId();
+        String referenceNo = previewADto.getReferenceNo();
         List<IncidentInfoA> incidentInfoAList = previewADto.getIncidentInfoAList();
         Assert.hasLength(incidentId,"incident id key is null");
         Assert.hasLength(incidentInvestId,"incident investigation id key is null");
         Assert.notEmpty(incidentInfoAList,"list for storing follow-up1A preview data is empty ");
         infoADto.setIncidentId(incidentId);
         infoADto.setIncidentInvestId(incidentInvestId);
+        infoADto.setReferenceNo(referenceNo);
 
         //set preview data into infoADto for jsp review
         List<FollowupInfoADto.InfoADto> infoADtoList = new ArrayList<>(incidentInfoAList.size());
@@ -295,12 +403,13 @@ public class FollowUPReportDelegator{
      * @param incidentId incident notification id
      * @param incidentInvestId incident investigation report id
      * */
-    public void retrieveFollowupInfoB(HttpServletRequest request,String incidentId,String incidentInvestId){
+    public void retrieveFollowupInfoB(HttpServletRequest request,String incidentId,String incidentInvestId,String referenceNo){
         FollowupInfoBDto infoBDto = getFollowupInfoBDto(request);
         Assert.hasLength(incidentId,"incident id key is null");
         Assert.hasLength(incidentInvestId,"incident investigation id key is null");
         infoBDto.setIncidentId(incidentId);
         infoBDto.setIncidentInvestId(incidentInvestId);
+        infoBDto.setReferenceNo(referenceNo);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B,infoBDto);
     }
 
@@ -443,5 +552,31 @@ public class FollowUPReportDelegator{
             syncDto.setToDeleteIds(toBeDeletedRepoIds);
             bsbFileClient.saveFiles(syncDto);
         }
+    }
+
+    public void retrieveByFollowupReport1ADto(HttpServletRequest request,FollowupReport1ADto followupReport1ADto ){
+        CommonDocDto followupDoc = new CommonDocDto();
+        Map<String, DocRecordInfo> savedDocMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(followupReport1ADto.getDocRecordInfos(),DocRecordInfo::getRepoId);
+        followupDoc.setSavedDocMap(savedDocMap);
+        //retrieve follow-up1B and follow-up1B documents
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1A,followupReport1ADto.getInfoADto());
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_DOCUMENT,followupDoc);
+    }
+
+    public void retrieveByFollowupReport1BDto(HttpServletRequest request,FollowupReport1BDto followupReport1BDto ){
+        CommonDocDto followupDoc = new CommonDocDto();
+        Map<String, DocRecordInfo> savedDocMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(followupReport1BDto.getDocRecordInfos(),DocRecordInfo::getRepoId);
+        followupDoc.setSavedDocMap(savedDocMap);
+        //retrieve follow-up1B and follow-up1B documents
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B,followupReport1BDto.getInfoBDto());
+        ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_DOCUMENT,followupDoc);
+    }
+
+
+    public void preFollowupDocView(HttpServletRequest request){
+        CommonDocDto commonDocDto = getFollowupDoc(request);
+        ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
+        ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getExistDocTypeMap());
+        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
     }
 }

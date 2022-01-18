@@ -20,6 +20,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAM
 @Data
 @Slf4j
 public class InvestReportDto {
+    private String processType;
     private IncidentInfoDto incidentInfoDto;
     private IncidentInvestDto incidentInvestDto;
     private MedicalInvestDto medicalInvestDto;
@@ -29,6 +30,7 @@ public class InvestReportDto {
 
     public static InvestReportDto from(NodeGroup investRepoRoot){
         InvestReportDto dto = new InvestReportDto();
+        dto.setProcessType("investigation");
         dto.setIncidentInfoDto((IncidentInfoDto) ((SimpleNode) investRepoRoot.at( NODE_NAME_INCIDENT_INFO)).getValue());
         dto.setIncidentInvestDto((IncidentInvestDto) ((SimpleNode) investRepoRoot.at(NODE_NAME_INCIDENT_INVESTIGATION)).getValue());
         dto.setMedicalInvestDto((MedicalInvestDto) ((SimpleNode) investRepoRoot.at(NODE_NAME_MEDICAL_INVESTIGATION)).getValue());

@@ -32,6 +32,12 @@ public interface IncidentFollowupClient {
     @GetMapping(path = "/followup/query/infoB/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FollowupPreviewBDto> queryFollowupInfoBByRefNo(@PathVariable("refNo") String refNo);
 
+    @GetMapping(path = "/followup/re/infoB/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FollowupReport1BDto> retrieveFollowupReport1B(@PathVariable("refNo") String refNo);
+
+    @GetMapping(path = "/followup/re/infoA/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FollowupReport1ADto> retrieveFollowupReport1A(@PathVariable("refNo") String refNo);
+
     @PostMapping(path = "/followup/save/reportA", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewFollowupReport1A(@RequestBody FollowupReport1ADto dto);
 
@@ -47,6 +53,12 @@ public interface IncidentFollowupClient {
     @PostMapping(path = "/followup/draft/reportA", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftFollowup1A(@RequestBody FollowupReport1ADto dto);
 
-    @PostMapping(path = "/register/draft/reportB", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/followup/draft/reportB", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftFollowup1B(@RequestBody FollowupReport1BDto dto);
+
+    @GetMapping(path = "/followup/application/report1A/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FollowupReport1ADto> retrieveFollowup1AByApplicationId(@PathVariable("appId") String appId);
+
+    @GetMapping(path = "/followup/application/report1B/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FollowupReport1BDto> retrieveFollowup1BByApplicationId(@PathVariable("appId") String appId);
 }

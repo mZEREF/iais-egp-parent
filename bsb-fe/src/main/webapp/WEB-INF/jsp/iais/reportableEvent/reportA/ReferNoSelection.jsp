@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -23,6 +24,7 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -37,7 +39,7 @@
                                     <div class="col-sm-6 col-md-7">
                                         <select name="refNo" id="refNo">
                                             <c:forEach var="item" items="${referNoOps}">
-                                                <option value="${item.value}">${item.text}</option>
+                                                <option value="${MaskUtil.maskValue('refNo',item.value)}" <c:if test="${followup1A.referenceNo eq item.value}">selected = "selected"</c:if>>${item.text}</option>
                                             </c:forEach>
                                         </select>
                                         <span data-err-ind="refNo" class="error-msg"></span>

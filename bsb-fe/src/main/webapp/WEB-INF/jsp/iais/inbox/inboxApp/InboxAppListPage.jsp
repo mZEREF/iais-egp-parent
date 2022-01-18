@@ -182,6 +182,9 @@
                                                                         <c:when test="${app.processType eq 'PROTYPE006' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/JudgeDataSubmissionType?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE008' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/IncidentCheckProcess?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
                                                                     </c:choose>
 
                                                                     <c:if test="${app.status eq 'BSBAPST011'}">

@@ -22,6 +22,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 @Data
 @Slf4j
 public class IncidentNotificationDto {
+    private String processType;
     private IncidentInfoDto incidentInfoDto;
     private PersonInvolvedInfoDto involvedInfoDto;
     private PersonReportingDto reportingDto;
@@ -30,6 +31,7 @@ public class IncidentNotificationDto {
 
     public static IncidentNotificationDto from(NodeGroup incidentNotRoot){
         IncidentNotificationDto dto = new IncidentNotificationDto();
+        dto.setProcessType("notification");
         dto.setIncidentInfoDto((IncidentInfoDto) ((SimpleNode) incidentNotRoot.at( NODE_NAME_INCIDENT_INFO)).getValue());
         dto.setReportingDto((PersonReportingDto) ((SimpleNode) incidentNotRoot.at(NODE_NAME_PERSON_REPORTING_INFO)).getValue());
         dto.setInvolvedInfoDto((PersonInvolvedInfoDto) ((SimpleNode) incidentNotRoot.at(NODE_NAME_PERSON_INVOLVED_INFO)).getValue());
