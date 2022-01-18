@@ -42,6 +42,8 @@ public class ReceiptNotificationDto implements Serializable {
         private String receiveQty;
         @JMap
         private String meaUnit;
+        @JMap
+        private String index;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -49,6 +51,8 @@ public class ReceiptNotificationDto implements Serializable {
         private String docType;
         @JsonIgnore
         private String repoIdNewString;
+        @JsonIgnore
+        private String repoIdSavedString;
 
         public ReceiptNot() {
             this.newDocInfos = new ArrayList<>();
@@ -133,6 +137,8 @@ public class ReceiptNotificationDto implements Serializable {
         private String bat;
         private String receiveQty;
         private String meaUnit;
+        //
+        private String index;
     }
 
     @Data
@@ -409,6 +415,7 @@ public class ReceiptNotificationDto implements Serializable {
             receiptNotNeed.setBat(t.getBat());
             receiptNotNeed.setReceiveQty(t.getReceiveQty());
             receiptNotNeed.setMeaUnit(t.getMeaUnit());
+            receiptNotNeed.setIndex(t.getIndex());
             return receiptNotNeed;
         }).collect(Collectors.toList());
         ReceiptNotNeedR receiptNotNeedR = new ReceiptNotNeedR();
@@ -428,6 +435,8 @@ public class ReceiptNotificationDto implements Serializable {
         receiptNotNeedR.setFacId(this.facId);
         receiptNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
         receiptNotNeedR.setDocMetas(this.docMetaInfos);
+        receiptNotNeedR.setDraftAppNo(this.draftAppNo);
+        receiptNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_RECEIPT);
         return receiptNotNeedR;
     }
 
@@ -451,6 +460,7 @@ public class ReceiptNotificationDto implements Serializable {
             String repoId = repoIdIt.next();
             PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
             PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setIndex(newDocInfo.getIndex());
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -528,6 +538,7 @@ public class ReceiptNotificationDto implements Serializable {
                 receiptNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
                 receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
                 receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+                receiptNot.setIndex(idx);
 
                 List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
                 receiptNot.setDocType(getDocType(scheduleType));
@@ -651,6 +662,8 @@ public class ReceiptNotificationDto implements Serializable {
      * Put the saved docType 'ityBat','ityToxin' file into the Map with key index
      */
     public void draftDocToMap(List<PrimaryDocDto.DocRecordInfo> docInfos) {
+        this.oldKeySavedInfos.clear();
+        this.otherSavedInfos.clear();
         //key is repoId
         Map<String, PrimaryDocDto.DocRecordInfo> savedConsumeDocMap = docInfos.stream().collect(Collectors.toMap(PrimaryDocDto.DocRecordInfo::getRepoId, Function.identity()));
         this.setSavedDocInfos(savedConsumeDocMap);

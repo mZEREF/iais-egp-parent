@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<input type="hidden" id="existSavedFiles--v--${status.index}" name="existSavedFiles--v--${status.index}" value="${item.repoIdSavedString}">
 <input type="hidden" id="existFiles--v--${status.index}" name="existFiles--v--${status.index}" value="${item.repoIdNewString}">
 <input type="hidden" id="existIdx--v--${status.index}" name="existIdx--v--${status.index}" value="${status.index}">
 <div id="fileUploadInputDiv" style="display: none"></div>

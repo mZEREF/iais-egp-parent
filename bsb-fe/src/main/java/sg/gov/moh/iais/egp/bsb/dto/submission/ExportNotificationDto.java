@@ -44,6 +44,8 @@ public class ExportNotificationDto implements Serializable {
         private String transferQty;
         @JMap
         private String meaUnit;
+        @JMap
+        private String index;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -51,6 +53,8 @@ public class ExportNotificationDto implements Serializable {
         private String docType;
         @JsonIgnore
         private String repoIdNewString;
+        @JsonIgnore
+        private String repoIdSavedString;
 
         public ExportNot() {
             this.newDocInfos = new ArrayList<>();
@@ -126,6 +130,8 @@ public class ExportNotificationDto implements Serializable {
         private String transferType;
         private String transferQty;
         private String meaUnit;
+        //
+        private String index;
     }
 
     @Data
@@ -358,6 +364,7 @@ public class ExportNotificationDto implements Serializable {
             exportNotNeed.setTransferType(t.getTransferType());
             exportNotNeed.setTransferQty(t.getTransferQty());
             exportNotNeed.setMeaUnit(t.getMeaUnit());
+            exportNotNeed.setIndex(t.getIndex());
             return exportNotNeed;
         }).collect(Collectors.toList());
         ExportNotNeedR exportNotNeedR = new ExportNotNeedR();
@@ -372,6 +379,8 @@ public class ExportNotificationDto implements Serializable {
         exportNotNeedR.setEnsure(this.ensure);
         exportNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
         exportNotNeedR.setDocMetas(this.docMetaInfos);
+        exportNotNeedR.setDraftAppNo(this.draftAppNo);
+        exportNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_EXPORT);
         return exportNotNeedR;
     }
 
@@ -395,6 +404,7 @@ public class ExportNotificationDto implements Serializable {
             String repoId = repoIdIt.next();
             PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
             PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setIndex(newDocInfo.getIndex());
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -475,6 +485,7 @@ public class ExportNotificationDto implements Serializable {
                 exportNot.setTransferType(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_TYPE + SEPARATOR + idx));
                 exportNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
                 exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+                exportNot.setIndex(idx);
 
                 List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
                 exportNot.setDocType(getDocType(scheduleType));
@@ -593,6 +604,8 @@ public class ExportNotificationDto implements Serializable {
      * Put the saved docType 'ityBat','ityToxin' file into the Map with key index
      */
     public void draftDocToMap(List<PrimaryDocDto.DocRecordInfo> docInfos) {
+        this.oldKeySavedInfos.clear();
+        this.otherSavedInfos.clear();
         //key is repoId
         Map<String, PrimaryDocDto.DocRecordInfo> savedConsumeDocMap = docInfos.stream().collect(Collectors.toMap(PrimaryDocDto.DocRecordInfo::getRepoId, Function.identity()));
         this.setSavedDocInfos(savedConsumeDocMap);

@@ -31,6 +31,12 @@ function schTypeChange(obj) {
     var deleteNewFiles = document.getElementById("deleteNewFiles");
     appendInputValue(deleteNewFiles,deleteList);
 
+    //empty all saved files
+    var deleteSavedList = $("#existSavedFiles"+"--v--"+num).val();
+    //add saved id into the delete list
+    var deleteSavedFilesEl = document.getElementById("deleteExistFiles");
+    appendInputValue(deleteSavedFilesEl,deleteSavedList);
+
     var docH3 = list.find("h3");
     addHtml(docH3,scheduleType);
 }

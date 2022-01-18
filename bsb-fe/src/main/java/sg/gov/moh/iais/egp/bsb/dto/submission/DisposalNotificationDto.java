@@ -46,6 +46,8 @@ public class DisposalNotificationDto implements Serializable {
         private String destructMethod;
         @JMap
         private String destructDetails;
+        @JMap
+        private String index;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -53,6 +55,8 @@ public class DisposalNotificationDto implements Serializable {
         private String docType;
         @JsonIgnore
         private String repoIdNewString;
+        @JsonIgnore
+        private String repoIdSavedString;
 
         public DisposalNot() {
             this.newDocInfos = new ArrayList<>();
@@ -119,6 +123,8 @@ public class DisposalNotificationDto implements Serializable {
         private String meaUnit;
         private String destructMethod;
         private String destructDetails;
+        //
+        private String index;
     }
 
     @Data
@@ -308,6 +314,7 @@ public class DisposalNotificationDto implements Serializable {
             disposalNotNeed.setDisposedQty(t.getDisposedQty());
             disposalNotNeed.setDestructDetails(t.getDestructDetails());
             disposalNotNeed.setDestructMethod(t.getDestructMethod());
+            disposalNotNeed.setIndex(t.getIndex());
             return disposalNotNeed;
         }).collect(Collectors.toList());
         DisposalNotNeedR disposalNotNeedR = new DisposalNotNeedR();
@@ -317,6 +324,8 @@ public class DisposalNotificationDto implements Serializable {
         disposalNotNeedR.setFacId(this.facId);
         disposalNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
         disposalNotNeedR.setDocMetas(this.docMetaInfos);
+        disposalNotNeedR.setDraftAppNo(this.draftAppNo);
+        disposalNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
         return disposalNotNeedR;
     }
 
@@ -340,6 +349,7 @@ public class DisposalNotificationDto implements Serializable {
             String repoId = repoIdIt.next();
             PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
             PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setIndex(newDocInfo.getIndex());
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -420,6 +430,7 @@ public class DisposalNotificationDto implements Serializable {
                 disposalNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
                 disposalNot.setDestructMethod(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_METHOD + SEPARATOR + idx));
                 disposalNot.setDestructDetails(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_DETAILS + SEPARATOR + idx));
+                disposalNot.setIndex(idx);
 
                 List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
                 disposalNot.setDocType(getDocType(scheduleType));
@@ -533,6 +544,8 @@ public class DisposalNotificationDto implements Serializable {
      * Put the saved docType 'ityBat','ityToxin' file into the Map with key index
      */
     public void draftDocToMap(List<PrimaryDocDto.DocRecordInfo> docInfos) {
+        this.oldKeySavedInfos.clear();
+        this.otherSavedInfos.clear();
         //key is repoId
         Map<String, PrimaryDocDto.DocRecordInfo> savedConsumeDocMap = docInfos.stream().collect(Collectors.toMap(PrimaryDocDto.DocRecordInfo::getRepoId, Function.identity()));
         this.setSavedDocInfos(savedConsumeDocMap);

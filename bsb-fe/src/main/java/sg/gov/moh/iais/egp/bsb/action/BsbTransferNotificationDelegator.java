@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
@@ -159,7 +161,18 @@ public class BsbTransferNotificationDelegator {
         //
         Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos = transferNotificationDto.getOldKeySavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_KEY_MAP, oldKeySavedInfos);
-
+        //key is index in ConsumptionNot
+        Map<String, TransferNotificationDto.TransferNot> notificationMap = transferNotificationDto.getTransferNotList().stream().collect(Collectors.toMap(TransferNotificationDto.TransferNot::getIndex, Function.identity()));
+        for (TransferNotificationDto.TransferNot dto : notificationMap.values()) {
+            if (StringUtils.hasLength(dto.getIndex())) {
+                List<PrimaryDocDto.DocRecordInfo> docRecordInfos = oldKeySavedInfos.get(Integer.valueOf(dto.getIndex()));
+                if (!CollectionUtils.isEmpty(docRecordInfos)) {
+                    //Retrieves the ids of all saved files in the current section and stores them in the repoIdSavedString
+                    String savedRepoIdString = docRecordInfos.stream().map(PrimaryDocDto.DocRecordInfo::getRepoId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    dto.setRepoIdSavedString(savedRepoIdString);
+                }
+            }
+        }
         List<PrimaryDocDto.DocRecordInfo> otherSavedInfos = transferNotificationDto.getOtherSavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_OTHERS_DOC, otherSavedInfos);
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, KEY_DATA_SUBMISSION_TYPE_TRANSFER);
