@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -70,7 +71,7 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            PatientDto db = patientService.getArPatientDto(idType, idNo, nationality, orgId);
+            PatientDto db = patientService.getActiveArPatientByConds(idType, idNo, nationality, orgId);
             result.put("patient", db);
         }
         return result;
@@ -102,7 +103,12 @@ public class ArAjaxController {
             CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idType, idNo, nationality, orgId,
                     hciCode);
             if (dbDto != null) {
-                dto = dbDto;
+                if (StringUtil.isEmpty(dbDto.getPatientCode())) {
+                    // 2: DS_MSG009 - ID Number entered belongs to a patient's previous identity, please use latest patient ID.
+                    dto.setPatientStatus(dbDto.getPatientStatus());
+                } else {
+                    dto = dbDto;
+                }
             }
             dto.setHciCode(hciCode);
             if (StringUtil.isNotEmpty(dto.getLastStage())) {
@@ -110,6 +116,10 @@ public class ArAjaxController {
             } else {
                 dto.setLastStageDesc("-");
             }
+            // add current selection dto to super dto
+            ArSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            superDto.setSelectionDto(dto);
+            DataSubmissionHelper.setCurrentArDataSubmission(superDto, request);
             result.put("selection", dto);
         }
         result.put("cycleStartHtmls", DataSubmissionHelper.genCycleStartHtmls(dto.getCycleDtos()));
@@ -132,7 +142,7 @@ public class ArAjaxController {
         String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
         int age = Formatter.getAge(birthDate);
         if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
-            result.put("showAgeMsg", true);
+            result.put("showAgeMsg", Boolean.TRUE);
         }
         return result;
     }

@@ -201,6 +201,13 @@
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohDelayRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
                                                                         </c:when>
                                                                     </c:choose>
+
+                                                                    <c:if test="${approval.processType eq 'PROTYPE001' and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">
+                                                                        <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationFacility?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">DeRegistration</option>
+                                                                    </c:if>
+                                                                    <c:if test="${(approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004') and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">
+                                                                        <option value="/bsb-fe/eservice/INTERNET/ApplicantCancellationApproval?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">Cancellation</option>
+                                                                    </c:if>
                                                                 </select>
                                                             </td>
                                                         </tr>

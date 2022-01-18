@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
@@ -613,6 +614,24 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto) {
         return intranetUserClient.workloadCalculation(workloadCalculationDto).getEntity();
+    }
+
+    @Override
+    public List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId) {
+      if(fromDsCenter){
+          List<String> strings = IaisCommonUtils.genNewArrayList();
+          List<DsCenterDto> dsCenterDtos = hcsaLicenceClient.getDsCenterDtosByOrganizationId(orgId).getEntity();
+          if(IaisCommonUtils.isNotEmpty(dsCenterDtos)){
+              dsCenterDtos.stream().forEach(dsCenterDto -> {
+                  if(!strings.contains(dsCenterDto.getCenterType())){
+                      strings.add(dsCenterDto.getCenterType());
+                  }
+              });
+          }
+          return IaisEGPHelper.getRoleSelectionByDsCenter(strings);
+      }else {
+          return getRoleSelection(licenseeId);
+      }
     }
 
     @Override

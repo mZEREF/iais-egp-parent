@@ -6,6 +6,20 @@ function bsbInboxViewMsg(msgId) {
 }
 
 
+function delDraftCancelBtn() {
+    $('#deleteDraftModal').modal('hide');
+}
+function delDraftYesBtn() {
+    $('#deleteDraftModal').modal('hide');
+    showWaiting();
+    $("[name='action_type']").val("deleteDraft");
+    $("#mainForm").submit();
+}
+function delDraftMsgYesBtn() {
+    $('#deleteDraftMessage').modal('hide');
+}
+
+
 $(function () {
     $("#clearBtn").click(function () {
         resetNiceSelect("#searchPanel");
@@ -50,8 +64,17 @@ $(function () {
     });
 
     $("select[data-action-select]").change(function () {
-        window.location = this.value;
+        var val = this.value;
+        if (val.startsWith('deleteDraft')) {
+            $("[name='action_value']").val(val);
+            $('#deleteDraftModal').modal('show');
+        } else {
+            window.location = this.value;
+        }
     });
+    if ($("#afterDeleteDraftApp").val() === 'true') {
+        $("#deleteDraftMessage").modal('show');
+    }
 
     $("#viewSubmission").click(function (){
         showWaiting();

@@ -94,8 +94,8 @@ public class HcsaFileAjaxController {
          }else {
              messageCode.setMsgType("Y");
          }
-         File toFile = null;
-         String tempFolder = null;
+         File toFile;
+         String tempFolder;
          try{
              String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
              if(reloadIndex == -1){
@@ -135,7 +135,6 @@ public class HcsaFileAjaxController {
                     "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                     "                                               ReUpload</button>";
         }
-        if(selectedFile != null) {
             String originalFileName = selectedFile.getOriginalFilename();
             if(originalFileName != null) {
                 String[] fileSplit = originalFileName.split("\\.");
@@ -156,14 +155,13 @@ public class HcsaFileAjaxController {
                         ).append("</Div>")
                 ;
             }
-        }
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.toJson(messageCode);
     }
 
     private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
-        if(selectedFile.isEmpty()){
+        if(selectedFile == null || selectedFile.isEmpty()){
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
         }
         if (maxSize <= 0) {

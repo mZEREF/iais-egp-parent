@@ -86,6 +86,7 @@
             </div>
             <div class="col-xs-12 col-md-6 text-right">
                 <button class="btn btn-secondary save" id="saveDraft">Save as Draft</button>
+                <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg" class="btn btn-secondary">Cancel</a>
                 <button class="btn btn-primary save" id="doConfirm">NEXT</button>
             </div>
         </div>

@@ -15,9 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +31,6 @@ import java.util.Map;
 @Slf4j
 public class FreezingStageDelegator extends CommonDelegator {
 
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
 
     @Override
     public void start(BaseProcessClass bpc) {

@@ -18,25 +18,7 @@ function schTypeChange(obj) {
         $("#bat" + meta.separator + num).html("<option value=\"\">Please select<\/option>");
         $("#bat" + meta.separator + num).next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>");
     } else {
-        $.post('/bsb-fe/bio-info/bio.do',
-            {schedule: scheduleType},
-            function (data) {
-                var result = data.result;
-                if (result == 'success') {
-                    var queryResult = data.queryResult;
-                    var optionString = "";
-                    var optionString1 = "";
-                    for (var i = 0; i < queryResult.length; i++) {
-                        optionString += "<option value=\"" + queryResult[i] + "\">" + queryResult[i] + "</option>";
-                        optionString1 += "<li data-value=\"" + queryResult[i] + "\" class=\"option\">" + queryResult[i] + "</li>"
-                    }
-                    $("#bat" + meta.separator + num).html("<option value=\"\">Please select<\/option>" + optionString);
-                    $("#bat" + meta.separator + num).next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>" + optionString1);
-                } else {
-
-                }
-            }
-        )
+        callAjaxGetBat(scheduleType,meta,num);
     }
 
     var docList = $("#documentList").val();
@@ -51,6 +33,28 @@ function schTypeChange(obj) {
 
     var docH3 = list.find("h3");
     addHtml(docH3,scheduleType);
+}
+
+function callAjaxGetBat(scheduleType,meta,num){
+    $.post('/bsb-fe/bio-info/bio.do',
+        {schedule: scheduleType},
+        function (data) {
+            var result = data.result;
+            if (result == 'success') {
+                var queryResult = data.queryResult;
+                var optionString = "";
+                var optionString1 = "";
+                for (var i = 0; i < queryResult.length; i++) {
+                    optionString += "<option value=\"" + queryResult[i] + "\">" + queryResult[i] + "</option>";
+                    optionString1 += "<li data-value=\"" + queryResult[i] + "\" class=\"option\">" + queryResult[i] + "</li>"
+                }
+                $("#bat" + meta.separator + num).html("<option value=\"\">Please select<\/option>" + optionString);
+                $("#bat" + meta.separator + num).next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>" + optionString1);
+            } else {
+
+            }
+        }
+    )
 }
 
 //joint the title of file
@@ -119,17 +123,12 @@ $(function () {
         }
     });
 
-    // $("#saveDraft").click(function (){
-    //     showWaiting();
-    //     $("[name='action_type']").val("saveDraft");
-    //     $("#mainForm").submit();
-    // });
-
     $("#back").click(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
+
     $("#edit").click(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");

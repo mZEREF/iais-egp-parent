@@ -9,6 +9,7 @@ public class ReportableEventConstants {
 
     public static final String MODULE_NAME_NOTIFICATION_OF_INCIDENT = "Notification of Incident";
     public static final String MODULE_NAME_INVESTIGATION_REPORT = "Investigation Report";
+    public static final String MODULE_NAME_INCIDENT_FOLLOW_UP = "Incident Follow-up";
     public static final String KEY_ROOT_NODE_GROUP_INCIDENT_NOT = "incidentNotRoot";
     public static final String KEY_ROOT_NODE_GROUP_INVEST_REPORT = "investRepoRoot";
 
@@ -42,5 +43,9 @@ public class ReportableEventConstants {
     public static final String ERR_MSG_INVALID_ACTION = "Invalid action";
     public static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
     public static final String KEY_VALIDATION_ERRORS = "errorMsg";
+
+    public static final String KEY_PROCESS_TYPE_NOTIFICATION = "notification";
+    public static final String KEY_PROCESS_TYPE_INVESTIGATION = "investigation";
+    public static final String KEY_PROCESS_TYPE_FOLLOW_UP_1A = "followup1A";
 
 }

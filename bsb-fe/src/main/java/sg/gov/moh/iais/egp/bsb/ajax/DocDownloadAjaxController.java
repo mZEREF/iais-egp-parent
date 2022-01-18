@@ -15,9 +15,11 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
@@ -125,9 +127,15 @@ public class DocDownloadAjaxController {
     public void downloadCertSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCertGetSavedFile);
     }
+
     @GetMapping("/dataSub/new/{id}")
     public void downloadDataSubNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetNewFile);
+    }
+
+    @GetMapping("/dataSub/repo/{id}")
+    public void downloadDataSubSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetSavedFile);
     }
 
     @GetMapping("/approvalApp/new/{id}")
@@ -153,6 +161,26 @@ public class DocDownloadAjaxController {
     @GetMapping("/withdrawn/repo/{id}")
     public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
+    }
+
+    @GetMapping("/followup/new/{id}")
+    public void downloadNotSavedFollowupFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::followupGetNewFile);
+    }
+
+    @GetMapping("/followup/repo/{id}")
+    public void downloadSavedFollowupFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::followupGetSavedFile);
+    }
+
+    @GetMapping("/commonDoc/new/{id}")
+    public void downloadNotSavedCommonDocFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::commonDocGetNewFile);
+    }
+
+    @GetMapping("/commonDoc/repo/{id}")
+    public void downloadSavedCommonDocFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::commonDocGetSavedFile);
     }
 
 
@@ -256,6 +284,38 @@ public class DocDownloadAjaxController {
     }
 
     /**
+     * Follow-up report get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile dataSubGetSavedFile(HttpServletRequest request, String id) {
+        TransferNotificationDto transferNotificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,"transferNotDto");
+        ConsumeNotificationDto consumeNotificationDto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO);
+        DisposalNotificationDto disposalNotificationDto = (DisposalNotificationDto) ParamUtil.getSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO);
+        ExportNotificationDto exportNotificationDto = (ExportNotificationDto) ParamUtil.getSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO);
+        ReceiptNotificationDto receiptNotificationDto = (ReceiptNotificationDto) ParamUtil.getSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO);
+
+        sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto.DocRecordInfo docRecordInfo;
+        if(transferNotificationDto != null){
+            docRecordInfo = transferNotificationDto.getSavedDocInfos().get(id);
+        } else if(consumeNotificationDto != null){
+            docRecordInfo = consumeNotificationDto.getSavedDocInfos().get(id);
+        } else if(disposalNotificationDto != null){
+            docRecordInfo = disposalNotificationDto.getSavedDocInfos().get(id);
+        } else if(exportNotificationDto != null){
+            docRecordInfo = exportNotificationDto.getSavedDocInfos().get(id);
+        } else if(receiptNotificationDto != null){
+            docRecordInfo = receiptNotificationDto.getSavedDocInfos().get(id);
+        } else{
+            return null;
+        }
+        if (docRecordInfo == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
+    }
+
+    /**
      * Facility Certifier registration get the saved doc file data
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
@@ -315,4 +375,41 @@ public class DocDownloadAjaxController {
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
     }
 
+    /**
+     * Follow-up report get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile followupGetNewFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request,"followupDoc");
+        return followupDoc.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    /**
+     * Follow-up report get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile followupGetSavedFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request,"followupDoc");
+        DocRecordInfo info = followupDoc.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile commonDocGetNewFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO);
+        return followupDoc.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile commonDocGetSavedFile(HttpServletRequest request, String id) {
+        CommonDocDto followupDoc = (CommonDocDto) ParamUtil.getSessionAttr(request,DocConstants.KEY_COMMON_DOC_DTO);
+        DocRecordInfo info = followupDoc.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
 }

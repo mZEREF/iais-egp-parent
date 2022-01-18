@@ -6,12 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -23,7 +25,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description TopDataSubmissionDelegator
@@ -33,9 +38,9 @@ import java.util.Map;
 @Delegator("topDataSubmissionDelegator")
 public class TopDataSubmissionDelegator {
 
+    private static final String PREMISES = "premises";
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
-
     /**
      * Step: Start
      *
@@ -45,6 +50,8 @@ public class TopDataSubmissionDelegator {
         log.info(" -----TopDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearTopSession(bpc.request);
         DsConfigHelper.initTopConfig(bpc.request);
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
+        DataSubmissionHelper.clearSession(bpc.request);
     }
 
     /**
@@ -82,6 +89,11 @@ public class TopDataSubmissionDelegator {
      */
     public void prepareStepData(BaseProcessClass bpc) {
         log.info(" -----PrepareStepData ------ ");
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        if (topSuperDataSubmissionDto == null) {
+            topSuperDataSubmissionDto = initTopSuperDataSubmissionDto(bpc.request);
+        }
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_TOP, bpc.request);
         if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentConfig.getCode())) {
@@ -100,9 +112,8 @@ public class TopDataSubmissionDelegator {
             preparePresentTermination(bpc.request);
         }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
             preparePostTermination(bpc.request);
-        }/*else if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)) {
-
-        }*/
+        }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
     }
 
 
@@ -121,6 +132,10 @@ public class TopDataSubmissionDelegator {
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
         int status = 0; // 0: current page; -1: back / previous; 1: next
+        if("previous".equals(crudType)){
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, currentConfig, bpc.request);
+        }
         if (DsConfigHelper.TOP_STEP_PATIENT.equals(currentCode)) {
             status = doPatient(bpc.request);
         } else if (DsConfigHelper.TOP_STEP_PLANNING.equals(currentCode)) {
@@ -131,11 +146,21 @@ public class TopDataSubmissionDelegator {
             status = doPresentTermination(bpc.request);
         }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
             status = doPostTermination(bpc.request);
-        }/*else if (DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)) {
-
+        }else if(DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)){
+            status = 2;
+        }
+        if("next".equals(crudType)|| DataSubmissionHelper.isToNextAction(bpc.request)){
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, currentConfig, bpc.request);
+        }/*else{
+            status=0;
+            currentConfig.setStatus(status);
+            DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, currentConfig, bpc.request);
         }*/
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
+
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
     }
 
     private void preparePatient(HttpServletRequest request) {
@@ -165,6 +190,21 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto() : terminationOfPregnancyDto.getPatientInformationDto();
         ControllerHelper.get(request, patientInformationDto);
+        String[] livingChildrenGenders= ParamUtil.getStrings(request, "livingChildrenGenders");
+        if( !IaisCommonUtils.isEmpty(livingChildrenGenders)){
+
+            patientInformationDto.setLivingChildrenGenders(Arrays.asList(livingChildrenGenders));
+        }else{
+            patientInformationDto.setLivingChildrenGenders(null);
+        }
+        FamilyPlanDto familyPlanDto=new FamilyPlanDto();
+        try {
+            int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData());
+            familyPlanDto.setPatientAge(age/365);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
         terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
@@ -188,12 +228,15 @@ public class TopDataSubmissionDelegator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto() == null ? new TerminationOfPregnancyDto() : topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         FamilyPlanDto familyPlanDto = terminationOfPregnancyDto.getFamilyPlanDto() == null ? new FamilyPlanDto() : terminationOfPregnancyDto.getFamilyPlanDto();
         ControllerHelper.get(request, familyPlanDto);
+        if(familyPlanDto.getPatientAge()<16 && !StringUtil.isEmpty(familyPlanDto.getPatientAge())){
+            familyPlanDto.setNeedHpbConsult(true);
+        }
         terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-        if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
+        if("next".equals(actionType)|| DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
             if(result !=null){
                 errMap.putAll(result.retrieveAll());
@@ -289,46 +332,48 @@ public class TopDataSubmissionDelegator {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(" ----- DoSubmission ------ ");
-        /**
-         * DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-         *         DataSTubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-         *          *         CycleDto cycle = dpSuperDataSubmissionDto.getCycleDto();
-         *          *         String cycleType = cycle.getCycleType();
-         *          *         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
-         *          *             String submissionNo = dpDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_DRP);
-         *          *             dataSubmissionDto.setSubmissionNo(submissionNo);
-         *          *         }
-         *          *         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
-         *          *             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
-         *          *         }
-         *          *         String stage = dataSubmissionDto.getCycleStage();
-         *          *         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-         *          *
-         *          *         cycle.setStatus(status);
-         *          *         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleype + " - Stage : " + stage
-         *                 + " - Status: " + status + " -----"));
-         *
-         *         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-         *         if (loginContext != null) {
-         *             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
-         *             dataSubmissionDto.setSubmitDt(new Date());
-         *         }
-         *         dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto);
-         *         try {
-         *             dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperDataSubmissionDto);
-         *         } catch (Exception e) {
-         *             log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-         *         }
-         *         if (!StringUtil.isEmpty(dpSuperDataSubmissionDto.getDraftId())) {
-         *             dpDataSubmissionService.updateDataSubmissionDraftStatus(dpSuperDataSubmissionDto.getDraftId(),
-         *                     DataSubmissionConsts.DS_STATUS_INACTIVE);
-         *         }
-         *         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-         *         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
-         *         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-         *         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
-         *         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
-         */
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
+        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto, false));
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+        DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
+        if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
+            String submissionNo = topDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_TOP);
+            dataSubmissionDto.setSubmissionNo(submissionNo);
+        }
+        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
+
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            dataSubmissionDto.setSubmitBy(loginContext.getUserId());
+            dataSubmissionDto.setSubmitDt(new Date());
+        }
+        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
+        try {
+            if(Formatter.compareDateByDay(String.valueOf(dataSubmissionDto.getSubmitDt()),terminationDto.getTopDate())>30){
+                terminationDto.setLateSubmit(true);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
+        topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
+        try {
+            topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        if (!StringUtil.isEmpty(topSuperDataSubmissionDto.getDraftId())) {
+            topDataSubmissionService.updateDataSubmissionDraftStatus(topSuperDataSubmissionDto.getDraftId(),
+                    DataSubmissionConsts.DS_STATUS_INACTIVE);
+        }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKTOP);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
 
     }
@@ -340,12 +385,11 @@ public class TopDataSubmissionDelegator {
      */
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
-        String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
+        String currentStage = (String) ParamUtil.getRequestAttr(bpc.request,"currentStage");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, currentStage);
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto != null) {
-            topSuperDataSubmissionDto.setDraftNo(topDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_TOP,
-                    topSuperDataSubmissionDto.getDraftNo()));
+            topSuperDataSubmissionDto.setDraftNo(topDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_TOP, topSuperDataSubmissionDto.getDraftNo()));
             topSuperDataSubmissionDto = topDataSubmissionService.saveDataSubmissionDraft(topSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
@@ -391,6 +435,8 @@ public class TopDataSubmissionDelegator {
                 actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
             } else if (1 == status) { // next
                 actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_TOP, bpc.request);
+            } else if(2 == status){
+                actionType="submission";
             }
         } else if (DataSubmissionHelper.isToNextAction(bpc.request)) {
             Integer status = (Integer) ParamUtil.getRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS);
@@ -402,10 +448,13 @@ public class TopDataSubmissionDelegator {
             }
         } else if ("previous".equals(crudType)) {
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
+        } else if ("preview".equals(crudType)) {
+            actionType = crudType;
         } else {
             actionType = crudType;
             DsConfigHelper.setActiveConfig(actionType, bpc.request);
         }
+
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, actionType);
     }
 
@@ -428,4 +477,22 @@ public class TopDataSubmissionDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
+    private TopSuperDataSubmissionDto initTopSuperDataSubmissionDto(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
+                .map(LoginContext::getOrgId).orElse("");
+
+        topSuperDataSubmissionDto.setOrgId(orgId);
+        topSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.TOP_TYPE_SBT);
+        topSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        topSuperDataSubmissionDto.setFe(true);
+        topSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto, false));
+        topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
+
+        return topSuperDataSubmissionDto;
+    }
 }
+

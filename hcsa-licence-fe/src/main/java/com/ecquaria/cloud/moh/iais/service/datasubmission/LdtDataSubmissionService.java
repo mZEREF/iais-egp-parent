@@ -21,4 +21,6 @@ public interface LdtDataSubmissionService {
     void updateDataSubmissionDraftStatus(String draftId, String status);
 
     LdtSuperDataSubmissionDto saveLdtSuperDataSubmissionDtoToBE(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto);
+
+    LdtSuperDataSubmissionDto getLdtSuperDataSubmissionDtoByDraftNo(String draftNo);
 }

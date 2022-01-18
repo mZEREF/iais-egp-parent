@@ -129,13 +129,13 @@
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                                                 <c:choose>
-                                                                    <c:when test="${app.processType eq 'PROTYPE001'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
-                                                                    <c:when test="${app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004')}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohViewApprovalPossessApplication?appId=<iais:mask name='id' value='${app.id}'/>&processType=${app.processType}<c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
-                                                                    <c:when test="${app.processType eq 'PROTYPE005'}">
+                                                                    <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -164,23 +164,39 @@
                                                                 <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
                                                                     <c:choose>
-                                                                        <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
-                                                                        <c:when test="${(app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationFacility?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Edit</option>
                                                                         </c:when>
-                                                                        <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE006' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/JudgeDataSubmissionType?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE008' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/IncidentCheckProcess?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
                                                                     </c:choose>
+
+                                                                    <c:if test="${app.status eq 'BSBAPST011'}">
+                                                                        <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
+                                                                    </c:if>
 
                                                                     <c:if test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST022'}">
                                                                         <option value="/bsb-fe/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
                                                                     </c:if>
 
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage and may be one of the following: New / Renewal / Request for Change / Deregistration / Cancellation / Notification/ Data Submission.--%>
-                                                                    <c:if test="${(app.appType eq 'BSBAPTY001' or app.appType eq 'BSBAPTY002' or app.appType eq 'BSBAPTY003' or app.appType eq 'BSBAPTY004' or app.appType eq 'BSBAPTY005' or app.appType eq 'BSBAPTY010') and (app.status ne 'BSBAPST008' and app.status ne 'BSBAPST009')}">
+                                                                    <c:if test="${(app.appType eq 'BSBAPTY001' or app.appType eq 'BSBAPTY002' or app.appType eq 'BSBAPTY003' or app.appType eq 'BSBAPTY004' or app.appType eq 'BSBAPTY005' or app.appType eq 'BSBAPTY010') and (app.status ne 'BSBAPST008' and app.status ne 'BSBAPST009' and app.status ne 'BSBAPST011' and app.status ne 'BSBAPST012')}">
                                                                         <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdrawn</option>
                                                                     </c:if>
                                                                 </select>
@@ -206,6 +222,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <iais:confirm msg="Are you sure you want to delete?" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
+                                        <iais:confirm msg="The draft application is deleted" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
+                                        <input type="hidden" id="afterDeleteDraftApp" name="afterDeleteDraftApp" value="${AFTER_DELETE_DRAFT_APP}" readonly disabled/>
                                         <!--Modal End-->
                                         <div class="row" style="margin-top: 1.5%">
                                             <div class="col-md-12">

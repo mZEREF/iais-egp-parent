@@ -117,7 +117,7 @@
                                                 <label>${incidentInfo.otherInvest}</label>
                                             </div>
                                         </div>
-                                        <h3 style="margin: 10px 0;border-bottom: 0px">Details of Incident Investigation</h3>
+                                        <h3 style="margin: 10px 0;border-bottom: 0">Details of Incident Investigation</h3>
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
                                                 <label>Background information leading up to the incident</label>

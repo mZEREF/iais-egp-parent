@@ -12,6 +12,9 @@ $(document).ready(function () {
         $('#nextBtn').html('Submit');
     }
 
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+
     $('.back').click(function () {
         if (currPage === "confirm") {
             submit('page');
@@ -98,4 +101,16 @@ function getDataForPrinting() {
         printflag = '';
     }
     return {declaration: declaration, printflag: printflag};
+}
+
+function showPopCommon(controlId,showPopId,val){
+    if($(controlId).length == 0){
+        controlId = '#'+controlId;
+    }
+    if($(showPopId).length == 0){
+        showPopId = '#' + showPopId;
+    }
+    if($(controlId).val() == val){
+        $(showPopId).modal('show');
+    }
 }

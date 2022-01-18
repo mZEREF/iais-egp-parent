@@ -38,6 +38,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_APPROVED                      = "BSBAPST009";
     public static final String APP_STATUS_REGISTERED                    = "BSBAPST010";
     public static final String APP_STATUS_DRAFT                         = "BSBAPST011";
+    public static final String APP_STATUS_REMOVED                       = "BSBAPST012";
     public static final String APP_STATUS_PEND_APPOINTMENT_SCHEDULE     = "BSBAPST021";
     public static final String APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT   = "BSBAPST022";
     public static final String APP_STATUS_PEND_INSPECTION_READINESS     = "BSBAPST023";
@@ -55,6 +56,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_EXTENSION_REVIEW         = "BSBAPST035";
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
+    public static final Set<String> UNAVAILABLE_APP_STATUS;
 
     static {
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
@@ -87,6 +89,10 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_FOLLOW_UP_ITEMS_REVIEW);
         inspectionAppStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
+
+        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
+        unavailableAppStatus.add(APP_STATUS_REMOVED);
+        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
     }
 
 
@@ -195,6 +201,11 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_REVOKED = "APPRSTA003";
     public static final String APPROVAL_STATUS_SUSPENDED = "APPRSTA004";
     public static final String APPROVAL_STATUS_EXPIRED = "APPRSTA005";
+    public static final String APPROVAL_STATUS_SUSPENDED_NC = "APPRSTA006";
+    public static final String APPROVAL_STATUS_SUSPENDED_OTHERS = "APPRSTA007";
+    public static final String APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION = "APPRSTA008";
+    public static final String APPROVAL_STATUS_SUSPENDED_CONDITIONAL_INVENTORY_MOVEMENT = "APPRSTA009";
+    public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
 
     //BE DECISION VALUE
     public static final String MOH_PROCESSING_DECISION_SCREENED_BY_DO = "MOHPRO001";
@@ -207,4 +218,24 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO = "MOHPRO008";
     public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM = "MOHPRO009";
 
+    //Reason(s) for Facility Deregistration
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_2 = "BSBRFFD002";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_3 = "BSBRFFD003";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_4 = "BSBRFFD004";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_5 = "BSBRFFD005";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_6 = "BSBRFFD006";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_7 = "BSBRFFD007";
+    public static final String REASONS_FOR_FACILITY_DEREGISTRATION_8 = "BSBRFFD008";
+    //Reason(s) for Approval Cancellation
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_1 = "BSBRFAC001";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_2 = "BSBRFAC002";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_3 = "BSBRFAC003";
+    public static final String REASONS_FOR_APPROVAL_CANCELLATION_4 = "BSBRFAC004";
+    //Reason(s) for AFC Deregistration
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_1 = "BSBRFAD001";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_2 = "BSBRFAD002";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_3 = "BSBRFAD003";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD001";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD001";
 }

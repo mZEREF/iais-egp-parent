@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.googlecode.jmapper.annotations.JMap;
 import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
@@ -32,10 +34,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 public class ExportNotificationDto implements Serializable {
     @Data
     public static class ExportNot implements Serializable {
+        @JMap
         private String scheduleType;
+        @JMap
         private String bat;
+        @JMap
         private String transferType;
+        @JMap
         private String transferQty;
+        @JMap
         private String meaUnit;
 
         @JsonIgnore
@@ -58,23 +65,41 @@ public class ExportNotificationDto implements Serializable {
         }
     }
 
+    @JMap
     private String facId;
+    @JMap
     private String receivedFacility;
+    @JMap
     private String receivedCountry;
+    @JMap
     private String exportDate;
+    @JMap
     private String provider;
+    @JMap
     private String flightNo;
+    @JMap
     private String remarks;
+    @JMap
     private String ensure;
+    @JMap
+    private String draftAppNo;
+    @JMap
+    private String dataSubmissionType;
 
+    @JMap("needList")
     private List<ExportNot> exportNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
-    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
-    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> newKeyNewInfos;
+    private Map<Integer, List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
+    private Map<Integer, List<PrimaryDocDto.NewDocInfo>> newKeyNewInfos;
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
     private Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
+    //key is index
+    private Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos;
+    private List<PrimaryDocDto.DocRecordInfo> otherSavedInfos;
 
+    @JsonIgnore
+    private PrimaryDocDto primaryDocDto;
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
@@ -87,6 +112,9 @@ public class ExportNotificationDto implements Serializable {
         newKeyNewInfos = new LinkedHashMap<>();
         allNewDocInfos = new LinkedHashMap<>();
         savedDocInfos = new LinkedHashMap<>();
+        //
+        oldKeySavedInfos = new LinkedHashMap<>();
+        otherSavedInfos = new ArrayList<>();
     }
 
     @Data
@@ -103,6 +131,8 @@ public class ExportNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class ExportNotNeedR {
+        private String dataSubmissionType;
+        private String draftAppNo;
         private List<ExportNotNeed> needList;
         private String facId;
         private String receivedFacility;
@@ -114,6 +144,46 @@ public class ExportNotificationDto implements Serializable {
         private String ensure;
         private List<PrimaryDocDto.DocRecordInfo> docInfos;
         private List<DocMeta> docMetas;
+    }
+
+    public PrimaryDocDto getPrimaryDocDto() {
+        return primaryDocDto;
+    }
+
+    public void setPrimaryDocDto(PrimaryDocDto primaryDocDto) {
+        this.primaryDocDto = primaryDocDto;
+    }
+
+    public Map<Integer, List<PrimaryDocDto.DocRecordInfo>> getOldKeySavedInfos() {
+        return oldKeySavedInfos;
+    }
+
+    public void setOldKeySavedInfos(Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos) {
+        this.oldKeySavedInfos = oldKeySavedInfos;
+    }
+
+    public List<PrimaryDocDto.DocRecordInfo> getOtherSavedInfos() {
+        return otherSavedInfos;
+    }
+
+    public void setOtherSavedInfos(List<PrimaryDocDto.DocRecordInfo> otherSavedInfos) {
+        this.otherSavedInfos = otherSavedInfos;
+    }
+
+    public String getDataSubmissionType() {
+        return dataSubmissionType;
+    }
+
+    public void setDataSubmissionType(String dataSubmissionType) {
+        this.dataSubmissionType = dataSubmissionType;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
     }
 
     public String getFacId() {
@@ -262,10 +332,14 @@ public class ExportNotificationDto implements Serializable {
         }
     }
 
-    public void getDocMetaInfoFromNew() {
+    public void getDocMetaInfoToValidate() {
         this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
+        this.savedDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);
         });
     }
@@ -334,6 +408,9 @@ public class ExportNotificationDto implements Serializable {
             newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
             newFileSyncDtoList.add(newFileSyncDto);
         }
+        allNewDocInfos.clear();
+        newKeyNewInfos.clear();
+        otherNewInfos.clear();
         return newFileSyncDtoList;
     }
 
@@ -370,6 +447,7 @@ public class ExportNotificationDto implements Serializable {
     /**
      * get a structure used to display new selected docs
      * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
+     *
      * @return a map, the key is the doc type, the value is the new doc info list
      */
     public Map<String, List<PrimaryDocDto.NewDocInfo>> getNewDocTypeMap() {
@@ -383,56 +461,60 @@ public class ExportNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(request);
-        clearExportLists();
-        String[] idxArr = idxes.trim().split(" +");
-        int keyFlag = 0;
-        for (String idx : idxArr) {
-            ExportNot exportNot = new ExportNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
-            exportNot.setScheduleType(scheduleType);
-            exportNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
-            exportNot.setTransferType(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_TYPE + SEPARATOR + idx));
-            exportNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
-            exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+        if (StringUtils.hasLength(idxes)) {
+            //When a section is deleted, all files corresponding to it are deleted
+            removeTempIdByKeyMap(request);
+            clearExportLists();
+            String[] idxArr = idxes.trim().split(" +");
+            int keyFlag = 0;
+            for (String idx : idxArr) {
+                ExportNot exportNot = new ExportNot();
+                String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
+                exportNot.setScheduleType(scheduleType);
+                exportNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
+                exportNot.setTransferType(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_TYPE + SEPARATOR + idx));
+                exportNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
+                exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
-            exportNot.setDocType(getDocType(scheduleType));
-            exportNot.setNewDocInfos(newDocInfoList);
-            // NewRepoId is a String used to concatenate all the ids in the current list
-            String newRepoId = "";
-            //keyMap is deal with problem document is not show in page
-            if(!CollectionUtils.isEmpty(newDocInfoList)){
-                this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
-                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
-            }else{
-                keyFlag++;
-                //Check whether the previous file data exists
-                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.oldKeyNewInfos.get(Integer.valueOf(idx));
-                if(!CollectionUtils.isEmpty(oldDocInfo)){
-                    //Populate the list with previous data if it exists
-                    exportNot.setNewDocInfos(oldDocInfo);
-                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
+                List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
+                exportNot.setDocType(getDocType(scheduleType));
+                exportNot.setNewDocInfos(newDocInfoList);
+                // NewRepoId is a String used to concatenate all the ids in the current list
+                String newRepoId = "";
+                //keyMap is deal with problem document is not show in page
+                if (!CollectionUtils.isEmpty(newDocInfoList)) {
+                    this.newKeyNewInfos.put(keyFlag++, newDocInfoList);
+                    newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                } else {
+                    keyFlag++;
+                    //Check whether the previous file data exists
+                    List<PrimaryDocDto.NewDocInfo> oldDocInfo = this.oldKeyNewInfos.get(Integer.valueOf(idx));
+                    if (!CollectionUtils.isEmpty(oldDocInfo)) {
+                        //Populate the list with previous data if it exists
+                        exportNot.setNewDocInfos(oldDocInfo);
+                        newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    }
                 }
+                exportNot.setRepoIdNewString(newRepoId);
+                //set need Validation value
+                addExportLists(exportNot);
             }
-            exportNot.setRepoIdNewString(newRepoId);
-            //set need Validation value
-            addExportLists(exportNot);
+            List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq, request, "others", this.allNewDocInfos);
+            this.setOtherNewInfos(newOtherList);
+            //get all new doc
+            PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
+            //Reassign to savedDocMap
+            draftDocToMap(new ArrayList<>(this.savedDocInfos.values()));
+            //get all
+            getDocMetaInfoToValidate();
+            this.setReceivedFacility(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_FACILITY));
+            this.setReceivedCountry(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_COUNTRY));
+            this.setExportDate(ParamUtil.getString(request, KEY_PREFIX_EXPORT_DATE));
+            this.setProvider(ParamUtil.getString(request, KEY_PREFIX_PROVIDER));
+            this.setFlightNo(ParamUtil.getString(request, KEY_PREFIX_FLIGHT_NO));
+            this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
+            this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
-        this.setOtherNewInfos(newOtherList);
-        //get all new doc
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
-        //get all
-        getDocMetaInfoFromNew();
-        this.setReceivedFacility(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_FACILITY));
-        this.setReceivedCountry(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_COUNTRY));
-        this.setExportDate(ParamUtil.getString(request, KEY_PREFIX_EXPORT_DATE));
-        this.setProvider(ParamUtil.getString(request, KEY_PREFIX_PROVIDER));
-        this.setFlightNo(ParamUtil.getString(request, KEY_PREFIX_FLIGHT_NO));
-        this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
-        this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
     }
 
     public String getDocType(String scheduleType) {
@@ -462,19 +544,19 @@ public class ExportNotificationDto implements Serializable {
      * but still displays the bug when a new section is added next time. There are certain problems with this method. Future changes may be made ！！！！！
      * removeTempIdByKeyMap
      * section no[1,3,4]->[1,2,3] del2,[1,3]
-     * */
+     */
 
-    public void removeTempIdByKeyMap(HttpServletRequest request){
+    public void removeTempIdByKeyMap(HttpServletRequest request) {
         //When changes occur, the value of the new map is assigned to the value of the old map
-        if(CollectionUtils.isEmpty(this.newKeyNewInfos)){
+        if (CollectionUtils.isEmpty(this.newKeyNewInfos)) {
             return;
         }
         this.oldKeyNewInfos.clear();
         for (Map.Entry<Integer, List<PrimaryDocDto.NewDocInfo>> entry : this.newKeyNewInfos.entrySet()) {
-            this.oldKeyNewInfos.put(entry.getKey(),entry.getValue());
+            this.oldKeyNewInfos.put(entry.getKey(), entry.getValue());
         }
-        String deleteIdx = ParamUtil.getString(request,"deleteIdx");
-        if(StringUtils.hasLength(deleteIdx)){
+        String deleteIdx = ParamUtil.getString(request, "deleteIdx");
+        if (StringUtils.hasLength(deleteIdx)) {
             List<Integer> deleteIds = Arrays.stream(deleteIdx.split(","))
                     .map(Integer::valueOf)
                     .collect(Collectors.toList());
@@ -487,21 +569,52 @@ public class ExportNotificationDto implements Serializable {
         //Retrieve oldKeyMap keys and sort them in order
         List<Integer> keyList = new ArrayList<>(this.oldKeyNewInfos.keySet());
         Collections.sort(keyList);
-        Assert.notEmpty(keyList,"key list is empty");
+        Assert.notEmpty(keyList, "key list is empty");
         for (Integer intKey : keyList) {
-            this.newKeyNewInfos.put(newKeyFlag++,this.oldKeyNewInfos.get(intKey));
+            this.newKeyNewInfos.put(newKeyFlag++, this.oldKeyNewInfos.get(intKey));
         }
     }
 
     /**
      * The array_value () method is used to determine whether a value is contained in an array
      * arrayContainsKey
+     *
      * @param idxArr - array contains section no
-     * @param key - value need to search from array idxArr
-     * */
-    public boolean arrayContainsKey(String[] idxArr,String key){
-        Assert.notNull(idxArr,"Array idxArr is null");
-        Assert.hasLength(key,"enter key is null");
+     * @param key    - value need to search from array idxArr
+     */
+    public boolean arrayContainsKey(String[] idxArr, String key) {
+        Assert.notNull(idxArr, "Array idxArr is null");
+        Assert.hasLength(key, "enter key is null");
         return Arrays.asList(idxArr).contains(key);
+    }
+
+    /**
+     * Take out the files saved during the Save Draft and put them into the Map as required
+     * Put the saved docType 'ityBat','ityToxin' file into the Map with key index
+     */
+    public void draftDocToMap(List<PrimaryDocDto.DocRecordInfo> docInfos) {
+        //key is repoId
+        Map<String, PrimaryDocDto.DocRecordInfo> savedConsumeDocMap = docInfos.stream().collect(Collectors.toMap(PrimaryDocDto.DocRecordInfo::getRepoId, Function.identity()));
+        this.setSavedDocInfos(savedConsumeDocMap);
+        //key is docType
+        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedDocMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docInfos, PrimaryDocDto.DocRecordInfo::getDocType);
+        //get bat docs
+        List<PrimaryDocDto.DocRecordInfo> ityBatSavedDocs = savedDocMap.get("ityBat");
+        List<PrimaryDocDto.DocRecordInfo> ityToxinSavedDocs = savedDocMap.get("ityToxin");
+        List<PrimaryDocDto.DocRecordInfo> docs = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(ityBatSavedDocs)) {
+            docs.addAll(ityBatSavedDocs);
+        }
+        if (!CollectionUtils.isEmpty(ityToxinSavedDocs)){
+            docs.addAll(ityToxinSavedDocs);
+        }
+        //key is index,used to display on page
+        Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docs, PrimaryDocDto.DocRecordInfo::getIndex);
+        this.setOldKeySavedInfos(oldKeySavedMap);
+        //get others saved doc list
+        List<PrimaryDocDto.DocRecordInfo> othersSavedDocs = savedDocMap.get("others");
+        if (!CollectionUtils.isEmpty(othersSavedDocs)) {
+            this.setOtherSavedInfos(othersSavedDocs);
+        }
     }
 }

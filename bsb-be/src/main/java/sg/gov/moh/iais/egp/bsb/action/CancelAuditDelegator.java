@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -37,6 +38,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 @Slf4j
 @Delegator(value = "cancelAuditDelegator")
 public class CancelAuditDelegator {
+    private static final String ACTION_TYPE_SUBMIT = "doSubmit";
+    private static final String ACTION_TYPE_PREPARE = "prepare";
+    private static final String ACTION_TYPE_APPROVE = "doApprove";
+    private static final String ACTION_TYPE_REJECT = "doReject";
+    private static final String ACTION_TYPE = "action_type";
+
     private final AuditClientBE auditClientBE;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
 
@@ -141,7 +148,7 @@ public class CancelAuditDelegator {
         ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,dto);
     }
 
-    public void preDOConfirm(BaseProcessClass bpc){
+    public void doValidate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String cancelReason = ParamUtil.getRequestString(request, PARAM_CANCEL_REASON);
@@ -156,7 +163,7 @@ public class CancelAuditDelegator {
                 processAuditDto.setModule("doCancel");
             }
         }
-        doValidation(cancelAuditDto,request);
+        doValidateData(cancelAuditDto,request);
         ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,cancelAuditDto);
         ParamUtil.setSessionAttr(request,PARAM_CANCEL_REASON,cancelReason);
     }
@@ -206,7 +213,7 @@ public class CancelAuditDelegator {
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
-    public void preAOConfirm(BaseProcessClass bpc) {
+    public void aoValidate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String aoDecision = ParamUtil.getRequestString(request,PARAM_AO_DECISION);
@@ -215,7 +222,7 @@ public class CancelAuditDelegator {
         dto.setActionBy(loginContext.getUserName());
         dto.setAoDecision(aoDecision);
         dto.setModule("aoCancel");
-        doValidation(dto,request);
+        aoValidateData(dto,request);
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
@@ -309,30 +316,33 @@ public class CancelAuditDelegator {
         ParamUtil.setRequestAttr(request, PARAM_FACILITY_NAME, selectModel);
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     * */
-    private void doValidation(CancelAuditDto dto, HttpServletRequest request){
-        if(dto.doValidation()){
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
-        }else{
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+    private void doValidateData(CancelAuditDto dto, HttpServletRequest request){
+        //validation
+        String actionType;
+        ValidationResultDto validationResultDto = auditClientBE.validateDOCancelAudit(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            actionType = ACTION_TYPE_SUBMIT;
         }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
 
-    /**
-     * just a method to do simple valid,maybe update in the future
-     * doValidation
-     * */
-    private void doValidation(OfficerProcessAuditDto dto, HttpServletRequest request){
-        if(dto.doValidation()){
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
-        }else{
-            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
-            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+    private void aoValidateData(OfficerProcessAuditDto dto, HttpServletRequest request){
+        //validation
+        String actionType = null;
+        ValidationResultDto validationResultDto = auditClientBE.validateOfficerAuditDt(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = ACTION_TYPE_PREPARE;
+        }else {
+            if (dto.getAoDecision().equals("MOHPRO003")){
+                actionType = ACTION_TYPE_REJECT;
+            } else if (dto.getAoDecision().equals("MOHPRO007")){
+                actionType = ACTION_TYPE_APPROVE;
+            }
         }
+        ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
     }
-
 }

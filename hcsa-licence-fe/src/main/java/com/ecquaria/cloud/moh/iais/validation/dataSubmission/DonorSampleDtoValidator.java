@@ -63,17 +63,17 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
         }
         if(StringUtil.isEmpty(sampleKey)){
-            log.info(StringUtil.changeForLog("Generated a ned samplekey"));
+            log.info(StringUtil.changeForLog("Generated a new samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
         }else{
             donorSampleDto.setSampleKey(sampleKey);
         }
-        //countLive
-        if(countLive(donorSampleDtoFromDb) >3){
-            map.put("directedDonationYesDonorLive","DS_ERR053");
-            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
-            map.put("donorDetailDonorLive","DS_ERR053");
-        }
+        //countLive  77526
+//        if(countLive(donorSampleDtoFromDb) >3){
+//            map.put("directedDonationYesDonorLive","DS_ERR053");
+//            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
+//            map.put("donorDetailDonorLive","DS_ERR053");
+//        }
         if(donorSampleDto.isDirectedDonation()){
              result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationY");
         }else{
@@ -117,7 +117,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 }else if(!donorSampleDto.isDirectedDonation()){
                     String sampleType = donorSampleDto.getSampleType();
                     log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-                    int ageInt = Integer.valueOf(age);
+                    int ageInt = Integer.parseInt(age);
                     if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
                         if(ageInt<21 || ageInt>40 ){
                             map.put("ages"+i,"DS_ERR044");

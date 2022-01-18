@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="IncidentCheckProcess" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="50" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <InvokeStep defClass="" executor="" icon="" name="IncidentNotification" processname="IncidentNotification" project="" version="-1" x="410" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="InvestigationReport" processname="InvestigationReport" project="" version="-1" x="410" y="180">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IncidentFollowUPReport1A" processname="IncidentFollowUPReport1A" project="" version="-1" x="400" y="260">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IncidentFollowUPReport1B" processname="IncidentFollowUPReport1B" project="" version="-1" x="400" y="360">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkProcess" x="130" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="checkProcess_OnStepProcess_0" name="checkProcess_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages />
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkProcess" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(70,250)(150,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkProcess" style="rectanular">
+   <position>{(150,250)(270,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IncidentNotification" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(270,250)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/InvestigationReport" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(270,250)(430,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IncidentFollowUPReport1A" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(270,250)(420,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IncidentFollowUPReport1B" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(270,250)(420,380)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="250" y="230">
+   <Description />
+   <SwitchCase component="/Steps/InvokeStep/IncidentNotification" value="&quot;notificaiton&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/InvestigationReport" value="&quot;investigation&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/IncidentFollowUPReport1A" value="&quot;followup1A&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/IncidentFollowUPReport1B" value="&quot;followup1B&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

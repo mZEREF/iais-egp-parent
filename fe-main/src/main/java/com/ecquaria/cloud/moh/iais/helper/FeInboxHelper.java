@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -22,45 +23,38 @@ public final class FeInboxHelper {
     public final static List<SelectOption> dataSubmissionStatusOptions = getInboxStatuses();
 
     private  static Map<String,String> getSubmissionNoStatus(){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(7);
-        //todo
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(2);
         stringStringMap.put("DS",DataSubmissionConsts.DS_STATUS_DRAFT);
         stringStringMap.put("ART",DataSubmissionConsts.DS_STATUS_ACTIVE);
         return stringStringMap;
     }
 
 
-    public static List<String> getDsTypes(List<String> roles){
-        if(IaisCommonUtils.isEmpty(roles)){
+    public static List<String> getDsTypes(List<String> privilegeIds){
+        if(IaisCommonUtils.isEmpty(privilegeIds)){
             return null;
         }
         List<String> types = IaisCommonUtils.genNewArrayList(5);
-        roles.stream().forEach(role ->{
-            switch(role){
-                case RoleConsts.USER_ROLE_DS_AR :
+        privilegeIds.stream().forEach(privilegeId ->{
+            switch(privilegeId){
+                case PrivilegeConsts.USER_PRIVILEGE_DS_AR :
                     types.add(DataSubmissionConsts.DS_AR);
                     break;
-                case RoleConsts.USER_ROLE_DS_DP :
+                case PrivilegeConsts.USER_PRIVILEGE_DS_DP :
                     types.add(DataSubmissionConsts.DS_DRP);
                     break;
-                case RoleConsts.USER_ROLE_DS_TOP:
+                case PrivilegeConsts.USER_PRIVILEGE_DS_TOP:
                     types.add(DataSubmissionConsts.DS_TOP);
                     break;
-                case RoleConsts.USER_ROLE_DS_VSS:
+                case PrivilegeConsts.USER_PRIVILEGE_DS_VSS:
                     types.add(DataSubmissionConsts.DS_VSS);
                     break;
-                case RoleConsts.USER_ROLE_DS_LDT:
+                case PrivilegeConsts.USER_PRIVILEGE_DS_LDT:
                     types.add(DataSubmissionConsts.DS_LDT);
                     break;
                 default: break;
             }
         });
-        //todo delete
-        types.add(DataSubmissionConsts.DS_AR);
-        types.add(DataSubmissionConsts.DS_DRP);
-        types.add(DataSubmissionConsts.DS_TOP);
-        types.add(DataSubmissionConsts.DS_LDT);
-        types.add(DataSubmissionConsts.DS_VSS);
         return types;
     }
 

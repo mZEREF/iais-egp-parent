@@ -147,19 +147,50 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="modal fade" id="submitDeclareModal" role="dialog" aria-labelledby="myModalLabel">
-                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-12"><span style="font-size: 2rem">Please check the declaration box</span></div>
-                                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading completed">
+                                                            <h4 class="panel-title">
+                                                                <a class="collapsed" data-toggle="collapse" href="#previewDec">Declarations</a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="previewDec" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <div class="text-right app-font-size-16"><a href="#"><em
+                                                                        class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                </div>
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div>
+                                                                        <div class="form-group">
+                                                                            <p>I will ensure to the best of my ability that the packaging of the materials and the transfer, is carried out in accordance with the requirements stipulated in the BATA Transportation Regulations</p>
+                                                                            <br/>
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <input type="radio" name="ensure" id="ensureT" value="yes"/>
+                                                                                <label for="ensureT">Yes</label>
                                                                             </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <input type="radio" name="ensure" id="ensureN" value="no"/>
+                                                                                <label for="ensureN">No</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal fade" id="submitDeclareModal" role="dialog" aria-labelledby="myModalLabel">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12"><span style="font-size: 2rem">Please check the declaration box</span></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
                                                                 </div>
                                                             </div>
                                                         </div>

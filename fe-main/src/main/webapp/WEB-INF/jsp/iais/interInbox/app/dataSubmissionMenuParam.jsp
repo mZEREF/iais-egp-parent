@@ -8,6 +8,9 @@
             <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction">AR online enquiry</a>
         </li>
         <li>
+            <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryDonorSample">Donor sample enquiry</a>
+        </li>
+        <li>
             <a href="#">Amend a Submission</a>
         </li>
         <li>

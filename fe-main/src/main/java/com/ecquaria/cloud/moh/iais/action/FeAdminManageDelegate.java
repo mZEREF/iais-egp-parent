@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -98,7 +99,7 @@ public class FeAdminManageDelegate {
                 }
             });
             CrudHelper.doPaging(searchParam,bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId()));
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
@@ -178,12 +179,14 @@ public class FeAdminManageDelegate {
             String name = ParamUtil.getString(request,"name");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
             String active = ParamUtil.getString(request,"active");
+            //admin role
             String role   = ParamUtil.getString(request,"role");
             String roles = ParamUtil.getStringsToString(request, "roles");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String id = feUserDto.getId();
+            String oldRoles = feUserDto.getRoles();
             ControllerHelper.get(request,feUserDto);
             if(StringUtil.isEmpty(id)){
                 if(feUserDto.isCorpPass()){
@@ -215,7 +218,8 @@ public class FeAdminManageDelegate {
                 feUserDto.setUserRole(role);
             }else{
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                feUserDto.setUserRole(role);
+                feUserDto.setUserRole("user");
+                feUserDto.setRoles(oldRoles);
             }
 
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);

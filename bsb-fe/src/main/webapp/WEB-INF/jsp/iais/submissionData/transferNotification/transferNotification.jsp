@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
@@ -70,6 +70,7 @@
                                         <%@include file="tranNotBat.jsp" %>
                                     </div>
                                 </div>
+                                <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                             </div>
                         </div>
                     </iais:body>
@@ -86,6 +87,7 @@
             </div>
             <div class="col-xs-12 col-md-6 text-right">
                 <button class="btn btn-secondary save" id="saveDraft">Save as Draft</button>
+                <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg" class="btn btn-secondary">Cancel</a>
                 <button class="btn btn-primary save" id="doConfirm">NEXT</button>
             </div>
         </div>

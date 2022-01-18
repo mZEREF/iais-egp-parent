@@ -109,7 +109,8 @@
         $("#mainForm").submit();
     }
     function printWDPDF(){
-        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohArWithdrawal/1/printStep",'_blank');
+        var remarks = $('#withdrawnRemarks').val();
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohArWithdrawal/1/printStep?remarks="+remarks,'_blank');
     }
 
     function toDsView(submissionNo,dsType) {

@@ -18,6 +18,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilitySelectionDto extends ValidatableNodeValue {
+    private String draftAppNo;
     private String facClassification;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.type")
@@ -71,7 +72,13 @@ public class FacilitySelectionDto extends ValidatableNodeValue {
         this.activityTypes.clear();
     }
 
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
 
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
 
     public String getFacClassification() {
         return facClassification;

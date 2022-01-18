@@ -15,6 +15,8 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
+import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
@@ -28,7 +30,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static sg.gov.moh.iais.egp.bsb.action.BsbWithdrawnAppDelegatorBE.WITHDRAWN_APP_DTO;
 
 @RestController
 @RequestMapping(path = "/ajax/doc/download")
@@ -102,8 +103,13 @@ public class DocDownloadAjaxController {
     }
 
     @GetMapping("/revocation/repo/{id}")
-    public void downloadRevocationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedFile);
+    public void downloadSavedRevocationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedRevocationFile);
+    }
+
+    @GetMapping("/revocation/new/{id}")
+    public void downloadNewRevocationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getNewRevocationFile);
     }
 
     @GetMapping("/withdrawn/repo/{id}")
@@ -119,6 +125,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/incidentView/repo/{id}")
     public void downloadIncidentViewSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::incidentViewGetSavedFile);
+    }
+
+    @GetMapping("/suspension/repo/{id}")
+    public void downloadSavedSuspensionFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedSuspensionFile);
+    }
+
+    @GetMapping("/suspension/new/{id}")
+    public void downloadNewSuspensionFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getNewSuspensionFile);
     }
 
     /**
@@ -165,7 +181,7 @@ public class DocDownloadAjaxController {
     }
 
     private MultipartFile withdrawnGetSavedFile(HttpServletRequest request, String id) {
-        AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
+        AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, "withdrawnDto");
         DocRecordInfo info = null;
         for (DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
             if (docRecordInfo.getRepoId().equals(id)) {
@@ -178,5 +194,43 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getSavedSuspensionFile(HttpServletRequest request, String id) {
+        SuspensionReinstatementDto dto = (SuspensionReinstatementDto) ParamUtil.getSessionAttr(request, "suspensionReinstatementDto");
+        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getNewSuspensionFile(HttpServletRequest request, String id) {
+        SuspensionReinstatementDto dto = (SuspensionReinstatementDto) ParamUtil.getSessionAttr(request,"suspensionReinstatementDto");
+        sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto primaryDocDto = dto.getPrimaryDocDto();
+        if(primaryDocDto==null){
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getSavedRevocationFile(HttpServletRequest request, String id) {
+        SubmitRevokeDto dto = (SubmitRevokeDto) ParamUtil.getSessionAttr(request, "revokeDto");
+        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getNewRevocationFile(HttpServletRequest request, String id) {
+        SubmitRevokeDto dto = (SubmitRevokeDto) ParamUtil.getSessionAttr(request,"revokeDto");
+        sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto primaryDocDto = dto.getPrimaryDocDto();
+        if(primaryDocDto==null){
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
     }
 }

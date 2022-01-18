@@ -127,8 +127,10 @@
     </div>
 </form>
 <c:if test="${hasDraft}">
-    <iais:confirm msg="DS_MSG001" callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
-                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-                  cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
+    <iais:confirm
+            msg="There is an existing draft for the Laboratory Developed Test. Please either continue the draft submission or delete the draft if you wish to submit a different patient"
+            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
+            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
 </c:if>
 <%@include file="./common/ldtFooter.jsp" %>

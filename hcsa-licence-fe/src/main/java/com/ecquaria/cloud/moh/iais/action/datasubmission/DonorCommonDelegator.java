@@ -31,8 +31,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
     private final static String ADD_DONOR_MAX_SIZE               ="arAddDonorMaxSize";
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
 
     protected void setDonorUserSession(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
@@ -254,10 +252,19 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     protected String checkDonorsVerifyPass(List<DonorDto> arDonorDtos,HttpServletRequest request){
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && IaisCommonUtils.isNotEmpty(arDonorDtos)){
+            Map<String, String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP);
+            if(IaisCommonUtils.isEmpty(errorMap)){
+                return AppConsts.YES;
+            }
+            for(String key : errorMap.keySet()){
+                if(!(key.contains("age") || key.contains("relation"))){
+                    return AppConsts.YES;
+                }
+            }
             StringBuilder stringBuilder = new StringBuilder();
             for (DonorDto donorDto : arDonorDtos) {
                 if (StringUtil.isEmpty(donorDto.getDonorSampleKey())) {
-                    stringBuilder.append(" Donor ").append(donorDto.getArDonorIndex()+1).append(",");
+                    stringBuilder.append(" Donor ").append(donorDto.getArDonorIndex()+1).append(',');
                 }
             }
             if(StringUtil.isEmpty(stringBuilder.toString())){

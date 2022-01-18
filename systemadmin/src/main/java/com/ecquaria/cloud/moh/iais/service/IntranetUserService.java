@@ -92,5 +92,7 @@ public interface IntranetUserService {
 
     Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto);
 
+    List<SelectOption> getRoleSelection(boolean fromDsCenter,String licenseeId,String orgId);
+
     List<SelectOption> getRoleSelection(String licenseeId);
 }

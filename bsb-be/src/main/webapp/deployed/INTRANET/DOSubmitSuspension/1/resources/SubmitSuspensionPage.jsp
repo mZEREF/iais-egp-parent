@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/suspension/DOSubmitSuspension.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/suspension/doSubmitSuspension.jsp"%>

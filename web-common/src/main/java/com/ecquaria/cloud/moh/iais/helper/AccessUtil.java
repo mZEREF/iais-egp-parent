@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -26,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
-import com.ecquaria.cloud.privilege.Privilege;
 import com.ecquaria.cloud.privilege.PrivilegeServiceClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -164,17 +162,13 @@ public class AccessUtil {
                 //get privilege Number
                 Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
                 if(privilegeNo != null && privilegeNo.length > 0) {
-                    //get Privilege
+                    //get Privilege HALP_MOH_DS_ART
                     long[] privilegeNoArr = ArrayUtils.toPrimitive(privilegeNo);
                     loginContext.setPrivileges(privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity());
-                    //todo delete
-                    Privilege privilege = new Privilege();
-                    privilege.setId(PrivilegeConsts.USER_PRIVILEGE_DS_AR);
-                    loginContext.getPrivileges().add(privilege);
                 }
                 return true;
             }else {
-                log.error("--------loginContext roleIds is null--------",loginContext);
+                log.error("--------loginContext {} roleIds is null--------",loginContext);
             }
         }
         return false;

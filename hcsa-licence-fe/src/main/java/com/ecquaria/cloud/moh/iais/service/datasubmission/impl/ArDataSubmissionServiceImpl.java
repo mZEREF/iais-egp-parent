@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -41,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -79,9 +81,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     FeMessageClient feMessageClient;
 
     @Autowired
-    private LicenceClient licenceClient;
-
-    @Autowired
     private ArFeClient arFeClient;
 
     @Autowired
@@ -96,26 +95,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
+    @Autowired
+    private DsLicenceService dsLicenceService;
+
     private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
-            return IaisCommonUtils.genNewHashMap();
-        }
-        List<String> svcNames = new ArrayList<>();
-        //TODO
-        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
-        List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
-        if (premisesDtos == null || premisesDtos.isEmpty()) {
-            return premisesDtoMap;
-        }
-        for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto, DataSubmissionConsts.DS_AR),
-                    premisesDto);
-        }
-        return premisesDtoMap;
+        return dsLicenceService.getArCenterPremises(licenseeId);
     }
 
     @Override
@@ -275,8 +262,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
             String orgId, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
-                + nationality + " -----");
+        log.info(StringUtil.changeForLog("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
+                + nationality + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
                 || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
             return;
@@ -286,7 +273,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + submissionType + " -----");
+        log.info(StringUtil.changeForLog("----- Delete Param: " + orgId + " : " + submissionType + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return;
         }
@@ -817,5 +804,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
         return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
                 0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
+    }
+
+    @Override
+    public TransferInOutStageDto getCorrespondOutStageDto(String patientCode, String ReceiveHciCode){
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(ReceiveHciCode)){
+            log.info(StringUtil.changeForLog("------ No patientCode or ReceiveHciCode -----"));
+            return null;
+        }
+        return arFeClient.getOutStageByPatientAndHciCode(patientCode, ReceiveHciCode).getEntity();
     }
 }

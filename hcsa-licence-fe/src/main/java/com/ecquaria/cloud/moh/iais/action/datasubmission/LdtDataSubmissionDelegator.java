@@ -89,10 +89,9 @@ public class LdtDataSubmissionDelegator {
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
-        String submissionType = DataSubmissionConsts.DS_CYCLE_LDT;
         LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId);
         if (dataSubmissionDraft != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
     }
 
@@ -215,6 +214,13 @@ public class LdtDataSubmissionDelegator {
         if (crud_action_type.equals(ACTION_TYPE_CONFIRM)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
+            if (isRfc(request)) {
+                LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
+                if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
+                    ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                    crud_action_type = ACTION_TYPE_PAGE;
+                }
+            }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -328,6 +334,15 @@ public class LdtDataSubmissionDelegator {
             currentAction = ACTION_TYPE_PAGE;
             ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, currentAction);
         }
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType) || DataSubmissionConstant.CRUD_TYPE_RFC.equals(crudType)) {
+            setSelectOptions(bpc);
+        }
+    }
+
+    private boolean isRfc(HttpServletRequest request) {
+        LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
+        return ldtSuperDataSubmissionDto != null && ldtSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(ldtSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
 
     private DsLaboratoryDevelopTestDto transformPageData(HttpServletRequest request) throws ParseException {
@@ -362,9 +377,11 @@ public class LdtDataSubmissionDelegator {
         ldtSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.LDT_TYPE_SBT);
         ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         ldtSuperDataSubmissionDto.setFe(true);
+        ldtSuperDataSubmissionDto.setSvcName(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
         ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        ldtSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(ldtSuperDataSubmissionDto, false));
+        ldtSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(ldtSuperDataSubmissionDto,
+                DataSubmissionHelper.getLicenseeId(request), false));
         ldtSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(ldtSuperDataSubmissionDto, false));
 
         return ldtSuperDataSubmissionDto;

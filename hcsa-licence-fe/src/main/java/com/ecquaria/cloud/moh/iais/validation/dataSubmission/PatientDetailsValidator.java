@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 public class PatientDetailsValidator implements CustomizeValidator {
@@ -27,12 +28,26 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if("ETHG005".equals(patientInformationDto.getEthnicGroup()) && StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
             errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
         }
-       /* if(Integer.valueOf(patientInformationDto.getLivingChildrenNo())>0){
-            errorMap.put("livingChildrenNo", "GENERAL_ERR0006");
-        }*/
+        if(!StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
+            errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
+        }
+
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
             errorMap.put("otherOccupation", "GENERAL_ERR0006");
         }
+        int i = 0;
+        List<String> livingChildrenGenders= patientInformationDto.getLivingChildrenGenders();
+        if(!StringUtil.isEmpty(livingChildrenGenders)){
+            if(livingChildrenGenders.size() !=0){
+                for (String livingChildrenGender : livingChildrenGenders) {
+                    if(livingChildrenGender.equals("")){
+                        errorMap.put("livingChildrenGenders"+i, "GENERAL_ERR0006");
+                    }
+                    i++;
+                }
+            }
+        }
+
         return errorMap;
     }
 }

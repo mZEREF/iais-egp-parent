@@ -143,11 +143,12 @@
                             </c:choose>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Roles" width="5" required="true" id="assignRoleTitle" />
+                            <iais:field value="Roles" width="5" required="true"/>
+                            <iais:value width="7" cssClass="col-md-7" id="assignRoleTitle" >
                             <c:forEach var="role" items="${SESSION_NAME_ROLES}" >
                                 <c:set var="value" value="${role.value}"/>
                                 <c:set var="roles" value="${inter_user_attr.roles}"/>
-                                <div class="form-check col-xs-7  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}">
+                                <div class="form-check col-xs-7  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}" style="padding-left: 0px;">
                                     <input class="form-check-input" type="checkbox"
                                            name="roles"
                                            value="${value}"
@@ -160,6 +161,7 @@
                                         <c:out value="${role.text}"/></label>
                                 </div>
                             </c:forEach>
+                            </iais:value>
                             <iais:value width="4" cssClass="col-md-4"/>
                             <iais:value width="3" cssClass="col-md-3">
                                 <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
@@ -228,7 +230,7 @@
                     clearCheckBoxArea();
                     var s = '';
                   for(let i =0 ; i< data.length; i++){
-                    s += '<div class="form-check col-xs-7 ';
+                    s += '<div style="padding-left: 0px;" class="form-check col-xs-7 ';
                     if(data[i].value =='ORG_USER'){
                         s+= ' oneClearRoleCheckbox" >'
                     }else {
@@ -246,9 +248,9 @@
                     s+='">';
                     s+= ' <span class="check-square"></span>';
                     s+= data[i].text;
-                    s+='</label>';
+                    s+='</label></div>';
                   }
-                    $('#assignRoleTitle').after(s);
+                    $('#assignRoleTitle').append(s);
                    dismissWaiting();
                 }
             )

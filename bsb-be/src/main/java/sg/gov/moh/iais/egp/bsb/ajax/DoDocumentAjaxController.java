@@ -68,7 +68,9 @@ public class DoDocumentAjaxController {
             doc.setName(selectedFile.getOriginalFilename());
 
             doc.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            Facility facility = (Facility) ParamUtil.getSessionAttr(request, FACILITY);
+//            Facility facility = (Facility) ParamUtil.getSessionAttr(request, FACILITY);
+            Facility facility = new Facility();
+            facility.setId("C9F01DDC-C84D-EC11-BE74-000C298D317C");
             doc.setFacility(facility);
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

@@ -12,12 +12,10 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.io.Serializable;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -39,8 +37,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
     private final static String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
     private final static String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
+
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;

@@ -59,13 +59,7 @@ public class EndCycleDelegator extends CommonDelegator{
             String cycleAbandoned = ParamUtil.getString(bpc.request, "cycleAbandoned");
             String abandonReasonSelect = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
             String otherAbandonReason = ParamUtil.getRequestString(bpc.request, "otherAbandonReason");
-            Boolean cycleAbandonedb = null;
-            if ("true".equals(cycleAbandoned)){
-                cycleAbandonedb = true;
-            }else if ("false".equals(cycleAbandoned)){
-                cycleAbandonedb = false;
-            }
-            endCycleStageDto.setCycleAbandoned(cycleAbandonedb);
+            endCycleStageDto.setCycleAbandoned(Boolean.valueOf(cycleAbandoned));
             endCycleStageDto.setAbandonReason(abandonReasonSelect);
             endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
             arSuperDataSubmissionDto.setEndCycleStageDto(endCycleStageDto);

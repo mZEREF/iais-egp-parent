@@ -36,4 +36,7 @@ public class INTERNET___MohBSBInboxApp___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "page", this);
 	}
 
+	public void deleteDraft_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "deleteDraft", this);
+	}
 }

@@ -30,6 +30,7 @@
                        for="counsellingYes"><span
                         class="check-circle"></span>Yes</label>
             </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_counsellingGiven"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
             <div class="form-check">
@@ -61,6 +62,7 @@
                        for="pregnancyYes"><span
                         class="check-circle"></span>Yes</label>
             </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_counsellingGivenOnMin"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
             <div class="form-check">

@@ -5,7 +5,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.*;
 
@@ -14,6 +16,9 @@ import java.util.List;
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class)
 public interface BsbInboxClient {
+    @DeleteMapping(value = "/bsb-inbox/app/{appId}")
+    void deleteDraftApplication(@PathVariable("appId") String appId);
+
     @GetMapping(value = "/bsb-inbox/msg", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxMsgSearchResultDto> getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
 

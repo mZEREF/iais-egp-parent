@@ -35,12 +35,12 @@
                             <c:out value="${donorSampleDto.donorName}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
+                   <%-- <iais:row>
                         <iais:field width="5" value="Donor relation to patient" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>
                         </iais:value>
-                    </iais:row>
+                    </iais:row>--%>
                 </div>
                 <div id="directedDonationNo" style="${donorSampleDto.directedDonation ? 'display: none;' : ''}">
                     <iais:row id="sampleType" >
@@ -120,7 +120,6 @@
                     <label class="col-xs-5 col-md-4 control-label">
                         <c:if test="${index.first==true && donorSampleDto.donorSampleAgeDtos == null}">
                             Donor's Age when Sample was Collected
-                            <span class="mandatory">*</span>
                         </c:if>
                     </label>
                     <iais:value width="7" cssClass="col-md-7"  display="true">

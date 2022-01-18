@@ -79,25 +79,21 @@ public class PatientInfoValidator implements CustomizeValidator {
         }
         if (patient.isPreviousIdentification()) {
             patientInfo.setPrevious(previous);
-            if ("file".equals(profile)) {
+            if (!isRfc) {
                 result = WebValidationHelper.validateProperty(previous, "ART");
                 if (result != null && result.isHasErrors()) {
                     map.putAll(result.retrieveAll("pre", ""));
                 }
-                //DS_MSG006
-                if (!map.containsKey("preIdNumber") && StringUtil.isEmpty(previous.getId())) {
-                    map.put("preIdNumber", "DS_MSG006");
-                }
             }
             if (!"file".equals(profile)) {
-                /*boolean retrievePrevious = patientInfo.isRetrievePrevious();
+                boolean retrievePrevious = patientInfo.isRetrievePrevious();
                 if (!retrievePrevious) {
-                    //map.put("retrievePrevious", "DS_ERR005");
+                    map.put("retrievePrevious", "DS_ERR005");
                 } else if (StringUtil.isEmpty(previous.getId())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
-                }*/
+                }
             } else {
-                isRfc = true;
+                //isRfc = true;
                 if ("".equals(previous.getIdType())) {
                     map.put("preIdType", ERR_MSG_INVALID_DATA);
                 }
@@ -105,12 +101,16 @@ public class PatientInfoValidator implements CustomizeValidator {
                     map.put("preNationality", ERR_MSG_INVALID_DATA);
                 }
             }
-            /*if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
+            if (!isRfc && !map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
                     && previous.getIdNumber().equals(patient.getIdNumber())
                     && Objects.equals(previous.getIdType(), patient.getIdType())
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
-            }*/
+            }
+            //DS_MSG006 - Patient does not exist in the system, please check entered ID Type, ID No. and Nationality.
+            if (!map.containsKey("preIdNumber") && !map.containsKey("retrievePrevious") && StringUtil.isEmpty(previous.getId())) {
+                map.put("preIdNumber", "DS_MSG006");
+            }
         }
         HusbandDto husband = patientInfo.getHusband();
         if (husband == null) {
@@ -121,10 +121,12 @@ public class PatientInfoValidator implements CustomizeValidator {
             map.putAll(result.retrieveAll("", "Hbd"));
         }
         if (!map.containsKey("idNumberHbd") && !StringUtil.isEmpty(husband.getIdNumber())
+                && !StringUtil.isEmpty(husband.getIdType()) && !StringUtil.isEmpty(husband.getNationality())
                 && husband.getIdNumber().equals(patient.getIdNumber())
                 && Objects.equals(husband.getIdType(), patient.getIdType())
                 && Objects.equals(husband.getNationality(), patient.getNationality())) {
-            map.put("idNumberHbd", ERR_MSG_INVALID_DATA);
+            // The Husband and Patient ID Number should not be the same. (DS_ERR055)
+            map.put("idNumberHbd", "DS_ERR055");
         }
         birthDate = husband.getBirthDate();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
@@ -141,12 +143,17 @@ public class PatientInfoValidator implements CustomizeValidator {
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
         if (isRfc) {
-            DataSubmissionDto dataSubmission = patientService.getPatientDataSubmissionByConds(patient.getIdType(),
+            /*DataSubmissionDto dataSubmission = patientService.getPatientDataSubmissionByConds(patient.getIdType(),
                     patient.getIdNumber(), patient.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
             DataSubmissionDto previousDS = patientService.getPatientDataSubmissionByConds(previous.getIdType(),
                     previous.getIdNumber(), previous.getNationality(), orgId, DataSubmissionConsts.DS_PATIENT_ART);
             if (previousDS != null && dataSubmission != null
                     && !Objects.equals(previousDS.getSubmissionNo(), dataSubmission.getSubmissionNo())) {
+                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+            }*/
+            PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
+                    patient.getNationality(), orgId);
+            if (patientDto != null && !Objects.equals(patientDto.getPatientCode(), previous.getPatientCode())) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
             }
             if (map.isEmpty()) {
@@ -177,22 +184,22 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(patientInfo.getIsPreviousIdentification())) {
                 map.put("isPreviousIdentification", "GENERAL_ERR0006");
             }
-            if ("".equals(patient.getIdType())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getIdType())) {
                 map.put("idType", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(patient.getNationality())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getNationality())) {
                 map.put("nationality", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(patient.getEthnicGroup())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(patient.getEthnicGroup())) {
                 map.put("ethnicGroup", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getIdType())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getIdType())) {
                 map.put("idTypeHbd", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getNationality())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getNationality())) {
                 map.put("nationalityHbd", ERR_MSG_INVALID_DATA);
             }
-            if ("".equals(husband.getEthnicGroup())) {
+            if (DataSubmissionConstant.DFT_ERROR_MC.equals(husband.getEthnicGroup())) {
                 map.put("ethnicGroupHbd", ERR_MSG_INVALID_DATA);
             }
         }

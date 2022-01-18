@@ -41,7 +41,7 @@ public class ArDataSubmissionDelegator {
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
-    private static final String PREMISES = "premises";
+    private static final String CENTRE_SEL = "centreSel";
 
     /**
      * StartStep: Start
@@ -69,7 +69,7 @@ public class ArDataSubmissionDelegator {
         Map<String, PremisesDto> premisesMap = DataSubmissionHelper.setArPremisesMap(bpc.request);
         if (premisesMap.isEmpty()) {
             Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
-            map.put(PREMISES, "There are no active Assisted Reproduction licences");
+            map.put(CENTRE_SEL, "There are no active Assisted Reproduction licences");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else if (premisesMap.size() == 1) {
             premisesMap.forEach((k, v) -> {
@@ -120,27 +120,28 @@ public class ArDataSubmissionDelegator {
         }
         // check premises
         HttpSession session = bpc.request.getSession();
-        String premises = ParamUtil.getString(bpc.request, PREMISES);
+        String centreSel = ParamUtil.getString(bpc.request, CENTRE_SEL);
         Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) session.getAttribute(
                 DataSubmissionConstant.AR_PREMISES_MAP);
         PremisesDto premisesDto = (PremisesDto) session.getAttribute(DataSubmissionConstant.AR_PREMISES);
-        if (!StringUtil.isEmpty(premises)) {
+        if (!StringUtil.isEmpty(centreSel)) {
             if (premisesMap != null) {
-                premisesDto = premisesMap.get(premises);
+                premisesDto = premisesMap.get(centreSel);
             }
             if (premisesDto == null) {
-                map.put(PREMISES, "GENERAL_ERR0049");
+                map.put(CENTRE_SEL, "GENERAL_ERR0049");
             }
         } else if (premisesMap != null && premisesMap.size() > 1) {
-            map.put(PREMISES, "GENERAL_ERR0006");
+            map.put(CENTRE_SEL, "GENERAL_ERR0006");
         } else if (premisesDto == null) {
-            map.put(PREMISES, "There are no active Assisted Reproduction licences");
+            map.put(CENTRE_SEL, "There are no active Assisted Reproduction licences");
         }
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         boolean reNew = isNeedReNew(currentSuper, submissionType, submissionMethod, premisesDto);
         if (reNew) {
             currentSuper = new ArSuperDataSubmissionDto();
         }
+        currentSuper.setCentreSel(centreSel);
         if (!map.isEmpty()) {
             currentSuper.setSubmissionType(submissionType);
             currentSuper.setSubmissionMethod(submissionMethod);
@@ -150,14 +151,14 @@ public class ArDataSubmissionDelegator {
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
-            String hciCode = premisesDto.getHciCode();
+            String hciCode =  premisesDto !=null ? premisesDto.getHciCode() : "";
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {
                 ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                         orgId, submissionType, hciCode);
                 if (dataSubmissionDraft != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "invalid";
                 }
             } else if ("resume".equals(actionValue)) {
@@ -179,7 +180,7 @@ public class ArDataSubmissionDelegator {
             currentSuper.setPremisesDto(premisesDto);
             currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             currentSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentSuper, reNew));
-            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, reNew));
+            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, DataSubmissionHelper.getLicenseeId(bpc.request), reNew));
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);

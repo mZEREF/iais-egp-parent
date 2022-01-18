@@ -131,4 +131,5 @@ public interface ArDataSubmissionService {
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
 
+    TransferInOutStageDto getCorrespondOutStageDto(String patientCode, String ReceiveHciCode);
 }

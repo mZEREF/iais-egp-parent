@@ -38,7 +38,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_L
  * @version 2021/11/10 9:37
  **/
 @Slf4j
-@Delegator(value = "reportInventoryDelegator")
+@Delegator("reportInventoryDelegator")
 public class BsbReportInventoryDelegator {
     private static final String DTO_BSB_REPORT_INVENTORY = "repReportDto";
     private static final String KEY_FACILITY_INFO = "facilityInfo";
@@ -117,7 +117,6 @@ public class BsbReportInventoryDelegator {
         //begin to validate
         doValidation(inventoryDto,request);
         ParamUtil.setSessionAttr(request,DTO_BSB_REPORT_INVENTORY,inventoryDto);
-        ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
         Map<String, List<ReportInventoryDto.NewDocInfo>> newFiles =  inventoryDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request,KEY_FACILITY_INFO,subCommon.getFacInfo(request));
         ParamUtil.setRequestAttr(request,"newFiles", newFiles);

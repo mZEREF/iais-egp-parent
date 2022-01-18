@@ -48,6 +48,9 @@ public interface FacilityRegisterClient {
     @PostMapping(path = "/register/facility/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityPreviewSubmit(@RequestBody PreviewSubmitDto dto);
 
+    @PostMapping(path = "/register/facility/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveNewFacilityDraft(@RequestBody FacilityRegisterDto dto);
+
     @PostMapping(path = "/register/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
 

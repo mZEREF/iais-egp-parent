@@ -15,21 +15,41 @@ $(function () {
     });
 });
 
-function downloadFile(cond, id) {
-    var url;
-    if (cond === 'saved') {
-        url = "/bsb-be/ajax/doc/download/facility/repo/" + id;
-    }
-    window.open(url);
+function addReloadFile() {
+    var id = this.getAttribute("id");
+    var f = this.files;
+    var tr = "<tr id="+id+'FileTr'+">"+"<td>" + f[0].name + "</td>" + "<td>"+"Internal"+"</td>" + "<td>"
+        + "<a href=\"javascript:void(0)\" onClick=\"downloadNewSuspensionFile('+"+id+"+')\">"+f[0].name+"</a>"+ "</td>"
+        + "<td>" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td>" + "" + "</td>" + "<td>" + new Date().toLocaleDateString() + "</td>"
+        + "<td>" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteNewFile(this,'"+id+"');\">Delete</button>" +"</td>"+"</tr>";
+    doAddTr(tr);
 }
 
-function deleteNewFile(id) {
-    // delete delete button, reload button and download button
-    var fileDiv = document.getElementById(id + "FileTr");
-    fileDiv.parentNode.removeChild(fileDiv);
+function doAddTr(tr) {
+    $("#tbodyFileListId").append(tr);
+}
 
+function deleteNewFile(row,id) {
+    $(row).parent('td').parent('tr').remove();
+    //remove this id from newFileMap
     // add id into the delete list
-    var deleteSavedInput = document.getElementById("deleteNewFiles");
+    var deleteNewInput = document.getElementById("deleteNewFiles");
+    appendInputValue(deleteNewInput, id);
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
+}
+
+function deleteSavedFile(row,id) {
+    $(row).parent('td').parent('tr').remove();
+    //remove this id from newFileMap
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteExistFiles");
     appendInputValue(deleteSavedInput, id);
 }
 
@@ -48,53 +68,25 @@ function deleteFile(id) {
     fileDiv.parentNode.removeChild(fileDiv);
 }
 
-function appendInputValue(input, value) {
-    if (input.value) {
-        input.value = input.value + "," + value;
-    } else {
-        input.value = value;
+function downloadFile(cond, id) {
+    var url;
+    if (cond === 'saved') {
+        url = "/bsb-be/ajax/doc/download/facility/repo/" + id;
     }
-}
-
-function addReloadFile() {
-    var id = this.getAttribute("id");
-    var fileDiv = document.getElementById(id + "FileDiv");
-    if (fileDiv) {
-        // change filename and size
-        var spanEl = document.getElementById(id + 'FileTr');
-        spanEl.innerText = genFileInfo(this);
-    } else {
-        // add filename, size, delete and reload button
-        var f = this.files;
-        var myDate = new Date();
-        var tr = "<tr id="+id+'FileTr'+">"+"<td width=\"20%\">" + f[0].name + "</td>" + "<td>"+"Self Audit"+"</td>" + "<td  width=\"20%\">" + f[0].name + "</td>" +
-            "<td width=\"15%\">" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td width=\"20%\">" + 'xxx' + "</td>" + "<td width=\"25%\">" + myDate.toLocaleDateString() + "</td>"+"</tr>";
-        doAddTr(tr);
-
-        var name = this.getAttribute("name");
-        var gpa = $("a[data-upload-file=" + name + "]");
-        var gp = gpa.closest('.file-upload-gp')[0];
-        gp.insertBefore(fileDiv, gpa[0]);
-    }
-}
-
-function genFileInfo(fileInputEl) {
-    var f = fileInputEl.files;
-    // return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
-    return "<td width=\"20%\"><p>" + f[0].name + "</p></td>" + "<td></td>" + "<td  width=\"20%\"><p>" + f[0].name + "</p></td>" +
-        "<td width=\"15%\"><p>" + (f[0].size / 1024).toFixed(1) + "KB" + "</p></td>" + "<td width=\"20%\"><p>" + xxx + "</p></td>" + "<td width=\"25%\"><p>" + new Date() + "</p></td>";
-}
-
-function downloadRevokeFile(id) {
-    var url = "/bsb-be/ajax/doc/download/revocation/repo/" + id;
     window.open(url);
-}
-
-function doAddTr(tr) {
-    $("#tbodyFileListId").append(tr);
 }
 
 function downloadWithdrawnFile(id) {
     var url = "/bsb-be/ajax/doc/download/withdrawn/repo/" + id;
+    window.open(url);
+}
+
+function downloadNewSuspensionFile(id) {
+    var url = "/bsb-be/ajax/doc/download/suspension/new/" + id;
+    window.open(url);
+}
+
+function downloadSavedSuspensionFile(id) {
+    var url = "/bsb-be/ajax/doc/download/suspension/repo/" + id;
     window.open(url);
 }

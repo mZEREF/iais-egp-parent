@@ -1,10 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.dto.suspension;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author tangtang
@@ -41,6 +47,17 @@ public class SuspensionReinstatementDto implements Serializable {
     //HM
     private String hmRemarks;
     private String hmDecision;
+
+    @JsonIgnore
+    private PrimaryDocDto primaryDocDto;
+
+    //Used to store files retrieved from the database,key is fileRepoId
+    private Map<String, DocRecordInfo> queryDocMap;
+
+    private List<DocRecordInfo> savedInfos;
+    private List<DocMeta> docMetas;
+    /* to be deleted docs (which already saved), the string is repoId, used to delete doc in internalDoc */
+    private Set<String> toBeDeletedDocIds;
 
     private static final String KEY_DO_REMARKS = "doRemarks";
     private static final String KEY_DO_DECISION = "doDecision";

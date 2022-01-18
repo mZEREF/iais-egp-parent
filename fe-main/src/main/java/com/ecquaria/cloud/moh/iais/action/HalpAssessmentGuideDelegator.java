@@ -513,7 +513,7 @@ public class HalpAssessmentGuideDelegator {
                             chkBase.add(hcsaServiceDto.getId());
                         }
                         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                                 chkBase.add(appSvcRelatedInfoDto.getServiceId());
                             }
                         }
@@ -1111,7 +1111,7 @@ public class HalpAssessmentGuideDelegator {
                             appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                             appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                             appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
-                            if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                            if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                                 List<HcsaServiceDto> baseServiceDtos =  getBaseBySpc(hcsaServiceCorrelationDtoList,hcsaServiceDto.getId());
                                 for(HcsaServiceDto hcsaServiceDto1:baseServiceDtos){
                                     if(svcIds.contains(hcsaServiceDto.getId())){
@@ -1294,12 +1294,12 @@ public class HalpAssessmentGuideDelegator {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                 if(hcsaServiceDto != null){
-                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                    if(ApplicationConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcIds.add(hcsaServiceDto.getId());
                         if(appSelectSvcDto.isAlign()){
                             appSvcRelatedInfoDto.setAlignFlag(alignFlag);
                         }
-                    }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                    }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
                         speSvcIds.add(hcsaServiceDto.getId());
                     }
                 }
@@ -1518,7 +1518,7 @@ public class HalpAssessmentGuideDelegator {
                     appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                     appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                     appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                    appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
+                    appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_TYPE_BASE);
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 }
             }
@@ -2388,9 +2388,9 @@ public class HalpAssessmentGuideDelegator {
                 }
                 String serviceType = hcsaServiceDto.getSvcType();
                 appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
+                if(ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceType)){
                     baseDtos.add(appSvcRelatedInfoDto);
-                }else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)){
+                }else if (ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
                     specDtos.add(appSvcRelatedInfoDto);
                 }
             }

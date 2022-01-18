@@ -10,15 +10,13 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-
+        <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
+        <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -77,6 +75,7 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
+                                                                    <%--@elvariable id="revokeDto" type="sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
@@ -86,7 +85,7 @@
                                                                                           name="reason"
                                                                                           cols="70"
                                                                                           rows="7"
-                                                                                          maxlength="500"></textarea>
+                                                                                          maxlength="500">${revokeDto.doReason}</textarea>
                                                                                 <span data-err-ind="reasonContent" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -99,24 +98,25 @@
                                                                                           name="DORemarks"
                                                                                           cols="70"
                                                                                           rows="7"
-                                                                                          maxlength="500"></textarea>
+                                                                                          maxlength="500">${revokeDto.doRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <c:if test="${from eq 'fac'}">
+                                                                <c:if test="${back eq 'fac'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
-                                                                <c:if test="${from eq 'app'}">
+                                                                <c:if test="${back eq 'app'}">
                                                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 </c:if>
                                                                 <div style="text-align: right">
-                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

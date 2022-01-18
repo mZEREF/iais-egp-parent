@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
@@ -9,6 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -24,16 +28,16 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.privilege.Privilege;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wangyu
@@ -73,9 +77,7 @@ public class DataSubmissionInboxDelegator {
 
 	public void initData(HttpServletRequest request){
 		clearSession(request);
-		LoginContext loginContext = AccessUtil.getLoginUser(request);
-		List<String> types = FeInboxHelper.getDsTypes(loginContext.getRoleIds());
-		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
+		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 	}
 
@@ -123,7 +125,7 @@ public class DataSubmissionInboxDelegator {
 		InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
 		interInboxDelegator.setNumInfoToRequest(request,interInboxUserDto);
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
-			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId())){
+			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId()) || IaisCommonUtils.isEmpty((List<String>)ParamUtil.getSessionAttr(request,DS_TYPES))){
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
@@ -331,12 +333,23 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	setShowPopMsg(request,actionValue);
 		  }else {
 	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
 				ParamUtil.setRequestAttr(request,"deleteDraftOk",AppConsts.YES);
 			}
 		  }
 	 }
+
+	 private void setShowPopMsg(HttpServletRequest request,String actionValue){
+        if(WITHDRAW.equalsIgnoreCase(actionValue) || AMENDED.equalsIgnoreCase(actionValue)){
+        	String msg=ParamUtil.getRequestString(request,"showPopFailMsg");
+        	if(StringUtil.isEmpty(msg)){
+				ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR022");
+			}
+		}
+	 }
+
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
 		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
@@ -361,10 +374,24 @@ public class DataSubmissionInboxDelegator {
 					 for (String submissionNo : submissionNos) {
 						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
 							 submissionSelect = true;
-							  if(checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto)){
-								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
-							  }
-							 break;
+							int switchResult =  checkDataPassBySubmissionNo(submissionNo,actionValue,inboxDataSubmissionQueryDto);
+							switch (switchResult){
+								case 1:actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);break;
+								case 2:
+									//Withdraw.Patient Information or Donor Sample
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR050");break;
+								case 3:
+									//Withdraw.RFC
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+								case 4:
+									//Withdraw.locked
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR052");break;
+								case 5:
+									//Withdraw.Withdraw
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR054");break;
+								default:
+							}
+							break;
 						 }
 					 }
 					 inboxDataSubmissionQueryDto.setSubmissionSelect(submissionSelect);
@@ -399,6 +426,7 @@ public class DataSubmissionInboxDelegator {
 		}
 
 		if(WITHDRAW.equals(actionValue)){
+
 			List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
 			ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
 			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,null);
@@ -407,7 +435,7 @@ public class DataSubmissionInboxDelegator {
 		}
 	}
 
-	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
+	private boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue){
 		if(StringUtil.isEmpty(submissionNo) || submissionNo.length() <10 ){
 			return false;
 		}
@@ -418,15 +446,68 @@ public class DataSubmissionInboxDelegator {
 			return true;
 		}
 	}
-	private static boolean checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
+
+
+	private int checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
-			return checkDataPassBySubmissionNo(submissionNo, actionValue);
-		}else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
+			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
+		}else if(!checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT) && (actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
+			if(actionValue.equals(WITHDRAW)){
+				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
+				List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
+				Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+				for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+				) {
+					if(!dataSubmissionDto.getSubmitDt().before(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt())){
+						ArSuperDataSubmissionDto arSuperData = licenceInboxClient.getArSuperDataSubmissionDto(
+								dataSubmissionDto.getSubmissionNo()).getEntity();
+						dataSubmissionDtoMap.put(arSuperData.getDataSubmissionDto().getSubmissionNo(),arSuperData);
+					}
+				}
+				for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
+				) {
+					addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
+				}
+				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
+					 ) {
+					if(arWd.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+						return 3;
+					}
+					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
+						return 5;
+					}
+					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
+						return 4;
+					}
+				}
+
+				if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+					PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
+					List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
+					for (CycleDto cyc:cycleDtoList
+						 ) {
+						if(!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_ART)&&!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP)){
+							return 2;
+						}
+					}
+				}
+				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+					List<DonorSampleAgeDto> donorSampleAgeDtos=arSuperDataSubmissionDto.getDonorSampleDto().getDonorSampleAgeDtos();
+					for (DonorSampleAgeDto age:donorSampleAgeDtos
+						 ) {
+						if(!age.getStatus().equals(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE)){
+							return 2;
+						}
+					}
+				}
+			}
 			//check x times
 			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
-			return true;
+			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
+			return maxTimes >= maxCountFromDb?1:0;
 		}
-		return true;
+		return 0;
 	}
 
 }

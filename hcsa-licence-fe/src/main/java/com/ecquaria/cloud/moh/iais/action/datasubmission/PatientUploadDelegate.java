@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.PatientInfoExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -129,7 +130,7 @@ public class PatientUploadDelegate {
 
     private void preapreDate(String pageStage, HttpServletRequest request) {
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"));
+        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"));
         ParamUtil.setRequestAttr(request, "maxCountMap", maxCountMap);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
@@ -169,9 +170,9 @@ public class PatientUploadDelegate {
                 fileItemSize = patientInfoExcelDtoList.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumbe()) {
+                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"), "maxCount"));
+                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
@@ -252,17 +253,13 @@ public class PatientUploadDelegate {
         for (PatientInfoExcelDto patientInfoExcelDto : patientInfoExcelDtoList) {
             PatientInfoDto dto = new PatientInfoDto();
             PatientDto patient = MiscUtil.transferEntityDto(patientInfoExcelDto, PatientDto.class);
-            if (StringUtil.isNotEmpty(patient.getName())) {
-                patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
-            }
             patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
-            // for oval validation
-            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
+            DsRfcHelper.handlePatient(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
             if (patient.isPreviousIdentification()) {
@@ -273,24 +270,20 @@ public class PatientUploadDelegate {
                 previous.setIdType(preIdType);
                 previous.setIdNumber(preIdNumber);
                 previous.setNationality(preNationality);
-                PatientDto db = patientService.getActivePatientByConds(preIdType, preIdNumber, preNationality, orgId,
-                        DataSubmissionConsts.DS_PATIENT_ART);
+                PatientDto db = patientService.getActiveArPatientByConds(preIdType, preIdNumber, preNationality, orgId);
                 if (db != null) {
                     previous = db;
                 }
                 dto.setPrevious(previous);
             }
             HusbandDto husbandDto = new HusbandDto();
-            if (StringUtil.isNotEmpty(patientInfoExcelDto.getNameHbd())) {
-                husbandDto.setName(patientInfoExcelDto.getNameHbd().toUpperCase(AppConsts.DFT_LOCALE));
-            }
+            husbandDto.setName(patientInfoExcelDto.getNameHbd());
             husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            // for oval validation
-            husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
+            DsRfcHelper.handleHusband(husbandDto);
             dto.setHusband(husbandDto);
             result.add(dto);
         }
@@ -421,7 +414,11 @@ public class PatientUploadDelegate {
                     dataSubmissionDto.setDeclaration(declaration);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
                     PatientDto patient = dto.getPatient();
-                    patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
+                    String patientCode = patient.getPatientCode();
+                    if (dto.getPrevious() != null && !StringUtil.isEmpty(dto.getPatient().getPatientCode())) {
+                        patientCode = dto.getPatient().getPatientCode();
+                    }
+                    patient.setPatientCode(patientService.getPatientCode(patientCode));
                     patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
                     dto.setPatient(patient);
                     newDto.setPatientInfoDto(dto);

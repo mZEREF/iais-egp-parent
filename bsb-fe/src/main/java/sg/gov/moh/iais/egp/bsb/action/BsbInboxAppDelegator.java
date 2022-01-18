@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -118,6 +119,14 @@ public class BsbInboxAppDelegator {
         ParamUtil.setSessionAttr(request, KEY_INBOX_APP_SEARCH_DTO, searchDto);
     }
 
+    public void deleteDraft(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String composedValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String maskedAppId = composedValue.substring("deleteDraft".length());
+        String appId = MaskHelper.unmask("deleteId", maskedAppId);
+        inboxClient.deleteDraftApplication(appId);
+        ParamUtil.setRequestAttr(request, "AFTER_DELETE_DRAFT_APP", Boolean.TRUE);
+    }
 
 
     private InboxAppSearchDto getSearchDto(HttpServletRequest request) {

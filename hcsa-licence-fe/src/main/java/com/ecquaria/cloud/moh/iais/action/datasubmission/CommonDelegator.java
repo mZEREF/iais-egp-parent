@@ -47,7 +47,7 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
     protected final static String  DONOR_SOURSE_OTHERS    = "Others";
     @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
+    protected ArDataSubmissionService arDataSubmissionService;
 
     /**
      * StartStep: Start
@@ -268,7 +268,7 @@ public abstract class CommonDelegator {
                 if (!outcomeStageDto.getPregnancyDetected()) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
                 } else {//3.3.4.3
-                    //status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
@@ -418,6 +418,7 @@ public abstract class CommonDelegator {
         if (!errorMap.isEmpty()) {
             log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, failedCrudActionType);
             return false;

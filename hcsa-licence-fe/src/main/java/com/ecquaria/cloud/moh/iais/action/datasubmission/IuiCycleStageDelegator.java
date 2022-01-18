@@ -32,9 +32,6 @@ import java.util.List;
 @Slf4j
 public class IuiCycleStageDelegator extends DonorCommonDelegator {
 
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
-
     @Override
     public void start(BaseProcessClass bpc) {
         //set SelectOption

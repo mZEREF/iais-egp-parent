@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -1287,7 +1288,7 @@ public class AppealServiceImpl implements AppealService {
             HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
             applicationDto.setServiceId(hcsaServiceDto.getId());
             applicationDto.setApplicationNo(s);
-            applicationDto.setOriginLicenceId(licenceDto.getOriginLicenceId());
+            applicationDto.setOriginLicenceId(licenceDto.getId());
             String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto, false);
             if(!StringUtil.isEmpty(baseServiceId)){
                 applicationDto.setBaseServiceId(baseServiceId);
@@ -1301,9 +1302,10 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDtos = reAppSvcCgo(request);
         }
 
-
+        SubLicenseeDto subLicenseeDto=licenceClient.getSubLicenseesById(licenceDto.getSubLicenseeId()).getEntity();
         appealDto.setApplicationGroupDto(applicationGroupDto);
         appealDto.setAppId(licenceDto.getId());
+        appealDto.setSubLicenseeDto(subLicenseeDto);
         appealDto.setApplicationDto(applicationDtoListlist);
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_LICENCE);
 
@@ -1392,6 +1394,8 @@ public class AppealServiceImpl implements AppealService {
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,applicationDto.getApplicationNo());
         String rfi = (String) request.getSession().getAttribute("rfi");
         ApplicationGroupDto entity = applicationFeClient.getApplicationGroup(grpId).getEntity();
+        AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppGrpNo(entity.getGroupNo());
+
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder = new StringBuilder(appNo);
         String s = stringBuilder.append("-01").toString();
@@ -1427,7 +1431,7 @@ public class AppealServiceImpl implements AppealService {
         List<ApplicationDto> list = IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);
         appealDto.setApplicationGroupDto(applicationGroupDto);
-
+        appealDto.setSubLicenseeDto(appSubmissionDto.getSubLicenseeDto());
         appealDto.setAppId(applicationDto.getId());
         appealDto.setApplicationDto(list);
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);

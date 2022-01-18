@@ -4,5 +4,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@include file="../voluntarySterilisation/section/previewTreatmentDetails.jsp" %>
-<%@include file="../voluntarySterilisation/section/previewTreatmentDetails.jsp" %>
-<%@include file="../voluntarySterilisation/section/previewTreatmentDetails.jsp" %>
+<%@include file="../voluntarySterilisation/section/previewParticularsConsentOrCourtOrder.jsp" %>
+<%@include file="../voluntarySterilisation/section/previewParticularsSterilizationSection.jsp" %>

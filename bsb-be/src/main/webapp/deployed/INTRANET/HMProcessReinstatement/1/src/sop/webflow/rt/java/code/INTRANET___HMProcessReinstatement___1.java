@@ -20,7 +20,7 @@ public class INTRANET___HMProcessReinstatement___1 extends BaseProcessClass {
 	}
 
 	public void preData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareData", this);
+		EngineHelper.delegate(DELEGATOR, "aoPrepareData", this);
 	}
 
 	public void doValidate_OnStepProcess_0() throws Exception {

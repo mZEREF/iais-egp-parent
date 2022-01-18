@@ -18,6 +18,7 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 
 <%@include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -302,6 +303,7 @@
                                 <%@ include file="../InnerFooter.jsp" %>
                             </div>
                         </div>
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

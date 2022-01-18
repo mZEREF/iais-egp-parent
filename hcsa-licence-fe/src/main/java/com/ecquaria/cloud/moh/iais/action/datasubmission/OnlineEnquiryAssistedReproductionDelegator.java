@@ -465,7 +465,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("arOrIui",arDto.getArOrIuiCycle());
             }
             if(arDto.getIVM()!=null){//bit
-                filter.put("ivm",Integer.parseInt(arDto.getIVM()));
+                filter.put("ivm",Integer.valueOf(arDto.getIVM()));
             }
             if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
                 filter.put("cart_fcn",1);
@@ -499,11 +499,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getAbandonedCycle()!=null){//bit
-                filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
+                filter.put("abandonedCycle",Integer.valueOf(arDto.getAbandonedCycle()));
             }
 
             if(arDto.getDonorGameteUsed()!=null){//not found
-                filter.put("donorGameteUsed",Integer.parseInt(arDto.getDonorGameteUsed()));
+                filter.put("donorGameteUsed",Integer.valueOf(arDto.getDonorGameteUsed()));
             }
             if(arDto.getDonorName()!=null){
                 filter.put("donorName", arDto.getDonorName());
@@ -515,7 +515,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("removedFromStorage", arDto.getRemovedFromStorage());
             }
             if(arDto.getEmbryosStoredBeyond()!=null){//not found
-                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
+                filter.put("embryosStoredBeyond",Integer.valueOf(arDto.getEmbryosStoredBeyond()));
             }
             if(arDto.getSourceSemen()!=null){
                 if("Donor".equals(arDto.getSourceSemen())){
@@ -1070,7 +1070,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transfers", arDto.getIncludeTransfers());
                 }
                 if(arDto.getCycleNumber()!=null) {
-                    filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
+                    filter.put("cycleNo", Integer.valueOf(arDto.getCycleNumber()));
                 }
                 transactionParameter.setFilters(filter);
 

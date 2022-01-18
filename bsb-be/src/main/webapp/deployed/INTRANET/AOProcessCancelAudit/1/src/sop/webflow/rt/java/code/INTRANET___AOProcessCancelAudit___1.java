@@ -24,9 +24,6 @@ public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareAOCancelAuditData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	}
-
 	public void doApprove_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "aoApproveCancel", this);
 	}
@@ -35,8 +32,7 @@ public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "aoRejectCancel", this);
 	}
 
-	public void preConfirm_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preAOConfirm", this);
+	public void doValidate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "aoValidate", this);
 	}
-
 }

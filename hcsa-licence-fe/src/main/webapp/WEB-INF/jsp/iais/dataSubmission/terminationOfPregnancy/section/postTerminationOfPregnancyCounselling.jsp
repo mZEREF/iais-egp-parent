@@ -30,6 +30,7 @@
                        for="radioYes"><span
                         class="check-circle"></span>Yes</label>
             </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_givenPostCounselling"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
             <div class="form-check">

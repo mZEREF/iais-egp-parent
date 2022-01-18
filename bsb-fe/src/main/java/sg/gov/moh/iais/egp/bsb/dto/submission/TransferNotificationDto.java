@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.googlecode.jmapper.annotations.JMap;
 import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,10 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_SUBMISSION_TYPE_TRANSFER;
 
 /**
  * @author YiMing
@@ -65,6 +69,10 @@ public class TransferNotificationDto implements Serializable {
     private String providerName;
     private String remarks;
     private String ensure;
+    @JMap
+    private String draftAppNo;
+    @JMap
+    private String dataSubmissionType;
 
     private List<TransferNot> transferNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
@@ -73,9 +81,14 @@ public class TransferNotificationDto implements Serializable {
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
     private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
+    //key is index
+    private Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos;
+    private List<PrimaryDocDto.DocRecordInfo> otherSavedInfos;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
+    @JsonIgnore
+    private PrimaryDocDto primaryDocDto;
 
     public TransferNotificationDto() {
         //Initialize the transferNotList
@@ -89,6 +102,8 @@ public class TransferNotificationDto implements Serializable {
         newKeyNewInfos = new LinkedHashMap<>();
         allNewDocInfos = new LinkedHashMap<>();
         savedDocInfos = new LinkedHashMap<>();
+        oldKeySavedInfos = new LinkedHashMap<>();
+        otherSavedInfos = new ArrayList<>();
     }
 
     @Data
@@ -106,6 +121,8 @@ public class TransferNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class TransferNotNeedR{
+        private String dataSubmissionType;
+        private String draftAppNo;
         private List<TransferNotNeed> needList;
         private String facId;
         private String receiveFacility;
@@ -118,7 +135,45 @@ public class TransferNotificationDto implements Serializable {
         private List<DocMeta> docMetas;
     }
 
+    public Map<Integer, List<PrimaryDocDto.DocRecordInfo>> getOldKeySavedInfos() {
+        return oldKeySavedInfos;
+    }
 
+    public void setOldKeySavedInfos(Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos) {
+        this.oldKeySavedInfos = oldKeySavedInfos;
+    }
+
+    public List<PrimaryDocDto.DocRecordInfo> getOtherSavedInfos() {
+        return otherSavedInfos;
+    }
+
+    public void setOtherSavedInfos(List<PrimaryDocDto.DocRecordInfo> otherSavedInfos) {
+        this.otherSavedInfos = otherSavedInfos;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
+
+    public String getDataSubmissionType() {
+        return dataSubmissionType;
+    }
+
+    public void setDataSubmissionType(String dataSubmissionType) {
+        this.dataSubmissionType = dataSubmissionType;
+    }
+
+    public PrimaryDocDto getPrimaryDocDto() {
+        return primaryDocDto;
+    }
+
+    public void setPrimaryDocDto(PrimaryDocDto primaryDocDto) {
+        this.primaryDocDto = primaryDocDto;
+    }
 
     public String getExpectedTfDate() {
         return expectedTfDate;
@@ -255,6 +310,10 @@ public class TransferNotificationDto implements Serializable {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);
         });
+        this.savedDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
     }
 
     /**
@@ -284,6 +343,8 @@ public class TransferNotificationDto implements Serializable {
         transferNotNeedR.setReceiveFacility(this.receiveFacility);
         transferNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
         transferNotNeedR.setDocMetas(this.docMetaInfos);
+        transferNotNeedR.setDraftAppNo(this.draftAppNo);
+        transferNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_TRANSFER);
         return transferNotNeedR;
     }
 
@@ -306,6 +367,9 @@ public class TransferNotificationDto implements Serializable {
             String repoId = repoIdIt.next();
             PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
             PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            //
+            docRecordInfo.setIndex(newDocInfo.getIndex());
+            //
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -319,6 +383,9 @@ public class TransferNotificationDto implements Serializable {
             newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
             newFileSyncDtoList.add(newFileSyncDto);
         }
+        allNewDocInfos.clear();
+        newKeyNewInfos.clear();
+        otherNewInfos.clear();
         return newFileSyncDtoList;
     }
 
@@ -390,56 +457,63 @@ public class TransferNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request){
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(request);
-        clearTransferNotList();
-        String[] idxArr = idxes.trim().split(" +");
-        int keyFlag = 0;
-        for (String idx : idxArr) {
-            TransferNot transferNot = new TransferNot();
-            String scheduleType = ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+idx);
-            transferNot.setScheduleType(scheduleType);
-            transferNot.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+idx));
-            transferNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_BAT_QTY+SEPARATOR+idx));
-            transferNot.setBatQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE +SEPARATOR+idx));
-            transferNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY+SEPARATOR+idx));
-            transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
-            transferNot.setDocType(getDocType(scheduleType));
-            transferNot.setNewDocInfos(newDocInfoList);
-            // NewRepoId is a String used to concatenate all the ids in the current list
-            String newRepoId = "";
-            //keyMap is deal with problem document is not show in page
-            if(!CollectionUtils.isEmpty(newDocInfoList)){
-                this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
-                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
-            }else{
-                keyFlag++;
-                //Check whether the previous file data exists
-                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.oldKeyNewInfos.get(Integer.valueOf(idx));
-                if(!CollectionUtils.isEmpty(oldDocInfo)){
-                    //Populate the list with previous data if it exists
-                    transferNot.setNewDocInfos(oldDocInfo);
-                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
+        if (StringUtils.hasLength(idxes)) {
+            //When a section is deleted, all files corresponding to it are deleted
+            removeTempIdByKeyMap(request);
+            clearTransferNotList();
+            String[] idxArr = idxes.trim().split(" +");
+            int keyFlag = 0;
+            for (String idx : idxArr) {
+                TransferNot transferNot = new TransferNot();
+                String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
+                transferNot.setScheduleType(scheduleType);
+                transferNot.setBatCode(ParamUtil.getString(request, KEY_PREFIX_BAT_CODE + SEPARATOR + idx));
+                transferNot.setTransferType(ParamUtil.getString(request, KEY_PREFIX_BAT_QTY + SEPARATOR + idx));
+                transferNot.setBatQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_TYPE + SEPARATOR + idx));
+                transferNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
+                transferNot.setMstUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+                List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
+                transferNot.setDocType(getDocType(scheduleType));
+                transferNot.setNewDocInfos(newDocInfoList);
+                // NewRepoId is a String used to concatenate all the ids in the current list
+                String newRepoId = "";
+                //keyMap is deal with problem document is not show in page
+                if (!CollectionUtils.isEmpty(newDocInfoList)) {
+                    this.newKeyNewInfos.put(keyFlag++, newDocInfoList);
+                    newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                } else {
+                    keyFlag++;
+                    //Check whether the previous file data exists
+                    List<PrimaryDocDto.NewDocInfo> oldDocInfo = this.oldKeyNewInfos.get(Integer.valueOf(idx));
+                    if (!CollectionUtils.isEmpty(oldDocInfo)) {
+                        //Populate the list with previous data if it exists
+                        transferNot.setNewDocInfos(oldDocInfo);
+                        newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    }
                 }
+                transferNot.setRepoIdNewString(newRepoId);
+
+                //set need Validation value
+                addTransferNotList(transferNot);
             }
-            transferNot.setRepoIdNewString(newRepoId);
+            List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq, request, "others", this.allNewDocInfos);
+            this.setOtherNewInfos(newOtherList);
+            //get all new doc
+            PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
+            //delete saved doc,add deleted docId,repoId to Set
+            PrimaryDocDto primaryDoc = new PrimaryDocDto();
+            primaryDoc.deleteSavedFiles(mulReq, this.savedDocInfos);
+            //Reassign to savedDocMap
+            draftDocToMap(new ArrayList<>(this.savedDocInfos.values()));
+            //get all
+            getDocMetaInfoFromNew();
 
-            //set need Validation value
-            addTransferNotList(transferNot);
+            this.setExpectedTfDate(ParamUtil.getString(request, KEY_EXPECTED_TRANSFER_DATE));
+            this.setExpArrivalTime(ParamUtil.getString(request, KEY_EXPECTED_ARRIVAL_TIME));
+            this.setProviderName(ParamUtil.getString(request, KEY_PROVIDER_NAME));
+            this.setRemarks(ParamUtil.getString(request, KEY_REMARK));
+            this.setReceiveFacility(ParamUtil.getString(request, KEY_RECEIVE_FACILITY));
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
-        this.setOtherNewInfos(newOtherList);
-        //get all new doc
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
-        //get all
-        getDocMetaInfoFromNew();
-
-        this.setExpectedTfDate(ParamUtil.getString(request,KEY_EXPECTED_TRANSFER_DATE));
-        this.setExpArrivalTime(ParamUtil.getString(request,KEY_EXPECTED_ARRIVAL_TIME));
-        this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
-        this.setRemarks(ParamUtil.getString(request,KEY_REMARK));
-        this.setReceiveFacility(ParamUtil.getString(request,KEY_RECEIVE_FACILITY));
     }
 
     public String getDocType(String scheduleType){
@@ -511,4 +585,35 @@ public class TransferNotificationDto implements Serializable {
         return Arrays.asList(idxArr).contains(key);
     }
 
+    /**
+     * Take out the files saved during the Save Draft and put them into the Map as required
+     * Put the saved docType 'ityBat','ityToxin' file into the Map with key index
+     */
+    public void draftDocToMap(List<PrimaryDocDto.DocRecordInfo> docInfos) {
+        this.oldKeySavedInfos.clear();
+        this.otherSavedInfos.clear();
+        //key is repoId
+        Map<String, PrimaryDocDto.DocRecordInfo> savedConsumeDocMap = docInfos.stream().collect(Collectors.toMap(PrimaryDocDto.DocRecordInfo::getRepoId, Function.identity()));
+        this.setSavedDocInfos(savedConsumeDocMap);
+        //key is docType
+        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedDocMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docInfos, PrimaryDocDto.DocRecordInfo::getDocType);
+        //get bat docs
+        List<PrimaryDocDto.DocRecordInfo> ityBatSavedDocs = savedDocMap.get(KEY_DOC_TYPE_INVENTORY_BAT);
+        List<PrimaryDocDto.DocRecordInfo> ityToxinSavedDocs = savedDocMap.get(KEY_DOC_TYPE_INVENTORY_TOXIN);
+        List<PrimaryDocDto.DocRecordInfo> docs = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(ityBatSavedDocs)) {
+            docs.addAll(ityBatSavedDocs);
+        }
+        if (!CollectionUtils.isEmpty(ityToxinSavedDocs)){
+            docs.addAll(ityToxinSavedDocs);
+        }
+        //key is index,used to display on page
+        Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docs, PrimaryDocDto.DocRecordInfo::getIndex);
+        this.setOldKeySavedInfos(oldKeySavedMap);
+        //get others saved doc list
+        List<PrimaryDocDto.DocRecordInfo> othersSavedDocs = savedDocMap.get("others");
+        if (!CollectionUtils.isEmpty(othersSavedDocs)) {
+            this.setOtherSavedInfos(othersSavedDocs);
+        }
+    }
 }

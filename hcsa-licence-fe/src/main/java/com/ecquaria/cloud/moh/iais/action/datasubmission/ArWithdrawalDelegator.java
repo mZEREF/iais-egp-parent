@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsWithdrawCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -46,26 +48,45 @@ public class ArWithdrawalDelegator {
     @Autowired
     private SystemAdminClient systemAdminClient;
 
+    @Autowired
+    private AssistedReproductionService assistedReproductionService;
+
     public void start(BaseProcessClass bpc)  {
         List<String> submissionNos = (List<String>) ParamUtil.getSessionAttr(bpc.request,"submissionWithdrawalNos");
         List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
+        Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+
         for (String submissionNo:submissionNos
              ) {
             ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
-            addWithdrawnDtoList.add(arSuper);
+            List<DataSubmissionDto> dataSubmissionDtoList=assistedReproductionService.allDataSubmissionByCycleId(arSuper.getDataSubmissionDto().getCycleId());
+
+            for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+            ) {
+                if(!dataSubmissionDto.getSubmitDt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                    ArSuperDataSubmissionDto arSuperDataSubmissionDto = assistedReproductionService.getArSuperDataSubmissionDto(
+                            dataSubmissionDto.getSubmissionNo());
+                    dataSubmissionDtoMap.put(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo(),arSuperDataSubmissionDto);
+                }
+            }
+        }
+        for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
+        ) {
+            addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
         }
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal From");
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", null);
         DataSubmissionHelper.setCurrentArDataSubmission(null,bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
     }
 
     public void prepareDate(BaseProcessClass bpc)  {
         ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
-        newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         newDto.setOrgId(orgId);
@@ -77,12 +98,12 @@ public class ArWithdrawalDelegator {
         dataSubmissionDto.setCycleStage("");
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
-        DataSubmissionHelper.setCurrentArDataSubmission(newDto,bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);
 
     }
 
     public void withdrawalStep(BaseProcessClass bpc)  {
-        ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arSuperDataSubmission= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arWdDto");
         String remarks=ParamUtil.getString(bpc.request, "withdrawnRemarks");
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
 
@@ -108,26 +129,30 @@ public class ArWithdrawalDelegator {
             return;
         }
         arSuperDataSubmission.getDataSubmissionDto().setRemarks(remarks);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "arWdDto", arSuperDataSubmission);
 
     }
 
     public void saveDate(BaseProcessClass bpc)  {
         List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+        List<DsWithdrawCorrelationDto> list=IaisCommonUtils.genNewArrayList();
         for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-            arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
-            try {
-                 arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-            }
+            DsWithdrawCorrelationDto dsWithdrawCorrelationDto=new DsWithdrawCorrelationDto();
+            dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
+            list.add(dsWithdrawCorrelationDto);
+        }
+        addWithdrawnDtoList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(addWithdrawnDtoList);
+        try {
+            arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(addWithdrawnDtoList);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
 
-
-        ArSuperDataSubmissionDto arSuperDataSubmission=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arSuperDataSubmission= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arWdDto");
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
+        arSuperDataSubmission.setDsWithdrawCorrelationDtoList(list);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
@@ -149,6 +174,7 @@ public class ArWithdrawalDelegator {
     }
 
     public void printStep(BaseProcessClass bpc)  {
-
+        String remarks= ParamUtil.getString(bpc.request, "remarks");
+        ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",remarks);
     }
 }

@@ -147,15 +147,15 @@
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div>
                                                                         <div class="form-group">
-                                                                            <p>The information provided in this submission and any document submitted together with the submissoin is not false, misleading or inaccurate in any particular manner.</p>
+                                                                            <p>I will ensure to the best of my ability that the packaging of the materials and the transfer, is carried out in accordance with the requirements stipulated in the BATA Transportation Regulations</p>
                                                                             <br/>
                                                                             <div class="col-sm-4" style="margin-top: 8px">
-                                                                                <input type="radio" name="declare" id="declareT" value="yes"/>
-                                                                                <label for="declareT">yes</label>
+                                                                                <input type="radio" name="ensure" id="ensureT" value="yes"/>
+                                                                                <label for="ensureT">Yes</label>
                                                                             </div>
                                                                             <div class="col-sm-4" style="margin-top: 8px">
-                                                                                <input type="radio" name="declare" id="declareN" value="no"/>
-                                                                                <label for="declareN">no</label>
+                                                                                <input type="radio" name="ensure" id="ensureN" value="no"/>
+                                                                                <label for="ensureN">No</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>

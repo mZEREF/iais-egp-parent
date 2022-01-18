@@ -1724,9 +1724,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             String id = activeHcsaServiceDtoByName.getId();
             String baseService="";
-            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
+            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
                 var1.setBaseServiceId(activeHcsaServiceDtoByName.getId());
-            }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+            }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                 String licenceId = appSubmissionDto.getLicenceId();
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null || serviceCorrelationDtos.isEmpty()){
@@ -1743,7 +1743,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 if(!StringUtil.isEmpty(baseService)){
                     String service_name = appConfigClient.getServiceNameById(baseService).getEntity();
-                    List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licenceId).getEntity();
+                    List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceId).getEntity();
                     if(entity!=null && !entity.isEmpty()){
                         Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
                         while (iterator1.hasNext()){
@@ -1770,9 +1770,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
         if(activeHcsaServiceDtoByName!=null){
             String svcType = activeHcsaServiceDtoByName.getSvcType();
-            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
+            if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
                 return flag==true ? String.valueOf(true): activeHcsaServiceDtoByName.getId();
-            }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+            }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null ||serviceCorrelationDtos.isEmpty()){
                     return flag==true ? String.valueOf(false): "";
@@ -1790,7 +1790,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     return flag==true ?String.valueOf(false):"";
                 }
 
-                List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licenceDto.getId()).getEntity();
+                List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId()).getEntity();
                 if(entity==null||entity.isEmpty()){
                     return flag==true ? String.valueOf(false): "";
                 }
@@ -1838,7 +1838,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
-            log.info("No submissions to send email.");
+            log.info("No submissions to send email.");return;
         }
         appSubmissionDtos.stream()
                 .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))

@@ -12,6 +12,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -20,12 +21,12 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
-    <c:if test="${privilege.id eq 'HALP_DASHBOARD'}">
+    <c:if test="${privilege.id eq 'HALP_HCSA_INBOX'}">
         <c:set var="msgTab" value="1"/>
         <c:set var="appTab" value="1"/>
         <c:set var="licTab" value="1"/>
     </c:if>
-    <c:if test="${privilege.id eq 'HALP_MOH_DS_ART'}">
+    <c:if test="${StringUtil.stringContain(privilege.id,'HALP_MOH_DS_')}">
         <c:set var="msgTab" value="1"/>
         <c:set var="dssTab" value="1"/>
     </c:if>

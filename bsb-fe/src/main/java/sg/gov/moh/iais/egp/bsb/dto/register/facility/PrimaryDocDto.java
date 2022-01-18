@@ -185,6 +185,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
             newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
             newFileSyncDtoList.add(newFileSyncDto);
         }
+        newDocMap.clear();
         return newFileSyncDtoList;
     }
 

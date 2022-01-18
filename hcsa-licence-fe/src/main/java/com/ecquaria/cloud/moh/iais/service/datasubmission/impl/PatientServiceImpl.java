@@ -57,6 +57,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientDto getActiveArPatientByConds(String idType, String idNumber, String nationality, String orgId) {
+        return getActivePatientByConds(idType, idNumber, nationality, orgId, DataSubmissionConsts.DS_PATIENT_ART);
+    }
+
+    @Override
     public PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + idType
                 + " : " + idNumber + " : " + nationality + " -----"));

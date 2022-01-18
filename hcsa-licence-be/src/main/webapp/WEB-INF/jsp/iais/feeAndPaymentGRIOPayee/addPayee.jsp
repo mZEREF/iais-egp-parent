@@ -146,7 +146,15 @@
                                             </label>
                                         </div>
                                     </iais:row>
-
+                                    <iais:row>
+                                        <iais:field value="DDA Ref No. " mandatory="true"/>
+                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                            <label style="width:180%;font-weight:normal;">
+                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
+                                                <div><span  id="error_cusRefNo" name="iaisErrorMsg" class="error-msg" ></span></div>
+                                            </label>
+                                        </div>
+                                    </iais:row>
                                     <iais:row>
                                         <iais:field value="GIRO Form " mandatory="true"/>
                                         <div class="document-upload-gp col-sm-7 col-md-4 col-xs-10">
