@@ -287,14 +287,15 @@
 
     <sql key = "dataSubmissionQuery" remarks = "Query data Submission Inter-Inbox Data by condition">
         <![CDATA[
-           SELECT DISTINCT t1.*,t2.BUSINESS_NAME FROM (select * FROM (
-           SELECT dds.ID ID,dds.CYCLE_ID CYCLE_ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],dds.STATUS STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME FROM  ds_cycle dc
+            SELECT DISTINCT t1.*,t2.BUSINESS_NAME FROM (select * FROM (
+           SELECT dds.ID ID,dds.CYCLE_ID CYCLE_ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],dds.STATUS STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId FROM  ds_cycle dc
            left join  ds_data_submission dds
            on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS != 'DS002'
            UNION
-           SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME
+           SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
            ) t1 where t1.SVC_NAME IS NOT NULL AND t1.SVC_NAME != '') t1
+           <#if fromLic??>
           left join (
           select p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME,licence.LICENSEE_ID licenseeId,licence.SVC_NAME SVC_NAME  FROM
           (Select * FROM premises p WHERE p.STATUS= 'CMSTAT001') p
@@ -302,7 +303,10 @@
           on p.ID = lp.PREMISES_ID
           left join  (select * FROM licence WHERE licence.STATUS = 'LICEST001') licence
           on  lp.LICENCE_ID = licence.ID
-          ) t2  on t1.HCI_CODE = t2.HCI_CODE AND t1.SVC_NAME = t2.SVC_NAME
+          ) t2  on t1.HCI_CODE = t2.HCI_CODE AND t1.SVC_NAME = t2.SVC_NAME </#if>
+           <#if fromCenter??>
+               left join (select HCI_CODE,CENTER_NAME BUSINESS_NAME,LICENSEE_ID licenseeId,CENTER_TYPE from  ds_center dsc WHERE dsc.STATUS = 'CMSTAT001') t2 on t1.dclicenseeId = t2.licenseeId AND t2.HCI_CODE = t1.HCI_CODE
+           </#if>
           WHERE 1=1
           <#if type??> and t1.[type] = :type </#if>
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
