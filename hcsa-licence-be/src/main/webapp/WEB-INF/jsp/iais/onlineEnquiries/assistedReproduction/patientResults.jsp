@@ -12,8 +12,12 @@
 %>
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
+<%--<script type="text/css" src="<%=webrootBe%>css/rightpanelstyle.css"></script>--%>
+<script type="text/javascript" src="<%=webrootBe%>js/rightpanel-main.js"></script>
+<link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  type="text/css" media="all">
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
