@@ -27,14 +27,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-5 col-md-4 control-label">What was Transferred?
-                        <c:if test="${diffWas}">
-                            <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                               data-toggle="tooltip"
-                               data-html="true"
-                               title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
-                        </c:if>
-                    </label>
+                    <iais:field width="5" value="What was Transferred?"/>
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
                         <c:forEach items="${transferInOutStageDto.transferredList}" var="transferred" varStatus="staus">
                             <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${transferred}"/>
@@ -53,7 +46,7 @@
                                      </c:if>
                                  </label>
                                  <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                     <c:out value="${transferInOutStageDto.oocyteNum}" />
+                                     <c:out value="${transferInOutStageDto.oocyteNo}" />
                                  </iais:value>
                              </iais:row>
                             </c:if>
@@ -68,7 +61,7 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                       <c:out value="${transferInOutStageDto.embryoNum}" />
+                                       <c:out value="${transferInOutStageDto.embryoNo}" />
                                     </iais:value>
                                 </iais:row>
                             </c:if>
@@ -83,20 +76,13 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                        <c:out value="${transferInOutStageDto.spermVialsNum}" />
+                                        <c:out value="${transferInOutStageDto.spermVialsNo}" />
                                     </iais:value>
                                 </iais:row>
                             </c:if>
                         </c:forEach>
                 <iais:row>
-                    <label class="col-xs-5 col-md-4 control-label">Were the Gamete(s) or Embryo(s) from a Donor?
-                        <c:if test="${diffIsDonor}">
-                            <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                               data-toggle="tooltip"
-                               data-html="true"
-                               title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
-                        </c:if>
-                    </label>
+                    <iais:field width="5" value="Were the Gamete(s) or Embryo(s) from a Donor?" />
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
                             <c:out value= "${transferInOutStageDto.fromDonor ? 'Yes' : 'No'}"/>
                     </iais:value>
@@ -105,7 +91,11 @@
                     <iais:row>
                         <iais:field width="5" value="Transferred In From" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                            <iais:code code="${transferInOutStageDto.transInFromHciCode}"/>
+                            <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
+                                <c:if test="${premisesSelect.value eq transferInOutStageDto.transInFromHciCode}">
+                                    <c:out value="${premisesSelect.text}"/>
+                                </c:if>
+                            </c:forEach>
                         </iais:value>
                     </iais:row>
                         <iais:row style="${transferInOutStageDto.transInFromHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
@@ -119,7 +109,11 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                            <iais:code code="${transferInOutStageDto.transOutToHciCode}"/>
+                            <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
+                                <c:if test="${premisesSelect.value eq transferInOutStageDto.transOutToHciCode}">
+                                    <c:out value="${premisesSelect.text}"/>
+                                </c:if>
+                            </c:forEach>
                         </iais:value>
                     </iais:row>
                         <iais:row style="${transferInOutStageDto.transOutToHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
@@ -130,14 +124,7 @@
                         </iais:row>
                 </div>
                 <iais:row>
-                    <label class="col-xs-5 col-md-4 control-label">Date of Transfer
-                        <c:if test="${diffDate}">
-                            <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                               data-toggle="tooltip"
-                               data-html="true"
-                               title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
-                        </c:if>
-                    </label>
+                    <iais:field width="5" value="Date of Transfer" />
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
                         <c:out value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>

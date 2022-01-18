@@ -130,7 +130,7 @@
                         <iais:row>
                                 <iais:field width="5" value="Transferred In From" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select  name="transInFromHciCode" firstOption="Please Select"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
+                                    <iais:select  name="transInFromHciCode" firstOption="Please Select"  options="transferOutInPremisesSelect" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
                                 </iais:value>
                         </iais:row>
 
@@ -145,7 +145,7 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  name="transOutToHciCode"  firstOption="Please Select" codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
+                            <iais:select  name="transOutToHciCode"  firstOption="Please Select" options="transferOutInPremisesSelect" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
                         </iais:value>
                     </iais:row>
                         <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">

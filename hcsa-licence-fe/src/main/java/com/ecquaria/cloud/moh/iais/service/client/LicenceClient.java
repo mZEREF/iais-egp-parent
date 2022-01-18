@@ -229,4 +229,10 @@ public interface LicenceClient {
     @GetMapping(value = "/lic-common/ds-center/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrgIdAndCentreType(@PathVariable("orgId") String orgId,
             @RequestParam("centerType") String centerType);
+
+    @GetMapping(value = "/lic-common/ds-center-center-type", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> getCenterDtosByCentreType(@RequestParam("centerType") String centerType);
+
+    @GetMapping(value = "/lic-common/ar-center-org-id-hci-code", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DsCenterDto> getArCenter(@RequestParam("orgId") String orgId, @RequestParam("hciCode") String hciCode);
 }
