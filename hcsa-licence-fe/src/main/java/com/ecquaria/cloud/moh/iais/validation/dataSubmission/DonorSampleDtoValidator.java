@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -33,6 +34,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService .class);
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         DonorSampleDto donorSampleDto = (DonorSampleDto)obj;
+        donorSampleDto.setAgeErrorMsg(null);
         ValidationResult result = null;
         ValidationResult donorIdentityKnownResult = null;
         ValidationResult sampleFromOthersResult = null;
@@ -114,18 +116,21 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 }else if(age.length()>2){
                     map.put("ages"+i,"GENERAL_ERR0041");
                     //donor sample
-                }else if(!donorSampleDto.isDirectedDonation()){
+                }
+                else if(!donorSampleDto.isDirectedDonation()){
                     String sampleType = donorSampleDto.getSampleType();
                     log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
                     int ageInt = Integer.parseInt(age);
                     if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
                         if(ageInt<21 || ageInt>40 ){
-                            map.put("ages"+i,"DS_ERR044");
+                            //map.put("ages"+i,"DS_ERR044");
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR044")));
                         }
                     }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
                             ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
                         if(ageInt<21 || ageInt>35 ){
-                            map.put("ages"+i,"DS_ERR045");
+                            //map.put("ages"+i,"DS_ERR045");
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR045")));
                         }
                     }
                 }

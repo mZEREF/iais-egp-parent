@@ -105,6 +105,13 @@
                                 <label class="col-xs-5 col-md-4 control-label">
                                     <c:if test="${idxStatus.first==true}">
                                         Donor's Age when Sample was Collected
+                                        <c:if test="${donorSampleDto.ageErrorMsg!=null}">
+                                            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                               title='<c:out value="${donorSampleDto.ageErrorMsg}"/>'
+                                               style="z-index: 10"
+                                               data-original-title="">i</a>
+                                        </c:if>
+
                                     </c:if>
                                 </label>
                                 <iais:value width="7" cssClass="col-md-7"  display="true">
@@ -120,6 +127,12 @@
                     <label class="col-xs-5 col-md-4 control-label">
                         <c:if test="${index.first==true && donorSampleDto.donorSampleAgeDtos == null}">
                             Donor's Age when Sample was Collected
+                            <c:if test="${donorSampleDto.ageErrorMsg!=null}">
+                                <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                   title='<c:out value="${donorSampleDto.ageErrorMsg}"/>'
+                                   style="z-index: 10"
+                                   data-original-title="">i</a>
+                            </c:if>
                         </c:if>
                     </label>
                     <iais:value width="7" cssClass="col-md-7"  display="true">
