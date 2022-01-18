@@ -295,7 +295,7 @@
            SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
            ) t1 where t1.SVC_NAME IS NOT NULL AND t1.SVC_NAME != '') t1
-           <#if fromLic??>
+           <#if fromCenter?? && !fromCenter>
           left join (
           select p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME,licence.LICENSEE_ID licenseeId,licence.SVC_NAME SVC_NAME  FROM
           (Select * FROM premises p WHERE p.STATUS= 'CMSTAT001') p
@@ -304,7 +304,7 @@
           left join  (select * FROM licence WHERE licence.STATUS = 'LICEST001') licence
           on  lp.LICENCE_ID = licence.ID
           ) t2  on t1.HCI_CODE = t2.HCI_CODE AND t1.SVC_NAME = t2.SVC_NAME </#if>
-           <#if fromCenter??>
+           <#if fromCenter?? && fromCenter>
                left join (select HCI_CODE,CENTER_NAME BUSINESS_NAME,LICENSEE_ID licenseeId,CENTER_TYPE from  ds_center dsc WHERE dsc.STATUS = 'CMSTAT001') t2 on t1.dclicenseeId = t2.licenseeId AND t2.HCI_CODE = t1.HCI_CODE
            </#if>
           WHERE 1=1

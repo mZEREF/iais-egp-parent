@@ -493,7 +493,9 @@ public abstract class CommonDelegator {
 
     //TODO from ar center
     protected final List<SelectOption> getSourseList(HttpServletRequest request){
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions(DataSubmissionHelper.setArPremisesMap(request));
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
         return selectOptions;
     }
