@@ -71,8 +71,8 @@ public abstract class DpCommonDelegator {
      */
     public void doPrepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Switch -----"));
-        ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
-        //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        DpSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(superDto.getAppType()));
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {

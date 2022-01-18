@@ -693,14 +693,6 @@ public final class DataSubmissionHelper {
         return emailAddress.toString();
     }
 
-    public static String getMainTitle(ArSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
-    }
-
-    public static String getMainTitle(DpSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
-    }
-
     public static String getMainTitle(String type) {
         String title;
         switch (type) {
@@ -711,6 +703,21 @@ public final class DataSubmissionHelper {
                 title = DataSubmissionConstant.DS_TITLE_NEW;
         }
         return title;
+    }
+
+    public static String getSmallTitle(String type) {
+        StringBuilder title = new StringBuilder();
+        title.append("You are submitting for <strong>");
+        switch (type) {
+            case DataSubmissionConsts.DS_AR:
+                title.append(DataSubmissionConstant.DS_SMALL_TITLE_ART);
+                break;
+            case DataSubmissionConsts.DS_DRP:
+                title.append(DataSubmissionConstant.DS_SMALL_TITLE_DRP);
+                break;
+        }
+        title.append("</strong>");
+        return title.toString();
     }
 
     public static String getCode(String codeValue, List<MasterCodeView> masterCodes) {

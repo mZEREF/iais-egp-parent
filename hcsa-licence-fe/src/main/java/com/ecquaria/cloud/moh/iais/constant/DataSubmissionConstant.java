@@ -61,6 +61,9 @@ public class DataSubmissionConstant {
     public static String DS_TITLE_NEW                       = "New Data Submission";
     public static String DS_TITLE_RFC                       = "Amendment";
 
+    public static String DS_SMALL_TITLE_ART                 = "Assisted Reproduction";
+    public static String DS_SMALL_TITLE_DRP                 = "Drug Practices";
+
     public static String PRINT_FLAG                         = "printflag";
     public static String PRINT_FLAG_PTART                   = "PTART";
     public static String PRINT_FLAG_PTDRP                   = "PTDRP";

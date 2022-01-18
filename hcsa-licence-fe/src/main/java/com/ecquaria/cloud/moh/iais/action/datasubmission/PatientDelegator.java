@@ -58,7 +58,7 @@ public class PatientDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
         ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getPatientAgeMessage("Patient"));
         ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getPatientAgeMessage("Husband"));
     }
