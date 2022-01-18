@@ -64,6 +64,9 @@ public class DataSubmissionConstant {
     public static String DS_SMALL_TITLE_ART                 = "Assisted Reproduction";
     public static String DS_SMALL_TITLE_DRP                 = "Drug Practices";
 
+    public static String DS_SHOW_PATIENT                    = "Patient";
+    public static String DS_SHOW_HUSBAND                    = "Husband";
+
     public static String PRINT_FLAG                         = "printflag";
     public static String PRINT_FLAG_PTART                   = "PTART";
     public static String PRINT_FLAG_PTDRP                   = "PTDRP";

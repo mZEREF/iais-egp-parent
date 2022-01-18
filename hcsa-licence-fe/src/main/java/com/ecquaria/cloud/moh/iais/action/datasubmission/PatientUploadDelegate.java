@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -53,7 +52,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -259,7 +257,7 @@ public class PatientUploadDelegate {
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
-            DsRfcHelper.handlePatient(patient);
+            DsRfcHelper.prepare(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
             if (patient.isPreviousIdentification()) {
@@ -283,7 +281,7 @@ public class PatientUploadDelegate {
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            DsRfcHelper.handleHusband(husbandDto);
+            DsRfcHelper.prepare(husbandDto);
             dto.setHusband(husbandDto);
             result.add(dto);
         }
