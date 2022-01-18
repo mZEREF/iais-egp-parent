@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -72,7 +73,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
             return premisesDtoMap;
         }
         for (DsCenterDto dsCenterDto : dsCenterDtos) {
-            premisesDtoMap.put(dsCenterDto.getId(), transfer(dsCenterDto, orgId));
+            premisesDtoMap.put(dsCenterDto.getId(), DsHelper.transfer(dsCenterDto));
         }
         return premisesDtoMap;
     }
@@ -97,7 +98,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     private PremisesDto transfer(DsCenterDto dsCenterDto, String orgId) {
         PremisesDto premisesDto = new PremisesDto();
         premisesDto.setId(dsCenterDto.getId());
-        premisesDto.setSvcName(dsCenterDto.getCenterName());
+        premisesDto.setSvcName(dsCenterDto.getCenterType());
         premisesDto.setBusinessName(dsCenterDto.getCenterName());
         premisesDto.setHciCode(dsCenterDto.getHciCode());
         premisesDto.setOrganizationId(orgId);

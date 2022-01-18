@@ -155,8 +155,11 @@ public class ArDataSubmissionDelegator {
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {
-                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, hciCode);
+                ArSuperDataSubmissionDto dataSubmissionDraft = null;
+                if (!DataSubmissionConsts.DS_METHOD_FILE_UPLOAD.equals(submissionMethod)) {
+                    dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                            orgId, submissionType, hciCode);
+                }
                 if (dataSubmissionDraft != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "invalid";
