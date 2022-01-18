@@ -334,7 +334,8 @@ public class TopDataSubmissionDelegator {
         log.info(" ----- DoSubmission ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
-        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto, false));
+        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto,
+                DataSubmissionHelper.getLicenseeId(bpc.request), false));
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
         DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
@@ -446,9 +447,9 @@ public class TopDataSubmissionDelegator {
                 actionType = crudType;
                 DsConfigHelper.setActiveConfig(actionType, bpc.request);
             }
-        } else if ("previous".equals(crudType)) {
+        } else if ("previous".equals(crudType)) {//back
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
-        } else if ("preview".equals(crudType)) {
+        } else if ("page".equals(crudType) || "preview".equals(crudType)) {
             actionType = crudType;
         } else {
             actionType = crudType;
@@ -489,7 +490,8 @@ public class TopDataSubmissionDelegator {
         topSuperDataSubmissionDto.setFe(true);
         topSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto, false));
+        topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto,
+                DataSubmissionHelper.getLicenseeId(request), false));
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
 
         return topSuperDataSubmissionDto;

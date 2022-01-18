@@ -492,7 +492,7 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
-    public static CycleDto initCycleDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto, boolean reNew) {
+    public static CycleDto initCycleDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = topSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -507,6 +507,9 @@ public final class DataSubmissionHelper {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
         cycleDto.setCycleType(cycleType);
+        if (StringUtil.isEmpty(licenseeId)) {
+            cycleDto.setLicenseeId(licenseeId);
+        }
         return cycleDto;
     }
 
