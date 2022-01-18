@@ -35,7 +35,10 @@ public class AppointmentUtil {
                 ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
                 ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
                 ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+                ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
+                ApplicationConsts.APPLICATION_STATUS_DELETED
+
         };
     }
 }
