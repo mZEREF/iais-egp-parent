@@ -305,13 +305,13 @@
           on  lp.LICENCE_ID = licence.ID
           ) t2  on t1.HCI_CODE = t2.HCI_CODE AND t1.SVC_NAME = t2.SVC_NAME </#if>
            <#if fromCenter?? && fromCenter>
-               left join (select HCI_CODE,CENTER_NAME BUSINESS_NAME,LICENSEE_ID licenseeId,CENTER_TYPE from  ds_center dsc WHERE dsc.STATUS = 'CMSTAT001') t2 on t1.dclicenseeId = t2.licenseeId AND t2.HCI_CODE = t1.HCI_CODE
+               left join (select HCI_CODE,CENTER_NAME BUSINESS_NAME,LICENSEE_ID licenseeId,CENTER_TYPE from  ds_center dsc WHERE dsc.STATUS = 'CMSTAT001') t2 on t1.dclicenseeId = t2.licenseeId AND t2.HCI_CODE = t1.HCI_CODE AND t2.CENTER_TYPE = t1.DS_TYPE
            </#if>
           WHERE 1=1
           <#if type??> and t1.[type] = :type </#if>
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
           <#if status ??> and t1.STATUS = :status</#if>
-           <#if licenseeId ??> and licenseeId = :licenseeId</#if>
+           <#if licenseeId ??> and  t1.dclicenseeId = :licenseeId</#if>
            <#if dsType ??> and DS_TYPE in ${dsType} </#if>
             <#if lastDateStart??> AND DATEDIFF(DAY,:lastDateStart,UPDATED_DT) >=0 </#if>
             <#if lastDateEnd??> AND DATEDIFF(DAY,:lastDateEnd,UPDATED_DT) <=0 </#if>
