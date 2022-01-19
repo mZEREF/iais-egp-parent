@@ -132,24 +132,13 @@ public class PatientDelegator extends CommonDelegator {
         // ret-set cycle dto
         CycleDto cycleDto = currentArDataSubmission.getCycleDto();
         if (cycleDto == null) {
-            cycleDto = initCycleDto(currentArDataSubmission);
+            cycleDto = DataSubmissionHelper.initCycleDto(currentArDataSubmission, DataSubmissionHelper.getLicenseeId(request), true);
         }
         // cycleDto.setPatientCode(patientCode);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(cycleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;
-    }
-
-    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = new CycleDto();
-        }
-        cycleDto.setHciCode(currentArDataSubmission.getHciCode());
-        cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
-        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
-        return cycleDto;
     }
 
     @Override
