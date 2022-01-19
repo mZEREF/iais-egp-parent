@@ -17,6 +17,42 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
+<style>
+    .progress-tracker li:before {
+        position: relative;
+        width: 28px;
+        height: 28px;
+        border: 1px solid #BFBFBF;
+        border-radius: 50%;
+        background-color: white;
+        display: block;
+        left: 50%;
+        margin-left: -15px;
+        top: 0;
+        margin-bottom: -26px;
+        z-index: -1;
+    }
+    .progress-tracker li:not(:first-child):after {
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        right: 50%;
+        background-color: #BFBFBF;
+        top: 12px;
+        z-index: -2;
+    }
+    .progress-tracker li.active:after {
+        height: 2px;
+        top: 12px;
+        background-color: #1989BF;
+    }
+    .nav > li > a {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-top: 20px;
+    }
+</style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submitDt" value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" />
@@ -37,12 +73,12 @@
                                         <c:choose>
                                             <c:when test ="${steplist.submitDt <= submitDt}">
                                                 <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" data-service-step="${steplist.cycleStage}">
-                                                    <a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                        ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
                                                 <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
-                                                    <a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                        ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
