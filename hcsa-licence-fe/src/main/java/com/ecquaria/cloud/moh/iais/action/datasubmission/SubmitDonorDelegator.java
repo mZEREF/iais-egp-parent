@@ -1,19 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import java.io.Serializable;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -80,17 +76,17 @@ public class SubmitDonorDelegator extends CommonDelegator {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
 
-    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = new CycleDto();
-        }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
-                .map(PremisesDto::getHciCode)
-                .orElse("");
-        cycleDto.setHciCode(hicCode);
-        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
-        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE);
-        return cycleDto;
-    }
+//    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
+//        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
+//        if (cycleDto == null) {
+//            cycleDto = new CycleDto();
+//        }
+//        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
+//                .map(PremisesDto::getHciCode)
+//                .orElse("");
+//        cycleDto.setHciCode(hicCode);
+//        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
+//        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE);
+//        return cycleDto;
+//    }
 }
