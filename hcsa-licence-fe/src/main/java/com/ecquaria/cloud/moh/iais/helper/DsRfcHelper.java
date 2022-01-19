@@ -42,7 +42,11 @@ public final class DsRfcHelper {
             patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
         patient.setEthnicGroup(StringUtil.getNonNull(patient.getEthnicGroup()));
-        patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
+        if (DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(patient.getEthnicGroup())) {
+            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
+        } else {
+            patient.setEthnicGroupOther(null);
+        }
         if (StringUtil.isEmpty(patient.getPatientType()) || force) {
             patient.setPatientType(patientType);
         }
@@ -57,7 +61,11 @@ public final class DsRfcHelper {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
         husband.setEthnicGroup(StringUtil.getNonNull(husband.getEthnicGroup()));
-        husband.setEthnicGroupOther(StringUtil.getNonNull(husband.getEthnicGroupOther()));
+        if (DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(husband.getEthnicGroup())) {
+            husband.setEthnicGroupOther(StringUtil.getNonNull(husband.getEthnicGroupOther()));
+        } else {
+            husband.setEthnicGroupOther(null);
+        }
         return husband;
     }
 
