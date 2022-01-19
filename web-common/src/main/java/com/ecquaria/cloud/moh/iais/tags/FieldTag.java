@@ -122,7 +122,7 @@ public final class FieldTag extends DivTagSupport {
         html.append(value);
         if (!StringUtil.isEmpty(info)) {
             html.append("&nbsp;<a class=\"btn-tooltip styleguide-tooltip\" ")
-                    .append("style=\"z-index: 999;position: absolute; right: 30px; top: 12px;\" ")
+                    .append("style=\"z-index: 10\" ")
                     .append("href=\"javascript:void(0);\" ")
                     .append("data-placement=\"top\" ")
                     .append("data-toggle=\"tooltip\" ")
@@ -131,8 +131,6 @@ public final class FieldTag extends DivTagSupport {
                     .append(info)
                     .append("&lt;/p&gt;\">")
                     .append("i</a>&nbsp;");
-            /*html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
-                    .append(info).append("\"></i></span>&nbsp;");*/
         } else {
             html.append("&nbsp;");
         }
