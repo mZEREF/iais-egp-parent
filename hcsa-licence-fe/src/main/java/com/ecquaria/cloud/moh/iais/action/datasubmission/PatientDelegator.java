@@ -125,18 +125,11 @@ public class PatientDelegator extends CommonDelegator {
         patientInfo.setAmendReasonOther(StringUtil.getNonNull(amendReasonOther));
         patientInfo.setAppType(currentArDataSubmission.getAppType());
         currentArDataSubmission.setPatientInfoDto(patientInfo);
-
+        // amend reason
         DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
         dataSubmission.setAmendReason(amendReason);
         dataSubmission.setAmendReasonOther(amendReasonOther);
-        // ret-set cycle dto
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = DataSubmissionHelper.initCycleDto(currentArDataSubmission, DataSubmissionHelper.getLicenseeId(request), true);
-        }
-        // cycleDto.setPatientCode(patientCode);
-        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        currentArDataSubmission.setCycleDto(cycleDto);
+        currentArDataSubmission.setDataSubmissionDto(dataSubmission);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;
     }
