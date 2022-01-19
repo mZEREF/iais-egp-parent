@@ -392,9 +392,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 
@@ -437,9 +435,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         cycleDto.setCycleType(cycleType);
         return cycleDto;
     }
@@ -477,9 +473,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         cycleDto.setCycleType(cycleType);
         return cycleDto;
     }
@@ -516,9 +510,7 @@ public final class DataSubmissionHelper {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
         cycleDto.setCycleType(cycleType);
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 
@@ -924,9 +916,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 
