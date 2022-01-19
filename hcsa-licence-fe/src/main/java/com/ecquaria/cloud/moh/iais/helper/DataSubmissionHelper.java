@@ -246,9 +246,6 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-            result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
-            result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
-            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || DsHelper.isCycleFinalStatus(lastStatus)) {
