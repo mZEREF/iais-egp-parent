@@ -66,7 +66,7 @@
                                 <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
                                     <c:choose>
                                         <c:when test ="${steplist.submitDt <= submitDt}">
-                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" data-service-step="${steplist.cycleStage}">
+                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" style="color: white;" data-service-step="${steplist.cycleStage}">
                                                     ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                             </li>
                                         </c:when>
