@@ -87,7 +87,7 @@ public final class DsRfcHelper {
         String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
         String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
         int age = Formatter.getAge(birthDate);
-        if (Integer.parseInt(age1) <= age && Integer.parseInt(age2) >= age) {
+        if (Integer.parseInt(age1) <= age && age <= Integer.parseInt(age2)) {
             return "";
         }
         Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
