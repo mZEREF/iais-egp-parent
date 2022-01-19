@@ -363,7 +363,7 @@ public class PatientUploadDelegate {
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- DoPreview -----"));
         // declaration
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
@@ -381,7 +381,7 @@ public class PatientUploadDelegate {
             log.error("------No checked for declaration-----");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
-        }
+        }*/
     }
 
     /**
