@@ -224,10 +224,7 @@
                                                         </td>
 
                                                         <td >
-<%--                                                            <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">--%>
-<%--                                                                Quick View--%>
-<%--                                                            </button>--%>
-<%--                                                            <br>--%>
+
                                                             <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
@@ -238,20 +235,7 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
-                                    <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:100px">
-                                        <div class="col-md-8"  role="document" style="float:right ">
-                                            <div class="modal-content">
-                                                <div class="row">
-                                                    <div class="col-md-1" >
-                                                        <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> > </span></button>
-                                                    </div>
-                                                    <div class="col-md-11 " >
-                                                        <div class="quickBodyDiv"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
 
                             </div>

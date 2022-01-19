@@ -126,7 +126,7 @@
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
-            <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
+            <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
@@ -406,7 +406,7 @@
                 <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateTo)</#if>
-                <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
 
