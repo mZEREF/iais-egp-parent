@@ -15,9 +15,7 @@
     String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
-<%--<script type="text/css" src="<%=webrootBe%>css/rightpanelstyle.css"></script>--%>
-<script type="text/javascript" src="<%=webrootBe%>js/rightpanel-main.js"></script>
-<link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  type="text/css" media="all">
+<link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -224,7 +222,7 @@
                                                             </td>
 
                                                             <td >
-                                                                <button    onclick="quickView('${patient.patientCode}')"   type="button" class=" btn btn-default btn-sm js-cd-panel-trigger">
+                                                                <button type="button" onclick="quickView('${patient.patientCode}')"   data-panel="main" class=" btn btn-sm cd-btn js-cd-panel-trigger">
                                                                     Quick View
                                                                 </button>
                                                                 <br>
@@ -239,17 +237,6 @@
                                             </tbody>
                                         </table>
 
-                                        <div class="cd-panel cd-panel--from-right js-cd-panel-main">
-                                            <div class="cd-panel__header">
-                                                <h3>Quick View Panel</h3>
-                                                <a href="#0" class="cd-panel__close js-cd-close">Close</a>
-                                            </div>
-                                            <div class="cd-panel__container">
-                                                <div class="cd-panel__content quickBodyDiv">
-
-                                                </div> <!-- cd-panel__content -->
-                                            </div> <!-- cd-panel__container -->
-                                        </div>
                                     </div>
 
                                 </div>
@@ -349,3 +336,16 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+
+<div class="cd-panel cd-panel--from-right js-cd-panel-main">
+    <div class="cd-panel__header">
+        <h3>Quick View Panel</h3>
+        <a  class="cd-panel__close js-cd-close">Close</a>
+    </div>
+    <div class="cd-panel__container">
+        <div class="cd-panel__content quickBodyDiv">
+
+        </div> <!-- cd-panel__content -->
+    </div> <!-- cd-panel__container -->
+</div>
+

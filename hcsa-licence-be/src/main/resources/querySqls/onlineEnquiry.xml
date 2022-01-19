@@ -734,11 +734,10 @@
                         <p class="number">FrozenSpermsNumber</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <a href="#" onclick="fullDetailsView('patientCode')">View Full Details</a>
-                    </div>
-                </div>
+
+            </div>
+            <div class="row">
+                <h4><a href="#" onclick="fullDetailsView('patientCode')">View Full Details</a></h4>
             </div>
 
 
