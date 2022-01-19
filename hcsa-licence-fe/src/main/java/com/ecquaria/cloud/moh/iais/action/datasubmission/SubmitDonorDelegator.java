@@ -76,17 +76,5 @@ public class SubmitDonorDelegator extends CommonDelegator {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
 
-//    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
-//        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-//        if (cycleDto == null) {
-//            cycleDto = new CycleDto();
-//        }
-//        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
-//                .map(PremisesDto::getHciCode)
-//                .orElse("");
-//        cycleDto.setHciCode(hicCode);
-//        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
-//        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE);
-//        return cycleDto;
-//    }
+
 }
