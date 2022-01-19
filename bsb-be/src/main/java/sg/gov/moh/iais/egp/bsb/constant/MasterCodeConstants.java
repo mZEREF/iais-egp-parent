@@ -236,6 +236,6 @@ public class MasterCodeConstants {
     public static final String REASONS_FOR_AFC_DEREGISTRATION_1 = "BSBRFAD001";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_2 = "BSBRFAD002";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_3 = "BSBRFAD003";
-    public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD001";
-    public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD001";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD004";
+    public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD005";
 }

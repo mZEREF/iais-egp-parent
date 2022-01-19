@@ -11,13 +11,12 @@ import sg.gov.moh.iais.egp.bsb.client.DeRegOrCancellationClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationFacilityDto;
+import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.*;
 import sg.gov.moh.iais.egp.bsb.service.DeRegOrCancellationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,13 +31,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.CessationAndDeRegConstants
  * @date : 2022/1/10
  */
 @Slf4j
-@Delegator("applicantDeRegFacDelegator")
-public class ApplicantDeRegFacDelegator {
+@Delegator("applicantCancellationAppDelegator")
+public class ApplicantCancellationAppDelegator {
     private final DeRegOrCancellationClient deRegOrCancellationClient;
     private final DeRegOrCancellationService deRegOrCancellationService;
 
     @Autowired
-    public ApplicantDeRegFacDelegator(DeRegOrCancellationClient deRegOrCancellationClient, DeRegOrCancellationService deRegOrCancellationService) {
+    public ApplicantCancellationAppDelegator(DeRegOrCancellationClient deRegOrCancellationClient, DeRegOrCancellationService deRegOrCancellationService) {
         this.deRegOrCancellationClient = deRegOrCancellationClient;
         this.deRegOrCancellationService = deRegOrCancellationService;
     }
@@ -46,9 +45,9 @@ public class ApplicantDeRegFacDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_PROCESS_TYPE);
-        request.getSession().removeAttribute(KEY_DE_REGISTRATION_FACILITY_DTO);
+        request.getSession().removeAttribute(KEY_CANCELLATION_APPROVAL_DTO);
         request.getSession().removeAttribute(DocConstants.KEY_COMMON_DOC_DTO);
-        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DE_REGISTRATION_FACILITY);
+        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_CANCELLATION_APPROVAL);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -59,23 +58,23 @@ public class ApplicantDeRegFacDelegator {
         if (StringUtils.hasLength(maskApprovalId)){
             String approvalId = MaskUtil.unMaskValue(KEY_APPROVAL_ID, maskApprovalId);
             if (approvalId != null && !maskApprovalId.equals(approvalId)){
-                ResponseDto<DeRegistrationFacilityDto> resultDto = deRegOrCancellationClient.getDeRegistrationFacilityData(approvalId);
+                ResponseDto<CancellationApprovalDto> resultDto = deRegOrCancellationClient.getCancellationApprovalData(approvalId);
                 if (resultDto.ok()){
-                    DeRegistrationFacilityDto deRegistrationFacilityDto = resultDto.getEntity();
-                    ParamUtil.setSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO, deRegistrationFacilityDto);
-                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, deRegistrationFacilityDto.getProcessType());
+                    CancellationApprovalDto cancellationApprovalDto = resultDto.getEntity();
+                    ParamUtil.setSessionAttr(request, KEY_CANCELLATION_APPROVAL_DTO, cancellationApprovalDto);
+                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, cancellationApprovalDto.getProcessType());
                 }
             }
         }else if (StringUtils.hasLength(maskEditId)){
             String applicationId = MaskUtil.unMaskValue(KEY_EDIT_ID, maskEditId);
             if (applicationId != null && !maskEditId.equals(applicationId)){
-                ResponseDto<DeRegistrationFacilityDto> resultDto = deRegOrCancellationClient.getDraftDeRegistrationFacilityData(applicationId);
+                ResponseDto<CancellationApprovalDto> resultDto = deRegOrCancellationClient.getDraftCancellationApprovalData(applicationId);
                 if (resultDto.ok()){
-                    DeRegistrationFacilityDto deRegistrationFacilityDto = resultDto.getEntity();
-                    ParamUtil.setSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO, deRegistrationFacilityDto);
-                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, deRegistrationFacilityDto.getProcessType());
+                    CancellationApprovalDto cancellationApprovalDto = resultDto.getEntity();
+                    ParamUtil.setSessionAttr(request, KEY_CANCELLATION_APPROVAL_DTO, cancellationApprovalDto);
+                    ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, cancellationApprovalDto.getProcessType());
 
-                    Collection<DocRecordInfo> docRecordInfoList = deRegistrationFacilityDto.getDocRecordInfos();
+                    Collection<DocRecordInfo> docRecordInfoList = cancellationApprovalDto.getDocRecordInfos();
                     commonDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(docRecordInfoList, DocRecordInfo::getRepoId));
                 }
             }
@@ -86,21 +85,21 @@ public class ApplicantDeRegFacDelegator {
 
     public void validCommit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        DeRegistrationFacilityDto deRegistrationFacilityDto = (DeRegistrationFacilityDto) ParamUtil.getSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO);
-        deRegistrationFacilityDto.reqObjMapping(request);
+        CancellationApprovalDto cancellationApprovalDto = (CancellationApprovalDto) ParamUtil.getSessionAttr(request, KEY_CANCELLATION_APPROVAL_DTO);
+        cancellationApprovalDto.reqObjMapping(request);
 
         CommonDocDto commonDocDto = deRegOrCancellationService.getCommonDocDoc(request);
         commonDocDto.reqObjMapping(request);
         List<DocMeta> docMetaList = commonDocDto.convertToDocMetaList("deRegistration");
-        deRegistrationFacilityDto.setDocMetas(docMetaList);
+        cancellationApprovalDto.setDocMetas(docMetaList);
         ParamUtil.setSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO, commonDocDto);
-        ParamUtil.setSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO, deRegistrationFacilityDto);
+        ParamUtil.setSessionAttr(request, KEY_CANCELLATION_APPROVAL_DTO, cancellationApprovalDto);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String action1 = "";
 
         if (actionType.equals(KEY_ACTION_TYPE_JUMP)){
-            ValidationResultDto validationResultDto = deRegOrCancellationClient.validateDeRegistrationFacilityDto(deRegistrationFacilityDto);
+            ValidationResultDto validationResultDto = deRegOrCancellationClient.validateCancellationApprovalDto(cancellationApprovalDto);
             if (!validationResultDto.isPass()){
                 ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
                 action1 = KEY_ACTION_INIT;
@@ -110,7 +109,7 @@ public class ApplicantDeRegFacDelegator {
         }else if (actionType.equals(KEY_ACTION_TYPE_DRAFT)){
             //save draft logic
             action1 = KEY_ACTION_INIT;
-            deRegOrCancellationService.saveDeRegistrationFacilityDraft(request);
+            deRegOrCancellationService.saveCancellationApprovalDraft(request);
         }
         ParamUtil.setRequestAttr(request, KEY_ACTION_1, action1);
     }
@@ -128,10 +127,10 @@ public class ApplicantDeRegFacDelegator {
         List<NewFileSyncDto> newFileSyncDtoList = deRegOrCancellationService.saveNewUploadedDoc(commonDocDto);
 
         //save data
-        DeRegistrationFacilityDto deRegistrationFacilityDto = (DeRegistrationFacilityDto) ParamUtil.getSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO);
-        deRegistrationFacilityDto.setDocRecordInfos(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
-        ResponseDto<String> responseDto = deRegOrCancellationClient.saveDeRegistrationFacilityDto(deRegistrationFacilityDto);
-        log.info("save new deRegistrationFacilityDto response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
+        CancellationApprovalDto cancellationApprovalDto = (CancellationApprovalDto) ParamUtil.getSessionAttr(request, KEY_CANCELLATION_APPROVAL_DTO);
+        cancellationApprovalDto.setDocRecordInfos(new ArrayList<>(commonDocDto.getSavedDocMap().values()));
+        ResponseDto<String> responseDto = deRegOrCancellationClient.saveCancellationApprovalDto(cancellationApprovalDto);
+        log.info("save new cancellationApprovalDto response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
         deRegOrCancellationService.deleteAndSyncDocs(commonDocDto, newFileSyncDtoList);
 
@@ -152,7 +151,7 @@ public class ApplicantDeRegFacDelegator {
             }
         }else if (actionType.equals(KEY_ACTION_TYPE_DRAFT)){
             action2 = KEY_ACTION_PREPARE_PREVIEW;
-            deRegOrCancellationService.saveDeRegistrationFacilityDraft(request);
+            deRegOrCancellationService.saveCancellationApprovalDraft(request);
         }
         ParamUtil.setRequestAttr(request, KEY_ACTION_2, action2);
     }

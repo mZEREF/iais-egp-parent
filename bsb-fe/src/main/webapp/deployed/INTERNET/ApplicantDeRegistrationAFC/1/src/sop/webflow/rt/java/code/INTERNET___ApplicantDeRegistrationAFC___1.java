@@ -13,9 +13,9 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___ApplicantDeRegistrationFacility___1 extends BaseProcessClass {
+public class INTERNET___ApplicantDeRegistrationAFC___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="applicantDeRegFacDelegator";
+	private static final String DELEGATOR ="applicantDeRegAFCDelegator";
 	
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
