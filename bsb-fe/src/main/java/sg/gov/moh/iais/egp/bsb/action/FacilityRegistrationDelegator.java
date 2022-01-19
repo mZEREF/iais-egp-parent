@@ -225,7 +225,7 @@ public class FacilityRegistrationDelegator {
             }
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }

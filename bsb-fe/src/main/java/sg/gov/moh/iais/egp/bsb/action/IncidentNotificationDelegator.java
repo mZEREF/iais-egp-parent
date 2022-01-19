@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -24,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -33,6 +36,7 @@ import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sg.gov.moh.iais.egp.bsb.entity.Draft;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +45,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
  * @author YiMing
@@ -53,6 +62,8 @@ public class IncidentNotificationDelegator {
     private static final String PARAM_SELECT_OCCURRENCE_HH_OPTIONS = "occurHHOps";
     private static final String PARAM_SELECT_OCCURRENCE_MM_OPTIONS = "occurMMOps";
     private static final String PARAM_SELECT_FACILITY_NAME_OPTIONS = "facNameOps";
+    private static final String KEY_DRAFT = "draft";
+    private static final String PARAM_PLEASE_SELECT = "Please Select";
     private static final String EDIT_REFERENCE_ID = "editRefId";
     private static final String KEY_EDIT_REF_ID = "editId";
     private final FileRepoClient fileRepoClient;
@@ -73,11 +84,11 @@ public class IncidentNotificationDelegator {
         AuditTrailHelper.auditFunction(MODULE_NAME_NOTIFICATION_OF_INCIDENT, MODULE_NAME_NOTIFICATION_OF_INCIDENT);
     }
 
-    public void init(BaseProcessClass bpc){
+    public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         boolean newIncidentNot = true;
 
-        // check if we are doing editing
+        // check if we are doing editing,reference Id
         String maskedRefId = request.getParameter(EDIT_REFERENCE_ID);
         if (StringUtils.hasLength(maskedRefId)) {
             if (log.isInfoEnabled()) {
@@ -90,12 +101,29 @@ public class IncidentNotificationDelegator {
                 ResponseDto<IncidentNotificationDto> resultDto = incidentClient.retrieveIncidentNotByReferenceId(refId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    NodeGroup facRegRoot = resultDto.getEntity().toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
-                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, facRegRoot);
+                    NodeGroup incidentNotRoot = resultDto.getEntity().toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
+                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
                 }
             }
             if (failRetrieveEditData) {
                 throw new IaisRuntimeException("Fail to retrieve app data");
+            }
+        }
+
+        //-------------------------------------------------------------
+        //enter from draft continue button
+        //processType is make sure enter from your own draft
+        String processType = (String) ParamUtil.getSessionAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE);
+        Draft draft = (Draft) ParamUtil.getSessionAttr(request,KEY_DRAFT);
+        if(draft != null && "notification".equals(processType)){
+            newIncidentNot = false;
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                IncidentNotificationDto notificationDto = mapper.readValue(draft.getDraftData(),IncidentNotificationDto.class);
+                NodeGroup incidentNotRoot = notificationDto.toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
+                ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
         }
 
@@ -113,9 +141,17 @@ public class IncidentNotificationDelegator {
 
     public void actionFilter(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
+            // not set, use action from user's client
             actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        } else {
+            // set, if the action is 'save draft', we save it and route back to that page
+            if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+                actionType = KEY_ACTION_JUMP;
+                saveDraft(request);
+            }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
@@ -143,7 +179,10 @@ public class IncidentNotificationDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
-        } else {
+        }  else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_INCIDENT_INFO);
+        }else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
@@ -174,6 +213,9 @@ public class IncidentNotificationDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PERSON_REPORTING_INFO);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -203,6 +245,9 @@ public class IncidentNotificationDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PERSON_INVOLVED_INFO);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -238,6 +283,9 @@ public class IncidentNotificationDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
+        }else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_DOCUMENTS);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -273,9 +321,7 @@ public class IncidentNotificationDelegator {
                 PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                 List<NewFileSyncDto> newFilesToSync = null;
                 if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+                    newFilesToSync = saveNewUploadedDoc(primaryDocDto);
                 }
 
                 // save data
@@ -287,24 +333,10 @@ public class IncidentNotificationDelegator {
                     log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
                 }
                 try {
-                    // sync files to BE file-repo (save new added files, delete useless files)
-                    if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                        /* Ignore the failure of sync files currently.
-                         * We should add a mechanism to retry synchronization of files in the future */
-                        FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                        syncDto.setNewFiles(newFilesToSync);
-                        syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                        bsbFileClient.saveFiles(syncDto);
-                    }
-
-                    // delete docs in FE file-repo
-                    /* Ignore the failure when try to delete FE files because this is not a big issue.
-                     * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setId(id);
-                        fileRepoClient.removeFileById(fileRepoDto);
-                    }
+                    // delete docs
+                    List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+                    // sync docs
+                    syncNewDocsAndDeleteFiles(newFilesToSync,toBeDeletedRepoIds);
                 } catch (Exception e) {
                     log.error("Fail to sync files to BE", e);
                 }
@@ -313,6 +345,9 @@ public class IncidentNotificationDelegator {
             } else {
                 jumpHandler(request, incidentNotRoot);
             }
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -476,9 +511,9 @@ public class IncidentNotificationDelegator {
      * */
     public static List<SelectOption> tempReportingOfIncidentOps(){
         List<SelectOption> reportIncidentOps = new ArrayList<>(3);
-        reportIncidentOps.add(new SelectOption("","Please Select"));
-        reportIncidentOps.add(new SelectOption("REPORT001","Adverse incident or accident (occurrence which resulted in personnel injury, property damage including loss of materials and/or release of hazardous materials outside of the containment facility)"));
-        reportIncidentOps.add(new SelectOption("REPORT002","Near miss (unplanned occurrence that did not result in personnel injury, property damage including loss of materials or release of hazardous materials outside of the containment facility but had the potential to do so)"));
+        reportIncidentOps.add(new SelectOption("",PARAM_PLEASE_SELECT));
+        reportIncidentOps.add(new SelectOption("REPORT001","Adverse incident or accident"));
+        reportIncidentOps.add(new SelectOption("REPORT002","Near miss"));
         return reportIncidentOps;
     }
 
@@ -488,6 +523,7 @@ public class IncidentNotificationDelegator {
            return originalOps();
         }
         List<SelectOption> facNameOps = new ArrayList<>(facilityInfos.size());
+        facNameOps.add(new SelectOption("",PARAM_PLEASE_SELECT));
         for (FacilityInfo info : facilityInfos) {
             facNameOps.add(new SelectOption(MaskUtil.maskValue("id",info.getFacId()),info.getFacName()));
         }
@@ -497,7 +533,84 @@ public class IncidentNotificationDelegator {
 
     public static List<SelectOption> originalOps(){
         List<SelectOption> originalOps = new ArrayList<>(1);
-        originalOps.add(new SelectOption("","Please Select"));
+        originalOps.add(new SelectOption("",PARAM_PLEASE_SELECT));
         return originalOps;
     }
+
+    /** Save new uploaded documents into FE file repo.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of DTOs can be used to sync to BE
+     */
+    public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
+        List<NewFileSyncDto> newFilesToSync = null;
+        if (!primaryDocDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+        }
+        return newFilesToSync;
+    }
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of repo IDs deleted in FE file repo
+     */
+    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
+        /* Ignore the failure when try to delete FE files because this is not a big issue.
+         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+        }
+        return toBeDeletedRepoIds;
+    }
+
+    /** Sync new uploaded documents to BE; delete unwanted documents in BE too.
+     * @param newFilesToSync a list of DTOs contains ID and data
+     * @param toBeDeletedRepoIds a list of repo IDs to be deleted in BE
+     */
+    public void syncNewDocsAndDeleteFiles(List<NewFileSyncDto> newFilesToSync, List<String> toBeDeletedRepoIds) {
+        // sync files to BE file-repo (save new added files, delete useless files)
+        if (!CollectionUtils.isEmpty(newFilesToSync) || !CollectionUtils.isEmpty(toBeDeletedRepoIds)) {
+            /* Ignore the failure of sync files currently.
+             * We should add a mechanism to retry synchronization of files in the future */
+            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+            syncDto.setNewFiles(newFilesToSync);
+            syncDto.setToDeleteIds(toBeDeletedRepoIds);
+            bsbFileClient.saveFiles(syncDto);
+        }
+    }
+
+    public void saveDraft(HttpServletRequest request) {
+        NodeGroup incidentNotRoot = getIncidentNotRoot(request);
+
+        // save docs
+        SimpleNode primaryDocNode = (SimpleNode) incidentNotRoot.at(NODE_NAME_DOCUMENTS);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+
+        // save data
+        IncidentNotificationDto finalAllDataDto = IncidentNotificationDto.from(incidentNotRoot);
+        String draftAppNo = incidentClient.saveDraftIncidentNotification(finalAllDataDto);
+        // set draft app No. into the NodeGroup
+        IncidentInfoDto incidentInfoDto = (IncidentInfoDto) ((SimpleNode) incidentNotRoot.at(NODE_NAME_INCIDENT_INFO)).getValue();
+        incidentInfoDto.setDraftAppNo(draftAppNo);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
+
+        try {
+            // delete docs
+            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            // sync docs
+            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
+
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
+    }
+
 }

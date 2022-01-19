@@ -26,11 +26,6 @@ public class INTRANET___DOScreeningIncidentNotification___1 extends BaseProcessC
 		EngineHelper.delegate(DELEGATOR, "preIncidentProcessingData", this);
 	}
 
-	public void preViewNotification_OnStepProcess_0() throws Exception {
-		// 		PreViewNotification->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preViewNotification", this);
-	}
-
 	public void handleScreening_OnStepProcess_0() throws Exception {
 	// 		HandleScreening->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);

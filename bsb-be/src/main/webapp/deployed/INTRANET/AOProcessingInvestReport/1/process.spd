@@ -23,13 +23,6 @@
     <JavaCode defClass="" executor="" methodName="handleAOProcessing_OnStepProcess_0" name="handleAOProcessing_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreViewInvestReport" x="500" y="290">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preViewInvestReport_OnStepProcess_0" name="preViewInvestReport_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="DoProcessing" x="620" y="190">
    <Description />
    <probepoint type="none" />
@@ -40,12 +33,6 @@
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InvestAOProcessing" stageIndicator="" x="260" y="190">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewInvestReport" stageIndicator="" x="520" y="400">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -78,23 +65,16 @@
   <SynchronousLink destinationName="/Pages/WebPage/ProcessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoProcessing" style="rectanular">
    <position>{(640,210)(760,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewInvestReport" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(560,210)(520,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ViewInvestReport" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreViewInvestReport" style="rectanular">
-   <position>{(520,310)(540,420)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(560,210)(193,108)(160,210)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="540" y="190">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="540" y="190">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/DoProcessing" value="&quot;submit&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreViewInvestReport" value="&quot;view&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;prepare&quot;" />
   </Switch>
  </Switches>
  <Branches />

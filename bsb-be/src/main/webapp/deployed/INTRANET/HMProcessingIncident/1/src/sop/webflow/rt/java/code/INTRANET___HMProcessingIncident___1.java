@@ -26,11 +26,6 @@ public class INTRANET___HMProcessingIncident___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "startHM", this);
 	}
 
-	public void preViewNotification_OnStepProcess_0() throws Exception {
-		// 		PreViewNotification->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preViewNotification", this);
-	}
-
 	public void handleHMProcessing_OnStepProcess_0() throws Exception {
 	// 		HandleHMProcessing->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);

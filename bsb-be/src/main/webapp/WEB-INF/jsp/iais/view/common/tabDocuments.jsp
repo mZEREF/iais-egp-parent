@@ -64,3 +64,7 @@
         </div>
     </div>
 </div>
+
+<div style="text-align: left">
+    <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+</div>

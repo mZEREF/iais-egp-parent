@@ -39,7 +39,7 @@ public class IncidentCheckProcessDelegator {
 
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
+        request.getSession().removeAttribute(ModuleCommonConstants.KEY_ACTION_TYPE);
         request.getSession().removeAttribute(KEY_DRAFT);
         request.getSession().removeAttribute("processKey");
     }

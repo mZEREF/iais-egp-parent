@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReferNoSelectionDto extends ValidatableNodeValue {
+
+    private String draftAppNo;
+
     private String refNo;
 
     @JsonIgnore
@@ -40,6 +43,14 @@ public class ReferNoSelectionDto extends ValidatableNodeValue {
     @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
     }
 
     public String getRefNo() {

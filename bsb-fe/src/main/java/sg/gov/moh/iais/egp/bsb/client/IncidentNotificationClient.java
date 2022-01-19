@@ -24,6 +24,9 @@ import java.util.Map;
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "incident")
 public interface IncidentNotificationClient {
+    @PostMapping(path = "/incident/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftIncidentNotification(@RequestBody IncidentNotificationDto dto);
+
     @PostMapping(path = "/incident/save/incidentNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewIncidentNotification(@RequestBody IncidentNotificationDto dto);
 

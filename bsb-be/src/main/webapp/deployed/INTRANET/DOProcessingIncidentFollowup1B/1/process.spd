@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="DOProcessingIncidentFollowup1B" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="40" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="120" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreProcessingData" x="200" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preProcessingData_OnStepProcess_0" name="preProcessingData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleProcessing" x="460" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleProcessing_OnStepProcess_0" name="handleProcessing_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ActionFilter" x="600" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SubmitProcessing" x="700" y="320">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitProcessing_OnStepProcess_0" name="submitProcessing_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Followup1BProcessing" stageIndicator="" x="320" y="230">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingSuccess" stageIndicator="" x="700" y="420">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(60,250)(140,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(140,250)(220,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Followup1BProcessing" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreProcessingData" style="rectanular">
+   <position>{(220,250)(340,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleProcessing" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Followup1BProcessing" style="rectanular">
+   <position>{(340,250)(480,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleProcessing" style="rectanular">
+   <position>{(480,250)(620,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="rectanular">
+   <position>{(620,250)(740,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitProcessing" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(740,250)(720,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ProcessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SubmitProcessing" style="rectanular">
+   <position>{(720,340)(720,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(740,250)(253,160)(220,250)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="720" y="230">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/SubmitProcessing" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;prepare&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+
