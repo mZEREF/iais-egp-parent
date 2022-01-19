@@ -27,7 +27,7 @@
         background-color: white;
         display: block;
         left: 50%;
-        margin-left: -15px;
+        margin-left: -14px;
         top: 0;
         margin-bottom: -26px;
         z-index: -1;
