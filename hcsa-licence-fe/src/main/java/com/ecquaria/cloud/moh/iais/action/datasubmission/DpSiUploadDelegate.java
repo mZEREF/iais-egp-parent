@@ -6,7 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
@@ -17,10 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
-import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.dto.PatientInfoExcelDto;
+import com.ecquaria.cloud.moh.iais.dto.SovenorInventoryExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -67,7 +65,7 @@ public class DpSiUploadDelegate {
 
     private static final String FILE_ITEM_SIZE = "fileItemSize";
 
-    private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
+    private static final String SOVENOR_INVENTORY_LIST = "SOVENOR_INVENTORY_LIST";
     private static final String PAGE_SHOW_FILE = "showPatientFile";
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
@@ -91,7 +89,7 @@ public class DpSiUploadDelegate {
     private void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
-        session.removeAttribute(PATIENT_INFO_LIST);
+        session.removeAttribute(SOVENOR_INVENTORY_LIST);
         session.removeAttribute(PAGE_SHOW_FILE);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }
@@ -131,7 +129,7 @@ public class DpSiUploadDelegate {
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
         if (fileItemSize == null) {
-            List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) request.getSession().getAttribute(PATIENT_INFO_LIST);
+            List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
             fileItemSize = patientInfoList != null ? patientInfoList.size() : 0;
             ParamUtil.setRequestAttr(request, FILE_ITEM_SIZE, fileItemSize);
         }
@@ -154,16 +152,16 @@ public class DpSiUploadDelegate {
         Map<String, String> errorMap = null;
         boolean hasItems = AppConsts.YES.equals(ParamUtil.getString(bpc.request, "hasItems"));
         log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
-        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
-        if (patientInfoList == null || !hasItems) {
+        List<DpSovenorInventoryDto> dpSovenorInventoryDtos = (List<DpSovenorInventoryDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
+        if (dpSovenorInventoryDtos == null || !hasItems) {
             // upload file (first time / error)
             Entry<String, File> fileEntry = getFileEntry(bpc.request);
             PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
             ParamUtil.setSessionAttr(bpc.request, PAGE_SHOW_FILE, pageShowFileDto);
             errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
             if (errorMap.isEmpty()) {
-                List<PatientInfoExcelDto> patientInfoExcelDtoList = getPatientInfoExcelDtoList(fileEntry);
-                fileItemSize = patientInfoExcelDtoList.size();
+                List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos = getSovenorInventoryExcelDtoList(fileEntry);
+                fileItemSize = sovenorInventoryExcelDtos.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
                 } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
@@ -171,8 +169,8 @@ public class DpSiUploadDelegate {
                             Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
-                    patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
-                    Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
+                    dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos, orgId);
+                   /* Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
                     List<PatientDto> patientDtos = patientInfoList.stream()
                             .map(PatientInfoDto::getPatient)
@@ -187,7 +185,7 @@ public class DpSiUploadDelegate {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
                         errorMap.put("itemError", "itemError");
-                    }
+                    }*/
                 }
             }
             //crudype = ACTION_TYPE_PAGE;
@@ -202,10 +200,10 @@ public class DpSiUploadDelegate {
             fileItemSize = 0;
             crudype = ACTION_TYPE_PAGE;
         } else {
-            if (patientInfoList != null) {
-                fileItemSize = patientInfoList.size();
+            if (dpSovenorInventoryDtos != null) {
+                fileItemSize = dpSovenorInventoryDtos.size();
             }
-            bpc.request.getSession().setAttribute(PATIENT_INFO_LIST, patientInfoList);
+            bpc.request.getSession().setAttribute(SOVENOR_INVENTORY_LIST, dpSovenorInventoryDtos);
             crudype = ACTION_TYPE_PREVIEW;
         }
         ParamUtil.setRequestAttr(bpc.request, FILE_ITEM_SIZE, fileItemSize);
@@ -234,15 +232,15 @@ public class DpSiUploadDelegate {
      * Transfer to patient info dto from patient info excel dto
      * And map value to code for some fields (drowndrop)
      *
-     * @param patientInfoExcelDtoList
+     * @param sovenorInventoryExcelDtos
      * @param orgId
      * @return
      */
-    private List<PatientInfoDto> getPatientInfoList(List<PatientInfoExcelDto> patientInfoExcelDtoList, String orgId) {
-        if (patientInfoExcelDtoList == null) {
+    private List<DpSovenorInventoryDto> getSovenorInventoryList(List<SovenorInventoryExcelDto> sovenorInventoryExcelDtos, String orgId) {
+        if (sovenorInventoryExcelDtos == null) {
             return null;
         }
-        List<MasterCodeView> idTypes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+        /*List<MasterCodeView> idTypes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE);
         List<MasterCodeView> nationalities = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
         List<MasterCodeView> groups = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_ETHNIC_GROUP);
         List<PatientInfoDto> result = IaisCommonUtils.genNewArrayList(patientInfoExcelDtoList.size());
@@ -289,20 +287,20 @@ public class DpSiUploadDelegate {
             husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
             dto.setHusband(husbandDto);
             result.add(dto);
-        }
-        return result;
+        }*/
+        return null;
     }
 
-    private List<PatientInfoExcelDto> getPatientInfoExcelDtoList(Entry<String, File> fileEntry) {
+    private List<SovenorInventoryExcelDto> getSovenorInventoryExcelDtoList(Entry<String, File> fileEntry) {
         if (fileEntry == null) {
             return IaisCommonUtils.genNewArrayList(0);
         }
         try {
             File file = fileEntry.getValue();
             if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class, true);
+                return FileUtils.transformToJavaBean(fileEntry.getValue(), SovenorInventoryExcelDto.class, true);
             } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class, true);
+                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), SovenorInventoryExcelDto.class, true);
             }
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
@@ -396,7 +394,7 @@ public class DpSiUploadDelegate {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- Submission -----"));
-        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
+        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
         if (patientInfoList == null || patientInfoList.isEmpty()) {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;
