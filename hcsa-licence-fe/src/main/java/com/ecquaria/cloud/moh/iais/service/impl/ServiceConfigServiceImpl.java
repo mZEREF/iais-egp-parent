@@ -814,101 +814,110 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                   String tag = giroPaymentXmlDto.getTag();
                   String fileName = tag;
                   String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+                  log.info(StringUtil.changeForLog("-----downloadfilefolder :" + downloadfilefolder+"-----------"));
                   String downPath = downloadfilefolder + ConfigHelper.getString("giro.sftp.linux.seperator");
+                  log.info(StringUtil.changeForLog("-----downPath :" + downPath +"-----------"));
                       List<String> remoteFileNames = FileUtil.getRemoteFileNames(fileName,downloadfilefolder);
                       if(IaisCommonUtils.isEmpty(remoteFileNames)){
                           log.info(StringUtil.changeForLog("----- SFTP NO FIND FILE LIKE "+ fileName +"-----------"));
                       }else {
                           log.info(StringUtil.changeForLog("--------- find file tag:" + tag));
-                          boolean ack01Stfp = true;
-                          boolean ack02Stfp = true;
+                          log.info(StringUtil.changeForLog("---remoteFileNames is "+ remoteFileNames));
+                          if(FileUtil.checkFileNamesExistKeyWords(remoteFileNames,".ACK1",".ACK2")){
+                              boolean ack01Stfp = true;
+                              boolean ack02Stfp = true;
 
-                          String ack01 =  FileUtil.getContentByPostfixNotation(".ACK1",downPath,remoteFileNames);
-                          String ack02 =  FileUtil.getContentByPostfixNotation(".ACK2",downPath,remoteFileNames);
-                          if(StringUtil.isEmpty(ack01)){
-                              ack01Stfp = false;
-                          }else {
-                              log.info(StringUtil.changeForLog("--------ACK01 :" + ack01));
-                              saveAck(ack01,ApplicationConsts.GIRO_GET_ACK1_TYPE,tag);
-                              log.info(StringUtil.changeForLog("--------save ACK01 ok ,tag :" + tag+"------------------"));
-                          }
-                          if(StringUtil.isEmpty(ack02)){
-                              ack02Stfp = false;
-                          }else {
-                              log.info(StringUtil.changeForLog("--------ACK02 :" + ack02));
-                              saveAck(ack02,ApplicationConsts.GIRO_GET_ACK2_TYPE,tag);
-                              log.info(StringUtil.changeForLog("--------save ACK02 ok ,tag :" + tag+"------------------"));
-                          }
-                          //change get ack 01 ack 02
-                          InputAck1Dto inputAck1Dto = new InputAck1Dto();
-                          inputAck1Dto.setDtoByStringAck1(ack01,inputAck1Dto);
-                          if(inputAck1Dto.getINPUT_HEADER() == null || GrioConsts.ACK1_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck1Dto.getINPUT_HEADER().getGroupStatus())){
-                              ack01Stfp = false;
-                          }
-                          InputAck2Or3Dto inputAck2Dto = new InputAck2Or3Dto();
-                          inputAck2Dto.setDtoByStringAck(ack02, inputAck2Dto);
-                          if(inputAck2Dto.getINPUT_HEADER() == null || GrioConsts.ACK2_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck2Dto.getINPUT_HEADER().getGroupStatus())){
-                              ack02Stfp = false;
-                          }
-                          if( ack01Stfp && ack02Stfp){
-                              String ack03 =  FileUtil.getContentByPostfixNotation(".ACK3",downPath,remoteFileNames);
-                              log.info(StringUtil.changeForLog("--------ACK03 :" + ack03));
-                              saveAck(ack03,ApplicationConsts.GIRO_GET_ACK3_TYPE,tag);
-                              log.info(StringUtil.changeForLog("--------save ACK03 ok ,tag :" + tag+"------------------"));
-                              //change get ack 03
-                              InputAck2Or3Dto inputAck3Dto = new InputAck2Or3Dto();
-                              String ack03Xml = inputAck3Dto.setDtoByStringAck(ack03, inputAck3Dto);
-                              List<InputDataAck2Or3Dto> DATAS = inputAck3Dto.getDATAS();
-                              if( !IaisCommonUtils.isEmpty(DATAS)){
-                                  boolean noRejectPending = true;
-                                  List<InputDataAck2Or3Dto> rejtDATAS = IaisCommonUtils.genNewArrayList();
-                                  List<InputDataAck2Or3Dto> paySucDATAS = IaisCommonUtils.genNewArrayList();
-                                  for(InputDataAck2Or3Dto inputDataAck2Or3Dto : DATAS){
-                                          if(GrioConsts. ACK3_TRANSACTION_LEVEL_PENDING_VALUE.equalsIgnoreCase(inputDataAck2Or3Dto.getTransactionStatus()) ){
-                                              noRejectPending = false;
-                                              break;
-                                          }else if(GrioConsts.ACK3_TRANSACTION_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputDataAck2Or3Dto.getTransactionStatus())){
-                                              rejtDATAS.add(inputDataAck2Or3Dto);
-                                          }else {
-                                              paySucDATAS.add(inputDataAck2Or3Dto);
+                              String ack01 =  FileUtil.getContentByPostfixNotation(".ACK1",downPath,remoteFileNames);
+                              String ack02 =  FileUtil.getContentByPostfixNotation(".ACK2",downPath,remoteFileNames);
+                              if(StringUtil.isEmpty(ack01)){
+                                  ack01Stfp = false;
+                              }else {
+                                  log.info(StringUtil.changeForLog("--------ACK01 :" + ack01));
+                                  saveAck(ack01,ApplicationConsts.GIRO_GET_ACK1_TYPE,tag);
+                                  log.info(StringUtil.changeForLog("--------save ACK01 ok ,tag :" + tag+"------------------"));
+                              }
+                              if(StringUtil.isEmpty(ack02)){
+                                  ack02Stfp = false;
+                              }else {
+                                  log.info(StringUtil.changeForLog("--------ACK02 :" + ack02));
+                                  saveAck(ack02,ApplicationConsts.GIRO_GET_ACK2_TYPE,tag);
+                                  log.info(StringUtil.changeForLog("--------save ACK02 ok ,tag :" + tag+"------------------"));
+                              }
+                              //change get ack 01 ack 02
+                              InputAck1Dto inputAck1Dto = new InputAck1Dto();
+                              inputAck1Dto.setDtoByStringAck1(ack01,inputAck1Dto);
+                              if(inputAck1Dto.getINPUT_HEADER() == null || GrioConsts.ACK1_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck1Dto.getINPUT_HEADER().getGroupStatus())){
+                                  ack01Stfp = false;
+                              }
+                              InputAck2Or3Dto inputAck2Dto = new InputAck2Or3Dto();
+                              inputAck2Dto.setDtoByStringAck(ack02, inputAck2Dto);
+                              if(inputAck2Dto.getINPUT_HEADER() == null || GrioConsts.ACK2_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck2Dto.getINPUT_HEADER().getGroupStatus())){
+                                  ack02Stfp = false;
+                              }
+                              if( ack01Stfp && ack02Stfp){
+                                  if(FileUtil.checkFileNamesExistKeyWords(remoteFileNames,".ACK3")){
+                                      String ack03 =  FileUtil.getContentByPostfixNotation(".ACK3",downPath,remoteFileNames);
+                                      log.info(StringUtil.changeForLog("--------ACK03 :" + ack03));
+                                      saveAck(ack03,ApplicationConsts.GIRO_GET_ACK3_TYPE,tag);
+                                      log.info(StringUtil.changeForLog("--------save ACK03 ok ,tag :" + tag+"------------------"));
+                                      //change get ack 03
+                                      InputAck2Or3Dto inputAck3Dto = new InputAck2Or3Dto();
+                                      String ack03Xml = inputAck3Dto.setDtoByStringAck(ack03, inputAck3Dto);
+                                      List<InputDataAck2Or3Dto> DATAS = inputAck3Dto.getDATAS();
+                                      if( !IaisCommonUtils.isEmpty(DATAS)){
+                                          boolean noRejectPending = true;
+                                          List<InputDataAck2Or3Dto> rejtDATAS = IaisCommonUtils.genNewArrayList();
+                                          List<InputDataAck2Or3Dto> paySucDATAS = IaisCommonUtils.genNewArrayList();
+                                          for(InputDataAck2Or3Dto inputDataAck2Or3Dto : DATAS){
+                                              if(GrioConsts. ACK3_TRANSACTION_LEVEL_PENDING_VALUE.equalsIgnoreCase(inputDataAck2Or3Dto.getTransactionStatus()) ){
+                                                  noRejectPending = false;
+                                                  break;
+                                              }else if(GrioConsts.ACK3_TRANSACTION_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputDataAck2Or3Dto.getTransactionStatus())){
+                                                  rejtDATAS.add(inputDataAck2Or3Dto);
+                                              }else {
+                                                  paySucDATAS.add(inputDataAck2Or3Dto);
+                                              }
                                           }
-                                  }
-                                  if(noRejectPending){
-                                      saveXml(ack03Xml,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP,tag);
-                                      //save upload xml inactive
-                                      giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                                      giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                                      appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
-                                      //upload GiroPayment
-                                      saveGiroPaymentDtosByDatas(paySucDATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
-                                      //upload app group
-                                      saveAppGroupForTrue(paySucDATAS);
-                                      saveGiroPaymentDtosByDatas(rejtDATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL);
-                                      rejectSaveAppGroupSendEmailStatus(rejtDATAS);
+                                          if(noRejectPending){
+                                              saveXml(ack03Xml,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP,tag);
+                                              //save upload xml inactive
+                                              giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                                              giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                                              appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+                                              //upload GiroPayment
+                                              saveGiroPaymentDtosByDatas(paySucDATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+                                              //upload app group
+                                              saveAppGroupForTrue(paySucDATAS);
+                                              saveGiroPaymentDtosByDatas(rejtDATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL);
+                                              rejectSaveAppGroupSendEmailStatus(rejtDATAS);
+                                          }else {
+                                              deleteListFileNameByAckTag(remoteFileNames,".ACK1");
+                                              deleteListFileNameByAckTag(remoteFileNames,".ACK2");
+                                          }
+                                      }else {
+                                          log.info(StringUtil.changeForLog("-----------------ACK3 DATA IS NULL"));
+                                      }
                                   }else {
-                                      deleteListFileNameByAckTag(remoteFileNames,".ACK1");
-                                      deleteListFileNameByAckTag(remoteFileNames,".ACK2");
+                                      log.info(StringUtil.changeForLog("-----------------ACK3 File No find --------------"));
                                   }
                               }else {
-                                  log.info(StringUtil.changeForLog("-----------------ACK3 DATA IS NULL"));
+                                  log.info(StringUtil.changeForLog("----------file tag reject :" + tag));
+                                  //fail need send email
+                                  giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                                  giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                                  appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+                                  // Releasing the already inactive AppGroup
+                                  List<InputDataAck2Or3Dto> DATAS  =  inputAck2Dto.getDATAS();
+                                  if(IaisCommonUtils.isEmpty(DATAS)){
+                                      DATAS = IaisCommonUtils.genNewArrayList();
+                                      setInputDataAck2Or3DtosByGiroXmlPaymentDto(DATAS,giroPaymentXmlDto);
+                                  }
+                                  rejectSaveAppGroupSendEmailStatus(DATAS);
+                                  // old code GrioConsts.GIRO_PAY_STATUS_FAILED
+                                  saveGiroPaymentDtosByDatas(DATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL);
                               }
-                          }else {
-                              log.info(StringUtil.changeForLog("----------file tag reject :" + tag));
-                              //fail need send email
-                              giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                              giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                              appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
-                              // Releasing the already inactive AppGroup
-                              List<InputDataAck2Or3Dto> DATAS  =  inputAck2Dto.getDATAS();
-                              if(IaisCommonUtils.isEmpty(DATAS)){
-                                  DATAS = IaisCommonUtils.genNewArrayList();
-                                  setInputDataAck2Or3DtosByGiroXmlPaymentDto(DATAS,giroPaymentXmlDto);
-                              }
-                              rejectSaveAppGroupSendEmailStatus(DATAS);
-                              // old code GrioConsts.GIRO_PAY_STATUS_FAILED
-                              saveGiroPaymentDtosByDatas(DATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL);
+                              FileUtil.deleteFilesByFileNames(remoteFileNames,downPath);
                           }
-                          FileUtil.deleteFilesByFileNames(remoteFileNames,downPath);
                   }
               }catch (Exception e){
                   log.error(e.getMessage(),e);
