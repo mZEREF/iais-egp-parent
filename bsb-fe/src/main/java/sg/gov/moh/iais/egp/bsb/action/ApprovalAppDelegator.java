@@ -164,7 +164,7 @@ public class ApprovalAppDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         Assert.hasText(actionValue, "Invalid action value");
-        boolean currentLetGo = true;
+        boolean currentLetGo;
         if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
             currentLetGo = activityNode.doValidation();
             if (currentLetGo) {
@@ -179,7 +179,9 @@ public class ApprovalAppDelegator {
             //get primaryDocDto(facility registration upload doc) by current facilityId
             Collection<DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
             PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
-            registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
+            if (!org.springframework.util.CollectionUtils.isEmpty(docRecordInfos)){
+                registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
+            }
             //get new primaryDocNode
             NodeGroup approvalProfileNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
             SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalProfileNodeGroup});
