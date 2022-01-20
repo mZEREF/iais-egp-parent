@@ -238,14 +238,4 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
         return getFeignResponseEntity(patientCode);
     }
-
-    @Override
-    public FeignResponseEntity<TransferInOutStageDto> getOutStageByPatientAndHciCode(String patientCode, String receiveHciCode) {
-        return getFeignResponseEntity(patientCode, receiveHciCode);
-    }
-
-    @Override
-    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(String hciCode, String svcName, String licenseeId, String patientCode) {
-        return getFeignResponseEntity(hciCode, svcName, licenseeId, patientCode);
-    }
 }

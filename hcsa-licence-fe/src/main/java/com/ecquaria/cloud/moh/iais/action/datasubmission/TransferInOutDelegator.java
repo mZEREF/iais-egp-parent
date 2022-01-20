@@ -99,26 +99,22 @@ public class TransferInOutDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
         ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
         List<String> transferredList = transferInOutStageDto.getTransferredList();
         int num = "in".equals(transferInOutStageDto.getTransferType()) ? 1 : -1;
         for (String transferred : transferredList) {
             if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
                 if (transferInOutStageDto.getOocyteNum() != null) {
-                    patientInventoryDto.setChangeFrozenOocytes(-1 * transferInOutStageDto.getOocyteNum());
                     arChangeInventoryDto.setFrozenOocyteNum(num * transferInOutStageDto.getOocyteNum());
                 }
             }
             if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
                 if (transferInOutStageDto.getEmbryoNum() != null) {
-                    patientInventoryDto.setChangeFrozenEmbryos(-1 * transferInOutStageDto.getEmbryoNum());
                     arChangeInventoryDto.setFrozenEmbryoNum(num * transferInOutStageDto.getEmbryoNum());
                 }
             }
             if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
                 if (transferInOutStageDto.getSpermVialsNum() != null) {
-                    patientInventoryDto.setChangeFrozenSperms(-1 * transferInOutStageDto.getSpermVialsNum());
                     arChangeInventoryDto.setFrozenSpermNum(num * transferInOutStageDto.getSpermVialsNum());
                 }
             }
@@ -279,17 +275,16 @@ public class TransferInOutDelegator extends CommonDelegator {
             arSuper.setSelectionDto(selectionDto);
             arSuper.setPatientInfoDto(newDto.getPatientInfoDto());
             arSuper.setPatientInventoryDto(newDto.getPatientInventoryDto());
+            ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
+            if (arCurrentInventoryDto == null){
+                arCurrentInventoryDto = new ArCurrentInventoryDto();
+                arCurrentInventoryDto.setHciCode(hciCode);
+                arCurrentInventoryDto.setSvcName(cycleDto.getSvcName());
+                arCurrentInventoryDto.setLicenseeId(cycleDto.getLicenseeId());
+                arCurrentInventoryDto.setPatientCode(cycleDto.getPatientCode());
+            }
+            arSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         }
-
-        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, svcName, licenseeId, patientCode);
-        if (arCurrentInventoryDto == null) {
-            arCurrentInventoryDto = new ArCurrentInventoryDto();
-            arCurrentInventoryDto.setHciCode(hciCode);
-            arCurrentInventoryDto.setSvcName(svcName);
-            arCurrentInventoryDto.setLicenseeId(licenseeId);
-            arCurrentInventoryDto.setPatientCode(patientCode);
-        }
-        arSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
 
         TransferInOutStageDto transferInOutStageDto = (TransferInOutStageDto) CopyUtil.copyMutableObject(outStageDto);
         transferInOutStageDto.setId(null);
