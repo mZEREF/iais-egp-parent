@@ -466,11 +466,8 @@ public class ClientReschedulingDelegator {
                     if(result!=null&&result.size()!=0){
                         if(result.get(0).getUserClandars()!=null){
                             apptViewDtos.get(id).setInspNewDate(result.get(0).getUserClandars().get(0).getStartSlot().get(0));
-                            List<String> userIds=IaisCommonUtils.genNewArrayList();
-                            for (ApptUserCalendarDto uc:result.get(0).getUserClandars()
-                            ) {
-                                userIds.add(uc.getLoginUserId());
-                            }
+                            List<ApptUserCalendarDto> userIds=IaisCommonUtils.genNewArrayList();
+                            userIds.addAll(result.get(0).getUserClandars());
                             apptViewDtos.get(id).setUserIds(userIds);
                             apptViewDtos.get(id).setApptRefNo(result.get(0).getApptRefNo());
                         }else {
