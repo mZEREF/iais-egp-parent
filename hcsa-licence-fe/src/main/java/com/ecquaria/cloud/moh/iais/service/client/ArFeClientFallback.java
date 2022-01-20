@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
@@ -15,14 +16,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Date;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @Description ArCommonFeClientFallback
@@ -243,5 +242,10 @@ public class ArFeClientFallback implements ArFeClient {
     @Override
     public FeignResponseEntity<TransferInOutStageDto> getOutStageByPatientAndHciCode(String patientCode, String receiveHciCode) {
         return getFeignResponseEntity(patientCode, receiveHciCode);
+    }
+
+    @Override
+    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(String hciCode, String svcName, String licenseeId, String patientCode) {
+        return getFeignResponseEntity(hciCode, svcName, licenseeId, patientCode);
     }
 }

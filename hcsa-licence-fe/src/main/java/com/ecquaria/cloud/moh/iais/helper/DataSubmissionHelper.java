@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -668,6 +670,21 @@ public final class DataSubmissionHelper {
     public static PatientInventoryDto getCurrentPatientInventory(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
         return  arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getPatientInventoryDto() : null;
+    }
+
+    public static ArCurrentInventoryDto getCurrentArCurrentInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
+        return  arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;
+    }
+
+    public static ArChangeInventoryDto getCurrentArChangeInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getArChangeInventoryDto() : new ArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+            arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+        }
+        return arChangeInventoryDto;
     }
 
     public static String getLicenseeEmailAddrs(HttpServletRequest request) {

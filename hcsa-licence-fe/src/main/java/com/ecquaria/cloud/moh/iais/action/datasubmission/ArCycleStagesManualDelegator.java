@@ -5,7 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -256,6 +256,16 @@ public class ArCycleStagesManualDelegator {
             log.warn(StringUtil.changeForLog("-----" + msg + "-----"));
             throw new IaisRuntimeException(msg);
         }
+        String licenseeId = DataSubmissionHelper.getLicenseeId(request);
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, currentSuper.getSvcName(), licenseeId, selectionDto.getPatientCode());
+        if (arCurrentInventoryDto == null) {
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+            arCurrentInventoryDto.setHciCode(hciCode);
+            arCurrentInventoryDto.setSvcName(currentSuper.getSvcName());
+            arCurrentInventoryDto.setLicenseeId(licenseeId);
+            arCurrentInventoryDto.setPatientCode(selectionDto.getPatientCode());
+        }
+        currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
