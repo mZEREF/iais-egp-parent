@@ -42,9 +42,9 @@ public class INTERNET___ApplicantDeRegistrationFacility___1 extends BaseProcessC
 		EngineHelper.delegate(DELEGATOR, "doSaveSubmit", this);
 	}
 
-	public void doSaveDraft_OnStepProcess_0() throws Exception {
-	// 		DoSaveDraft->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSaveDraft", this);
+	public void doPreview_OnStepProcess_0() throws Exception {
+	// 		DoPreview->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPreview", this);
 	}
 
 }

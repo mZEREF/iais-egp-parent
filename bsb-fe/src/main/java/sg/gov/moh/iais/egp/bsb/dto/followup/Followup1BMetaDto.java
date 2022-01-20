@@ -29,7 +29,7 @@ public class Followup1BMetaDto {
         if(CollectionUtils.isEmpty(newDocInfoMap) && CollectionUtils.isEmpty(savedDocInfoMap)){
             return followup1BMetaDto;
         }
-        List<DocMeta> metaDtoList = new ArrayList<>(newDocInfoMap.size());
+        List<DocMeta> metaDtoList = new ArrayList<>(newDocInfoMap.size()+savedDocInfoMap.size());
         savedDocInfoMap.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
             metaDtoList.add(docMeta);

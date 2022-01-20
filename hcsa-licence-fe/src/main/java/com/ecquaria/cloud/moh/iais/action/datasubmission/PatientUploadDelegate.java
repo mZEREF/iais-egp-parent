@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -53,7 +52,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -107,8 +105,8 @@ public class PatientUploadDelegate {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PrepareSwitch -----"));
-        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionConstant.DS_TITLE_NEW);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConstant.DS_TITLE_NEW));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR));
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -259,7 +257,7 @@ public class PatientUploadDelegate {
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
-            DsRfcHelper.handlePatient(patient);
+            DsRfcHelper.prepare(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
             if (patient.isPreviousIdentification()) {
@@ -283,7 +281,7 @@ public class PatientUploadDelegate {
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            DsRfcHelper.handleHusband(husbandDto);
+            DsRfcHelper.prepare(husbandDto);
             dto.setHusband(husbandDto);
             result.add(dto);
         }
@@ -365,7 +363,7 @@ public class PatientUploadDelegate {
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- DoPreview -----"));
         // declaration
-        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
@@ -383,7 +381,7 @@ public class PatientUploadDelegate {
             log.error("------No checked for declaration-----");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
-        }
+        }*/
     }
 
     /**

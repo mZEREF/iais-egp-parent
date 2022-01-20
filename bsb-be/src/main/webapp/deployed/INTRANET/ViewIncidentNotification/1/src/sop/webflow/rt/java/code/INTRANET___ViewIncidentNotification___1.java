@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___ViewIncidentNotificaiton___1 extends BaseProcessClass {
+public class INTRANET___ViewIncidentNotification___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="incidentMOHProcessDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {

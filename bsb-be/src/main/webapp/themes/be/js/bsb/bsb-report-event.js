@@ -30,7 +30,7 @@ $(function (){
 function viewApp(module){
     var url = "";
     if(module === 'notification'){
-        url = "/bsb-be/eservice/INTRANET/ViewIncidentNotificaiton";
+        url = "/bsb-be/eservice/INTRANET/ViewIncidentNotification";
     }else if(module === 'investigation'){
         url = "/bsb-be/eservice/INTRANET/ViewInvestReport";
     }

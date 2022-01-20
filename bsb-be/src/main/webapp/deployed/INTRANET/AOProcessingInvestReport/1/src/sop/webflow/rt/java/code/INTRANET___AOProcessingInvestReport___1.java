@@ -31,11 +31,6 @@ public class INTRANET___AOProcessingInvestReport___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);
 	}
 
-	public void preViewInvestReport_OnStepProcess_0() throws Exception {
-	// 		PreViewInvestReport->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preViewInvestReport", this);
-	}
-
 	public void doProcessing_OnStepProcess_0() throws Exception {
 	// 		DoProcessing->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doAOInvestProcessing", this);

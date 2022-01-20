@@ -5,25 +5,32 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * Process: MohDsAction
@@ -90,6 +97,7 @@ public class MohDsActionDelegator {
             ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
             initDataForView(arSuper, bpc.request);
+            arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
@@ -103,14 +111,45 @@ public class MohDsActionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 
+    private DonorSampleDto setflagMsg(DonorSampleDto donorSampleDto){
+        if(donorSampleDto != null){
+            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
+            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos) && !donorSampleDto.isDirectedDonation()){
+                for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
+                    int age = donorSampleAgeDto.getAge();
+                    if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(donorSampleDto.getSampleType())){
+                        if(age <21 || age >40){
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR044")));
+                            break;
+                        }
+                    }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(donorSampleDto.getSampleType())
+                            ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(donorSampleDto.getSampleType())){
+                        if(age <21 || age >35){
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR045")));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return donorSampleDto;
+    }
 
     public void initDataForView(ArSuperDataSubmissionDto arSuper, HttpServletRequest request) {
+        String cycelType = Optional.ofNullable(arSuper)
+                .map(ArSuperDataSubmissionDto::getCycleDto)
+                .map(CycleDto::getCycleType)
+                .orElse(null);
+        if (DataSubmissionConsts.DS_CYCLE_PATIENT_ART.equals(cycelType)) {
+            DsRfcHelper.handle(arSuper.getPatientInfoDto());
+        }
         if (arSuper != null) {
             if (arSuper.getArCycleStageDto() != null) {
                 arCycleStageDelegator.init(request);
                 arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(), arSuper.getPatientInfoDto(),
                         arSuper.getPremisesDto().getHciCode());
-                arCycleStageDelegator.setEnhancedCounsellingTipShow(request,arSuper.getArCycleStageDto(),true);
+                arCycleStageDelegator.setEnhancedCounsellingTipShow(request, arSuper.getArCycleStageDto(), true);
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);

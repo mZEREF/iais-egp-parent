@@ -205,8 +205,8 @@
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <select name = "batName" id = "batName" multiple>
                                                                             <option>Please select</option>
-                                                                            <option value="test01">test01</option>
-                                                                            <option value="test02">test02</option>
+                                                                            <option value="Biological01">Biological01</option>
+                                                                            <option value="Biological02">Biological02</option>
                                                                         </select>
                                                                         <span data-err-ind="batName" class="error-msg"></span>
                                                                     </div>
@@ -232,11 +232,11 @@
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <div class="col-sm-4" style="margin-top: 8px">
                                                                             <input type="radio" name="batReleasePossibility" id="possibleY" value="Y" <c:if test="${reportingPerson.batReleasePossibility eq 'Y'}">checked = "checked"</c:if>/>
-                                                                            <label for="possibleY">yes</label>
+                                                                            <label for="possibleY">Yes</label>
                                                                         </div>
                                                                         <div class="col-sm-4" style="margin-top: 8px">
                                                                             <input type="radio" name="batReleasePossibility" id="possibleN" value="N" <c:if test="${reportingPerson.batReleasePossibility eq 'N'}">checked = "checked"</c:if>/>
-                                                                            <label for="possibleN">no</label>
+                                                                            <label for="possibleN">No</label>
                                                                         </div>
                                                                         <span data-err-ind="batReleasePossibility" class="error-msg"></span>
                                                                     </div>
@@ -273,11 +273,11 @@
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <div class="col-sm-4" style="margin-top: 8px">
                                                                             <input type="radio" name="incidentPersonInvolved" id="involvedY" value="Y" <c:if test="${reportingPerson.incidentPersonInvolved eq 'Y'}">checked = "checked"</c:if>/>
-                                                                            <label for="involvedY">yes</label>
+                                                                            <label for="involvedY">Yes</label>
                                                                         </div>
                                                                         <div class="col-sm-4" style="margin-top: 8px">
                                                                             <input type="radio" name="incidentPersonInvolved" id="involvedN" value="N" <c:if test="${reportingPerson.incidentPersonInvolved eq 'N'}">checked = "checked"</c:if>/>
-                                                                            <label for="involvedN">no</label>
+                                                                            <label for="involvedN">No</label>
                                                                         </div>
                                                                         <span data-err-ind="incidentPersonInvolved" class="error-msg"></span>
                                                                     </div>
@@ -319,6 +319,8 @@
                                         </div>
                                     </div>
                                     <%@include file="common/InnerFooter.jsp"%>
+
+                                    <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                                 </div>
                             </div>
                         </div>

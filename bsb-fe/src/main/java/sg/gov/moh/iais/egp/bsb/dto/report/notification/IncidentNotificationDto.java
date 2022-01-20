@@ -29,7 +29,7 @@ public class IncidentNotificationDto {
     private Collection<DocRecordInfo> docRecordInfos;
     private AuditTrailDto auditTrailDto;
 
-    public static IncidentNotificationDto from(NodeGroup incidentNotRoot){
+        public static IncidentNotificationDto from(NodeGroup incidentNotRoot){
         IncidentNotificationDto dto = new IncidentNotificationDto();
         dto.setProcessType("notification");
         dto.setIncidentInfoDto((IncidentInfoDto) ((SimpleNode) incidentNotRoot.at( NODE_NAME_INCIDENT_INFO)).getValue());

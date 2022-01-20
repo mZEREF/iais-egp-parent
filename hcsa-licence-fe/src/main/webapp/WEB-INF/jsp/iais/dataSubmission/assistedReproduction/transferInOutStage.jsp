@@ -16,7 +16,14 @@
             <div class="col-xs-12">
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/transferInOutStageSection.jsp" %>
+                    <c:choose>
+                        <c:when test="${not empty outStageDsNo}">
+                            <%@include file="section/transferInOutStageReceiveSection.jsp" %>
+                        </c:when>
+                        <c:otherwise>
+                            <%@include file="section/transferInOutStageSection.jsp" %>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>

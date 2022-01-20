@@ -11,6 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
+import sg.gov.moh.iais.egp.bsb.dto.report.notification.IncidentNotificationDto;
 
 import java.util.List;
 
@@ -21,6 +22,10 @@ import java.util.List;
  **/
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "investRep")
 public interface InvestReportClient {
+
+    @PostMapping(path = "/invest/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftInvestigationReport(@RequestBody InvestReportDto dto);
+
     @GetMapping(path = "/invest/query/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     IncidentDto queryIncidentByRefNo(@PathVariable("refNo") String refNo);
 

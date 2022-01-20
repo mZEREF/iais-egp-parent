@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <div class="panel panel-default usedDonorOocyteControlClass">
     <div class="panel-heading">
         <h4  class="panel-title" >
@@ -64,43 +65,13 @@
                                 <iais:input maxLength="66" type="text" name="donorName" value="${donorSampleDto.donorName}" />
                             </iais:value>
                         </iais:row>
-                       <%-- <iais:row>
-                            <iais:field width="5" value="Donor relation to patient" mandatory="true"/>
-                            <iais:value width="3" cssClass="col-md-3">
-                                <div class="form-check" >
-                                    <input class="form-check-input"
-                                           type="radio"
-                                           name="donorRelation"
-                                           value="F"
-                                           id = "donorRelationF"
-                                           <c:if test="${donorSampleDto.donorRelation eq 'F'}">checked</c:if>
-                                           aria-invalid="false">
-                                    <label class="form-check-label"
-                                           for="donorRelationF"><span
-                                            class="check-circle"></span>Friend</label>
-                                </div>
-                                <span id="error_donorRelation" name="iaisErrorMsg" class="error-msg"></span>
-                            </iais:value>
-                            <iais:value width="3" cssClass="col-md-3">
-                                <div class="form-check" >
-                                    <input class="form-check-input" type="radio"
-                                           name="donorRelation"
-                                           value="R"
-                                           id = "donorRelationR"
-                                           <c:if test="${donorSampleDto.donorRelation eq 'R'}">checked</c:if>
-                                           aria-invalid="false">
-                                    <label class="form-check-label"
-                                           for="donorRelationR" ><span
-                                            class="check-circle"></span>Relative</label>
-                                </div>
-                            </iais:value>
-                        </iais:row>--%>
+
                     </div>
                     <div id="directedDonationNo" style="${donorSampleDto.directedDonation ? 'display: none;' : ''}">
                         <iais:row id="sampleType" >
                             <iais:field width="5" value="Sample Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="AR_DONOR_SAMPLE_TYPE" value="${donorSampleDto.sampleType}"
+                                <iais:select name="sampleType" id ="sampleTypeId" firstOption="Please Select" codeCategory="AR_DONOR_SAMPLE_TYPE" value="${donorSampleDto.sampleType}"
                                              cssClass="sampleType"/>
                             </iais:value>
                         </iais:row>
@@ -184,7 +155,7 @@
                                 <iais:row  id = "donorAge0">
                                     <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
                                     <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="ages" value="" />
+                                        <iais:input maxLength="2" type="text" name="ages" value="" onblur='checkAge(this)'/>
                                         <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
                                     </iais:value>
                                 </iais:row>
@@ -200,7 +171,7 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="ages" value="${age}" />
+                                        <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
                                         <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                     </iais:value>
                                     <c:if test="${idxStatus.first!=true}">
@@ -266,8 +237,7 @@
             "\">\n" +
             "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
             "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
-            "                                <input type=\"text\" name=\"ages" +
-            "\" maxlength=\"2\" autocomplete=\"off\">\n" +
+            "                                <input type=\"text\" name=\"ages\" maxlength=\"2\" onblur='checkAge(this)' autocomplete=\"off\">\n" +
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +
             "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
@@ -298,6 +268,24 @@
             $("#donorDetail").hide();
             $("#donorSampleCodeRow").show();
             clearFields($("#donorDetail"));
+        }
+    }
+    function checkAge(t){
+        var directedDonation=$('input:radio[name="directedDonation"]:checked').val();
+        var age = $(t).val();
+        if(age != '') {
+            if (directedDonation == 0) {
+                var sampleType = $('#sampleTypeId').val();
+                if (sampleType == 'DST003') {
+                    if(age<21 || age>40 ){
+                       alert("Donor\'s age when sperm(s) are collected is outside the range of 21 to 40 yrs old.");
+                    }
+                } else if (sampleType == 'DST001' || sampleType == 'DST002') {
+                    if(age<21 || age>35 ){
+                        alert("Donor\'s age when oocyte(s) or embryo(s) are collected is outside the range of 21 to 35 yrs old.");
+                    }
+                }
+            }
         }
     }
 </script>

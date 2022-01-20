@@ -30,13 +30,6 @@
     <JavaCode defClass="" executor="" methodName="doProcessing_OnStepProcess_0" name="doProcessing_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreViewNotification" x="530" y="290">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preViewNotification_OnStepProcess_0" name="preViewNotification_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="IncidentAOProcessing" stageIndicator="" x="340" y="190">
@@ -46,12 +39,6 @@
    <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PocessingSuccess" stageIndicator="" x="660" y="420">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewNotification" stageIndicator="" x="400" y="290">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -81,20 +68,13 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(690,210)(213,88)(180,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewNotification" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(690,210)(550,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ViewNotification" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreViewNotification" style="rectanular">
-   <position>{(550,310)(420,310)}</position>
-  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="670" y="190">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="670" y="190">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/DoProcessing" value="&quot;submit&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;doBack&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreViewNotification" value="&quot;view&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;prepare&quot;" />
   </Switch>
  </Switches>
  <Branches />

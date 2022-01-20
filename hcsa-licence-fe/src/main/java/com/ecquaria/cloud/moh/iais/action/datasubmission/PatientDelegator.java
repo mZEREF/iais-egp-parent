@@ -17,14 +17,12 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 /**
  * Process: MohARPatientInformationManual
@@ -58,9 +56,9 @@ public class PatientDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
-        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getPatientAgeMessage("Patient"));
-        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getPatientAgeMessage("Husband"));
+        //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
     }
 
     @Override
@@ -93,7 +91,7 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        DsRfcHelper.handlePatient(patient);
+        DsRfcHelper.prepare(patient);
         patientInfo.setPatient(patient);
         String patientCode = patient.getPatientCode();
         // check previous
@@ -119,7 +117,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
-        DsRfcHelper.handleHusband(husband);
+        DsRfcHelper.prepare(husband);
         patientInfo.setHusband(husband);
         String amendReason = ParamUtil.getString(request, "amendReason");
         String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
@@ -127,36 +125,21 @@ public class PatientDelegator extends CommonDelegator {
         patientInfo.setAmendReasonOther(StringUtil.getNonNull(amendReasonOther));
         patientInfo.setAppType(currentArDataSubmission.getAppType());
         currentArDataSubmission.setPatientInfoDto(patientInfo);
-
+        // amend reason
         DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
         dataSubmission.setAmendReason(amendReason);
         dataSubmission.setAmendReasonOther(amendReasonOther);
-        // ret-set cycle dto
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = initCycleDto(currentArDataSubmission);
-        }
-        // cycleDto.setPatientCode(patientCode);
-        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        currentArDataSubmission.setCycleDto(cycleDto);
+        currentArDataSubmission.setDataSubmissionDto(dataSubmission);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;
-    }
-
-    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = new CycleDto();
-        }
-        cycleDto.setHciCode(currentArDataSubmission.getHciCode());
-        cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
-        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
-        return cycleDto;
     }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConsts.DS_PATIENT_ART);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DsRfcHelper.handle(arSuperDataSubmission.getPatientInfoDto());
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
     }
 
     @Override

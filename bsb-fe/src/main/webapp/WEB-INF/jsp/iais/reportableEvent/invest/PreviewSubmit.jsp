@@ -343,6 +343,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

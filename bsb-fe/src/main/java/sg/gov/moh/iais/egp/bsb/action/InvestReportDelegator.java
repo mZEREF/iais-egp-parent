@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -30,7 +33,9 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
+import sg.gov.moh.iais.egp.bsb.dto.report.notification.IncidentNotificationDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sg.gov.moh.iais.egp.bsb.entity.Draft;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +44,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_JUMP;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_SAVE_AS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
  * @author YiMing
@@ -55,6 +65,7 @@ public class InvestReportDelegator {
     private static final String PARAM_REFERENCE_NO = "refNo";
     private static final String PARAM_INCIDENT_DTO = "incidentDto";
     private static final String KEY_EDIT_REF_ID = "editId";
+    private static final String KEY_DRAFT = "draft";
 
     public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, InvestReportClient investReportClient) {
         this.fileRepoClient = fileRepoClient;
@@ -65,12 +76,31 @@ public class InvestReportDelegator {
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP_INVEST_REPORT);
+        request.getSession().removeAttribute(PARAM_INCIDENT_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME_INVESTIGATION_REPORT, MODULE_NAME_INVESTIGATION_REPORT);
     }
 
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_ROOT_NODE_GROUP_INVEST_REPORT,getInvestReportRoot(request));
+        boolean newIncidentNot = true;
+        //enter from draft continue button
+        //processType is make sure enter from your own draft
+        String processType = (String) ParamUtil.getSessionAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE);
+        Draft draft = (Draft) ParamUtil.getSessionAttr(request,KEY_DRAFT);
+        if(draft != null && "investigation".equals(processType)){
+            newIncidentNot = false;
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                InvestReportDto investReportDto = mapper.readValue(draft.getDraftData(),InvestReportDto.class);
+                NodeGroup investRepoRoot = investReportDto.toInvestReportDto(KEY_ROOT_NODE_GROUP_INVEST_REPORT);
+                ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        if (newIncidentNot) {
+            ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, getInvestReportRoot(request));
+        }
     }
 
 
@@ -83,9 +113,17 @@ public class InvestReportDelegator {
 
     public void actionFilter(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
+            // not set, use action from user's client
             actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        } else {
+            // set, if the action is 'save draft', we save it and route back to that page
+            if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+                actionType = KEY_ACTION_JUMP;
+                saveDraft(request);
+            }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
@@ -93,21 +131,38 @@ public class InvestReportDelegator {
     public void preReferNoSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"referNoOps",tempReferenceNoOps());
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+        SimpleNode incidentNode = (SimpleNode) investRepoRoot.getNode(NODE_NAME_REFERENCE_NO_SELECTION);
+        ReferNoSelectionDto referNoSelectionDto = (ReferNoSelectionDto) incidentNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, referNoSelectionDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(investRepoRoot,NODE_NAME_REFERENCE_NO_SELECTION);
+        ParamUtil.setRequestAttr(request,NODE_NAME_REFERENCE_NO_SELECTION,referNoSelectionDto);
     }
 
     public void handleReferNoSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup investRepoRoot = getInvestReportRoot(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String maskReferenceNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
+        String referenceNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskReferenceNo);
+        SimpleNode referNoSelectNode = (SimpleNode) investRepoRoot.getNode(NODE_NAME_REFERENCE_NO_SELECTION);
+        ReferNoSelectionDto referNoSelectionDto = (ReferNoSelectionDto) referNoSelectNode.getValue();
+        referNoSelectionDto.setRefNo(referenceNo);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, investRepoRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_REFERENCE_NO_SELECTION);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        String maskReferenceNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
-        String referenceNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskReferenceNo);
-        IncidentDto incidentDto = investReportClient.queryIncidentByRefNo(referenceNo);
-        ParamUtil.setSessionAttr(request,PARAM_INCIDENT_DTO,incidentDto);
+        if(StringUtils.hasLength(maskReferenceNo)){
+            IncidentDto incidentDto = investReportClient.queryIncidentByRefNo(referenceNo);
+            ParamUtil.setSessionAttr(request,PARAM_INCIDENT_DTO,incidentDto);
+        }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
     }
 
@@ -139,6 +194,9 @@ public class InvestReportDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, investRepoRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_INCIDENT_INFO);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -170,6 +228,9 @@ public class InvestReportDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, investRepoRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_INCIDENT_INVESTIGATION);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -198,6 +259,9 @@ public class InvestReportDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, investRepoRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_MEDICAL_INVESTIGATION);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -233,6 +297,9 @@ public class InvestReportDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, investRepoRoot);
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_DOCUMENTS);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -247,7 +314,7 @@ public class InvestReportDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_INCIDENT_INVESTIGATION, ((SimpleNode)investRepoRoot.at(NODE_NAME_INCIDENT_INVESTIGATION)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_MEDICAL_INVESTIGATION, ((SimpleNode)investRepoRoot.at(NODE_NAME_MEDICAL_INVESTIGATION)).getValue());
 
-
+        Nodes.needValidation(investRepoRoot, NODE_NAME_PREVIEW_SUBMIT);
         ParamUtil.setRequestAttr(request, "docSettings", getInvestReportDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)investRepoRoot.at(NODE_NAME_DOCUMENTS)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
@@ -268,9 +335,7 @@ public class InvestReportDelegator {
                 PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                 List<NewFileSyncDto> newFilesToSync = null;
                 if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+                    newFilesToSync = saveNewUploadedDoc(primaryDocDto);
                 }
 
                 // save data
@@ -283,23 +348,10 @@ public class InvestReportDelegator {
                 }
                 try {
                     // sync files to BE file-repo (save new added files, delete useless files)
-                    if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                        /* Ignore the failure of sync files currently.
-                         * We should add a mechanism to retry synchronization of files in the future */
-                        FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                        syncDto.setNewFiles(newFilesToSync);
-                        syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                        bsbFileClient.saveFiles(syncDto);
-                    }
-
-                    // delete docs in FE file-repo
-                    /* Ignore the failure when try to delete FE files because this is not a big issue.
-                     * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setId(id);
-                        fileRepoClient.removeFileById(fileRepoDto);
-                    }
+                    // delete docs
+                    List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+                    // sync docs
+                    syncNewDocsAndDeleteFiles(newFilesToSync,toBeDeletedRepoIds);
                 } catch (Exception e) {
                     log.error("Fail to sync files to BE", e);
                 }
@@ -308,6 +360,9 @@ public class InvestReportDelegator {
             } else {
                 jumpHandler(request, investRepoRoot);
             }
+        } else if (ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -430,8 +485,8 @@ public class InvestReportDelegator {
     }
 
     public static NodeGroup newInvestReportRoot(String name) {
-        Node referNoSelectionNode = new Node(NODE_NAME_REFERENCE_NO_SELECTION,new Node[0]);
-        SimpleNode incidentNode = new SimpleNode(new IncidentInfoDto(), NODE_NAME_INCIDENT_INFO, new Node[0]);
+        SimpleNode referNoSelectionNode = new SimpleNode(new ReferNoSelectionDto(),NODE_NAME_REFERENCE_NO_SELECTION,new Node[0]);
+        SimpleNode incidentNode = new SimpleNode(new IncidentInfoDto(), NODE_NAME_INCIDENT_INFO, new Node[]{referNoSelectionNode});
         SimpleNode incidentInvestNode = new SimpleNode(new IncidentInvestDto(), NODE_NAME_INCIDENT_INVESTIGATION,new Node[0]);
         SimpleNode medicalInvestNode = new SimpleNode(new MedicalInvestDto(), NODE_NAME_MEDICAL_INVESTIGATION, new Node[0]);
         SimpleNode documentNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_DOCUMENTS, new Node[0]);
@@ -455,7 +510,7 @@ public class InvestReportDelegator {
         List<SelectOption> referNoOps = new ArrayList<>(referNoList.size()+1);
         referNoOps.add(new SelectOption("","Please Select"));
         for (String refNo : referNoList) {
-            referNoOps.add(new SelectOption(MaskUtil.maskValue(PARAM_REFERENCE_NO,refNo),refNo));
+            referNoOps.add(new SelectOption(refNo,refNo));
         }
         return referNoOps;
     }
@@ -464,5 +519,81 @@ public class InvestReportDelegator {
         List<SelectOption> originalOps = new ArrayList<>(1);
         originalOps.add(new SelectOption("","Please Select"));
         return originalOps;
+    }
+
+    /** Save new uploaded documents into FE file repo.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of DTOs can be used to sync to BE
+     */
+    public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
+        List<NewFileSyncDto> newFilesToSync = null;
+        if (!primaryDocDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+        }
+        return newFilesToSync;
+    }
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of repo IDs deleted in FE file repo
+     */
+    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
+        /* Ignore the failure when try to delete FE files because this is not a big issue.
+         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+        }
+        return toBeDeletedRepoIds;
+    }
+
+    /** Sync new uploaded documents to BE; delete unwanted documents in BE too.
+     * @param newFilesToSync a list of DTOs contains ID and data
+     * @param toBeDeletedRepoIds a list of repo IDs to be deleted in BE
+     */
+    public void syncNewDocsAndDeleteFiles(List<NewFileSyncDto> newFilesToSync, List<String> toBeDeletedRepoIds) {
+        // sync files to BE file-repo (save new added files, delete useless files)
+        if (!CollectionUtils.isEmpty(newFilesToSync) || !CollectionUtils.isEmpty(toBeDeletedRepoIds)) {
+            /* Ignore the failure of sync files currently.
+             * We should add a mechanism to retry synchronization of files in the future */
+            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+            syncDto.setNewFiles(newFilesToSync);
+            syncDto.setToDeleteIds(toBeDeletedRepoIds);
+            bsbFileClient.saveFiles(syncDto);
+        }
+    }
+
+    public void saveDraft(HttpServletRequest request) {
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+
+        // save docs
+        SimpleNode primaryDocNode = (SimpleNode) investRepoRoot.at(NODE_NAME_DOCUMENTS);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+
+        // save data
+        InvestReportDto finalAllDataDto = InvestReportDto.from(investRepoRoot);
+        String draftAppNo = investReportClient.saveDraftInvestigationReport(finalAllDataDto);
+        // set draft app No. into the NodeGroup
+        ReferNoSelectionDto referNoSelectionDto = (ReferNoSelectionDto) ((SimpleNode) investRepoRoot.at(NODE_NAME_REFERENCE_NO_SELECTION)).getValue();
+        referNoSelectionDto.setDraftAppNo(draftAppNo);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
+
+        try {
+            // delete docs
+            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            // sync docs
+            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
+
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }
 }

@@ -10,7 +10,6 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>Deregistration Form</h1>
                     <c:if test="${processType eq 'PROTYPE001' or processType eq 'PROTYPE005'}"><h1>Deregistration Form</h1></c:if>
                     <c:if test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003' or processType eq 'PROTYPE004'}"><h1>Cancellation Form</h1></c:if>
                 </div>

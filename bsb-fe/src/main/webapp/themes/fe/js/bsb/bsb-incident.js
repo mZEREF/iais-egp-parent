@@ -47,6 +47,12 @@ $(function (){
         $("#mainForm").submit();
     });
 
+    $("#saveDraft").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("draft");
+        $("#mainForm").submit();
+    });
+
     $("#possibleY").change(function (){
         $("#releasePossibleY").show();
     });
@@ -199,19 +205,6 @@ $(function (){
                         activityType.next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>" + optionLi);
                         // bat.html("<option value=\"\">Please select<\/option>" + optionString1);
                         // bat.next().children(".multi-select-menu").children(".multi-select-menuitems").html("<label class=\"multi-select-menuitem\" for=\"batName_0\" role =\"menuitem\"> <input id=\"batName_0\" type=\"checkbox\" value=\"Please select\"> Please Select </label>"+optionLi1);
-
-                        bat.multiselect({
-                            isOpen:false,
-                            multiple : true,
-                            header : true,
-                            hide : [ "explode", 500 ],
-                            noneSelectedText : ['Please Select'],
-                            close : function() {
-                                var val = bat.val();
-                                $("#Warehouse").val(val);
-                            }
-                        });
-                        bat.multiselect('disable');
                     } else {
 
                     }

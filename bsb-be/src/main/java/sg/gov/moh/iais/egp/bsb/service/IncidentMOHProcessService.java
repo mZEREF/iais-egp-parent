@@ -82,18 +82,16 @@ public class IncidentMOHProcessService {
 
     public void handleProcessing(HttpServletRequest request) {
         String actionType = ParamUtil.getString(request, IncidentProcessConstants.PARAM_ACTION_TYPE);
-        if(IncidentProcessConstants.ACTION_TYPE_BACK.equals(actionType)){
-            ParamUtil.setRequestAttr(request,IncidentProcessConstants.PARAM_ACTION_TYPE,IncidentProcessConstants.ACTION_TYPE_BACK);
-        }else if(IncidentProcessConstants.ACTION_TYPE_SUBMIT.equals(actionType)){
+        if(IncidentProcessConstants.ACTION_TYPE_SUBMIT.equals(actionType)){
             ProcessingDto processingDto = getCurrentProcessDto(request);
             processingDto.reqObjMapping(request);
             IncidentNotificationDto incidentNotificationDto = (IncidentNotificationDto) ParamUtil.getSessionAttr(request,PARAM_INCIDENT_PROCESS_DTO);
             incidentNotificationDto.setProcessingDto(processingDto);
             //do validation
             if(processingDto.doValidation()){
-                ParamUtil.setRequestAttr(request,IncidentProcessConstants.PARAM_ACTION_TYPE,IncidentProcessConstants.ACTION_TYPE_SUBMIT);
+                ParamUtil.setRequestAttr(request,IncidentProcessConstants.KEY_INDEED_ACTION_TYPE,IncidentProcessConstants.ACTION_TYPE_SUBMIT);
             }else{
-                ParamUtil.setRequestAttr(request,IncidentProcessConstants.PARAM_ACTION_TYPE,IncidentProcessConstants.ACTION_TYPE_BACK);
+                ParamUtil.setRequestAttr(request,IncidentProcessConstants.KEY_INDEED_ACTION_TYPE,IncidentProcessConstants.ACTION_TYPE_PREPARE);
                 ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH,ValidationConstants.YES);
             }
             ParamUtil.setSessionAttr(request,PARAM_INCIDENT_PROCESS_DTO,incidentNotificationDto);

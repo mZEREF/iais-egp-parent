@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.jsp.JspException;
@@ -120,8 +121,16 @@ public final class FieldTag extends DivTagSupport {
 
         html.append(value);
         if (!StringUtil.isEmpty(info)) {
-            html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
-                    .append(info).append("\"></i></span>&nbsp;");
+            html.append("&nbsp;<a class=\"btn-tooltip styleguide-tooltip\" ")
+                    .append("style=\"z-index: 10\" ")
+                    .append("href=\"javascript:void(0);\" ")
+                    .append("data-placement=\"top\" ")
+                    .append("data-toggle=\"tooltip\" ")
+                    .append("data-html=\"true\" ")
+                    .append("title=\"&lt;p&gt;")
+                    .append(info)
+                    .append("&lt;/p&gt;\">")
+                    .append("i</a>&nbsp;");
         } else {
             html.append("&nbsp;");
         }

@@ -44,6 +44,8 @@ public class ConsumeNotificationDto implements Serializable {
         private String consumedQty;
         @JMap
         private String meaUnit;
+        @JMap
+        private String index;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -51,6 +53,8 @@ public class ConsumeNotificationDto implements Serializable {
         private String docType;
         @JsonIgnore
         private String repoIdNewString;
+        @JsonIgnore
+        private String repoIdSavedString;
 
         public ConsumptionNot() {
             this.newDocInfos = new ArrayList<>();
@@ -117,6 +121,8 @@ public class ConsumeNotificationDto implements Serializable {
         private String consumeType;
         private String consumedQty;
         private String meaUnit;
+        //
+        private String index;
     }
 
     @Data
@@ -307,6 +313,7 @@ public class ConsumeNotificationDto implements Serializable {
             consumeNotNeed.setConsumedQty(t.getConsumedQty());
             consumeNotNeed.setBat(t.getBat());
             consumeNotNeed.setMeaUnit(t.getMeaUnit());
+            consumeNotNeed.setIndex(t.getIndex());
             return consumeNotNeed;
         }).collect(Collectors.toList());
         ConsumeNotNeedR consumeNotNeedR = new ConsumeNotNeedR();
@@ -422,7 +429,7 @@ public class ConsumeNotificationDto implements Serializable {
                 consumptionNot.setConsumeType(ParamUtil.getString(request, KEY_PREFIX_CONSUME_TYPE + SEPARATOR + idx));
                 consumptionNot.setConsumedQty(ParamUtil.getString(request, KEY_PREFIX_CONSUME_QTY + SEPARATOR + idx));
                 consumptionNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
-
+                consumptionNot.setIndex(idx);
                 List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
                 consumptionNot.setDocType(getDocType(scheduleType));
                 consumptionNot.setNewDocInfos(newDocInfoList);

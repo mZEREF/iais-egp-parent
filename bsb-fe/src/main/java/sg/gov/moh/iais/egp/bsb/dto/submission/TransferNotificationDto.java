@@ -36,12 +36,20 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DATA_
 public class TransferNotificationDto implements Serializable {
     @Data
     public static class TransferNot implements Serializable{
+        @JMap
         private String scheduleType;
+        @JMap
         private String batCode;
+        @JMap
         private String transferType;
+        @JMap
         private String batQty;
+        @JMap
         private String transferQty;
+        @JMap
         private String mstUnit;
+        @JMap
+        private String index;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -49,6 +57,8 @@ public class TransferNotificationDto implements Serializable {
         private String docType;
         @JsonIgnore
         private String repoIdNewString;
+        @JsonIgnore
+        private String repoIdSavedString;
 
         public TransferNot() {
             this.newDocInfos = new ArrayList<>();
@@ -62,18 +72,25 @@ public class TransferNotificationDto implements Serializable {
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
+    @JMap
     private String facId;
+    @JMap
     private String receiveFacility;
+    @JMap
     private String expectedTfDate;
+    @JMap
     private String expArrivalTime;
+    @JMap
     private String providerName;
+    @JMap
     private String remarks;
+    @JMap
     private String ensure;
     @JMap
     private String draftAppNo;
     @JMap
     private String dataSubmissionType;
-
+    @JMap("needList")
     private List<TransferNot> transferNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
     private Map<Integer,List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
@@ -116,6 +133,8 @@ public class TransferNotificationDto implements Serializable {
         private String batQty;
         private String transferQty;
         private String mstUnit;
+        //
+        private String index;
     }
 
     @Data
@@ -331,6 +350,7 @@ public class TransferNotificationDto implements Serializable {
             transferNotNeed.setTransferQty(t.getTransferQty());
             transferNotNeed.setBatQty(t.getBatQty());
             transferNotNeed.setMstUnit(t.getMstUnit());
+            transferNotNeed.setIndex(t.getIndex());
             return transferNotNeed; }).collect(Collectors.toList());
         TransferNotNeedR transferNotNeedR = new TransferNotNeedR();
         transferNotNeedR.setNeedList(transferNotNeeds);
@@ -472,6 +492,8 @@ public class TransferNotificationDto implements Serializable {
                 transferNot.setBatQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_TYPE + SEPARATOR + idx));
                 transferNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
                 transferNot.setMstUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
+                transferNot.setIndex(idx);
+
                 List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx), this.allNewDocInfos, keyFlag);
                 transferNot.setDocType(getDocType(scheduleType));
                 transferNot.setNewDocInfos(newDocInfoList);

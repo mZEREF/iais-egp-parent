@@ -39,6 +39,10 @@ public class DataSubmissionConstant {
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";
     public static String AR_PREMISES                        = "AR_PREMISES";
 
+    public static String AR_TRANSFER_OUT_IN_PREMISES_SEL    = "transferOutInPremisesSelect";
+    public static String AR_TRANSFER_OUT_STAGE_NO           = "outStageDsNo";
+    public static String AR_TRANSFER_OUT_STAGE_SUPER_DTO    = "outStageArDto";
+
     public static String DP_DATA_SUBMISSION                 = "dpSuperDataSubmissionDto";
     public static String DP_OLD_DATA_SUBMISSION             = "dpOldSuperDataSubmissionDto";
     public static String DP_PREMISES_MAP                    = "DP_PREMISES_MAP";
@@ -56,6 +60,12 @@ public class DataSubmissionConstant {
 
     public static String DS_TITLE_NEW                       = "New Data Submission";
     public static String DS_TITLE_RFC                       = "Amendment";
+
+    public static String DS_SMALL_TITLE_ART                 = "Assisted Reproduction";
+    public static String DS_SMALL_TITLE_DRP                 = "Drug Practices";
+
+    public static String DS_SHOW_PATIENT                    = "Patient";
+    public static String DS_SHOW_HUSBAND                    = "Husband";
 
     public static String PRINT_FLAG                         = "printflag";
     public static String PRINT_FLAG_PTART                   = "PTART";

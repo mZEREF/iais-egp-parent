@@ -192,11 +192,17 @@ function removeBtnEventHandler() {
     var existId = $("#existFiles--v--"+idx).val();
     var deleteNewFiles = document.getElementById("deleteNewFiles");
     var deleteIdx = document.getElementById("deleteIdx");
+    //delete saved doc
+    var savedDocId = $("#existSavedFiles--v--"+idx).val();
+    var deleteSavedFiles = document.getElementById("deleteExistFiles");
     if(existId !== "" && deleteNewFiles !== null){
         appendInputValue(deleteNewFiles,existId);
     }
     if(secIdx !== "" && deleteIdx !== null){
         appendInputValue(deleteIdx,secIdx);
+    }
+    if(savedDocId !== "" && deleteSavedFiles !== null){
+        appendInputValue(deleteSavedFiles,savedDocId);
     }
     var meta = readSectionRepeatMetaData();
     if (meta) {

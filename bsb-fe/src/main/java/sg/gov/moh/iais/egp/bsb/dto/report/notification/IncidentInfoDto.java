@@ -25,6 +25,7 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IncidentInfoDto extends ValidatableNodeValue {
 
+    private String draftAppNo;
     private String incidentEntityId;
     private String referenceNo;
     private String incidentReporting;
@@ -57,6 +58,14 @@ public class IncidentInfoDto extends ValidatableNodeValue {
     @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
     }
 
     public String getIncidentEntityId() {

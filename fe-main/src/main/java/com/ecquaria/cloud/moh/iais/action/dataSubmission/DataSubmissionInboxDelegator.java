@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -127,6 +128,7 @@ public class DataSubmissionInboxDelegator {
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId()) || IaisCommonUtils.isEmpty((List<String>)ParamUtil.getSessionAttr(request,DS_TYPES))){
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
+				searchParam.addParam("fromCenter",ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false));
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
 				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);

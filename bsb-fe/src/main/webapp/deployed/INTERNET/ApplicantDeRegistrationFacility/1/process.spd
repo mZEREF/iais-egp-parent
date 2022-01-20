@@ -1,71 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="ApplicantDeRegistrationFacility" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="48" y="60">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="Init" x="156" y="62">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="ValidCommit" x="408" y="60">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="validCommit_OnStepProcess_0" name="validCommit_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="validCommit_OnStepProcess_0" name="validCommit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSaveSubmit" x="684" y="408">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="DoSaveSubmit" x="804" y="396">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSaveSubmit_OnStepProcess_0" name="doSaveSubmit_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSaveDraft" x="576" y="168">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doSaveSubmit_OnStepProcess_0" name="doSaveSubmit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreparePreview" x="408" y="276">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preparePreview_OnStepProcess_0" name="preparePreview_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preparePreview_OnStepProcess_0" name="preparePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoPreview" x="696" y="276">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPreview_OnStepProcess_0" name="doPreview_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreparePage" stageIndicator="" x="276" y="60">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreparePreviewPage" stageIndicator="" x="396" y="408">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreparePreviewPage" stageIndicator="" x="552" y="276">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowledgementPage" stageIndicator="" x="828" y="408">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowledgementPage" stageIndicator="" x="948" y="396">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(68,80)(176,82)}</position>
@@ -77,7 +77,7 @@
    <position>{(296,80)(428,80)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AcknowledgementPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoSaveSubmit" style="oblique">
-   <position>{(704,428)(848,428)}</position>
+   <position>{(824,416)(968,416)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/JumpSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ValidCommit" style="oblique">
    <position>{(428,80)(440,200)}</position>
@@ -86,45 +86,45 @@
    <position>{(440,200)(176,82)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(596,428)(704,428)}</position>
+   <position>{(716,416)(824,416)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(596,428)(620,576)(180,578)(176,82)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreparePreviewPage" style="oblique">
-   <position>{(416,428)(596,428)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(596,428)(596,188)}</position>
+   <position>{(716,416)(738,572)(180,578)(176,82)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/JumpSwitch" style="oblique">
    <position>{(440,200)(428,296)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreparePreviewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="oblique">
-   <position>{(428,296)(416,428)}</position>
+   <position>{(428,296)(572,296)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/JumpSwitch" style="oblique">
-   <position>{(440,200)(596,188)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(716,416)(428,296)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoPreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreparePreviewPage" style="oblique">
+   <position>{(572,296)(716,296)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoPreview" style="oblique">
+   <position>{(716,296)(716,416)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="JumpSwitch" x="420" y="180">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/Init" value="&quot;init&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preparePreview&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/DoSaveDraft" value="&quot;doSaveDraft&quot;"/>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_1" name="JumpSwitch" x="420" y="180">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Init" value="&quot;init&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preparePreview&quot;" />
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="ActionSwitch" x="576" y="408">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/DoSaveSubmit" value="&quot;doSaveSubmit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Init" value="&quot;init&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/DoSaveDraft" value="&quot;doSaveDraft&quot;"/>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_2" name="ActionSwitch" x="696" y="396">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/DoSaveSubmit" value="&quot;doSaveSubmit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Init" value="&quot;init&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preparePreview&quot;" />
   </Switch>
  </Switches>
- <Branches/>
- <Merges/>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

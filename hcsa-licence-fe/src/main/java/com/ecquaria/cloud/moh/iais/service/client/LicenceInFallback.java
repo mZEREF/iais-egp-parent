@@ -527,4 +527,13 @@ public class LicenceInFallback implements LicenceClient {
         return getFeignResponseEntity(orgId, centerType);
     }
 
+    @Override
+    public FeignResponseEntity<List<DsCenterDto>> getCenterDtosByCentreType(String centerType) {
+        return getFeignResponseEntity(centerType);
+    }
+
+    @Override
+    public FeignResponseEntity<DsCenterDto> getArCenter(String orgId, String hciCode) {
+        return  getFeignResponseEntity(orgId, hciCode);
+    }
 }

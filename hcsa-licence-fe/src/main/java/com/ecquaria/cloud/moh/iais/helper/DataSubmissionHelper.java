@@ -5,7 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -65,6 +74,9 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
         session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
+        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
+        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
+        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
@@ -234,9 +246,6 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-            result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
-            result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
-            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || DsHelper.isCycleFinalStatus(lastStatus)) {
@@ -380,9 +389,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 
@@ -425,9 +432,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         cycleDto.setCycleType(cycleType);
         return cycleDto;
     }
@@ -465,9 +470,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         cycleDto.setCycleType(cycleType);
         return cycleDto;
     }
@@ -489,7 +492,7 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
-    public static CycleDto initCycleDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto, boolean reNew) {
+    public static CycleDto initCycleDto(TopSuperDataSubmissionDto topSuperDataSubmissionDto, String licenseeId, boolean reNew) {
         CycleDto cycleDto = topSuperDataSubmissionDto.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -504,6 +507,7 @@ public final class DataSubmissionHelper {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
         cycleDto.setCycleType(cycleType);
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 
@@ -651,7 +655,7 @@ public final class DataSubmissionHelper {
         return getNumsSelections(0, endNum);
     }
 
-    public static String getPatientAgeMessage(String person) {
+    public static String getAgeMessage(String person) {
         String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
         String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
         Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
@@ -687,14 +691,6 @@ public final class DataSubmissionHelper {
         return emailAddress.toString();
     }
 
-    public static String getMainTitle(ArSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
-    }
-
-    public static String getMainTitle(DpSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : "");
-    }
-
     public static String getMainTitle(String type) {
         String title;
         switch (type) {
@@ -705,6 +701,21 @@ public final class DataSubmissionHelper {
                 title = DataSubmissionConstant.DS_TITLE_NEW;
         }
         return title;
+    }
+
+    public static String getSmallTitle(String type) {
+        StringBuilder title = new StringBuilder();
+        title.append("You are submitting for <strong>");
+        switch (type) {
+            case DataSubmissionConsts.DS_AR:
+                title.append(DataSubmissionConstant.DS_SMALL_TITLE_ART);
+                break;
+            case DataSubmissionConsts.DS_DRP:
+                title.append(DataSubmissionConstant.DS_SMALL_TITLE_DRP);
+                break;
+        }
+        title.append("</strong>");
+        return title.toString();
     }
 
     public static String getCode(String codeValue, List<MasterCodeView> masterCodes) {
@@ -902,9 +913,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
-        if (StringUtil.isEmpty(licenseeId)) {
-            cycleDto.setLicenseeId(licenseeId);
-        }
+        cycleDto.setLicenseeId(licenseeId);
         return cycleDto;
     }
 

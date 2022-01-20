@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
@@ -111,7 +113,7 @@ public class DataSubmissionDelegator {
                         JMapper<DisposalNotificationDto, DisposalNotificationDto.DisposalNotNeedR> disposalDtoJMapper = new JMapper<>(DisposalNotificationDto.class, DisposalNotificationDto.DisposalNotNeedR.class);
                         DisposalNotificationDto disposalNotificationDto = disposalDtoJMapper.getDestinationWithoutControl(disposalNotNeedR);
                         //put saved doc to savedDocMap
-                        if (CollectionUtils.isEmpty(disposalNotNeedR.getDocInfos())) {
+                        if (!CollectionUtils.isEmpty(disposalNotNeedR.getDocInfos())) {
                             disposalNotificationDto.draftDocToMap(disposalNotNeedR.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_DISPOSAL_NOTIFICATION_DTO, disposalNotificationDto);
@@ -122,7 +124,7 @@ public class DataSubmissionDelegator {
                         JMapper<ExportNotificationDto, ExportNotificationDto.ExportNotNeedR> exportDtoJMapper = new JMapper<>(ExportNotificationDto.class, ExportNotificationDto.ExportNotNeedR.class);
                         ExportNotificationDto exportNotificationDto = exportDtoJMapper.getDestinationWithoutControl(exportNotNeedR);
                         //put saved doc to savedDocMap
-                        if (CollectionUtils.isEmpty(exportNotNeedR.getDocInfos())) {
+                        if (!CollectionUtils.isEmpty(exportNotNeedR.getDocInfos())) {
                             exportNotificationDto.draftDocToMap(exportNotNeedR.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_EXPORT_NOTIFICATION_DTO, exportNotificationDto);
@@ -133,7 +135,7 @@ public class DataSubmissionDelegator {
                         JMapper<ReceiptNotificationDto, ReceiptNotificationDto.ReceiptNotNeedR> receiptDtoJMapper = new JMapper<>(ReceiptNotificationDto.class, ReceiptNotificationDto.ReceiptNotNeedR.class);
                         ReceiptNotificationDto receiptNotificationDto = receiptDtoJMapper.getDestinationWithoutControl(receiptNotNeedR);
                         //put saved doc to savedDocMap
-                        if (CollectionUtils.isEmpty(receiptNotNeedR.getDocInfos())) {
+                        if (!CollectionUtils.isEmpty(receiptNotNeedR.getDocInfos())) {
                             receiptNotificationDto.draftDocToMap(receiptNotNeedR.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_RECEIPT_NOTIFICATION_DTO, receiptNotificationDto);
@@ -187,6 +189,20 @@ public class DataSubmissionDelegator {
         //
         Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos = notificationDto.getOldKeySavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_KEY_MAP, oldKeySavedInfos);
+
+        //key is index in ConsumptionNot
+        Map<String, ConsumeNotificationDto.ConsumptionNot> notificationMap = notificationDto.getConsumptionNotList().stream().collect(Collectors.toMap(ConsumeNotificationDto.ConsumptionNot::getIndex, Function.identity()));
+        for (ConsumeNotificationDto.ConsumptionNot dto : notificationMap.values()) {
+            if (StringUtils.hasLength(dto.getIndex())) {
+                List<PrimaryDocDto.DocRecordInfo> docRecordInfos = oldKeySavedInfos.get(Integer.valueOf(dto.getIndex()));
+                if (!CollectionUtils.isEmpty(docRecordInfos)) {
+                    //Retrieves the ids of all saved files in the current section and stores them in the repoIdSavedString
+                    String savedRepoIdString = docRecordInfos.stream().map(PrimaryDocDto.DocRecordInfo::getRepoId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    dto.setRepoIdSavedString(savedRepoIdString);
+                }
+            }
+        }
+        //
 
         List<PrimaryDocDto.DocRecordInfo> otherSavedInfos = notificationDto.getOtherSavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_OTHERS_DOC, otherSavedInfos);
@@ -300,6 +316,18 @@ public class DataSubmissionDelegator {
 
         Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos = notificationDto.getOldKeySavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_KEY_MAP, oldKeySavedInfos);
+        //key is index in ConsumptionNot
+        Map<String, DisposalNotificationDto.DisposalNot> notificationMap = notificationDto.getDisposalNotList().stream().collect(Collectors.toMap(DisposalNotificationDto.DisposalNot::getIndex, Function.identity()));
+        for (DisposalNotificationDto.DisposalNot dto : notificationMap.values()) {
+            if (StringUtils.hasLength(dto.getIndex())) {
+                List<PrimaryDocDto.DocRecordInfo> docRecordInfos = oldKeySavedInfos.get(Integer.valueOf(dto.getIndex()));
+                if (!CollectionUtils.isEmpty(docRecordInfos)) {
+                    //Retrieves the ids of all saved files in the current section and stores them in the repoIdSavedString
+                    String savedRepoIdString = docRecordInfos.stream().map(PrimaryDocDto.DocRecordInfo::getRepoId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    dto.setRepoIdSavedString(savedRepoIdString);
+                }
+            }
+        }
 
         List<PrimaryDocDto.DocRecordInfo> otherSavedInfos = notificationDto.getOtherSavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_OTHERS_DOC, otherSavedInfos);
@@ -401,7 +429,18 @@ public class DataSubmissionDelegator {
 
         Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos = notificationDto.getOldKeySavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_KEY_MAP, oldKeySavedInfos);
-
+        //key is index in ConsumptionNot
+        Map<String, ExportNotificationDto.ExportNot> notificationMap = notificationDto.getExportNotList().stream().collect(Collectors.toMap(ExportNotificationDto.ExportNot::getIndex, Function.identity()));
+        for (ExportNotificationDto.ExportNot dto : notificationMap.values()) {
+            if (StringUtils.hasLength(dto.getIndex())) {
+                List<PrimaryDocDto.DocRecordInfo> docRecordInfos = oldKeySavedInfos.get(Integer.valueOf(dto.getIndex()));
+                if (!CollectionUtils.isEmpty(docRecordInfos)) {
+                    //Retrieves the ids of all saved files in the current section and stores them in the repoIdSavedString
+                    String savedRepoIdString = docRecordInfos.stream().map(PrimaryDocDto.DocRecordInfo::getRepoId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    dto.setRepoIdSavedString(savedRepoIdString);
+                }
+            }
+        }
         List<PrimaryDocDto.DocRecordInfo> otherSavedInfos = notificationDto.getOtherSavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_OTHERS_DOC, otherSavedInfos);
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, KEY_DATA_SUBMISSION_TYPE_EXPORT);
@@ -502,7 +541,18 @@ public class DataSubmissionDelegator {
 
         Map<Integer, List<PrimaryDocDto.DocRecordInfo>> oldKeySavedInfos = notificationDto.getOldKeySavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_KEY_MAP, oldKeySavedInfos);
-
+        //key is index in ConsumptionNot
+        Map<String, ReceiptNotificationDto.ReceiptNot> notificationMap = notificationDto.getReceiptNotList().stream().collect(Collectors.toMap(ReceiptNotificationDto.ReceiptNot::getIndex, Function.identity()));
+        for (ReceiptNotificationDto.ReceiptNot dto : notificationMap.values()) {
+            if (StringUtils.hasLength(dto.getIndex())) {
+                List<PrimaryDocDto.DocRecordInfo> docRecordInfos = oldKeySavedInfos.get(Integer.valueOf(dto.getIndex()));
+                if (!CollectionUtils.isEmpty(docRecordInfos)) {
+                    //Retrieves the ids of all saved files in the current section and stores them in the repoIdSavedString
+                    String savedRepoIdString = docRecordInfos.stream().map(PrimaryDocDto.DocRecordInfo::getRepoId).map(i -> MaskUtil.maskValue("file", i)).collect(Collectors.joining(","));
+                    dto.setRepoIdSavedString(savedRepoIdString);
+                }
+            }
+        }
         List<PrimaryDocDto.DocRecordInfo> otherSavedInfos = notificationDto.getOtherSavedInfos();
         ParamUtil.setRequestAttr(request, PARAM_SAVED_OTHERS_DOC, otherSavedInfos);
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, KEY_DATA_SUBMISSION_TYPE_RECEIPT);

@@ -67,7 +67,7 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="250" y="230">
    <Description />
-   <SwitchCase component="/Steps/InvokeStep/IncidentNotification" value="&quot;notificaiton&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/IncidentNotification" value="&quot;notification&quot;" />
    <SwitchCase component="/Steps/InvokeStep/InvestigationReport" value="&quot;investigation&quot;" />
    <SwitchCase component="/Steps/InvokeStep/IncidentFollowUPReport1A" value="&quot;followup1A&quot;" />
    <SwitchCase component="/Steps/InvokeStep/IncidentFollowUPReport1B" value="&quot;followup1B&quot;" />

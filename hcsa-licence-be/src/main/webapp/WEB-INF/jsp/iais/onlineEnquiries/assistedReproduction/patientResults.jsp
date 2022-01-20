@@ -12,8 +12,10 @@
 %>
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
+<link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -220,7 +222,7 @@
                                                             </td>
 
                                                             <td >
-                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
+                                                                <button type="button" onclick="quickView('${patient.patientCode}')"   data-panel="main" class=" btn btn-sm cd-btn js-cd-panel-trigger">
                                                                     Quick View
                                                                 </button>
                                                                 <br>
@@ -234,20 +236,7 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
-                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:100px">
-                                            <div class="col-md-8"  role="document" style="float:right ">
-                                                <div class="modal-content">
-                                                    <div class="row">
-                                                        <div class="col-md-1" >
-                                                            <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> > </span></button>
-                                                        </div>
-                                                        <div class="col-md-11 " >
-                                                            <div class="quickBodyDiv"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                 </div>
@@ -347,3 +336,16 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+
+<div class="cd-panel cd-panel--from-right js-cd-panel-main">
+    <div class="cd-panel__header">
+        <h3>Quick View Panel</h3>
+        <a  class="cd-panel__close js-cd-close">Close</a>
+    </div>
+    <div class="cd-panel__container">
+        <div class="cd-panel__content quickBodyDiv">
+
+        </div> <!-- cd-panel__content -->
+    </div> <!-- cd-panel__container -->
+</div>
+
