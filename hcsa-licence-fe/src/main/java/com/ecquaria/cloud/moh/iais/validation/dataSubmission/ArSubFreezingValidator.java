@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
@@ -33,18 +33,18 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                     errMap.put("cryopreservedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                 }
                 //Cannot be greater than number of fresh oocytes or fresh embryos under patient's inventory currently
-                PatientInventoryDto patientInventoryDto = arSuperDataSubmission.getPatientInventoryDto();
+                ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmission.getArCurrentInventoryDto();
                 String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
                 int oocytesOrEmbryos = 0;
-                if (patientInventoryDto != null) {
+                if (arCurrentInventoryDto != null) {
                     if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = patientInventoryDto.getCurrentFreshOocytes();
+                        oocytesOrEmbryos = arCurrentInventoryDto.getFreshOocyteNum();
                     } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = patientInventoryDto.getCurrentFreshEmbryos();
+                        oocytesOrEmbryos = arCurrentInventoryDto.getFreshEmbryoNum();
                     } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = patientInventoryDto.getCurrentThawedOocytes();
+                        oocytesOrEmbryos = arCurrentInventoryDto.getThawedOocyteNum();
                     } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
-                        oocytesOrEmbryos = patientInventoryDto.getCurrentThawedEmbryos();
+                        oocytesOrEmbryos = arCurrentInventoryDto.getThawedEmbryoNum();
                     }
                 }
                 if (cryopreservedNum > oocytesOrEmbryos) {

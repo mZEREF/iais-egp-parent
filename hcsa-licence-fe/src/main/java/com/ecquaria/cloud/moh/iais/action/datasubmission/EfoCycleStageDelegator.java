@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -75,16 +74,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        try{
-            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
-            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
-            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }
         EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");

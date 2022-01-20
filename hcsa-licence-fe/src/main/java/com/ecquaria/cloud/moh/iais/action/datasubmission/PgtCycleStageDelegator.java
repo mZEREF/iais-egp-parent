@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -93,16 +92,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        try{
-            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
-            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
-            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         pgtStageDto.setIsPgtMCom(0);
         pgtStageDto.setIsPgtMRare(0);

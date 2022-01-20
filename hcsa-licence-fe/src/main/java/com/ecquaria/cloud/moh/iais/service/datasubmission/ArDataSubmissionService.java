@@ -73,15 +73,6 @@ public interface ArDataSubmissionService {
 
     Date getLastCompletedCycleStartDate(String patientCode, String hciCode);
 
-    /**
-      * @author: shicheng
-      * @Date 2021/11/9
-      * @Param: patientInventoryDto, arSubFreezingStageDto
-      * @return: PatientInventoryDto
-      * @Descripation: setFreezingPatientChange
-      */
-    PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto);
-
     DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCodeType,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
 
     /**
@@ -108,8 +99,6 @@ public interface ArDataSubmissionService {
     List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey);
 
     List<String> saveFileRepo(List<File> files);
-
-    PatientInventoryDto getPatientInventory(String patientCode, String HciCode);
 
     List<DonorDto> getAllDonorDtoByCycleId(String cycleId);
 

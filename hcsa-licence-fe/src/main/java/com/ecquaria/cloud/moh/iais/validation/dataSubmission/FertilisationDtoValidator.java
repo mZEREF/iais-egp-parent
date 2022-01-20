@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -9,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +36,11 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         int patientFrozen = 100;
         int thawedMaxNum = 100;
         int freshMaxNum = 100;
-        if(arSuperDataSubmissionDto.getPatientInventoryDto() != null){
-            thawedMaxNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentThawedOocytes();
-            freshMaxNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFreshOocytes();
-           patientFrozen=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenSperms();
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
+        if (arCurrentInventoryDto != null) {
+            thawedMaxNum = arCurrentInventoryDto.getThawedOocyteNum();
+            freshMaxNum = arCurrentInventoryDto.getFreshOocyteNum();
+            patientFrozen = arCurrentInventoryDto.getFrozenSpermNum();
         }
         int totalThawedSum = 0;
         int totalFreshSum = 0;

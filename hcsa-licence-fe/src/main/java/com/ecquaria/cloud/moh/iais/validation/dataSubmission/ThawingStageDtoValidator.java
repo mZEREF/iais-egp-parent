@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -70,7 +70,7 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
             }
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
 
         int thawedOocytesNumInt = toInt(thawingStageDto.getThawedOocytesNum());
         int hawedEmbryosNumInt = toInt(thawingStageDto.getThawedEmbryosNum());
@@ -78,11 +78,11 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
         int thawedOocytesSurvivedImmatureNumInt = toInt(thawingStageDto.getThawedOocytesSurvivedImmatureNum());
         int thawedOocytesSurvivedOtherNumInt = toInt(thawingStageDto.getThawedOocytesSurvivedOtherNum());
         int thawedEmbryosSurvivedNumInt = toInt(thawingStageDto.getThawedEmbryosSurvivedNum());
-        if (patientInventoryDto != null) {
-            if (thawedOocytesNumInt > patientInventoryDto.getCurrentFrozenOocytes()) {
+        if (arCurrentInventoryDto != null) {
+            if (thawedOocytesNumInt > arCurrentInventoryDto.getFrozenOocyteNum()) {
                 errorMap.put("thawedOocytesNum", "No. of Oocytes Thawed cannot be greater than total number of frozen oocytes tagged patient");
             }
-            if (hawedEmbryosNumInt > patientInventoryDto.getCurrentFrozenEmbryos()) {
+            if (hawedEmbryosNumInt > arCurrentInventoryDto.getFrozenEmbryoNum()) {
                 errorMap.put("thawedEmbryosNum", "No. of Embryos Thawed cannot be greater than total number of frozen embryos tagged patient");
             }
         }

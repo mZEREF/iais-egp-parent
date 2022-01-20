@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -47,15 +47,14 @@ public class ThawingDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
-
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
+        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
         if (thawingStageDto.getHasOocyte()) {
-            patientInventoryDto.setChangeFrozenOocytes(-1 * Integer.parseInt(thawingStageDto.getThawedOocytesNum()));
-            patientInventoryDto.setChangeThawedOocytes(Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedMatureNum()));
+            arChangeInventoryDto.setFrozenOocyteNum(-1 * Integer.parseInt(thawingStageDto.getThawedOocytesNum()));
+            arChangeInventoryDto.setThawedOocyteNum(Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedMatureNum()));
         }
         if (thawingStageDto.getHasEmbryo()) {
-            patientInventoryDto.setChangeFrozenEmbryos(-1 * Integer.parseInt(thawingStageDto.getThawedEmbryosNum()));
-            patientInventoryDto.setChangeThawedEmbryos(Integer.parseInt(thawingStageDto.getThawedEmbryosSurvivedNum()));
+            arChangeInventoryDto.setFrozenEmbryoNum(-1 * Integer.parseInt(thawingStageDto.getThawedEmbryosNum()));
+            arChangeInventoryDto.setThawedEmbryoNum(Integer.parseInt(thawingStageDto.getThawedEmbryosSurvivedNum()));
         }
     }
 

@@ -2,10 +2,10 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -82,11 +82,11 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
         } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getThirdEmbryoType())) {
             thawedEmbryoNum++;
         }
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
-        if (freshEmbryoNum > patientInventoryDto.getCurrentFreshEmbryos()){
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
+        if (freshEmbryoNum > arCurrentInventoryDto.getFreshEmbryoNum()) {
             errorMap.put("FreshEmbryosNum", "No. of Fresh Embryos cannot be greater than total number of fresh Embryos tagged patient");
         }
-        if (thawedEmbryoNum > patientInventoryDto.getCurrentThawedEmbryos()){
+        if (thawedEmbryoNum > arCurrentInventoryDto.getThawedEmbryoNum()) {
             errorMap.put("thawedEmbryosNum", "No. of Thawed Embryos cannot be greater than total number of thawed Embryos tagged patient");
         }
         return errorMap;

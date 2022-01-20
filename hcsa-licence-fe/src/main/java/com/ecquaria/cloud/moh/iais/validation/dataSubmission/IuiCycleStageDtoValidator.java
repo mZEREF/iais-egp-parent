@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -65,7 +64,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                     }
                 }
 
-                int patientFrozen = arSuperDataSubmission.getPatientInventoryDto() == null ? 0 : arSuperDataSubmission.getPatientInventoryDto().getCurrentFrozenSperms();
+                int patientFrozen = arSuperDataSubmission.getArCurrentInventoryDto() == null ? 0 : arSuperDataSubmission.getArCurrentInventoryDto().getFrozenSpermNum();
                 int allFrozen = patientFrozen + extractVialsOfSperm;
                 if(usedVialsOfSperm > allFrozen && usedVialsOfSperm < 100) {
                     Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);

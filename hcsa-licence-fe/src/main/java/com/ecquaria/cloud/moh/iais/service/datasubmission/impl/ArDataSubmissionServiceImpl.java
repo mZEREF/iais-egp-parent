@@ -20,8 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransfer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -403,29 +401,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto,
-            ArSubFreezingStageDto arSubFreezingStageDto) {
-        if (patientInventoryDto != null && arSubFreezingStageDto != null) {
-            String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
-            int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());
-            if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshOocytes(-1 * cryopreservedNum);
-                patientInventoryDto.setChangeFrozenOocytes(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshEmbryos(-1 * cryopreservedNum);
-                patientInventoryDto.setChangeFrozenEmbryos(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedOocytes(-1 * cryopreservedNum);
-                patientInventoryDto.setChangeFrozenOocytes(cryopreservedNum);
-            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedEmbryos(-1 * cryopreservedNum);
-                patientInventoryDto.setChangeFrozenEmbryos(cryopreservedNum);
-            }
-        }
-        return patientInventoryDto;
-    }
-
-    @Override
     public DonorSampleDto getDonorSampleDto(String idType, String idNumber,String donorSampleCodeType,String donorSampleCode, String sampleFromHciCode,
             String sampleFromOthers) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
@@ -512,15 +487,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public PatientInventoryDto getPatientInventory(String patientCode, String HciCode) {
-        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(HciCode)){
-            log.info(StringUtil.changeForLog("------ No patient code or hci code -----"));
-            return new PatientInventoryDto();
-        }
-        return arFeClient.patientInventoryByCode(patientCode, HciCode).getEntity();
-    }
-
-    @Override
     public List<DonorDto> getAllDonorDtoByCycleId(String cycleId) {
         if (StringUtil.isEmpty(cycleId)){
             log.info(StringUtil.changeForLog("------ No cycle Id -----"));
@@ -559,11 +525,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 //        if (cycleDto != null){
 //            embryoTransferCount = embryoTransferCount(cycleDto.getId());
 //        }
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
-        if (patientInventoryDto != null) {
-            embryoTransferCount += patientInventoryDto.getCurrentFreshEmbryos();
-            embryoTransferCount += patientInventoryDto.getCurrentThawedEmbryos();
-            embryoTransferCount += patientInventoryDto.getCurrentFrozenEmbryos();
+        ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
+        if (arCurrentInventoryDto != null) {
+            embryoTransferCount += arCurrentInventoryDto.getFreshEmbryoNum();
+            embryoTransferCount += arCurrentInventoryDto.getThawedEmbryoNum();
+            embryoTransferCount += arCurrentInventoryDto.getFrozenEmbryoNum();
         }
         return haveEmbryoTransferGreaterFiveDayIncludeCurrentStage(arSuperDataSubmissionDto)
                 && embryoTransferCount >= 3;

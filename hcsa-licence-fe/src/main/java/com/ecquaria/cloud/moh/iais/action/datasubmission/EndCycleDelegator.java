@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -46,7 +46,6 @@ public class EndCycleDelegator extends CommonDelegator{
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
     }
 
     @Override
@@ -92,12 +91,12 @@ public class EndCycleDelegator extends CommonDelegator{
                 }
             }
 
-            PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
-            if (patientInventoryDto != null) {
-                if (patientInventoryDto.getCurrentFreshOocytes() > 0
-                        || patientInventoryDto.getCurrentThawedOocytes() > 0
-                        || patientInventoryDto.getCurrentFreshEmbryos() > 0
-                        || patientInventoryDto.getCurrentThawedEmbryos() > 0) {
+            ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request);
+            if (arCurrentInventoryDto != null) {
+                if (arCurrentInventoryDto.getFreshOocyteNum() > 0
+                        || arCurrentInventoryDto.getThawedOocyteNum() > 0
+                        || arCurrentInventoryDto.getFreshEmbryoNum() > 0
+                        || arCurrentInventoryDto.getThawedEmbryoNum() > 0) {
                     errorMap.put("inventoryNoZero", MessageUtil.getMessageDesc("DS_ERR017"));
                 }
             }

@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInven
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -184,7 +183,7 @@ public class TransferInOutDelegator extends CommonDelegator {
                 .map(LoginContext::getOrgId).orElse("");
         String hciCode = getReceivedHciCode(transferInOutStageDto);
         if (StringUtil.isNotEmpty(hciCode)) {
-            String licenseeId = getLicenseeId(orgId, hciCode);
+            String licenseeId = DataSubmissionHelper.getLicenseeId(request);
             sendNeedTransferInNotification(licenseeId, arSuperDataSubmissionDto.getHciCode(), arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
         }
     }
@@ -218,19 +217,6 @@ public class TransferInOutDelegator extends CommonDelegator {
         return null;
     }
 
-    private String getLicenseeId(String orgId, String hciCode) {
-        String result = null;
-        PremisesDto premisesDto = dsLicenceService.getPremisesDto(orgId, hciCode);
-        if (premisesDto != null) {
-            String organizationId = premisesDto.getOrganizationId();
-            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(organizationId);
-            if (licenseeDto != null) {
-                result = licenseeDto.getId();
-            }
-        }
-        return result;
-    }
-
     private void initReceive(HttpServletRequest request) {
         String outStageDsNo = ParamUtil.getRequestString(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
         if (StringUtil.isEmpty(outStageDsNo)) {
@@ -247,7 +233,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         String hciCode = outStageDto.getTransOutToHciCode();
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
-        PremisesDto premisesDto = dsLicenceService.getPremisesDto(orgId, hciCode);
+        PremisesDto premisesDto = dsLicenceService.getArPremisesDto(orgId, hciCode);
 
         ArSuperDataSubmissionDto arSuper = new ArSuperDataSubmissionDto();
         arSuper.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE);
@@ -274,7 +260,6 @@ public class TransferInOutDelegator extends CommonDelegator {
             arSuper.setCycleDto(cycleDto);
             arSuper.setSelectionDto(selectionDto);
             arSuper.setPatientInfoDto(newDto.getPatientInfoDto());
-            arSuper.setPatientInventoryDto(newDto.getPatientInventoryDto());
             ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
             if (arCurrentInventoryDto == null){
                 arCurrentInventoryDto = new ArCurrentInventoryDto();
