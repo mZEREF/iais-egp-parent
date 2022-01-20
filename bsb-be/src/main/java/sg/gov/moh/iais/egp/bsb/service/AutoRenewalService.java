@@ -11,8 +11,6 @@ import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApprovalDto;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -81,8 +79,8 @@ public class AutoRenewalService {
         SystemParameterDto sysParDtoFacCerM2 = systemBeBsbClient.getParameterByRowguid(FAC_CONFIG_CER_MONTH_2).getEntity();
         SystemParameterDto sysParDtoFacCerM1 = systemBeBsbClient.getParameterByRowguid(FAC_CONFIG_CER_MONTH_1).getEntity();
 
-        Map<String, Date> facDateMap = Maps.newLinkedHashMapWithExpectedSize(5);
-        Map<String, Date> facCerDateMap = Maps.newLinkedHashMapWithExpectedSize(6);
+        Map<String, LocalDate> facDateMap = Maps.newLinkedHashMapWithExpectedSize(5);
+        Map<String, LocalDate> facCerDateMap = Maps.newLinkedHashMapWithExpectedSize(6);
         log.info("The facility registration remind date is {}", org.apache.commons.lang.StringUtils.normalizeSpace(facDateMap.toString()));
         log.info("The facility certifier registration remind date is {}", org.apache.commons.lang.StringUtils.normalizeSpace(facCerDateMap.toString()));
 
@@ -131,7 +129,7 @@ public class AutoRenewalService {
         sendNotification(expiredApprovalDtoList);
     }
 
-    private Date getRemindDay(SystemParameterDto systemParameterDto){
+    private LocalDate getRemindDay(SystemParameterDto systemParameterDto){
         String value = systemParameterDto.getValue();
         String valueType = systemParameterDto.getValueType();
         String paramType = systemParameterDto.getParamType();
@@ -139,13 +137,9 @@ public class AutoRenewalService {
             int configInt = Integer.parseInt(value);
             LocalDate today = LocalDate.now();
             if (MONTH.equals(paramType)){
-                LocalDate remind = today.plus(configInt, ChronoUnit.MONTHS);
-                ZonedDateTime zonedDateTime = remind.atStartOfDay(ZoneId.systemDefault());
-                return Date.from(zonedDateTime.toInstant());
+                return today.plus(configInt, ChronoUnit.MONTHS);
             }else if (WEEKS.equals(paramType)){
-                LocalDate remind = today.plus(configInt, ChronoUnit.WEEKS);
-                ZonedDateTime zonedDateTime = remind.atStartOfDay(ZoneId.systemDefault());
-                return Date.from(zonedDateTime.toInstant());
+                return today.plus(configInt, ChronoUnit.WEEKS);
             }
             log.info("The config param type is {}", org.apache.commons.lang.StringUtils.normalizeSpace(paramType));
         }
