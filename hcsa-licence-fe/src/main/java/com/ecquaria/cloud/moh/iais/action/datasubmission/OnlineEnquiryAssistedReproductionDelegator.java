@@ -842,7 +842,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             setQueryFilter(arFilterDto,patientParameter,0);
             SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
             LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId());
+            patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
             if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                 String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
                 patientParam.addParam("patient_id_types", patientIdTypeListStr);
@@ -865,7 +865,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             setQueryFilter(arFilterDto,submissionParameter,1);
             SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
-            submissionParam.addFilter("dc_licenseeId",loginContext.getLicenseeId());
+            submissionParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
             CrudHelper.doPaging(submissionParam,bpc.request);
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
             SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);

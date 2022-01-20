@@ -156,7 +156,7 @@ public class OnlineEnquiryDonorSampleDelegator {
             SearchParam donorSampleParam = SearchResultHelper.getSearchParam(request, donorSampleParameter,true);
             CrudHelper.doPaging(donorSampleParam,bpc.request);
             LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            donorSampleParam.addFilter("dc_licenseeId",loginContext.getLicenseeId());
+            donorSampleParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
 
             QueryHelp.setMainSql("onlineEnquiry","searchDonorSampleByAssistedReproduction",donorSampleParam);
             SearchResult<ArEnquiryDonorSampleDto> donorSampleResult = assistedReproductionService.searchDonorSampleByParam(donorSampleParam);
