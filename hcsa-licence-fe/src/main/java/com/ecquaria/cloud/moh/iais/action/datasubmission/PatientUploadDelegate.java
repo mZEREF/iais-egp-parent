@@ -362,26 +362,12 @@ public class PatientUploadDelegate {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- DoPreview -----"));
-        // declaration
-        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
-        dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{ACTION_TYPE_PAGE, "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             return;
         }
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        if (StringUtil.isEmpty(declaration)) {
-            errorMap.put("declaration", "GENERAL_ERR0006");
-        }
-        if (!errorMap.isEmpty()) {
-            log.error("------No checked for declaration-----");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PREVIEW);
-        }*/
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
 
     /**
