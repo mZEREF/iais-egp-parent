@@ -524,7 +524,9 @@ public class NewApplicationHelper {
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         int premCount = 0;
-        if (appSvcLaboratoryDisciplinesDtos.isEmpty()) {
+        if (appSvcLaboratoryDisciplinesDtos == null || appSvcLaboratoryDisciplinesDtos.isEmpty()) {
+            // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
+            map.put("checkError", "GENERAL_ERR0056");
             return map;
         }
         int svcScopeSize = appSvcLaboratoryDisciplinesDtos.size();
@@ -535,11 +537,12 @@ public class NewApplicationHelper {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
             List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
             int count = 0;
-            if (listDtos.isEmpty()) {
-                /*   map.put("checkError","NEW_ERR0012");*/
+            if (listDtos == null || listDtos.isEmpty()) {
+                // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
+                map.put("checkError", "GENERAL_ERR0056");
             } else {
-                boolean selectOtherScope = selectOtherScope(listDtos);
                 String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", NewApplicationConstant.PLEASEINDICATE, "field");
+                boolean selectOtherScope = selectOtherScope(listDtos);
                 if (selectOtherScope) {
                     boolean selectOtherChildrenScope = false;
                     //check children scope is selected
@@ -2622,7 +2625,7 @@ public class NewApplicationHelper {
                     appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                     appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                     appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                    appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
+                    appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_TYPE_BASE);
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 }
             }
@@ -2647,9 +2650,9 @@ public class NewApplicationHelper {
                 }
                 String serviceType = hcsaServiceDto.getSvcType();
                 appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)) {
+                if (ApplicationConsts.SERVICE_TYPE_BASE.equals(serviceType)) {
                     baseDtos.add(appSvcRelatedInfoDto);
-                } else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)) {
+                } else if (ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)) {
                     specDtos.add(appSvcRelatedInfoDto);
                 }
             }
@@ -3732,13 +3735,13 @@ public class NewApplicationHelper {
         //class
         for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
             switch (hcsaServiceDto.getSvcType()) {
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:
+                case ApplicationConsts.SERVICE_TYPE_BASE:
                     baseList.add(hcsaServiceDto);
                     break;
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:
+                case ApplicationConsts.SERVICE_TYPE_SUBSUMED:
                     subList.add(hcsaServiceDto);
                     break;
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
+                case ApplicationConsts.SERVICE_TYPE_SPECIFIED:
                     specifiedList.add(hcsaServiceDto);
                     break;
                 default:

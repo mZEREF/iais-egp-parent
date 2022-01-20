@@ -701,6 +701,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+            appEditSelectDto.setLicenseeEdit(true);
             appEditSelectDto.setServiceEdit(true);
             appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appEditSelectDto.setPoEdit(true);

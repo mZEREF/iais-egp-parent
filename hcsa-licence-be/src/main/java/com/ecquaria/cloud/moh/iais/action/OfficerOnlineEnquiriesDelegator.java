@@ -822,7 +822,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if(StringUtil.isEmpty(premisesDto.getBlkNo())){
                 licAddress=" "+licAddress;
             }
-            if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
+            if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)&&rfiApplicationQueryDto.getHciName().equals(premisesDto.getHciName())){
                 reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                 reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                 addressEquals=true;

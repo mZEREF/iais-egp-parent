@@ -343,6 +343,9 @@
             $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
         });
         doEdit();
+        if ('${errormapIs}' == 'error') {
+            $('#edit').trigger('click');
+        }
     });
 
 
