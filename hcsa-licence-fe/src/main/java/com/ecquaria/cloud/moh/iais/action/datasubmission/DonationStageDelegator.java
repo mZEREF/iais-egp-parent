@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -71,16 +70,7 @@ public class DonationStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        try{
-            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
-            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
-            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }
+
 
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
@@ -194,27 +184,20 @@ public class DonationStageDelegator extends CommonDelegator{
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
         ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
-        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
-            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
-        }
+
         switch (donationStageDto.getDonatedType()){
             case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
-                patientInventoryDto.setChangeFreshOocytes(-donationStageDto.getTotalNum());
                 arChangeInventoryDto.setFreshOocyteNum(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
-                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 arChangeInventoryDto.setFrozenOocyteNum(-donationStageDto.getTotalNum());
                 break;
 
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
-                patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
                 arChangeInventoryDto.setFrozenEmbryoNum(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
-                patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
                 arChangeInventoryDto.setFrozenSpermNum(-donationStageDto.getTotalNum());
                 break;
             default:
@@ -229,7 +212,6 @@ public class DonationStageDelegator extends CommonDelegator{
             }
         }
         donationStageDto.setDonatedCentreAddress(value);
-        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 
