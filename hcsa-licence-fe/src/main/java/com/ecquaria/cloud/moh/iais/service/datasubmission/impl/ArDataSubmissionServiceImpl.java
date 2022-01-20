@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -28,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -50,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -804,14 +802,5 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
         return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
                 0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
-    }
-
-    @Override
-    public TransferInOutStageDto getCorrespondOutStageDto(String patientCode, String ReceiveHciCode){
-        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(ReceiveHciCode)){
-            log.info(StringUtil.changeForLog("------ No patientCode or ReceiveHciCode -----"));
-            return null;
-        }
-        return arFeClient.getOutStageByPatientAndHciCode(patientCode, ReceiveHciCode).getEntity();
     }
 }

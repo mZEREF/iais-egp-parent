@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApprovalDto;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface AutoRenewalClient {
     @GetMapping(value = "/autoRenewal/select/remindApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, List<ApprovalDto>>> approvalRenewal(@RequestBody Map<String, Date> dateMap, @RequestParam("processType") String processType);
+    FeignResponseEntity<Map<String, List<ApprovalDto>>> approvalRenewal(@RequestBody Map<String, LocalDate> dateMap, @RequestParam("processType") String processType);
 
     @GetMapping(value = "/autoRenewal/select/suspendedApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApprovalDto>> getSuspendedApprovalList();

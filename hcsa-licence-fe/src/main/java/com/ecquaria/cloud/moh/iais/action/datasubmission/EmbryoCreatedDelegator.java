@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -59,16 +59,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        try{
-            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
-            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
-            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
-            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
-        }
+
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
         int totalNum =0;
@@ -134,13 +125,12 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
-        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
-            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
-        }
-//        patientInventoryDto.setChangeFreshOocytes(-embryoCreatedStageDto.getPoorDevFreshOccNum()-embryoCreatedStageDto.getTransEmbrFreshOccNum());
-//        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
 
-        patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getTotalNum());
+        arChangeInventoryDto.setFreshEmbryoNum(embryoCreatedStageDto.getTotalNum());
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
+
     }
 }

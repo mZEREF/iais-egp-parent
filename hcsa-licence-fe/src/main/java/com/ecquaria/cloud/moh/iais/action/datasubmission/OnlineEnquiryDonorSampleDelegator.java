@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -153,6 +155,8 @@ public class OnlineEnquiryDonorSampleDelegator {
 
             SearchParam donorSampleParam = SearchResultHelper.getSearchParam(request, donorSampleParameter,true);
             CrudHelper.doPaging(donorSampleParam,bpc.request);
+            LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            donorSampleParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
 
             QueryHelp.setMainSql("onlineEnquiry","searchDonorSampleByAssistedReproduction",donorSampleParam);
             SearchResult<ArEnquiryDonorSampleDto> donorSampleResult = assistedReproductionService.searchDonorSampleByParam(donorSampleParam);

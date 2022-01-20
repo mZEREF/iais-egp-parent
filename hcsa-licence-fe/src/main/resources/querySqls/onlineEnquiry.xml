@@ -48,6 +48,7 @@
                 where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
@@ -68,7 +69,7 @@
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
             <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
             <#if patient_id_types??> AND  ${patient_id_types}</#if>
-
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
         ]]>
     </sql>
 
@@ -563,7 +564,7 @@
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY) in( :birthEventsTotalList) </#if>
-
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
          ]]>
     </sql>

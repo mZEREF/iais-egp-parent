@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
@@ -37,7 +36,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -487,11 +487,8 @@ public class DataSubmissionInboxDelegator {
 				if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
 					PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
 					List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
-					for (CycleDto cyc:cycleDtoList
-						 ) {
-						if(!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_ART)&&!cyc.getCycleType().equals(DataSubmissionConsts.DS_CYCLE_PATIENT_DRP)){
-							return 2;
-						}
+					if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
+						return 2;
 					}
 				}
 				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){

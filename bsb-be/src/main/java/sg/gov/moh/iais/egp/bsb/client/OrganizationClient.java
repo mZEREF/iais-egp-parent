@@ -18,6 +18,12 @@ import java.util.List;
  **/
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class)
 public interface OrganizationClient {
+    @GetMapping(value = "/iais-orguser-be/users-account/{id}", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(@PathVariable(value = "id") String id);
+
+    @PostMapping(value = "/iais-orguser-be/users-by-ids", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);
+
     @GetMapping(value = "/iais-orguser-be/OrgUsers/{roleId}")
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccountByRoleId(@PathVariable("roleId") String roleId);
 

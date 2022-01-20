@@ -5,7 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -251,6 +251,15 @@ public class ArCycleStagesManualDelegator {
             currentSuper.setSelectionDto(selectionDto);
             currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
             currentSuper.setPatientInventoryDto(newDto.getPatientInventoryDto());
+            ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
+            if (arCurrentInventoryDto == null){
+                arCurrentInventoryDto = new ArCurrentInventoryDto();
+                arCurrentInventoryDto.setHciCode(hciCode);
+                arCurrentInventoryDto.setSvcName(cycleDto.getSvcName());
+                arCurrentInventoryDto.setLicenseeId(cycleDto.getLicenseeId());
+                arCurrentInventoryDto.setPatientCode(cycleDto.getPatientCode());
+            }
+            currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         } else {
             String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
             log.warn(StringUtil.changeForLog("-----" + msg + "-----"));

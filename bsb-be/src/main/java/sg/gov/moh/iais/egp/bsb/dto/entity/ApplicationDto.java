@@ -52,4 +52,10 @@ public class ApplicationDto extends BaseEntityDto {
     private ApplicationGroupDto appGroup;
 
     private String toBeSuspendReinstateAppId;
+
+    private String doUserId;
+
+    private String aoUserId;
+
+    private String hmUserId;
 }

@@ -130,6 +130,4 @@ public interface ArDataSubmissionService {
     void sendIncompleteCycleNotificationPeriod();
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
-
-    TransferInOutStageDto getCorrespondOutStageDto(String patientCode, String ReceiveHciCode);
 }

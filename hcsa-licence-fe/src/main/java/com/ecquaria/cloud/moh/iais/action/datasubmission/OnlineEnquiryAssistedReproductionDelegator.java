@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -839,7 +841,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             setQueryFilter(arFilterDto,patientParameter,0);
             SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
-
+            LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
             if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                 String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
                 patientParam.addParam("patient_id_types", patientIdTypeListStr);
@@ -862,6 +865,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             setQueryFilter(arFilterDto,submissionParameter,1);
             SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
+            submissionParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
             CrudHelper.doPaging(submissionParam,bpc.request);
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
             SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
