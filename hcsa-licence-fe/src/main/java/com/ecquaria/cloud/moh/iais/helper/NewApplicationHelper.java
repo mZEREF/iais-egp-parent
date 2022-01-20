@@ -524,7 +524,7 @@ public class NewApplicationHelper {
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         int premCount = 0;
-        if (appSvcLaboratoryDisciplinesDtos.isEmpty()) {
+        if (appSvcLaboratoryDisciplinesDtos == null || appSvcLaboratoryDisciplinesDtos.isEmpty()) {
             // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
             map.put("checkError", "GENERAL_ERR0056");
             return map;
@@ -537,7 +537,7 @@ public class NewApplicationHelper {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
             List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
             int count = 0;
-            if (listDtos.isEmpty()) {
+            if (listDtos == null || listDtos.isEmpty()) {
                 // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
                 map.put("checkError", "GENERAL_ERR0056");
             } else {
