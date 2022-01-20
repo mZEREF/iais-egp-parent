@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
@@ -198,33 +199,42 @@ public class DisposalStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
         if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
             patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
         }
         switch (disposalStageDto.getDisposedType()){
             case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
                 patientInventoryDto.setChangeFreshOocytes(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setFreshOocyteNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
                 patientInventoryDto.setChangeFrozenOocytes(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenOocyteNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
                 patientInventoryDto.setChangeThawedOocytes(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setThawedOocyteNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
                 patientInventoryDto.setChangeFreshEmbryos(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setFreshEmbryoNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
                 patientInventoryDto.setChangeFrozenEmbryos(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenEmbryoNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
                 patientInventoryDto.setChangeThawedEmbryos(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setThawedEmbryoNum(-disposalStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
                 patientInventoryDto.setChangeFrozenSperms(-disposalStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenSpermNum(-disposalStageDto.getTotalNum());
                 break;
             default:
         }
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
     }

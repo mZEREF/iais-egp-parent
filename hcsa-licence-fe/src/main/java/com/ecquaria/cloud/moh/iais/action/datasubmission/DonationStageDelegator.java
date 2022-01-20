@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
@@ -194,22 +195,27 @@ public class DonationStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
         if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
             patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
         }
         switch (donationStageDto.getDonatedType()){
             case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
                 patientInventoryDto.setChangeFreshOocytes(-donationStageDto.getTotalNum());
+                arChangeInventoryDto.setFreshOocyteNum(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
                 patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenOocyteNum(-donationStageDto.getTotalNum());
                 break;
 
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
                 patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenEmbryoNum(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
                 patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
+                arChangeInventoryDto.setFrozenSpermNum(-donationStageDto.getTotalNum());
                 break;
             default:
         }
@@ -224,6 +230,7 @@ public class DonationStageDelegator extends CommonDelegator{
         }
         donationStageDto.setDonatedCentreAddress(value);
         arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 
     }

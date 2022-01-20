@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
@@ -135,12 +136,16 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
         if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
             patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
         }
-//        patientInventoryDto.setChangeFreshOocytes(-embryoCreatedStageDto.getPoorDevFreshOccNum()-embryoCreatedStageDto.getTransEmbrFreshOccNum());
-//        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
-
+        arChangeInventoryDto.setFreshEmbryoNum(embryoCreatedStageDto.getTotalNum());
         patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getTotalNum());
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
+
     }
 }
