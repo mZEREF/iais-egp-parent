@@ -28,5 +28,8 @@ public class ModuleCommonConstants {
 
     public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
 
+    public static final String KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST    = "supportDocDisplayDtoList";
+    public static final String KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST   = "internalDocDisplayDtoList";
+
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
 }
