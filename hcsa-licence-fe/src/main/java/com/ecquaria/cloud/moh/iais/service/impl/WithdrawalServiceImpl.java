@@ -221,6 +221,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
                 applicationFeClient.updateApplicationList(applicationDtoList);
             }
+            newAppSubmissionDto.setSubLicenseeDto(appSubmissionDto.getSubLicenseeDto());
             newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("AppSubmissionDto",newAppSubmissionDto);

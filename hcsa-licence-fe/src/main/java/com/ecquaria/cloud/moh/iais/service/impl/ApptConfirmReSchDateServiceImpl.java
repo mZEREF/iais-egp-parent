@@ -508,8 +508,15 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
             for (ApptViewDto appt:apptViewDtos
                  ) {
-                if(appt.getAppCorrId().equals(appPremisesCorrelationDto.getId())){
-                    map.put(applicationDto.getApplicationNo(),appt.getUserIds());
+                if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
+                    List<String> userList=IaisCommonUtils.genNewArrayList();
+                    for (ApptUserCalendarDto uc:appt.getUserIds()
+                         ) {
+                        if(uc.getAppNo().equals(applicationDto.getApplicationNo())){
+                            userList.add(uc.getLoginUserId());
+                        }
+                    }
+                    map.put(applicationDto.getApplicationNo(),userList);
                 }
             }
 

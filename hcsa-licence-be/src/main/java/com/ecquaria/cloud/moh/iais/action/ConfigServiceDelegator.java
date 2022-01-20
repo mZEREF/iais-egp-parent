@@ -285,7 +285,7 @@ public class ConfigServiceDelegator {
 
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceSubTypeDto> list=IaisCommonUtils.genNewArrayList();
-        if(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)){
+        if(ApplicationConsts.SERVICE_TYPE_SUBSUMED.equals(serviceType)){
             if(subsumption!=null){
                 for(String str:subsumption){
                     if(!"".equals(str)){
@@ -297,7 +297,7 @@ public class ConfigServiceDelegator {
                 }
             }
 
-        } else if (preRequisite != null && ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)) {
+        } else if (preRequisite != null && ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)) {
             for(String str : preRequisite){
                 if(!"".equals(str)){
                     HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
@@ -537,7 +537,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpeRoutingSchemeDto1.setInsOder(String.valueOf(0));
                     hcsaSvcSpeRoutingSchemeDto2.setInsOder(String.valueOf(1));
                 }
-                if ("optional".equals(isMandatory)||ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)) {
+                if ("optional".equals(isMandatory)||ApplicationConsts.SERVICE_TYPE_SUBSUMED.equals(serviceType)) {
                     hcsaConfigPageDto.setIsMandatory(String.valueOf(false));
                     hcsaSvcSpecificStageWorkloadDto.setIsMandatory(String.valueOf(false));
                     hcsaSvcStageWorkingGroupDto.setIsMandatory(String.valueOf(false));
