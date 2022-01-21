@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -46,4 +47,9 @@ public interface VssFeClient {
 
     @GetMapping(value = "/vss-common/vss-data-submission/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDto(@PathVariable("submissionNo") String submissionNo);
+
+
+    @GetMapping(value = "/vss-common/vssDocument/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<VssFileDto>> getListVssDocumentDtoStatus(@RequestParam("status") String status);
+
 }
