@@ -202,7 +202,7 @@
                                                                     </c:if>
 
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage and may be one of the following: New / Renewal / Request for Change / Deregistration / Cancellation / Notification/ Data Submission.--%>
-                                                                    <c:if test="${(app.appType eq 'BSBAPTY001' or app.appType eq 'BSBAPTY002' or app.appType eq 'BSBAPTY003' or app.appType eq 'BSBAPTY004' or app.appType eq 'BSBAPTY005' or app.appType eq 'BSBAPTY010') and (app.status ne 'BSBAPST008' and app.status ne 'BSBAPST009' and app.status ne 'BSBAPST011' and app.status ne 'BSBAPST012')}">
+                                                                    <c:if test="${(app.appType eq 'BSBAPTY001' or app.appType eq 'BSBAPTY002' or app.appType eq 'BSBAPTY003' or app.appType eq 'BSBAPTY004' or app.appType eq 'BSBAPTY005' or app.appType eq 'BSBAPTY010') and (app.status ne 'BSBAPST007' and app.status ne 'BSBAPST008' and app.status ne 'BSBAPST009' and app.status ne 'BSBAPST011' and app.status ne 'BSBAPST012')}">
                                                                         <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdrawn</option>
                                                                     </c:if>
                                                                 </select>
