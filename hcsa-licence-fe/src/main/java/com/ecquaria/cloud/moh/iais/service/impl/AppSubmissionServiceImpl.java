@@ -2691,9 +2691,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
-                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-                doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList);
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                List<HcsaSvcSubtypeOrSubsumedDto> checkList = serviceConfigService.loadLaboratoryDisciplines(serviceId);
+                Map<String, String> disciplineMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtos,
+                        appSvcLaboratoryDisciplinesDtoList, serviceId, checkList);
+                if (!disciplineMap.isEmpty()) {
+                    errorMap.putAll(disciplineMap);
+                    addErrorStep(currentStep, stepName, true, errorList);
+                }
             } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
                 Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
@@ -3427,91 +3431,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
     }
-
-    private static void doSvcDisdolabory(Map map, List<AppSvcDisciplineAllocationDto> appSvcDislist, List<AppSvcLaboratoryDisciplinesDto> appSvclaborlist) {
-        if (appSvclaborlist == null || appSvclaborlist.isEmpty()) {
-            return;
-        } else if (appSvclaborlist != null && !appSvclaborlist.isEmpty()) {
-            List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
-            for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvclaborlist) {
-                appSvcChckListDtoList.addAll(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
-            }
-
-            if (appSvcChckListDtoList != null) {
-                if (appSvcDislist == null) {
-                    map.put("appSvcDislist", "appSvcDislist null");
-                    return;
-                } else {
-                  /*  if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
-                        log.info(appSvcChckListDtoList.size()+" appSvcChckListDtoList ");
-                        log.info(appSvcDislist.size()+" appSvcDislist ");
-                        map.put("appSvcChckListDtoListsize","size");
-                        sB.append(serviceId);
-                        return;
-                    }
-                    */
-                }
-            }
-        }
-    }
-
-    /*private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
-        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
-
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO);
-        if (commonHcsaSvcDocConfigList == null) {
-            List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
-            boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
-                hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-            }else{
-                hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
-            }
-            if (hcsaSvcDocDtos != null) {
-                List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto  = IaisCommonUtils.genNewArrayList();
-                for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
-                    if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                        commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
-                    }
-                }
-                commonHcsaSvcDocConfigList = commonHcsaSvcDocConfigDto;
-            } else {
-                return;
-            }
-        }
-        for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
-            String name = "common" + comm.getId();
-
-            Boolean isMandatory = comm.getIsMandatory();
-            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
-            if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
-                documentMap.put(name, err006);
-            } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
-                Boolean flag = Boolean.FALSE;
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                    if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
-                        continue;
-                    }
-                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                    if(!comm.getId().equals(svcComDocId)&&comm.getDocTitle().equals(appGrpPrimaryDocDto.getSvcComDocName())){
-                        appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
-                        svcComDocId=comm.getId();
-                    }
-                    if (comm.getId().equals(svcComDocId)) {
-                        flag = Boolean.TRUE;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    documentMap.put(name, err006);
-                }
-            }
-        }
-
-    }
-    */
 
     private void doCommomDocument(AppSubmissionDto appSubmissionDto, Map<String, String> documentMap, boolean isRfi) {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();

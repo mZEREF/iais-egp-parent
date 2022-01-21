@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
@@ -37,10 +39,10 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     private boolean tempCenterEnable;
 
     @Autowired
-    CessationFeService cessationFeService;
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Autowired
-    private OrganizationLienceseeClient organizationLienceseeClient;
+    RequestForChangeService requestForChangeService;
 
     static {
         System.out.println("-------------------tempCenterEnable---------------------");
@@ -57,10 +59,16 @@ public class DsLicenceServiceImpl implements DsLicenceService {
 
     @Override
     public List<PremisesDto> getArCenterPremises() {
-        return getDataSubmissionPremisesByType(DataSubmissionConsts.DS_AR);
+        if (tempCenterEnable) {
+            return getCenterPremisesByCentreType(DataSubmissionConsts.DS_AR);
+        } else {
+            //TODO
+            return IaisCommonUtils.genNewArrayList();
+        }
     }
 
     public Map<String, PremisesDto> getDataSubmissionPremises(String licenseeId, String dsType) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - DS Type: " + dsType));
         if (tempCenterEnable) {
             return getDsCenterPremises(getOrgId(licenseeId), dsType);
         } else {
@@ -71,21 +79,21 @@ public class DsLicenceServiceImpl implements DsLicenceService {
         }
     }
 
-    public List<PremisesDto> getDataSubmissionPremisesByType(String dsType) {
-        if (tempCenterEnable) {
-            return getCenterPremisesByCentreType(dsType);
-        } else {
-            //TODO
-            return IaisCommonUtils.genNewArrayList();
-        }
-    }
-
     @Override
-    public PremisesDto getPremisesDto(String orgId, String hciCode) {
+    public PremisesDto getArPremisesDto(String orgId, String hciCode) {
         if (tempCenterEnable) {
             return getArCenterPremises(orgId, hciCode);
         } else {
-            return cessationFeService.getPremiseByHciCodeName(hciCode);
+            List<String> svcNames = new ArrayList<>();
+            //TODO
+            //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
+            List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(getLicenseeId(orgId), svcNames, false).getEntity();
+            for (PremisesDto premisesDto : premisesDtos) {
+                if (hciCode.equals(premisesDto.getHciCode())) {
+                    return premisesDto;
+                }
+            }
+            return null;
         }
     }
 
@@ -101,6 +109,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     private Map<String, PremisesDto> getDsCenterPremises(String orgId, String dsType) {
+        log.info(StringUtil.changeForLog("Org Id: " + orgId + " - Center Type: " + dsType));
         if (StringUtil.isEmpty(orgId)) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -131,6 +140,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     private Map<String, PremisesDto> getLicencePremises(String licenseeId, List<String> svcNames) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - Svc Names: " + svcNames));
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -168,4 +178,12 @@ public class DsLicenceServiceImpl implements DsLicenceService {
         return null;
     }
 
+    private String getLicenseeId(String orgId) {
+        String result = null;
+        LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(orgId);
+        if (licenseeDto != null) {
+            result = licenseeDto.getId();
+        }
+        return result;
+    }
 }

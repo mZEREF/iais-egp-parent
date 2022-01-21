@@ -1,11 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -41,8 +42,24 @@ public class FreezingStageDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmission.getPatientInventoryDto();
-        arDataSubmissionService.setFreezingPatientChange(patientInventoryDto, arSubFreezingStageDto);
+        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        if (arChangeInventoryDto != null && arSubFreezingStageDto != null) {
+            String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
+            int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());
+            if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
+                arChangeInventoryDto.setFreshOocyteNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
+                arChangeInventoryDto.setFreshEmbryoNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
+                arChangeInventoryDto.setThawedOocyteNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenOocyteNum(cryopreservedNum);
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
+                arChangeInventoryDto.setThawedEmbryoNum(-1 * cryopreservedNum);
+                arChangeInventoryDto.setFrozenEmbryoNum(cryopreservedNum);
+            }
+        }
     }
 
     @Override

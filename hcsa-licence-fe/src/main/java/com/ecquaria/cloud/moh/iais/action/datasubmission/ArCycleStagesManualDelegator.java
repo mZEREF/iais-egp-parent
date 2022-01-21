@@ -250,7 +250,6 @@ public class ArCycleStagesManualDelegator {
             currentSuper.setCycleDto(cycleDto);
             currentSuper.setSelectionDto(selectionDto);
             currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
-            currentSuper.setPatientInventoryDto(newDto.getPatientInventoryDto());
             ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
             if (arCurrentInventoryDto == null){
                 arCurrentInventoryDto = new ArCurrentInventoryDto();

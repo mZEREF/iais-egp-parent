@@ -370,4 +370,16 @@ public class FileUtil {
 			}
 		}
 	}
+
+	public static boolean checkFileNamesExistKeyWords(List<String> fileNames,String ... keyWord){
+		if(IaisCommonUtils.isEmpty(fileNames)){
+			return false;
+		}
+		for (int i = 0; i < keyWord.length; i++) {
+			if(fileNames.contains(keyWord[i])){
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -1,16 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -65,12 +64,11 @@ public class FertilisationDelegator extends CommonDelegator{
         int ThawedOocytesMicroinjectedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesMicroinjectedNum(),0);
         int ThawedOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesGiftNum(),0);
         int ThawedOocytesZiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesZiftNum(),0);
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
-
-        int changeFreshOocytes =FreshOocytesInseminatedNum+ FreshOocytesMicroInjectedNum+FreshOocytesGiftNum+FreshOocytesZiftNu;
-        int changeThawedOocytes = ThawedOocytesInseminatedNum+ThawedOocytesMicroinjectedNum+ThawedOocytesGiftNum+ThawedOocytesZiftNum;
-        patientInventoryDto.setChangeFreshOocytes(-1*changeFreshOocytes);
-        patientInventoryDto.setChangeThawedOocytes(-1*changeThawedOocytes);
+        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        int changeFreshOocytes = FreshOocytesInseminatedNum + FreshOocytesMicroInjectedNum + FreshOocytesGiftNum + FreshOocytesZiftNu;
+        int changeThawedOocytes = ThawedOocytesInseminatedNum + ThawedOocytesMicroinjectedNum + ThawedOocytesGiftNum + ThawedOocytesZiftNum;
+        arChangeInventoryDto.setFreshOocyteNum(-1 * changeFreshOocytes);
+        arChangeInventoryDto.setThawedOocyteNum(-1 * changeThawedOocytes);
     }
 
     @Override

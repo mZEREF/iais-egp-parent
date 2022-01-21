@@ -5,10 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -100,11 +101,11 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         }
 
         int totalEmbryos = 0;
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
-        if (patientInventoryDto != null) {
-            totalEmbryos += patientInventoryDto.getCurrentFreshEmbryos();
-            totalEmbryos += patientInventoryDto.getCurrentThawedEmbryos();
-            totalEmbryos += patientInventoryDto.getCurrentFrozenEmbryos();
+        ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(request);
+        if (arCurrentInventoryDto != null) {
+            totalEmbryos += arCurrentInventoryDto.getFreshEmbryoNum();
+            totalEmbryos += arCurrentInventoryDto.getThawedEmbryoNum();
+            totalEmbryos += arCurrentInventoryDto.getFrozenEmbryoNum();
         }
 
         ParamUtil.setRequestAttr(request, "age", age);
@@ -148,7 +149,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
 
     private void setPatientInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         EmbryoTransferStageDto transferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
-        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
         int freshEmbryoNum = 0;
         int thawedEmbryoNum = 0;
         if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getFirstEmbryoType())) {
@@ -166,9 +166,9 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getThirdEmbryoType())) {
             thawedEmbryoNum--;
         }
-        patientInventoryDto.setChangeFreshEmbryos(freshEmbryoNum);
-        patientInventoryDto.setChangeThawedEmbryos(thawedEmbryoNum);
-        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        arChangeInventoryDto.setFreshEmbryoNum(freshEmbryoNum);
+        arChangeInventoryDto.setThawedEmbryoNum(thawedEmbryoNum);
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
@@ -216,13 +216,12 @@ public class EmbryoTransferDelegator extends CommonDelegator {
                     }
                 }
             }
-
-            PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
-            if (patientInventoryDto != null) {
-                int currentFreshEmbryos = patientInventoryDto.getCurrentFreshEmbryos() + patientInventoryDto.getChangeFreshEmbryos();
-                int currentThawedEmbryos = patientInventoryDto.getCurrentThawedEmbryos() + patientInventoryDto.getChangeThawedEmbryos();
-                if (patientInventoryDto.getCurrentFreshOocytes() > 0
-                        || patientInventoryDto.getCurrentThawedOocytes() > 0
+            ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request);
+            if (arCurrentInventoryDto != null) {
+                int currentFreshEmbryos = arCurrentInventoryDto.getFreshEmbryoNum() + arCurrentInventoryDto.getFreshEmbryoNum();
+                int currentThawedEmbryos = arCurrentInventoryDto.getThawedEmbryoNum() + arCurrentInventoryDto.getThawedEmbryoNum();
+                if (arCurrentInventoryDto.getFreshOocyteNum() > 0
+                        || arCurrentInventoryDto.getThawedOocyteNum() > 0
                         || currentFreshEmbryos > 0
                         || currentThawedEmbryos > 0) {
                     errorMap.put("inventoryNoZero", MessageUtil.getMessageDesc("DS_ERR017"));

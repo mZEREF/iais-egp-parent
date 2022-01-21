@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -665,11 +664,6 @@ public final class DataSubmissionHelper {
         repMap.put("1", age2);
         repMap.put("2", person);
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
-    }
-
-    public static PatientInventoryDto getCurrentPatientInventory(HttpServletRequest request) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
-        return  arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getPatientInventoryDto() : null;
     }
 
     public static ArCurrentInventoryDto getCurrentArCurrentInventoryDto(HttpServletRequest request) {
