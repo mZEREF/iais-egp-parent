@@ -60,17 +60,17 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
         if(!IaisCommonUtils.isEmpty(transferredList)){
            for (String transferred :transferredList){
                 if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)){
-                  if(transferInOutStageDto.getOocyteNum() == null){
+                  if(StringUtil.isEmpty(transferInOutStageDto.getOocyteNum())){
                       errorMap.put("oocyteNum", "GENERAL_ERR0006");
                     }
                 }
                 if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)){
-                    if(transferInOutStageDto.getEmbryoNum() == null){
+                    if(StringUtil.isEmpty(transferInOutStageDto.getEmbryoNum())){
                         errorMap.put("embryoNum", "GENERAL_ERR0006");
                     }
                 }
                if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)){
-                   if(transferInOutStageDto.getSpermVialsNum() == null){
+                   if(StringUtil.isEmpty(transferInOutStageDto.getSpermVialsNum())){
                        errorMap.put("spermVialsNum", "GENERAL_ERR0006");
                    }
                }

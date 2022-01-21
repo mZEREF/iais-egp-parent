@@ -77,21 +77,24 @@
                         <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="2" type="text" name="oocyteNum"  value="${transferInOutStageDto.oocyteNo}" />
+                                <iais:input maxLength="2" type="text" name="oocyteNum"
+                                            value="${transferInOutStageDto.oocyteNum}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_oocyteNum"></span>
                             </iais:value>
                         </iais:row>
                     <iais:row id="transferred1">
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNo}" />
+                            <iais:input maxLength="2" type="text" name="embryoNum"
+                                        value="${transferInOutStageDto.embryoNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_embryoNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row id="transferred2">
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNo}" />
+                            <iais:input maxLength="2" type="text" name="spermVialsNum"
+                                        value="${transferInOutStageDto.spermVialsNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_spermVialsNum"></span>
                         </iais:value>
                     </iais:row>
@@ -129,9 +132,13 @@
                 <div class="inFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
                         <iais:row>
                                 <iais:field width="5" value="Transferred In From" mandatory="true"/>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select  name="transInFromHciCode" firstOption="Please Select"  options="transferOutInPremisesSelect" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
-                                </iais:value>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                                       var="selecctInValue"/>
+                                <iais:select name="transInFromHciCode" firstOption="Please Select"
+                                             options="transferOutInPremisesSelect" value="${selecctInValue}"
+                                             onchange="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')"/>
+                            </iais:value>
                         </iais:row>
 
                         <iais:row id="othersInFrom" style="${transferInOutStageDto.transInFromHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
@@ -145,7 +152,11 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  name="transOutToHciCode"  firstOption="Please Select" options="transferOutInPremisesSelect" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
+                            <c:set value="${transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
+                                   var="selecctOutValue"/>
+                            <iais:select name="transOutToHciCode" firstOption="Please Select"
+                                         options="transferOutInPremisesSelect" value="${selecctOutValue}"
+                                         onchange="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')"/>
                         </iais:value>
                     </iais:row>
                         <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
