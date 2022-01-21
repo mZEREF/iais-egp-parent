@@ -1011,6 +1011,8 @@ public class ClinicalLaboratoryDelegator {
     /**
      * StartStep: doLaboratoryDisciplines
      *
+     * Modality/Discipline/Speciality/Subsumed Svs.
+     *
      * @param bpc
      * @throws
      */
@@ -1032,19 +1034,21 @@ public class ClinicalLaboratoryDelegator {
         if (requestInformationConfig != null) {
             isRfi = true;
         }
+        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        String currentSvcId = getCurrentServiceId(bpc.request);
+        AppSvcRelatedInfoDto currentSvcDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =
+                currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
             Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
-            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
             NewApplicationHelper.recursingSvcScope(hcsaSvcSubtypeOrSubsumedDtos, map);
-            String currentSvcId = getCurrentServiceId(bpc.request);
-            AppSvcRelatedInfoDto currentSvcDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
+            appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String name = appGrpPremisesDto.getPremisesIndexNo() + "control--runtime--1";
@@ -1083,27 +1087,25 @@ public class ClinicalLaboratoryDelegator {
                 }
                 i++;
             }
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-            if ("next".equals(crud_action_type)) {
-                errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
-                reSetChangesForApp(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
-
-            if (!errorMap.isEmpty()) {
-                //set audit
-                bpc.request.setAttribute("errormapIs", "error");
-                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
-                return;
-            } else {
-                handleDisciplineAllocations(appSvcLaboratoryDisciplinesDtoList, currentSvcDto);
-            }
-            currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
         }
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if ("next".equals(crud_action_type)) {
+            errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
+            reSetChangesForApp(appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+        }
+        if (!errorMap.isEmpty()) {
+            //set audit
+            bpc.request.setAttribute("errormapIs", "error");
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
+        } else {
+            handleDisciplineAllocations(appSvcLaboratoryDisciplinesDtoList, currentSvcDto);
+        }
+        currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
 
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }

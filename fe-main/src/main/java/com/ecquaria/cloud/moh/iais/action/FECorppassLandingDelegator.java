@@ -163,7 +163,7 @@ public class FECorppassLandingDelegator {
                 OidcCpAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
                     identityNo = oiRepon.getUserInfo().getNricFin();
-                    uen = oiRepon.getUserInfo().getCpUid();
+                    uen = oiRepon.getUserInfo().getCpEntId();
                 }
             }
         } else {

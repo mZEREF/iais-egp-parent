@@ -524,7 +524,9 @@ public class NewApplicationHelper {
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         int premCount = 0;
-        if (appSvcLaboratoryDisciplinesDtos.isEmpty()) {
+        if (appSvcLaboratoryDisciplinesDtos == null || appSvcLaboratoryDisciplinesDtos.isEmpty()) {
+            // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
+            map.put("checkError", "GENERAL_ERR0056");
             return map;
         }
         int svcScopeSize = appSvcLaboratoryDisciplinesDtos.size();
@@ -535,11 +537,12 @@ public class NewApplicationHelper {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
             List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
             int count = 0;
-            if (listDtos.isEmpty()) {
-                /*   map.put("checkError","NEW_ERR0012");*/
+            if (listDtos == null || listDtos.isEmpty()) {
+                // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
+                map.put("checkError", "GENERAL_ERR0056");
             } else {
-                boolean selectOtherScope = selectOtherScope(listDtos);
                 String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", NewApplicationConstant.PLEASEINDICATE, "field");
+                boolean selectOtherScope = selectOtherScope(listDtos);
                 if (selectOtherScope) {
                     boolean selectOtherChildrenScope = false;
                     //check children scope is selected
