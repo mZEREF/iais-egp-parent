@@ -68,6 +68,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     public Map<String, PremisesDto> getDataSubmissionPremises(String licenseeId, String dsType) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - DS Type: " + dsType));
         if (tempCenterEnable) {
             return getDsCenterPremises(getOrgId(licenseeId), dsType);
         } else {
@@ -108,6 +109,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     private Map<String, PremisesDto> getDsCenterPremises(String orgId, String dsType) {
+        log.info(StringUtil.changeForLog("Org Id: " + orgId + " - Center Type: " + dsType));
         if (StringUtil.isEmpty(orgId)) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -138,6 +140,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     private Map<String, PremisesDto> getLicencePremises(String licenseeId, List<String> svcNames) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - Svc Names: " + svcNames));
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }

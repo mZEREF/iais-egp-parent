@@ -362,12 +362,13 @@ public class PatientUploadDelegate {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- DoPreview -----"));
-        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if (StringUtil.isIn(crudype, new String[]{ACTION_TYPE_PAGE, "back"})) {
+        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        log.info(StringUtil.changeForLog("----- Crud Type: " + crudType));
+        if (StringUtil.isIn(crudType, new String[]{ACTION_TYPE_PAGE, "back"})) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             return;
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudType);
     }
 
     /**
