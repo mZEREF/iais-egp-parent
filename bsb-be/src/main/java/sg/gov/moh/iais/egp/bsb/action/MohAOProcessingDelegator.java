@@ -11,15 +11,16 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.AOProcessingDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
+import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_VIEW_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
@@ -36,17 +37,19 @@ public class MohAOProcessingDelegator {
 
     private final ProcessClient processClient;
     private final ProcessHistoryService processHistoryService;
+    private final AppViewService appViewService;
 
     @Autowired
-    public MohAOProcessingDelegator(ProcessClient processClient, ProcessHistoryService processHistoryService) {
+    public MohAOProcessingDelegator(ProcessClient processClient, ProcessHistoryService processHistoryService, AppViewService appViewService) {
         this.processClient = processClient;
         this.processHistoryService = processHistoryService;
+        this.appViewService = appViewService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
-        request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APP_VIEW_DTO);
+        request.getSession().removeAttribute(KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
@@ -72,11 +75,8 @@ public class MohAOProcessingDelegator {
                     mohProcessDto.setApplicationId(appId);
                     ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
                     //view application process need an applicationDto
-                    AppViewDto appViewDto = new AppViewDto();
-                    appViewDto.setApplicationId(appId);
-                    appViewDto.setProcessType(mohProcessDto.getSubmitDetailsDto().getProcessType());
-                    appViewDto.setAppType(mohProcessDto.getSubmitDetailsDto().getAppType());
-                    ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APP_VIEW_DTO, appViewDto);
+                    appViewService.createAndSetAppViewDtoInSession(appId, mohProcessDto.getSubmitDetailsDto().getProcessType(),
+                            mohProcessDto.getSubmitDetailsDto().getAppType(), request);
                     //show routingHistory list
                     processHistoryService.getAndSetHistoryInSession(mohProcessDto.getSubmitDetailsDto().getApplicationNo(), request);
                 }
