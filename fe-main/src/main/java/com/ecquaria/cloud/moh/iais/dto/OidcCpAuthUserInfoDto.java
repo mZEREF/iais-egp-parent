@@ -20,11 +20,7 @@ public class OidcCpAuthUserInfoDto implements Serializable {
     private String cpAccType;
     private String cpUidFullName;
     private String isSPHolder;
-    private String cpUid;
-    private String cpEndId;
+    private String cpEntId;
     private String cpEntStatus;
     private String cpEntType;
-    private String cpNonUENRegNo;
-    private String cpNonUENCountry;
-    private String cpNonUENName;
 }

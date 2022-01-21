@@ -507,16 +507,20 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ProcessReSchedulingDto processReSchedulingDto;
             Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
             for (ApptViewDto appt:apptViewDtos
-                 ) {
+            ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     List<String> userList=IaisCommonUtils.genNewArrayList();
                     for (ApptUserCalendarDto uc:appt.getUserIds()
-                         ) {
+                    ) {
                         if(uc.getAppNo().equals(applicationDto.getApplicationNo())){
                             userList.add(uc.getLoginUserId());
                         }
                     }
-                    map.put(applicationDto.getApplicationNo(),userList);
+                    Set<String> users=IaisCommonUtils.genNewHashSet();
+                    users.addAll(userList);
+                    List<String> userListSet=IaisCommonUtils.genNewArrayList();
+                    userListSet.addAll(users);
+                    map.put(applicationDto.getApplicationNo(),userListSet);
                 }
             }
 
@@ -537,7 +541,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                         ) {
+                    ) {
                         insAppt.setReason(appt.getReason());
                         insAppt.setEndDate(appt.getSpecificEndDate());
                         insAppt.setStartDate(appt.getSpecificStartDate());
@@ -655,7 +659,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         //update application
         //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
-        //setCreateHistoryDto(processReSchedulingDto);
+        setCreateHistoryDto(processReSchedulingDto);
         //set some data to update recommendation
         setRecommendationDto(processReSchedulingDto);
         //set some data to update inspection status
