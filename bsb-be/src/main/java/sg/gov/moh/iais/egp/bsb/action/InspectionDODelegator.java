@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
@@ -261,7 +262,7 @@ public class InspectionDODelegator {
         HttpServletRequest request = bpc.request;
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_CONFIG);
         InsFindingFormDto findingFormDto = (InsFindingFormDto) ParamUtil.getSessionAttr(request, KEY_INS_FINDING);
-        int existingItemMaxIdx = findingFormDto.getItemDtoList().size() - 1;
+        int existingItemMaxIdx = Optional.of(findingFormDto).map(InsFindingFormDto::getItemDtoList).map(List::size).orElse(0) - 1;
 
         String idxes = ParamUtil.getString(request, "sectionIdx");
         ArrayList<InsFindingFormDto.InsFindingItemDto> newFindingItemList;
