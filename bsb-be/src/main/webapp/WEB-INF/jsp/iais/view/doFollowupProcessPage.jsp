@@ -96,7 +96,6 @@
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
                                                                     <textarea autocomplete="off" class="col-xs-12" name="note" id="note" maxlength="1000" style="width: 100%"><c:out value="${dto.remarks}"/></textarea>
-                                                                    <span data-err-ind="note" class="error-msg"></span>
                                                                 </div>
                                                             </div>
                                                             <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"> </em> Back</a>

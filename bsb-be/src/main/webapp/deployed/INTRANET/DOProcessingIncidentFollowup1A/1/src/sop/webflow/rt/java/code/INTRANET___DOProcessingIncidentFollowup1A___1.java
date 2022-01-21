@@ -11,11 +11,14 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___DOProcessingIncidentFollowup1A___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="followupProcessDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 	
 	public void init_OnStepProcess_0() throws Exception {
@@ -24,18 +27,21 @@ public class INTRANET___DOProcessingIncidentFollowup1A___1 extends BaseProcessCl
 
 	public void preProcessingData_OnStepProcess_0() throws Exception {
 	// 		PreProcessingData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preProcessing1AData", this);
 	}
 
 	public void handleProcessing_OnStepProcess_0() throws Exception {
 	// 		HandleProcessing->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleProcessing", this);
 	}
 
 	public void actionFilter_OnStepProcess_0() throws Exception {
 	// 		ActionFilter->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "actionFilter", this);
 	}
 
-	public void submitProcessing_OnStepProcess_0() throws Exception {
-	// 		submitProcessing->OnStepProcess
+	public void preSuccessData_OnStepProcess_0() throws Exception {
+		// 		PreSuccessData->OnStepProcess
 	}
 
 

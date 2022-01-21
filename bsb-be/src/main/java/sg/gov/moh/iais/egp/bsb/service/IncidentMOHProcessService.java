@@ -43,6 +43,7 @@ public class IncidentMOHProcessService {
     private static final String PARAM_PLEASE_SELECT = "Please Select";
     private static final String PARAM_PROCESS_KEY = "key";
     private static final String KEY_APPLICATION_ID = "appId";
+    private static final String MESSAGE_APPLICATION_ID_IS_NULL = "application id is null";
     private final IncidentProcessClient incidentProcessClient;
 
     public IncidentMOHProcessService(IncidentProcessClient incidentProcessClient) {
@@ -130,14 +131,14 @@ public class IncidentMOHProcessService {
 
     private IncidentNotificationDto getIncidentNotificationDto(HttpServletRequest request){
         String maskAppId = ParamUtil.getString(request, TaskModuleConstants.PARAM_NAME_APP_ID);
-        Assert.hasLength(maskAppId,"application id is null");
+        Assert.hasLength(maskAppId,MESSAGE_APPLICATION_ID_IS_NULL);
         String appId = MaskUtil.unMaskValue(TaskModuleConstants.MASK_PARAM_ID,maskAppId);
         return incidentProcessClient.getIncidentNotificationByAppId(appId).getEntity();
     }
 
     private IncidentNotificationDto getInvestigationReportDto(HttpServletRequest request){
         String maskAppId = ParamUtil.getString(request, TaskModuleConstants.PARAM_NAME_APP_ID);
-        Assert.hasLength(maskAppId,"application id is null");
+        Assert.hasLength(maskAppId,MESSAGE_APPLICATION_ID_IS_NULL);
         String appId = MaskUtil.unMaskValue(TaskModuleConstants.MASK_PARAM_ID,maskAppId);
         return incidentProcessClient.getInvestReportByAppId(appId).getEntity();
     }

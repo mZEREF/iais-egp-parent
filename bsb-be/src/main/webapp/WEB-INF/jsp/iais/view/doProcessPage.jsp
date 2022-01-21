@@ -171,9 +171,9 @@
                                                             <c:forEach var="history" items="${dto.processHistoryList}">
                                                                 <tr>
                                                                     <td><c:out value="${history.userName}"/></td>
-                                                                    <td><c:out value="${history.status}"/></td>
+                                                                    <td><c:out value="${history.statusUpdate}"/></td>
                                                                     <td><c:out value="${history.remarks}"/></td>
-                                                                    <td><c:out value="${history.updateDate}"/></td>
+                                                                    <td><c:out value="${history.lastUpdated}"/></td>
                                                                 </tr>
                                                             </c:forEach>
                                                             </tbody>

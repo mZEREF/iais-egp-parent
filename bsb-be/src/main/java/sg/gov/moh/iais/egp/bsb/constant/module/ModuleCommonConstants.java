@@ -4,6 +4,7 @@ public class ModuleCommonConstants {
     private ModuleCommonConstants() {}
 
     public static final String KEY_ACTION_TYPE                      = "action_type";
+    public static final String KEY_INDEED_ACTION_TYPE               = "indeed_action_type";
     public static final String KEY_ACTION_VALUE                     = "action_value";
     public static final String KEY_ACTION_ADDITIONAL                = "action_additional";
     public static final String KEY_CRUD_ACTION_TYPE                 = "crud_action_type";

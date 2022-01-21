@@ -183,7 +183,7 @@ public class FollowUPReportDelegator{
         String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B_PREVIEW,followupPreviewBDto);
         if(!StringUtils.hasLength(key)){
-            retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentId(),followupPreviewBDto.getReferenceNo());
+            retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentId(),followupPreviewBDto.getReferenceNo(),followupPreviewBDto.getAddPersonnelName());
         }else {
             request.getSession().removeAttribute(KEY_PROCESS_KEY);
         }
@@ -403,13 +403,14 @@ public class FollowUPReportDelegator{
      * @param incidentId incident notification id
      * @param incidentInvestId incident investigation report id
      * */
-    public void retrieveFollowupInfoB(HttpServletRequest request,String incidentId,String incidentInvestId,String referenceNo){
+    public void retrieveFollowupInfoB(HttpServletRequest request,String incidentId,String incidentInvestId,String referenceNo,String personnelName){
         FollowupInfoBDto infoBDto = getFollowupInfoBDto(request);
         Assert.hasLength(incidentId,"incident id key is null");
         Assert.hasLength(incidentInvestId,"incident investigation id key is null");
         infoBDto.setIncidentId(incidentId);
         infoBDto.setIncidentInvestId(incidentInvestId);
         infoBDto.setReferenceNo(referenceNo);
+        infoBDto.setPersonnelName(personnelName);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B,infoBDto);
     }
 
