@@ -9,19 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DOProcessingDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
-import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.YES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
@@ -39,12 +35,12 @@ public class MohDOProcessingDelegator {
     private static final String FUNCTION_NAME = "DO Processing";
 
     private final ProcessClient processClient;
-    private final RoutingHistoryClient routingHistoryClient;
+    private final ProcessHistoryService processHistoryService;
 
     @Autowired
-    public MohDOProcessingDelegator(ProcessClient processClient, RoutingHistoryClient routingHistoryClient) {
+    public MohDOProcessingDelegator(ProcessClient processClient, ProcessHistoryService processHistoryService) {
         this.processClient = processClient;
-        this.routingHistoryClient = routingHistoryClient;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -82,8 +78,7 @@ public class MohDOProcessingDelegator {
                     appViewDto.setAppType(mohProcessDto.getSubmitDetailsDto().getAppType());
                     ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APP_VIEW_DTO, appViewDto);
                     //show routingHistory list
-                    List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(mohProcessDto.getSubmitDetailsDto().getApplicationNo()).getEntity();
-                    ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+                    processHistoryService.getAndSetHistoryInSession(mohProcessDto.getSubmitDetailsDto().getApplicationNo(), request);
                 }
             }
             if (failLoadData) {

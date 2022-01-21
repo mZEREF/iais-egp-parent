@@ -23,21 +23,19 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
  * @author Zhu Tangtang
@@ -52,13 +50,13 @@ public class DORevocationDelegator {
     private final RevocationClient revocationClient;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
     private final FileRepoClient fileRepoClient;
-    private final RoutingHistoryClient routingHistoryClient;
+    private final ProcessHistoryService processHistoryService;
 
-    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, RoutingHistoryClient routingHistoryClient) {
+    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, ProcessHistoryService processHistoryService) {
         this.revocationClient = revocationClient;
         this.biosafetyEnquiryClient = biosafetyEnquiryClient;
         this.fileRepoClient = fileRepoClient;
-        this.routingHistoryClient = routingHistoryClient;
+        this.processHistoryService = processHistoryService;
     }
 
     /**
@@ -227,8 +225,7 @@ public class DORevocationDelegator {
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
                 //show routingHistory list
-                List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
-                ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+                processHistoryService.getAndSetHistoryInSession(revokeDto.getApplicationNo(), request);
             }
         }
         ParamUtil.setSessionAttr(request,BACK,from);

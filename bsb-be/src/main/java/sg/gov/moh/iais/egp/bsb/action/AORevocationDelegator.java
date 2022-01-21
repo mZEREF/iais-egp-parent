@@ -11,24 +11,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 
 /**
  * @author Zhu Tangtang
@@ -44,13 +41,13 @@ public class AORevocationDelegator {
     private static final String ACTION_TYPE = "action_type";
 
     private final RevocationClient revocationClient;
-    private final RoutingHistoryClient routingHistoryClient;
     private final FileRepoClient fileRepoClient;
+    private final ProcessHistoryService processHistoryService;
 
-    public AORevocationDelegator(RevocationClient revocationClient, RoutingHistoryClient routingHistoryClient, FileRepoClient fileRepoClient) {
+    public AORevocationDelegator(RevocationClient revocationClient, FileRepoClient fileRepoClient, ProcessHistoryService processHistoryService) {
         this.revocationClient = revocationClient;
-        this.routingHistoryClient = routingHistoryClient;
         this.fileRepoClient = fileRepoClient;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -86,8 +83,7 @@ public class AORevocationDelegator {
             revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
             revokeDto.setTaskId(taskId);
             //show routingHistory list
-            List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(revokeDto.getApplicationNo()).getEntity();
-            ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+            processHistoryService.getAndSetHistoryInSession(revokeDto.getApplicationNo(), request);
         }
         ParamUtil.setSessionAttr(request, FROM, REVOCATION_TASK_LIST);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
