@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <div class="row">
     <div class="col-xs-12 col-md-10">
         <div class="navigation">

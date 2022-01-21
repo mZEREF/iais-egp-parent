@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/inspection/viewSelfAssessment.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inspection/pre/viewSelfAssessment.jsp"%>

@@ -28,6 +28,8 @@
             <div class="form-group">
                 <label class="col-xs-12 col-md-4 control-label label-normal">Inspector Officer</label>
                 <div class="col-sm-7 col-md-5 col-xs-10">
+                    <%-- This is wrong, the inspector should be saved in a table, the current user may not be
+                      the inspector because of reassignment --%>
                     <p>${iais_Audit_Trail_dto_Attr.mohUserId}</p>
                 </div>
                 <div class="clear"></div>

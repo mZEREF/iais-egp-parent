@@ -14,8 +14,9 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbInspectionDO";
+public class INTRANET___MohBsbInspectionAOReview___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbAOReviewInspectionReport";
+	
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
@@ -33,27 +34,16 @@ public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "bindAction", this);
 	}
 
-	public void preChecklist_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preChecklist", this);
-	}
-
-	public void validateAndSaveChecklist_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "validateAndSaveChecklist", this);
-	}
-
-	public void saveInsFinding_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "saveInsFinding", this);
-	}
-
-	public void saveInsOutcome_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "saveInsOutcome", this);
-	}
-
-	public void clearData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "clearData", this);
-	}
-
 	public void handleSubmit_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
+
+	public void revision_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "revision", this);
+	}
+
+	public void approve_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "approve", this);
+	}
+
 }

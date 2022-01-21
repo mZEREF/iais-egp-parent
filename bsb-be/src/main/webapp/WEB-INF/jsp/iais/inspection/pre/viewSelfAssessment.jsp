@@ -23,7 +23,7 @@
                                     <span>Self-Assessment Checklists</span>
                                 </h2>
                             </div>
-                            <%@include file="../chklst/checkListAnswer.jsp"%>
+                            <%@include file="../../chklst/checkListAnswer.jsp"%>
                         </div>
                     </div>
                     <div>

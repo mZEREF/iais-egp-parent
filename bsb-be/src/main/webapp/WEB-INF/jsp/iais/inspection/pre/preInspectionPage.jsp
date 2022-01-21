@@ -64,16 +64,14 @@
                                                 <%@include file="facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabCheckList" role="tabpanel">
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing Status Update</h4>
-                                                    </strong>
+                                                    <h4>Processing Status Update</h4>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
@@ -128,4 +126,5 @@
             </div>
         </div>
     </form>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
 </div>

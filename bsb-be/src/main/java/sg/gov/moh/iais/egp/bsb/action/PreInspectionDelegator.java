@@ -12,9 +12,12 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
+import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
 
 
@@ -33,10 +37,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbPreInspection")
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
+    private final InternalDocClient internalDocClient;
 
     @Autowired
-    public PreInspectionDelegator(InspectionClient inspectionClient) {
+    public PreInspectionDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
         this.inspectionClient = inspectionClient;
+        this.internalDocClient = internalDocClient;
     }
 
 
@@ -55,17 +61,23 @@ public class PreInspectionDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         InsFacInfoDto facInfoDto = (InsFacInfoDto) ParamUtil.getSessionAttr(request, KEY_INS_INFO);
         if (facInfoDto == null) {
-            String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
             facInfoDto = inspectionClient.getInsFacInfo(appId);
             ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
+        }
+        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(facInfoDto.getAppStatus())) {
+            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_UNAVAILABLE, Boolean.TRUE);
         }
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         if (processDto == null) {
             processDto = new InsProcessDto();
             ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         }
+
+        List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
+        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
     }
 
     public void bindAction(BaseProcessClass bpc) {
@@ -101,9 +113,9 @@ public class PreInspectionDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validatePreInsSubmission(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (DECISION_MARK_READY.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_READY.equals(processDto.getDecision())) {
                 validateResult = "ready";
-            } else if (DECISION_RFI.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())) {
                 validateResult = "rfi";
             } else {
                 validateResult = "unknown";
