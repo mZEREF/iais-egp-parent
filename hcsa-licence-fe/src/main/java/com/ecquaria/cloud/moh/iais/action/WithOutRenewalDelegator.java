@@ -2106,8 +2106,8 @@ public class WithOutRenewalDelegator {
                 emailParam.setTemplateContent(map);
                 emailParam.setQueryCode(appNo);
                 emailParam.setReqRefNum(appNo);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                emailParam.setRefId(appNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+                emailParam.setRefId( loginContext.getLicenseeId());
                 emailParam.setSubject(emailSubject);
                 //send email
                 log.info(StringUtil.changeForLog("send renewal application email"));
@@ -2119,8 +2119,8 @@ public class WithOutRenewalDelegator {
                 smsParam.setSubject(smsSubject);
                 smsParam.setQueryCode(appNo);
                 smsParam.setReqRefNum(appNo);
-                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                smsParam.setRefId(appNo);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
+                smsParam.setRefId(loginContext.getLicenseeId());
                 log.info(StringUtil.changeForLog("send renewal application sms"));
                 notificationHelper.sendNotification(smsParam);
                 log.info(StringUtil.changeForLog("send renewal application sms end"));
