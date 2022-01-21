@@ -34,16 +34,21 @@
         </div>
     </div>
 </form>
+<%--
+There is an existing draft for Patient Information. Please either resume from draft or continue to submit for a different patient.(DS_MSG001)
+There is an existing draft for Cycle Stage. Please either resume from draft or continue to submit for a different patient or cycle stage.(DS_MSG002)
+--%>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">
-    <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
+    <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-                  cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" />
+                  cancelBtnDesc="Continue" cancelFunc="submit('confirm', 'delete');" />
 </c:if>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
-    <iais:confirm msg="DS_MSG001" callBack="submit('patient', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
+    <iais:confirm msg="DS_MSG001" callBack="submit('patient', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-                  cancelBtnDesc="Delete" cancelFunc="submit('patient', 'delete')" />
+                  cancelBtnDesc="Continue" cancelFunc="submit('patient', 'delete')" />
 </c:if>
+
 <iais:confirm msg="DS_MSG003" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close"
               cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
               cancelFunc="submit('patient', 'patient');" needFungDuoJi="false"/>

@@ -125,6 +125,7 @@ public final class DataSubmissionHelper {
         newDto.setCentreSel(currentSuper.getCentreSel());
         newDto.setAppType(currentSuper.getAppType());
         newDto.setOrgId(currentSuper.getOrgId());
+        newDto.setLicenseeId(currentSuper.getLicenseeId());
         newDto.setSubmissionType(currentSuper.getSubmissionType());
         newDto.setSubmissionMethod(currentSuper.getSubmissionMethod());
         newDto.setPremisesDto(currentSuper.getPremisesDto());
@@ -140,7 +141,8 @@ public final class DataSubmissionHelper {
         }
         dataSubmissionDto.setDeclaration(null);
         newDto.setDataSubmissionDto(dataSubmissionDto);
-        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, getLicenseeId(MiscUtil.getCurrentRequest()), true));
+        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, true));
+        currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return newDto;
     }
 
@@ -369,7 +371,7 @@ public final class DataSubmissionHelper {
         return cycleDto;
     }
 
-    public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, String licenseeId, boolean reNew) {
+    public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
         CycleDto cycleDto = currentArDataSubmission.getCycleDto();
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
@@ -389,6 +391,11 @@ public final class DataSubmissionHelper {
         cycleDto.setCycleType(cycleType);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        String licenseeId = currentArDataSubmission.getLicenseeId();
+        if (StringUtil.isEmpty(licenseeId)) {
+            licenseeId = getLicenseeId(MiscUtil.getCurrentRequest());
+            currentArDataSubmission.setLicenseeId(licenseeId);
         }
         cycleDto.setLicenseeId(licenseeId);
         return cycleDto;

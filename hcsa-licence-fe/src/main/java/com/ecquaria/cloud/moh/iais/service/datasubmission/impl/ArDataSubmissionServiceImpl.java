@@ -372,6 +372,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<CycleDto> getCyclesByConds(String patientCode, String hciCode, String svcName) {
+        log.info(StringUtil.changeForLog("patientCode: " + patientCode + " - hciCode: " + hciCode + " - Svc Name: " + svcName));
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(hciCode)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getCyclesByConds(patientCode, hciCode, svcName).getEntity();
+    }
+
+    @Override
     public List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode, String hciCode, String cycleType,
             String... status) {
         CycleDto cycleDto = new CycleDto();

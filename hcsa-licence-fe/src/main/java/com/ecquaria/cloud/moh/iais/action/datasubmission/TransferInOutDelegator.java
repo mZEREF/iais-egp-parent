@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -245,7 +244,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         arSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(arSuper, false));
         arSuper.getDataSubmissionDto().setCycleStage(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-        arSuper.setCycleDto(DataSubmissionHelper.initCycleDto(arSuper, licenseeId, false));
+        arSuper.setLicenseeId(licenseeId);
+        arSuper.setCycleDto(DataSubmissionHelper.initCycleDto(arSuper, false));
 
         String patientCode = outArDto.getCycleDto().getPatientCode();
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(patientCode,
