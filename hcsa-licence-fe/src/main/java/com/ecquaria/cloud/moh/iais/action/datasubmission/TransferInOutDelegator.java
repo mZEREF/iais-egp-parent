@@ -152,7 +152,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
     }
 
-    private void initSelectOpts(HttpServletRequest request) {
+    public void initSelectOpts(HttpServletRequest request) {
         PremisesDto currentPremisesDto = DataSubmissionHelper.getCurrentArDataSubmission(request).getPremisesDto();
         List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremises();
         premisesDtos = premisesDtos.stream().filter(premisesDto ->
