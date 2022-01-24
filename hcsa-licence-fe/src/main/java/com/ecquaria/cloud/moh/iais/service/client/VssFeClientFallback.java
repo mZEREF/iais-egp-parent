@@ -50,6 +50,11 @@ public class VssFeClientFallback implements VssFeClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> updateVssDocumentStatusByTreId(String treatmentId, String status) {
+        return  getFeignResponseEntity(treatmentId,status);
+    }
+
+    @Override
     public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
         return getFeignResponseEntity(draftId, status);
     }

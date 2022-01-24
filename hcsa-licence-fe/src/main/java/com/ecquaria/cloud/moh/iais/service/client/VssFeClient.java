@@ -52,4 +52,6 @@ public interface VssFeClient {
     @GetMapping(value = "/vss-common/vssDocument/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<VssFileDto>> getListVssDocumentDtoStatus(@RequestParam("status") String status);
 
+    @PostMapping(value = "/vss-common/vssDocument/treatmentId/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateVssDocumentStatusByTreId(@RequestParam("treatmentId") String treatmentId, @RequestParam("status") String status);
 }
