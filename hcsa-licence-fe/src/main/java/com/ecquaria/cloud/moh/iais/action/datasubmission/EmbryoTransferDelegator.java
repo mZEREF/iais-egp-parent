@@ -221,6 +221,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
                 }
             }
             ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request);
+            arCurrentInventoryDto = ArCurrentInventoryDto.addChange(arCurrentInventoryDto, arSuperDataSubmission.getArChangeInventoryDto());
             if (arCurrentInventoryDto != null) {
                 int currentFreshEmbryos = arCurrentInventoryDto.getFreshEmbryoNum() + arCurrentInventoryDto.getFreshEmbryoNum();
                 int currentThawedEmbryos = arCurrentInventoryDto.getThawedEmbryoNum() + arCurrentInventoryDto.getThawedEmbryoNum();
