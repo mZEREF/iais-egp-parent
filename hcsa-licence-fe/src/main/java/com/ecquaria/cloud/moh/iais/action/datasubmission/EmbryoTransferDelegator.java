@@ -167,8 +167,12 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             thawedEmbryoNum--;
         }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
         arChangeInventoryDto.setFreshEmbryoNum(freshEmbryoNum);
         arChangeInventoryDto.setThawedEmbryoNum(thawedEmbryoNum);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
