@@ -199,6 +199,14 @@
         </div>
     </div>
 </div>
+<iais:confirm msg="Donor\'s age when sperm(s) are collected is outside the range of 21 to 40 yrs old."
+              callBack="$('#ageMsgDiv1').hide();" popupOrder="ageMsgDiv1" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />
+<iais:confirm msg="Donor\'s age when oocyte(s) or embryo(s) are collected is outside the range of 21 to 35 yrs old."
+              callBack="$('#ageMsgDiv2').hide();" popupOrder="ageMsgDiv2" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />
 <input type="hidden" id ="ageCount" value="${ageCount}"/>
 <script  type="text/javascript">
     $(document).ready(function(){
@@ -278,11 +286,11 @@
                 var sampleType = $('#sampleTypeId').val();
                 if (sampleType == 'DST003') {
                     if(age<21 || age>40 ){
-                       alert("Donor\'s age when sperm(s) are collected is outside the range of 21 to 40 yrs old.");
+                       $("#ageMsgDiv1").show();
                     }
                 } else if (sampleType == 'DST001' || sampleType == 'DST002') {
                     if(age<21 || age>35 ){
-                        alert("Donor\'s age when oocyte(s) or embryo(s) are collected is outside the range of 21 to 35 yrs old.");
+                        $("#ageMsgDiv2").show();
                     }
                 }
             }
