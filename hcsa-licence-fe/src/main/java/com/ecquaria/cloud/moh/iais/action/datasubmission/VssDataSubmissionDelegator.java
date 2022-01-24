@@ -53,15 +53,12 @@ public class VssDataSubmissionDelegator {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
-    @Autowired
-    private VssUploadFileService vssUploadFileService;
     /**
      * Step: Start
      *
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc) {
-        vssUploadFileService.vssFile();
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.initVssConfig(bpc.request);
