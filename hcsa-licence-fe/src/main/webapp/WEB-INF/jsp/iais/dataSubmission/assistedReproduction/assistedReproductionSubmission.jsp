@@ -28,9 +28,9 @@
   </div>
 </form>
 <%--
-There is an existing draft for Patient Information. Please either resume from draft or continue to submit for a different patient.(DS_MSG001)
-There is an existing draft for Cycle Stage. Please either resume from draft or continue to submit for a different patient or cycle stage.(DS_MSG002)
-There is an existing draft for Donor Sample. Please either resume from draft or continue to submit a different donor sample.(DS_MSG008)
+There is an existing draft for Patient Information. Please either resume from draft or continue to submit for a new patient.(DS_MSG001)
+There is an existing cycle stage draft for this patient. Please either resume from draft or continue to submit for a new cycle stage.(DS_MSG002)
+There is an existing draft for Donor Sample. Please either resume from draft or continue to submit a new donor sample.(DS_MSG008)
 --%>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
   <iais:confirm msg="DS_MSG001" callBack="submit('confirm', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
