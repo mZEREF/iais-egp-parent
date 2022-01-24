@@ -314,8 +314,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         if (outArSuperDto != null) {
             TransferInOutStageDto outStageDto = outArSuperDto.getTransferInOutStageDto();
             boolean diffOocyte = !outStageDto.getOocyteNum().equals(transferInOutStageDto.getOocyteNum());
-            boolean diffEmbryo = !outStageDto.getOocyteNum().equals(transferInOutStageDto.getOocyteNum());
-            boolean diffSpermVial = !outStageDto.getOocyteNum().equals(transferInOutStageDto.getOocyteNum());
+            boolean diffEmbryo = !outStageDto.getEmbryoNum().equals(transferInOutStageDto.getEmbryoNum());
+            boolean diffSpermVial = !outStageDto.getSpermVialsNum().equals(transferInOutStageDto.getSpermVialsNum());
             ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
             ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
             ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
