@@ -17,8 +17,7 @@ public interface VssUploadFileService {
 
 
     void  getRelatedDocuments(VssFileDto vssFileDto) throws Exception;
-/*
-    boolean renameAndSave(String file,String vssTreId);*/
+  /*  boolean renameAndSave(String file,String vssTreId);*/
 
     void vssFile();
 }

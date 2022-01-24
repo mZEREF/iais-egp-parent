@@ -9,14 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.VssFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -57,7 +53,6 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
 
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
-
     @Override
     public void vssFile(){
         String status = DataSubmissionConsts.VSS_NEED_SYSN_BE_STATUS;
@@ -74,6 +69,9 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
                 String vssTreId = saveFile(dto);
                 log.info("------------------- saveFile  end --------------");
                 String compressFileName = compressFile(vssTreId);
+                if(!compressFileName.equals("")){
+                    vssFeClient.updateVssDocumentStatusByTreId(vssTreId,DataSubmissionConsts.VSS_NEED_SYSN_BE_SUCCESS_STATUS);
+                }
               /*  renameAndSave(compressFileName,vssTreId);*/
                 log.info("------------------- compressFile  end --------------");
             }catch (Throwable e){
@@ -145,12 +143,6 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
         }
         return vsstreId;
     }
-
-  /*  @Override
-    public String changeStatus(VssFileDto vssFileDto, Map<String, List<String>> map) {
-        return null;
-    }*/
-
     @Override
     public String compressFile(String vssTreId) {
         String compress = compress(vssTreId);
@@ -160,7 +152,6 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
 
     private String compress(String vssTreId){
         log.info("------------ start compress() -----------------------");
-        long l =   System.currentTimeMillis();
         String outFolder = sharedOutPath;
         if (!outFolder.endsWith(File.separator)) {
             outFolder += File.separator;
@@ -168,13 +159,13 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
         String soPath = sharedOutPath;
         File zipFile = MiscUtil.generateFile(soPath);
         MiscUtil.checkDirs(zipFile);
-        String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
+        String osPath = outFolder + vssTreId + AppServicesConsts.ZIP_NAME;
         File osFile = MiscUtil.generateFile(osPath);
         try (OutputStream outputStream = newOutputStream(osFile.toPath());//Destination compressed folder
              CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 
-            log.info(StringUtil.changeForLog("------------zip file name is"+ outFolder + l+".zip"+"--------------------"));
+            log.info(StringUtil.changeForLog("------------zip file name is"+ outFolder + vssTreId+".zip"+"--------------------"));
             String path = sharedPath + AppServicesConsts.FILE_NAME + File.separator + vssTreId;
             File file = MiscUtil.generateFile(path);
 
@@ -184,7 +175,7 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
             log.error(e.getMessage(),e);
             throw new IaisRuntimeException(e);
         }
-        return l+"";
+        return vssTreId;
     }
 
     private void zipFile(ZipOutputStream zos,File file) throws IOException {
@@ -214,7 +205,6 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
         }
 
     }
-
 
     @Override
     public void getRelatedDocuments(VssFileDto vssFileDto) throws Exception {
@@ -250,58 +240,5 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
         }
 
     }
-/*
-    @Override
-    public boolean renameAndSave(String fileNamesss,String vssTreId)  {
-       */
-/* log.info("--------------rename start ---------------------");
-        boolean flag = true;
-        String outFolder = sharedOutPath;
-        if (!outFolder.endsWith(File.separator)) {
-            outFolder += File.separator;
-        }
-        String soPath = sharedOutPath;
-        File zipFile = MiscUtil.generateFile(soPath);
-        if(zipFile.isDirectory()){
-            File[] files = zipFile.listFiles((dir, name) -> {
-                if (name.endsWith(fileNamesss+".zip")) {
-                    return true;
-                }
-                return false;
-            });
-            for(File file:files){
-                try (InputStream is= Files.newInputStream(file.toPath());
-                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
-                    int count=0;
-                    byte [] size=new byte[1024];
-                    count=is.read(size);
-                    while(count!=-1){
-                        by.write(size,0,count);
-                        count= is.read(size);
-                    }
-                    byte[] bytes = by.toByteArray();
-                    String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
-                    boolean b = file.renameTo(curFile);
-                    if(b){
-                        log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+s+".zip"));
-                    }
-                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, vssTreId);
-                    log.info(StringUtil.changeForLog("----"+string));
-                    if(!string.equals("SUCCESS")){
-                        MiscUtil.deleteFile(curFile);
-                        flag=false;
-                        break;
-                    }2
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                    throw new IaisRuntimeException(e);
-                }
-            }
-        }*//*
-
-        return false;
-    }
-*/
 
 }

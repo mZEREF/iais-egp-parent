@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +52,16 @@ public class VssDataSubmissionDelegator {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
+
+    @Autowired
+    private VssUploadFileService vssUploadFileService;
     /**
      * Step: Start
      *
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc) {
+        vssUploadFileService.vssFile();
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.initVssConfig(bpc.request);
@@ -346,6 +351,7 @@ public class VssDataSubmissionDelegator {
                     vssDocumentDto.setMd5Code(md5Code);
                     vssDocumentDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
                     vssDocumentDto.setSubmitDt(date);
+                    vssDocumentDto.setStatus(DataSubmissionConsts.VSS_NEED_SYSN_BE_STATUS);
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setFileName(v.getName());
                     fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
