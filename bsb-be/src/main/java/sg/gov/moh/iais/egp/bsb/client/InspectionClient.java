@@ -71,6 +71,11 @@ public interface InspectionClient {
                                     @RequestParam("taskId") String taskId,
                                     @RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/process/to-applicant", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void routeInspectionReportToApplicant(@RequestParam("appId") String appId,
+                                          @RequestParam("taskId") String taskId,
+                                          @RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/actual/report/review/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionReportRouteBackToDO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,

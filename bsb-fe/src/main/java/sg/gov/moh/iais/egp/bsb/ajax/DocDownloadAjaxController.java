@@ -18,9 +18,12 @@ import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
@@ -181,6 +184,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/commonDoc/repo/{id}")
     public void downloadSavedCommonDocFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::commonDocGetSavedFile);
+    }
+
+    @GetMapping("/commentInsReport/report/{id}")
+    public void downloadInspectionReport(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getInspectionReportPdf);
+    }
+
+    @GetMapping("/commentInsReport/comment/{id}")
+    public void downloadNewCommentReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getCommentInspectionReport);
     }
 
 
@@ -411,5 +424,15 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getInspectionReportPdf(HttpServletRequest request, String id) {
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, "Inspection report.pdf", null, content);
+    }
+
+    private MultipartFile getCommentInspectionReport(HttpServletRequest request, String id) {
+        CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, InspectionConstants.KEY_COMMENT_REPORT_DATA);
+        return dto.getNewDocMap().get(id).getMultipartFile();
     }
 }

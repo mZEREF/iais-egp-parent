@@ -129,7 +129,12 @@ public class BsbSubmitInspectionReportDelegator {
     }
 
     public void routeToApplicant(BaseProcessClass bpc) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        inspectionClient.routeInspectionReportToApplicant(appId, taskId, processDto);
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully routed inspection report to applicant for comment.");
     }
 
     public void markFinal(BaseProcessClass bpc) {

@@ -6,12 +6,16 @@ import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsCommentReportDataDto;
 
 
-@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "assessment")
-public interface AssessmentClient {
+@FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
+public interface InspectionClient {
     @GetMapping(path = "/assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<PreAssessmentDto> getAssessmentState(@PathVariable("appId") String appId);
 
@@ -27,4 +31,13 @@ public interface AssessmentClient {
 
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
+
+    @GetMapping("/inspection/report/{appId}")
+    InsCommentReportDataDto retrieveInspectionReport(@PathVariable("appId") String appId);
+
+    @PostMapping(value = "/inspection/report/comment/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateCommentReportForm(CommentInsReportDto.CommentInsReportValidateDto dto);
+
+    @PostMapping(value = "/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveCommentReportForm(CommentInsReportSaveDto saveDto);
 }
