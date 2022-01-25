@@ -142,7 +142,7 @@ public class ArWithdrawalDelegator {
             String dataSubNo=arSuperDataSubmission.getDataSubmissionDto().getSubmissionNo();
             if(dataSubNo.contains("-01")||!dataSubNo.contains("-")){
                 cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),true);
-            }else {
+            }else if(!cycleWd.containsKey(arSuperDataSubmission.getCycleDto().getId()) || !cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
                 cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),false);
             }
         }
