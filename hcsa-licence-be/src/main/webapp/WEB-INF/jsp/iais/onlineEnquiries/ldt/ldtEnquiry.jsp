@@ -19,7 +19,7 @@
         line-height: 0px;
     }
 </style>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/ldtSearch.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -116,7 +116,8 @@
                                     <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                         <thead>
                                         <tr >
-                                            <th scope="col">S/N</th>
+                                            <th scope="col" style="display: none"></th>
+                                            <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="LDT_NAME"
                                                                  value="Name of Laboratory"/>
@@ -199,10 +200,8 @@
 
                             </div>
 
-
                         </div>
                     </div>
-
 
                 </div>
             </div>
@@ -210,50 +209,3 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-<script type="text/javascript">
-
-
-    function doClear() {
-        $('input[type="text"]').val("");
-        $('input[type="checkbox"]').prop("checked", false);
-        $("option:first").prop("selected", 'selected');
-        $(".current").text("Please Select");
-        $('.date_picker').val("");
-        $(".multi-select-button").html("-- Select --");
-        $('#cycleStageDisplay').attr("style","display: none");
-    }
-
-
-    function jumpToPagechangePage() {
-        search();
-    }
-
-    function doSearch() {
-        $('input[name="pageJumpNoTextchangePage"]').val(1);
-        search();
-    }
-
-    function search() {
-        showWaiting();
-        $("[name='crud_action_type']").val('search');
-        $('#mainForm').submit();
-    }
-
-    function sortRecords(sortFieldName, sortType) {
-        $("[name='crud_action_value']").val(sortFieldName);
-        $("[name='crud_action_additional']").val(sortType);
-        $("[name='crud_action_type']").val('search');
-        $('#mainForm').submit();
-    }
-
-
-    var fullDetailsView = function (submissionNo) {
-
-        showWaiting();
-        $("[name='crud_action_value']").val(submissionNo);
-        $("[name='crud_action_type']").val('viewInfo');
-        $('#mainForm').submit();
-    }
-
-
-</script>
