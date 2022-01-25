@@ -647,6 +647,23 @@
          ]]>
     </sql>
 
+    <sql key = "searchLaboratoryDevelopTest" remarks="search Laboratory Develop Test">
+        <![CDATA[
+            SELECT distinct ldt.ID,dds.ID SUBMISSION_ID,lp.BUSINESS_NAME LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION, ldt.TEST_STATUS, ldt.REMARKS
+            FROM laboratory_develop_test ldt
+            join premises p on p.HCI_CODE = ldt.HCI_CODE
+            JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+            JOIN ds_data_submission dds on dds.SUBMISSION_NO = ldt.LDT_NO
+            where 1 = 1
+            <#if ldtDateFrom??> AND ldt.LDT_DATE >= convert(date,:ldtDateFrom)</#if>
+            <#if ldtDateTo??> AND ldt.LDT_DATE <= convert(date,:ldtDateTo)</#if>
+            <#if laboratoryName??> AND  charindex(:laboratoryName, lp.BUSINESS_NAME) >0</#if>
+            <#if ldtTestName??> AND  charindex(:ldtTestName, ldt.LDT_TEST_NAME) >0</#if>
+            <#if responsePerson??> AND  charindex(:responsePerson, ldt.RESPONSE_PERSON) >0</#if>
+            <#if testStatus??> AND  ldt.TEST_STATUS = :testStatus</#if>
+         ]]>
+    </sql>
+
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

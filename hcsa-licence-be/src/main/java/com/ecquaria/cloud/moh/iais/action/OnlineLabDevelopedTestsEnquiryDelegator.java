@@ -3,17 +3,31 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * OnlineLabDevelopedTestsEnquiryDelegator
@@ -50,8 +64,69 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
 
     }
 
-    public void perSearch(BaseProcessClass bpc){
+    public void perSearch(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request=bpc.request;
+        DsLaboratoryDevelopTestEnquiryFilterDto dsFilterDto=new DsLaboratoryDevelopTestEnquiryFilterDto();
+        String laboratoryName=ParamUtil.getString(request,"laboratoryName");
+        dsFilterDto.setLaboratoryName(laboratoryName);
 
+        Date ldtDateFrom= Formatter.parseDate(ParamUtil.getString(request, "ldtDateFrom"));
+        dsFilterDto.setLdtDateFrom(ldtDateFrom);
+        Date ldtDateTo= Formatter.parseDate(ParamUtil.getString(request, "ldtDateTo"));
+        dsFilterDto.setLdtDateTo(ldtDateTo);
+        String ldtTestName=ParamUtil.getString(request,"ldtTestName");
+        dsFilterDto.setLdtTestName(ldtTestName);
+        String donorIdType=ParamUtil.getString(request,"donorIdType");
+        dsFilterDto.setTestStatus(donorIdType);
+        String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
+        dsFilterDto.setResponsePerson(donorIdNumber);
+
+        ParamUtil.setSessionAttr(request,"dsLaboratoryDevelopTestEnquiryFilterDto",dsFilterDto);
+
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            ldtParameter.setSortType(sortType);
+            ldtParameter.setSortField(sortFieldName);
+        }
+        Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
+        if(dsFilterDto.getLaboratoryName()!=null){
+            filter.put("laboratoryName", dsFilterDto.getLaboratoryName());
+        }
+        if(dsFilterDto.getLdtDateFrom()!=null){
+            String ldtDateFromStr = Formatter.formatDateTime(dsFilterDto.getLdtDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("ldtDateFrom", ldtDateFromStr);
+        }
+        if(dsFilterDto.getLdtDateTo()!=null){
+            String ldtDateToStr = Formatter.formatDateTime(dsFilterDto.getLdtDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("ldtDateTo", ldtDateToStr);
+        }
+        if(dsFilterDto.getLdtTestName()!=null){
+            filter.put("ldtTestName", dsFilterDto.getLdtTestName());
+        }
+        if(dsFilterDto.getTestStatus()!=null){
+            if("0".equals(dsFilterDto.getTestStatus())){
+                filter.put("testStatus", 0);
+            }
+            if("1".equals(dsFilterDto.getTestStatus())){
+                filter.put("testStatus", 1);
+            }
+        }
+        if(dsFilterDto.getResponsePerson()!=null){
+            filter.put("responsePerson", dsFilterDto.getResponsePerson());
+        }
+
+        ldtParameter.setFilters(filter);
+        SearchParam ldtParam = SearchResultHelper.getSearchParam(request, ldtParameter,true);
+        CrudHelper.doPaging(ldtParam,bpc.request);
+
+        QueryHelp.setMainSql("onlineEnquiry","searchLaboratoryDevelopTest",ldtParam);
+
+        SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto> ldtResult = assistedReproductionService.searchDsLdtByParam(ldtParam);
+        ParamUtil.setRequestAttr(request,"ldtResult",ldtResult);
+        ParamUtil.setRequestAttr(request,"ldtParam",ldtParam);
     }
 
     public void ldtEnquiryStep(BaseProcessClass bpc){
