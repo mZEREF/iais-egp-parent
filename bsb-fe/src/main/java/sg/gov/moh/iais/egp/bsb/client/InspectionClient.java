@@ -38,6 +38,6 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/report/comment/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateCommentReportForm(CommentInsReportDto.CommentInsReportValidateDto dto);
 
-    @PostMapping(value = "/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveCommentReportForm(CommentInsReportSaveDto saveDto);
 }

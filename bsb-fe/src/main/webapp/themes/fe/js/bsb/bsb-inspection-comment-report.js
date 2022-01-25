@@ -2,10 +2,10 @@ $(function () {
     var attachmentDiv = $("#attachmentUploadDiv");
 
     $("#doUpload").change(function () {
-        attachmentDiv.hide();
+        attachmentDiv.show();
     });
     $("#noComment").change(function () {
-        attachmentDiv.show();
+        attachmentDiv.hide();
     });
 
 
@@ -61,11 +61,17 @@ function addAttachment() {
 
 
 function deleteFile(id) {
-    // delete input
-    var inputEl = document.getElementById(id);
-    inputEl.parentNode.removeChild(inputEl);
-
     // delete info and button
     var fileDiv = document.getElementById(id + "FileDiv");
     fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteNewFiles");
+    appendCSInputVal(deleteSavedInput, id);
+}
+
+
+function genFileInfo(fileInputEl) {
+    var f = fileInputEl.files;
+    return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
