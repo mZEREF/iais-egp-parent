@@ -157,7 +157,7 @@ public class ArDataSubmissionDelegator {
                     dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                             orgId, submissionType, hciCode);
                 }
-                if (dataSubmissionDraft != null && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())) {
+                if (dataSubmissionDraft != null/* && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())*/) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "invalid";
                 }
