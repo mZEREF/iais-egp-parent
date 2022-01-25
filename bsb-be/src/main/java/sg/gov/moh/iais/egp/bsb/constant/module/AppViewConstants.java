@@ -29,4 +29,9 @@ public class AppViewConstants {
     public static final String KEY_DOC_SETTINGS                             = "docSettings";
     public static final String KEY_SAVED_FILES                              = "savedFiles";
     public static final String KEY_PRIMARY_DOC_DTO                          = "primaryDocDto";
+
+    //deregistration view dto
+    public static final String KEY_DE_REGISTRATION_FACILITY_DTO             = "deRegistrationFacilityDto";
+    public static final String KEY_CANCELLATION_APPROVAL_DTO                = "cancellationApprovalDto";
+    public static final String KEY_DE_REGISTRATION_AFC_DTO                  = "deRegistrationAFCDto";
 }

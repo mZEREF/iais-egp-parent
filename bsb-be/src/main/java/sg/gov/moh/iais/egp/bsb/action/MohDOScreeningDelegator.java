@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.process.DOScreeningDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,7 @@ public class MohDOScreeningDelegator {
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         request.getSession().removeAttribute(AppViewConstants.KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
+        MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 

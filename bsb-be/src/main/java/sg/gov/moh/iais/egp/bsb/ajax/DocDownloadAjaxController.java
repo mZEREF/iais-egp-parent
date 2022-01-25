@@ -137,6 +137,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getNewSuspensionFile);
     }
 
+    @GetMapping("/applicationDoc/{id}")
+    public void downloadApplicationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getApplicationFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id
@@ -232,5 +237,15 @@ public class DocDownloadAjaxController {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getApplicationFile(HttpServletRequest request, String id) {
+        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "applicationDocRepoIdNameMap");
+        String fileName = map.get(id);
+        if (fileName == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, fileName, null, content);
     }
 }

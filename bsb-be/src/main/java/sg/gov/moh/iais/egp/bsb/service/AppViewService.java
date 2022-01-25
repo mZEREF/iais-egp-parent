@@ -12,6 +12,9 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -48,6 +51,9 @@ public class AppViewService {
         ParamUtil.setSessionAttr(request, KEY_APP_VIEW_DTO, appViewDto);
     }
 
+    /**
+     * retrieve new facility registration view data
+     */
     public void retrieveFacReg(HttpServletRequest request, String applicationId) {
         ResponseDto<FacilityRegisterDto> resultDto = appViewClient.getFacRegDtoByAppId(applicationId);
         if (resultDto.ok()){
@@ -74,6 +80,9 @@ public class AppViewService {
         }
     }
 
+    /**
+     * retrieve new approval app view data
+     */
     public void retrieveApprovalApp(HttpServletRequest request, String applicationId) {
         ResponseDto<ApprovalAppDto> resultDto = appViewClient.getApprovalAppDtoByAppId(applicationId);
         if (resultDto.ok()){
@@ -92,6 +101,9 @@ public class AppViewService {
         }
     }
 
+    /**
+     * retrieve new facility certifier registration view data
+     */
     public void retrieveFacCerReg(HttpServletRequest request, String applicationId) {
         ResponseDto<FacilityCertifierRegisterDto> resultDto = appViewClient.getFacCerRegDtoByAppId(applicationId);
         if (resultDto.ok()){
@@ -107,6 +119,52 @@ public class AppViewService {
             ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
             ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         } else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    /**
+     * retrieve deregistration facility view data
+     */
+    public void retrieveDeregistrationFac(HttpServletRequest request, String applicationId){
+        ResponseDto<DeRegistrationFacilityDto> resultDto = appViewClient.getDeRegistrationFacilityDtoByAppId(applicationId);
+        if (resultDto.ok()){
+            DeRegistrationFacilityDto deRegistrationFacilityDto = resultDto.getEntity();
+            ParamUtil.setRequestAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO, deRegistrationFacilityDto);
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getDeRegistrationDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(deRegistrationFacilityDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
+        }else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    /**
+     * retrieve cancellation approval app view data
+     */
+    public void retrieveCancellationApproval(HttpServletRequest request, String applicationId){
+        ResponseDto<CancellationApprovalDto> resultDto = appViewClient.getCancellationApprovalDtoByAppId(applicationId);
+        if (resultDto.ok()){
+            CancellationApprovalDto cancellationApprovalDto = resultDto.getEntity();
+            ParamUtil.setRequestAttr(request, KEY_CANCELLATION_APPROVAL_DTO, cancellationApprovalDto);
+        }else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
+    /**
+     * retrieve deregistration AFC view data
+     */
+    public void retrieveDeRegistrationAFC(HttpServletRequest request, String applicationId){
+        ResponseDto<DeRegistrationAFCDto> resultDto = appViewClient.getDeRegistrationAFCDtoByAppId(applicationId);
+        if (resultDto.ok()){
+            DeRegistrationAFCDto deRegistrationAFCDto = resultDto.getEntity();
+            ParamUtil.setRequestAttr(request, KEY_DE_REGISTRATION_AFC_DTO, deRegistrationAFCDto);
+        }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
     }
@@ -145,6 +203,13 @@ public class AppViewService {
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_TESTIMONIALS, "Testimonials", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_CURRICULUM_VITAE, "Curriculum Vitae", true));
+        return docSettings;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    public List<DocSetting> getDeRegistrationDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>(1);
+        docSettings.add(new DocSetting("attachments", "Attachments", true));
         return docSettings;
     }
 }

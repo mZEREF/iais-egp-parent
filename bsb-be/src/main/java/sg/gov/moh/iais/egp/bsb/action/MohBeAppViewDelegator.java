@@ -41,17 +41,30 @@ public class MohBeAppViewDelegator {
         if (appViewDto != null){
             String applicationId = appViewDto.getApplicationId();
             String processType = appViewDto.getProcessType();
+            String appType = appViewDto.getAppType();
             switch (processType) {
                 case PROCESS_TYPE_FAC_REG:
-                    appViewService.retrieveFacReg(request, applicationId);
+                    if (appType.equals(APP_TYPE_NEW)){
+                        appViewService.retrieveFacReg(request, applicationId);
+                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
+                        appViewService.retrieveDeregistrationFac(request, applicationId);
+                    }
                     break;
                 case PROCESS_TYPE_APPROVE_POSSESS:
                 case PROCESS_TYPE_APPROVE_LSP:
                 case PROCESS_TYPE_SP_APPROVE_HANDLE:
-                    appViewService.retrieveApprovalApp(request, applicationId);
+                    if (appType.equals(APP_TYPE_NEW)){
+                        appViewService.retrieveApprovalApp(request, applicationId);
+                    }else if (appType.equals(APP_TYPE_CANCEL)){
+                        appViewService.retrieveCancellationApproval(request, applicationId);
+                    }
                     break;
                 case PROCESS_TYPE_FAC_CERTIFIER_REG:
-                    appViewService.retrieveFacCerReg(request, applicationId);
+                    if (appType.equals(APP_TYPE_NEW)){
+                        appViewService.retrieveFacCerReg(request, applicationId);
+                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
+                        appViewService.retrieveDeRegistrationAFC(request, applicationId);
+                    }
                     break;
                 default:
                     log.info("don't have such processType {}", StringUtils.normalizeSpace(processType));

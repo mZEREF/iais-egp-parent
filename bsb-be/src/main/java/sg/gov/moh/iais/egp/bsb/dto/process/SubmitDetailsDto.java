@@ -1,12 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationMiscDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class SubmitDetailsDto implements Serializable {
@@ -32,6 +30,4 @@ public class SubmitDetailsDto implements Serializable {
     private String email;
     //list bat
     private List<Biological> biologicalList;
-    //the last ao,do,hm applicationMisc
-    private Map<String, ApplicationMiscDto> applicationMiscDtoMap;
 }

@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.process.AOProcessingDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_V
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.MASK_PARAM_ID;
 
 /**
  * @author : LiRan
@@ -51,6 +51,7 @@ public class MohAOProcessingDelegator {
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         request.getSession().removeAttribute(KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
+        MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 

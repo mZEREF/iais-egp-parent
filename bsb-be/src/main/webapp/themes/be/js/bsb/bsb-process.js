@@ -1,6 +1,5 @@
 $(function () {
     validate();
-    $('#viewAppDiv').hide();
     var riskLevel = $("#riskLevel").val();
     if (riskLevel == "RLOTBA001" || riskLevel == "RLOTBA003"){
         $("#commentFalse").hide();
@@ -21,9 +20,6 @@ $(function () {
     })
     $("#submitButton").click(function () {
         $('#mainForm').submit();
-    })
-    $("#viewAppBtn").click(function () {
-        $('#viewAppDiv').show();
     })
 })
 function validate(){
