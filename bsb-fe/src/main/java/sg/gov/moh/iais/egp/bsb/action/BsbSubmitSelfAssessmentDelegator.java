@@ -210,7 +210,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = (String) ParamUtil.getSessionAttr(request, KEY_CURRENT_ACTION);
         if (!ACTION_EDIT.equals(currentAction) && !ACTION_FILL.equals(currentAction)) {
-            throw new IaisRuntimeException("Invalid action!");
+            throw new IaisRuntimeException("Invalid action ["+ currentAction +"] to reach here!");
         }
         /* For each sectionId--itemId, retrieve value, put into the answerMap.
          * Check if all questions are answered, if not, route back. */
@@ -231,8 +231,10 @@ public class BsbSubmitSelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, String>) answerMap);
         ParamUtil.setRequestAttr(request, KEY_VALID, allFilled);
         if (!allFilled) {
+            log.info("Applicant try to submit self-assessment, but not all items checked");
             ParamUtil.setRequestAttr(request, KEY_ERROR_MESSAGE, "Please complete the checklist questions.");
         } else {
+            log.info("All items checked, save self-assessment data");
             // save checklist answer into DB, change app status to pending readiness
             List<ChklstItemAnswerDto> answerDtoList = new ArrayList<>(answerMap.size());
             for (Map.Entry<String, String> entry : answerMap.entrySet()) {

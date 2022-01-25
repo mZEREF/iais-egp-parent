@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.withdrawn;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -19,7 +20,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

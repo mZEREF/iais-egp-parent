@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -239,8 +240,10 @@ public class InspectionDODelegator {
         ParamUtil.setRequestAttr(request, KEY_VALID, allFilled);
 
         if (!allFilled) {
+            log.info("Officer try to submit checklist, but not all items checked");
             ParamUtil.setRequestAttr(request, KEY_ERROR_MESSAGE, "Please complete the checklist questions.");
         } else {
+            log.info("All items checked, save checklist");
             // save checklist answer into DB, change app status to pending readiness
             List<ChklstItemAnswerDto> answerDtoList = new ArrayList<>(answerMap.size());
             for (Map.Entry<String, String> entry : answerMap.entrySet()) {
@@ -265,6 +268,9 @@ public class InspectionDODelegator {
         int existingItemMaxIdx = Optional.of(findingFormDto).map(InsFindingFormDto::getItemDtoList).map(List::size).orElse(0) - 1;
 
         String idxes = ParamUtil.getString(request, "sectionIdx");
+        if (log.isInfoEnabled()) {
+            log.info("Officer submit inspection findings, section indexed are [{}]", LogUtil.escapeCrlf(idxes));
+        }
         ArrayList<InsFindingFormDto.InsFindingItemDto> newFindingItemList;
         if (StringUtils.hasText(idxes)) {
             String[] idxArr = idxes.trim().split(" +");
@@ -310,8 +316,10 @@ public class InspectionDODelegator {
         findingFormDto.setItemDtoList(newFindingItemList);
 
         // save inspection findings
+        log.info("Validate inspection findings");
         ValidationResultDto validationResultDto = inspectionClient.saveInspectionFindings(findingFormDto);
         if (!validationResultDto.isPass()) {
+            log.info("Inspection findings validation not pass");
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
         }
         ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingFormDto);
@@ -326,8 +334,10 @@ public class InspectionDODelegator {
         outcomeDto.setOutcome(ParamUtil.getString(request, KEY_OUTCOME_OUTCOME));
         outcomeDto.setRemarks(ParamUtil.getString(request, KEY_OUTCOME_REMARKS));
 
+        log.info("Validate inspection outcome");
         ValidationResultDto validationResultDto = inspectionClient.saveInspectionOutcome(outcomeDto);
         if (!validationResultDto.isPass()) {
+            log.info("Inspection outcome validation not pass");
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
         }
         ParamUtil.setSessionAttr(request, KEY_INS_OUTCOME, outcomeDto);
@@ -335,6 +345,7 @@ public class InspectionDODelegator {
     }
 
     public void handleSubmit(BaseProcessClass bpc) {
+        log.info("Officer submit for inspection findings step");
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionFindings(appId);
@@ -345,6 +356,7 @@ public class InspectionDODelegator {
             ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
             route = "submit";
         } else {
+            log.info("But not all necessary data has been submitted");
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_PROCESSING);
             route = "back";

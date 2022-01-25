@@ -90,31 +90,39 @@ public class BsbCommentInspectionReport {
         CommentInsReportDto.CommentInsReportValidateDto validateDto = dto.toValidateDto();
         ValidationResultDto validationResultDto = inspectionClient.validateCommentReportForm(validateDto);
         if (validationResultDto.isPass()) {
+            log.info("Validation pass for submission");
             ParamUtil.setRequestAttr(request, KEY_ROUTE, "save");
         } else {
+            log.info("Validation fail for submission");
             ParamUtil.setRequestAttr(request, KEY_ROUTE, "back");
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            String errorMsg = validationResultDto.toErrorMsg();
+            log.info("Error msg is [{}]", errorMsg);
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, errorMsg);
         }
     }
 
     public void save(BaseProcessClass bpc) {
+        log.info("Start to save submission of inspection report comment");
         HttpServletRequest request = bpc.request;
         CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, KEY_COMMENT_REPORT_DATA);
 
         if (MasterCodeConstants.YES.equals(dto.getUpload()) && !dto.getNewDocMap().isEmpty()) {
             // save new uploaded files at local and sync
             // save at local
+            log.info("Save attachment into file-repo");
             MultipartFile[] files = dto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             List<NewFileSyncDto> newFilesToSync = dto.newFileSaved(repoIds);
             if (!newFilesToSync.isEmpty()) {
                 // sync files to BE
+                log.info("Sync attachment to BE");
                 FileRepoSyncDto syncDto = new FileRepoSyncDto();
                 syncDto.setNewFiles(newFilesToSync);
                 bsbFileClient.saveFiles(syncDto);
             }
 
             // save app doc if any
+            log.info("Save application, routing history and bsb_application_doc if any");
             CommentInsReportSaveDto saveDto = new CommentInsReportSaveDto();
             String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
             saveDto.setAppId(appId);

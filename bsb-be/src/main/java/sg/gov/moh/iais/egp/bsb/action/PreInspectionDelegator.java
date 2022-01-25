@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -122,6 +123,9 @@ public class PreInspectionDelegator {
             }
         } else {
             validateResult = "invalid";
+        }
+        if (log.isInfoEnabled()) {
+            log.info("Officer submit decision [{}] for pre-inspection, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
         }
         ParamUtil.setRequestAttr(request, KEY_VALID, validateResult);
     }

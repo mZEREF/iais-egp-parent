@@ -195,11 +195,13 @@ public class FacilityRegistrationDelegator {
                     previewSubmitNode.passValidation();
 
                     // save docs
+                    log.info("Save documents into file-repo");
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                     List<NewFileSyncDto> newFilesToSync = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
 
                     // save data
+                    log.info("Save facility registration data");
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
@@ -208,11 +210,13 @@ public class FacilityRegistrationDelegator {
 
                     try {
                         // delete docs
+                        log.info("Delete already saved documents in file-repo");
                         List<String> toBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto);
                         // sync docs
+                        log.info("Sync new uploaded documents to BE");
                         facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
                     } catch (Exception e) {
-                        log.error("Fail to sync files to BE", e);
+                        log.error("Fail to synchronize documents", e);
                     }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);

@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -112,6 +113,7 @@ public class BsbInspectionAOReviewReportDelegator {
             ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_PROCESSING);
             validateResult = "back";
         }
+        log.info("Officer submit decision [{}] for review inspection report, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
     }
 
