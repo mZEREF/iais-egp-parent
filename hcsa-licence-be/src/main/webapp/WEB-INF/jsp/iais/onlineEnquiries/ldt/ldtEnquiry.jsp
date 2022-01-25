@@ -182,7 +182,8 @@
                                                             <c:out value="${ldt.designation}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <c:out value="${ldt.testStatus}"/>
+                                                            <c:if test="${ldt.testStatus=='0'}">Inactive</c:if>
+                                                            <c:if test="${ldt.testStatus=='1'}">Active</c:if>
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <c:out value="${ldt.remarks}"/>

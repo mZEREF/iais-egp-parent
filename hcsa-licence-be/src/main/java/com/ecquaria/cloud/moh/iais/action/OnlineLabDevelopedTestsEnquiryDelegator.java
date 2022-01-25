@@ -76,10 +76,10 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         dsFilterDto.setLdtDateTo(ldtDateTo);
         String ldtTestName=ParamUtil.getString(request,"ldtTestName");
         dsFilterDto.setLdtTestName(ldtTestName);
-        String donorIdType=ParamUtil.getString(request,"donorIdType");
-        dsFilterDto.setTestStatus(donorIdType);
-        String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
-        dsFilterDto.setResponsePerson(donorIdNumber);
+        String testStatus=ParamUtil.getString(request,"testStatus");
+        dsFilterDto.setTestStatus(testStatus);
+        String responsePerson=ParamUtil.getString(request,"responsePerson");
+        dsFilterDto.setResponsePerson(responsePerson);
 
         ParamUtil.setSessionAttr(request,"dsLaboratoryDevelopTestEnquiryFilterDto",dsFilterDto);
 

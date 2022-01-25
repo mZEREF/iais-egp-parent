@@ -649,11 +649,10 @@
 
     <sql key = "searchLaboratoryDevelopTest" remarks="search Laboratory Develop Test">
         <![CDATA[
-            SELECT distinct ldt.ID,dds.ID SUBMISSION_ID,lp.BUSINESS_NAME LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION, ldt.TEST_STATUS, ldt.REMARKS
+            SELECT distinct ldt.ID,null SUBMISSION_ID,lp.BUSINESS_NAME LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION, ldt.TEST_STATUS, ldt.REMARKS ,ldt.LDT_NO
             FROM laboratory_develop_test ldt
             join premises p on p.HCI_CODE = ldt.HCI_CODE
             JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-            JOIN ds_data_submission dds on dds.SUBMISSION_NO = ldt.LDT_NO
             where 1 = 1
             <#if ldtDateFrom??> AND ldt.LDT_DATE >= convert(date,:ldtDateFrom)</#if>
             <#if ldtDateTo??> AND ldt.LDT_DATE <= convert(date,:ldtDateTo)</#if>
