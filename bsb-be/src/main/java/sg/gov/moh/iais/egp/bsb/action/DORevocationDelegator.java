@@ -67,8 +67,9 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
-        ParamUtil.setSessionAttr(request,BACK,null);
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, null);
+        ParamUtil.setSessionAttr(request, FROM, null);
+        ParamUtil.setSessionAttr(request, BACK_URL, null);
     }
 
     /**
@@ -193,6 +194,12 @@ public class DORevocationDelegator {
         ParamUtil.setSessionAttr(request, PARAM_APPROVAL_ID, maskedApprovalId);
         ParamUtil.setSessionAttr(request, KEY_APP_ID, maskedAppId);
         ParamUtil.setSessionAttr(request, KEY_TASK_ID, maskedTaskId);
+        if (from.equals(FAC)) {
+            ParamUtil.setSessionAttr(request, BACK_URL, APPROVAL_LIST_URL);
+        }
+        if (from.equals(APP)) {
+            ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
+        }
     }
 
     /**
@@ -203,7 +210,6 @@ public class DORevocationDelegator {
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
 
         String from = ParamUtil.getRequestString(request, FROM);
-        ParamUtil.setSessionAttr(request, FROM, null);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         if (!StringUtils.hasLength(revokeDto.getModule())) {
             if (from.equals(FAC)) {
@@ -228,7 +234,6 @@ public class DORevocationDelegator {
                 processHistoryService.getAndSetHistoryInSession(revokeDto.getApplicationNo(), request);
             }
         }
-        ParamUtil.setSessionAttr(request,BACK,from);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 

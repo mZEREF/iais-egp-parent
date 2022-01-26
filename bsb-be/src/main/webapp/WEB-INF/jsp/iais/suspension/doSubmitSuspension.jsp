@@ -189,12 +189,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                        <c:if test="${back eq 'fac'}">
-                                                                            <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
-                                                                        </c:if>
-                                                                        <c:if test="${back eq 'app'}">
-                                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
-                                                                        </c:if>
+                                                                        <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                                                                 <div style="text-align: right">
                                                                     <a href="/bsb-be/eservice/INTRANET/MohBsbTaskList" class="btn btn-secondary">Cancel</a>
                                                                     <c:if test="${suspensionReinstatementDto.approvalProcessType eq 'PROTYPE005'}">

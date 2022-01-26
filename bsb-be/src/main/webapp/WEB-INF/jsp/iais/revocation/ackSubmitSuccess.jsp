@@ -19,12 +19,7 @@
                             </div>
                         </div>
                         <div style="text-align: left">
-                            <c:if test="${from eq 'fac'}">
-                                <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
-                            </c:if>
-                            <c:if test="${from eq 'app'}">
-                                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
-                            </c:if>
+                            <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                         </div>
                     </div>
                 </div>

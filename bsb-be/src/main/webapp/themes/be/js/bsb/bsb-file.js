@@ -16,11 +16,12 @@ $(function () {
 });
 
 function addReloadFile() {
+    var user = $("input[name='loginUser']").val();
     var id = this.getAttribute("id");
     var f = this.files;
     var tr = "<tr id="+id+'FileTr'+">"+"<td>" + f[0].name + "</td>" + "<td>"+"Internal"+"</td>" + "<td>"
         + "<a href=\"javascript:void(0)\" onClick=\"downloadNewSuspensionFile('+"+id+"+')\">"+f[0].name+"</a>"+ "</td>"
-        + "<td>" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td>" + "" + "</td>" + "<td>" + new Date().toLocaleDateString() + "</td>"
+        + "<td>" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td>" + user + "</td>" + "<td>" + new Date().toLocaleDateString() + "</td>"
         + "<td>" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteNewFile(this,'"+id+"');\">Delete</button>" +"</td>"+"</tr>";
     doAddTr(tr);
 }

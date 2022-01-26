@@ -57,11 +57,11 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, PARAM_APPLICATION_SEARCH, null);
         ParamUtil.setSessionAttr(request, PARAM_REVOCATION_DETAIL, null);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, null);
+        ParamUtil.setSessionAttr(request, BACK_URL, null);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FROM, null);
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
 
         SubmitRevokeDto revokeDto = getRevokeDto(request);
@@ -85,7 +85,7 @@ public class AORevocationDelegator {
             //show routingHistory list
             processHistoryService.getAndSetHistoryInSession(revokeDto.getApplicationNo(), request);
         }
-        ParamUtil.setSessionAttr(request, FROM, REVOCATION_TASK_LIST);
+        ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 

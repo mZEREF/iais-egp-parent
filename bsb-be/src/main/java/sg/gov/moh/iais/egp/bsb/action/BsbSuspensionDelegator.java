@@ -67,7 +67,8 @@ public class BsbSuspensionDelegator {
         AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, null);
         AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, null);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, null);
-        ParamUtil.setSessionAttr(request, BACK, null);
+        ParamUtil.setSessionAttr(request, BACK_URL, null);
+        ParamUtil.setSessionAttr(request, FROM, null);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         request.getSession().removeAttribute(KEY_CAN_UPLOAD);
     }
@@ -79,13 +80,13 @@ public class BsbSuspensionDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
         String from = ParamUtil.getRequestString(request, FROM);
-        ParamUtil.setSessionAttr(request, FROM, null);
         SuspensionReinstatementDto dto = getSuspensionDto(request);
         if (StringUtils.isEmpty(dto.getApprovalId()) && StringUtils.isEmpty(dto.getApplicationId())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
                 dto = suspensionClient.getSuspensionDataByApprovalId(approvalId).getEntity();
+                ParamUtil.setSessionAttr(request, BACK_URL, APPROVAL_LIST_URL);
             }
             if (from.equals(APP)) {
                 String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
@@ -105,17 +106,16 @@ public class BsbSuspensionDelegator {
                 dto.setPrimaryDocDto(primaryDocDto);
                 //show routingHistory list
                 processHistoryService.getAndSetHistoryInSession(dto.getApplicationNo(), request);
+                ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
             }
         }
         setModuleType(dto);
-        ParamUtil.setSessionAttr(request, BACK, from);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
 
     public void aoPrepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
-        String from = ParamUtil.getRequestString(request, FROM);
         ParamUtil.setSessionAttr(request, FROM, null);
         SuspensionReinstatementDto dto = getSuspensionDto(request);
         if (StringUtils.isEmpty(dto.getApprovalId()) && StringUtils.isEmpty(dto.getApplicationId())) {
@@ -138,8 +138,8 @@ public class BsbSuspensionDelegator {
             processHistoryService.getAndSetHistoryInSession(dto.getApplicationNo(), request);
         }
         setModuleType(dto);
-        ParamUtil.setSessionAttr(request, BACK, from);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
+        ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
     }
 
     private void setModuleType(SuspensionReinstatementDto dto) {

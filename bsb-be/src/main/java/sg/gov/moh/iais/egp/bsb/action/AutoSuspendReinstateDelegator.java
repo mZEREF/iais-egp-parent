@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.service.AutoSuspendService;
  * @author tangtang
  * @date 2022/1/4 17:04
  */
-@JobHandler(value="autoRenewalDelegatorHandler")
+@JobHandler(value="autoSuspendDelegatorHandler")
 @Component
 @Slf4j
 public class AutoSuspendReinstateDelegator extends IJobHandler {
@@ -24,7 +24,7 @@ public class AutoSuspendReinstateDelegator extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            autoSuspendService.startRenewal();
+            autoSuspendService.startSuspend();
         }catch (Exception e){
             return ReturnT.FAIL;
         }

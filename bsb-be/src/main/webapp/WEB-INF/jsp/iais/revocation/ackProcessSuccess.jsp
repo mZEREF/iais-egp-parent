@@ -17,8 +17,8 @@
                         <h2><span><c:out value="You have successfully dealt with it"></c:out></span></h2>
                     </div>
                 </div>
-                <div align="left">
-                    <span><a href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back To Process</a></span>
+                <div style="text-align: left">
+                    <span><a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a></span>
                 </div>
             </div>
         </div>
