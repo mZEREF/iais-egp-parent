@@ -12,6 +12,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<c:set var="title" value="" />
+
 <%@ include file="common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
