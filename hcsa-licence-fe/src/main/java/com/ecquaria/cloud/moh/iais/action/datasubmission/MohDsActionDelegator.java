@@ -107,6 +107,7 @@ public class MohDsActionDelegator {
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, "title", "Laboratory Develop Test");
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
