@@ -35,7 +35,7 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
 
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    @Value("${iais.sharedfolder.rectification.out}")
+    @Value("${iais.sharedfolder.application.out}")
     private String sharedOutPath;
 
     @Value("${iais.hmac.keyId}")
