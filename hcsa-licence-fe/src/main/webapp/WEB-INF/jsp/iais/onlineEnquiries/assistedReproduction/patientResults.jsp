@@ -162,7 +162,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="NAME"
                                                                  value="Patient Name"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="ID_TYPE"
                                                                  value="Patient ID Type"/>
                                             <iais:sortableHeader needSort="true"
@@ -171,7 +171,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="DATE_OF_BIRTH"
                                                                  value="Patient Date of Birth"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="NATIONALITY"
                                                                  value="Patient Nationality"/>
 
@@ -263,10 +263,10 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="SUBMISSION_TYPE"
                                                                  value="Submission Type"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="CYCLE_STAGE"
                                                                  value="Submission Subtype"/>
                                             <iais:sortableHeader needSort="true"

@@ -179,7 +179,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="DONOR_SAMPLE_CODE"
                                                                  value="Donor Sample Code / ID No"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="SAMPLE_TYPE"
                                                                  value="Sample Type"/>
                                             <iais:sortableHeader needSort="true"

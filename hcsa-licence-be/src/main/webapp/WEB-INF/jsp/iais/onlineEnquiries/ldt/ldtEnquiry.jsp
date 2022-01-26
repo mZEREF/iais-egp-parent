@@ -124,7 +124,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="LDT_TEST_NAME"
                                                                  value="Name of LDT Test"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="INTENDED_PURPOSE"
                                                                  value="Intended Purpose of Test"/>
                                             <iais:sortableHeader needSort="true"
