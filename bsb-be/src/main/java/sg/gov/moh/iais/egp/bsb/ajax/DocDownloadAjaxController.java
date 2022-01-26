@@ -203,7 +203,7 @@ public class DocDownloadAjaxController {
 
     private MultipartFile getSavedSuspensionFile(HttpServletRequest request, String id) {
         SuspensionReinstatementDto dto = (SuspensionReinstatementDto) ParamUtil.getSessionAttr(request, "suspensionReinstatementDto");
-        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        DocRecordInfo info = dto.getPrimaryDocDto().getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
@@ -222,7 +222,7 @@ public class DocDownloadAjaxController {
 
     private MultipartFile getSavedRevocationFile(HttpServletRequest request, String id) {
         SubmitRevokeDto dto = (SubmitRevokeDto) ParamUtil.getSessionAttr(request, "revokeDto");
-        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        DocRecordInfo info = dto.getPrimaryDocDto().getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
