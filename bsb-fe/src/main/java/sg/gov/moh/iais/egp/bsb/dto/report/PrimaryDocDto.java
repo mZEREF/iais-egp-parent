@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.report;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -23,7 +24,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 

@@ -22,6 +22,8 @@ public class FollowupInfoBDto implements Serializable {
 
     private String incidentInvestId;
 
+    private String personnelName;
+
     private String followupDes;
 
     private String testResult;

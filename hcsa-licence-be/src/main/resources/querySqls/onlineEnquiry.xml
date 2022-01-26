@@ -647,6 +647,58 @@
          ]]>
     </sql>
 
+    <sql key = "searchLaboratoryDevelopTest" remarks="search Laboratory Develop Test">
+        <![CDATA[
+            select distinct * from (SELECT  ldt.ID,null SUBMISSION_ID,
+                   CONCAT(case Prem.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+Prem.BLK_NO end ,
+               case Prem.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+Prem.STREET_NAME end
+               , case Prem.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+Prem.BUILDING_NAME end
+               , case Prem.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' #'+Prem.FLOOR_NO end
+               , case Prem.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+Prem.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM hcsal.dbo.premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =Prem.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case Prem.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+Prem.POSTAL_CODE end
+                  ,case Prem.HCI_NAME
+                  when null then null
+                  when '' then null
+                  else ', '+Prem.HCI_NAME end
+              )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION, ldt.TEST_STATUS, ldt.REMARKS ,ldt.LDT_NO
+                FROM laboratory_develop_test ldt
+                join premises Prem on Prem.HCI_CODE = ldt.HCI_CODE ) T1
+            where 1 = 1
+            <#if ldtDateFrom??> AND T1.LDT_DATE >= convert(date,:ldtDateFrom)</#if>
+            <#if ldtDateTo??> AND T1.LDT_DATE <= convert(date,:ldtDateTo)</#if>
+            <#if laboratoryName??> AND  charindex(:laboratoryName, T1.LDT_NAME) >0</#if>
+            <#if ldtTestName??> AND  charindex(:ldtTestName, T1.LDT_TEST_NAME) >0</#if>
+            <#if responsePerson??> AND  charindex(:responsePerson, T1.RESPONSE_PERSON) >0</#if>
+            <#if testStatus??> AND  T1.TEST_STATUS = :testStatus</#if>
+         ]]>
+    </sql>
+
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

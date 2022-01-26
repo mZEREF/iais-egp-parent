@@ -65,6 +65,20 @@ public class IncidentMOHProcessDelegator {
         mohProcessService.preInvestProcessingData(request);
     }
 
+    public void preFollowup1AProcessingData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,PARAM_MODULE_KEY,"followup1A");
+        mohProcessService.preInvestProcessingData(request);
+    }
+
+    public void preFollowup1BProcessingData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,PARAM_MODULE_KEY,"followup1B");
+        mohProcessService.preInvestProcessingData(request);
+    }
+
+
+
     public void preViewNotification(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         mohProcessService.preViewIncidentNotification(request);

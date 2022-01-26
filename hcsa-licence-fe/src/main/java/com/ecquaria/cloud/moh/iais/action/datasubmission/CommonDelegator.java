@@ -242,11 +242,12 @@ public abstract class CommonDelegator {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(stage)) {
                 EmbryoTransferredOutcomeStageDto outcomeStageDto = arSuperDataSubmission.getEmbryoTransferredOutcomeStageDto();
-                if (StringUtil.isIn(outcomeStageDto, new String[]{
+                String transferedOutcome = outcomeStageDto.getTransferedOutcome();
+                if (StringUtil.isIn(transferedOutcome, new String[]{
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED,
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN})) {
                     status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
-                } else if (StringUtil.isIn(outcomeStageDto, new String[]{
+                } else if (StringUtil.isIn(transferedOutcome, new String[]{
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY})) {//3.3.4.3
                     status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }

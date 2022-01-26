@@ -1230,7 +1230,7 @@
                                                 <iais:sortableHeader needSort="true"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="ID_TYPE"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="true"
@@ -1239,7 +1239,7 @@
                                                 <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="NATIONALITY"
                                                                      value="Patient Nationality"/>
                                                 <iais:sortableHeader needSort="true"

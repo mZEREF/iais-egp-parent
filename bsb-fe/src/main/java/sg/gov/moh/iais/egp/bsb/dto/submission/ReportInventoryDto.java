@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -15,17 +16,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
-import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 

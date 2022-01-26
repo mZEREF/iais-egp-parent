@@ -154,6 +154,11 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
+    public FeignResponseEntity<List<CycleDto>> getCyclesByConds(String patientCode, String hciCode, String svcName) {
+        return getFeignResponseEntity(patientCode, hciCode, svcName);
+    }
+
+    @Override
     public FeignResponseEntity<DonorSampleDto> getDonorSampleDto(String idType, String idNumber, String donorSampleCodeType,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers) {
         return  getFeignResponseEntity(idType,idNumber,donorSampleCodeType,donorSampleCode,sampleFromHciCode,sampleFromOthers);
     }

@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -137,6 +137,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getNewSuspensionFile);
     }
 
+    @GetMapping("/applicationDoc/{id}")
+    public void downloadApplicationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getApplicationFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id
@@ -198,7 +203,7 @@ public class DocDownloadAjaxController {
 
     private MultipartFile getSavedSuspensionFile(HttpServletRequest request, String id) {
         SuspensionReinstatementDto dto = (SuspensionReinstatementDto) ParamUtil.getSessionAttr(request, "suspensionReinstatementDto");
-        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        DocRecordInfo info = dto.getPrimaryDocDto().getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
@@ -217,7 +222,7 @@ public class DocDownloadAjaxController {
 
     private MultipartFile getSavedRevocationFile(HttpServletRequest request, String id) {
         SubmitRevokeDto dto = (SubmitRevokeDto) ParamUtil.getSessionAttr(request, "revokeDto");
-        DocRecordInfo info = dto.getQueryDocMap().get(id);
+        DocRecordInfo info = dto.getPrimaryDocDto().getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
@@ -232,5 +237,15 @@ public class DocDownloadAjaxController {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getApplicationFile(HttpServletRequest request, String id) {
+        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "applicationDocRepoIdNameMap");
+        String fileName = map.get(id);
+        if (fileName == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, fileName, null, content);
     }
 }

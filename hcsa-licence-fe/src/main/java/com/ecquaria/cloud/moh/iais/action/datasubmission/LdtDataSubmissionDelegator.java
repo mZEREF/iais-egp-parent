@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
@@ -15,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -22,12 +25,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,6 +63,15 @@ public class LdtDataSubmissionDelegator {
 
     @Autowired
     private LdtDataSubmissionService ldtDataSubmissionService;
+
+    @Autowired
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+
+    @Autowired
+    NotificationHelper notificationHelper;
+
+    @Autowired
+    LicenceViewService licenceViewService;
 
     public static final String CRUD_ACTION_TYPE_LDT = "crud_action_type_ldt";
     public static final String CURRENT_PAGE = "ldt_current_page";
@@ -129,7 +147,6 @@ public class LdtDataSubmissionDelegator {
 
         DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
         CycleDto cycle = ldtSuperDataSubmissionDto.getCycleDto();
-        String cycleType = cycle.getCycleType();
 
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = ldtDataSubmissionService.getSubmissionNo();
@@ -162,6 +179,23 @@ public class LdtDataSubmissionDelegator {
             ldtDataSubmissionService.updateDataSubmissionDraftStatus(ldtSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
+        String licenseeId = loginContext.getLicenseeId();
+
+        LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
+        String licenseeDtoName = licenseeDto.getName();
+        String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
+        String licenceId = "";
+        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
+        if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
+            LicenceDto licenceDto = licenceDtoList.get(0);
+            licenceId = licenceDto.getId();
+        }
+        try {
+            sendNotification(licenseeDtoName, submissionNo, licenceId);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+        }
+
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
@@ -404,5 +438,26 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("The containCLB  result is -->:" + result));
         log.info(StringUtil.changeForLog("The containCLB  end ..."));
         return result;
+    }
+
+    private void sendNotification(String applicantName, String LDTId, String licenceId) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG).getEntity();
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        msgContentMap.put("ApplicantName", applicantName);
+        msgContentMap.put("LDTId", LDTId);
+        msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("LDTId", LDTId);
+        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG);
+        emailParam.setTemplateContent(msgContentMap);
+        emailParam.setQueryCode(LDTId);
+        emailParam.setReqRefNum(LDTId);
+        emailParam.setRefId(licenceId);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        emailParam.setSubject(subject);
+        notificationHelper.sendNotification(emailParam);
+        log.info(StringUtil.changeForLog("***************** send LDT Notification  end *****************"));
     }
 }

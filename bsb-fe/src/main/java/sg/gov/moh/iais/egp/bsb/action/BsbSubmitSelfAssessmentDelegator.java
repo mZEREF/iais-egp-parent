@@ -20,7 +20,7 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.AssessmentClient;
+import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.AssessmentState;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -45,11 +45,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.*;
 @Slf4j
 @Delegator("bsbSubmitSelfAssessment")
 public class BsbSubmitSelfAssessmentDelegator {
-    private final AssessmentClient assessmentClient;
+    private final InspectionClient inspectionClient;
 
     @Autowired
-    public BsbSubmitSelfAssessmentDelegator(AssessmentClient assessmentClient) {
-        this.assessmentClient = assessmentClient;
+    public BsbSubmitSelfAssessmentDelegator(InspectionClient inspectionClient) {
+        this.inspectionClient = inspectionClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -94,7 +94,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_ENTRY_APP_ID);
         // use appId to get facility and activity data, and assessment action state
-        ResponseDto<PreAssessmentDto> responseDto = assessmentClient.getAssessmentState(appId);
+        ResponseDto<PreAssessmentDto> responseDto = inspectionClient.getAssessmentState(appId);
         if (responseDto.ok()) {
             PreAssessmentDto dto = responseDto.getEntity();
             ArrayList<String> actions = new ArrayList<>(assessmentActions(dto.getAssessmentState()));
@@ -149,7 +149,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         String action = (String) ParamUtil.getSessionAttr(request, KEY_CURRENT_ACTION);
         if (ACTION_PRINT.equals(action) || ACTION_VIEW.equals(action) || ACTION_EDIT.equals(action)) {
             String appId = (String) ParamUtil.getRequestAttr(request, KEY_APP_ID);
-            SelfAssessmtChklDto answerRecordDto = assessmentClient.getSavedSelfAssessment(appId);
+            SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
             if (answerRecordDto != null) {
                 ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
             }
@@ -167,7 +167,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             answerRecordDto.setVersion(1);
             answerRecordDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-            ChecklistConfigDto configDto = assessmentClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
+            ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
             answerRecordDto.setChkLstConfigId(configDto.getId());
 
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG, configDto);
@@ -176,7 +176,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG);
         if (configDto == null) {
             String configId = answerRecordDto.getChkLstConfigId();
-            configDto = assessmentClient.getChecklistConfigById(configId);
+            configDto = inspectionClient.getChecklistConfigById(configId);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG, configDto);
         }
         Map<String, String> answerMap = (Map<String, String>) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP);
@@ -210,7 +210,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = (String) ParamUtil.getSessionAttr(request, KEY_CURRENT_ACTION);
         if (!ACTION_EDIT.equals(currentAction) && !ACTION_FILL.equals(currentAction)) {
-            throw new IaisRuntimeException("Invalid action!");
+            throw new IaisRuntimeException("Invalid action ["+ currentAction +"] to reach here!");
         }
         /* For each sectionId--itemId, retrieve value, put into the answerMap.
          * Check if all questions are answered, if not, route back. */
@@ -231,8 +231,10 @@ public class BsbSubmitSelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, String>) answerMap);
         ParamUtil.setRequestAttr(request, KEY_VALID, allFilled);
         if (!allFilled) {
+            log.info("Applicant try to submit self-assessment, but not all items checked");
             ParamUtil.setRequestAttr(request, KEY_ERROR_MESSAGE, "Please complete the checklist questions.");
         } else {
+            log.info("All items checked, save self-assessment data");
             // save checklist answer into DB, change app status to pending readiness
             List<ChklstItemAnswerDto> answerDtoList = new ArrayList<>(answerMap.size());
             for (Map.Entry<String, String> entry : answerMap.entrySet()) {
@@ -245,7 +247,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
             answerRecordDto.setAnswer(answer);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
-            assessmentClient.submitSelfAssessment(answerRecordDto);
+            inspectionClient.submitSelfAssessment(answerRecordDto);
             ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
         }
     }

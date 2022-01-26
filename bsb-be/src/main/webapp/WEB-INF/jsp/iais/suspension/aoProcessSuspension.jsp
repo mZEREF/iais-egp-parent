@@ -178,7 +178,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                        <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                                                                 <div style="text-align: right">
                                                                     <button id="submitBtn" class="btn btn-primary">Submit</button>
                                                                 </div>
@@ -187,7 +187,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

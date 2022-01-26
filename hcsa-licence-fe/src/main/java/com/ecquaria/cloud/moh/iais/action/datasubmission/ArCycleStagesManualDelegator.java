@@ -133,7 +133,7 @@ public class ArCycleStagesManualDelegator {
                 // re-set cycle stage
                 DataSubmissionDto dataSubmissionDto = currentSuper.getDataSubmissionDto();
                 if (dataSubmissionDto != null) {
-                    // To reNew super data submission
+                    // To reNew super data submission and retrieving draft data
                     dataSubmissionDto.setCycleStage(null);
                 }
                 /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
@@ -167,18 +167,25 @@ public class ArCycleStagesManualDelegator {
                 currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
                 stage = "current";
                 ParamUtil.setRequestAttr(request, "hasDraft", Boolean.TRUE);
+            } else {
+                currentArDataSubmission.setDraftId(null);
+                currentArDataSubmission.setDraftNo(null);
+                currentArDataSubmission.setPatientInfoDto(null);
             }
         } else if ("resume".equals(actionValue)) {
             ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
                     currentArDataSubmission.getDraftId());
             if (arSuperDataSubmissionDtoDraft != null) {
-                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+                currentArDataSubmission = arSuperDataSubmissionDtoDraft;
             } else {
                 log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
             }
         } else if ("delete".equals(actionValue)) {
             arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO,
                     null);
+            currentArDataSubmission.setDraftId(null);
+            currentArDataSubmission.setDraftNo(null);
+            currentArDataSubmission.setPatientInfoDto(null);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return stage;
@@ -197,8 +204,8 @@ public class ArCycleStagesManualDelegator {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode);
-            if (dataSubmissionDraft != null && !Objects.equals(currentArDataSubmission.getDraftNo(),
-                    dataSubmissionDraft.getDraftNo())) {
+            if (dataSubmissionDraft != null/* && !Objects.equals(currentArDataSubmission.getDraftNo(),
+                    dataSubmissionDraft.getDraftNo())*/) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
@@ -220,6 +227,8 @@ public class ArCycleStagesManualDelegator {
             arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
                     selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode);
+            currentArDataSubmission = DataSubmissionHelper.reNew(currentArDataSubmission);
+            currentArDataSubmission.getDataSubmissionDto().setCycleStage(stage);
             handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
         }
         return stage;
@@ -311,9 +320,7 @@ public class ArCycleStagesManualDelegator {
         currentArDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
         currentArDataSubmission.setSubmissionMethod(DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY);
-        currentArDataSubmission.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission, true));
-        currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, null,true));
-        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(DataSubmissionHelper.reNew(currentArDataSubmission), bpc.request);
     }
 
     /**

@@ -30,14 +30,7 @@
     <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreSelfAssessment" x="520" y="290">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preSelfAssessment_OnStepProcess_0" name="preSelfAssessment_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreChecklist" x="650" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="PreChecklist" x="520" y="290">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -65,7 +58,7 @@
     <JavaCode defClass="" executor="" methodName="saveInsOutcome_OnStepProcess_0" name="saveInsOutcome_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ClearData" x="590" y="380">
+  <AutomaticStep defClass="" executor="" icon="" name="ClearData" x="530" y="370">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -79,36 +72,9 @@
     <JavaCode defClass="" executor="" methodName="handleSubmit_OnStepProcess_0" name="handleSubmit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ToAO" x="1030" y="520">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="toAO_OnStepProcess_0" name="toAO_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ToApplicant" x="1140" y="520">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="toApplicant_OnStepProcess_0" name="toApplicant_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Final" x="1270" y="520">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="final_OnStepProcess_0" name="final_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page" stageIndicator="" x="460" y="50">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewSelfAssessment" stageIndicator="" x="420" y="280">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -120,7 +86,7 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Acknowledge" stageIndicator="" x="1140" y="660">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Acknowledge" stageIndicator="" x="1130" y="540">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -144,26 +110,17 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindAction" style="oblique">
    <position>{(610,70)(610,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ViewSelfAssessment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreSelfAssessment" style="oblique">
-   <position>{(540,310)(440,300)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(610,190)(330,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreSelfAssessment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(610,190)(540,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Pre" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(330,260)(320,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewSelfAssessment" style="oblique">
-   <position>{(440,300)(330,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Checklist" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreChecklist" style="oblique">
-   <position>{(670,310)(680,480)}</position>
+   <position>{(540,310)(680,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(610,190)(670,310)}</position>
+   <position>{(610,190)(540,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SaveInsFinding" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(610,190)(790,310)}</position>
@@ -178,55 +135,40 @@
    <position>{(930,310)(329,677)(330,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Checklist" style="oblique">
-   <position>{(680,480)(545,510)}</position>
+   <position>{(680,480)(520,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ValidateAndSaveChecklist" style="oblique">
-   <position>{(500,570)(425,530)}</position>
+   <position>{(500,570)(400,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ValidateAndSaveChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(545,510)(500,570)}</position>
+   <position>{(520,480)(500,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(545,510)(330,260)}</position>
+   <position>{(520,480)(330,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(425,530)(330,260)}</position>
+   <position>{(400,500)(330,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(425,530)(670,310)}</position>
+   <position>{(400,500)(540,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ClearData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(545,510)(610,400)}</position>
+   <position>{(520,480)(550,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreChecklist" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ClearData" style="oblique">
-   <position>{(610,400)(670,310)}</position>
+   <position>{(550,390)(540,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleSubmit" style="oblique">
-   <position>{(1140,310)(1185,450)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ToAO" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1185,450)(1050,540)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ToApplicant" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1185,450)(1160,540)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Final" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1185,450)(1290,540)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ToAO" style="oblique">
-   <position>{(1050,540)(1160,680)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ToApplicant" style="oblique">
-   <position>{(1160,540)(1160,680)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Final" style="oblique">
-   <position>{(1290,540)(1160,680)}</position>
+   <position>{(1140,310)(1160,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(610,190)(1140,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
-   <position>{(1185,450)(998,421)(329,677)(330,260)}</position>
+   <position>{(1160,420)(998,421)(329,677)(330,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(1160,420)(1150,560)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
@@ -234,7 +176,6 @@
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="action_type" name="Switch1" x="590" y="170">
    <Description />
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PreSelfAssessment" value="&quot;viewSelfAssessment&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreChecklist" value="&quot;viewChecklist&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/SaveInsFinding" value="&quot;insFinding&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/SaveInsOutcome" value="&quot;insOutcome&quot;" />
@@ -251,12 +192,10 @@
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;true&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreChecklist" value="&quot;false&quot;" />
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="valid" name="Switch4" x="1140" y="400">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="route" name="Switch4" x="1140" y="400">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/ToAO" value="&quot;ao&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/ToApplicant" value="&quot;applicant&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/Final" value="&quot;final&quot;" />
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;" />
+   <SwitchCase component="/Pages/WebPage/Acknowledge" value="&quot;submit&quot;" />
   </Switch>
  </Switches>
  <Branches />

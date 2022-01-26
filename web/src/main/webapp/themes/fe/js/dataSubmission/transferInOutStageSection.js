@@ -12,8 +12,8 @@ $(document).ready(function () {
             $('.outFromParts').show();
         }
     });
-    toggleOnSelect("#transInFromHciCode",'AR_TIF_003', 'othersInFrom');
-    toggleOnSelect("#transOutToHciCode",'AR_TIF_003', 'othersOutFrom');
+    toggleOnSelect("#transInFromHciCode",'Others', 'othersInFrom');
+    toggleOnSelect("#transOutToHciCode",'Others', 'othersOutFrom');
 
     toggleOnCheck('#transferredCheckAR_WWT_001','transferred0')
     toggleOnCheck('#transferredCheckAR_WWT_002','transferred1')

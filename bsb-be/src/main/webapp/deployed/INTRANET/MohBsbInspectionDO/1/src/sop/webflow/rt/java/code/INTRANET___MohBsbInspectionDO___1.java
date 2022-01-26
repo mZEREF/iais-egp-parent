@@ -33,10 +33,6 @@ public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "bindAction", this);
 	}
 
-	public void preSelfAssessment_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSelfAssessment", this);
-	}
-
 	public void preChecklist_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preChecklist", this);
 	}
@@ -59,17 +55,5 @@ public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
 
 	public void handleSubmit_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
-	}
-
-	public void toAO_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "submitToAo", this);
-	}
-
-	public void toApplicant_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "routeToApplicant", this);
-	}
-
-	public void final_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "markFinal", this);
 	}
 }

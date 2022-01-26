@@ -35,7 +35,7 @@ public class AutoSuspendService {
         this.systemBeBsbClient = systemBeBsbClient;
     }
 
-    public void startRenewal() {
+    public void startSuspend() {
         Map<String, LocalDate> dateMap = Maps.newLinkedHashMapWithExpectedSize(1);
         SystemParameterDto sysParDtoFacW1 = systemBeBsbClient.getParameterByRowguid(FAC_CONFIG_WEEK_1).getEntity();
         LocalDate remindDay = getRemindDay(sysParDtoFacW1);

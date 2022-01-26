@@ -46,7 +46,7 @@
                                      </c:if>
                                  </label>
                                  <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                     <c:out value="${transferInOutStageDto.oocyteNo}" />
+                                     <c:out value="${transferInOutStageDto.oocyteNum}"/>
                                  </iais:value>
                              </iais:row>
                             </c:if>
@@ -61,7 +61,7 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                       <c:out value="${transferInOutStageDto.embryoNo}" />
+                                        <c:out value="${transferInOutStageDto.embryoNum}"/>
                                     </iais:value>
                                 </iais:row>
                             </c:if>
@@ -76,7 +76,7 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                        <c:out value="${transferInOutStageDto.spermVialsNo}" />
+                                        <c:out value="${transferInOutStageDto.spermVialsNum}"/>
                                     </iais:value>
                                 </iais:row>
                             </c:if>
@@ -91,37 +91,41 @@
                     <iais:row>
                         <iais:field width="5" value="Transferred In From" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                                   var="selecctInValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
-                                <c:if test="${premisesSelect.value eq transferInOutStageDto.transInFromHciCode}">
+                                <c:if test="${premisesSelect.value eq selecctInValue}">
                                     <c:out value="${premisesSelect.text}"/>
                                 </c:if>
                             </c:forEach>
                         </iais:value>
                     </iais:row>
-                        <iais:row style="${transferInOutStageDto.transInFromHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
-                            <iais:field width="5" value="Transferred In From (Others)" />
-                            <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                <c:out value="${transferInOutStageDto.transInFromOthers}"/>
-                            </iais:value>
-                        </iais:row>
+                    <iais:row style="${transferInOutStageDto.transInFromHciCode eq'Others' ? '' : 'display:none;'}">
+                        <iais:field width="5" value="Transferred In From (Others)"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:out value="${transferInOutStageDto.transInFromOthers}"/>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:set value="${transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
+                                   var="selecctOutValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
-                                <c:if test="${premisesSelect.value eq transferInOutStageDto.transOutToHciCode}">
+                                <c:if test="${premisesSelect.value eq selecctOutValue}">
                                     <c:out value="${premisesSelect.text}"/>
                                 </c:if>
                             </c:forEach>
                         </iais:value>
                     </iais:row>
-                        <iais:row style="${transferInOutStageDto.transOutToHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
-                            <iais:field width="5" value="Transfer Out To (Others)" />
-                            <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                                <c:out value="${transferInOutStageDto.transOutToOthers}"/>
-                            </iais:value>
-                        </iais:row>
+                    <iais:row style="${transferInOutStageDto.transOutToHciCode eq'Others' ? '' : 'display:none;'}">
+                        <iais:field width="5" value="Transfer Out To (Others)"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:out value="${transferInOutStageDto.transOutToOthers}"/>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="5" value="Date of Transfer" />

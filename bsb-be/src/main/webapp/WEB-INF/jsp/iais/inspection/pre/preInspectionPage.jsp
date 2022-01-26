@@ -36,9 +36,6 @@
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
-                                            <li id="checkList" role="presentation">
-                                                <a href="#tabCheckList" id="doCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">Check List</a>
-                                            </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
                                             </li>
@@ -52,9 +49,6 @@
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">Check List</a>
-                                                </div>
-                                                <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
                                                 </div>
                                             </div>
@@ -64,16 +58,12 @@
                                                 <%@include file="facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/tabDocuments.jsp"%>
-                                            </div>
-                                            <div class="tab-pane" id="tabCheckList" role="tabpanel">
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing Status Update</h4>
-                                                    </strong>
+                                                    <h4>Processing Status Update</h4>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
@@ -103,7 +93,7 @@
                                                                             <select name="processingDecision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO001'}">selected="selected"</c:if>>Mark as ready</option>
-                                                                                <option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>
+                                                                                <%--<option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>--%>
                                                                             </select>
                                                                             <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                         </div>
@@ -128,4 +118,5 @@
             </div>
         </div>
     </form>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
 </div>

@@ -9,8 +9,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <iais:sortableHeader field="BUSINESS_NAME" needSort="false"
-                                     value="AR Centre"/>
+
                 <iais:sortableHeader needSort="false"
                                      field="NAME"
                                      value="Name"/>
@@ -40,13 +39,7 @@
                 </c:when>
                 <c:otherwise>
                     <tr>
-                        <td style="vertical-align:middle;">
-                            <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
-                                <c:if test="${not empty arCentre}">
-                                    <c:out value="${arCentre.getPremiseLabel()}"/><br>
-                                </c:if>
-                            </c:forEach>
-                        </td>
+
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.patient.name}"/>
                         </td>
@@ -99,8 +92,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <iais:sortableHeader field="BUSINESS_NAME" needSort="false"
-                                     value="AR Centre"/>
+
                 <iais:sortableHeader needSort="false"
                                      field="NAME"
                                      value="Name"/>
@@ -130,15 +122,7 @@
                 </c:when>
                 <c:otherwise>
                     <tr>
-                        <td style="vertical-align:middle;">
 
-                            <c:forEach var="arCentre" items="${patientInfoDto.previous.arCentres}">
-                                <p>
-                                    <c:out value="${arCentre.getPremiseLabel()}"/>
-                                </p>
-
-                            </c:forEach>
-                        </td>
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.previous.name}"/>
                         </td>

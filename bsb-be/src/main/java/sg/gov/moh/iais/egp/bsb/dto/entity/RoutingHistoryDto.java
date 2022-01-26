@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -15,8 +16,6 @@ public class RoutingHistoryDto extends BaseEntityDto {
     private String id;
 
     private RoutingStageDto routingStage;
-
-    private String internalRemarks;
 
     private String processDecision;
 
@@ -28,5 +27,5 @@ public class RoutingHistoryDto extends BaseEntityDto {
 
     private String applicationNo;
 
-    private String externalRemarks;
+    private String remarks;
 }

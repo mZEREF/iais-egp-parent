@@ -35,11 +35,11 @@
     <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="submitProcessing" x="680" y="310">
+  <AutomaticStep defClass="" executor="" icon="" name="PreSuccessData" x="680" y="310">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submitProcessing_OnStepProcess_0" name="submitProcessing_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="preSuccessData_OnStepProcess_0" name="preSuccessData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -50,7 +50,7 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingSuccess" stageIndicator="" x="680" y="410">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ProcessingSuccess" stageIndicator="" x="670" y="430">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -80,11 +80,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreProcessingData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(730,240)(274,125)(240,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/submitProcessing" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreSuccessData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(730,240)(700,330)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ProcessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/submitProcessing" style="rectanular">
-   <position>{(700,330)(700,430)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ProcessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreSuccessData" style="rectanular">
+   <position>{(700,330)(690,450)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
@@ -92,7 +92,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="710" y="220">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/PreProcessingData" value="&quot;prepare&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/submitProcessing" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreSuccessData" value="&quot;close&quot;" />
   </Switch>
  </Switches>
  <Branches />

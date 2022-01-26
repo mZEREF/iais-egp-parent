@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ page import="java.lang.String" %>
 <div id="fileUploadInputDiv" style="display: none"></div>
+<input type="text" name="loginUser" value="${iais_Login_User_Info_Attr.userName}" hidden/>
 <div class="alert alert-info" role="alert">
     <h4>Supporting Document</h4>
 </div>
@@ -62,7 +63,7 @@
                                 <td>${info.docType}</td>
                                 <td><p><a href="javascript:void(0)" onclick="downloadNewSuspensionFile('${tmpId}')">${info.filename}</a></p></td>
                                 <td>${String.format("%.1f", info.size/1024.0)}KB</td>
-                                <td>${info.submitBy}</td>
+                                <td>${iais_Login_User_Info_Attr.userName}</td>
                                 <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
                                 <td>
                                     <button type="button" class="btn btn-secondary-del btn-sm"
@@ -100,12 +101,7 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <c:if test="${back eq 'fac'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
-                <c:if test="${back eq 'app'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
+                <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                 <c:if test="${canUpload eq 'Y'}">
                     <div style="text-align: right">
                         <a class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>

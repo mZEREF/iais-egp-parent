@@ -162,7 +162,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="NAME"
                                                                  value="Patient Name"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="ID_TYPE"
                                                                  value="Patient ID Type"/>
                                             <iais:sortableHeader needSort="true"
@@ -171,7 +171,7 @@
                                             <iais:sortableHeader needSort="true"
                                                                  field="DATE_OF_BIRTH"
                                                                  value="Patient Date of Birth"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="NATIONALITY"
                                                                  value="Patient Nationality"/>
 
@@ -259,16 +259,14 @@
                                     <table aria-describedby="" class="table">
                                         <thead>
                                         <tr >
-                                            <iais:sortableHeader needSort="true"
-                                                                 field="BUSINESS_NAME"
-                                                                 value="AR Centre"/>
+
                                             <iais:sortableHeader needSort="true"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="SUBMISSION_TYPE"
                                                                  value="Submission Type"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="CYCLE_STAGE"
                                                                  value="Submission Subtype"/>
                                             <iais:sortableHeader needSort="true"
@@ -292,9 +290,7 @@
                                                            varStatus="status">
                                                     <tr>
 
-                                                        <td style="vertical-align:middle;">
-                                                            <c:out value="${submission.arCentre}"/>
-                                                        </td>
+
                                                         <td style="vertical-align:middle;">
                                                             <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
                                                             </a>

@@ -16,8 +16,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.*;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -36,7 +34,7 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
         }
         if ("save".equals(profile)) {
             CycleStageSelectionDto selectionDto = (CycleStageSelectionDto) obj;
-            if (StringUtil.isNotEmpty(selectionDto.getStage())) {
+            if (StringUtil.isNotEmpty(selectionDto.getStage()) && !selectionDto.isUndergoingCycle()) {
                 //3.3.3.1(4)
                 CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, null, null, null);
                 if (DsHelper.isNormalCycle(cycleDto.getCycleType())) {
@@ -47,8 +45,9 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
                     if (lastStartDate != null && StringUtil.isDigit(period)) {
                         try {
                             int p = Integer.parseInt(period);
-                            int target = Formatter.compareDateByDay(lastStartDate, new Date());
-                            if (target < p) {
+                            int target = Formatter.compareDateByDay(new Date(), lastStartDate);
+                            log.info(StringUtil.changeForLog("Overlap Period: " + p + " - Acutual Period: " + target));
+                            if (target <= p) {
                                 errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
                             }
                         } catch (Exception e) {

@@ -18,7 +18,12 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>Data Submission</h1>
+                    <c:if test="${not empty title}">
+                        <h1>${title}</h1>
+                    </c:if>
+                    <c:if test="${empty title}">
+                        <h1>Data Submission</h1>
+                    </c:if>
                 </div>
             </div>
         </div>

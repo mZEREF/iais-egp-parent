@@ -1,5 +1,14 @@
 <%--@elvariable id="insFindingList" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto"--%>
 <%--@elvariable id="insOutcome" type="sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto"--%>
+
+<%@page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
+
+<%-- This select is used to init nice-select, if we don't have at least one nice-select,
+     our js generated nice-select will not have click event --%>
+<select name="doNotShow" style="display: none" disabled aria-label="forNiceSelect">
+    <option value="error">ERROR</option>
+</select>
+
 <div class="row">
     <div class="col-xs-12">
         <div class="table-gp">
@@ -23,8 +32,8 @@
                             <td style="border: 0; padding-top: 5px; padding-bottom: 0">${finding.itemText}<span data-err-ind="itemValue--v--${status.index}" class="error-msg"></span></td>
                             <td style="border: 0; padding-top: 5px; padding-bottom: 0">
                                 <select name="findingType--v--${status.index}" aria-label="finding type">
-                                    <option value="NC" <c:if test="${finding.findingType eq 'NC'}">selected="selected"</c:if>>Non-compliance</option>
-                                    <option value="followUp" <c:if test="${finding.findingType eq 'followUp'}">selected="selected"</c:if>>Follow-up item</option>
+                                    <option value="${InspectionConstants.VALUE_FINDING_TYPE_NC}" <c:if test="${finding.findingType eq InspectionConstants.VALUE_FINDING_TYPE_NC}">selected="selected"</c:if>>Non-compliance</option>
+                                    <option value="${InspectionConstants.VALUE_FINDING_TYPE_FOLLOW_UP}" <c:if test="${finding.findingType eq InspectionConstants.VALUE_FINDING_TYPE_FOLLOW_UP}">selected="selected"</c:if>>Follow-up item</option>
                                 </select>
                                 <span data-err-ind="findingType--v--${status.index}" class="error-msg"></span>
                             </td>
@@ -56,15 +65,15 @@
                     <div class="col-sm-7 col-md-5 col-xs-10">
                         <div class="input-group">
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="deficiency" id="majorDeficiency" value="major" <c:if test="${insOutcome.deficiency eq 'major'}">checked="checked"</c:if> />
+                                <input type="radio" name="deficiency" id="majorDeficiency" value="${InspectionConstants.VALUE_OUTCOME_DEFICIENCY_MAJOR}" <c:if test="${insOutcome.deficiency eq InspectionConstants.VALUE_OUTCOME_DEFICIENCY_MAJOR}">checked="checked"</c:if> />
                                 <label for="majorDeficiency" class="label-normal">Major</label>
                             </div>
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="deficiency" id="minorDeficiency" value="minor" <c:if test="${insOutcome.deficiency eq 'minor'}">checked="checked"</c:if> />
+                                <input type="radio" name="deficiency" id="minorDeficiency" value="${InspectionConstants.VALUE_OUTCOME_DEFICIENCY_MINOR}" <c:if test="${insOutcome.deficiency eq InspectionConstants.VALUE_OUTCOME_DEFICIENCY_MINOR}">checked="checked"</c:if> />
                                 <label for="minorDeficiency" class="label-normal">Minor</label>
                             </div>
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="deficiency" id="nilDeficiency" value="nil" <c:if test="${insOutcome.deficiency eq 'nilDeficiency'}">checked="checked"</c:if> />
+                                <input type="radio" name="deficiency" id="nilDeficiency" value="${InspectionConstants.VALUE_OUTCOME_DEFICIENCY_NIL}" <c:if test="${insOutcome.deficiency eq InspectionConstants.VALUE_OUTCOME_DEFICIENCY_NIL}">checked="checked"</c:if> />
                                 <label for="nilDeficiency" class="label-normal">NIL</label>
                             </div>
                             <span data-err-ind="deficiency" class="error-msg"></span>
@@ -77,11 +86,11 @@
                     <div class="col-sm-7 col-md-5 col-xs-10">
                         <div class="input-group">
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="followUpReq" id="needFollowUp" value="Y" <c:if test="${insOutcome.followUpRequired eq 'Y'}">checked="checked"</c:if> />
+                                <input type="radio" name="followUpReq" id="needFollowUp" value="${InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES}" <c:if test="${insOutcome.followUpRequired eq InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES}">checked="checked"</c:if> />
                                 <label for="needFollowUp" class="label-normal">Yes</label>
                             </div>
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="followUpReq" id="noNeedFollowUp" value="N" <c:if test="${insOutcome.followUpRequired eq 'N'}">checked="checked"</c:if> />
+                                <input type="radio" name="followUpReq" id="noNeedFollowUp" value="${InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO}" <c:if test="${insOutcome.followUpRequired eq InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO}">checked="checked"</c:if> />
                                 <label for="noNeedFollowUp" class="label-normal">No</label>
                             </div>
                             <span data-err-ind="followUpRequired" class="error-msg"></span>
@@ -94,15 +103,15 @@
                     <div class="col-sm-7 col-md-5 col-xs-10">
                         <div class="input-group">
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="outcome" id="passOutcome" value="pass" <c:if test="${insOutcome.outcome eq 'pass'}">checked="checked"</c:if> />
+                                <input type="radio" name="outcome" id="passOutcome" value="${InspectionConstants.VALUE_OUTCOME_OUTCOME_PASS}" <c:if test="${insOutcome.outcome eq InspectionConstants.VALUE_OUTCOME_OUTCOME_PASS}">checked="checked"</c:if> />
                                 <label for="passOutcome" class="label-normal">Pass</label>
                             </div>
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="outcome" id="passWithCondOutcome" value="pwc" <c:if test="${insOutcome.outcome eq 'pwc'}">checked="checked"</c:if> />
+                                <input type="radio" name="outcome" id="passWithCondOutcome" value="${InspectionConstants.VALUE_OUTCOME_OUTCOME_PASS_WITH_CONDITION}" <c:if test="${insOutcome.outcome eq InspectionConstants.VALUE_OUTCOME_OUTCOME_PASS_WITH_CONDITION}">checked="checked"</c:if> />
                                 <label for="passWithCondOutcome" class="label-normal">Pass with condition(s)</label>
                             </div>
                             <div class="col-sm-4" style="margin-top: 8px">
-                                <input type="radio" name="outcome" id="failOutcome" value="fail" <c:if test="${insOutcome.outcome eq 'fail'}">checked="checked"</c:if> />
+                                <input type="radio" name="outcome" id="failOutcome" value="${InspectionConstants.VALUE_OUTCOME_OUTCOME_FAIL}" <c:if test="${insOutcome.outcome eq InspectionConstants.VALUE_OUTCOME_OUTCOME_FAIL}">checked="checked"</c:if> />
                                 <label for="failOutcome" class="label-normal">Fail</label>
                             </div>
                             <span data-err-ind="outcome" class="error-msg"></span>

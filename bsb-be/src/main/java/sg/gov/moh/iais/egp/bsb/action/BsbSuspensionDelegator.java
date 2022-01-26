@@ -11,19 +11,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.client.SuspensionClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,13 +53,13 @@ public class BsbSuspensionDelegator {
     private static final String KEY_CAN_UPLOAD = "canUpload";
 
     private final SuspensionClient suspensionClient;
-    private final RoutingHistoryClient routingHistoryClient;
     private final FileRepoClient fileRepoClient;
+    private final ProcessHistoryService processHistoryService;
 
-    public BsbSuspensionDelegator(SuspensionClient suspensionClient, RoutingHistoryClient routingHistoryClient, FileRepoClient fileRepoClient) {
+    public BsbSuspensionDelegator(SuspensionClient suspensionClient, FileRepoClient fileRepoClient, ProcessHistoryService processHistoryService) {
         this.suspensionClient = suspensionClient;
-        this.routingHistoryClient = routingHistoryClient;
         this.fileRepoClient = fileRepoClient;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -69,7 +67,8 @@ public class BsbSuspensionDelegator {
         AuditTrailHelper.auditFunction(SUSPENSION_MODULE_NAME, null);
         AuditTrailHelper.auditFunction(REINSTATEMENT_MODULE_NAME, null);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, null);
-        ParamUtil.setSessionAttr(request, BACK, null);
+        ParamUtil.setSessionAttr(request, BACK_URL, null);
+        ParamUtil.setSessionAttr(request, FROM, null);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         request.getSession().removeAttribute(KEY_CAN_UPLOAD);
     }
@@ -81,13 +80,13 @@ public class BsbSuspensionDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
         String from = ParamUtil.getRequestString(request, FROM);
-        ParamUtil.setSessionAttr(request, FROM, null);
         SuspensionReinstatementDto dto = getSuspensionDto(request);
         if (StringUtils.isEmpty(dto.getApprovalId()) && StringUtils.isEmpty(dto.getApplicationId())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
                 dto = suspensionClient.getSuspensionDataByApprovalId(approvalId).getEntity();
+                ParamUtil.setSessionAttr(request, BACK_URL, APPROVAL_LIST_URL);
             }
             if (from.equals(APP)) {
                 String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
@@ -106,19 +105,17 @@ public class BsbSuspensionDelegator {
                 primaryDocDto.setSavedDocMap(dto.getQueryDocMap());
                 dto.setPrimaryDocDto(primaryDocDto);
                 //show routingHistory list
-                List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(dto.getApplicationNo()).getEntity();
-                ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+                processHistoryService.getAndSetHistoryInSession(dto.getApplicationNo(), request);
+                ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
             }
         }
         setModuleType(dto);
-        ParamUtil.setSessionAttr(request, BACK, from);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
     }
 
     public void aoPrepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
-        String from = ParamUtil.getRequestString(request, FROM);
         ParamUtil.setSessionAttr(request, FROM, null);
         SuspensionReinstatementDto dto = getSuspensionDto(request);
         if (StringUtils.isEmpty(dto.getApprovalId()) && StringUtils.isEmpty(dto.getApplicationId())) {
@@ -138,12 +135,11 @@ public class BsbSuspensionDelegator {
             primaryDocDto.setSavedDocMap(dto.getQueryDocMap());
             dto.setPrimaryDocDto(primaryDocDto);
             //show routingHistory list
-            List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(dto.getApplicationNo()).getEntity();
-            ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+            processHistoryService.getAndSetHistoryInSession(dto.getApplicationNo(), request);
         }
         setModuleType(dto);
-        ParamUtil.setSessionAttr(request, BACK, from);
         ParamUtil.setSessionAttr(request, SUSPENSION_REINSTATEMENT_DTO, dto);
+        ParamUtil.setSessionAttr(request, BACK_URL, TASK_LIST_URL);
     }
 
     private void setModuleType(SuspensionReinstatementDto dto) {

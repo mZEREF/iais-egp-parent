@@ -1,9 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -46,6 +43,17 @@ public class VssFeClientFallback implements VssFeClient{
     public FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDto(String submissionNo) {
         return getFeignResponseEntity(submissionNo);
     }
+
+    @Override
+    public FeignResponseEntity<List<VssFileDto>> getListVssDocumentDtoStatus(String status) {
+        return getFeignResponseEntity(status);
+    }
+
+    @Override
+    public FeignResponseEntity<Void> updateVssDocumentStatusByTreId(String treatmentId, String status) {
+        return  getFeignResponseEntity(treatmentId,status);
+    }
+
     @Override
     public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
         return getFeignResponseEntity(draftId, status);

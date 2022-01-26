@@ -6,19 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.RoutingHistoryClient;
 import sg.gov.moh.iais.egp.bsb.client.WithdrawnClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.RoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
-import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.MASK_PARAM_ID;
@@ -38,11 +34,11 @@ public class BsbWithdrawnAppDelegatorBE {
     public static final String WITHDRAWN_APP_DTO = "withdrawnDto";
 
     private final WithdrawnClient withdrawnClient;
-    private final RoutingHistoryClient routingHistoryClient;
+    private final ProcessHistoryService processHistoryService;
 
-    public BsbWithdrawnAppDelegatorBE(WithdrawnClient withdrawnClient, RoutingHistoryClient routingHistoryClient) {
+    public BsbWithdrawnAppDelegatorBE(WithdrawnClient withdrawnClient, ProcessHistoryService processHistoryService) {
         this.withdrawnClient = withdrawnClient;
-        this.routingHistoryClient = routingHistoryClient;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -72,8 +68,7 @@ public class BsbWithdrawnAppDelegatorBE {
                     dto.setTaskId(taskId);
                     ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
                     //show routingHistory list
-                    List<RoutingHistoryDto> routingHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(dto.getAppNo()).getEntity();
-                    ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) routingHistoryDtoList);
+                    processHistoryService.getAndSetHistoryInSession(dto.getAppNo(), request);
                 }else {
                     log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
                     ParamUtil.setRequestAttr(request, WITHDRAWN_APP_DTO, new AppSubmitWithdrawnDto());

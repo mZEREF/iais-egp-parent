@@ -34,6 +34,15 @@
                                                     <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE005'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/afc/view.jsp" %>
                                                     </c:if>
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE001'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationFacilityView.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY004' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/deregistration/cancellationApprovalView.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE005'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationAFCView.jsp" %>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>

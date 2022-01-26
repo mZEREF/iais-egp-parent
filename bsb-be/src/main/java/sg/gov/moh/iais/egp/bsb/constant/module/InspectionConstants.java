@@ -14,7 +14,7 @@ public class InspectionConstants {
     public static final String KEY_CHKL_CONFIG = "checklistConfigDto";
     public static final String KEY_ANSWER_MAP = "answerMap";
     public static final String KEY_EDITABLE = "editable";
-
+    public static final String KEY_SELF_ASSESSMENT_UNAVAILABLE = "selfAssessmentUnavailable";
 
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
@@ -33,8 +33,9 @@ public class InspectionConstants {
     public static final String TAB_FAC_INFO = "tabInfo";
     public static final String TAB_INS_DETAIL = "tabInsDetails";
     public static final String TAB_DOC = "tabDocuments";
-    public static final String TAB_INS_FINDING = "tagInsFinding";
+    public static final String TAB_INS_FINDING = "tabInsFinding";
     public static final String TAB_PROCESSING = "tabProcessing";
+    public static final String TAB_INS_REPORT = "tabInsReport";
 
     public static final String KEY_FINDING_ITEM = "findingItem";
     public static final String KEY_FINDING_TYPE = "findingType";
@@ -46,10 +47,17 @@ public class InspectionConstants {
     public static final String KEY_OUTCOME_OUTCOME = "outcome";
     public static final String KEY_OUTCOME_REMARKS = "remarks";
 
+    public static final String VALUE_FINDING_TYPE_NC = "Non-compliance";
+    public static final String VALUE_FINDING_TYPE_FOLLOW_UP = "Follow-up";
 
-    public static final String DECISION_RFI = "MOHPRO002";
-    public static final String DECISION_MARK_READY = "MOHPRO021";
-    public static final String DECISION_SUBMIT_AO = "MOHPRO022";
-    public static final String DECISION_ROUTE_APPLICANT = "MOHPRO023";
-    public static final String DECISION_MARK_FINAL = "MOHPRO024";
+    public static final String VALUE_OUTCOME_DEFICIENCY_MAJOR = "Major";
+    public static final String VALUE_OUTCOME_DEFICIENCY_MINOR = "Minor";
+    public static final String VALUE_OUTCOME_DEFICIENCY_NIL = "NIL";
+    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES = "Yes";
+    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO = "No";
+    public static final String VALUE_OUTCOME_OUTCOME_PASS = "Pass";
+    public static final String VALUE_OUTCOME_OUTCOME_PASS_WITH_CONDITION = "Pass with condition(s)";
+    public static final String VALUE_OUTCOME_OUTCOME_FAIL = "Fail";
+
+    public static final String KEY_ROUTE = "route";
 }

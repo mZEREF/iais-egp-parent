@@ -136,12 +136,26 @@ public class ArWithdrawalDelegator {
     public void saveDate(BaseProcessClass bpc)  {
         List<ArSuperDataSubmissionDto> addWithdrawnDtoList= (List<ArSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
         List<DsWithdrawCorrelationDto> list=IaisCommonUtils.genNewArrayList();
+        Map<String,Boolean> cycleWd=IaisCommonUtils.genNewHashMap();
+        for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
+        ) {
+            String dataSubNo=arSuperDataSubmission.getDataSubmissionDto().getSubmissionNo();
+            if(dataSubNo.contains("-01")||!dataSubNo.contains("-")){
+                cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),true);
+            }else if(!cycleWd.containsKey(arSuperDataSubmission.getCycleDto().getId()) || !cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
+                cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),false);
+            }
+        }
         for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
             DsWithdrawCorrelationDto dsWithdrawCorrelationDto=new DsWithdrawCorrelationDto();
             dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
             list.add(dsWithdrawCorrelationDto);
+            if(cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
+                arSuperDataSubmission.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+            }
+
         }
         addWithdrawnDtoList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(addWithdrawnDtoList);
         try {

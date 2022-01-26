@@ -1,4 +1,5 @@
 <%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
+<%--@elvariable id="selfAssessmentUnavailable" type="java.lang.Boolean"--%>
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Facility Details</strong></div>
@@ -46,7 +47,9 @@
         </button>
     </a>
 
+    <c:if test="${selfAssessmentUnavailable == null || !selfAssessmentUnavailable}">
     <button id="viewSelfAssessmt" type="button" class="btn btn-primary">
         Self-Assessment Checklists
     </button>
+    </c:if>
 </div>

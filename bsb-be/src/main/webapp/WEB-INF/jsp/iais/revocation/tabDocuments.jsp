@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <div id="fileUploadInputDiv" style="display: none"></div>
+<div id="fileUploadInputDiv" style="display: none"></div>
 <div class="alert alert-info" role="alert"><strong>
     <h4>Supporting Document</h4>
 </strong></div>
@@ -96,12 +97,7 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <c:if test="${from eq 'fac'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
-                <c:if test="${from eq 'app'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
+                <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em>Back</a>
                 <c:if test="${canUpload eq 'Y'}">
                     <div style="text-align: right">
                         <a class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>

@@ -63,6 +63,7 @@ public class ArDataSubmissionDelegator {
     public void doPrepareARSubmission(BaseProcessClass bpc) {
         // no title
         bpc.request.removeAttribute("title");
+        bpc.request.getSession().removeAttribute("title");
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
@@ -141,16 +142,13 @@ public class ArDataSubmissionDelegator {
         if (reNew) {
             currentSuper = new ArSuperDataSubmissionDto();
         }
-        currentSuper.setCentreSel(centreSel);
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        String orgId = loginContext.getOrgId();
+        String licenseeId = loginContext.getLicenseeId();
         if (!map.isEmpty()) {
-            currentSuper.setSubmissionType(submissionType);
-            currentSuper.setSubmissionMethod(submissionMethod);
-            currentSuper.setPremisesDto(premisesDto);
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
-            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
-                    .map(LoginContext::getOrgId).orElse("");
             String hciCode =  premisesDto !=null ? premisesDto.getHciCode() : "";
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
@@ -160,7 +158,7 @@ public class ArDataSubmissionDelegator {
                     dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                             orgId, submissionType, hciCode);
                 }
-                if (dataSubmissionDraft != null && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())) {
+                if (dataSubmissionDraft != null/* && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())*/) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
                     actionType = "invalid";
                 }
@@ -175,15 +173,21 @@ public class ArDataSubmissionDelegator {
                 }
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+                currentSuper = new ArSuperDataSubmissionDto();
+                reNew = true;
             }
-            currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
-            currentSuper.setOrgId(orgId);
-            currentSuper.setSubmissionType(submissionType);
-            currentSuper.setSubmissionMethod(submissionMethod);
-            currentSuper.setPremisesDto(premisesDto);
-            currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            currentSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentSuper, reNew));
-            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, DataSubmissionHelper.getLicenseeId(bpc.request), reNew));
+        }
+        currentSuper.setOrgId(orgId);
+        currentSuper.setLicenseeId(licenseeId);
+        currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        currentSuper.setCentreSel(centreSel);
+        currentSuper.setSubmissionType(submissionType);
+        currentSuper.setSubmissionMethod(submissionMethod);
+        currentSuper.setPremisesDto(premisesDto);
+        currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if (reNew) {
+            currentSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentSuper, true));
+            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, true));
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);

@@ -57,7 +57,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/process/common/applicationInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabDynamicContent" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/process/common/dynamicContent.jsp" %>
@@ -152,7 +152,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="/WEB-INF/jsp/iais/routingHistory/processHistory.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
@@ -165,5 +165,5 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/iais/doDocument/uploadFile.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>

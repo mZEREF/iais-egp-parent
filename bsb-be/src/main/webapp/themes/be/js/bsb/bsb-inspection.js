@@ -87,14 +87,14 @@ function genInsFinding(amt, idx, sectionIdPrefix, separator, itemSelectionString
                 '<td style="border: 0; padding-top: 5px; padding-bottom: 0">' + fullItemSectionString + '</td>' +
                 '<td style="border: 0; padding-top: 5px; padding-bottom: 0">' +
                     '<select name="findingType' + separator + idx + '" style="display: none" aria-label="finding type">' +
-                        '<option value="NC" selected="selected">Non-compliance</option>' +
-                        '<option value="followUp">Follow-up item</option>' +
+                        '<option value="Non-compliance" selected="selected">Non-compliance</option>' +
+                        '<option value="Follow-up">Follow-up item</option>' +
                     '</select>' +
                     '<div class="nice-select" tabindex="0">' +
                         '<span class="current">Non-compliance</span>' +
                         '<ul class="list">' +
-                            '<li class="option selected" data-value="NC">Non-compliance</li>' +
-                            '<li class="option" data-value="followUp">Follow-up item</li>' +
+                            '<li class="option selected" data-value="Non-compliance">Non-compliance</li>' +
+                            '<li class="option" data-value="Follow-up">Follow-up item</li>' +
                         '</ul>' +
                     '</div>' +
                 '</td>' +

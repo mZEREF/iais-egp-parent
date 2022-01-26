@@ -58,6 +58,8 @@ public class MohDsActionDelegator {
     private ArCycleStageDelegator arCycleStageDelegator;
     @Autowired
     private IuiCycleStageDelegator iuiCycleStageDelegator;
+    @Autowired
+    private TransferInOutDelegator transferInOutDelegator;
 
     /**
      * Step: Start
@@ -105,6 +107,7 @@ public class MohDsActionDelegator {
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, "title", "Laboratory Develop Test");
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
@@ -153,6 +156,9 @@ public class MohDsActionDelegator {
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
+            }else if (arSuper.getTransferInOutStageDto() != null){
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuper, request);
+                transferInOutDelegator.initSelectOpts(request);
             }
         }
     }

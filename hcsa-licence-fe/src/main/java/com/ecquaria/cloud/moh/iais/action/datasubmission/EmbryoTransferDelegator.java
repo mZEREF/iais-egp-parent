@@ -167,8 +167,12 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             thawedEmbryoNum--;
         }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
         arChangeInventoryDto.setFreshEmbryoNum(freshEmbryoNum);
         arChangeInventoryDto.setThawedEmbryoNum(thawedEmbryoNum);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
@@ -217,6 +221,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
                 }
             }
             ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request);
+            arCurrentInventoryDto = ArCurrentInventoryDto.addChange(arCurrentInventoryDto, arSuperDataSubmission.getArChangeInventoryDto());
             if (arCurrentInventoryDto != null) {
                 int currentFreshEmbryos = arCurrentInventoryDto.getFreshEmbryoNum() + arCurrentInventoryDto.getFreshEmbryoNum();
                 int currentThawedEmbryos = arCurrentInventoryDto.getThawedEmbryoNum() + arCurrentInventoryDto.getThawedEmbryoNum();

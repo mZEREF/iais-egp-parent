@@ -46,7 +46,7 @@
                         <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="oocyteNum"
-                                        value="${transferInOutStageDto.oocyteNo}"/>
+                                        value="${transferInOutStageDto.oocyteNum}"/>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4">
                             <input type="hidden" value="${outStageOocyte}">
@@ -55,7 +55,7 @@
                                        name="sameAmount"
                                        value="true"
                                        id="sameAmountOocyte"
-                                       <c:if test="${transferInOutStageDto.oocyteNo == outStageOocyte}">checked</c:if>
+                                       <c:if test="${transferInOutStageDto.oocyteNum == outStageOocyte}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="sameAmountOocyte"><span
@@ -70,7 +70,7 @@
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="embryoNum"
-                                        value="${transferInOutStageDto.embryoNo}"/>
+                                        value="${transferInOutStageDto.embryoNum}"/>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4">
                             <input type="hidden" value="${outStageEmbryo}">
@@ -79,7 +79,7 @@
                                        name="sameAmount"
                                        value="true"
                                        id="sameAmountEmbryo"
-                                       <c:if test="${transferInOutStageDto.embryoNo == outStageEmbryo}">checked</c:if>
+                                       <c:if test="${transferInOutStageDto.embryoNum == outStageEmbryo}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="sameAmountEmbryo"><span
@@ -94,7 +94,7 @@
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:input maxLength="2" type="text" name="spermVialsNum"
-                                        value="${transferInOutStageDto.spermVialsNo}"/>
+                                        value="${transferInOutStageDto.spermVialsNum}"/>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4">
                             <input type="hidden" value="${outStageSpermVial}">
@@ -103,7 +103,7 @@
                                        name="sameAmount"
                                        value="true"
                                        id="sameAmountSpermVial"
-                                       <c:if test="${transferInOutStageDto.spermVialsNo == outStageSpermVial}">checked</c:if>
+                                       <c:if test="${transferInOutStageDto.spermVialsNum == outStageSpermVial}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="sameAmountSpermVial"><span
@@ -123,15 +123,17 @@
                 <iais:row>
                     <iais:field width="5" value="Transferred In From"/>
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                        <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                               var="selecctInValue"/>
                         <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
-                            <c:if test="${premisesSelect.value eq transferInOutStageDto.transInFromHciCode}">
+                            <c:if test="${premisesSelect.value eq selecctInValue}">
                                 <c:out value="${premisesSelect.text}"/>
                             </c:if>
                         </c:forEach>
                     </iais:value>
                 </iais:row>
 
-                <iais:row style="${transferInOutStageDto.transInFromHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
+                <iais:row style="${transferInOutStageDto.transInFromHciCode eq'Others' ? '' : 'display:none;'}">
                     <iais:field width="5" value="Transferred In From (Others)"/>
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
                         <c:out value="${transferInOutStageDto.transInFromOthers}"/>

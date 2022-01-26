@@ -217,6 +217,12 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_APPROVE = "MOHPRO007";
     public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO = "MOHPRO008";
     public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM = "MOHPRO009";
+    public static final String MOH_PROCESSING_DECISION_VERIFIED = "MOHPRO010";
+    public static final String MOH_PROCESSING_DECISION_INTERNAL_CLARIFICATIONS = "MOHPRO011";
+    public static final String MOH_PROCESSING_DECISION_MARK_AS_READY = "MOHPRO021";
+    public static final String MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW = "MOHPRO022";
+    public static final String MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT = "MOHPRO023";
+    public static final String MOH_PROCESSING_DECISION_MARK_AS_FINAL = "MOHPRO024";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";
