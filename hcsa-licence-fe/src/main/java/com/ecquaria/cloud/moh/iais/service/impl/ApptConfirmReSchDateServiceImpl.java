@@ -541,7 +541,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                         ) {
+                    ) {
                         insAppt.setReason(appt.getReason());
                         insAppt.setEndDate(appt.getSpecificEndDate());
                         insAppt.setStartDate(appt.getSpecificStartDate());
