@@ -45,8 +45,9 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
                     if (lastStartDate != null && StringUtil.isDigit(period)) {
                         try {
                             int p = Integer.parseInt(period);
-                            int target = Formatter.compareDateByDay(lastStartDate, new Date());
-                            if (target < p) {
+                            int target = Formatter.compareDateByDay(new Date(), lastStartDate);
+                            log.info(StringUtil.changeForLog("Overlap Period: " + p + " - Acutual Period: " + target));
+                            if (target <= p) {
                                 errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
                             }
                         } catch (Exception e) {
