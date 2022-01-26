@@ -259,9 +259,7 @@
                                     <table aria-describedby="" class="table">
                                         <thead>
                                         <tr >
-                                            <iais:sortableHeader needSort="true"
-                                                                 field="BUSINESS_NAME"
-                                                                 value="AR Centre"/>
+
                                             <iais:sortableHeader needSort="true"
                                                                  field="SUBMISSION_NO"
                                                                  value="Submission ID"/>
@@ -292,9 +290,7 @@
                                                            varStatus="status">
                                                     <tr>
 
-                                                        <td style="vertical-align:middle;">
-                                                            <c:out value="${submission.arCentre}"/>
-                                                        </td>
+
                                                         <td style="vertical-align:middle;">
                                                             <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
                                                             </a>
