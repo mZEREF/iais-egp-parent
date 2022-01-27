@@ -180,7 +180,7 @@
                acc.STATUS,
                user_role.ROLE_ID
            FROM user_account acc
-           left JOIN  (Select * From user_role WHERE ROLE_ID = 'ORG_ADMIN') user_role ON acc.ID = user_role.USER_ACCT_ID
+           left JOIN  (Select * From user_role WHERE ROLE_ID = 'ORG_ADMIN' AND STATUS != 'CMSTAT002') user_role ON acc.ID = user_role.USER_ACCT_ID
            left JOIN organization org ON acc.ORGANIZATION_ID = org.ID
            where  acc.STATUS != 'CMSTAT002'
            <#if orgid??>AND org.ID = :orgid</#if>
