@@ -42,9 +42,10 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                 if(Formatter.compareDateByDay(sexualSterilizationDto.getOperationDate(),guardianAppliedPartDto.getCourtOrderIssueDate())<0){
                     erMap.put("operationDate", "Date of Court Order Issued must be equal to or earlier than Date of Operation");
                 }
-            }catch (ParseException e){
+            }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
+
         }
         return erMap;
     }
