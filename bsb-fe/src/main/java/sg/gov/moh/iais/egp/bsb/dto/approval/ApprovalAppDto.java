@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.dto.approval;
 
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,8 +27,6 @@ public class ApprovalAppDto implements Serializable {
     private ActivityDto activityDto;
     private Map<String, ApprovalProfileDto> approvalProfileMap;
     private Collection<DocRecordInfo> docRecordInfos;
-
-    private AuditTrailDto auditTrailDto;
 
     /** Write the approvalAppRoot NodeGroup into a DTO, then send the DTO to save the data. */
     public static ApprovalAppDto from(NodeGroup approvalAppRoot) {

@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -318,8 +316,6 @@ public class ApprovalAppDelegator {
 
                 // save data
                 ApprovalAppDto finalAllDataDto = ApprovalAppDto.from(approvalAppRoot);
-                AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                finalAllDataDto.setAuditTrailDto(auditTrailDto);
                 ResponseDto<String> responseDto = approvalAppClient.saveNewApprovalApp(finalAllDataDto);
                 log.info("save new approval application response: {}", responseDto);
 

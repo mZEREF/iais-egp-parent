@@ -42,3 +42,7 @@ function validate(){
 function doOpenApp() {
     window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
 }
+function downloadSupportDocument(appId, repoId, docName) {
+    var url = "/bsb-be/ajax/doc/download/applicationDoc/" + repoId;
+    window.open(url);
+}
