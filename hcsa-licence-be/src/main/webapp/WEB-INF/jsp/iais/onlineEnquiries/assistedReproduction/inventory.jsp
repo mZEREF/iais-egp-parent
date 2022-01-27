@@ -149,7 +149,7 @@
                                                              field="SUBMIT_DT"
                                                              value="Submission Date"/>
                                         <iais:sortableHeader needSort="true"
-                                                             field="CYCLE_STAGE"
+                                                             field="CYCLE_STAGE_DESC"
                                                              value="Stage"/>
                                         <iais:sortableHeader needSort="true"
                                                              field="cycle_no"

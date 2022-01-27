@@ -161,7 +161,7 @@
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="ID_TYPE"
+                                                                     field="ID_TYPE_DESC"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
@@ -170,7 +170,7 @@
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="NATIONALITY"
+                                                                     field="NATIONALITY_DESC"
                                                                      value="Patient Nationality"/>
 
                                                 <iais:sortableHeader needSort="false"
@@ -270,7 +270,7 @@
                                                                      field="SUBMISSION_TYPE"
                                                                      value="Submission Type"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="CYCLE_STAGE"
+                                                                     field="CYCLE_STAGE_DESC"
                                                                      value="Submission Subtype"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="SUBMIT_DT"

@@ -180,7 +180,7 @@
                                                                  field="DONOR_SAMPLE_CODE"
                                                                  value="Donor Sample Code / ID No"/>
                                             <iais:sortableHeader needSort="true"
-                                                                 field="SAMPLE_TYPE"
+                                                                 field="SAMPLE_TYPE_DESC"
                                                                  value="Sample Type"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="SAMPLE_FROM_HCI_CODE"

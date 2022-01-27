@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -94,10 +95,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .sortField("CREATED_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     private static final Set<String> patientSortFieldNames = ImmutableSet.of(
-            "NAME", "ID_NUMBER","DATE_OF_BIRTH"
+            "NAME", "ID_NUMBER","DATE_OF_BIRTH","ID_TYPE_DESC","NATIONALITY_DESC"
     );
     private static final Set<String> submissionSortFieldNames = ImmutableSet.of(
-            "BUSINESS_NAME", "SUBMISSION_NO", "SUBMIT_DT"
+            "BUSINESS_NAME", "SUBMISSION_NO", "SUBMIT_DT","CYCLE_STAGE_DESC"
     );
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -837,7 +838,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             setQueryFilter(arFilterDto,patientParameter,0);
             SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
-
+            if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+            }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+            }
             if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                 String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
                 patientParam.addParam("patient_id_types", patientIdTypeListStr);
@@ -860,6 +865,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             setQueryFilter(arFilterDto,submissionParameter,1);
             SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
+            if(submissionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(submissionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+            }
             CrudHelper.doPaging(submissionParam,bpc.request);
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
             SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
@@ -946,6 +954,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientAdvParameter,true);
+            if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+            }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+            }
             CrudHelper.doPaging(patientParam,bpc.request);
 
             QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
@@ -1080,6 +1093,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
 
                 SearchParam transactionParam = SearchResultHelper.getSearchParam(request, transactionParameter,true);
+                if(transactionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(transactionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+                }
                 CrudHelper.doPaging(transactionParam,bpc.request);
 
                 QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
