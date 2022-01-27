@@ -31,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,26 +79,16 @@ public class FeAdminManageDelegate {
             QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
             Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
-            for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()) {
-                if(feMap.get(item.getId()) != null){
-                    if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(feMap.get(item.getId()).getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){
-                        feMap.get(item.getId()).setRole(RoleConsts.USER_ROLE_ORG_ADMIN);
-                    }
+            feAdminQueryDtoSearchResult.getRows().stream().forEach( item -> {
+                FeUserQueryDto feUserQueryDto = feMap.get(item.getId());
+                if(feUserQueryDto != null){
+                    if(!RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserQueryDto.getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){ feUserQueryDto.setRole(RoleConsts.USER_ROLE_ORG_ADMIN);}
                 }else{
+                    item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO);
                     feMap.put(item.getId(),item);
                 }
-            }
-            List<FeUserQueryDto> feUserQueryDtoList = IaisCommonUtils.genNewArrayList();
-            for (Map.Entry<String,FeUserQueryDto> entry:feMap.entrySet()) {
-                feUserQueryDtoList.add(entry.getValue());
-            }
-            feUserQueryDtoList.forEach(item -> {
-                if (AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive())) {
-                    item.setIsActive("1");
-                } else {
-                    item.setIsActive("0");
-                }
             });
+            List<FeUserQueryDto> feUserQueryDtoList = new ArrayList<>(feMap.values());
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
