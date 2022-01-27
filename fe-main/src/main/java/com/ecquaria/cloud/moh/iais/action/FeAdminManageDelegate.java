@@ -31,8 +31,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,24 +76,10 @@ public class FeAdminManageDelegate {
             searchParam.addFilter("orgid",organizationId,true);
             QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
-            Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
-            feAdminQueryDtoSearchResult.getRows().stream().forEach( item -> {
-                log.info("---- db FeUserQueryDto " + item.getRole()+"---------");
-                FeUserQueryDto feUserQueryDto = feMap.get(item.getId());
-                if(feUserQueryDto != null){
-                    if(!RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserQueryDto.getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){ feUserQueryDto.setRole(RoleConsts.USER_ROLE_ORG_ADMIN);}
-                }else{
-                    item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO);
-                    feMap.put(item.getId(),item);
-                }
-            });
-            List<FeUserQueryDto> feUserQueryDtoList = new ArrayList<>(feMap.values());
+            feAdminQueryDtoSearchResult.getRows().stream().forEach(item -> item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO));
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
-            feUserQueryDtoList.forEach(o->{
-                log.info("----map  FeUserQueryDto " + o.getRole()+"---------");
-            });
-            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
+            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult.getRows());
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
         }else{

@@ -169,7 +169,7 @@
 
     <sql  key = "feUserList" remarks = "Query user admin ">
         <![CDATA[
-            SELECT DISTINCT
+                SELECT DISTINCT
                acc.ID,
                acc.DISPLAY_NAME,
                acc.SALUTATION,
@@ -178,11 +178,11 @@
                acc.DESIGNATION,
                acc.OTHER_DESIGNATION,
                acc.STATUS,
-               role.ROLE_ID
+               user_role.ROLE_ID
            FROM user_account acc
-           JOIN organization org ON acc.ORGANIZATION_ID = org.ID
-           JOIN user_role role ON acc.ID = role.USER_ACCT_ID
-           where role.STATUS != 'CMSTAT002' and acc.STATUS != 'CMSTAT002'
+           left JOIN  (Select * From user_role WHERE ROLE_ID = 'ORG_ADMIN') user_role ON acc.ID = user_role.USER_ACCT_ID
+           left JOIN organization org ON acc.ORGANIZATION_ID = org.ID
+           where  acc.STATUS != 'CMSTAT002'
            <#if orgid??>AND org.ID = :orgid</#if>
            <#if roleid??>AND role.ROLE_ID = :roleid</#if>
         ]]>
