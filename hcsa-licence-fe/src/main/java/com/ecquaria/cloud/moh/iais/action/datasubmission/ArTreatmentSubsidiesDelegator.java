@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -9,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -80,6 +83,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(arTreatmentSubsidiesStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            valRFC(request, arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto());
         }
 
         if (!errorMap.isEmpty()) {
@@ -95,5 +99,15 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
 
         arTreatmentSubsidiesStageDto.setCoFunding(coFunding);
         arTreatmentSubsidiesStageDto.setIsThereAppeal(isThereAppeal);
+    }
+
+    protected void valRFC(HttpServletRequest request, ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto) {
+        if (isRfc(request)) {
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && arTreatmentSubsidiesStageDto.equals(arOldSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto())) {
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
@@ -234,5 +235,10 @@ public class ArFeClientFallback implements ArFeClient {
     @Override
     public FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(String patientCode) {
         return getFeignResponseEntity(patientCode);
+    }
+
+    @Override
+    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode) {
+        return getFeignResponseEntity(hciCode, licenseeId, patientCode);
     }
 }

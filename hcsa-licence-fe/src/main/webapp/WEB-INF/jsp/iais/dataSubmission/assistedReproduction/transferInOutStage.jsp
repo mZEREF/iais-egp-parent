@@ -22,6 +22,7 @@
                         </c:when>
                         <c:otherwise>
                             <%@include file="section/transferInOutStageSection.jsp" %>
+                            <%@include file="common/dsAmendment.jsp" %>
                         </c:otherwise>
                     </c:choose>
                 </div>

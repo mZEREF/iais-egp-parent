@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
@@ -193,4 +194,9 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/patient-info/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(@PathVariable("patientCode") String patientCode);
+
+    @GetMapping(value = "/data-submission/ar-current-inventory-by-conds", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(@RequestParam(name = "hciCode") String hciCode,
+                                                                               @RequestParam(name = "licenseeId") String licenseeId,
+                                                                               @RequestParam(name = "patientCode") String patientCode);
 }
