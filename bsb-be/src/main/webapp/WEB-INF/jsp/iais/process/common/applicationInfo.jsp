@@ -11,35 +11,35 @@
                     </tr>
                     <tr>
                         <td class="col-xs-6" style="text-align: right">Application No.</td>
-                        <td class="col-xs-6" style="padding-left : 20px">${mohProcessDto.submitDetailsDto.applicationNo}</td>
+                        <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.applicationNo}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Application Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${mohProcessDto.submitDetailsDto.appType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.appType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Process Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${mohProcessDto.submitDetailsDto.processType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.processType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Activity Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${mohProcessDto.submitDetailsDto.activityType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.activityType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Facility Name/Address</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.facilityName}/${TableDisplayUtil.getOneLineAddress(mohProcessDto.submitDetailsDto.blkNo, mohProcessDto.submitDetailsDto.streetName, mohProcessDto.submitDetailsDto.floorNo, mohProcessDto.submitDetailsDto.unitNo, mohProcessDto.submitDetailsDto.postalCode)}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.facilityName}/${TableDisplayUtil.getOneLineAddress(submitDetailsDto.blkNo, submitDetailsDto.streetName, submitDetailsDto.floorNo, submitDetailsDto.unitNo, submitDetailsDto.postalCode)}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Submission Date</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.applicationDate}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.applicationDate}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Application Status</td>
-                        <td style="padding-left : 20px"><iais:code code="${mohProcessDto.submitDetailsDto.status}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.status}"></iais:code></td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Facility/Approval Expiry Date</td>
-                        <td style="padding-left : 20px"><c:out value="${mohProcessDto.submitDetailsDto.facilityOrApprovalExpiryDate}"/></td>
+                        <td style="padding-left : 20px"><c:out value="${submitDetailsDto.facilityOrApprovalExpiryDate}"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -60,23 +60,23 @@
                     </tr>
                     <tr>
                         <td class="col-xs-6" style="text-align: right">Facility/Organisation Name</td>
-                        <td class="col-xs-6" style="padding-left : 20px">${mohProcessDto.submitDetailsDto.facilityOrOrganisationName}</td>
+                        <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationName}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Facility/Organisation Address</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.facilityOrOrganisationAddress}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationAddress}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Facility/Organisation Admin</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.facilityOrOrganisationAdmin}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationAdmin}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Telephone</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.telephone}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.telephone}</td>
                     </tr>
                     <tr>
                         <td style="text-align: right">Email</td>
-                        <td style="padding-left : 20px">${mohProcessDto.submitDetailsDto.email}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.email}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -106,7 +106,7 @@
                     </tr>
                     </thead>
                     <tbody style="text-align:center;">
-                    <c:forEach var="item" items="${mohProcessDto.submitDetailsDto.biologicalList}" varStatus="status">
+                    <c:forEach var="item" items="${submitDetailsDto.biologicalList}" varStatus="status">
                         <tr>
                             <td>
                                 <p><c:out value="${status.index + 1}"/></p>

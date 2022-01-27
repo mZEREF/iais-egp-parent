@@ -17,11 +17,14 @@ import sg.gov.moh.iais.egp.bsb.dto.processderegistration.AOProcessDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessDeregistrationService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
+import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.*;
@@ -82,7 +85,8 @@ public class AOProcessDeregistrationDelegator {
         List<DocDisplayDto> supportDocDisplayDto = applicationDocClient.getApplicationDocForDisplay(appId);
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, supportDocDisplayDto);
         //provide for download support doc
-        processDeregistrationService.setApplicationDocMapInSession(request, supportDocDisplayDto);
+        Map<String, String> repoIdDocNameMap = DocDisplayDtoUtil.getRepoIdDocNameMap(supportDocDisplayDto);
+        ParamUtil.setSessionAttr(request, "docDisplayDtoRepoIdNameMap", (Serializable) repoIdDocNameMap);
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {

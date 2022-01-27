@@ -240,7 +240,7 @@ public class DocDownloadAjaxController {
     }
 
     private MultipartFile getApplicationFile(HttpServletRequest request, String id) {
-        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "applicationDocRepoIdNameMap");
+        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "docDisplayDtoRepoIdNameMap");
         String fileName = map.get(id);
         if (fileName == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
