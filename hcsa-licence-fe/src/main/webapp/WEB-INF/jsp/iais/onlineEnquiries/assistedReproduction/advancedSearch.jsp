@@ -1233,7 +1233,7 @@
                                                              value="Patient ID Type"/>
                                         <iais:sortableHeader needSort="true"
                                                              field="ID_NUMBER"
-                                                             value="Patient ID No"/>
+                                                             value="Patient ID No."/>
                                         <iais:sortableHeader needSort="true"
                                                              field="DATE_OF_BIRTH"
                                                              value="Patient Date of Birth"/>
