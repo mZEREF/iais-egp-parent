@@ -804,15 +804,24 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     private void setReqForInfoSearchListDtoLicenceInfo(ApplicationLicenceQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
+        String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
+        reqForInfoSearchListDto.setLicenceStatus(licStatus);
+        reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
+        reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
+        reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
+        List<String> addressList1 = IaisCommonUtils.genNewArrayList();
         if(reqForInfoSearchListDto.getAppId()==null){
             reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
             reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
             reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
             reqForInfoSearchListDto.setUen(rfiApplicationQueryDto.getLicUenNo());
+            addressList1.add(rfiApplicationQueryDto.getLicPremType());
+            reqForInfoSearchListDto.setAddress(addressList1);
+            return;
         }
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-        List<String> addressList1 = IaisCommonUtils.genNewArrayList();
+
         boolean addressEquals=false;
         for (PremisesDto premisesDto:premisesDtoList
         ) {
@@ -832,11 +841,6 @@ public class OfficerOnlineEnquiriesDelegator {
         if(addressEquals){
             reqForInfoSearchListDto.setAddress(addressList1);
         }
-        String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
-        reqForInfoSearchListDto.setLicenceStatus(licStatus);
-        reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
-        reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
-        reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
     }
 
     private void rfiApplicationQueryDtoToReqForInfoSearchListDto(ApplicationLicenceQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
