@@ -68,31 +68,36 @@
                             <iais:body >
                             <div class="col-xs-12">
                                 <div class="tab-gp dashboard-tab">
-                                <ul class="progress-tracker nav ">
-                                    <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
-                                        <c:choose>
-                                            <c:when test ="${steplist.submitDt <= submitDt}">
-                                                <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" style="color: white;" data-service-step="${steplist.cycleStage}">
-                                                        ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
-                                                </li>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
-                                                        ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
-                                                </li>
-                                            </c:otherwise>
-                                        </c:choose>
+                                    <div class="components">
+                                        <div class="table-responsive">
+                                            <ul class="progress-tracker nav ">
+                                                <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
+                                                    <c:choose>
+                                                        <c:when test ="${steplist.submitDt <= submitDt}">
+                                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" style="color: white;" data-service-step="${steplist.cycleStage}">
+                                                                    ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
+                                                                    ${status.index+1}<a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
 
-                                    </c:forEach>
-                                </ul>
-                                <div class="tab-nav-mobile visible-xs visible-sm">
-                                    <div class="swiper-wrapper" role="tablist">
-                                        <div class="swiper-slide"><a href="#tab${cycleStage}" aria-controls="tab${cycleStage}" role="tab" data-toggle="tab"><iais:code code="${cycleStage}"/></a></div>
+                                                </c:forEach>
+                                            </ul>
+                                            <div class="tab-nav-mobile visible-xs visible-sm">
+                                                <div class="swiper-wrapper" role="tablist">
+                                                    <div class="swiper-slide"><a href="#tab${cycleStage}" aria-controls="tab${cycleStage}" role="tab" data-toggle="tab"><iais:code code="${cycleStage}"/></a></div>
 
+                                                </div>
+                                                <div class="swiper-button-prev"></div>
+                                                <div class="swiper-button-next"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="swiper-button-prev"></div>
-                                    <div class="swiper-button-next"></div>
-                                </div>
+
 
                                 <div class="tab-content row">
                                     <div class="tab-pane active col-lg-8 col-xs-8 panel-group" style="left: 15%;" role="tabpanel">
