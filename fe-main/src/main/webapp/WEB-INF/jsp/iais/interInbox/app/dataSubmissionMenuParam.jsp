@@ -11,7 +11,7 @@
             <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryDonorSample">Donor sample enquiry</a>
         </li>
         <li>
-            <a href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmissionsInbox">Amend a Submission</a>
+            <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Amend a Submission</a>
         </li>
         <li>
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Edit a Draft Submission</a>
