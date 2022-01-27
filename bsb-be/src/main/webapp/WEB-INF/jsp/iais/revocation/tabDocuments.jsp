@@ -72,8 +72,8 @@
                     </c:forEach>
                 </c:if>
                 <%--@elvariable id="docInfo" type="sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo"--%>
-                <c:if test="${revokeDto.queryDocMap ne null}">
-                    <c:forEach var="docInfo" items="${revokeDto.queryDocMap.values()}">
+                <c:if test="${revokeDto.primaryDocDto.savedDocMap ne null}">
+                    <c:forEach var="docInfo" items="${revokeDto.primaryDocDto.savedDocMap.values()}">
                         <c:set var="tmpId" value="${MaskUtil.maskValue('file', docInfo.repoId)}"/>
                         <div id="${tmpId}FileDiv">
                             <tr id="${tmpId}FileTr">
@@ -81,7 +81,7 @@
                                 <td>${docInfo.docType}</td>
                                 <td><p><a href="javascript:void(0)" onclick="downloadSavedRevokeFile('${tmpId}')">${docInfo.filename}</a></p></td>
                                 <td>${String.format("%.1f", docInfo.size/1024.0)}KB</td>
-                                <td>${docInfo.submitBy}</td>
+                                <td>${docInfo.submitByName}</td>
                                 <td><fmt:formatDate value='${docInfo.submitDate}' pattern='dd/MM/yyyy'/></td>
                                 <td>
                                     <button type="button" class="btn btn-secondary-del btn-sm"

@@ -29,7 +29,7 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>

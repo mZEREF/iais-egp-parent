@@ -26,8 +26,7 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                                           data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +131,7 @@
                                 </c:forEach>
                             </table>
 <%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
-                            <div align="right">
+                            <div style="text-align: right">
                                 <button name="submitBtn" id="createList" type="button" class="btn btn-primary">
                                     Create List
                                 </button>

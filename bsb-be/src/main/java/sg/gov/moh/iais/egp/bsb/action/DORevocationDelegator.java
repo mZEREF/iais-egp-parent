@@ -230,6 +230,9 @@ public class DORevocationDelegator {
                 }
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
+                PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+                primaryDocDto.setSavedDocMap(revokeDto.getQueryDocMap());
+                revokeDto.setPrimaryDocDto(primaryDocDto);
                 //show routingHistory list
                 processHistoryService.getAndSetHistoryInSession(revokeDto.getApplicationNo(), request);
             }
