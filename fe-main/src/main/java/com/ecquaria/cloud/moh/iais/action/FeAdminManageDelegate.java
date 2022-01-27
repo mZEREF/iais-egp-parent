@@ -80,6 +80,7 @@ public class FeAdminManageDelegate {
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
             Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
             feAdminQueryDtoSearchResult.getRows().stream().forEach( item -> {
+                log.info("---- db FeUserQueryDto " + item.getRole()+"---------");
                 FeUserQueryDto feUserQueryDto = feMap.get(item.getId());
                 if(feUserQueryDto != null){
                     if(!RoleConsts.USER_ROLE_ORG_ADMIN.equals(feUserQueryDto.getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){ feUserQueryDto.setRole(RoleConsts.USER_ROLE_ORG_ADMIN);}
@@ -91,6 +92,9 @@ public class FeAdminManageDelegate {
             List<FeUserQueryDto> feUserQueryDtoList = new ArrayList<>(feMap.values());
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
+            feUserQueryDtoList.forEach(o->{
+                log.info("----map  FeUserQueryDto " + o.getRole()+"---------");
+            });
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);

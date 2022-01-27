@@ -98,7 +98,7 @@
                                                 </td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${item.role eq 'ORG_ADMIN'}">
+                                                        <c:when test="${item.role == 'ORG_ADMIN'}">
                                                             <p>Yes</p>
                                                         </c:when>
                                                         <c:otherwise>
