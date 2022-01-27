@@ -149,6 +149,9 @@ public class PageDataCopyUtil {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
         copy.setPremisesType(appGrpPremisesDto.getPremisesType());
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            copy.setAddrType(appGrpPremisesDto.getAddrType());
+            copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+
             copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
             copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
             copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
@@ -165,28 +168,31 @@ public class PageDataCopyUtil {
                 copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
             }
         } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+
             copy.setOffSiteStartHH(appGrpPremisesDto.getOffSiteStartHH());
             copy.setOffSiteStartMM(appGrpPremisesDto.getOffSiteStartMM());
             copy.setOffSiteEndHH(appGrpPremisesDto.getOffSiteEndHH());
             copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
 
-            copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-
             copy.setOffSiteEmail(appGrpPremisesDto.getOffSiteEmail());
         } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             //EASMTS
+            copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
+            copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
+
             copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
             copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
             copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
             copy.setEasMtsCoLocation(appGrpPremisesDto.getEasMtsCoLocation());
         } else {
+            copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
+            copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+
             copy.setConStartHH(appGrpPremisesDto.getConStartHH());
             copy.setConStartMM(appGrpPremisesDto.getConStartMM());
             copy.setConEndHH(appGrpPremisesDto.getConEndHH());
             copy.setConEndMM(appGrpPremisesDto.getConEndMM());
-
-            copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
-            copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
 
             copy.setConveyanceEmail(appGrpPremisesDto.getConveyanceEmail());
         }
