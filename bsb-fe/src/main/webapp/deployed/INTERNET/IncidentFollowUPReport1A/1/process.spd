@@ -151,7 +151,7 @@
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="720" y="100">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="720" y="100">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/PreReferenceNo" value="&quot;back&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreViewReport1A" value="&quot;next&quot;" />

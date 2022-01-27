@@ -31,7 +31,7 @@
                 <div class="col-lg-12 col-xs-12">
                     <div class="internet-content">
                         <div class="col-xs-12">
-                            <div class="row" style="margin:25px 0">
+                            <div class="row" style="margin:25px 0;">
                                 <div class="form-group">
                                     <div class="col-sm-5 control-label">
                                         <label for="refNo">Reference No</label>
@@ -46,8 +46,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 ">
+                            <div class="row" style="margin-bottom: 30px">
+                                <div class="col-xs-12 col-sm-6">
                                     <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">

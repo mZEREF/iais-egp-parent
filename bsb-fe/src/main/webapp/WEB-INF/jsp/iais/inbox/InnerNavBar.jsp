@@ -18,7 +18,7 @@
         <a href="/bsb-fe/eservice/INTERNET/DataSubInbox" aria-controls="tabLic" role="tab">Data Submissions</a>
     </li>
     <li role="presentation" id="reportEventTab">
-        <a href="#" aria-controls="tabLic" role="tab">Report Events</a>
+        <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxRep" aria-controls="tabLic" role="tab">Report Events</a>
     </li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
@@ -42,7 +42,7 @@
             <a href="#" aria-controls="tabLicence" role="tab">Data Submissions</a>
         </div>
         <div class="swiper-slide">
-            <a href="#" aria-controls="tabLicence" role="tab">Report Events</a>
+            <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxRep" aria-controls="tabLicence" role="tab">Report Events</a>
         </div>
     </div>
     <div class="swiper-button-prev"></div>

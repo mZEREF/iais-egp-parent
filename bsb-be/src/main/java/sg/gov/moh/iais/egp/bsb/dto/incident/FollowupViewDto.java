@@ -2,9 +2,10 @@ package sg.gov.moh.iais.egp.bsb.dto.incident;
 
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.entity.FollowupNoteDto;
-import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -13,10 +14,10 @@ import java.util.List;
  * @version 2022/1/20 13:19
  **/
 @Data
-public class FollowupViewDto {
+public class FollowupViewDto implements Serializable {
     private ApplicationInfoDto applicationInfoDto;
     private IncidentBatViewDto incidentBatViewDto;
     private IncidentPersonnelDto incidentPersonnelDto;
-    private List<IncidentDocDto> incidentDocDtoList;
+    private List<DocDisplayDto> supportDocDisplayDtoList;
     private List<FollowupNoteDto> followupNoteDtoList;
 }

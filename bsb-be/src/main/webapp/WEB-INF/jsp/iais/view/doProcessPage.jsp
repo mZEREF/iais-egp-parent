@@ -73,7 +73,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/view/common/batPage.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/view/common/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <div class="alert alert-info" role="alert" style="margin-top: 15px">
@@ -171,7 +171,7 @@
                                                             <c:forEach var="history" items="${dto.processHistoryList}">
                                                                 <tr>
                                                                     <td><c:out value="${history.userName}"/></td>
-                                                                    <td><c:out value="${history.statusUpdate}"/></td>
+                                                                    <td><iais:code code="${history.statusUpdate}"/></td>
                                                                     <td><c:out value="${history.remarks}"/></td>
                                                                     <td><c:out value="${history.lastUpdated}"/></td>
                                                                 </tr>
@@ -191,4 +191,5 @@
             </div>
         </div>
     </form>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
 </div>

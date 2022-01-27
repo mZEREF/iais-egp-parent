@@ -73,7 +73,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/view/common/batPage.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/view/common/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <div class="alert alert-info" role="alert" style="margin-top: 15px">
@@ -82,13 +82,25 @@
                                                 <div class="row" style="margin: 20px 0">
                                                     <div class="col-xs-12">
                                                         <div class="form-horizontal">
-                                                            <div class="form-group ">
-                                                                <div class="col-sm-5 control-label">
+                                                            <c:forEach var="item" items="${processDto.followupNoteDtoList}">
+                                                                <div class="form-group ">
+                                                                    <div class="col-sm-5 control-label">
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-md-7">
+                                                                        <label class="label-normal"><c:out value="${item.addNoteTime}"/>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${item.noteInfo}"/></label>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="col-sm-6 col-md-7">
-                                                                    <label class="label-normal">02/18/1999  Please clarify XYZ</label>
+                                                            </c:forEach>
+
+                                                            <c:forEach var="item" items="${followupDto.newFollowupNotes}">
+                                                                <div class="form-group ">
+                                                                    <div class="col-sm-5 control-label">
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-md-7">
+                                                                        <label class="label-normal"><c:out value="${item.addNoteTime}"/>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${item.newNote}"/></label>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            </c:forEach>
 
                                                             <div class="form-group ">
                                                                 <div class="col-sm-5 control-label">
@@ -98,10 +110,27 @@
                                                                     <textarea autocomplete="off" class="col-xs-12" name="note" id="note" maxlength="1000" style="width: 100%"><c:out value="${dto.remarks}"/></textarea>
                                                                 </div>
                                                             </div>
-                                                            <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"> </em> Back</a>
-                                                            <button class="btn btn-primary" type="button" id="addNote" style="float: right">Add Note</button>
+                                                            <div class = "row">
+                                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"> </em> Back</a>
+                                                                <button class="btn btn-primary" type="button" id="addNote" style="float: right">Add Note</button>
+                                                                <button class="btn btn-primary" type="button" id="close" style="float: right">Close Report</button>
+                                                            </div>
+                                                            <div class="modal fade" id="submitCloseModal" role="dialog" aria-labelledby="myModalLabel">
+                                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12"><span style="font-size: 2rem">Are you sure all the follow-ups have been satisfactorily completed</span></div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">No</button>
+                                                                            <button type="button" class="btn btn-secondary btn-md" onclick="closeNote()">Yes</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <button class="btn btn-primary" type="button" id="close" style="float: right">Close</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,4 +144,5 @@
             </div>
         </div>
     </form>
+    <%@include file="/WEB-INF/jsp/iais/doDocument/internalFileUploadModal.jsp"%>
 </div>

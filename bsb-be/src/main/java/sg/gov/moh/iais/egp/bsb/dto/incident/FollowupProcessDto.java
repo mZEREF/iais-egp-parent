@@ -54,7 +54,11 @@ public class FollowupProcessDto implements Serializable {
         this.newFollowupNotes = newFollowupNotes;
     }
 
+    private static final String KEY_APP_ID = "appId";
+    private static final String KEY_TASK_ID = "taskId";
     public void reqObjMapping(HttpServletRequest request){
+        this.applicationId = (String) ParamUtil.getSessionAttr(request,KEY_APP_ID);
+        this.taskId = (String) ParamUtil.getSessionAttr(request,KEY_TASK_ID);
         NewFollowupNote newFollowupNote = new NewFollowupNote();
         String newNote = ParamUtil.getString(request,"note");
         newFollowupNote.setNewNote(newNote);

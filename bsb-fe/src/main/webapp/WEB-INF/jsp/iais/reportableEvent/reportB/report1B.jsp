@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Incident Reference No.</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p><c:out value="${previewB.referenceNo}"/></p>
+                                <p><c:out value="${followup1B.referenceNo}"/></p>
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -46,7 +46,7 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Name of Personnel</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p><c:out value="${previewB.addPersonnelName}"/></p>
+                                <p><c:out value="${followup1B.personnelName}"/></p>
                             </div>
                             <div class="clear"></div>
                         </div>
