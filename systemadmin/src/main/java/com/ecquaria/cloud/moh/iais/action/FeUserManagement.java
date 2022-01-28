@@ -153,7 +153,7 @@ public class FeUserManagement {
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
-                    List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
+                    List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdTypeWithDel(orgUserDto.getIdNumber(),orgUserDto.getIdType());
                     Optional<FeUserDto> user = userList.stream()
                             .filter(i -> item.equals(i.getId()))
                             .findAny();

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -59,7 +60,13 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         if (!StringUtil.isEmpty(startDateStr) && !StringUtil.isEmpty(endDateStr)) {
             String[] eftStartDateStr = startDateStr.split("/");
             String[] eftEndDateStr = endDateStr.split("/");
-            Date today = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date today = null;
+            try {
+                today = sdf.parse(Formatter.formatDate(new Date()));
+            } catch (ParseException e) {
+                log.error(e.getMessage(),e);
+            }
             //get today string
             String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
             //get start Date By request
@@ -88,22 +95,27 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
             int comparatorValue = endDate.compareTo(startDate);
-            if (comparatorValue < 0) {
-                errorMap.put("accountActivateDatetime", "USER_ERR006");
+            if (comparatorValue <= 0) {
+                errorMap.put("accountActivateDatetime", "USER_ERR022");
             }
-            if ("create".equals(user_action)) {
-                if( today.after(sDate)) {
-                    errorMap.put("accountActivateDatetime", "USER_ERR007");
-                }
-                if( today.after(eDate)) {
-                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-                }
+
+            if(  sDate.before(today)) {
+                errorMap.put("accountActivateDatetime", "USER_ERR007");
+            }
+            if( eDate.before(today)) {
+                errorMap.put("accountDeactivateDatetime", "USER_ERR007");
             }
 
         }else {
             if (!StringUtil.isEmpty(startDateStr) ) {
                 String[] eftStartDateStr = startDateStr.split("/");
-                Date today = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Date today = null;
+                try {
+                    today = sdf.parse(Formatter.formatDate(new Date()));
+                } catch (ParseException e) {
+                    log.error(e.getMessage(),e);
+                }
                 //get today string
                 String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
                 //get start Date By request
@@ -114,10 +126,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     log.error(e.getMessage(), e);
                     sDate = new Date();
                 }
-                if ("create".equals(user_action)) {
-                    if( today.after(sDate)) {
-                        errorMap.put("accountActivateDatetime", "USER_ERR007");
-                    }
+                if( sDate.before(today)) {
+                    errorMap.put("accountActivateDatetime", "USER_ERR007");
                 }
             }
             if ( !StringUtil.isEmpty(endDateStr)) {
@@ -134,10 +144,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     eDate = new Date();
                 }
 
-                if ("create".equals(user_action)) {
-                    if( today.after(eDate)) {
-                        errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-                    }
+                if( eDate.before(today)) {
+                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
                 }
             }
         }
