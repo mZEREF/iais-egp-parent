@@ -17,7 +17,7 @@
             <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Edit a Draft Submission</a>
         </li>
         <li>
-            <a href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmissionsInbox">Withdraw Submission</a>
+            <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">Withdraw Submission</a>
         </li>
     </ol>
 
