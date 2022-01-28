@@ -804,25 +804,35 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     private void setReqForInfoSearchListDtoLicenceInfo(ApplicationLicenceQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
+        String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
+        reqForInfoSearchListDto.setLicenceStatus(licStatus);
+        reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
+        reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
+        reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
+        List<String> addressList1 = IaisCommonUtils.genNewArrayList();
         if(reqForInfoSearchListDto.getAppId()==null){
             reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
             reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
             reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
             reqForInfoSearchListDto.setUen(rfiApplicationQueryDto.getLicUenNo());
+            addressList1.add(rfiApplicationQueryDto.getLicPremType());
+            reqForInfoSearchListDto.setAddress(addressList1);
+            return;
         }
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-        List<String> addressList1 = IaisCommonUtils.genNewArrayList();
+        String appPremisesKey=MiscUtil.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
+
         boolean addressEquals=false;
         for (PremisesDto premisesDto:premisesDtoList
         ) {
-            String appAddress=rfiApplicationQueryDto.getPremType();
+            String licPremisesKey=MiscUtil.getPremisesKey(premisesDto.getHciName(),premisesDto.getPostalCode(),premisesDto.getBlkNo(),"","",premisesDto.getFloorNo(),premisesDto.getUnitNo(),null);
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=hcsaLicenceClient.getPremisesFloorUnits(premisesDto.getId()).getEntity();
             String licAddress=MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
             if(StringUtil.isEmpty(premisesDto.getBlkNo())){
                 licAddress=" "+licAddress;
             }
-            if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)&&rfiApplicationQueryDto.getHciName().equals(premisesDto.getHciName())){
+            if(appPremisesKey.equals(licPremisesKey)){
                 reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                 reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                 addressEquals=true;
@@ -832,11 +842,7 @@ public class OfficerOnlineEnquiriesDelegator {
         if(addressEquals){
             reqForInfoSearchListDto.setAddress(addressList1);
         }
-        String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
-        reqForInfoSearchListDto.setLicenceStatus(licStatus);
-        reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
-        reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
-        reqForInfoSearchListDto.setExpiryDate(rfiApplicationQueryDto.getExpiryDate());
+
     }
 
     private void rfiApplicationQueryDtoToReqForInfoSearchListDto(ApplicationLicenceQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
