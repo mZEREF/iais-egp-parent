@@ -155,7 +155,7 @@
                             <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                             <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-amend">Amend</a>
                             <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                            <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
+                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>
                 </div>
@@ -216,7 +216,6 @@
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
-            $('#ds-unlock').addClass("disabled");
             $('#ds-deleteDraft').addClass("disabled");
         }
     }
