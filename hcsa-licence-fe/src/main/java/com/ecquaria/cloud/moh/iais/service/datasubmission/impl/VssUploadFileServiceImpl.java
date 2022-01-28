@@ -35,18 +35,8 @@ public class VssUploadFileServiceImpl implements VssUploadFileService {
 
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    @Value("${iais.sharedfolder.application.out}")
+    @Value("${iais.sharedfolder.dsvss.out}")
     private String sharedOutPath;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Autowired
     private VssFeClient vssFeClient;

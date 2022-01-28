@@ -105,5 +105,55 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_courtOrderIssueDate"></span>
         </iais:value>
     </iais:row>
+    <div class="center-content">
+        <div class="">
+            <div class="document-upload-gp">
+                <div class="document-upload-list">
+                    <h3>Court Order Document</h3>
+                            <div class="file-upload-gp">
+                                <div name="selectedVssFileShowId" id="selectedVssFileShowId">
+                                    <c:forEach items="${vssFiles}" var="vssFile"
+                                               varStatus="ind">
+                                        <div id="selectedVssFileDiv${vssFile.seqNum}">
+                                            <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                                                <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
+                                            </span>
+                                            <span class="error-msg" name="iaisErrorMsg"
+                                                  id="file${ind.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg"
+                                                  id="error_${configIndex}error"></span>
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                    onclick="javascript:deleteFileFeAjax('selectedVssFile',${vssFile.seqNum});">
+                                                Delete</button>  <button type="button" class="btn btn-secondary btn-sm"
+                                                                         onclick="javascript:reUploadFileFeAjax('selectedVssFile',${vssFile.seqNum},'mainForm');">
+                                            ReUpload</button>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                                <input id="selectedFile" name="selectedFile"
+                                       class="selectedFile commDoc"
+                                       type="file" style="display: none;"
+                                       aria-label="selectedFile1"
+                                       onclick="(event)"
+                                       onchange="doUserRecUploadConfirmFile(event)"/><a href="javascript:void(0);"
+                                                                                        class="btn btn-file-upload btn-secondary"
+                                                                                        onclick="clearFlagValueFEFile()">Upload</a>
+                            </div>
+                    <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
+<%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
+<script>
+
+    function doUserRecUploadConfirmFile(event) {
+        uploadFileValidate();
+    }
+
+    function uploadFileValidate() {
+        ajaxCallUploadForMax('mainForm', "selectedVssFile",true);
+    }
+</script>
