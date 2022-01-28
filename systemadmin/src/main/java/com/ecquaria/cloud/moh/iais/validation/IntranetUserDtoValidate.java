@@ -99,13 +99,11 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 errorMap.put("accountActivateDatetime", "USER_ERR022");
             }
 
-            if ("create".equals(user_action)) {
-                if(  sDate.before(today)) {
-                    errorMap.put("accountActivateDatetime", "USER_ERR007");
-                }
-                if( eDate.before(today)) {
-                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-                }
+            if(  sDate.before(today)) {
+                errorMap.put("accountActivateDatetime", "USER_ERR007");
+            }
+            if( eDate.before(today)) {
+                errorMap.put("accountDeactivateDatetime", "USER_ERR007");
             }
 
         }else {
@@ -128,10 +126,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     log.error(e.getMessage(), e);
                     sDate = new Date();
                 }
-                if ("create".equals(user_action)) {
-                    if( sDate.before(today)) {
-                        errorMap.put("accountActivateDatetime", "USER_ERR007");
-                    }
+                if( sDate.before(today)) {
+                    errorMap.put("accountActivateDatetime", "USER_ERR007");
                 }
             }
             if ( !StringUtil.isEmpty(endDateStr)) {
@@ -148,10 +144,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     eDate = new Date();
                 }
 
-                if ("create".equals(user_action)) {
-                    if( eDate.before(today)) {
-                        errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-                    }
+                if( eDate.before(today)) {
+                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
                 }
             }
         }
