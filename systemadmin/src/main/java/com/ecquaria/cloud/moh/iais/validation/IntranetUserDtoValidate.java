@@ -95,12 +95,10 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
             int comparatorValue = endDate.compareTo(startDate);
-            if (comparatorValue < 0) {
-                errorMap.put("accountActivateDatetime", "USER_ERR006");
+            if (comparatorValue <= 0) {
+                errorMap.put("accountActivateDatetime", "USER_ERR022");
             }
-            if(comparatorValue == 0 ){
-                errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-            }
+
             if ("create".equals(user_action)) {
                 if(  sDate.before(today)) {
                     errorMap.put("accountActivateDatetime", "USER_ERR007");
@@ -131,7 +129,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     sDate = new Date();
                 }
                 if ("create".equals(user_action)) {
-                    if( !sDate.before(today)) {
+                    if( sDate.before(today)) {
                         errorMap.put("accountActivateDatetime", "USER_ERR007");
                     }
                 }
