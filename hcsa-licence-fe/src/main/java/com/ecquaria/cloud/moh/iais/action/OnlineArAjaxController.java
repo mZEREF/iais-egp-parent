@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
@@ -12,8 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -70,15 +69,16 @@ public class OnlineArAjaxController {
         int currentFrozenEmbryos=0;
         int currentFreshEmbryos=0;
         int currentFrozenSperms=0;
+        List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
+
         try {
-            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+            for (ArCurrentInventoryDto aci:arCurrentInventoryDtos
             ) {
-                PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
-                currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
-                currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
-                currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
-                currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
-                currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
+                currentFrozenOocytes+=aci.getFrozenOocyteNum();
+                currentFreshOocytes+=aci.getFreshOocyteNum();
+                currentFrozenEmbryos+=aci.getFrozenEmbryoNum();
+                currentFreshEmbryos+=aci.getFreshEmbryoNum();
+                currentFrozenSperms+=aci.getFrozenEmbryoNum();
             }
         }catch (Exception e){
             log.error(e.getMessage(),e);
