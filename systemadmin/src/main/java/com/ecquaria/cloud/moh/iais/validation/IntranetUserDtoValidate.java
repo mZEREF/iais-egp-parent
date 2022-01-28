@@ -99,7 +99,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 errorMap.put("accountActivateDatetime", "USER_ERR006");
             }
             if(comparatorValue == 0 ){
-                errorMap.put("accountDeactivateDatetime", "USER_ERR006");
+                errorMap.put("accountDeactivateDatetime", "USER_ERR007");
             }
             if ("create".equals(user_action)) {
                 if(  sDate.before(today)) {
