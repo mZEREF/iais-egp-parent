@@ -118,7 +118,7 @@
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
-                left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE ='DSCL_008'
