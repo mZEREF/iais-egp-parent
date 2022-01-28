@@ -251,43 +251,42 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             return;
         }
 
+        String userId = userDto.getUserId();
         ClientUser clientUser = result.getEntity();
         if (clientUser != null){
             clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
             userClient.updateClientUser(clientUser);
-            return;
+        } else {
+            String email = userDto.getEmail();
+            String salutation = userDto.getSalutation();
+            clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
+            clientUser.setId(userId);
+            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            clientUser.setSalutation(salutation);
+            clientUser.setEmail(email);
+
+            UserIdentifier userIdentifier = new UserIdentifier();
+            userIdentifier.setId(userId);
+            userIdentifier.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
+            String chanQue = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
+            String chanAn = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
+
+            clientUser.setPassword(pwd);
+            clientUser.setPasswordChallengeQuestion(chanQue);
+            clientUser.setPasswordChallengeAnswer(chanAn);
+
+            Date activeDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(activeDate);
+            calendar.add(Calendar.DAY_OF_YEAR, 999);
+            clientUser.setAccountActivateDatetime(activeDate);
+            clientUser.setAccountDeactivateDatetime(calendar.getTime());
+            userClient.createClientUser(clientUser);
         }
-
-        String userId = userDto.getUserId();
-        String email = userDto.getEmail();
-        String salutation = userDto.getSalutation();
-
-        clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
-        clientUser.setId(userId);
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-        clientUser.setSalutation(salutation);
-        clientUser.setEmail(email);
-
-        UserIdentifier userIdentifier = new UserIdentifier();
-        userIdentifier.setId(userId);
-        userIdentifier.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-
-        String randomStr = IaisEGPHelper.generateRandomString(6);
-        String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-        String chanQue = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-        String chanAn = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-
-        clientUser.setPassword(pwd);
-        clientUser.setPasswordChallengeQuestion(chanQue);
-        clientUser.setPasswordChallengeAnswer(chanAn);
-
-        Date activeDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(activeDate);
-        calendar.add(Calendar.DAY_OF_YEAR, 999);
-        clientUser.setAccountActivateDatetime(activeDate);
-        clientUser.setAccountDeactivateDatetime(calendar.getTime());
 
         OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
         EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
@@ -310,7 +309,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             feMainRbacClient.createUerRoleIds(role).getEntity();
         }
 
-        userClient.createClientUser(clientUser);
     }
 
     @Override
