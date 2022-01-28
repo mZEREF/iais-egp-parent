@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
@@ -59,6 +60,9 @@ public interface AssistedReproductionService {
     List<SelectOption> genPremisesOptions(String patientCode);
 
     List<PgtStageDto> listPgtStageByPatientCode( String patientCode);
+
+    List<ArCurrentInventoryDto> arCurrentInventoryDtosByPatientCode(String patientCode);
+
 
 
 }

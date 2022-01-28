@@ -33,25 +33,25 @@
                                     <c:out value="${patientInventory.key}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentFrozenOocytes}"/>
+                                    <c:out value="${patientInventory.value.frozenOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentThawedOocytes}"/>
+                                    <c:out value="${patientInventory.value.thawedOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentFreshOocytes}"/>
+                                    <c:out value="${patientInventory.value.freshOocyteNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentFrozenEmbryos}"/>
+                                    <c:out value="${patientInventory.value.frozenEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentThawedEmbryos}"/>
+                                    <c:out value="${patientInventory.value.thawedEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentFreshEmbryos}"/>
+                                    <c:out value="${patientInventory.value.freshEmbryoNum}"/>
                                 </td>
                                 <td style="vertical-align:middle;">
-                                    <c:out value="${patientInventory.value.currentFrozenSperms}"/>
+                                    <c:out value="${patientInventory.value.frozenSpermNum}"/>
                                 </td>
 
                             </tr>
@@ -154,26 +154,26 @@
                                         <iais:sortableHeader needSort="true"
                                                              field="cycle_no"
                                                              value="Cycle"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Frozen Oocytes"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="FROZEN_OOCY_NUM"
                                                              value="Frozen Oocytes"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Thawed Oocytes"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="THAWED_OOCY_NUM"
                                                              value="Thawed Oocytes"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Fresh Oocytes"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="FRESH_OOCY_NUM"
                                                              value="Fresh Oocytes"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Frozen Embryos"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="FROZEN_EMBR_NUM"
                                                              value="Frozen Embryos"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Thawed Embryos"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="THAWED_EMBR_NUM"
                                                              value="Thawed Embryos"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Fresh Embryos"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="FRESH_EMBR_NUM"
                                                              value="Fresh Embryos"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Frozen Sperms"
+                                        <iais:sortableHeader needSort="true"
+                                                             field="FROZEN_SPERM_NUM"
                                                              value="Frozen Sperms"/>
 
                                     </tr>

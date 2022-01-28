@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
@@ -20,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
+import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     @Autowired
     private AssistedReproductionService assistedReproductionService;
+
+    @Autowired
+    private AssistedReproductionClient assistedReproductionClient;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -995,8 +999,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
                 ParamUtil.setSessionAttr(request,"arViewFull",null);
 
-                LinkedHashMap<String,PatientInventoryDto> patientInventoryDtos=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
-                PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
+                LinkedHashMap<String, ArCurrentInventoryDto> arCurrentInventoryDtoLinkedHashMap=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
+                ArCurrentInventoryDto patientInventoryDtoTotal=new ArCurrentInventoryDto();
                 int currentFrozenOocytes=0;
                 int currentThawedOocytes=0;
                 int currentFreshOocytes=0;
@@ -1004,29 +1008,41 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentThawedEmbryos=0;
                 int currentFreshEmbryos=0;
                 int currentFrozenSperms=0;
-                for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
-                ) {
-                    if(premisesDto!=null){
-                        PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
-                        currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
-                        currentThawedOocytes+=patientInventoryDto.getCurrentThawedOocytes();
-                        currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
-                        currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
-                        currentThawedEmbryos+=patientInventoryDto.getCurrentThawedEmbryos();
-                        currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
-                        currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
-                        patientInventoryDtos.put(premisesDto.getPremiseLabel(),patientInventoryDto);
+                List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
+
+                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode()).getEntity();
+                Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
+                if(IaisCommonUtils.isNotEmpty(premisesDtos)){
+                    for (PremisesDto premisesDto : premisesDtos) {
+                        if(premisesDto!=null){
+                            premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                        }
                     }
                 }
-                patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);
-                patientInventoryDtoTotal.setCurrentFreshOocytes(currentFreshOocytes);
-                patientInventoryDtoTotal.setCurrentFrozenEmbryos(currentFrozenEmbryos);
-                patientInventoryDtoTotal.setCurrentFreshEmbryos(currentFreshEmbryos);
-                patientInventoryDtoTotal.setCurrentFrozenOocytes(currentFrozenOocytes);
-                patientInventoryDtoTotal.setCurrentThawedOocytes(currentThawedOocytes);
-                patientInventoryDtoTotal.setCurrentFrozenSperms(currentFrozenSperms);
-                patientInventoryDtos.put("Total",patientInventoryDtoTotal);
-                ParamUtil.setSessionAttr(request,"patientInventoryDtos",  patientInventoryDtos);
+                for (ArCurrentInventoryDto aci:arCurrentInventoryDtos
+                ) {
+                    if(aci!=null){
+                        currentFrozenOocytes+=aci.getFrozenOocyteNum();
+                        currentThawedOocytes+=aci.getThawedOocyteNum();
+                        currentFreshOocytes+=aci.getFreshOocyteNum();
+                        currentFrozenEmbryos+=aci.getFrozenEmbryoNum();
+                        currentThawedEmbryos+=aci.getThawedEmbryoNum();
+                        currentFreshEmbryos+=aci.getFreshEmbryoNum();
+                        currentFrozenSperms+=aci.getFrozenEmbryoNum();
+                        if(premisesMap.containsKey(aci.getHciCode())){
+                            arCurrentInventoryDtoLinkedHashMap.put(premisesMap.get(aci.getHciCode()).getPremiseLabel(),aci);
+                        }
+                    }
+                }
+                patientInventoryDtoTotal.setThawedEmbryoNum(currentThawedEmbryos);
+                patientInventoryDtoTotal.setFreshOocyteNum(currentFreshOocytes);
+                patientInventoryDtoTotal.setFreshEmbryoNum(currentFrozenEmbryos);
+                patientInventoryDtoTotal.setFreshEmbryoNum(currentFreshEmbryos);
+                patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
+                patientInventoryDtoTotal.setThawedOocyteNum(currentThawedOocytes);
+                patientInventoryDtoTotal.setFrozenSpermNum(currentFrozenSperms);
+                arCurrentInventoryDtoLinkedHashMap.put("Total",patientInventoryDtoTotal);
+                ParamUtil.setSessionAttr(request,"patientInventoryDtos",  arCurrentInventoryDtoLinkedHashMap);
 
                 ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
                 ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
