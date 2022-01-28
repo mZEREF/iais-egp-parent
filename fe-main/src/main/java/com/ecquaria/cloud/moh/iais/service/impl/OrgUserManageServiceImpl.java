@@ -253,6 +253,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         ClientUser clientUser = result.getEntity();
         if (clientUser != null){
+            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+            userClient.updateClientUser(clientUser);
             return;
         }
 
