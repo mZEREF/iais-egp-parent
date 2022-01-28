@@ -345,7 +345,7 @@
 
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
+           SELECT distinct dc.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
            CONCAT(case lp.BUSINESS_NAME
                   when null then '-, '
                   when '' then '-, '
