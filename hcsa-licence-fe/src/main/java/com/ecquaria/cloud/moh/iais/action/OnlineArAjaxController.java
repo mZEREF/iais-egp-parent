@@ -128,20 +128,20 @@ public class OnlineArAjaxController {
                 }
                 if(ajax.getTreatmentFreshStimulated()!=null&&ajax.getTreatmentFreshStimulated()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED);
                 }
                 if(ajax.getTreatmentFrozenEmbryo()!=null&&ajax.getTreatmentFrozenEmbryo()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_EMBRYO_CYCLE);
 
                 }
                 if(ajax.getTreatmentFrozenOocyte()!=null&&ajax.getTreatmentFrozenOocyte()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_OOCYTE_CYCLE);
                 }
@@ -150,14 +150,14 @@ public class OnlineArAjaxController {
                 }
                 if(StringUtil.isNotEmpty(ajax.getIuiCoFunding())){
                     if(!"".equals(coFunding)){
-                        coFunding=coFunding+',';
+                        coFunding=coFunding+", ";
                     }
                     coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getIuiCoFunding());
 
                 }
                 if(StringUtil.isNotEmpty(ajax.getPgtCoFunding())){
                     if(!"".equals(coFunding)){
-                        coFunding=coFunding+',';
+                        coFunding=coFunding+", ";
                     }
                     coFunding=coFunding+ajax.getPgtCoFunding();
                 }
