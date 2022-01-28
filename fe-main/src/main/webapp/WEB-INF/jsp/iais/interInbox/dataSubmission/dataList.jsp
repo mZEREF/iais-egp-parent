@@ -168,6 +168,7 @@
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
+        <iais:confirm msg="DS_ERR057" needCancel="false" popupOrder="actionNoDraftDataDelete"  yesBtnDesc="OK"   yesBtnCls="btn btn-secondary"  callBack="actionNoDraftDataDeleteCancelBallDsButton()" />
 </form>
 <script type="application/javascript">
 
@@ -249,7 +250,12 @@
 
 
     $('#ds-deleteDraft').click(function (){
-        $("#deleteDraftModal").modal('show');
+        if($("[name='submissionNo']").val().indexOf('DS')){
+            $("#deleteDraftModal").modal('show');
+        }else {
+            $("#actionNoDraftDataDelete").modal('show');
+        }
+
     });
     $('#ds-amend').click(function (){
         doSubmitForDataSubmission('rfc');
@@ -260,7 +266,9 @@
     $('#ds-unlock').click(function (){
         doSubmitForDataSubmission('unlock');}
     );
-
+    function actionNoDraftDataDeleteCancelBallDsButton(){
+        $("#actionNoDraftDataDelete").modal('hide');
+    }
 
     function delDraftCancelBtn(){
         $("#deleteDraftModal").modal('hide');
