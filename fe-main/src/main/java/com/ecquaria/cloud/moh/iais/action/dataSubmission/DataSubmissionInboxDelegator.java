@@ -36,6 +36,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -391,6 +392,15 @@ public class DataSubmissionInboxDelegator {
 								case 5:
 									//Withdraw.Withdraw
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR054");break;
+								case 6:
+									//Withdraw.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "withdrawn")));break;
+								case 7:
+									//RFC.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "amended")));break;
+								case 8:
+									//UNLOCK.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "unlocked")));break;
 								default:
 							}
 							break;
@@ -453,7 +463,13 @@ public class DataSubmissionInboxDelegator {
 	private int checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
 			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
-		}else if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){ return 3;
+		}else if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){
+			switch (actionValue){
+				case WITHDRAW: return 6;
+				case AMENDED : return 7;
+				case UNLOCK  : return 8;
+				default: return 0;
+			}
 		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
