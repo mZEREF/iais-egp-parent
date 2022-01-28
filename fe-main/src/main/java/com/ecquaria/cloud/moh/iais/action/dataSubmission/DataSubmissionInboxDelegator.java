@@ -454,7 +454,6 @@ public class DataSubmissionInboxDelegator {
 		if(actionValue.equals(DELETE_DRAFT)){
 			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
 		}else if(!checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT) && (actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
-			if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){ return 3;}
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
 				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
@@ -502,6 +501,7 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 			}
+			if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){ return 3;}
 			//check x times
 			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
 			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
