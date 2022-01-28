@@ -84,6 +84,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public List<FeUserDto> getUserListByNricAndIdTypeWithDel(String nric, String idType) {
+        return intranetUserClient.getUserListByNricAndIdTypeWithDel(nric, idType).getEntity();
+    }
+
+    @Override
     @SearchTrack(catalog = "systemAdmin", key = "IntranetUserQuery")
     public SearchResult<OrgUserQueryDto> doQuery(SearchParam param) {
         return intranetUserClient.doQuery(param).getEntity();

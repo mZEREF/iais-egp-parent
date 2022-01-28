@@ -48,6 +48,9 @@ public interface IntranetUserClient {
     @GetMapping(value = "/iais-orguser-be/user-account-list/{nric}/{idType}")
     FeignResponseEntity<List<FeUserDto>> getUserListByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
+    @GetMapping(value = "/iais-orguser-be/user-account-list-all/{nric}/{idType}")
+    FeignResponseEntity<List<FeUserDto>> getUserListByNricAndIdTypeWithDel(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
+
     @PostMapping(value = "/iais-orguser-be/intranet-user-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<OrgUserQueryDto>> doQuery(@RequestBody SearchParam searchParam);
 
