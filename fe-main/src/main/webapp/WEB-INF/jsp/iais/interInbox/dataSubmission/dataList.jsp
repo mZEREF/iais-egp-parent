@@ -250,7 +250,7 @@
 
     $('#ds-deleteDraft').click(function (){
         //get first
-        if($("[name='submissionNo'] :checked").val().indexOf('DS') >= 0){
+        if($("[name='submissionNo']:checked").val().indexOf('DS') >= 0){
             $("#deleteDraftModal").modal('show');
         }else {
             $("#actionNoDraftDataDelete").modal('show');
