@@ -133,6 +133,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         cycleStageParameter.setPageSize(pageSize);
         cycleStageParameter.setSortField("CREATED_DT");
 
+        ParamUtil.setSessionAttr(bpc.request, "patientParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "submissionParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "patientAdvParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "transactionParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "cycleStageParam",null);
+
     }
 
     private AssistedReproductionEnquiryFilterDto setAssistedReproductionEnquiryFilterDto(HttpServletRequest request) throws ParseException {
@@ -854,6 +860,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
                 }
             }
+            if(searchParamForPat!=null){
+                patientParam.setPageNo(searchParamForPat.getPageNo());
+                patientParam.setPageSize(searchParamForPat.getPageSize());
+            }
             CrudHelper.doPaging(patientParam,bpc.request);
 
             QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
@@ -871,6 +881,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
             if(submissionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(submissionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+            }
+            if(searchParamForSub!=null){
+                submissionParam.setPageNo(searchParamForSub.getPageNo());
+                submissionParam.setPageSize(searchParamForSub.getPageSize());
             }
             CrudHelper.doPaging(submissionParam,bpc.request);
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
@@ -962,6 +976,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
             }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+            }
+            if(searchParam!=null){
+                patientParam.setPageNo(searchParam.getPageNo());
+                patientParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(patientParam,bpc.request);
 
@@ -1112,6 +1130,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(transactionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
                     HalpSearchResultHelper.setMasterCodeForSearchParam(transactionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
                 }
+                SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request,"transactionParam");
+                if(searchParam!=null){
+                    transactionParam.setPageNo(searchParam.getPageNo());
+                    transactionParam.setPageSize(searchParam.getPageSize());
+                }
                 CrudHelper.doPaging(transactionParam,bpc.request);
 
                 QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
@@ -1151,6 +1174,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
 
                 SearchParam cycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
+                SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request,"cycleStageParam");
+                if(searchParam!=null){
+                    cycleStageParam.setPageNo(searchParam.getPageNo());
+                    cycleStageParam.setPageSize(searchParam.getPageSize());
+                }
                 CrudHelper.doPaging(cycleStageParam,bpc.request);
 
                 QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);

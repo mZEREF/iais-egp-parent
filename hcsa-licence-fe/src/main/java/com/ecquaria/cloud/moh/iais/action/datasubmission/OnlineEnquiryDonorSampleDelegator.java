@@ -64,6 +64,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         donorSampleParameter.setPageNo(1);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Assisted Reproduction Enquiry");
+        ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
+
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
         ArEnquiryDonorSampleFilterDto dsFilterDto=new ArEnquiryDonorSampleFilterDto();
@@ -170,6 +172,10 @@ public class OnlineEnquiryDonorSampleDelegator {
             SearchParam donorSampleParam = SearchResultHelper.getSearchParam(request, donorSampleParameter,true);
             if(donorSampleParam.getSortMap().containsKey("SAMPLE_TYPE_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(donorSampleParam,"SAMPLE_TYPE", "SAMPLE_TYPE_DESC", MasterCodeUtil.AR_DONOR_SAMPLE_TYPE);
+            }
+            if(searchParam!=null){
+                donorSampleParam.setPageNo(searchParam.getPageNo());
+                donorSampleParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(donorSampleParam,bpc.request);
             LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);

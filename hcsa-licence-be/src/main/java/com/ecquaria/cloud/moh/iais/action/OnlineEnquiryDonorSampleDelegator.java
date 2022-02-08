@@ -61,6 +61,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         donorSampleParameter.setPageSize(pageSize);
         donorSampleParameter.setPageNo(1);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
+
 
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
@@ -169,6 +171,10 @@ public class OnlineEnquiryDonorSampleDelegator {
             SearchParam donorSampleParam = SearchResultHelper.getSearchParam(request, donorSampleParameter,true);
             if(donorSampleParam.getSortMap().containsKey("SAMPLE_TYPE_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(donorSampleParam,"SAMPLE_TYPE", "SAMPLE_TYPE_DESC",MasterCodeUtil.AR_DONOR_SAMPLE_TYPE);
+            }
+            if(searchParam!=null){
+                donorSampleParam.setPageNo(searchParam.getPageNo());
+                donorSampleParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(donorSampleParam,bpc.request);
 
