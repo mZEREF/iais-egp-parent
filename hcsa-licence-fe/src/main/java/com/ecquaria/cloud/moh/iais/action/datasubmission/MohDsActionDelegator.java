@@ -228,6 +228,7 @@ public class MohDsActionDelegator {
     private String prepareArRfc(String submissionNo, HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                 submissionNo);
+        arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
         String uri;
         if (arSuper == null) {
             uri = DEFAULT_URI;
