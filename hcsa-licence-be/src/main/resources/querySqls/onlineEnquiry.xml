@@ -589,7 +589,9 @@
                   when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-           		 dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
            		CONCAT(case dds2lp.BUSINESS_NAME
                   when null then '-, '
                   when '' then '-, '
@@ -626,7 +628,8 @@
                   when null then null
                   when '' then null
                   else ', '+dds2p.POSTAL_CODE end
-              ) AS SAMPLE_FROM_HCI_CODE ,
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
            		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID
@@ -639,6 +642,7 @@
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>

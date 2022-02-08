@@ -75,6 +75,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         dsFilterDto.setSampleType(sampleType);
         String sampleHciCode=ParamUtil.getString(request,"sampleHciCode");
         dsFilterDto.setSampleHciCode(sampleHciCode);
+        String othersSampleHciCode=ParamUtil.getString(request,"othersSampleHciCode");
+        dsFilterDto.setOthersSampleHciCode(othersSampleHciCode);
         String donorIdType=ParamUtil.getString(request,"donorIdType");
         dsFilterDto.setDonorIdType(donorIdType);
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
@@ -100,6 +102,12 @@ public class OnlineEnquiryDonorSampleDelegator {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null");
+        SelectOption otherSelectOption=new SelectOption();
+        otherSelectOption.setText("Others");
+        otherSelectOption.setValue("AR_SC_001");
+        arCentreSelectOptionFrom.add(otherSelectOption);
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOptionFrom",arCentreSelectOptionFrom);
         if(!"back".equals(back)||searchParam==null){
             ArEnquiryDonorSampleFilterDto arDto=setArEnquiryDonorSampleFilterDto(request);
 
@@ -115,7 +123,11 @@ public class OnlineEnquiryDonorSampleDelegator {
                 filter.put("sampleType", arDto.getSampleType());
             }
             if(arDto.getSampleHciCode()!=null){
-                filter.put("sampleHciCode", arDto.getSampleHciCode());
+                if("AR_SC_001".equals(arDto.getSampleHciCode())){
+                    filter.put("othersDonorSampleCode", arDto.getOthersSampleHciCode());
+                }else {
+                    filter.put("sampleHciCode", arDto.getSampleHciCode());
+                }
             }
             if(arDto.getDonorIdType()!=null){
                 filter.put("donorIdType", arDto.getDonorIdType());

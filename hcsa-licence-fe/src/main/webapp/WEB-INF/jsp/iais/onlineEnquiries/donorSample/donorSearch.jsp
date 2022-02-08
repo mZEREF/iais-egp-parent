@@ -67,8 +67,14 @@
                         <iais:row>
                             <iais:field width="4" value="Name of Bank / AR Centre where sample is from" />
                             <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOption"
-                                             cssClass="clearSel"  value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
+                                <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOptionFrom"
+                                             cssClass="clearSel"   value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4">
+                                <div id="othersDisplay" <c:if test="${arEnquiryDonorSampleFilterDto.sampleHciCode!='AR_SC_001'}">style="display: none"</c:if> >
+                                    <input type="text" maxlength="100" id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
+
+                                </div>
                             </iais:value>
                         </iais:row>
                         <iais:row>
