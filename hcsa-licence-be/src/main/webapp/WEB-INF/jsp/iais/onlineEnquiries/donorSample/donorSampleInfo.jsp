@@ -47,7 +47,7 @@
                                             <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
                                         </div>
                                     </div>
-                                    <hr>
+<%--                                    <hr>--%>
 <%--                                    <div class="row">--%>
 <%--                                        <div class="col-md-6">--%>
 <%--                                            Donor Relation to Patient--%>
