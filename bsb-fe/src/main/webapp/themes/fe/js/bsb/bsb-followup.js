@@ -33,3 +33,7 @@ function showImplement(cause){
 function hideImplement(cause){
     $("#isAllIdentified--v--"+cause).hide();
 }
+
+function openIncident(maskedEditId){
+    window.open("/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId="+maskedEditId);
+}
