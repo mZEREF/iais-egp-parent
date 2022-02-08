@@ -4,6 +4,8 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -289,6 +291,12 @@ public abstract class CommonDelegator {
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmission.getArChangeInventoryDto();
+        if (arChangeInventoryDto != null&&arSuperDataSubmission.getArCurrentInventoryDto()!=null) {
+            ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmission.getArCurrentInventoryDto();
+            arCurrentInventoryDto = ArCurrentInventoryDto.addChange(arCurrentInventoryDto, arChangeInventoryDto);
+            arSuperDataSubmission.setArCurrentInventoryDto(arCurrentInventoryDto);
         }
         arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
         try {
