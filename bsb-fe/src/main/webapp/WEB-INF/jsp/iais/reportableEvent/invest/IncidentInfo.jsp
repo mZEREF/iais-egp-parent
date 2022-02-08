@@ -126,7 +126,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <%@include file="common/InnerFooter.jsp"%>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 ">
+                                            <a class="back" id="homeBack" href="/bsb-fe/eservice/INTERNET/MohBsbReportableEvents"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="button-group" style="float: right">
+                                                <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
+                                                <a class="btn btn-primary next" id="next" >Next</a>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                                 </div>

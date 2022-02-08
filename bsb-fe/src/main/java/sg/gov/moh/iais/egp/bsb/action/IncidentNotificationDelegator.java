@@ -242,6 +242,11 @@ public class IncidentNotificationDelegator {
         SimpleNode involvedPersonNode = (SimpleNode) incidentNotRoot.getNode(NODE_NAME_PERSON_INVOLVED_INFO);
         PersonInvolvedInfoDto personInvolvedInfoDto = (PersonInvolvedInfoDto) involvedPersonNode.getValue();
         personInvolvedInfoDto.reqObjMapping(request);
+        //set person involved info to field involved person count
+        SimpleNode reportingPersonNode = (SimpleNode) incidentNotRoot.getNode(NODE_NAME_PERSON_REPORTING_INFO);
+        PersonReportingDto personReportingDto = (PersonReportingDto) reportingPersonNode.getValue();
+        personReportingDto.setIncidentPersonInvolvedCount(String.valueOf(personInvolvedInfoDto.getIncidentPersons().size()));
+
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
