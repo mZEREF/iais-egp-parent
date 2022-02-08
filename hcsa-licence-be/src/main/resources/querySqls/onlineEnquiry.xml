@@ -688,7 +688,12 @@
                   when null then null
                   when '' then null
                   else ', '+Prem.HCI_NAME end
-              )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION, ldt.TEST_STATUS, ldt.REMARKS ,ldt.LDT_NO
+              )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
+              case ldt.TEST_STATUS
+              when 1 then 'Active'
+              when 0 then 'Inactive'
+              else '' end TEST_STATUS
+              , ldt.REMARKS ,ldt.LDT_NO
                 FROM laboratory_develop_test ldt
                 join premises Prem on Prem.HCI_CODE = ldt.HCI_CODE ) T1
             where 1 = 1
