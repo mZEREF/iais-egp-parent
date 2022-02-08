@@ -7,8 +7,6 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
-<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi
-       && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
 
 <div class="form-horizontal licenseeContent">
     <iais:row>
@@ -24,24 +22,6 @@
             </c:if>
         </iais:value>
     </iais:row>
-    <c:if test="${showClaimFields}">
-        <label>If you intend to transfer this licence to your corporate entity, please provide the UEN no. and Name of your Corporate Entity below:</label>
-        <br><br>
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
-            </iais:value>
-        </iais:row>
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
-                            value="${dto.claimCompanyName}"/>
-            </iais:value>
-        </iais:row>
-        <hr>
-    </c:if>
     <c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
@@ -179,9 +159,6 @@
         $('.retrieveAddr').removeClass('hidden');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
-        </c:if>
-        <c:if test="${showClaimFields}">
-        unDisableContent('div.claimFeilds');
         </c:if>
         initLicenseePage();
         $(this).closest('div').hide();
