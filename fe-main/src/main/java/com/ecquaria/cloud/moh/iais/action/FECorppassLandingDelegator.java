@@ -294,9 +294,11 @@ public class FECorppassLandingDelegator {
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         if (Optional.ofNullable(userSession).isPresent()){
             FeLoginHelper.writeUserField(request, userSession);
+            if(StringUtil.isEmpty(userSession.getRoles())){ userSession.setRoles("PASSVAL");}
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
+            if("PASSVAL".equalsIgnoreCase(userSession.getRoles())){ userSession.setRoles(null);ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);}
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

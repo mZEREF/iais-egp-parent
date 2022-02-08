@@ -21,7 +21,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="ID Type" width="11" required="true"/>
+    <iais:field value="ID Type" width="11" required="${canEditFlag == 'Y' ? true : false}" />
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
                     <iais:value width="11">
@@ -38,7 +38,7 @@
         </c:choose>
 </iais:row>
 <iais:row>
-    <iais:field value="ID No" width="11" required="true"/>
+    <iais:field value="ID No" width="11"  required="${canEditFlag == 'Y' ? true : false}"/>
     <iais:value width="11">
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
