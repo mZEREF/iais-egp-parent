@@ -41,8 +41,6 @@
                     <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
                     <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
                     <c:set var="isLicence" value="${not empty licenceView}"/>
-                    <c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC
-                        && !isRfi && specialSubLic && !isLicence}" scope="request"/>
 
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">

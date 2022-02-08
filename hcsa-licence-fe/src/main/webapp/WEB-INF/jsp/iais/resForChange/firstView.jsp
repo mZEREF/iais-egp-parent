@@ -19,8 +19,6 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:set var="showClaimFields"
-       value="${isRFC && !isRfi && (subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002')}" />
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
