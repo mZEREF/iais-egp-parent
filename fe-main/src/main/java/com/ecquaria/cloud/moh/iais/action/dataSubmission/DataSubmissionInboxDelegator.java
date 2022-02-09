@@ -439,7 +439,7 @@ public class DataSubmissionInboxDelegator {
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
-                //todo send email to be ar admin
+                //todo send email to be ar admin and change dss lock status
 
 			}
 		}
