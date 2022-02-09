@@ -401,6 +401,12 @@ public class DataSubmissionInboxDelegator {
 								case 8:
 									//UNLOCK.DRAFT
 									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "unlocked")));break;
+								case 9:
+									//UNLOCK.UNLOCK
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Unlocked\"", "unlocked")));break;
+								case 10:
+									//UNLOCK.Pend UNLOCK
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Pending Unlocked\"", "unlocked")));break;
 								default:
 							}
 							break;
@@ -433,6 +439,7 @@ public class DataSubmissionInboxDelegator {
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
+                //todo send email to be ar admin
 
 			}
 		}
@@ -518,10 +525,15 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 			}
-			//check x times
-			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
-			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
-			return maxTimes >= maxCountFromDb?1:0;
+			//check x times,change check status is locked
+			return inboxDataSubmissionQueryDto.getLockStatus() == 0 ? 1:0;
+		}else if(actionValue.equals(UNLOCK)){
+			// lockStatus == 0 : no need unlock,  1 : pass, 2 : pending unlock
+			switch (inboxDataSubmissionQueryDto.getLockStatus()){
+				case 0 : return 9;
+				case 2 : return 10;
+				default: return 1;
+			}
 		}
 		return 0;
 	}
