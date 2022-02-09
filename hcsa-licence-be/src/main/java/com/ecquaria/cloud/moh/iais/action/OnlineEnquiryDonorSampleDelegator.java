@@ -124,7 +124,7 @@ public class OnlineEnquiryDonorSampleDelegator {
                 filter.put("sampleType", arDto.getSampleType());
             }
             if(arDto.getSampleHciCode()!=null){
-                if("AR_SC_001".equals(arDto.getSampleHciCode())){
+                if("AR_SC_001".equals(arDto.getSampleHciCode())&&arDto.getOthersSampleHciCode()!=null){
                     filter.put("othersDonorSampleCode", arDto.getOthersSampleHciCode());
                 }else {
                     filter.put("sampleHciCode", arDto.getSampleHciCode());
