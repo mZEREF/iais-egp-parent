@@ -4,30 +4,12 @@
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
             SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
-            CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -38,13 +20,33 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dds.STATUS != 'DS002'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+            <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
+            <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            UNION ALL
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS BUSINESS_NAME ,dc.PATIENT_CODE
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
                 where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
@@ -79,30 +81,12 @@
         <![CDATA[
            SELECT distinct ajax.* FROM (
             SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-            CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -113,7 +97,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
@@ -126,30 +109,12 @@
 
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-                CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+                CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -160,7 +125,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
@@ -171,30 +135,12 @@
                 where dc.CYCLE_TYPE ='DSCL_009'
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-                CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+                CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -205,7 +151,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
@@ -216,30 +161,12 @@
                 where dc.CYCLE_TYPE ='DSCL_010'
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,'-' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
-                CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+                CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -250,7 +177,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
@@ -269,30 +195,12 @@
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[
            SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
-           CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+           CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -303,7 +211,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_data_submission dds
@@ -403,30 +310,12 @@
     <sql key = "searchTransactionHistoryByAssistedReproduction" remarks="search Transaction History">
         <![CDATA[
             SELECT distinct dds.ID ,
-            CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -437,16 +326,41 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
             dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
                 ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002')  cycle_no ,
                 daic.FROZEN_OOCY_NUM, daic.THAWED_OOCY_NUM, daic.FRESH_OOCY_NUM, daic.FROZEN_EMBR_NUM, daic.THAWED_EMBR_NUM, daic.FRESH_EMBR_NUM, daic.FROZEN_SPERM_NUM
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
+                left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
+
+                where dds.STATUS != 'DS002'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+            <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+            UNION ALL
+            SELECT distinct dds.ID ,
+            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+            dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002')  cycle_no ,
+                daic.FROZEN_OOCY_NUM, daic.THAWED_OOCY_NUM, daic.FRESH_OOCY_NUM, daic.FROZEN_EMBR_NUM, daic.THAWED_EMBR_NUM, daic.FRESH_EMBR_NUM, daic.FROZEN_SPERM_NUM
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
                 left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
@@ -475,30 +389,12 @@
     <sql key = "searchDonorSampleByAssistedReproduction" remarks="search Donor Sample">
         <![CDATA[
             SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
-            CONCAT(case lp.BUSINESS_NAME
-                  when null then '-, '
-                  when '' then '-, '
-                  else lp.BUSINESS_NAME + ', ' end ,
-                  case p.BLK_NO
-                  when null then null
-                  when '' then null
-                  else ''+p.BLK_NO end ,
-               case p.STREET_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.STREET_NAME end
-               , case p.BUILDING_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+p.FLOOR_NO end
-               , case p.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+p.UNIT_NO end
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
 		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -509,7 +405,6 @@
 		    ), 1, 1000)
                ,case p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
               dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
@@ -521,23 +416,18 @@
                   else dds2lp.BUSINESS_NAME + ', ' end ,
                   case dds2p.BLK_NO
                   when null then null
-                  when '' then null
                   else ''+dds2p.BLK_NO end ,
                case dds2p.STREET_NAME
                   when null then null
-                  when '' then null
                   else ' '+dds2p.STREET_NAME end
                , case dds2p.BUILDING_NAME
                   when null then null
-                  when '' then null
                   else ' '+dds2p.BUILDING_NAME end
                , case dds2p.FLOOR_NO
                   when null then null
-                  when '' then null
                   else ' # '+dds2p.FLOOR_NO end
                , case dds2p.UNIT_NO
                   when null then null
-                  when '' then null
                   else '-'+dds2p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -549,13 +439,12 @@
 		    ), 1, 1000)
                ,case dds2p.POSTAL_CODE
                   when null then null
-                  when '' then null
                   else ', '+dds2p.POSTAL_CODE end
               ) end
              AS SAMPLE_FROM_HCI_CODE ,
            		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
@@ -572,7 +461,68 @@
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY) in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
-
+            UNION ALL
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
+           		CONCAT(case dds2lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dds2lp.BUSINESS_NAME + ', ' end ,
+                  case dds2p.BLK_NO
+                  when null then null
+                  else ''+dds2p.BLK_NO end ,
+               case dds2p.STREET_NAME
+                  when null then null
+                  else ' '+dds2p.STREET_NAME end
+               , case dds2p.BUILDING_NAME
+                  when null then null
+                  else ' '+dds2p.BUILDING_NAME end
+               , case dds2p.FLOOR_NO
+                  when null then null
+                  else ' # '+dds2p.FLOOR_NO end
+               , case dds2p.UNIT_NO
+                  when null then null
+                  else '-'+dds2p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =dds2p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case dds2p.POSTAL_CODE
+                  when null then null
+                  else ', '+dds2p.POSTAL_CODE end
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
+                left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY) in( :birthEventsTotalList) </#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
          ]]>
     </sql>
 
