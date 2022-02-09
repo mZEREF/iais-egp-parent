@@ -219,6 +219,7 @@ public class ArCycleStagesManualDelegator {
                     currentArDataSubmission.getDraftId());
             if (arSuperDataSubmissionDtoDraft != null) {
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+                stage = arSuperDataSubmissionDtoDraft.getSelectionDto().getStage();
             } else {
                 log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
                 handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
