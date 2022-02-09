@@ -165,7 +165,7 @@
                                                                             <select id="occurrenceTimeH" name="occurrenceTimeH">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurHHOps}">
-                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                    <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeH eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>
@@ -173,10 +173,10 @@
                                                                             <label for="occurrenceTimeH">(HH)</label>
                                                                         </div>
                                                                         <div class="col-md-10 col-lg-5 col-9">
-                                                                            <select id="occurrenceTimeM" name="occurrenceTimeH">
+                                                                            <select id="occurrenceTimeM" name="occurrenceTimeM">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurMMOps}">
-                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeM eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>

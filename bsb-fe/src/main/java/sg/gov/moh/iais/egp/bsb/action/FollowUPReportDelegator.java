@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -273,6 +274,7 @@ public class FollowUPReportDelegator{
         } catch (Exception e) {
             log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE, e);
         }
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_FOLLOW_UP_REPORT_1A);
     }
 
     public void preFollowUPReport1B(BaseProcessClass bpc){
@@ -353,6 +355,7 @@ public class FollowUPReportDelegator{
         } catch (Exception e) {
             log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE , e);
         }
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_FOLLOW_UP_REPORT_1B);
     }
 
     //The temporary option value is the reference no list obtained from the API

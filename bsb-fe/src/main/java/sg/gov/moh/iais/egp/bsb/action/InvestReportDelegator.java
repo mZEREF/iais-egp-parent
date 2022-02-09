@@ -370,7 +370,8 @@ public class InvestReportDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
-
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_INVESTIGATION_REPORT);
     }
 
     /* Will be removed in future, will get this from config mechanism */

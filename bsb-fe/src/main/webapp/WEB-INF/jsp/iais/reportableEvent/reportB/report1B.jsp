@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Incident Reference No.</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p><c:out value="${followup1B.referenceNo}"/></p>
+                                <a href="#" onclick="openIncident('${MaskUtil.maskValue('editId',followup1B.incidentId)}')"><c:out value="${followup1B.referenceNo}"/></a></label>
                             </div>
                             <div class="clear"></div>
                         </div>

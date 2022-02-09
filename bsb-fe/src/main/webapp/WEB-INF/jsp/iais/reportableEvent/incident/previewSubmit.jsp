@@ -148,7 +148,7 @@
                                                             </div>
 
                                                             <div class="form-group">
-                                                                <div class="col-sm-5 control-label">
+                                                                <div class="col-sm-5 col-md-4 control-label">
                                                                     <label >Description of Incident</label>
                                                                     <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note:The driver of hte conveyance must have a valid Hazardous Materials Transport Driver Permit</p>">i</a>
                                                                 </div>
@@ -182,7 +182,7 @@
 
                                                             <c:if test="${reportingPerson.incidentPersonInvolved ne null}">
                                                                 <div class="form-group">
-                                                                    <div class="col-sm-5 control-label">
+                                                                    <div class="col-sm-5 col-md-4 control-label">
                                                                         <label >Number of personnel involved or affected</label>
                                                                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note:The driver of hte conveyance must have a valid Hazardous Materials Transport Driver Permit</p>">i</a>
                                                                     </div>

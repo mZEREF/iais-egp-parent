@@ -26,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -360,6 +361,8 @@ public class IncidentNotificationDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_INCIDENT_NOTIFICATION);
     }
 
     /**

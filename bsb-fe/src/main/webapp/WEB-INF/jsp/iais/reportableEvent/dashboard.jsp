@@ -10,7 +10,10 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>Reportable event</h1>
+                    <h1>New Reportable Event</h1>
+                    <c:if test="${incidentTitle ne null}">
+                        <h3 style="font-weight: normal">You are submitting for <iais:code code="${incidentTitle}"/></h3>
+                    </c:if>
                 </div>
             </div>
         </div>
