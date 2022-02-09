@@ -407,6 +407,9 @@ public class DataSubmissionInboxDelegator {
 								case 10:
 									//UNLOCK.Pend UNLOCK
 									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Pending Unlocked\"", "unlocked")));break;
+								case 11:
+									//RFC.LOCKED
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Locked\"", "amended")));break;
 								default:
 							}
 							break;
@@ -525,8 +528,14 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 			}
+
 			//check x times,change check status is locked
-			return inboxDataSubmissionQueryDto.getLockStatus() == 0 ? 1:0;
+			switch (inboxDataSubmissionQueryDto.getLockStatus()){
+				case 1 :
+				case 2 :
+					return actionValue.equals(WITHDRAW)  ? 4 : 11;
+				default: return 1;
+			}
 		}else if(actionValue.equals(UNLOCK)){
 			// lockStatus == 0 : no need unlock,  1 : pass, 2 : pending unlock
 			switch (inboxDataSubmissionQueryDto.getLockStatus()){
