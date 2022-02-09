@@ -1028,7 +1028,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentFrozenSperms=0;
                 List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
 
-                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode()).getEntity();
+                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode(),"null").getEntity();
                 Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
                 if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                     for (PremisesDto premisesDto : premisesDtos) {

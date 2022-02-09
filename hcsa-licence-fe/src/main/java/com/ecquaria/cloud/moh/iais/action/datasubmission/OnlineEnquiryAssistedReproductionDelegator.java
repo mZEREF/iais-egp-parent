@@ -817,12 +817,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
 
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
+        HttpServletRequest request = bpc.request;
+        LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
         submissionTypeOptions.add(new SelectOption("AR_TP001","Patient Information"));
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stages"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Samples"));
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         List<SelectOption> stageTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_AR,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_AR)));
@@ -830,7 +832,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_EFO,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_EFO)));
         ParamUtil.setRequestAttr(bpc.request,"stageTypeSelectOption",stageTypeSelectOption);
 
-        HttpServletRequest request = bpc.request;
+
         ParamUtil.setSessionAttr(request,"arViewFull",null);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParamForPat = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
@@ -855,7 +857,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
             }
-            LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
             if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                 String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
@@ -960,7 +961,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));
         sourceSemenOptions.add(new SelectOption("Husband","Husband"));
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null","null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientAdvParam");
@@ -1033,7 +1034,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentFrozenSperms=0;
                 List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
 
-                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode()).getEntity();
+                List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientInfoDto.getPatient().getPatientCode(),"null").getEntity();
                 Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
                 if(IaisCommonUtils.isNotEmpty(premisesDtos)){
                     for (PremisesDto premisesDto : premisesDtos) {
@@ -1089,7 +1090,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request=bpc.request;
         PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
         if(patientInfoDto!=null){
-            List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(patientInfoDto.getPatient().getPatientCode());
+            List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(patientInfoDto.getPatient().getPatientCode(),"null");
             ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         }
         ParamUtil.setSessionAttr(request,"arViewFull",1);

@@ -113,8 +113,8 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     }
 
     @Override
-    public List<SelectOption> genPremisesOptions(String patientCode) {
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode).getEntity();
+    public List<SelectOption> genPremisesOptions(String patientCode,String orgId) {
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode,orgId).getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
             for (PremisesDto premisesDto : premisesDtos) {

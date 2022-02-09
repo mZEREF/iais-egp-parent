@@ -100,11 +100,13 @@ public class OnlineEnquiryDonorSampleDelegator {
     }
     public void preSearch(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
+        LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
         String back = (String) ParamUtil.getRequestAttr(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
-        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null","null");
         SelectOption otherSelectOption=new SelectOption();
         otherSelectOption.setText("Others");
         otherSelectOption.setValue("AR_SC_001");
@@ -178,7 +180,6 @@ public class OnlineEnquiryDonorSampleDelegator {
                 donorSampleParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(donorSampleParam,bpc.request);
-            LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             donorSampleParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
 
             QueryHelp.setMainSql("onlineEnquiry","searchDonorSampleByAssistedReproduction",donorSampleParam);
