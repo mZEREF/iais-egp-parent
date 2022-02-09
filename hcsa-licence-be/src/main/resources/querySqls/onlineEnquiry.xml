@@ -137,11 +137,12 @@
 
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,null CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
+             SELECT distinct  dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.DS_TYPE = 'ART'
+                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID
+                JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
-                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
                 where 1=1
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
@@ -383,11 +384,11 @@
                   when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,dpi.PATIENT_CODE
-                FROM ds_patient_information dpi
-                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
+                FROM ds_data_submission dds
+                join ds_cycle dc on dds.CYCLE_ID=dc.ID and dds.STATUS != 'DS002' and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                join ds_data_submission dds on dds.CYCLE_ID=dc.ID and dds.STATUS != 'DS002'
+                join ds_patient_information dpi on (dc.PATIENT_CODE =dpi.PATIENT_CODE or dpi.SUBMISSION_ID = dds.ID)
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
