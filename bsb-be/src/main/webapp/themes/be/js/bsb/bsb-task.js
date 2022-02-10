@@ -28,10 +28,11 @@ $(function () {
 });
 
 
-function pickUpTask(id) {
+function pickUpTask(id,appId) {
     showWaiting();
     $("[name='action_type']").val("assign");
     $("[name='action_value']").val(id);
+    $("[name='appId']").val(appId);
     $("#mainForm").submit();
 }
 
