@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
@@ -232,7 +232,7 @@ public class OnlineArAjaxController {
             List<AssistedReproductionEnquiryResultsDto> queryList = results.getRows();
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
             queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");
@@ -278,7 +278,7 @@ public class OnlineArAjaxController {
                 }
             }
             queryList.forEach(i -> i.setSubmissionSubtype(MasterCodeUtil.getCodeDesc(i.getSubmissionSubtype())));
-            queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionEnquirySubResultsDto.class, "SubmissionID_SearchResults_Download");
@@ -314,10 +314,10 @@ public class OnlineArAjaxController {
 
         if (!Objects.isNull(results)){
             List<AssistedReproductionAdvEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
             queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setCycleStartDateStr(Formatter.formatDateTime(i.getCycleStartDate(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setCycleStartDateStr(Formatter.formatDateTime(i.getCycleStartDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionAdvEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");
