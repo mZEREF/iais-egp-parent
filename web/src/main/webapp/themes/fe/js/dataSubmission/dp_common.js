@@ -7,6 +7,9 @@ $(document).ready(function() {
     if ($draft.length > 0) {
         $draft.modal('show');
     }
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+
     var currPage = $('input[name="ar_page"]').val();
     console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {
@@ -110,6 +113,28 @@ function printData() {
                 console.log("err: " + data);
             }
         });
+    }
+}
+function getDataForPrinting() {
+    var declaration = $('input[name="declaration"]:checked').val();
+    if (isEmpty(declaration)) {
+        return null;
+    }
+    var printflag = $('#printflag').val();
+    if (isEmpty(printflag)) {
+        printflag = '';
+    }
+    return {declaration: declaration, printflag: printflag};
+}
+function showPopCommon(controlId,showPopId,val){
+    if($(controlId).length == 0){
+        controlId = '#'+controlId;
+    }
+    if($(showPopId).length == 0){
+        showPopId = '#' + showPopId;
+    }
+    if($(controlId).val() == val){
+        $(showPopId).modal('show');
     }
 }
 /*
