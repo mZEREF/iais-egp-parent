@@ -204,7 +204,13 @@ public final class DataSubmissionHelper {
         }
         return LdtSuperDataSubmissionDto;
     }
-
+    public static DpSuperDataSubmissionDto getOldDpSuperDataSubmissionDto(HttpServletRequest request) {
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = (DpSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
+        if (dpSuperDataSubmissionDto == null) {
+            log.info("------------------------------------getOldDpSuperDataSubmissionDto is null-----------------");
+        }
+        return dpSuperDataSubmissionDto;
+    }
 
     public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
         if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
