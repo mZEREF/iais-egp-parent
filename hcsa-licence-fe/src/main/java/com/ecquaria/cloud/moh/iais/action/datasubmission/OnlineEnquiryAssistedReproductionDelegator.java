@@ -1290,6 +1290,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
         List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
         if(IaisCommonUtils.isNotEmpty(dataSubmissionDtoList)){
+            dataSubmissionDtoList.removeIf(dataSubmissionDto -> dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW));
             ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
                     dataSubmissionDtoList.get(0).getSubmissionNo());
             if(StringUtil.isNotEmpty(submissionNo)){
