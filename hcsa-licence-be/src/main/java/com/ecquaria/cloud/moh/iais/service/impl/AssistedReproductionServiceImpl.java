@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -96,12 +95,6 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public PatientInfoDto patientInfoDtoBySubmissionId(String submissionId) {
         return assistedReproductionClient.patientInfoDtoBySubmissionId(submissionId).getEntity();
-    }
-
-
-    @Override
-    public PatientInventoryDto patientInventoryByCode(String patientCode, String hciCode) {
-        return assistedReproductionClient.patientInventoryByCode(patientCode,hciCode).getEntity();
     }
 
     @Override

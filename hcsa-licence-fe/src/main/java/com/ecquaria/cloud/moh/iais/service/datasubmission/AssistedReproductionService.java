@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 
 import java.util.List;
@@ -48,10 +47,6 @@ public interface AssistedReproductionService {
     PatientInfoDto patientInfoDtoByPatientCode( String patientCode);
 
     PatientInfoDto patientInfoDtoBySubmissionId( String submissionId);
-
-
-    PatientInventoryDto patientInventoryByCode(String patientCode,  String hciCode);
-
 
     ArEnquiryCoFundingHistoryDto patientCoFundingHistoryByCode(String patientCode);
 
