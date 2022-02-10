@@ -158,7 +158,9 @@ function doClear() {
     $("option:first").prop("selected", 'selected');
     $(".clearSel").text("Please Select");
     $('.date_picker').val("");
-    $(".multi-select-button").html("-- Select --");
+    $("#patientInformationFilter .multi-select-button").html("-- Select --");
+    $("#patientInformationFilter input[type='checkbox']").prop('checked', false);
+
     $('#cycleStageDisplay').attr("style","display: none");
 }
 
