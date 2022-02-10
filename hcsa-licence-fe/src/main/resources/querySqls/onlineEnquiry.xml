@@ -69,7 +69,7 @@
                 where 1=1
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
-            <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
+            <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
             <#if patient_id_types??> AND  ${patient_id_types}</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
         ]]>
@@ -223,7 +223,7 @@
                 where 1=1
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
-                <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
+                <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER</#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
                 <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
