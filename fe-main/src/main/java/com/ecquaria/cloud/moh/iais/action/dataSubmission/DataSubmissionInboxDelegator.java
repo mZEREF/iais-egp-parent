@@ -504,7 +504,7 @@ public class DataSubmissionInboxDelegator {
 						return 3;
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
-						return 5;
+						addWithdrawnDtoList.remove(arWd);
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
 						return 4;

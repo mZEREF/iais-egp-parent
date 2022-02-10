@@ -292,7 +292,7 @@
             CASE WHEN dds.LOCK_STATUS >0  THEN 'DS013'
             ELSE dds.STATUS  END  STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.UPDATED_DT UPDATED_DT,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE,dds.APP_TYPE APP_TYPE,dc.SVC_NAME SVC_NAME,dc.LICENSEE_ID dclicenseeId,dc.STATUS group_status,dds.LOCK_STATUS LOCK_STATUS FROM  ds_cycle dc
            left join  ds_data_submission dds
-           on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS != 'DS002'
+           on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS not in ('DS002','DS012')
            UNION
            SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId, 'DS001' group_status, 0  LOCK_STATUS
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
