@@ -34,7 +34,7 @@ function showDonor(index){
     $("#source"+index+"Row").hide();
     $("#otherSource"+index+"Row").hide();
     $("#donorSampleCode"+index+"Row").hide();
-    $("#source"+index).val("");
+    //$("#source"+index).val("");
     $("#otherSource"+index).val("");
     $("#donorSampleCode"+index).val("");
     $("#idNo"+index+"Row").show();
@@ -46,7 +46,7 @@ function hideDonor(index){
     $("#source"+index+"Row").show();
     $("#donorSampleCode"+index+"Row").show();
     $("#idNo"+index+"Row").hide();
-    $("#idType"+index).val("");
+    //$("#idType"+index).val("");
     $("#idNumber"+index).val("");
     $("#age"+index).val("");
     $("#age"+index+"Row").hide();

@@ -153,6 +153,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
             arDonorDto.setRelation(null);
+            arDonorDto.setIdNumber(null);
         }
 
         if(!AppConsts.NO.equalsIgnoreCase(arDonorDto.getResetDonor())){
