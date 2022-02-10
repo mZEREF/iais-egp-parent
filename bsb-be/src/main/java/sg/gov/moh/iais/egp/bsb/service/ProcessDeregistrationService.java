@@ -58,6 +58,7 @@ public class ProcessDeregistrationService {
 
     public void reqAOProcessDto(HttpServletRequest request, AOProcessDto aoProcessDto){
         aoProcessDto.setAoRemarks(ParamUtil.getString(request, KEY_AO_REMARKS));
+        aoProcessDto.setFinalRemarks(ParamUtil.getString(request, KEY_FINAL_REMARKS));
         aoProcessDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
         aoProcessDto.setReasonForRejection(ParamUtil.getString(request, KEY_REASON_FOR_REJECTION));
     }

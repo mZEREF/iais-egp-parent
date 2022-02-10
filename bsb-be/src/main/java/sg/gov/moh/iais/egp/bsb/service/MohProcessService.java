@@ -3,17 +3,10 @@ package sg.gov.moh.iais.egp.bsb.service;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.*;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 
@@ -122,19 +115,5 @@ public class MohProcessService {
         aoProcessingDto.setValidityStartDate(ParamUtil.getString(request, KEY_VALIDITY_START_DATE));
         aoProcessingDto.setValidityEndDate(ParamUtil.getString(request, KEY_VALIDITY_END_DATE));
         aoProcessingDto.setFinalRemarks(ParamUtil.getString(request, KEY_FINAL_REMARKS));
-    }
-
-    /**
-     * Convert doc list to map, key is doc repoId, value is docName,
-     * for download applicant upload support doc.
-     */
-    public void setDocDisplayDtoRepoIdNameMapInSession(HttpServletRequest request, List<DocDisplayDto> supportDocDisplayDto){
-        Map<String, String> map = new HashMap<>(supportDocDisplayDto.size());
-        if (!CollectionUtils.isEmpty(supportDocDisplayDto)){
-            for (DocDisplayDto docDisplayDto : supportDocDisplayDto) {
-                map.put(docDisplayDto.getFileRepoId(), docDisplayDto.getDocName());
-            }
-        }
-        ParamUtil.setSessionAttr(request, "docDisplayDtoRepoIdNameMap", (Serializable) map);
     }
 }

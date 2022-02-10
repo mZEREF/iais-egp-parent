@@ -151,6 +151,13 @@ public class AppViewService {
         if (resultDto.ok()){
             CancellationApprovalDto cancellationApprovalDto = resultDto.getEntity();
             ParamUtil.setRequestAttr(request, KEY_CANCELLATION_APPROVAL_DTO, cancellationApprovalDto);
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getDeRegistrationDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(cancellationApprovalDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
@@ -164,6 +171,13 @@ public class AppViewService {
         if (resultDto.ok()){
             DeRegistrationAFCDto deRegistrationAFCDto = resultDto.getEntity();
             ParamUtil.setRequestAttr(request, KEY_DE_REGISTRATION_AFC_DTO, deRegistrationAFCDto);
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getDeRegistrationDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(deRegistrationAFCDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }

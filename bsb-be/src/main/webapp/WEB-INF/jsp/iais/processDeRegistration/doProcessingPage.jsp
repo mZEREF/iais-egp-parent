@@ -15,7 +15,7 @@
 
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
+        <input type="hidden" name="ifProcess" id="ifProcess" value="${processPageValidation}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">

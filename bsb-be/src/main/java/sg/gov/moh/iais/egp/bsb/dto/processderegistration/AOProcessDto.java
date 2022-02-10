@@ -22,8 +22,9 @@ public class AOProcessDto implements Serializable {
     //ao processing
     private String currentStatus;
     private String doRemarks;
-    private String finalRemarks;
+    private String doFinalRemarks;
     private String aoRemarks;//text 300 O
+    private String finalRemarks;
     private String processingDecision;//dropdown M (Approve, Reject, Route back to Duty Officer, Route to Higher Manager)
     private String reasonForRejection;//text 500 O, Mandatory if “Processing Decision” is “Rejected”
 }
