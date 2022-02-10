@@ -1,19 +1,22 @@
-<c:set var="headingSign" value="completed"/>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >
-            <a href="#viewArCycleStage" data-toggle="collapse" >
+            <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission
             </a>
         </h4>
     </div>
-    <div id="viewArCycleStage" class="panel-collapse collapse in">
+    <div id="viewArCycleStage" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
+                <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
@@ -24,20 +27,20 @@
                 <iais:row>
                     <iais:field width="5" value="Date Started" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                    <c:out value="${arCycleStageDto.startDate}" />
+                        <c:out value="${arCycleStageDto.startDate}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's Age as of This Cycle" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                   <c:out value="${arCycleStageDto.cycleAge}"/>
+                        <c:out value="${arCycleStageDto.cycleAge}"/>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="Main Indication" />
                     <iais:value width="7" cssClass="col-md-7"  display="true">
-                       <iais:code code="${arCycleStageDto.mainIndication}"/>
+                        <iais:code code="${arCycleStageDto.mainIndication}"/>
                     </iais:value>
                 </iais:row>
 
@@ -56,7 +59,6 @@
                         </c:forEach>
                     </iais:value>
                 </iais:row>
-
                 <iais:row style="${StringUtil.stringContain(arCycleStageDto.otherIndication,DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS) ? '' : 'display: none'}">
                     <iais:field width="5" value="Other Indication (Others)" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
@@ -73,32 +75,32 @@
 
                 <iais:row>
                     <iais:field width="5" value="Current AR Treatment" />
-                    <iais:value width="7" cssClass="col-md-7">
-                            <c:forEach items="${arCycleStageDto.currentArTreatmentValues}" var="currentAR" varStatus="status">
-                                <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>
-                            </c:forEach>
+                    <iais:value width="7" cssClass="col-md-7"  display="true">
+                        <c:forEach items="${arCycleStageDto.currentArTreatmentValues}" var="currentAR" varStatus="status">
+                            <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>
+                        </c:forEach>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Current Marriage" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.currentMarriageChildren}"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.currentMarriageChildren}"/>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Previous Marriage" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.previousMarriageChildren}"/>
-                        </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.previousMarriageChildren}"/>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children conceived through AR" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.deliveredThroughChildren}"/>
-                        </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.deliveredThroughChildren}"/>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>
@@ -108,43 +110,53 @@
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.totalPreviouslyPreviously}"/>
-                        </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <iais:optionText value="${arCycleStageDto.totalPreviouslyPreviously}" selectionOptions="numberArcPreviouslyDropDown"/>
+                    </iais:value>
                 </iais:row>
 
-                <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalPreviouslyPreviously == 21 ? '' : 'display: none'}">
-                    <iais:field width="5" value="No. of Cycles undergone Overseas" />
+                <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalPreviouslyPreviously != 21 ? '' : 'display: none'}">
+                    <iais:field width="5" value="No. of AR Cycles undergone Overseas" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.cyclesUndergoneOverseas}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Cycles undergone Locally" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
-                        </iais:value>
+                    <iais:field width="5" value="No. of AR Cycles undergone Locally" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Enhanced Counselling" />
+                    <c:if test="${empty DS_ERR018Tip}">
+                        <iais:field width="5" value="Enhanced Counselling" />
+                    </c:if>
+                    <c:if test="${!empty DS_ERR018Tip}">
+                        <label class="col-xs-4 col-md-4 control-label">Enhanced Counselling
+                            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                               title="${DS_ERR018Tip}"
+                               style="z-index: 10"
+                               data-original-title="">i</a>
+                        </label>
+                    </c:if>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.enhancedCounselling == null ? 'NA' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
+                        <c:out value="${arCycleStageDto.enhancedCounselling == null ? '' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="AR Practitioner" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.practitioner}"/>
-                        </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.practitioner}"/>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="Embryologist" />
-                        <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.embryologist}"/>
-                        </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.embryologist}"/>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>
@@ -157,5 +169,5 @@
         </div>
     </div>
 </div>
-<c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>
+

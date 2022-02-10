@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
@@ -19,7 +21,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -27,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -34,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -55,6 +65,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -1309,7 +1320,78 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "count",count);
             }
+            initDataForView(arSuper, bpc.request);
+            arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
             ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
+        }
+
+    }
+
+    private DonorSampleDto setflagMsg(DonorSampleDto donorSampleDto){
+        if(donorSampleDto != null){
+            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
+            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos) && !donorSampleDto.isDirectedDonation()){
+                for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
+                    int age = donorSampleAgeDto.getAge();
+                    if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(donorSampleDto.getSampleType())){
+                        if(age <21 || age >40){
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR044")));
+                            break;
+                        }
+                    }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(donorSampleDto.getSampleType())
+                            ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(donorSampleDto.getSampleType())){
+                        if(age <21 || age >35){
+                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR045")));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return donorSampleDto;
+    }
+
+    public void initDataForView(ArSuperDataSubmissionDto arSuper, HttpServletRequest request) {
+        String cycelType = Optional.ofNullable(arSuper)
+                .map(ArSuperDataSubmissionDto::getCycleDto)
+                .map(CycleDto::getCycleType)
+                .orElse(null);
+        if (DataSubmissionConsts.DS_CYCLE_PATIENT_ART.equals(cycelType)) {
+            PatientInfoDto patientInfoDto=arSuper.getPatientInfoDto();
+            if (patientInfoDto.getPatient() != null) {
+                PatientDto patient = patientInfoDto.getPatient();
+                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+            }
+            if (patientInfoDto.getPrevious() != null) {
+                PatientDto patient = patientInfoDto.getPrevious();
+                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+            }
+            if (patientInfoDto.getHusband() != null) {
+                HusbandDto husband = patientInfoDto.getHusband();
+                husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
+            }
+        }
+
+        if (arSuper != null) {
+            if (arSuper.getArCycleStageDto() != null) {
+
+                if(arSuper.getPatientInfoDto() != null && arSuper.getPatientInfoDto().getPatient() !=null){
+                    PatientDto patientDto = arSuper.getPatientInfoDto().getPatient();
+                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                    if(IaisCommonUtils.isNotEmpty(integers)){
+                        int year = integers.get(0);
+                        int month = integers.get(integers.size()-1);
+                        arSuper.getArCycleStageDto().setCycleAgeYear(year);
+                        arSuper.getArCycleStageDto().setCycleAgeMonth(month);
+                        arSuper.getArCycleStageDto().setCycleAge(IaisCommonUtils.getYearsAndMonths(year,month));
+                    }
+
+                }
+                setEnhancedCounsellingTipShow(request, arSuper.getArCycleStageDto(), true);
+            } else if (arSuper.getIuiCycleStageDto() != null) {
+                setIuiCycleStageDtoDefaultVal(arSuper);
+            }
         }
 
     }
@@ -1323,5 +1405,63 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
 
+    public static String getAgeFlag(String birthDate, String person) {
+        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate)) {
+            return "";
+        }
+        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+        int age = Formatter.getAge(birthDate);
+        if (Integer.parseInt(age1) <= age && age <= Integer.parseInt(age2)) {
+            return "";
+        }
+        Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+        repMap.put("0", age1);
+        repMap.put("1", age2);
+        repMap.put("2", person);
+        return MessageUtil.getMessageDesc("DS_MSG005", repMap);
 
+    }
+
+
+
+    public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){
+        if((arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0)
+                || arCycleStageDto.getCountForEnhancedCounselling() >10){
+            if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
+                if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"INIT_IN_ARCYCLE_STAGE"))){
+                    ParamUtil.setSessionAttr(request,"enhancedCounsellingNoShow",AppConsts.YES);
+                    ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
+                }
+                if(needTip){
+                    ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
+                }
+            }
+        }
+    }
+    public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        if (arSuperDataSubmission != null) {
+            IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
+            if (iuiCycleStageDto == null) {
+                iuiCycleStageDto = new IuiCycleStageDto();
+                iuiCycleStageDto.setOwnPremises(true);
+                iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
+            }
+            //set patient age show
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            if (patientInfoDto != null) {
+                PatientDto patientDto = patientInfoDto.getPatient();
+                if (patientDto != null) {
+                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                    if (IaisCommonUtils.isNotEmpty(integers)) {
+                        int year = integers.get(0);
+                        int month = integers.get(integers.size() - 1);
+                        iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
+                    }
+                }
+            }
+            arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+        }
+        return arSuperDataSubmission;
+    }
 }

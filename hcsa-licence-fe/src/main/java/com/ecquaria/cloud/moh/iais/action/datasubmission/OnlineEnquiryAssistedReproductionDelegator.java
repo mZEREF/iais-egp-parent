@@ -112,6 +112,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     @Autowired
     private AssistedReproductionClient assistedReproductionClient;
 
+    @Autowired
+    private MohDsActionDelegator mohDsActionDelegator;
+
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
@@ -1318,6 +1321,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "count",count);
             }
+            mohDsActionDelegator.initDataForView(arSuper, bpc.request);
+            arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
             ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
 

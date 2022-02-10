@@ -24,13 +24,14 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Process: MohDsAction
@@ -114,7 +115,7 @@ public class MohDsActionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 
-    private DonorSampleDto setflagMsg(DonorSampleDto donorSampleDto){
+    public DonorSampleDto setflagMsg(DonorSampleDto donorSampleDto){
         if(donorSampleDto != null){
             List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
             if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos) && !donorSampleDto.isDirectedDonation()){
