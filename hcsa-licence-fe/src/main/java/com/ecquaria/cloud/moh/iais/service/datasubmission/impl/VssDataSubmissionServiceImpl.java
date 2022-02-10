@@ -78,6 +78,15 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
     }
 
     @Override
+    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDto(String submissionNo) {
+        log.info(StringUtil.changeForLog("----- Param - Sumission No.: " + submissionNo));
+        if (StringUtil.isEmpty(submissionNo) ) {
+            return null;
+        }
+        return vssFeClient.getVssSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
     public String getSubmissionNo(String dsType) {
         String submissionNo = systemAdminClient.submissionID(dsType).getEntity();
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
@@ -141,5 +150,14 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
             return;
         }
         vssFeClient.deleteVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+    }
+
+    @Override
+    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        log.info(StringUtil.changeForLog("----- Param - Draft No.: " + draftNo));
+        if (StringUtil.isEmpty(draftNo) ) {
+            return null;
+        }
+        return vssFeClient.getVssSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
     }
 }

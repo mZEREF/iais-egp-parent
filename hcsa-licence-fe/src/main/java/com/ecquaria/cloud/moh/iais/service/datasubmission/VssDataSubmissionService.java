@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
@@ -17,6 +18,8 @@ public interface VssDataSubmissionService {
 
     VssSuperDataSubmissionDto saveDataSubmissionDraft(VssSuperDataSubmissionDto vssSuperDataSubmissionDto);
 
+    VssSuperDataSubmissionDto getVssSuperDataSubmissionDto(String submissionNo);
+
     String getSubmissionNo(String dsType);
 
     VssSuperDataSubmissionDto saveVssSuperDataSubmissionDto(VssSuperDataSubmissionDto vssSuperDataSubmissionDto);
@@ -30,4 +33,5 @@ public interface VssDataSubmissionService {
 
     void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 
+    VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoByDraftNo(String draftNo);
 }
