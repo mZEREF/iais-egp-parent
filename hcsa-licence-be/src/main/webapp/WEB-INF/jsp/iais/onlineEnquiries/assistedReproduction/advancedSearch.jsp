@@ -184,6 +184,7 @@
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
                                     </iais:value>
                                 </iais:row>
+
                                 <iais:row>
                                     <iais:field width="4" value="IVM" />
                                     <iais:value width="3" cssClass="col-md-3 row">
@@ -508,7 +509,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNumMax"><span
-                                                        class="check-square"></span>More than 3</label>
+                                                        class="check-square"></span>> 3</label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -580,13 +581,13 @@
                                         <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
-                                                       type="checkbox" id="ageEmbryosNum7"
-                                                       name="ageEmbryosNum7"
+                                                       type="checkbox" id="ageEmbryosNum6"
+                                                       name="ageEmbryosNum6"
                                                        <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum6 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
-                                                       for="ageEmbryosNum7"><span
-                                                        class="check-square"></span><iais:code code="AOFET007"/></label>
+                                                       for="ageEmbryosNum6"><span
+                                                        class="check-square"></span><iais:code code="AOFET006"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -1156,7 +1157,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ptt"><span
-                                                        class="check-square"></span><iais:code code="PGTTP007"/></label>
+                                                        class="check-square"></span><iais:code code="PGTTP006"/></label>
                                             </div>
 
                                         </iais:value>
