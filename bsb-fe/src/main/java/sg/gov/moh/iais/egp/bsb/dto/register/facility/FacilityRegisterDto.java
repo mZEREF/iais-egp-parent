@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.InstructionDto;
@@ -15,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
@@ -43,14 +45,18 @@ public class FacilityRegisterDto implements Serializable{
     public static FacilityRegisterDto from(NodeGroup facRegRoot) {
         FacilityRegisterDto dto = new FacilityRegisterDto();
         dto.setFacilitySelectionDto((FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue());
-        dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+        dto.setFacilityProfileDto(profileDto);
         dto.setFacilityOperatorDto((FacilityOperatorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
         dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
         dto.setFacilityAdministratorDto((FacilityAdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
         dto.setFacilityOfficerDto((FacilityOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
         dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-        dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
+        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(profileDto.getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size());
+        docRecordInfos.addAll(profileDto.getSavedDocMap().values());
+        docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
+        dto.setDocRecordInfos(docRecordInfos);
         dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT)).getValue());
 
         NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
@@ -68,10 +74,22 @@ public class FacilityRegisterDto implements Serializable{
         }
         return batMap;
     }
-    
+
     /** Convert data in this big DTO into a facRegRoot NodeGroup
      *  This is needed when we want to view the saved data or edit it */
     public NodeGroup toFacRegRootGroup(String name) {
+        // split documents for profile
+        Collection<DocRecordInfo> profileDocs = new ArrayList<>();
+        Collection<DocRecordInfo> primaryDocs = new ArrayList<>();
+        for (DocRecordInfo info : docRecordInfos) {
+            if (DocConstants.DOC_TYPE_GAZETTE_ORDER.equals(info.getDocType())) {
+                profileDocs.add(info);
+            } else {
+                primaryDocs.add(info);
+            }
+        }
+        facilityProfileDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(profileDocs, DocRecordInfo::getRepoId));
+
         SimpleNode facSelectionNode = new SimpleNode(facilitySelectionDto, NODE_NAME_FAC_SELECTION, new Node[0]);
         SimpleNode facProfileNode = new SimpleNode(facilityProfileDto, NODE_NAME_FAC_PROFILE, new Node[0]);
         SimpleNode facOperatorNode = new SimpleNode(facilityOperatorDto, NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
@@ -101,7 +119,7 @@ public class FacilityRegisterDto implements Serializable{
         Node companyInfoDto = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
         SimpleNode otherAppInfoNode = new SimpleNode(OtherApplicationInfoDto.getAllCheckedInstance(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup});
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(primaryDocs, DocRecordInfo::getRepoId));
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode});
         SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode, primaryDocNode});
         return new NodeGroup.Builder().name(name)

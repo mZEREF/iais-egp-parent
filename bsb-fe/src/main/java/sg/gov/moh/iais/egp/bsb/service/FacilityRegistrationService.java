@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
@@ -517,24 +518,39 @@ public class FacilityRegistrationService {
             MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+        } else {
+            newFilesToSync = new ArrayList<>(0);
         }
         return newFilesToSync;
     }
 
-    /** Delete unwanted documents in FE file repo.
-     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
-     * @param primaryDocDto document DTO have the specific structure
-     * @return a list of repo IDs deleted in FE file repo
+    /** Save new uploaded documents of facility profile
+     * @see #saveNewUploadedDoc(PrimaryDocDto)
      */
-    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
-        /* Ignore the failure when try to delete FE files because this is not a big issue.
-         * The not deleted file won't be retrieved, so it's just a waste of disk space */
-        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+    public List<NewFileSyncDto> saveProfileNewUploadedDoc(FacilityProfileDto profileDto) {
+        List<NewFileSyncDto> newFilesToSync = null;
+        if (!profileDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = profileDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = profileDto.newFileSaved(repoIds);
+        } else {
+            newFilesToSync = new ArrayList<>(0);
+        }
+        return newFilesToSync;
+    }
+
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will clear deleted files in DTO too.
+     * @param refInDto reference of the toBeDeletedRepoIds in DTO
+     * @return a list of repo IDs deleted in FE file repo */
+    public List<String> deleteUnwantedDoc(Set<String> refInDto) {
+        List<String> toBeDeletedRepoIds = new ArrayList<>(refInDto);
         for (String id: toBeDeletedRepoIds) {
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setId(id);
             fileRepoClient.removeFileById(fileRepoDto);
-            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+            refInDto.remove(id);
         }
         return toBeDeletedRepoIds;
     }
@@ -559,9 +575,13 @@ public class FacilityRegistrationService {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
 
         // save docs
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        List<NewFileSyncDto> primaryDocNewFiles = saveNewUploadedDoc(primaryDocDto);
+        FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+        List<NewFileSyncDto> profileNewFiles = saveProfileNewUploadedDoc(profileDto);
+        List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+        newFilesToSync.addAll(primaryDocNewFiles);
+        newFilesToSync.addAll(profileNewFiles);
 
         // save data
         FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
@@ -573,7 +593,12 @@ public class FacilityRegistrationService {
 
         try {
             // delete docs
-            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            log.info("Delete already saved documents in file-repo");
+            List<String> primaryToBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
+            List<String> profileToBeDeletedRepoIds = deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
+            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+            toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
+            toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {

@@ -19,7 +19,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateFacilitySelection(@RequestBody FacilitySelectionDto dto);
 
     @PostMapping(path = "/register/facility/validate/facProfile", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityProfile(@RequestBody FacilityProfileDto dto);
+    ValidationResultDto validateFacilityProfile(@RequestBody FacilityProfileDto.FacilityProfileValidateDto dto);
 
     @PostMapping(path = "/register/facility/validate/facOperator", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOperator(@RequestBody FacilityOperatorDto dto);

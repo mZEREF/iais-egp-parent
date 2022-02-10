@@ -88,6 +88,10 @@ function downloadFile(cond, id) {
         url = "/bsb-fe/ajax/doc/download/facReg/repo/" + id;
     } else if (cond === 'new') {
         url = "/bsb-fe/ajax/doc/download/facReg/new/" + id;
+    } else if (cond === 'profileSaved') {
+        url = "/bsb-fe/ajax/doc/download/facReg/profile/repo/" + id;
+    } else if (cond === 'profileNew') {
+        url = "/bsb-fe/ajax/doc/download/facReg/profile/new/" + id;
     }
 
     window.open(url);
