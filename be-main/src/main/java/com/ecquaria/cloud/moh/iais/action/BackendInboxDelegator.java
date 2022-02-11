@@ -666,7 +666,7 @@ public class BackendInboxDelegator {
                 }
             }else{
                 String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-                if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
+                if(InspectionReportConstants.REJECTED.equals(recomDecision) || "reject".equals(recomDecision) || InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
                     appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }
