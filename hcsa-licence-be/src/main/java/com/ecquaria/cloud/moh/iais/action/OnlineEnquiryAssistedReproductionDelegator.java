@@ -208,7 +208,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setCycleStagesDateTo(cycleStagesDateTo);
         String arOrIuiCycle=ParamUtil.getString(request,"arOrIuiCycle");
         arFilterDto.setArOrIuiCycle(arOrIuiCycle);
-
+//more
+        String[] indicationArCycle=ParamUtil.getStrings(request,"indicationArCycle");
+        if(indicationArCycle != null){
+            List<String> selectValList = Arrays.asList(indicationArCycle);
+            arFilterDto.setIndicationArCycleList(selectValList);
+        }
         String IVM=ParamUtil.getString(request,"IVM");
         arFilterDto.setIVM(IVM);
         String freshCycleNatural=ParamUtil.getString(request,"freshCycleNatural");
@@ -229,7 +234,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDonorGameteUsed(donorGameteUsed);
         String donorName=ParamUtil.getString(request,"donorName");
         arFilterDto.setDonorName(donorName);
-
+        String donorIdType=ParamUtil.getString(request,"donorIdType");
+        arFilterDto.setDonorIdType(donorIdType);
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
         arFilterDto.setDonorIdNumber(donorIdNumber);
         String removedFromStorage=ParamUtil.getString(request,"removedFromStorage");
@@ -246,7 +252,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setZIFT(ZIFT);
         String IVF=ParamUtil.getString(request,"IVF");
         arFilterDto.setIVF(IVF);
-
+        String embryosTransferredNum0=ParamUtil.getString(request,"embryosTransferredNum0");
+        arFilterDto.setEmbryosTransferredNum0(embryosTransferredNum0);
         String embryosTransferredNum1=ParamUtil.getString(request,"embryosTransferredNum1");
         arFilterDto.setEmbryosTransferredNum1(embryosTransferredNum1);
         String embryosTransferredNum2=ParamUtil.getString(request,"embryosTransferredNum2");
@@ -528,6 +535,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getDonorName()!=null){
                 filter.put("donorName", arDto.getDonorName());
             }
+            if(arDto.getDonorIdType()!=null){
+                filter.put("donorIdType", arDto.getDonorIdType());
+            }
             if(arDto.getDonorIdNumber()!=null){
                 filter.put("donorIdNumber",arDto.getDonorIdNumber());
             }
@@ -558,7 +568,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("ivf",1);
             }
             List<Integer> embryosTransferredNums=IaisCommonUtils.genNewArrayList();
-
+            if(arDto.getEmbryosTransferredNum0()!=null&& "on".equals(arDto.getEmbryosTransferredNum0())){
+                embryosTransferredNums.add(0);
+            }
             if(arDto.getEmbryosTransferredNum1()!=null&& "on".equals(arDto.getEmbryosTransferredNum1())){
                 embryosTransferredNums.add(1);
             }
@@ -983,6 +995,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientAdvParameter,true);
+
+            if(IaisCommonUtils.isNotEmpty(arFilterDto.getIndicationArCycleList())){
+                String mainIndicationListStr = SqlHelper.constructInCondition("dacs.MAIN_INDICATION", arFilterDto.getIndicationArCycleList().size());
+                patientParam.addParam("indicationArCycleList", mainIndicationListStr);
+                for(int i = 0; i < arFilterDto.getIndicationArCycleList().size(); i++){
+                    patientParam.addFilter("dacs.MAIN_INDICATION" + i, arFilterDto.getIndicationArCycleList().get(i));
+                }
+            }
             if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
                 HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
             }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){

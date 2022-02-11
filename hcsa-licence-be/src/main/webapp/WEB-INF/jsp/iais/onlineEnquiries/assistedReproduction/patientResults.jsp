@@ -82,7 +82,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
                                     <div class="col-md-4 multi-select col-xs-4">
-                                        <iais:select name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                        <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
