@@ -16,8 +16,6 @@
 
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
-<c:set var="showClaimFields" value="${ConfigHelper.getBoolean('halp.rfc.split.flag', false) && isRFC && !isRfi && specialSubLic}"
-       scope="request"/>
 
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

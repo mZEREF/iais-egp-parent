@@ -31,20 +31,6 @@
                         <strong class="app-font-size-22 premHeader">Licensee Details</strong>
                     </iais:value>
                 </iais:row>
-                <c:if test="${showClaimFields}">
-                    <iais:row>
-                        <iais:field width="5" value="UEN of your Corporate Entity"/>
-                        <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.claimUenNo}" />
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Name of your Corporate Entity"/>
-                        <iais:value width="7" display="true">
-                            <c:out value="${subLicenseeDto.claimCompanyName}" />
-                        </iais:value>
-                    </iais:row>
-                </c:if>
                 <c:if test="${subLicenseeDto.licenseeType ne soloType}">
                     <iais:row>
                         <iais:field width="5" value="Licensee Type"/>
