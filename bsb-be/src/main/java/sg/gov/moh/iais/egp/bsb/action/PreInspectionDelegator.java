@@ -136,12 +136,13 @@ public class PreInspectionDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        log.info("AppId {} TaskId {} Inspection mark as ready", appId, taskId);
         inspectionClient.changeInspectionStatusToReady(appId, taskId, processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
 
     public void rfi(BaseProcessClass bpc) {
-        // to be implemented in the future
+        throw new UnsupportedOperationException("To be implemented in the future");
     }
 }

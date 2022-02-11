@@ -25,7 +25,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsInfoDto;
@@ -157,25 +156,6 @@ public class InspectionDODelegator {
 
     public void bindAction(BaseProcessClass bpc) {
         // do nothing now
-    }
-
-    public void preSelfAssessment(BaseProcessClass bpc) throws JsonProcessingException {
-        HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
-        ChecklistConfigDto configDto = inspectionClient.getChecklistConfigById(answerRecordDto.getChkLstConfigId());
-
-        String answerJson = answerRecordDto.getAnswer();
-        ObjectMapper mapper = new ObjectMapper();
-        List<ChklstItemAnswerDto> answerDtoList = mapper.readValue(answerJson, new TypeReference<List<ChklstItemAnswerDto>>() {});
-        Map<String, String> answerMap = Maps.newHashMapWithExpectedSize(answerDtoList.size());
-        for (ChklstItemAnswerDto answerDto : answerDtoList) {
-            answerMap.put(answerDto.getSectionId() + KEY_SEPARATOR + answerDto.getItemId(), answerDto.getAnswer());
-        }
-
-        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, configDto);
-        ParamUtil.setRequestAttr(request, KEY_ANSWER_MAP, answerMap);
-        ParamUtil.setRequestAttr(request, KEY_EDITABLE, Boolean.FALSE);
     }
 
     public void preChecklist(BaseProcessClass bpc) throws JsonProcessingException {
