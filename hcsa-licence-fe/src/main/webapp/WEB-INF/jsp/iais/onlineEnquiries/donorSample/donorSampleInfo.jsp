@@ -29,18 +29,16 @@
                         <div class="tab-content row">
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    AR Centre
-                                </div>
+                                <iais:field width="6" value="AR Centre"/>
+
                                 <div class="col-md-6">
                                         ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    Is Sample from a Directed Donation?
-                                </div>
+                                <iais:field width="6" value="Is Sample from a Directed Donation?"/>
+
                                 <div class="col-md-6">
                                     <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
                                 </div>
@@ -56,45 +54,40 @@
 <%--                            </div>--%>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    Sample Type
-                                </div>
+                                <iais:field width="6" value="Sample Type"/>
+
                                 <div class="col-md-6">
                                     <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    Is Donor's Identity Known?
-                                </div>
+                                <iais:field width="6" value="Is Donor's Identity Known?"/>
+
                                 <div class="col-md-6">
                                     <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown}"/>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    ID Type
-                                </div>
+                                <iais:field width="6" value="ID Type"/>
+
                                 <div class="col-md-6">
                                     <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.idType}"/>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    ID No.
-                                </div>
+                                <iais:field width="6" value="ID No."/>
+
                                 <div class="col-md-6">
                                     <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}" />
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-6">
-                                    Name
-                                </div>
+                                <iais:field width="6" value="Name"/>
+
                                 <div class="col-md-6">
                                     <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorName}" />
                                 </div>
