@@ -232,6 +232,7 @@
                        fileType = stringBiff;
                    }
                     $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
+                    flag = flag && false;
                 }
             }catch (e){
             }

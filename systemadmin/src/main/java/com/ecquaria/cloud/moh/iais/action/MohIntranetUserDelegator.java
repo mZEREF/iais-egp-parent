@@ -1405,6 +1405,8 @@ public class MohIntranetUserDelegator {
     private OrgUserDto prepareEditOrgUserDto(BaseProcessClass bpc) {
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
+        String startDateStr = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_STARTDATE);
+        Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String endDateStr = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_ENDDATE);
         Date endDate = DateUtil.parseDate(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String[] salutation = ParamUtil.getStrings(bpc.request, IntranetUserConstant.INTRANET_SALUTATION);
@@ -1443,7 +1445,11 @@ public class MohIntranetUserDelegator {
         orgUserDto.setMobileNo(mobileNo);
         orgUserDto.setOfficeTelNo(officeNo);
         orgUserDto.setRemarks(remarks);
+        orgUserDto.setAccountActivateDatetime(startDate);
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+        if (startDate != null && startDate.after(new Date())) {
+            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+        }
         return orgUserDto;
     }
 

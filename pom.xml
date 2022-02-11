@@ -145,7 +145,7 @@
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.82</version>
+                <version>0.83</version>
             </dependency>
 
             <dependency>
@@ -188,7 +188,7 @@
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>
-                <version>0.28</version>
+                <version>0.29</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -317,46 +317,6 @@
                     </releases>
                 </repository>
             </repositories>
-        </profile>
-        <profile>
-            <id>sg-nexus</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>moh-iais-nexus</id>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </repository>
-                <repository>
-                    <id>pd-nexus</id>
-                    <url>http://192.168.4.165:8080/repository/maven-releases/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </repository>
-            </repositories>
-            <distributionManagement>
-                <repository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Releases</name>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Snapshot</name>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
-                </snapshotRepository>
-            </distributionManagement>
         </profile>
         <profile>
             <id>sg-gdc-nexus</id>

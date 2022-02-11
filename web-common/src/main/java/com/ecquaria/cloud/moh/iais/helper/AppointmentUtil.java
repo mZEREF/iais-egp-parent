@@ -38,7 +38,6 @@ public class AppointmentUtil {
                 ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
                 ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
                 ApplicationConsts.APPLICATION_STATUS_DELETED
-
         };
     }
 }

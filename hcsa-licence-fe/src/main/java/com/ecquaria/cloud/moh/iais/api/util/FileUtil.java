@@ -375,8 +375,9 @@ public class FileUtil {
 		if(IaisCommonUtils.isEmpty(fileNames)){
 			return false;
 		}
+		String remoteFileNames = fileNames.toString();
 		for (int i = 0; i < keyWord.length; i++) {
-			if(fileNames.contains(keyWord[i])){
+			if(remoteFileNames.contains(keyWord[i])){
 				return true;
 			}
 		}

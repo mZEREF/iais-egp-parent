@@ -14,10 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+<<<<<<< HEAD
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+=======
+import com.ecquaria.cloud.moh.iais.common.utils.*;
+>>>>>>> origin/sit
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
@@ -225,7 +229,7 @@ public class FeAdminManageDelegate {
 
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,false);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,reSetMyInfoData(feUserDto,myInfoDto),false);
                 if(licenseeHave){
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
                 }
@@ -238,6 +242,20 @@ public class FeAdminManageDelegate {
         }else {
             repalceFeUserDtoByMyinfo(request);
         }
+    }
+
+    private MyInfoDto reSetMyInfoData(FeUserDto feUserDto,MyInfoDto myInfoDto){
+        if(myInfoDto == null){
+            return null;
+        }
+        MyInfoDto myInfoDtoReSet = MiscUtil.transferEntityDto(myInfoDto,MyInfoDto.class);
+        if(feUserDto.getDisplayName().equalsIgnoreCase(myInfoDto.getUserName())){
+            myInfoDtoReSet.setUserName(feUserDto.getDisplayName());
+            myInfoDtoReSet.setEmail(feUserDto.getEmail());
+            myInfoDtoReSet.setMobileNo(feUserDto.getMobileNo());
+        }
+        log.info(StringUtil.changeForLog("-------------reSetMyInfoData data : " + JsonUtil.parseToJson(myInfoDtoReSet) + "---------"));
+        return myInfoDtoReSet;
     }
 
     public void  clearInfo(HttpServletRequest request){
@@ -274,9 +292,6 @@ public class FeAdminManageDelegate {
                 }
             }else {
                 ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
-            }
-            if (myInfoDto != null && !myInfoDto.isServiceDown()) {
-                ParamUtil.setRequestAttr(request,"fromMyinfo", "Y");
             }
         }else {
             log.info("------- Illegal operation get Myinfo ---------");
