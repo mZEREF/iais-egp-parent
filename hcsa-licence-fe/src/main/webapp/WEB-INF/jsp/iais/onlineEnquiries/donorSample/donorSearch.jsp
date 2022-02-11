@@ -61,7 +61,7 @@
                         <iais:row>
                             <iais:field width="4" value="Donor Sample Code"/>
                             <iais:value width="4" cssClass="col-md-4" >
-                                <input type="text" maxlength="66" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
+                                <input type="text" maxlength="20" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -94,7 +94,7 @@
                         <iais:row>
                             <iais:field width="4" value="Donor's ID No."/>
                             <iais:value width="4" cssClass="col-md-4"  >
-                                <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
+                                <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
                             </iais:value>
                         </iais:row>
                         <iais:row>
