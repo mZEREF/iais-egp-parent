@@ -149,17 +149,7 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
-                                                                <c:choose>
-                                                                    <c:when test="${approval.processType eq 'PROTYPE001'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewApprovalPossessApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <c:out value="${approval.approveNo}"/>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                <c:out value="${approval.approveNo}"/>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Process Type</p>
@@ -193,6 +183,14 @@
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 <select id="approvalAction${status.index}" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
+                                                                    <c:choose>
+                                                                        <c:when test="${approval.processType eq 'PROTYPE001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
+                                                                        </c:when>
+                                                                        <c:when test="${approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRfcViewApprovalPossessApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
+                                                                        </c:when>
+                                                                    </c:choose>
                                                                     <c:choose>
                                                                         <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
