@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -665,7 +666,7 @@ public class BackendInboxDelegator {
                 }
             }else{
                 String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-                if("reject".equals(recomDecision)){
+                if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
                     appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }
