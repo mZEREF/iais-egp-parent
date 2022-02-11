@@ -47,6 +47,7 @@ public class BsbSuspensionDelegator {
     private static final String SUSPENSION_REINSTATEMENT_DTO = "suspensionReinstatementDto";
     private static final String ACK_MSG = "ackMsg";
     private static final String DO_SUSPEND_ACK_MSG = "You have successfully submitted a Suspension Task.";
+    private static final String DO_REINSTATE_ACK_MSG = "You have successfully submitted a Suspension Task.";
     private static final String AO_HM_SUSPEND_ACK_MSG = "You have successfully approved the application.";
     private static final String SUSPENSION_DOC_TYPE = "Suspension";
     private static final String REINSTATEMENT_DOC_TYPE = "Reinstatement";
@@ -302,7 +303,7 @@ public class BsbSuspensionDelegator {
             log.info(KEY_NON_OBJECT_ERROR);
         }
         suspensionClient.doReinstatement(dto);
-        ParamUtil.setRequestAttr(request, ACK_MSG, DO_SUSPEND_ACK_MSG);
+        ParamUtil.setRequestAttr(request, ACK_MSG, DO_REINSTATE_ACK_MSG);
     }
 
     public void aoReinstatementValidate(BaseProcessClass bpc) {

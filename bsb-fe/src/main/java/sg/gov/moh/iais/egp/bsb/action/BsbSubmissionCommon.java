@@ -60,19 +60,19 @@ public class BsbSubmissionCommon {
         if(StringUtils.hasLength(scheduleType)){
             switch (scheduleType){
                 case "SCHTYPE001":
-                    text = "First  Schedule Part I";
+                    text = "First Schedule Part I";
                     break;
                 case "SCHTYPE002":
                     text = "First Schedule Part II";
                     break;
                 case "SCHTYPE003":
-                    text = "Second  Schedule";
+                    text = "Second Schedule";
                     break;
                 case "SCHTYPE004":
-                    text = "Third  Schedule";
+                    text = "Third Schedule";
                     break;
                 case "SCHTYPE005":
-                    text = "Fourth  Schedule";
+                    text = "Fourth Schedule";
                     break;
                 case "SCHTYPE006":
                     text = "Fifth Schedule";

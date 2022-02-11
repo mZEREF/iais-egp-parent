@@ -109,7 +109,9 @@
 
                     <div class="col-xs-12">
                         <div class="components">
-
+                            <h3>
+                                <span>Search Results</span>
+                            </h3>
                             <iais:pagination param="ldtParam" result="ldtResult"/>
                             <div class="table-responsive">
                                 <div class="table-gp">
@@ -183,8 +185,7 @@
                                                             <c:out value="${ldt.designation}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <c:if test="${ldt.testStatus=='0'}">Inactive</c:if>
-                                                            <c:if test="${ldt.testStatus=='1'}">Active</c:if>
+                                                            <c:out value="${ldt.testStatus}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <c:out value="${ldt.remarks}"/>

@@ -39,3 +39,17 @@ var fullDetailsView = function (submissionNo) {
     $("[name='crud_action_type']").val('viewInfo');
     $('#mainForm').submit();
 }
+
+$(document).ready(function () {
+    $('#sampleHciCode').change(function () {
+
+        var reason= $('#sampleHciCode option:selected').val();
+
+        if("AR_SC_001"==reason){
+            $('#othersDisplay').attr("style","display: block");
+        }else {
+            $('#othersDisplay').attr("style","display: none");
+        }
+
+    });
+})

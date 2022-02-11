@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -31,7 +32,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,30 +77,10 @@ public class FeAdminManageDelegate {
             searchParam.addFilter("orgid",organizationId,true);
             QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
-            Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
-            for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()) {
-                if(feMap.get(item.getId()) != null){
-                    if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(feMap.get(item.getId()).getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){
-                        feMap.get(item.getId()).setRole(RoleConsts.USER_ROLE_ORG_ADMIN);
-                    }
-                }else{
-                    feMap.put(item.getId(),item);
-                }
-            }
-            List<FeUserQueryDto> feUserQueryDtoList = IaisCommonUtils.genNewArrayList();
-            for (Map.Entry<String,FeUserQueryDto> entry:feMap.entrySet()) {
-                feUserQueryDtoList.add(entry.getValue());
-            }
-            feUserQueryDtoList.forEach(item -> {
-                if (AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive())) {
-                    item.setIsActive("1");
-                } else {
-                    item.setIsActive("0");
-                }
-            });
+            feAdminQueryDtoSearchResult.getRows().stream().forEach(item -> item.setIsActive(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive()) ? AppConsts.YES : AppConsts.NO));
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false),loginContext.getLicenseeId(),loginContext.getOrgId()));
-            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
+            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult.getRows());
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
         }else{
@@ -246,7 +226,7 @@ public class FeAdminManageDelegate {
 
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,false);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,reSetMyInfoData(feUserDto,myInfoDto),false);
                 if(licenseeHave){
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
                 }
@@ -259,6 +239,20 @@ public class FeAdminManageDelegate {
         }else {
             repalceFeUserDtoByMyinfo(request);
         }
+    }
+
+    private MyInfoDto reSetMyInfoData(FeUserDto feUserDto,MyInfoDto myInfoDto){
+        if(myInfoDto == null){
+            return null;
+        }
+        MyInfoDto myInfoDtoReSet = MiscUtil.transferEntityDto(myInfoDto,MyInfoDto.class);
+        if(feUserDto.getDisplayName().equalsIgnoreCase(myInfoDto.getUserName())){
+            myInfoDtoReSet.setUserName(feUserDto.getDisplayName());
+            myInfoDtoReSet.setEmail(feUserDto.getEmail());
+            myInfoDtoReSet.setMobileNo(feUserDto.getMobileNo());
+        }
+        log.info(StringUtil.changeForLog("-------------reSetMyInfoData data : " + JsonUtil.parseToJson(myInfoDtoReSet) + "---------"));
+        return myInfoDtoReSet;
     }
 
     public void  clearInfo(HttpServletRequest request){
@@ -295,9 +289,6 @@ public class FeAdminManageDelegate {
                 }
             }else {
                 ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
-            }
-            if (myInfoDto != null && !myInfoDto.isServiceDown()) {
-                ParamUtil.setRequestAttr(request,"fromMyinfo", "Y");
             }
         }else {
             log.info("------- Illegal operation get Myinfo ---------");

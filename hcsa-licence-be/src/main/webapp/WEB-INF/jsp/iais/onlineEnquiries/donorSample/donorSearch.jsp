@@ -53,7 +53,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Donor Sample Code"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
+                                    <input type="text" maxlength="20" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -66,8 +66,14 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of Bank / AR Centre where sample is from" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOption"
+                                    <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOptionFrom"
                                                  cssClass="clearSel"   value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
+                                </iais:value>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <div id="othersDisplay" <c:if test="${arEnquiryDonorSampleFilterDto.sampleHciCode!='AR_SC_001'}">style="display: none"</c:if> >
+                                        <input type="text" maxlength="100" id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
+
+                                    </div>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -80,7 +86,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Donor's ID No."/>
                                 <iais:value width="4" cssClass="col-md-4"  >
-                                    <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
+                                    <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -180,7 +186,7 @@
                                                                  field="DONOR_SAMPLE_CODE"
                                                                  value="Donor Sample Code / ID No"/>
                                             <iais:sortableHeader needSort="true"
-                                                                 field="SAMPLE_TYPE"
+                                                                 field="SAMPLE_TYPE_DESC"
                                                                  value="Sample Type"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="SAMPLE_FROM_HCI_CODE"

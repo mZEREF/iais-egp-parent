@@ -23,3 +23,6 @@ RUN chmod a+x /run.sh
 USER iais
 
 CMD ["sh", "/run.sh"]
+
+
+

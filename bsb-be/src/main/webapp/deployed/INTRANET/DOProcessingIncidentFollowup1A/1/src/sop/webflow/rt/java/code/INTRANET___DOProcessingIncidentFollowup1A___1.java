@@ -23,6 +23,7 @@ public class INTRANET___DOProcessingIncidentFollowup1A___1 extends BaseProcessCl
 	
 	public void init_OnStepProcess_0() throws Exception {
 	// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "initFollowA", this);
 	}
 
 	public void preProcessingData_OnStepProcess_0() throws Exception {

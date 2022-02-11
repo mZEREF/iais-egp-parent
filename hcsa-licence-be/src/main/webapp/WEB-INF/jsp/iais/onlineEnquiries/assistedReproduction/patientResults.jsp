@@ -82,13 +82,13 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
                                     <div class="col-md-4 multi-select col-xs-4">
-                                        <iais:select name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                        <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
                                     <iais:value width="4" cssClass="col-md-4"  >
-                                        <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                     </iais:value>
                                 </iais:row>
 
@@ -161,16 +161,16 @@
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="ID_TYPE"
+                                                                     field="ID_TYPE_DESC"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
-                                                                     value="Patient ID No"/>
+                                                                     value="Patient ID No."/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="NATIONALITY"
+                                                                     field="NATIONALITY_DESC"
                                                                      value="Patient Nationality"/>
 
                                                 <iais:sortableHeader needSort="false"
@@ -202,8 +202,10 @@
                                                             <td style="vertical-align:middle;">
 
                                                                 <p style="width: 165px;"><c:out value="${patient.patientName}"/>
-                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
-                                                                    </a>
+                                                                    <c:if test="${not empty patient.cdPatientCode}">
+                                                                        <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                        </a>
+                                                                    </c:if>
                                                                 </p>
                                                             </td>
                                                             <td style="vertical-align:middle;">
@@ -270,7 +272,7 @@
                                                                      field="SUBMISSION_TYPE"
                                                                      value="Submission Type"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="CYCLE_STAGE"
+                                                                     field="CYCLE_STAGE_DESC"
                                                                      value="Submission Subtype"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="SUBMIT_DT"

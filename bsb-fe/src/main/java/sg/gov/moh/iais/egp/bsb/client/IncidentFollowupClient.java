@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.followup.*;
+import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1AViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1BViewDto;
 
 import java.util.List;
 
@@ -61,4 +63,10 @@ public interface IncidentFollowupClient {
 
     @GetMapping(path = "/followup/application/report1B/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FollowupReport1BDto> retrieveFollowup1BByApplicationId(@PathVariable("appId") String appId);
+
+    @GetMapping(path = "/followup/view/followup1A/{referNo}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<Followup1AViewDto> findFollowup1AViewDtoByReferenceNo(@PathVariable("referNo") String referNo);
+
+    @GetMapping(path = "/followup/view/followup1B/{referNo}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<Followup1BViewDto> findFollowup1BViewDtoByReferenceNo(@PathVariable("referNo") String referNo);
 }

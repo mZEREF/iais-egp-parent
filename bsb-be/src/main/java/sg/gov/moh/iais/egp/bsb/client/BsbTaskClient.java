@@ -23,7 +23,7 @@ public interface BsbTaskClient {
     ResponseDto<TaskListSearchResultDto> getTaskPool(@SpringQueryMap TaskListSearchDto dto);
 
     @PutMapping(value = "/task/assign", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> assignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId);
+    ResponseDto<String> assignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId, @RequestParam("appId") String appId, @RequestParam("roleId")String curRoleId);
 
     @PutMapping(value = "/task/reassign", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> reassignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId);

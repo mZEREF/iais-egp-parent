@@ -1,12 +1,11 @@
 
-function downloadFile(cond,id) {
-    var url;
-    if(cond === 'tab'){
-        url = "/bsb-be/ajax/doc/download/incident/repo/" + id;
-    }else if(cond === 'view'){
-        url = "/bsb-be/ajax/doc/download/incidentView/repo/" + id;
-    }
+function downloadFile(id) {
+    url = "/bsb-be/ajax/doc/download/incidentView/repo/" + id;
     window.open(url);
+}
+
+function downloadSupportDocument(maskedAppId,maskedRepoId,docName){
+    url = "/bsb-be/ajax/doc/download/incident/repo/" + maskedRepoId;
 }
 
 
@@ -21,8 +20,17 @@ $(function (){
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
+    });
+
+    $("#addNote").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("add");
+        $("#mainForm").submit();
     })
 
+    $("#close").click(function (){
+        $("#submitCloseModal").modal('show');
+    })
 
 })
 
@@ -36,7 +44,13 @@ function viewApp(module){
     } else if(module === 'followup1A'){
         url = "/bsb-be/eservice/INTRANET/ViewFollowup1A";
     } else if(module === 'followup1B'){
-        url = "/bsb-be/eservice/INTRANET/ViewFollowup1Bc ";
+        url = "/bsb-be/eservice/INTRANET/ViewFollowup1B";
     }
     window.open(url);
+}
+
+function closeNote(){
+    showWaiting();
+    $("[name='action_type']").val("close");
+    $("#mainForm").submit();
 }

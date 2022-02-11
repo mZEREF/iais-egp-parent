@@ -21,13 +21,13 @@ public class FacilityDocDto extends BaseEntityDto {
     @JMap(value = "${facility.id}")
     private String facilityId;
 
-    private String name;
+    private String docName;
 
-    private long size;
+    private long docSize;
 
     private String fileRepoId;
 
-    private Date submitAt;
+    private Date submitDt;
 
     private String submitBy;
 

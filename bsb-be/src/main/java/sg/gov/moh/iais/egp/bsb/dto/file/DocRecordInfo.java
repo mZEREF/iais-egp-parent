@@ -19,4 +19,5 @@ public class DocRecordInfo implements Serializable {
     private String repoId;
     private Date submitDate;
     private String submitBy;
+    private String submitByName;
 }

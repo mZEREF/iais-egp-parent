@@ -3,19 +3,12 @@ package sg.gov.moh.iais.egp.bsb.service;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessDeregistrationClient;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.AOProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.DOProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.HMProcessDto;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConstants.*;
 
@@ -65,6 +58,7 @@ public class ProcessDeregistrationService {
 
     public void reqAOProcessDto(HttpServletRequest request, AOProcessDto aoProcessDto){
         aoProcessDto.setAoRemarks(ParamUtil.getString(request, KEY_AO_REMARKS));
+        aoProcessDto.setFinalRemarks(ParamUtil.getString(request, KEY_FINAL_REMARKS));
         aoProcessDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
         aoProcessDto.setReasonForRejection(ParamUtil.getString(request, KEY_REASON_FOR_REJECTION));
     }
@@ -72,19 +66,5 @@ public class ProcessDeregistrationService {
     public void reqHMProcessDto(HttpServletRequest request, HMProcessDto hmProcessDto){
         hmProcessDto.setHmRemarks(ParamUtil.getString(request, KEY_HM_REMARKS));
         hmProcessDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
-    }
-
-    /**
-     * Convert doc list to map, key is doc repoId, value is docName,
-     * for download applicant upload support doc.
-     */
-    public void setApplicationDocMapInSession(HttpServletRequest request, List<DocDisplayDto> supportDocDisplayDto){
-        Map<String, String> map = new HashMap<>(supportDocDisplayDto.size());
-        if (!CollectionUtils.isEmpty(supportDocDisplayDto)){
-            for (DocDisplayDto docDisplayDto : supportDocDisplayDto) {
-                map.put(docDisplayDto.getFileRepoId(), docDisplayDto.getDocName());
-            }
-        }
-        ParamUtil.setSessionAttr(request, "applicationDocRepoIdNameMap", (Serializable) map);
     }
 }

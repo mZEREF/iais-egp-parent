@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    $('input[type="number"]').blur(function () {
+    $('input[type="text"]').blur(function () {
 
         var donResForTreatNum = $('#donResForTreatNum').val();
         var donResForCurCenNotTreatNum = $('#donResForCurCenNotTreatNum').val();

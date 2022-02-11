@@ -1,10 +1,13 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -58,9 +61,19 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         String transferedOutcome = ParamUtil.getRequestString(request, "transferedOutcome");
         embryoTransferredOutcomeStageDto.setTransferedOutcome(transferedOutcome);
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, embryoTransferredOutcomeStageDto,"save",ACTION_TYPE_CONFIRM);
+        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+            valRFC(request,embryoTransferredOutcomeStageDto);
+        }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
-
+    protected void valRFC(HttpServletRequest request, EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto()!= null && embryoTransferredOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
+    }
 }

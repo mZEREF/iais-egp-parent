@@ -47,5 +47,9 @@ public class ReportableEventConstants {
     public static final String KEY_PROCESS_TYPE_NOTIFICATION = "notification";
     public static final String KEY_PROCESS_TYPE_INVESTIGATION = "investigation";
     public static final String KEY_PROCESS_TYPE_FOLLOW_UP_1A = "followup1A";
-
+    public static final String KEY_INCIDENT_TITLE = "incidentTitle";
+    public static final String KEY_TITLE_INCIDENT_NOTIFICATION = "Notification of Incident";
+    public static final String KEY_TITLE_INVESTIGATION_REPORT  = "Investigation Report";
+    public static final String KEY_TITLE_FOLLOW_UP_REPORT_1A   = "Follow-up Report 1A";
+    public static final String KEY_TITLE_FOLLOW_UP_REPORT_1B   = "Follow-up Report 1B";
 }

@@ -476,10 +476,16 @@ public class EqRequestForChangeSubmitResultChange {
         if (n1 != n2) {
             return false;
         }
+        oldAppSubmissionDtoAppGrpPremisesDtoList.forEach(dto -> {
+            dto.setFloorNo(StringUtil.getNonNull(dto.getFloorNo()));
+            dto.setUnitNo(StringUtil.getNonNull(dto.getUnitNo()));
+        });
         for (AppPremisesOperationalUnitDto originalDto : appPremisesOperationalUnitDtoList) {
+            String floorNo = StringUtil.getNonNull(originalDto.getFloorNo());
+            String unitNo = StringUtil.getNonNull(originalDto.getUnitNo());
             if (!oldAppSubmissionDtoAppGrpPremisesDtoList.parallelStream()
-                    .anyMatch(dto -> Objects.equals(dto.getUnitNo(), originalDto.getUnitNo())
-                            && Objects.equals(dto.getFloorNo(), originalDto.getFloorNo()))) {
+                    .anyMatch(dto -> Objects.equals(dto.getUnitNo(), unitNo)
+                            && Objects.equals(dto.getFloorNo(), floorNo))) {
                 return false;
             }
         }
@@ -619,9 +625,11 @@ public class EqRequestForChangeSubmitResultChange {
         int oldLength = oldAppGrpPremisesDtos.size();
         if (length == oldLength) {
             for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
+                if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())
+                        || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getConveyanceVehicleNo()),
+                        StringUtil.getNonNull(oldAppGrpPremisesDto.getConveyanceVehicleNo()))) {
                     return false;
                 }
             }

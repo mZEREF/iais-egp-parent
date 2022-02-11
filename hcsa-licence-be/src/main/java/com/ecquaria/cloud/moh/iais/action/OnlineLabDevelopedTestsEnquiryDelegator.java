@@ -61,6 +61,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         ldtParameter.setPageSize(pageSize);
         ldtParameter.setPageNo(1);
         ParamUtil.setSessionAttr(bpc.request,"dsLaboratoryDevelopTestEnquiryFilterDto",null);
+        ParamUtil.setSessionAttr(bpc.request, "ldtParam",null);
 
     }
 
@@ -120,13 +121,18 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
 
         ldtParameter.setFilters(filter);
         SearchParam ldtParam = SearchResultHelper.getSearchParam(request, ldtParameter,true);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "ldtParam");
+        if(searchParam!=null){
+            ldtParam.setPageNo(searchParam.getPageNo());
+            ldtParam.setPageSize(searchParam.getPageSize());
+        }
         CrudHelper.doPaging(ldtParam,bpc.request);
 
         QueryHelp.setMainSql("onlineEnquiry","searchLaboratoryDevelopTest",ldtParam);
 
         SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto> ldtResult = assistedReproductionService.searchDsLdtByParam(ldtParam);
         ParamUtil.setRequestAttr(request,"ldtResult",ldtResult);
-        ParamUtil.setRequestAttr(request,"ldtParam",ldtParam);
+        ParamUtil.setSessionAttr(request,"ldtParam",ldtParam);
     }
 
     public void ldtEnquiryStep(BaseProcessClass bpc){

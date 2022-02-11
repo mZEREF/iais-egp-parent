@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -9,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrieva
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +80,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            valRFC(request, oocyteRetrievalStageDto);
         }
 
         if (!errorMap.isEmpty()) {
@@ -104,5 +108,15 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);
         oocyteRetrievalStageDto.setIsOvarianSyndrome(isOvarianSyndrome);
+    }
+
+    protected void valRFC(HttpServletRequest request, OocyteRetrievalStageDto oocyteRetrievalStageDto) {
+        if (isRfc(request)) {
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && oocyteRetrievalStageDto.equals(arOldSuperDataSubmissionDto.getOocyteRetrievalStageDto())) {
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

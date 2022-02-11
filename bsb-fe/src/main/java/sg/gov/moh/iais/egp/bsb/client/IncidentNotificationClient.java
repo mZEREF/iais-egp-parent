@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.report.BiologicalInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
+import sg.gov.moh.iais.egp.bsb.dto.report.notification.view.IncidentViewDto;
 
 import java.util.List;
 import java.util.Map;
@@ -50,4 +51,7 @@ public interface IncidentNotificationClient {
 
     @GetMapping(path="/incident/query/not/{refId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<IncidentNotificationDto> retrieveIncidentNotByReferenceId(@PathVariable("refId") String refId);
+
+    @GetMapping(path = "/incident/view/notification/{incidentId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<IncidentViewDto> findIncidentViewDtoByIncidentId(@PathVariable("incidentId") String incidentId);
 }

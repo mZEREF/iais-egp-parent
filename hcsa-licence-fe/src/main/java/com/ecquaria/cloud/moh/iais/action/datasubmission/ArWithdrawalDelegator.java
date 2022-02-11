@@ -99,6 +99,7 @@ public class ArWithdrawalDelegator {
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
         ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);
+        ParamUtil.setRequestAttr(bpc.request, "underwayArWd",1);
 
     }
 

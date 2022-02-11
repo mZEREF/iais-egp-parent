@@ -219,6 +219,7 @@ public class ArCycleStagesManualDelegator {
                     currentArDataSubmission.getDraftId());
             if (arSuperDataSubmissionDtoDraft != null) {
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+                stage = arSuperDataSubmissionDtoDraft.getSelectionDto().getStage();
             } else {
                 log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
                 handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
@@ -259,20 +260,21 @@ public class ArCycleStagesManualDelegator {
             currentSuper.setCycleDto(cycleDto);
             currentSuper.setSelectionDto(selectionDto);
             currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
-            ArCurrentInventoryDto arCurrentInventoryDto = newDto.getArCurrentInventoryDto();
-            if (arCurrentInventoryDto == null){
-                arCurrentInventoryDto = new ArCurrentInventoryDto();
-                arCurrentInventoryDto.setHciCode(hciCode);
-                arCurrentInventoryDto.setSvcName(cycleDto.getSvcName());
-                arCurrentInventoryDto.setLicenseeId(cycleDto.getLicenseeId());
-                arCurrentInventoryDto.setPatientCode(cycleDto.getPatientCode());
-            }
-            currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         } else {
             String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
             log.warn(StringUtil.changeForLog("-----" + msg + "-----"));
             throw new IaisRuntimeException(msg);
         }
+        String licenseeId = DataSubmissionHelper.getLicenseeId(request);
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode());
+        if (arCurrentInventoryDto == null) {
+            arCurrentInventoryDto = new ArCurrentInventoryDto();
+            arCurrentInventoryDto.setHciCode(hciCode);
+            arCurrentInventoryDto.setSvcName(currentSuper.getSvcName());
+            arCurrentInventoryDto.setLicenseeId(licenseeId);
+            arCurrentInventoryDto.setPatientCode(selectionDto.getPatientCode());
+        }
+        currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 

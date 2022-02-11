@@ -36,4 +36,7 @@ public interface BsbInboxClient {
 
     @GetMapping(value = "/bsb-audit/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();
+
+    @GetMapping(value = "/bsb-inbox/incident", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<InboxRepResultDto> searchInboxReportableEvent(@SpringQueryMap InboxRepSearchDto dto);
 }

@@ -36,6 +36,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -391,6 +392,24 @@ public class DataSubmissionInboxDelegator {
 								case 5:
 									//Withdraw.Withdraw
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR054");break;
+								case 6:
+									//Withdraw.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "withdrawn")));break;
+								case 7:
+									//RFC.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "amended")));break;
+								case 8:
+									//UNLOCK.DRAFT
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Draft\"", "unlocked")));break;
+								case 9:
+									//UNLOCK.UNLOCK
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Unlocked\"", "unlocked")));break;
+								case 10:
+									//UNLOCK.Pend UNLOCK
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Pending Unlocked\"", "unlocked")));break;
+								case 11:
+									//RFC.LOCKED
+									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Locked\"", "amended")));break;
 								default:
 							}
 							break;
@@ -423,6 +442,7 @@ public class DataSubmissionInboxDelegator {
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
+                //todo send email to be ar admin and change dss lock status
 
 			}
 		}
@@ -453,7 +473,14 @@ public class DataSubmissionInboxDelegator {
 	private int checkDataPassBySubmissionNo(String submissionNo,String actionValue,InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto){
 		if(actionValue.equals(DELETE_DRAFT)){
 			return checkDataPassBySubmissionNo(submissionNo, actionValue)?1:0;
-		}else if(!checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT) && (actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED))){
+		}else if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){
+			switch (actionValue){
+				case WITHDRAW: return 6;
+				case AMENDED : return 7;
+				case UNLOCK  : return 8;
+				default: return 0;
+			}
+		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
 				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
@@ -477,7 +504,7 @@ public class DataSubmissionInboxDelegator {
 						return 3;
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
-						return 5;
+						addWithdrawnDtoList.remove(arWd);
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
 						return 4;
@@ -501,10 +528,21 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 			}
-			//check x times
-			int maxTimes = IaisCommonUtils.getIntByNum(MasterCodeUtil.getCodeDesc(DataSubmissionConsts.MAXIMUM_NUMBER_OF_AMENDMENTS_WITHDRAWALS),3);
-			int maxCountFromDb = licenceInboxClient.getRfcCountByCycleId(inboxDataSubmissionQueryDto.getCycleId()).getEntity();
-			return maxTimes >= maxCountFromDb?1:0;
+
+			//check x times,change check status is locked
+			switch (inboxDataSubmissionQueryDto.getLockStatus()){
+				case 1 :
+				case 2 :
+					return actionValue.equals(WITHDRAW)  ? 4 : 11;
+				default: return 1;
+			}
+		}else if(actionValue.equals(UNLOCK)){
+			// lockStatus == 0 : no need unlock,  1 : pass, 2 : pending unlock
+			switch (inboxDataSubmissionQueryDto.getLockStatus()){
+				case 0 : return 9;
+				case 2 : return 10;
+				default: return 1;
+			}
 		}
 		return 0;
 	}

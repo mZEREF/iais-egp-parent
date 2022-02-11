@@ -150,12 +150,12 @@
                 <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
-                            <c:set var="disabledCssDraft" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
-                            <c:set var="disabledCssNoDraft" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
-                            <a class="btn btn-primary ${disabledCssDraft}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
-                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary ${disabledCssDraft}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
+                            <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
+                            <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
+                            <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+                            <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-amend">Amend</a>
+                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>
                 </div>
@@ -168,6 +168,7 @@
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
         <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
+        <iais:confirm msg="DS_ERR057" needFungDuoJi="false" needCancel="false" popupOrder="actionNoDraftDataDelete"  yesBtnDesc="OK"   yesBtnCls="btn btn-secondary"  callBack="actionNoDraftDataDeleteCancelBallDsButton()" />
 </form>
 <script type="application/javascript">
 
@@ -215,7 +216,7 @@
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
-            $('#ds-unlock').addClass("disabled");
+            $('#ds-deleteDraft').addClass("disabled");
         }
     }
 
@@ -248,7 +249,13 @@
 
 
     $('#ds-deleteDraft').click(function (){
-        $("#deleteDraftModal").modal('show');
+        //get first
+        if($("[name='submissionNo']:checked").val().indexOf('DS') >= 0){
+            $("#deleteDraftModal").modal('show');
+        }else {
+            $("#actionNoDraftDataDelete").modal('show');
+        }
+
     });
     $('#ds-amend').click(function (){
         doSubmitForDataSubmission('rfc');
@@ -259,7 +266,9 @@
     $('#ds-unlock').click(function (){
         doSubmitForDataSubmission('unlock');}
     );
-
+    function actionNoDraftDataDeleteCancelBallDsButton(){
+        $("#actionNoDraftDataDelete").modal('hide');
+    }
 
     function delDraftCancelBtn(){
         $("#deleteDraftModal").modal('hide');

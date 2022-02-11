@@ -121,4 +121,8 @@ public interface ArDataSubmissionService {
     void sendIncompleteCycleNotificationPeriod();
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
+
+    ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode);
+
+    ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
 }

@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="java.lang.String" %>
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
 <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 
@@ -89,5 +91,36 @@
             <input type="radio" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.isFacilityProtected eq 'N'}">checked="checked"</c:if> />
         </div>
         <span data-err-ind="isFacilityProtected" class="error-msg"></span>
+    </div>
+</div>
+
+
+<div id="docUploadDiv" class="document-upload-gp" <c:if test="${facProfile.isFacilityProtected ne 'Y'}">style="display: none"</c:if>>
+    <div class="document-upload-list">
+        <h3>Gazette Order <span class="mandatory otherQualificationSpan">*</span></h3>
+        <div class="file-upload-gp">
+            <c:forEach var="info" items="${facProfile.savedDocMap.values()}">
+                <c:set var="repoId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                <div id="${repoId}FileDiv">
+                    <span id="${repoId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${repoId}', 'gazetteOrder')">Reload</button><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('profileSaved', '${repoId}')">Download</button>
+                    <span data-err-ind="${info.repoId}" class="error-msg"></span>
+                </div>
+            </c:forEach>
+            <c:forEach var="info" items="${facProfile.newDocMap.values()}">
+                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
+                <div id="${tmpId}FileDiv">
+                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', 'gazetteOrder')">Reload</button><button
+                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('profileNew', '${tmpId}')">Download</button>
+                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                </div>
+            </c:forEach>
+            <a class="btn file-upload btn-secondary" data-upload-file="gazetteOrder" href="javascript:void(0);">Upload</a>
+            <span data-err-ind="gazetteOrder" class="error-msg"></span>
+        </div>
     </div>
 </div>

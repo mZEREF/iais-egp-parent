@@ -47,21 +47,21 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
-                                    <iais:value width="6" cssClass="col-md-6" >
+                                    <iais:value width="7" cssClass="col-md-7" >
                                         <input type="text"  id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.patientIdType}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                    <iais:value width="7" cssClass="col-md-7"  >
+                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -69,6 +69,7 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberFrom"  name="patientAgeNumberFrom" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberFrom}" >
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
                                     </iais:value>
@@ -82,7 +83,7 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Submission ID"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
                                     </iais:value>
                                 </iais:row>
@@ -93,6 +94,7 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateFrom}"/>
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateTo}"/>
                                     </iais:value>
@@ -106,21 +108,21 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Husband Name"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="husbandName"  name="husbandName" value="${assistedReproductionEnquiryFilterDto.husbandName}" >
                                     </iais:value>
                                 </iais:row>
 
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID Type"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="husbandIdType" id="husbandIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                                      cssClass="clearSel" value="${assistedReproductionEnquiryFilterDto.husbandIdType}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID No."/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="husbandIdNumber"  name="husbandIdNumber" value="${assistedReproductionEnquiryFilterDto.husbandIdNumber}" >
                                     </iais:value>
                                 </iais:row>
@@ -133,20 +135,20 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="AR Centre" />
-                                    <iais:value width="6" cssClass="col-md-6">
+                                    <iais:value width="7" cssClass="col-md-7">
                                         <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption" cssClass="clearSel"
                                                      value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Embryologist"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="embryologist"  name="embryologist" value="${assistedReproductionEnquiryFilterDto.embryologist}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="AR Practitioner"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="arPractitioner"  name="arPractitioner" value="${assistedReproductionEnquiryFilterDto.arPractitioner}" >
                                     </iais:value>
                                 </iais:row>
@@ -160,7 +162,7 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Status"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" options="cycleStagesStatusOptions"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.cycleStagesStatus}" />
                                     </iais:value>
@@ -170,20 +172,27 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="cycleStagesDateFrom" name="cycleStagesDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.cycleStagesDateFrom}"/>
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="cycleStagesDateTo" name="cycleStagesDateTo" dateVal="${assistedReproductionEnquiryFilterDto.cycleStagesDateTo}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="AR / IUI Cycle"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
+                                    <iais:field width="4" value="Main Indication of AR Cycle"/>
+                                    <div class="col-md-6 multi-select col-xs-6">
+                                        <iais:select cssClass="clearMultiSel" name="indicationArCycle" id="indicationArCycle" multiValues="${assistedReproductionEnquiryFilterDto.indicationArCycleList}" codeCategory="AR_MAIN_INDICATION"  multiSelect="true"/>
+                                    </div>
+                                </iais:row>
+                                <iais:row>
                                     <iais:field width="4" value="IVM" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -211,8 +220,8 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Current AR Treatment" />
-                                    <div class="col-md-6">
-                                        <iais:value width="6" cssClass="col-md-12">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -224,7 +233,7 @@
                                                         class="check-square"></span><iais:code code="AR_CAT_001"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="freshCycleSimulated"  id="freshCycleSimulated"
@@ -235,7 +244,7 @@
                                                         class="check-square"></span><iais:code code="AR_CAT_002"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="frozenOocyteCycle"  id="frozenOocyteCycle"
@@ -246,7 +255,7 @@
                                                         class="check-square"></span><iais:code code="AR_CAT_003"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="frozenEmbryoCycle"  id="frozenEmbryoCycle"
@@ -265,13 +274,14 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumTo"  name="freshCycleNumTo" value="${assistedReproductionEnquiryFilterDto.freshCycleNumTo}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Abandoned Cycle" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -307,7 +317,7 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Donor Gamete (i.e. Oocyte/Embryo/Sperm) Used" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -334,14 +344,20 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Donor's Name"/>
-                                    <iais:value width="6" cssClass="col-md-6" >
+                                    <iais:value width="7" cssClass="col-md-7" >
                                         <input type="text"  id="donorName"  name="donorName" value="${assistedReproductionEnquiryFilterDto.donorName}" >
                                     </iais:value>
                                 </iais:row>
-
+                                <iais:row>
+                                    <iais:field width="4" value="Donor's ID Type"/>
+                                    <iais:value width="6" cssClass="col-md-6"  >
+                                        <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                                     value="${assistedReproductionEnquiryFilterDto.donorIdType}" cssClass="idTypeSel" />
+                                    </iais:value>
+                                </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID No."/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${assistedReproductionEnquiryFilterDto.donorIdNumber}" >
                                     </iais:value>
                                 </iais:row>
@@ -354,13 +370,13 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="No. Removed from Storage"/>
-                                    <iais:value width="6" cssClass="col-md-6" >
+                                    <iais:value width="7" cssClass="col-md-7" >
                                         <input type="text"  id="removedFromStorage"  name="removedFromStorage" value="${assistedReproductionEnquiryFilterDto.removedFromStorage}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Embryos Stored Beyond 10 Years" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -395,15 +411,15 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="Source of Semen"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="sourceSemen" id="sourceSemen" firstOption="Please Select" options="sourceSemenOptions"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.sourceSemen}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="AR Techniques Used" />
-                                    <div class="col-md-6">
-                                        <iais:value width="6" cssClass="col-md-12">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -415,7 +431,7 @@
                                                         class="check-square"></span><iais:code code="AR_ATU_003"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ICSI" id="ICSI"
@@ -426,7 +442,7 @@
                                                         class="check-square"></span><iais:code code="AR_ATU_002"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ZIFT" id="ZIFT"
@@ -437,7 +453,7 @@
                                                         class="check-square"></span><iais:code code="AR_ATU_004"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="IVF" id="IVF"
@@ -461,9 +477,20 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="No. of Embryos Transferred" />
-                                    <div class="col-md-6">
-
-                                        <iais:value width="2" cssClass="col-md-2">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="2" cssClass="col-md-2 row">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="embryosTransferredNum0" id="embryosTransferredNum0"
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.embryosTransferredNum0 =='on' }">checked</c:if>
+                                                       aria-invalid="false">
+                                                <label class="form-check-label"
+                                                       for="embryosTransferredNum0"><span
+                                                        class="check-square"></span>0</label>
+                                            </div>
+                                        </iais:value>
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum1"  id="embryosTransferredNum1"
@@ -474,7 +501,7 @@
                                                         class="check-square"></span>1</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum2"  id="embryosTransferredNum2"
@@ -485,7 +512,7 @@
                                                         class="check-square"></span>2</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum3" id="embryosTransferredNum3"
@@ -496,7 +523,7 @@
                                                         class="check-square"></span>3</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNumMax" id="embryosTransferredNumMax"
@@ -504,7 +531,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNumMax"><span
-                                                        class="check-square"></span>More than 3</label>
+                                                        class="check-square"></span>> 3</label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -512,8 +539,8 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Age of Embryos Transferred" />
-                                    <div class="col-md-6">
-                                        <iais:value width="6" cssClass="col-md-6">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -525,7 +552,7 @@
                                                         class="check-square"></span><iais:code code="AOFET001"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-6">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -537,7 +564,7 @@
                                                         class="check-square"></span><iais:code code="AOFET004"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-6">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -549,7 +576,7 @@
                                                         class="check-square"></span><iais:code code="AOFET002"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-6">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -561,7 +588,7 @@
                                                         class="check-square"></span><iais:code code="AOFET005"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-6">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -573,7 +600,7 @@
                                                         class="check-square"></span><iais:code code="AOFET003"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-6">
+                                        <iais:value width="7" cssClass="col-md-6 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox" id="ageEmbryosNum6"
@@ -590,8 +617,8 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Outcome of Embryo Transferred" />
-                                    <div class="col-md-6">
-                                        <iais:value width="6" cssClass="col-md-12">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox" id="clinicalPregnancy"
@@ -603,7 +630,7 @@
                                                         class="check-square"></span>Clinical Pregnancy</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ectopicPregnancy" id="ectopicPregnancy"
@@ -614,7 +641,7 @@
                                                         class="check-square"></span>Ectopic Pregnancy</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="implantationDocumented" id="implantationDocumented"
@@ -622,10 +649,10 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="implantationDocumented"><span
-                                                        class="check-square"></span>Implantation Documented</label>
+                                                        class="check-square"></span>Implantation Detected</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="noPregnancy" id="noPregnancy"
@@ -633,10 +660,10 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="noPregnancy"><span
-                                                        class="check-square"></span>No Pregnancy</label>
+                                                        class="check-square"></span>No Pregnancy Detected</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="6" cssClass="col-md-12">
+                                        <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="unknown" id="unknown"
@@ -652,8 +679,8 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="No. of Live Birth Events (Total)" />
-                                    <div class="col-md-6">
-                                        <iais:value width="2" cssClass="col-md-2">
+                                    <div class="col-md-6 row">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -665,7 +692,7 @@
                                                         class="check-square"></span>0</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal1" id="birthEventsTotal1"
@@ -676,7 +703,7 @@
                                                         class="check-square"></span>1</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal2" id="birthEventsTotal2"
@@ -687,7 +714,7 @@
                                                         class="check-square"></span>2</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal3" id="birthEventsTotal3"
@@ -698,7 +725,7 @@
                                                         class="check-square"></span>3</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2">
+                                        <iais:value width="2" cssClass="col-md-2 row">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotalMax" id="birthEventsTotalMax"
@@ -718,6 +745,7 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="deliveryDateFrom" name="deliveryDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.deliveryDateFrom}"/>
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="deliveryDateTo" name="deliveryDateTo" dateVal="${assistedReproductionEnquiryFilterDto.deliveryDateTo}"/>
                                     </iais:value>
@@ -734,7 +762,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on ART co-funding?" />
 
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -747,7 +775,7 @@
                                                     class="check-circle"></span>Yes</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -764,7 +792,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on IUI co-funding?" />
 
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -777,7 +805,7 @@
                                                     class="check-circle"></span>Yes</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -794,7 +822,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on PGT co-funding?" />
 
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -807,7 +835,7 @@
                                                     class="check-circle"></span>Yes</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
+                                    <iais:value width="2" cssClass="col-md-3">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -832,8 +860,8 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Disposal of" />
-                                    <div class="col-md-8">
-                                        <iais:value  cssClass="col-md-12">
+                                    <div class="col-md-8 row">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -845,7 +873,7 @@
                                                         class="check-square"></span>Fresh Oocyte(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -857,7 +885,7 @@
                                                         class="check-square"></span>Frozen Oocyte(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -869,7 +897,7 @@
                                                         class="check-square"></span>Thawed Oocyte(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -881,7 +909,7 @@
                                                         class="check-square"></span>Fresh Embryo(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -893,7 +921,7 @@
                                                         class="check-square"></span>Frozen Embryo(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -905,7 +933,7 @@
                                                         class="check-square"></span>Thawed Embryo(s)</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -922,7 +950,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Total No. Disposed Of"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
                                     </iais:value>
                                 </iais:row>
@@ -932,6 +960,7 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="disposalDateFrom" name="disposalDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.disposalDateFrom}"/>
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="disposalDateTo" name="disposalDateTo" dateVal="${assistedReproductionEnquiryFilterDto.disposalDateTo}"/>
                                     </iais:value>
@@ -947,7 +976,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Is this a Transfer In or Out?" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -975,8 +1004,8 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="What was Transferred?" />
-                                    <div class="col-md-8">
-                                        <iais:value  cssClass="col-md-12">
+                                    <div class="col-md-8 row">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -988,7 +1017,7 @@
                                                         class="check-square"></span><iais:code code="AR_WWT_001"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1000,7 +1029,7 @@
                                                         class="check-square"></span><iais:code code="AR_WWT_002"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1017,7 +1046,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Transferred In From"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="transferredInFrom" id="transferredInFrom" firstOption="Please Select" options="arCentreSelectOption"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferredInFrom}"  />
                                     </iais:value>
@@ -1025,7 +1054,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Transfer Out To"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="transferOutTo" id="transferOutTo" firstOption="Please Select" options="arCentreSelectOption"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferOutTo}" />
                                     </iais:value>
@@ -1036,6 +1065,7 @@
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="transferDateFrom" name="transferDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.transferDateFrom}"/>
                                     </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="transferDateTo" name="transferDateTo" dateVal="${assistedReproductionEnquiryFilterDto.transferDateTo}"/>
                                     </iais:value>
@@ -1051,7 +1081,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="PGT" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -1079,8 +1109,8 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Outcome of Preimplantation Genetic Testing" />
-                                    <div class="col-md-8">
-                                        <iais:value  cssClass="col-md-12">
+                                    <div class="col-md-8 row">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1092,7 +1122,7 @@
                                                         class="check-square"></span><iais:code code="PGTTP001"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1104,7 +1134,7 @@
                                                         class="check-square"></span><iais:code code="PGTTP002"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1116,7 +1146,7 @@
                                                         class="check-square"></span><iais:code code="PGTTP003"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox" id="pgtSr"
@@ -1128,7 +1158,7 @@
                                                         class="check-square"></span><iais:code code="PGTTP004"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1140,7 +1170,7 @@
                                                         class="check-square"></span><iais:code code="PGTTP005"/></label>
                                             </div>
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1153,7 +1183,7 @@
                                             </div>
 
                                         </iais:value>
-                                        <iais:value  cssClass="col-md-12">
+                                        <iais:value  cssClass="col-md-12 row">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -1170,7 +1200,7 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="PGT Performed to Detect Sex-linked Disease" />
-                                    <iais:value width="3" cssClass="col-md-3">
+                                    <iais:value width="3" cssClass="col-md-3 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -1231,16 +1261,16 @@
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="ID_TYPE"
+                                                                     field="ID_TYPE_DESC"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
-                                                                     value="Patient ID No"/>
+                                                                     value="Patient ID No."/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="true"
-                                                                     field="NATIONALITY"
+                                                                     field="NATIONALITY_DESC"
                                                                      value="Patient Nationality"/>
                                                 <iais:sortableHeader needSort="true"
                                                                      field="CREATED_DT"

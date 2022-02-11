@@ -45,6 +45,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
+
         }
         return erMap;
     }

@@ -1,9 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
@@ -12,8 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -70,15 +69,16 @@ public class OnlineArAjaxController {
         int currentFrozenEmbryos=0;
         int currentFreshEmbryos=0;
         int currentFrozenSperms=0;
+        List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
+
         try {
-            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+            for (ArCurrentInventoryDto aci:arCurrentInventoryDtos
             ) {
-                PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
-                currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
-                currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
-                currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
-                currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
-                currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
+                currentFrozenOocytes+=aci.getFrozenOocyteNum();
+                currentFreshOocytes+=aci.getFreshOocyteNum();
+                currentFrozenEmbryos+=aci.getFrozenEmbryoNum();
+                currentFreshEmbryos+=aci.getFreshEmbryoNum();
+                currentFrozenSperms+=aci.getFrozenEmbryoNum();
             }
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -128,20 +128,20 @@ public class OnlineArAjaxController {
                 }
                 if(ajax.getTreatmentFreshStimulated()!=null&&ajax.getTreatmentFreshStimulated()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED);
                 }
                 if(ajax.getTreatmentFrozenEmbryo()!=null&&ajax.getTreatmentFrozenEmbryo()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_EMBRYO_CYCLE);
 
                 }
                 if(ajax.getTreatmentFrozenOocyte()!=null&&ajax.getTreatmentFrozenOocyte()){
                     if(!"".equals(arTreatment)){
-                        arTreatment=arTreatment+',';
+                        arTreatment=arTreatment+", ";
                     }
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_OOCYTE_CYCLE);
                 }
@@ -150,14 +150,14 @@ public class OnlineArAjaxController {
                 }
                 if(StringUtil.isNotEmpty(ajax.getIuiCoFunding())){
                     if(!"".equals(coFunding)){
-                        coFunding=coFunding+',';
+                        coFunding=coFunding+", ";
                     }
                     coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getIuiCoFunding());
 
                 }
                 if(StringUtil.isNotEmpty(ajax.getPgtCoFunding())){
                     if(!"".equals(coFunding)){
-                        coFunding=coFunding+',';
+                        coFunding=coFunding+", ";
                     }
                     coFunding=coFunding+ajax.getPgtCoFunding();
                 }
@@ -231,7 +231,7 @@ public class OnlineArAjaxController {
             List<AssistedReproductionEnquiryResultsDto> queryList = results.getRows();
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
             queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");
@@ -277,7 +277,7 @@ public class OnlineArAjaxController {
                 }
             }
             queryList.forEach(i -> i.setSubmissionSubtype(MasterCodeUtil.getCodeDesc(i.getSubmissionSubtype())));
-            queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionEnquirySubResultsDto.class, "SubmissionID_SearchResults_Download");
@@ -313,10 +313,10 @@ public class OnlineArAjaxController {
 
         if (!Objects.isNull(results)){
             List<AssistedReproductionAdvEnquiryResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setPatientDateBirthStr(Formatter.formatDateTime(i.getPatientDateBirth(), AppConsts.DEFAULT_DATE_FORMAT)));
             queryList.forEach(i -> i.setPatientIdType(MasterCodeUtil.getCodeDesc(i.getPatientIdType())));
             queryList.forEach(i -> i.setPatientNationality(MasterCodeUtil.getCodeDesc(i.getPatientNationality())));
-            queryList.forEach(i -> i.setCycleStartDateStr(Formatter.formatDateTime(i.getCycleStartDate(), SystemAdminBaseConstants.DATE_FORMAT)));
+            queryList.forEach(i -> i.setCycleStartDateStr(Formatter.formatDateTime(i.getCycleStartDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, AssistedReproductionAdvEnquiryResultsDto.class, "PatientInfo_SearchResults_DownloadS");

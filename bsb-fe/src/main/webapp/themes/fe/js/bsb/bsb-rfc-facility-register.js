@@ -122,6 +122,14 @@ $(function () {
         rfActivityTypesDiv.show();
     });
 
+    $("input[name=protectedPlace]").change(function () {
+        var id = $(this).attr("id");
+        if (id === 'isAProtectedPlace') {
+            $("#docUploadDiv").show();
+        } else if (id === 'notAProtectedPlace') {
+            $("#docUploadDiv").hide();
+        }
+    })
 
     $("input[data-custom-ind=committeePersonnelIsEmployee]").change(function () {
         var id = $(this).attr("id");

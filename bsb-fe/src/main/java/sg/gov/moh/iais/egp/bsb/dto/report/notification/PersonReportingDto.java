@@ -37,6 +37,8 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private String activityType;
     private String incidentEntityDate;
     private String occurrenceTime;
+    private String occurrenceTimeH;
+    private String occurrenceTimeM;
     private String location;
     private List<String> batName;
     private Map<String,String> batNameMap;
@@ -253,6 +255,22 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.incidentPersonInvolvedCount = incidentPersonInvolvedCount;
     }
 
+    public String getOccurrenceTimeH() {
+        return occurrenceTimeH;
+    }
+
+    public void setOccurrenceTimeH(String occurrenceTimeH) {
+        this.occurrenceTimeH = occurrenceTimeH;
+    }
+
+    public String getOccurrenceTimeM() {
+        return occurrenceTimeM;
+    }
+
+    public void setOccurrenceTimeM(String occurrenceTimeM) {
+        this.occurrenceTimeM = occurrenceTimeM;
+    }
+
     public String getEmergencyResponse() {
         return emergencyResponse;
     }
@@ -314,9 +332,9 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.facType = ParamUtil.getString(request,KEY_FACILITY_TYPE);
         this.activityType = ParamUtil.getString(request,KEY_ACTIVITY_TYPE);
         this.incidentEntityDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);
-        String occurrenceTimeH = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_HH);
-        String occurrenceTimeM = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_MM);
-        this.occurrenceTime = occurrenceTimeH+":"+occurrenceTimeM;
+        this.occurrenceTimeH = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_HH);
+        this.occurrenceTimeM = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_MM);
+        this.occurrenceTime = occurrenceTimeH+"/"+occurrenceTimeM;
         this.location = ParamUtil.getString(request,KEY_INCIDENT_LOCATION);
         String[] batNames = ParamUtil.getStrings(request,KEY_INCIDENT_BAT);
         if(batNames != null && batNames.length>0){

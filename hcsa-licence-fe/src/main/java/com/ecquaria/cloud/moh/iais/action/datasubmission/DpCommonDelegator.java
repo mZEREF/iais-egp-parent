@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
@@ -209,7 +210,9 @@ public abstract class DpCommonDelegator {
             String submissionNo = dpDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_DRP);
             dataSubmissionDto.setSubmissionNo(submissionNo);
         }
-        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
         String stage = dataSubmissionDto.getCycleStage();
@@ -339,6 +342,10 @@ public abstract class DpCommonDelegator {
         return true;
     }
 
+    protected boolean isRfc(HttpServletRequest request){
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
+        return dpSuperDataSubmissionDto != null && dpSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
+    }
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String... actionType) {
         return needValidate(request, actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE,
                 null, null) : true;

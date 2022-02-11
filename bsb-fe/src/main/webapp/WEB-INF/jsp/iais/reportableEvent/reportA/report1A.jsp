@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -38,7 +39,7 @@
                         <div class="form-group">
                             <label class="col-xs-5 col-md-4 control-label">Incident Reference No.</label>
                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                <p><c:out value="${previewA.referenceNo}"/></p>
+                                <a href="#" onclick="openIncident('${MaskUtil.maskValue('editId',followup1A.incidentId)}')"><c:out value="${followup1A.referenceNo}"/></a></label>
                             </div>
                             <div class="clear"></div>
                         </div>

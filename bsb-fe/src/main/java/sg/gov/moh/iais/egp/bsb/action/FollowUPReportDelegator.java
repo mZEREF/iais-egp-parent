@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -56,6 +57,7 @@ public class FollowUPReportDelegator{
     private static final String KEY_NEW_FILE_MAP = "newFiles";
     private static final String KEY_SAVED_FILE_MAP = "savedFiles";
     private static final String PARAM_DOC_SETTINGS = "docSettings";
+    private static final String MESSAGE_FAIL_TO_SYNC_FILES_TO_BE = "Fail to sync files to BE";
     private final IncidentFollowupClient followupClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
@@ -100,17 +102,8 @@ public class FollowUPReportDelegator{
             }
         }
 
-        //follow-up 1B edit
-        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
-        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
-        if(StringUtils.hasLength(maskedAppId) && !StringUtils.hasLength(key)){
-            String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
-            if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
-                FollowupReport1BDto report1BDto  = followupClient.retrieveFollowup1BByApplicationId(appId).getEntity();
-                retrieveByFollowupReport1BDto(request,report1BDto);
-            }
-        }
     }
+
 
     public void initFollowup1A(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -129,10 +122,12 @@ public class FollowUPReportDelegator{
 
        //------------------------------------------------------------------------------------
 
-        //follow-up 1A edit
-        String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
+    }
+
+    public void initFollowup1AEdit(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
-        if(StringUtils.hasLength(maskedAppId) && !StringUtils.hasLength(key)){
+        if(StringUtils.hasLength(maskedAppId)){
             //If there is no draft entry key and the value of appId is displayed, the user is entered from the Edit page
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
             if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
@@ -141,6 +136,19 @@ public class FollowUPReportDelegator{
             }
         }
     }
+
+    public void initFollowup1BEdit(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
+        if(StringUtils.hasLength(maskedAppId)){
+            String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
+            if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
+                FollowupReport1BDto report1BDto  = followupClient.retrieveFollowup1BByApplicationId(appId).getEntity();
+                retrieveByFollowupReport1BDto(request,report1BDto);
+            }
+        }
+    }
+
 
     public void preReferenceNo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -183,11 +191,12 @@ public class FollowUPReportDelegator{
         String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B_PREVIEW,followupPreviewBDto);
         if(!StringUtils.hasLength(key)){
-            retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentId(),followupPreviewBDto.getReferenceNo(),followupPreviewBDto.getAddPersonnelName());
+            retrieveFollowupInfoB(request,followupPreviewBDto.getIncidentId(),followupPreviewBDto.getIncidentInvestId(),followupPreviewBDto.getReferenceNo(),followupPreviewBDto.getAddPersonnelName());
         }else {
             request.getSession().removeAttribute(KEY_PROCESS_KEY);
         }
     }
+
 
     public void preFollowUPReport1A(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -214,10 +223,10 @@ public class FollowUPReportDelegator{
             ValidationResultDto resultDto =  followupClient.validateFollowup1A(followup1AMetaDto);
             doValidation(resultDto,request);
         }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
-            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_BACK);
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_BACK);
         }else if(ModuleCommonConstants.KEY_NAV_DRAFT.equals(actionType)){
             //1.Set the action_type value to prepare
-            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
             //2.save data into draft db
             saveFollow1ADraft(request,followupDoc,infoADto);
         }
@@ -263,8 +272,9 @@ public class FollowUPReportDelegator{
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
-            log.error("Fail to sync files to BE", e);
+            log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE, e);
         }
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_FOLLOW_UP_REPORT_1A);
     }
 
     public void preFollowUPReport1B(BaseProcessClass bpc){
@@ -343,8 +353,9 @@ public class FollowUPReportDelegator{
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
-            log.error("Fail to sync files to BE", e);
+            log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE , e);
         }
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_FOLLOW_UP_REPORT_1B);
     }
 
     //The temporary option value is the reference no list obtained from the API
@@ -452,14 +463,14 @@ public class FollowUPReportDelegator{
     public void doValidation(ValidationResultDto resultDto,HttpServletRequest request){
         //validate pass -> 1.Set the action_type value to next 2.Set key needShowError to N
         if(resultDto.isPass()){
-            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_NEXT);
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_NEXT);
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH,ValidationConstants.NO);
         }else{
             //validate fail -> 1.Set key needShowError to Y
             //                 2.Set the action_type value to back
             //                 3.Set key error map
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH,ValidationConstants.YES);
-            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
+            ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_PREPARE);
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,resultDto.toErrorMsg());
         }
     }
@@ -479,7 +490,7 @@ public class FollowUPReportDelegator{
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
-            log.error("Fail to sync files to BE", e);
+            log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE , e);
         }
 
         ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
@@ -499,7 +510,7 @@ public class FollowUPReportDelegator{
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {
-            log.error("Fail to sync files to BE", e);
+            log.error(MESSAGE_FAIL_TO_SYNC_FILES_TO_BE , e);
         }
 
         ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);

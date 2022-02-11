@@ -26,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -242,6 +243,11 @@ public class IncidentNotificationDelegator {
         SimpleNode involvedPersonNode = (SimpleNode) incidentNotRoot.getNode(NODE_NAME_PERSON_INVOLVED_INFO);
         PersonInvolvedInfoDto personInvolvedInfoDto = (PersonInvolvedInfoDto) involvedPersonNode.getValue();
         personInvolvedInfoDto.reqObjMapping(request);
+        //set person involved info to field involved person count
+        SimpleNode reportingPersonNode = (SimpleNode) incidentNotRoot.getNode(NODE_NAME_PERSON_REPORTING_INFO);
+        PersonReportingDto personReportingDto = (PersonReportingDto) reportingPersonNode.getValue();
+        personReportingDto.setIncidentPersonInvolvedCount(String.valueOf(personInvolvedInfoDto.getIncidentPersons().size()));
+
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, incidentNotRoot);
@@ -355,6 +361,8 @@ public class IncidentNotificationDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_INCIDENT_NOTIFICATION);
     }
 
     /**

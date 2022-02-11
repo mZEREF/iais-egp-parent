@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.incident.FollowupViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
 import sg.gov.moh.iais.egp.bsb.dto.suspension.SuspensionReinstatementDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
@@ -176,13 +179,14 @@ public class DocDownloadAjaxController {
     }
 
     public MultipartFile incidentGetSavedFile(HttpServletRequest request, String id){
-        Map<String, IncidentDocDto> repoIdDocMap = (Map<String, IncidentDocDto>) ParamUtil.getSessionAttr(request,"repoIdDocMap");
-        IncidentDocDto info = repoIdDocMap.get(id);
-        if (info == null) {
+        FollowupViewDto followupViewDto = (FollowupViewDto) ParamUtil.getSessionAttr(request,"processDto");
+        List<DocDisplayDto> docDisplayDtoList = followupViewDto.getSupportDocDisplayDtoList();
+        DocDisplayDto dto = CollectionUtils.uniqueIndexMap(docDisplayDtoList,DocDisplayDto::getFileRepoId).get(id);
+        if (dto == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
-        return new ByteArrayMultipartFile(null, info.getDocName(), null, content);
+        return new ByteArrayMultipartFile(null, dto.getDocName(), null, content);
     }
 
     private MultipartFile withdrawnGetSavedFile(HttpServletRequest request, String id) {
@@ -240,7 +244,7 @@ public class DocDownloadAjaxController {
     }
 
     private MultipartFile getApplicationFile(HttpServletRequest request, String id) {
-        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "applicationDocRepoIdNameMap");
+        Map<String, String> map = (Map<String, String>) ParamUtil.getSessionAttr(request, "docDisplayDtoRepoIdNameMap");
         String fileName = map.get(id);
         if (fileName == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);

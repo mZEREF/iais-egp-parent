@@ -15,7 +15,7 @@
 
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
+        <input type="hidden" name="ifProcess" id="ifProcess" value="${processPageValidation}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -80,33 +80,18 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
-                                                                            <iais:value width="10"><p><iais:code code="${doProcessDto.currentStatus}"/></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${hmProcessDto.currentStatus}"/></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="DO Remarks" required="false" width="12"/>
+                                                                            <iais:field value="HM Remarks" required="false" width="12"/>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="doRemarks" cols="70" rows="7" maxlength="500"><c:out value="${doProcessDto.doRemarks}"/></textarea>
-                                                                                        <span data-err-ind="doRemarks" class="error-msg"></span>
+                                                                                        <textarea name="hmRemarks" cols="70" rows="7" maxlength="500"><c:out value="${hmProcessDto.hmRemarks}"/></textarea>
+                                                                                        <span data-err-ind="hmRemarks" class="error-msg"></span>
                                                                                     </div>
-                                                                                </div>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Final Remarks" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${doProcessDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
-                                                                                    <label for="finalRemarksYes" class="form-check-label"><span class="check-square"></span>Yes</label>
-                                                                                </div>
-                                                                                <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${doProcessDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
-                                                                                    <label for="finalRemarksNo" class="form-check-label"><span class="check-square"></span>No</label>
                                                                                 </div>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -117,24 +102,10 @@
                                                                             <iais:value width="10">
                                                                                 <select name="processingDecision" id="processingDecision">
                                                                                     <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO004" <c:if test="${doProcessDto.processingDecision eq 'MOHPRO004'}">selected="selected"</c:if>>Recommend Approval</option>
-                                                                                    <option value="MOHPRO003" <c:if test="${doProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Rejected</option>
-                                                                                    <option value="MOHPRO002" <c:if test="${doProcessDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${hmProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${hmProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
                                                                                 </select>
                                                                                 <span data-err-ind="processingDecision" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div id="reasonForRejection">
-                                                                        <iais:row>
-                                                                            <iais:field value="Reason for Rejection" required="true" width="12"/>
-                                                                            <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
-                                                                                        <textarea name="reasonForRejection" cols="70" rows="7" maxlength="500"><c:out value="${doProcessDto.reasonForRejection}"/></textarea>
-                                                                                        <span data-err-ind="reasonForRejection" class="error-msg"></span>
-                                                                                    </div>
-                                                                                </div>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

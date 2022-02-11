@@ -152,7 +152,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <input type="text" autocomplete="off" name="incidentEntityDate" id="incidentEntityDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${reportingPerson.incidentEntityDate}" class="date_picker form-control" />
-                                                                        <span data-err-ind="incidentEntityDate" class="error-msg"></span><span data-err-ind="officeTelNo" class="error-msg"></span>
+                                                                        <span data-err-ind="incidentEntityDate" class="error-msg"></span><span data-err-ind="incidentEntityDate" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group">
@@ -165,7 +165,7 @@
                                                                             <select id="occurrenceTimeH" name="occurrenceTimeH">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurHHOps}">
-                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                    <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeH eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>
@@ -173,10 +173,10 @@
                                                                             <label for="occurrenceTimeH">(HH)</label>
                                                                         </div>
                                                                         <div class="col-md-10 col-lg-5 col-9">
-                                                                            <select id="occurrenceTimeM" name="occurrenceTimeH">
+                                                                            <select id="occurrenceTimeM" name="occurrenceTimeM">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurMMOps}">
-                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeM eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>
@@ -288,7 +288,14 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="incidentPersonInvolvedCount">0</label>
+                                                                        <label id="incidentPersonInvolvedCount">
+                                                                            <c:choose>
+                                                                                <c:when test="${reportingPerson.incidentPersonInvolvedCount eq null}">0</c:when>
+                                                                                <c:otherwise>
+                                                                                    <c:out value="${reportingPerson.incidentPersonInvolvedCount}"/>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group">

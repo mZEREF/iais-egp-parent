@@ -6,7 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.*;
+
+import java.util.List;
 
 /**
  * @author : LiRan
@@ -15,19 +18,19 @@ import sg.gov.moh.iais.egp.bsb.dto.process.*;
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface ProcessClient {
     @GetMapping(path = "/bsbMohOfficer/getDOScreeningData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getDOScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
+    ResponseDto<DOScreeningDto> getDOScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/bsbMohOfficer/getAOScreeningData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getAOScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
+    ResponseDto<AOScreeningDto> getAOScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/bsbMohOfficer/getHMScreeningData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getHMScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
+    ResponseDto<HMScreeningDto> getHMScreeningDataByAppId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/bsbMohOfficer/getDOProcessingData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getDOProcessingDataByAppId(@PathVariable("applicationId") String applicationId);
+    ResponseDto<DOProcessingDto> getDOProcessingDataByAppId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/bsbMohOfficer/getAOProcessingData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getAOProcessingDataByAppId(@PathVariable("applicationId") String applicationId);
+    ResponseDto<AOProcessingDto> getAOProcessingDataByAppId(@PathVariable("applicationId") String applicationId);
 
     @PostMapping(path = "/bsbMohOfficer/validate/doScreeningDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateDOScreeningDto(@RequestBody DOScreeningDto doScreeningDto);
@@ -45,17 +48,20 @@ public interface ProcessClient {
     ValidationResultDto validateAOProcessingDto(@RequestBody AOProcessingDto aoProcessingDto);
 
     @PostMapping(path = "/bsbMohOfficer/saveDOScreening",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveDOScreening(@RequestBody MohProcessDto mohProcessDto);
+    ResponseDto<String> saveDOScreening(@RequestBody DOScreeningDto doScreeningDto);
 
     @PostMapping(path = "/bsbMohOfficer/saveAOScreening",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveAOScreening(@RequestBody MohProcessDto mohProcessDto);
+    ResponseDto<String> saveAOScreening(@RequestBody AOScreeningDto aoScreeningDto);
 
     @PostMapping(path = "/bsbMohOfficer/saveHMScreening",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveHMScreening(@RequestBody MohProcessDto mohProcessDto);
+    ResponseDto<String> saveHMScreening(@RequestBody HMScreeningDto hmScreeningDto);
 
     @PostMapping(path = "/bsbMohOfficer/saveDOProcessing",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveDOProcessing(@RequestBody MohProcessDto mohProcessDto);
+    ResponseDto<String> saveDOProcessing(@RequestBody DOProcessingDto doProcessingDto);
 
     @PostMapping(path = "/bsbMohOfficer/saveAOProcessing",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveAOProcessing(@RequestBody MohProcessDto mohProcessDto);
+    ResponseDto<String> saveAOProcessing(@RequestBody AOProcessingDto aoProcessingDto);
+
+    @GetMapping(path = "/bsbMohOfficer/getDifferentModuleDoc/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<DocDisplayDto> getDifferentModuleDoc(@PathVariable("applicationId") String applicationId);
 }

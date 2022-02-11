@@ -37,8 +37,6 @@ public class CommentInsReportDto implements Serializable {
     }
 
 
-
-
     private String upload;
 
     /* docs new uploaded, key is tmpId */
@@ -54,12 +52,7 @@ public class CommentInsReportDto implements Serializable {
 
 
     public List<DocMeta> getNewFileMeta() {
-        List<DocMeta> metaList = new ArrayList<>(newDocMap.size());
-        for (NewDocInfo i : newDocMap.values()) {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "commentReport");
-            metaList.add(docMeta);
-        }
-        return metaList;
+        return newDocMap.values().stream().map(i -> i.toDocMeta("commentReport")).collect(Collectors.toCollection(() -> new ArrayList<>(newDocMap.size())));
     }
 
     public CommentInsReportValidateDto toValidateDto() {

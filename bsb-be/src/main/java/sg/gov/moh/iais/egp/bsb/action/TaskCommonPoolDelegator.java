@@ -141,18 +141,25 @@ public class TaskCommonPoolDelegator {
         AuditTrailHelper.auditFunction(MODULE_NAME, "Assign Task");
         HttpServletRequest request = bpc.request;
         String maskedTaskId = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String maskedAppId = ParamUtil.getString(request, "appId");
+
         if (log.isInfoEnabled()) {
             log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
+            log.info("masked application id: [{}]", LogUtil.escapeCrlf(maskedAppId));
         }
         String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
         if (taskId == null || taskId.equals(maskedTaskId)) {
             throw new IaisRuntimeException("Invalid masked task ID");
         }
+        String appId = MaskUtil.unMaskValue("appId", maskedAppId);
+        if (appId == null || appId.equals(maskedAppId)) {
+            throw new IaisRuntimeException("Invalid masked application id");
+        }
 
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-
-        ResponseDto<String> assignResult = bsbTaskClient.assignTask(taskId, userId);
+        String curRoleId = loginContext.getCurRoleId();
+        ResponseDto<String> assignResult = bsbTaskClient.assignTask(taskId, userId, appId,curRoleId);
         if (assignResult.ok()) {
             ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "Task has been assigned to you successfully!");
         } else {

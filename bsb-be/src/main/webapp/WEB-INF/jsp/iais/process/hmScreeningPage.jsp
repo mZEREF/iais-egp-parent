@@ -78,31 +78,31 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.riskLevel}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${hmScreeningDto.riskLevel}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.riskLevelComments}</p></iais:value>
+                                                                            <iais:value width="10"><p>${hmScreeningDto.riskLevelComments}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Recommendation" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.doRecommendation}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${hmScreeningDto.doRecommendation}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Review Decision" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${mohProcessDto.hmScreeningDto.aoReviewDecision}"></iais:code></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${hmScreeningDto.aoReviewDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.aoRemarks}</p></iais:value>
+                                                                            <iais:value width="10"><p>${hmScreeningDto.aoRemarks}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -111,7 +111,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.hmScreeningDto.hmRemarks}"></c:out></textarea>
+                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${hmScreeningDto.hmRemarks}"></c:out></textarea>
                                                                                         <span data-err-ind="remarks" class="error-msg"></span>
                                                                                     </div>
                                                                                 </div>
@@ -124,8 +124,8 @@
                                                                             <iais:value width="10">
                                                                                 <select name="processingDecision" id="processingDecision">
                                                                                     <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${mohProcessDto.hmScreeningDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
-                                                                                    <option value="MOHPRO003" <c:if test="${mohProcessDto.hmScreeningDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                                    <option value="MOHPRO007" <c:if test="${hmScreeningDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                    <option value="MOHPRO003" <c:if test="${hmScreeningDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
                                                                                 </select>
                                                                                 <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                             </iais:value>
@@ -134,13 +134,13 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.validityStartDate}</p></iais:value>
+                                                                            <iais:value width="10"><p>${hmScreeningDto.validityStartDate}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${mohProcessDto.hmScreeningDto.validityEndDate}</p></iais:value>
+                                                                            <iais:value width="10"><p>${hmScreeningDto.validityEndDate}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>

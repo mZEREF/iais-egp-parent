@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 
 import java.util.List;
@@ -48,17 +48,16 @@ public interface AssistedReproductionService {
 
     PatientInfoDto patientInfoDtoBySubmissionId( String submissionId);
 
-
-    PatientInventoryDto patientInventoryByCode(String patientCode,  String hciCode);
-
-
     ArEnquiryCoFundingHistoryDto patientCoFundingHistoryByCode(String patientCode);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo);
 
-    List<SelectOption> genPremisesOptions(String patientCode);
+    List<SelectOption> genPremisesOptions(String patientCode,String orgId);
 
     List<PgtStageDto> listPgtStageByPatientCode( String patientCode);
+
+    List<ArCurrentInventoryDto> arCurrentInventoryDtosByPatientCode(String patientCode);
+
 
 
 }

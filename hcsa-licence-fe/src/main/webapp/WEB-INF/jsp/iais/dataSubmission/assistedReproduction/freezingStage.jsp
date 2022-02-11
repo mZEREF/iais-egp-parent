@@ -81,6 +81,7 @@
                   </iais:row>
                 </div>
               </div>
+              <%@include file="common/dsAmendment.jsp" %>
             </div>
           </div>
         </div>

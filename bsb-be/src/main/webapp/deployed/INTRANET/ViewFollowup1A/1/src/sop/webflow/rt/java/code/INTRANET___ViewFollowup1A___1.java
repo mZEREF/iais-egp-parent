@@ -11,8 +11,10 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___ViewFollowup1A___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="followupProcessDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
@@ -20,6 +22,7 @@ public class INTRANET___ViewFollowup1A___1 extends BaseProcessClass {
 
 	public void preView_OnStepProcess_0() throws Exception {
 	// 		PreView->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewFollowup1A", this);
 	}
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -13,7 +14,7 @@ import java.util.Date;
  * be safe to add config to handle this or change your field name. */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DocDisplayDto {
+public class DocDisplayDto implements Serializable {
     @JMap
     private String id;
 

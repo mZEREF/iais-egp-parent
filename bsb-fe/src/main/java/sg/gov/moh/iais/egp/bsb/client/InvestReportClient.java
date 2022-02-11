@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
-import sg.gov.moh.iais.egp.bsb.dto.report.notification.IncidentNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.investigation.view.InvestViewDto;
 
 import java.util.List;
 
@@ -49,4 +49,7 @@ public interface InvestReportClient {
 
     @PostMapping(path = "/invest/validate/primaryDoc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePrimaryDoc(@RequestBody PrimaryDocDto.DocsMetaDto dto);
+
+    @GetMapping(path = "/invest/view/{referNo}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<InvestViewDto> findInvestViewDtoByReferenceNo(@PathVariable("referNo") String referNo);
 }

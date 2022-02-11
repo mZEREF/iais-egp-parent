@@ -37,6 +37,9 @@ $(document).ready(function() {
     if ($draft.length > 0) {
         $draft.modal('show');
     }
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+
     var currPage = $('input[name="vss_page"]').val();
     console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {
@@ -136,4 +139,5 @@ function printData() {
         }
         return {declaration: declaration, printflag: printflag};
     }
+
 }

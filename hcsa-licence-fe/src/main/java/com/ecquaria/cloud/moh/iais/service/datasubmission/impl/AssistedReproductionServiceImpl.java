@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -95,12 +95,6 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
         return assistedReproductionClient.patientInfoDtoBySubmissionId(submissionId).getEntity();
     }
 
-
-    @Override
-    public PatientInventoryDto patientInventoryByCode(String patientCode, String hciCode) {
-        return assistedReproductionClient.patientInventoryByCode(patientCode,hciCode).getEntity();
-    }
-
     @Override
     public ArEnquiryCoFundingHistoryDto patientCoFundingHistoryByCode(String patientCode) {
         return assistedReproductionClient.patientCoFundingHistoryByCode(patientCode).getEntity();
@@ -112,8 +106,8 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     }
 
     @Override
-    public List<SelectOption> genPremisesOptions(String patientCode) {
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode).getEntity();
+    public List<SelectOption> genPremisesOptions(String patientCode,String orgId) {
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode,orgId).getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(premisesDtos)){
             for (PremisesDto premisesDto : premisesDtos) {
@@ -143,5 +137,10 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public List<PgtStageDto> listPgtStageByPatientCode(String patientCode) {
         return dpFeClient.listPgtStageByPatientCode(patientCode).getEntity();
+    }
+
+    @Override
+    public List<ArCurrentInventoryDto> arCurrentInventoryDtosByPatientCode(String patientCode) {
+        return assistedReproductionClient.getArCurrentInventoryDtosByPatientCode(patientCode).getEntity();
     }
 }

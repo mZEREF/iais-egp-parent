@@ -778,4 +778,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
                 0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
     }
+
+    @Override
+    public ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode) {
+        return arFeClient.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode).getEntity();
+    }
+
+    @Override
+    public ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter){
+        return arFeClient.getArCurrentInventoryDtoBySubmissionNo(submissionNo, hasAfter).getEntity();
+    }
 }

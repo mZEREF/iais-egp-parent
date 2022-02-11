@@ -9,16 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.IncidentProcessClient;
+import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.IncidentProcessConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.incident.IncidentBatViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.IncidentNotificationDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.ProcessingDto;
-import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.entity.IncidentViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.incident.entity.InvestViewDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -43,11 +44,18 @@ public class IncidentMOHProcessService {
     private static final String PARAM_PLEASE_SELECT = "Please Select";
     private static final String PARAM_PROCESS_KEY = "key";
     private static final String KEY_APPLICATION_ID = "appId";
-    private static final String MESSAGE_APPLICATION_ID_IS_NULL = "application id is null";
-    private final IncidentProcessClient incidentProcessClient;
+    private static final String KEY_TASK_ID = "taskId";
+    public static final String KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST    = "supportDocDisplayDtoList";
+    public static final String KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST   = "internalDocDisplayDtoList";
 
-    public IncidentMOHProcessService(IncidentProcessClient incidentProcessClient) {
+    private static final String MESSAGE_APPLICATION_ID_IS_NULL = "application id is null";
+    private static final String MESSAGE_REQUEST_FOR_INFORMATION = "MESSAGE_REQUEST_FOR_INFORMATION";
+    private final IncidentProcessClient incidentProcessClient;
+    private final InternalDocClient internalDocClient;
+
+    public IncidentMOHProcessService(IncidentProcessClient incidentProcessClient, InternalDocClient internalDocClient) {
         this.incidentProcessClient = incidentProcessClient;
+        this.internalDocClient = internalDocClient;
     }
     public void preIncidentProcessingData(HttpServletRequest request) {
         String maskedAppId = ParamUtil.getString(request,TaskModuleConstants.PARAM_NAME_APP_ID);
@@ -180,7 +188,7 @@ public class IncidentMOHProcessService {
         List<SelectOption> selectOptions = new ArrayList<>(3);
         selectOptions.add(new SelectOption("",PARAM_PLEASE_SELECT));
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Acknowledged"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"Request for Information"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
         return selectOptions;
     }
 
@@ -190,7 +198,7 @@ public class IncidentMOHProcessService {
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Approve"));
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT,"Reject"));
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM,"Route To HM"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"Request for Information"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
         return selectOptions;
     }
 
@@ -199,7 +207,7 @@ public class IncidentMOHProcessService {
         selectOptions.add(new SelectOption("",PARAM_PLEASE_SELECT));
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE,"Approve"));
         selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT,"Reject"));
-        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"Request for Information"));
+        selectOptions.add(new SelectOption(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO,"MESSAGE_REQUEST_FOR_INFORMATION"));
         return selectOptions;
     }
 
@@ -247,9 +255,11 @@ public class IncidentMOHProcessService {
         IncidentBatViewDto incidentBatViewDto = incidentNotificationDto.getIncidentBatViewDto();
         incidentBatViewDto.setServiceType(replaceServiceType(incidentBatViewDto.getServiceType()));
         incidentNotificationDto.setIncidentBatViewDto(incidentBatViewDto);
-        List<IncidentDocDto> incidentDocs = incidentNotificationDto.getIncidentDocDtoList();
-        Map<String,IncidentDocDto> repoIdDocMap = CollectionUtils.uniqueIndexMap(incidentDocs,IncidentDocDto::getFileRepoId);
+        List<DocDisplayDto> incidentDocs = incidentNotificationDto.getSupportDocDisplayDtoList();
+        Map<String,DocDisplayDto> repoIdDocMap = CollectionUtils.uniqueIndexMap(incidentDocs,DocDisplayDto::getFileRepoId);
         ParamUtil.setSessionAttr(request,PARAM_REPO_ID_FILE_MAP,new HashMap<>(repoIdDocMap));
+        ParamUtil.setRequestAttr(request,KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST,incidentDocs);
+        //set internal document
         ParamUtil.setRequestAttr(request,"scheduleType",getScheduleTypeList());
         ParamUtil.setRequestAttr(request,"decisionOps",getDemandDecision(request));
         ParamUtil.setRequestAttr(request,"mohRoles",getMohOfficer());
@@ -265,7 +275,10 @@ public class IncidentMOHProcessService {
             }
             if(!maskedTaskId.equals(taskId)){
                 processingDto.setTaskId(taskId);
+                ParamUtil.setSessionAttr(request,KEY_TASK_ID,appId);
             }
+            List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
+            ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
         }
         incidentNotificationDto.setProcessingDto(processingDto);
         ParamUtil.setSessionAttr(request,PARAM_INCIDENT_PROCESS_DTO,incidentNotificationDto);

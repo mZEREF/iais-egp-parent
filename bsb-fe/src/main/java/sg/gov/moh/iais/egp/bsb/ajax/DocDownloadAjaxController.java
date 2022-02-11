@@ -23,8 +23,8 @@ import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
@@ -42,6 +42,8 @@ import static sg.gov.moh.iais.egp.bsb.action.WithdrawnAppDelegator.WITHDRAWN_APP
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
 
 
 @RestController
@@ -119,6 +121,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/facReg/repo/{id}")
     public void downloadSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegGetSavedFile);
+    }
+
+    @GetMapping("/facReg/profile/new/{id}")
+    public void downloadProfileNewFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegProfileGetNewFile);
+    }
+
+    @GetMapping("/facReg/profile/repo/{id}")
+    public void downloadProfileSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegProfileGetSavedFile);
     }
 
     @GetMapping("/facCertReg/new/{id}")
@@ -230,6 +242,27 @@ public class DocDownloadAjaxController {
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    /** Facility registration get new uploaded file for profile (exactly the gazette order) */
+    private MultipartFile facRegProfileGetNewFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        SimpleNode profileNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE);
+        FacilityProfileDto profileDto = (FacilityProfileDto) profileNode.getValue();
+        return profileDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    /** Facility registration get saved uploaded file for profile (exactly the gazette order) */
+    private MultipartFile facRegProfileGetSavedFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        SimpleNode profileNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE);
+        FacilityProfileDto profileDto = (FacilityProfileDto) profileNode.getValue();
+        DocRecordInfo info = profileDto.getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }

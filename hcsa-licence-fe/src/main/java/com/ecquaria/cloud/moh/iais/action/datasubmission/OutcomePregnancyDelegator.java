@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -89,6 +91,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            valRFC(request, pregnancyOutcomeStageDto);
         }
 
         if (!errorMap.isEmpty()) {
@@ -212,5 +215,15 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
             pregnancyOutcomeBabyDtos.add(pregnancyOutcomeBabyDto);
         }
         return pregnancyOutcomeBabyDtos;
+    }
+
+    protected void valRFC(HttpServletRequest request, PregnancyOutcomeStageDto pregnancyOutcomeStageDto) {
+        if (isRfc(request)) {
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && pregnancyOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getPregnancyOutcomeStageDto())) {
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

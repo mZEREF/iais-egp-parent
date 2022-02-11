@@ -34,6 +34,7 @@ public interface IntranetUserService {
     OrgUserDto createIntrenetUser(OrgUserDto orgUserDto);
     void createIntranetUsers(List<OrgUserDto> orgUserDtos);
     List<FeUserDto> getUserListByNricAndIdType(String nric, String idType);
+    List<FeUserDto> getUserListByNricAndIdTypeWithDel(String nric, String idType);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);

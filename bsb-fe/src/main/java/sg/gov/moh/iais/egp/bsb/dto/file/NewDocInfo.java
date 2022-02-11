@@ -17,4 +17,17 @@ public class NewDocInfo implements Serializable {
     private Date submitDate;
     private String submitBy;
     private ByteArrayMultipartFile multipartFile;
+
+
+    /** Convert this new doc to meta info object
+     * @see DocMeta#DocMeta(String, String, long)  */
+    public DocMeta toDocMeta() {
+        return new DocMeta(docType, filename, size);
+    }
+
+    /** Convert this new doc to meta info object with a specific module name
+     * @see DocMeta#DocMeta(String, String, String, long, String)  */
+    public DocMeta toDocMeta(String module) {
+        return new DocMeta(tmpId, docType, filename, size, module);
+    }
 }

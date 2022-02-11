@@ -76,8 +76,8 @@
                     </c:forEach>
                 </c:if>
                 <%--@elvariable id="docInfo" type="sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo"--%>
-                <c:if test="${suspensionReinstatementDto.queryDocMap ne null}">
-                    <c:forEach var="docInfo" items="${suspensionReinstatementDto.queryDocMap.values()}">
+                <c:if test="${suspensionReinstatementDto.primaryDocDto.savedDocMap ne null}">
+                    <c:forEach var="docInfo" items="${suspensionReinstatementDto.primaryDocDto.savedDocMap.values()}">
                         <c:set var="tmpId" value="${MaskUtil.maskValue('file', docInfo.repoId)}"/>
                         <div id="${tmpId}FileDiv">
                             <tr id="${tmpId}FileTr">
@@ -85,8 +85,8 @@
                                 <td>${docInfo.docType}</td>
                                 <td><p><a href="javascript:void(0)" onclick="downloadSavedSuspensionFile('${tmpId}')">${docInfo.filename}</a></p></td>
                                 <td>${String.format("%.1f", docInfo.size/1024.0)}KB</td>
-                                <td>${docInfo.submitBy}</td>
-                                <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                                <td>${docInfo.submitByName}</td>
+                                <td><fmt:formatDate value='${docInfo.submitDate}' pattern='dd/MM/yyyy'/></td>
                                 <td>
                                     <button type="button" class="btn btn-secondary-del btn-sm"
                                             onclick="javascript:deleteSavedFile(this,'${tmpId}');">

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -77,17 +77,13 @@ public interface AssistedReproductionClient {
     FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
 
     @GetMapping(value = "/ar-common/ar-center-premises-patient-code", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getAllArCenterPremisesDtoByPatientCode(@RequestParam(name = "patientCode") String patientCode);
+    FeignResponseEntity<List<PremisesDto>> getAllArCenterPremisesDtoByPatientCode(@RequestParam(name = "patientCode") String patientCode,@RequestParam(name = "orgId") String orgId);
 
     @GetMapping(value = "/ar-common/patient-info/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> patientInfoDtoByPatientCode(@PathVariable("patientCode") String patientCode);
 
     @GetMapping(value = "/ar-common/patient-info-sub/{submissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInfoDto> patientInfoDtoBySubmissionId(@PathVariable("submissionId") String submissionId);
-
-
-    @GetMapping(value = "/data-submission-be/patient-inventory/{patientCode}/{hciCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode, @PathVariable("hciCode") String hciCode);
 
     @GetMapping(value = "/data-submission-be/patient-Co-Funding-History/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArEnquiryCoFundingHistoryDto> patientCoFundingHistoryByCode(@PathVariable("patientCode") String patientCode);
@@ -102,4 +98,7 @@ public interface AssistedReproductionClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto>> searchLdtByParam(
             @RequestBody SearchParam searchParam);
+
+    @GetMapping(value = "/ar-common/ar-current-inventory-by-patientCode", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ArCurrentInventoryDto>> getArCurrentInventoryDtosByPatientCode(@RequestParam(name = "patientCode") String patientCode);
 }

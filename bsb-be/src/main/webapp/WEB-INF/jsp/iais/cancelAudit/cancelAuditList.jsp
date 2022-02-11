@@ -26,7 +26,7 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field value="Audit Type" required="true"/>
+                                    <iais:field value="Audit Type"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
                                                      value="${auditSearch.auditType}"
@@ -121,7 +121,7 @@
                                 </c:forEach>
                             </table>
 <%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
-                            <div align="right">
+                            <div style="text-align: right">
                                 <button name="submitBtn" id="doCancel" type="button" class="btn btn-primary">
                                     Submit
                                 </button>

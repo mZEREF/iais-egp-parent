@@ -21,11 +21,14 @@
 
 <%@include file="dashboard.jsp"%>
 
-<form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
+<form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
+    <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <div id="fileUploadInputDiv" style="display: none"></div>
     <div class="main-content">
         <div class="container">
             <div class="row">

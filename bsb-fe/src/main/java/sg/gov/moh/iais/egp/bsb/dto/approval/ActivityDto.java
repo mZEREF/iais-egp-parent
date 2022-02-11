@@ -21,6 +21,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActivityDto extends ValidatableNodeValue {
 
+    private String draftAppNo;
+    private String processType;
+
     @RfcAttributeDesc
     private String facilityId;
 
@@ -69,6 +72,22 @@ public class ActivityDto extends ValidatableNodeValue {
     public void replaceSchedules(String[] schedules) {
         clearSchedules();
         addSchedules(schedules);
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
+
+    public String getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(String processType) {
+        this.processType = processType;
     }
 
     public void clearSchedules() {
@@ -123,6 +142,8 @@ public class ActivityDto extends ValidatableNodeValue {
     private static final String KEY_ACTIVITY_ACTIVITY_TYPE = "activityType";
     private static final String KEY_ACTIVITY_SCHEDULE = "schedules";
 
+    private static final String PROCESS_TYPE = "processType";
+
     public void reqObjMapping(HttpServletRequest request) {
         String maskFacilityId = ParamUtil.getString(request, KEY_ACTIVITY_FACILITY_ID);
         String newFacilityName = ParamUtil.getString(request,KEY_ACTIVITY_FACILITY_NAME);
@@ -131,8 +152,8 @@ public class ActivityDto extends ValidatableNodeValue {
         String newFacilityId = "";
         String newActivityId = "";
         if (!maskFacilityId.equals("Please Select") && !maskActivityId.equals("Please Select")){
-            newFacilityId = MaskUtil.unMaskValue(KEY_ACTIVITY_FACILITY_ID,maskFacilityId);
-            newActivityId = MaskUtil.unMaskValue(KEY_ACTIVITY_ACTIVITY_ID,maskActivityId);
+            newFacilityId = MaskUtil.unMaskValue(KEY_ACTIVITY_FACILITY_ID, maskFacilityId);
+            newActivityId = MaskUtil.unMaskValue(KEY_ACTIVITY_ACTIVITY_ID, maskActivityId);
         }
         this.setFacilityId(newFacilityId);
         this.setFacilityName(newFacilityName);
@@ -140,5 +161,7 @@ public class ActivityDto extends ValidatableNodeValue {
         this.setActivityType(newActivityType);
         String[] scheduleArray = ParamUtil.getStrings(request, KEY_ACTIVITY_SCHEDULE);
         this.replaceSchedules(scheduleArray);
+        String newProcessType = (String) ParamUtil.getSessionAttr(request, PROCESS_TYPE);
+        this.setProcessType(newProcessType);
     }
 }

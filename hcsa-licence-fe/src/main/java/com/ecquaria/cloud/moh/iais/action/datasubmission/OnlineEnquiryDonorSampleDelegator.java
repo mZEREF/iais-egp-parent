@@ -17,7 +17,9 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -62,6 +64,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         donorSampleParameter.setPageNo(1);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Assisted Reproduction Enquiry");
+        ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
+
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
         ArEnquiryDonorSampleFilterDto dsFilterDto=new ArEnquiryDonorSampleFilterDto();
@@ -73,6 +77,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         dsFilterDto.setSampleType(sampleType);
         String sampleHciCode=ParamUtil.getString(request,"sampleHciCode");
         dsFilterDto.setSampleHciCode(sampleHciCode);
+        String othersSampleHciCode=ParamUtil.getString(request,"othersSampleHciCode");
+        dsFilterDto.setOthersSampleHciCode(othersSampleHciCode);
         String donorIdType=ParamUtil.getString(request,"donorIdType");
         dsFilterDto.setDonorIdType(donorIdType);
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
@@ -94,10 +100,18 @@ public class OnlineEnquiryDonorSampleDelegator {
     }
     public void preSearch(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
+        LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
         String back = (String) ParamUtil.getRequestAttr(request,"back");
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
-        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null","null");
+        SelectOption otherSelectOption=new SelectOption();
+        otherSelectOption.setText("Others");
+        otherSelectOption.setValue("AR_SC_001");
+        arCentreSelectOptionFrom.add(otherSelectOption);
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOptionFrom",arCentreSelectOptionFrom);
         if(!"back".equals(back)||searchParam==null){
             ArEnquiryDonorSampleFilterDto arDto=setArEnquiryDonorSampleFilterDto(request);
 
@@ -113,7 +127,11 @@ public class OnlineEnquiryDonorSampleDelegator {
                 filter.put("sampleType", arDto.getSampleType());
             }
             if(arDto.getSampleHciCode()!=null){
-                filter.put("sampleHciCode", arDto.getSampleHciCode());
+                if("AR_SC_001".equals(arDto.getSampleHciCode())&&arDto.getOthersSampleHciCode()!=null){
+                    filter.put("othersDonorSampleCode", arDto.getOthersSampleHciCode());
+                }else {
+                    filter.put("sampleHciCode", arDto.getSampleHciCode());
+                }
             }
             if(arDto.getDonorIdType()!=null){
                 filter.put("donorIdType", arDto.getDonorIdType());
@@ -154,8 +172,14 @@ public class OnlineEnquiryDonorSampleDelegator {
             }
 
             SearchParam donorSampleParam = SearchResultHelper.getSearchParam(request, donorSampleParameter,true);
+            if(donorSampleParam.getSortMap().containsKey("SAMPLE_TYPE_DESC")){
+                HalpSearchResultHelper.setMasterCodeForSearchParam(donorSampleParam,"SAMPLE_TYPE", "SAMPLE_TYPE_DESC", MasterCodeUtil.AR_DONOR_SAMPLE_TYPE);
+            }
+            if(searchParam!=null){
+                donorSampleParam.setPageNo(searchParam.getPageNo());
+                donorSampleParam.setPageSize(searchParam.getPageSize());
+            }
             CrudHelper.doPaging(donorSampleParam,bpc.request);
-            LoginContext loginContext=(LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             donorSampleParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
 
             QueryHelp.setMainSql("onlineEnquiry","searchDonorSampleByAssistedReproduction",donorSampleParam);

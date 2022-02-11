@@ -52,7 +52,7 @@
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.patient.birthDate}"/>
                             <c:if test="${patientInfoDto.patient.getAgeYear()<14 or patientInfoDto.patient.getAgeYear() >74}">
-                                <button  href="#errAge"  data-toggle="modal" data-target="#errAge" type="button" style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</button>
+                                <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
@@ -135,7 +135,7 @@
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.previous.birthDate}"/>
                             <c:if test="${patientInfoDto.previous.getAgeYear()<14 or patientInfoDto.previous.getAgeYear()>75}">
-                                <button  href="#errAge"  data-toggle="modal" data-target="#errAge" type="button" style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</button>
+                                <a  href="#errAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">

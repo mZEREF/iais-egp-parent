@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -286,7 +287,10 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/premises/{premisedId}/floor-units", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getPremisesFloorUnits(@PathVariable("premisedId") String premisedId);
 
+    @GetMapping(value = "/vss-common/vssDocument/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<VssFileDto>> getListVssDocumentDtoStatus(@RequestParam("status") String status);
 
-
+    @PostMapping(value = "/vss-common/vssDocument/treatmentId/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateVssDocumentStatusByTreId(@RequestParam("treatmentId") String treatmentId, @RequestParam("status") String status);
 
 }
