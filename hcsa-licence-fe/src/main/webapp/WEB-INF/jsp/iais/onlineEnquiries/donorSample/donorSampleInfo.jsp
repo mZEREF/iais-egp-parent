@@ -157,13 +157,13 @@
                                                                 <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
                                                                    data-toggle="tooltip"
                                                                    data-html="true"
-                                                                   title="&lt;p&gt;<iais:message key="DS_ERR044"/>&lt;/p&gt;">!</a>
+                                                                   title="&lt;p&gt;<iais:message key="DS_ERR044" escape="false"/>&lt;/p&gt;">!</a>
                                                             </c:if>
                                                             <c:if test="${(donorSampleAge.age>35 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST001' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST002')}">
                                                                 <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
                                                                    data-toggle="tooltip"
                                                                    data-html="true"
-                                                                   title="&lt;p&gt;<iais:message key="DS_ERR045"/>&lt;/p&gt;">!</a>
+                                                                   title="&lt;p&gt;<iais:message key="DS_ERR045" escape="false"/>&lt;/p&gt;">!</a>
                                                             </c:if>
                                                         </p>
                                                     </td>
