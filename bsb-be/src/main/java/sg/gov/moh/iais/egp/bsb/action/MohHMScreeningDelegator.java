@@ -67,6 +67,7 @@ public class MohHMScreeningDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         HMScreeningDto hmScreeningDto = mohProcessService.getHMScreeningDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_HM_SCREENING_DTO, hmScreeningDto);
+        ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, hmScreeningDto.getSubmitDetailsDto());
         //view application process need an applicationDto
         appViewService.createAndSetAppViewDtoInSession(appId, hmScreeningDto.getSubmitDetailsDto().getProcessType(),
                 hmScreeningDto.getSubmitDetailsDto().getAppType(), request);
