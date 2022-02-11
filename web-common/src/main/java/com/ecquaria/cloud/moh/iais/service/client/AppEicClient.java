@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,4 +33,7 @@ public interface AppEicClient {
 
     @PutMapping(path = "/eicTracking/eic-request", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<EicRequestTrackingDto> saveEicTrack(@RequestBody EicRequestTrackingDto eicRequestTrackingDto);
+
+    @DeleteMapping(value = "/eic-request-tracking", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> deleteOldEicRequestTracking();
 }
