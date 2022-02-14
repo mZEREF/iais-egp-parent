@@ -169,7 +169,7 @@
                     </div>
                     <br>
 
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 row">
                         <div class="components">
 
                             <iais:pagination param="donorSampleParam" result="donorSampleResult"/>

@@ -29,6 +29,14 @@
         float: left;
         margin-top: 5px;
     }
+    .btn.btn-sm {
+        font-size: 16px;
+        font-weight: 500;
+        padding: 5px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+        border: 1px solid grey;
+    }
 </style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
@@ -177,7 +185,7 @@
                 </div>
                 <br>
 
-                <div class="col-xs-12">
+                <div class="col-xs-12 row">
                     <div class="components">
 
                         <iais:pagination param="donorSampleParam" result="donorSampleResult"/>
