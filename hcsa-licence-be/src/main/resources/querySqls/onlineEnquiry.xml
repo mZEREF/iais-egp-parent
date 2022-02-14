@@ -334,7 +334,7 @@
 
                 <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
                 <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
-                <#if donorIdType??> AND  :donorIdType = donor.donorIdType </#if>
+                <#if donorIdType??> AND  :donorIdType = donor.ID_TYPE </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
@@ -433,7 +433,7 @@
 
                 <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
                 <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
-                <#if donorIdType??> AND  :donorIdType = donor.donorIdType </#if>
+                <#if donorIdType??> AND  :donorIdType = donor.ID_TYPE </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
