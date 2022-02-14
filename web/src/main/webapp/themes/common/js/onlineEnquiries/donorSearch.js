@@ -32,9 +32,10 @@ function sortRecords(sortFieldName, sortType) {
 }
 
 
-var fullDetailsView = function (submissionNo) {
+var fullDetailsView = function (submissionNo,sampleHciCode) {
 
     showWaiting();
+    $("[name='crud_action_additional']").val(sampleHciCode);
     $("[name='crud_action_value']").val(submissionNo);
     $("[name='crud_action_type']").val('viewInfo');
     $('#mainForm').submit();

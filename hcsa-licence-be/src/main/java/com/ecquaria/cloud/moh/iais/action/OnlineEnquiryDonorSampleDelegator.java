@@ -198,8 +198,9 @@ public class OnlineEnquiryDonorSampleDelegator {
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         String submissionNo = ParamUtil.getString(request,"crud_action_value");
-
+        String sampleHciCode = ParamUtil.getString(request,"crud_action_additional");
         ArSuperDataSubmissionDto donorInfo = assistedReproductionService.getArSuperDataSubmissionDto(submissionNo);
+        donorInfo.getDonorSampleDto().setSampleFromHciCode(sampleHciCode);
         ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
     }
 

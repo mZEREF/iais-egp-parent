@@ -245,7 +245,7 @@
                                                         <c:out value="${donorSample.ageNumber}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}')" class="btn btn-default btn-sm">
+                                                        <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                             View Full Details
                                                         </button>
                                                     </td>
