@@ -156,7 +156,7 @@ function doClear() {
     $('input[type="text"]').val("");
     $('input[type="checkbox"]').prop("checked", false);
     $("option:first").prop("selected", 'selected');
-    $(".clearSel").text("Please Select");
+    $(".clearSel").children(".current").text("Please Select");
     $(".clearMultiSel").prop("selected", false);
     $('.date_picker').val("");
     $("#patientInformationFilter .multi-select-button").html("-- Select --");

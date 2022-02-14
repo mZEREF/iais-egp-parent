@@ -914,7 +914,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(!StringUtil.isEmpty(pageNo)){
                 submissionParam.setPageNo(Integer.parseInt(pageNo));
             }
-            if(!StringUtil.isEmpty(pageSize)){
+            if(pageSize!=null&&pageSize.length>1&&!StringUtil.isEmpty(pageSize[1])){
                 submissionParam.setPageSize(Integer.parseInt(pageSize[1]));
             }
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
