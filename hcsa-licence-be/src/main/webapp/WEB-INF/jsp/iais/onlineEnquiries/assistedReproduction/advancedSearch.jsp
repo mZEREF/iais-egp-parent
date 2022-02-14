@@ -350,7 +350,7 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID Type"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
+                                    <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                                      value="${assistedReproductionEnquiryFilterDto.donorIdType}" cssClass="idTypeSel" />
                                     </iais:value>

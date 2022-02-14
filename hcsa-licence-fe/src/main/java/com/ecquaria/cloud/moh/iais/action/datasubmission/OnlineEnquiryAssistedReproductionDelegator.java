@@ -895,7 +895,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 submissionParam.setPageNo(searchParamForSub.getPageNo());
                 submissionParam.setPageSize(searchParamForSub.getPageSize());
             }
-            CrudHelper.doPaging(submissionParam,bpc.request);
+            String  pageNo = ParamUtil.getString(request,"pageJumpNoTextchangePage");
+            String[]  pageSize = ParamUtil.getStrings(request,"pageJumpNoPageSize");
+            if(!StringUtil.isEmpty(pageNo)){
+                submissionParam.setPageNo(Integer.parseInt(pageNo));
+            }
+            if(!StringUtil.isEmpty(pageSize)){
+                submissionParam.setPageSize(Integer.parseInt(pageSize[1]));
+            }
             QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
             SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
             if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){

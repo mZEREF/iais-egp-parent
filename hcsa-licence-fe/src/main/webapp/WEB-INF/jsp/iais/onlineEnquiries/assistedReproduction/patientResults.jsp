@@ -128,7 +128,8 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateFrom}"/>
                                 </iais:value>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <iais:value width="3" cssClass="col-md-3">
                                     <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateTo}"/>
                                 </iais:value>
                             </iais:row>
@@ -262,7 +263,7 @@
                     <div class="col-xs-12 row">
                         <div class="components">
 
-                            <iais:pagination param="submissionParam" result="submissionResult"/>
+                            <iais:pagination param="submissionParam" result="submissionResult" needRowNum=""/>
                             <div class="table-responsive">
                                 <div class="table-gp">
                                     <table aria-describedby="" class="table">

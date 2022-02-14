@@ -82,7 +82,7 @@
 
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
             CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
@@ -114,7 +114,7 @@
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
             UNION ALL
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
             CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
