@@ -107,7 +107,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Submission ID"/>
                                 <iais:value width="4" cssClass="col-md-4" display="true" >
-                                    <input type="text"  id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
+                                    <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
