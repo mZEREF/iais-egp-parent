@@ -42,8 +42,8 @@
                     <div class="col-xs-12 col-md-12">
                         <iais:row>
                             <iais:field width="4" value="SEARCH BY" />
-                            <div class="col-md-8">
-                                <iais:value width="4" cssClass="col-md-4">
+                            <div class="col-md-8 row">
+                                <iais:value width="4" cssClass="col-md-4 row">
                                     <div class="form-check">
                                         <input class="form-check-input"
                                                type="radio"
@@ -151,7 +151,7 @@
                 <br>
 
                 <div id="patientResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 row">
                         <div class="components">
 
                             <iais:pagination param="patientParam" result="patientResult"/>
@@ -259,7 +259,7 @@
 
 
                 <div id="submissionResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">style="display: none"</c:if>>
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 row">
                         <div class="components">
 
                             <iais:pagination param="submissionParam" result="submissionResult"/>
