@@ -840,8 +840,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
         submissionTypeOptions.add(new SelectOption("AR_TP001","Patient Information"));
-        submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stages"));
-        submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Samples"));
+        submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stage"));
+        submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Sample"));
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
@@ -924,8 +924,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 ) {
                     switch (subResultsDto.getSubmissionType()){
                         case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
-                        case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
-                        case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                        case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stage");break;
+                        case "AR_TP003":subResultsDto.setSubmissionType("Donor Sample");break;
                         default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
                     }
                 }
@@ -945,8 +945,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     ) {
                         switch (subResultsDto.getSubmissionType()){
                             case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
-                            case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
-                            case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                            case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stage");break;
+                            case "AR_TP003":subResultsDto.setSubmissionType("Donor Sample");break;
                             default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
                         }
                     }
