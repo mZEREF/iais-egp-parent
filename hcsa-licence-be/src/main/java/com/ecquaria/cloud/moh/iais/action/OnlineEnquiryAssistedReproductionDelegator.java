@@ -422,7 +422,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             if(arDto.getSubmissionDateTo()!=null){
                 String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("submission_to_date", submissionDateTo);
             }
         }
@@ -485,7 +485,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(arDto.getCycleStagesDateTo()!=null){
                 String cycleStagesDateTo = Formatter.formatDateTime(arDto.getCycleStagesDateTo(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("cycleStagesDateTo", cycleStagesDateTo);
             }
             if(arDto.getArOrIuiCycle()!=null){
@@ -668,7 +668,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             if(arDto.getDeliveryDateTo()!=null){
                 String deliveryDateTo = Formatter.formatDateTime(arDto.getDeliveryDateTo(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("deliveryDateTo", deliveryDateTo);
             }
 
@@ -742,7 +742,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             if(arDto.getDisposalDateTo()!=null){
                 String disposalDateTo = Formatter.formatDateTime(arDto.getDisposalDateTo(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("disposalDateTo", disposalDateTo);
             }
             if(arDto.getTransferInOrOut()!=null){
@@ -785,7 +785,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             if(arDto.getTransferDateTo()!=null){
                 String transferDateTo = Formatter.formatDateTime(arDto.getTransferDateTo(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
+                        SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                 filter.put("transferDateTo", transferDateTo);
             }
             if(arDto.getPGT()!=null){
@@ -1146,7 +1146,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
                 if(arDto.getSubmissionDateTo()!=null){
                     String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
-                            SystemAdminBaseConstants.DATE_FORMAT);
+                            SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                     filter.put("submission_to_date", submissionDateTo);
                 }
                 if(arDto.getIncludeTransfers()!=null) {

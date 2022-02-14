@@ -101,7 +101,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         }
         if(dsFilterDto.getLdtDateTo()!=null){
             String ldtDateToStr = Formatter.formatDateTime(dsFilterDto.getLdtDateTo(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
             filter.put("ldtDateTo", ldtDateToStr);
         }
         if(dsFilterDto.getLdtTestName()!=null){

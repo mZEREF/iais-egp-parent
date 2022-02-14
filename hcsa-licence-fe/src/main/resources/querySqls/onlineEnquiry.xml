@@ -34,7 +34,7 @@
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             UNION ALL
             SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE,
             case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
@@ -56,7 +56,7 @@
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
          ]]>
     </sql>
 
@@ -227,10 +227,10 @@
                 <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER</#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
-                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateTo)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
                 <#if husbandName??> AND  charindex(:husbandName, dh.NAME) >0</#if>
                 <#if husbandIdType??> AND  charindex(:husbandIdType, dh.ID_TYPE) >0</#if>
@@ -243,7 +243,7 @@
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
 
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
-                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
+                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(datetime,:cycleStagesDateTo)</#if>
                 <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
@@ -267,7 +267,7 @@
                 <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
-                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(date,:deliveryDateTo)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
                 <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
                 <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
                 <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
@@ -277,13 +277,13 @@
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
-                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(date,:disposalDateTo)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
                 <#if transferredList??> AND  (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
                 <#if transferredInFrom??> AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
-                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(date,:transferDateTo)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
                 <#if pgtNo??> AND  dps.ID is null </#if>
                 <#if pgtYes??> AND  dps.ID is not null </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
@@ -334,7 +334,7 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
             UNION ALL
@@ -360,7 +360,7 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
