@@ -13,6 +13,7 @@ import java.util.Date;
 public class DocRecordInfo implements Serializable {
     private String docEntityId;
     private String docType;
+    private String docSubType;
     private String filename;
     private long size;
     private String repoId;

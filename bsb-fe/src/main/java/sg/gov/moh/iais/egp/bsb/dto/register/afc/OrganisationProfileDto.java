@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class OrganisationProfileDto extends ValidatableNodeValue {
+    private String draftAppNo;
+
     private String facCertEntityId;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.name")
@@ -87,8 +89,13 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
         return this.validationResultDto.toErrorMsg();
     }
 
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
 
-
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
 
     public String getOrgName() {
         return orgName;

@@ -8,8 +8,7 @@ $(function () {
 
     $("#saveDraft").click(function () {
         showWaiting();
-        $("input[name='action_type']").val("jump");
-        $("input[name='action_value']").val("draft");
+        $("input[name='action_type']").val("draft");
         $("#mainForm").submit();
     });
 

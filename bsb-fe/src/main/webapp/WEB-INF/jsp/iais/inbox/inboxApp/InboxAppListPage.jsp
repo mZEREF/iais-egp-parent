@@ -176,6 +176,9 @@
                                                                         <c:when test="${app.appType eq 'BSBAPTY004' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/ApplicantCancellationApproval?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
                                                                         <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationAFC?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
