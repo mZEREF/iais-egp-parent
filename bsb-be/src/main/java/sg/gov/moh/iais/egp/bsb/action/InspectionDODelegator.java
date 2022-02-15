@@ -143,7 +143,7 @@ public class InspectionDODelegator {
         itemSelectionBuilder.append("</select>");
         itemNiceSelectBuilder.append("</ul></div>");
         // escape is needed, we don't use c:out in JSP
-        String itemSelection = StringEscapeUtils.escapeHtml(itemSelectionBuilder.toString() + itemNiceSelectBuilder.toString());
+        String itemSelection = StringEscapeUtils.escapeHtml(itemSelectionBuilder.append(itemNiceSelectBuilder).toString());
         ParamUtil.setSessionAttr(request, KEY_CHKL_ITEM_SELECTION, itemSelection);
     }
 
