@@ -13,10 +13,10 @@ deployments:
   - type: image_tag
     stack_name: fe-iais-app
     services:
-      - hcsa-licence-web=hub.ecquaria.com:8251/docker-mohiais-egp/hcsa-application:${TagName}-${BUILD_NUMBER}
-      - main-web=hub.ecquaria.com:8251/docker-mohiais-egp/fe-main:${TagName}-${BUILD_NUMBER}
-      - egov-app=hub.ecquaria.com:8251/docker-mohiais-egp/egov-app:${TagName}-${BUILD_NUMBER}
-      - web=hub.ecquaria.com:8251/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
+      - hcsa-licence-web=hub.ecquaria.com:8152/docker-mohiais-egp/hcsa-application:${TagName}-${BUILD_NUMBER}
+      - main-web=hub.ecquaria.com:8152/docker-mohiais-egp/fe-main:${TagName}-${BUILD_NUMBER}
+      - egov-app=hub.ecquaria.com:8152/docker-mohiais-egp/egov-app:${TagName}-${BUILD_NUMBER}
+      - web=hub.ecquaria.com:8152/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
   - type: wait_for_healthcheck
     stack_name: fe-iais-app
     timeout_seconds: 300

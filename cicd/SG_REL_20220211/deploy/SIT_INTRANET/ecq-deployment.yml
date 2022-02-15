@@ -13,10 +13,10 @@ deployments:
   - type: image_tag
     stack_name: be-iais-app
     services:
-      - hcsa-licence-web=hub.ecquaria.com:8251/docker-mohiais-egp/hcsa-licence:${TagName}-${BUILD_NUMBER}
-      - system-admin-web=hub.ecquaria.com:8251/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}
-      - main-web=hub.ecquaria.com:8251/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}
-      - web=hub.ecquaria.com:8251/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
+      - hcsa-licence-web=hub.ecquaria.com:8152/docker-mohiais-egp/hcsa-licence:${TagName}-${BUILD_NUMBER}
+      - system-admin-web=hub.ecquaria.com:8152/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}
+      - main-web=hub.ecquaria.com:8152/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}
+      - web=hub.ecquaria.com:8152/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
   - type: wait_for_healthcheck
     stack_name: be-iais-app
     timeout_seconds: 300
