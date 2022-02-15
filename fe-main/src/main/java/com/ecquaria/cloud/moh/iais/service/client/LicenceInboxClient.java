@@ -177,4 +177,6 @@ public interface LicenceInboxClient {
     @GetMapping(value = "/lic-common/ds-center-organizationId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> getDsCenterDtosByOrganizationId(@RequestParam("organizationId") String organizationId);
 
+    @GetMapping(value = "/data-submission/change-data-submission-id-status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateDataSubmissionByIdChangeStatus(@RequestParam("id") String id, @RequestParam("lockStatus") Integer lockStatus);
 }

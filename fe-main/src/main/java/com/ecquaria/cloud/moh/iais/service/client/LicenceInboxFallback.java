@@ -377,4 +377,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Void> updateDataSubmissionByIdChangeStatus(String id,Integer lockStatus) {
+        return getEntity();
+    }
 }

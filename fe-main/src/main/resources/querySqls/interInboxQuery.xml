@@ -312,7 +312,8 @@
           WHERE 1=1
           <#if type??> and t1.[type] = :type </#if>
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
-          <#if status ??> and t1.STATUS = :status</#if>
+          <#if status ?? &&  status != 'DS014' > and t1.STATUS = :status</#if>
+          <#if status ?? &&  status == 'DS014' > and t1.STATUS not in ('DS013',:status)</#if>
            <#if licenseeId ??> and  t1.dclicenseeId = :licenseeId</#if>
            <#if dsType ??> and DS_TYPE in ${dsType} </#if>
             <#if lastDateStart??> AND DATEDIFF(DAY,:lastDateStart,UPDATED_DT) >=0 </#if>

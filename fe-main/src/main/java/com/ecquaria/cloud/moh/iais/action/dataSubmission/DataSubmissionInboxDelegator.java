@@ -176,6 +176,7 @@ public class DataSubmissionInboxDelegator {
 		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
+		//status -> DS014 , status cannot be DS013,DS014.
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
 		setSearchParamDate(request,searchParam);
@@ -443,8 +444,10 @@ public class DataSubmissionInboxDelegator {
 				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
-                //todo send email to be ar admin and change dss lock status
-
+				actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{
+					//todo send email to be ar admin; if send email ok,update lockStatus
+                     licenceInboxClient.updateDataSubmissionByIdChangeStatus(inboxDataSubmissionQueryDto.getId(),2);
+				});
 			}
 		}
 
