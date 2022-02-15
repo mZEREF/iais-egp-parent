@@ -35,13 +35,6 @@
    <probepoint type="none" />
    <OnStepProcess />
   </ReturnInvokeProcessStep>
-  <AutomaticStep defClass="" executor="" icon="" name="saveDraft" x="1190" y="160">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="saveDraft_OnStepProcess_0" name="saveDraft_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch1" x="420" y="250">
    <Description />
    <probepoint type="none" />
@@ -68,6 +61,20 @@
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preSwitch_OnStepProcess_0" name="preSwitch_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="formPageSaveDraft" x="530" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="formPageSaveDraft_OnStepProcess_0" name="formPageSaveDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="confirmPageSaveDraft" x="1030" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="confirmPageSaveDraft_OnStepProcess_0" name="confirmPageSaveDraft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -126,12 +133,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(1080,270)(1210,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/saveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(1080,270)(1210,180)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/saveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(570,270)(1210,180)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(800,270)(196,426)(180,270)}</position>
   </SynchronousLink>
@@ -162,6 +163,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSelfFacSelect" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(570,270)(-313,484)(-340,270)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/formPageSaveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(570,270)(550,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/formPageSaveDraft" style="rectanular">
+   <position>{(550,160)(197,159)(180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/confirmPageSaveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1080,270)(1050,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveAndPreConfirm" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/confirmPageSaveDraft" style="rectanular">
+   <position>{(1050,160)(684,159)(650,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="780" y="250">
@@ -172,14 +185,14 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="550" y="250">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/saveAndPreConfirm" value="&quot;doConfirm&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/preSelfFacSelect" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/formPageSaveDraft" value="&quot;saveDraft&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="1060" y="250">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;doSave&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/confirmPageSaveDraft" value="&quot;saveDraft&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch4" x="40" y="250">
    <Description />
