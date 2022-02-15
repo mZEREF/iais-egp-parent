@@ -15,5 +15,8 @@
 <iais:confirm msg="This application has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft" yesBtnDesc="continue"
               cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpToInbox()" />
 <%-- validation --%>
+<input type="hidden" value="${RFC_NO_CHANGE_ERROR}" id="rfcNoChangeShow">
+<iais:confirm msg="DS_ERR021" needCancel="false" popupOrder="rfcNoChangeModal" yesBtnDesc="ok" needFungDuoJi="false"
+              yesBtnCls="btn btn-primary" callBack="$('#rfcNoChangeModal').modal('hide');" />
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="../../common/formHidden.jsp" %>
