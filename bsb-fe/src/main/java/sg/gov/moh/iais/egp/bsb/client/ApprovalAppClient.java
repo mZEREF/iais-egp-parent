@@ -50,6 +50,8 @@ public interface ApprovalAppClient {
     @PostMapping(path = "/approvalApp/approvalToPossess/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewApprovalApp(@RequestBody ApprovalAppDto approvalAppDto);
 
+    @PostMapping(path = "/approvalApp/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveNewApprovalAppDraft(@RequestBody ApprovalAppDto dto);
     /*******************RFC********************/
     @GetMapping(path = "/approvalApp/approvalToPossess/rfc/application/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalAppDto> getApprovalAppAppDataByApprovalId(@PathVariable("approvalId") String approvalId);

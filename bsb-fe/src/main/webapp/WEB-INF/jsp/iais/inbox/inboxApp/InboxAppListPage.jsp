@@ -194,6 +194,9 @@
                                                                         <c:when test="${app.processType eq 'PROTYPE008' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/IncidentCheckProcess?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Continue</option>
+                                                                        </c:when>
                                                                     </c:choose>
 
                                                                     <c:if test="${app.status eq 'BSBAPST011'}">

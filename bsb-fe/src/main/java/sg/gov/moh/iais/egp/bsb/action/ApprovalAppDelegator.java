@@ -193,11 +193,7 @@ public class ApprovalAppDelegator {
         approvalAppService.jumpFilter(bpc);
     }
 
-    public void doSaveDraft(BaseProcessClass bpc){
-        approvalAppService.doSaveDraft(bpc);
-    }
-
-    public void doSubmit(BaseProcessClass bpc){
-        approvalAppService.doSubmit(bpc);
+    public void preAcknowledge(BaseProcessClass bpc){
+        approvalAppService.preAcknowledge(bpc);
     }
 }

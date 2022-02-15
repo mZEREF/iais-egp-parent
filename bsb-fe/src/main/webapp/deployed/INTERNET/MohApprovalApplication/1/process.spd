@@ -65,18 +65,11 @@
     <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSubmit" x="1030" y="430">
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="1030" y="430">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSaveDraft" x="1020" y="350">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="JumpFilter" x="80" y="430">
@@ -191,14 +184,11 @@
   <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="oblique">
    <position>{(930,260)(930,450)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
    <position>{(930,450)(1050,450)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoSubmit" style="oblique">
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
    <position>{(1050,450)(1150,450)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(930,450)(1040,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/JumpFilter" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
    <position>{(930,450)(100,450)}</position>
@@ -244,8 +234,7 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="ActionSwitch" x="910" y="430">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/DoSubmit" value="&quot;submit&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/DoSaveDraft" value="&quot;draft&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/JumpFilter" value="&quot;jump&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="PageJumpSwitch" x="70" y="190">
