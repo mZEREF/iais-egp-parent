@@ -26,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -50,13 +51,16 @@ public class RenewalFacilityRegistrationDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final FacilityRegistrationService facilityRegistrationService;
+    private final DocSettingService docSettingService;
 
     public RenewalFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient,
-                                                BsbFileClient bsbFileClient, FacilityRegistrationService facilityRegistrationService) {
+                                                BsbFileClient bsbFileClient,
+                                                FacilityRegistrationService facilityRegistrationService, DocSettingService docSettingService) {
         this.facRegClient = facRegClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facilityRegistrationService = facilityRegistrationService;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -122,7 +126,7 @@ public class RenewalFacilityRegistrationDelegator {
         List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
 
-        ParamUtil.setRequestAttr(request, "docSettings", facilityRegistrationService.getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
