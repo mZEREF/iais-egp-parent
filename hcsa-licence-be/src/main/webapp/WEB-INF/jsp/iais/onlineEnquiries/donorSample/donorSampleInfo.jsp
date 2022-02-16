@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -190,7 +190,13 @@
                                     </div>
                                 </div>
                                 <div class="tab-content row">
-                                    <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                    <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_AR}">
+                                        <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiryAssistedReproduction/1/baseSearch?crud_action_type=backBase"  ><em class="fa fa-angle-left"> </em> Back</a>
+
+                                    </c:if>
+                                    <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS}">
+                                        <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                    </c:if>
                                 </div>
                             </div>
                             </iais:body>

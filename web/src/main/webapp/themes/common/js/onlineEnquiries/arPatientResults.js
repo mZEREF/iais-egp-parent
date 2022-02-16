@@ -224,10 +224,12 @@ var fullDetailsView = function (patientCode) {
     $('#mainForm').submit();
 }
 
-var fullDetailsViewBySubId = function (submissionId) {
+var fullDetailsViewBySubId = function (submissionId,submissionType,submissionIdNo) {
 
     showWaiting();
     $("[name='crud_action_additional']").val('submission');
+    $("[name='crud_action_type']").val(submissionType);
+    $("[name='crud_type']").val(submissionIdNo);
     $("[name='crud_action_value']").val(submissionId);
     $("[name='base_action_type']").val('viewFull');
     $('#mainForm').submit();

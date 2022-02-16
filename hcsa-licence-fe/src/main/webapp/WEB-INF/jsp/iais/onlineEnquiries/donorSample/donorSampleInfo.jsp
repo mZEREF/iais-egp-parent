@@ -190,8 +190,13 @@
                             </div>
                         </div>
                         <div class="tab-content row">
-                            <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
-                        </div>
+                            <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_AR}">
+                                <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction/1/baseSearch?crud_action_type=backBase"  ><em class="fa fa-angle-left"> </em> Back</a>
+
+                            </c:if>
+                            <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS}">
+                                <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                            </c:if>                        </div>
                     </div>
                 </iais:body>
             </div>

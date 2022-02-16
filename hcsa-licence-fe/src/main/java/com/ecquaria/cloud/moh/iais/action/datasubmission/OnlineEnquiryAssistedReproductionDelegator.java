@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -48,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -117,7 +119,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
 
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_AR);
 
         AssistedReproductionEnquiryFilterDto assistedReproductionEnquiryFilterDto=new AssistedReproductionEnquiryFilterDto();
         assistedReproductionEnquiryFilterDto.setSearchBy("1");
@@ -1013,7 +1015,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setSessionAttr(request,"arBase",0);
         ParamUtil.setSessionAttr(request,"arAdv",1);
     }
-    public void preViewFullDetails(BaseProcessClass bpc){
+    public void preViewFullDetails(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request=bpc.request;
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
@@ -1024,10 +1026,24 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             }
             if("submission".equals(additional)){
-                patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(key);
                 AssistedReproductionEnquiryFilterDto arFilterDto= (AssistedReproductionEnquiryFilterDto) ParamUtil.getSessionAttr(request,"assistedReproductionEnquiryFilterDto");
                 arFilterDto.setSearchBy("0");
                 ParamUtil.setSessionAttr(request,"assistedReproductionEnquiryFilterDto",arFilterDto);
+                String submissionType=ParamUtil.getRequestString(request, InboxConst.SWITCH_ACTION);
+                if(StringUtil.isNotEmpty(submissionType)&& "Donor Sample".equals(submissionType)){
+                    StringBuilder url = new StringBuilder();
+                    url.append(InboxConst.URL_HTTPS)
+                            .append(bpc.request.getServerName())
+                            .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohOnlineEnquiryDonorSample/1/perDonorInfo");
+                    String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                    String submissionIdNo=ParamUtil.getRequestString(request, "crud_type");
+                    ParamUtil.setSessionAttr(request,"submissionIdNo",submissionIdNo);
+
+                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+                    return;
+                }
+                patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(key);
+
             }
             if(patientInfoDto!=null){
                 ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
