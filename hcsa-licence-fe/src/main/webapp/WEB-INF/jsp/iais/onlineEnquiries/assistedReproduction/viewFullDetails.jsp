@@ -52,8 +52,8 @@
                                     <a href="#tabHusbandInfo" aria-controls="tabHusbandInfo" role="tab" data-toggle="tab">Husband Information</a></li>
                                 <li id="inventoryTab" class="<c:if test="${preActive == '1'}">active</c:if><c:if test="${ preActive != '1' }">complete</c:if>" role="presentation">
                                     <a href="#tabInventory" aria-controls="tabInventory" role="tab" data-toggle="tab">Inventory</a></li>
-                                <li class="complete" role="presentation">
-                                    <a href="#tabCoFundingHistory" aria-controls="tabCoFundingHistory" role="tab" data-toggle="tab">Co-funding History</a></li>
+<%--                                <li class="complete" role="presentation">--%>
+<%--                                    <a href="#tabCoFundingHistory" aria-controls="tabCoFundingHistory" role="tab" data-toggle="tab">Co-funding History</a></li>--%>
                                 <li id="cycleStageTab" class="<c:if test="${preActive == '2'}">active</c:if><c:if test="${ preActive != '2' }">complete</c:if>" role="presentation">
                                     <a href="#tabCycleStage" aria-controls="tabCycleStage" role="tab" data-toggle="tab">Cycle Stages</a></li>
                             </ul>
@@ -62,7 +62,7 @@
                                     <div class="swiper-slide"><a href="#tabPatientInfo" aria-controls="tabPatientInfo" role="tab" data-toggle="tab">Patient Information</a></div>
                                     <div class="swiper-slide"><a href="#tabHusbandInfo" aria-controls="tabHusbandInfo" role="tab" data-toggle="tab">Husband Information</a></div>
                                     <div class="swiper-slide"><a href="#tabInventory" aria-controls="tabInventory" role="tab" data-toggle="tab">Inventory</a></div>
-                                    <div class="swiper-slide"><a href="#tabCoFundingHistory" aria-controls="tabCoFundingHistory" role="tab" data-toggle="tab">Co-funding History</a></div>
+<%--                                    <div class="swiper-slide"><a href="#tabCoFundingHistory" aria-controls="tabCoFundingHistory" role="tab" data-toggle="tab">Co-funding History</a></div>--%>
                                     <div class="swiper-slide"><a href="#tabCycleStage" aria-controls="tabComplianceHistory" role="tab" data-toggle="tab">Cycle Stages</a></div>
                                 </div>
                                 <div class="swiper-button-prev"></div>
@@ -80,9 +80,9 @@
                                 <div class="tab-pane <c:if test="${preActive == '1'}">active</c:if>"  id="tabInventory" role="tabpanel">
                                     <%@include file="inventory.jsp" %>
                                 </div>
-                                <div class="tab-pane" id="tabCoFundingHistory" role="tabpanel">
-                                    <%@include file="coFundingHistory.jsp" %>
-                                </div>
+<%--                                <div class="tab-pane" id="tabCoFundingHistory" role="tabpanel">--%>
+<%--                                    <%@include file="coFundingHistory.jsp" %>--%>
+<%--                                </div>--%>
                                 <div class="tab-pane <c:if test="${preActive == '2'}">active</c:if>" id="tabCycleStage" role="tabpanel">
                                     <%@include file="cycleStage.jsp" %>
                                 </div>
