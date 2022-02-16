@@ -205,6 +205,13 @@
     <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Print" x="1300" y="950">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="print_OnStepProcess_0" name="print_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ServiceSelectionPage" stageIndicator="" x="410" y="160">
@@ -279,7 +286,13 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="1400" y="580">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="1260" y="700">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrintPage" stageIndicator="" x="1300" y="1080">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -448,13 +461,22 @@
    <position>{(1140,600)(1290,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AcknowleagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
-   <position>{(1290,600)(1420,600)}</position>
+   <position>{(1290,600)(1280,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(870,600)(1000,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="rectanular">
    <position>{(1000,600)(1140,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrintPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Print" style="oblique">
+   <position>{(1320,970)(1345,1130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PostSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AcknowleagePage" style="oblique">
+   <position>{(1280,720)(1335,870)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Print" linkstyle="Direct" name="" sourceName="/Switches/Switch/PostSwitch" style="oblique">
+   <position>{(1335,870)(1320,970)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
@@ -478,6 +500,10 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/JumpFilter" value="&quot;jump&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="PostSwitch" x="1290" y="820">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Print" value="&quot;print&quot;" />
   </Switch>
  </Switches>
  <Branches />

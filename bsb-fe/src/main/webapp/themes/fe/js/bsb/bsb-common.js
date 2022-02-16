@@ -93,3 +93,10 @@ function appendInputVal(input, value, separator) {
     }
 }
 
+function printPage(param, addt) {
+    showWaiting();
+    $("[name='action_type']").val("print");
+    $("[name='action_value']").val(param);
+    $("[name='action_additional']").val(addt);
+    $("#mainForm").submit();
+}

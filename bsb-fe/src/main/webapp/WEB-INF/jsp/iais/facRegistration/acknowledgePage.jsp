@@ -1,3 +1,4 @@
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -8,6 +9,8 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 
 <%@include file="dashboard.jsp"%>
 
@@ -40,9 +43,9 @@
                 <div class="col-xs-12 col-md-2"></div>
                 <div class="col-xs-12 col-md-10">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-secondary" href="javascript:void(0);">PRINT</a>
+                        <a class="btn btn-secondary" href="javascript:void(0);" onclick="printPage();">PRINT</a>
                         <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">HOME</a>
-                        <a class="btn btn-secondary" href="javascript:void(0);">INSPECTION PREFERRED DATE</a>
+                        <%--<a class="btn btn-secondary" href="javascript:void(0);">INSPECTION PREFERRED DATE</a>--%>
                     </div>
                 </div>
             </div>

@@ -261,4 +261,8 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setRequestAttr(request, "batList", batList);
     }
 
+    public void print(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        facilityRegistrationService.preparePreviewData(request);
+    }
 }
