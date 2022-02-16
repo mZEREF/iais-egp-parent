@@ -1,13 +1,11 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.String" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -39,7 +37,12 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <%@ include file="../../mainAppCommon/facRegistration/previewSubmit.jsp" %>
+                                    <fac:preview facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdmin="${facAdmin}" facOfficer="${facOfficer}" facCommittee="${facCommittee}" batList="${batList}">
+                                        <jsp:attribute name="editFrag"><a href="#" data-step-key="facInfo_facProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
+                                        <jsp:attribute name="docFrag">
+                                            <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
+                                        </jsp:attribute>
+                                    </fac:preview>
                                     <div class="text-right"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
                                     <div class="form-horizontal" style="padding: 30px 20px 10px;">
                                         <div class="form-group ">

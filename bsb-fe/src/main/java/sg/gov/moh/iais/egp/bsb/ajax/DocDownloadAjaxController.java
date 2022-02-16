@@ -84,6 +84,9 @@ public class DocDownloadAjaxController {
             }
 
             filename = file.getOriginalFilename();
+            if (filename == null) {
+                filename = "File";
+            }
             length = file.getSize();
             data = file.getBytes();
         } catch (Exception e) {
@@ -112,6 +115,10 @@ public class DocDownloadAjaxController {
         }
     }
 
+    @GetMapping("/repo/{repoId}")
+    public void downloadFileFromRepo(@PathVariable("repoId") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getStandaloneSavedFile);
+    }
 
     @GetMapping("/facReg/new/{id}")
     public void downloadNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
@@ -220,6 +227,15 @@ public class DocDownloadAjaxController {
             throw new MaskAttackException("Masked id is invalid");
         }
         return tmpId;
+    }
+
+    /** Download saved files directly from file-repo
+     * @param repoId file repo ID
+     */
+    private MultipartFile getStandaloneSavedFile(HttpServletRequest request, String repoId) {
+        byte[] content = fileRepoClient.getFileFormDataBase(repoId).getEntity();
+        String filename = request.getParameter("filename");
+        return new ByteArrayMultipartFile(null, filename, null, content);
     }
 
     /**

@@ -452,6 +452,13 @@ public class FacilityRegistrationService {
 
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        preparePreviewData(request);
+
+        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
+        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
+    }
+
+    public void preparePreviewData(HttpServletRequest request) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
@@ -479,9 +486,6 @@ public class FacilityRegistrationService {
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
-
-        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
-        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
     }
 
     public void actionFilter(BaseProcessClass bpc) {
@@ -514,7 +518,7 @@ public class FacilityRegistrationService {
      * @return a list of DTOs can be used to sync to BE
      */
     public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
-        List<NewFileSyncDto> newFilesToSync = null;
+        List<NewFileSyncDto> newFilesToSync;
         if (!primaryDocDto.getNewDocMap().isEmpty()) {
             MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
@@ -529,7 +533,7 @@ public class FacilityRegistrationService {
      * @see #saveNewUploadedDoc(PrimaryDocDto)
      */
     public List<NewFileSyncDto> saveProfileNewUploadedDoc(FacilityProfileDto profileDto) {
-        List<NewFileSyncDto> newFilesToSync = null;
+        List<NewFileSyncDto> newFilesToSync;
         if (!profileDto.getNewDocMap().isEmpty()) {
             MultipartFile[] files = profileDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();

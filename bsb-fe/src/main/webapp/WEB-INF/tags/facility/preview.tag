@@ -1,3 +1,20 @@
+<%@tag description="Preview page of facility registration" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@attribute name="facProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto" %>
+<%@attribute name="facOperator" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
+<%@attribute name="facAuth" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
+<%@attribute name="facAdmin" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto" %>
+<%@attribute name="facOfficer" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto" %>
+<%@attribute name="facCommittee" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
+<%@attribute name="batList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>" %>
+<%@attribute name="docFrag" fragment="true" %>
+<%@attribute name="editFrag" fragment="true" %>
+
+<jsp:invoke fragment="editFrag" var="editFragString"/>
+
 <div class="preview-gp">
     <div class="row">
         <div class="col-xs-12">
@@ -10,7 +27,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16"><a href="#" data-step-key="facInfo_facProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facProfile")}</div>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -24,7 +41,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${TableDisplayUtil.getOneLineAddress(facProfile.block, facProfile.streetName, facProfile.floor, facProfile.unitNo, facProfile.postalCode)}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p><iais-bsb:address block="${facProfile.block}" street="${facProfile.streetName}" floor="${facProfile.floor}" unitNo="${facProfile.unitNo}" postalCode="${facProfile.postalCode}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -356,7 +373,7 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16"><a href="#" data-step-key="batInfo"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div>
                             <c:forEach var="bat" items="${batList}">
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
@@ -394,35 +411,9 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div>
                             <div class="panel-main-content form-horizontal min-row">
-                                <c:forEach var="doc" items="${docSettings}">
-                                    <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
-                                    <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
-                                    <c:set var="newFileList" value="${newFiles.get(doc.type)}" />
-                                    <c:if test="${not empty savedFileList or not empty newFileList}">
-                                        <div class="form-group">
-                                            <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div>
-                                            <c:forEach var="file" items="${savedFileList}">
-                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', file.repoId)}"/>
-                                                <div class="form-group">
-                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
-                                                    <div class="clear"></div>
-                                                </div>
-                                            </c:forEach>
-                                            <c:forEach var="file" items="${newFileList}">
-                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', file.tmpId)}"/>
-                                                <div class="form-group">
-                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
-                                                    <div class="clear"></div>
-                                                </div>
-                                            </c:forEach>
-                                        </div>
-                                    </c:if>
-                                </c:forEach>
+                                <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>
                     </div>
