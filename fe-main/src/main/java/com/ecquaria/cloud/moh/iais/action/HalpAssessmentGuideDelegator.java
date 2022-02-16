@@ -2114,7 +2114,7 @@ public class HalpAssessmentGuideDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_MAIN_WEB_MODULE+"IaisSubmissionData").append("?selfAssessmentGuide=true");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLDTDataSubmission");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
