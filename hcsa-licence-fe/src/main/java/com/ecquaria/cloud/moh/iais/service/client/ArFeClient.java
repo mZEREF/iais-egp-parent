@@ -139,11 +139,11 @@ public interface ArFeClient {
 
 
     @GetMapping(value = "/data-submission/data-submission-donor-sample", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<DonorSampleDto> getDonorSampleDto(@RequestParam(value = "idType",required = false) String idType, @RequestParam(value = "idNumber",required = false) String idNumber,
+    FeignResponseEntity<DonorSampleDto> getDonorSampleDto(@RequestParam(value = "directedDonation") boolean directedDonation,
+                                                          @RequestParam(value = "idType",required = false) String idType,
+                                                          @RequestParam(value = "idNumber",required = false) String idNumber,
                                                           @RequestParam(value = "donorSampleCodeType",required = false) String donorSampleCodeType,
-                                                          @RequestParam(value = "donorSampleCode",required = false) String donorSampleCode,
-                                                          @RequestParam(value = "sampleFromHciCode",required = false) String sampleFromHciCode,
-                                                          @RequestParam(value = "sampleFromOthers",required = false) String sampleFromOthers);
+                                                          @RequestParam(value = "donorSampleCode",required = false) String donorSampleCode);
 
     @GetMapping(value = "/ar-common/arTreatmentSubsidiesStageDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStagesByPatientInfo(@RequestParam(name = "patientCode") String patientCode,

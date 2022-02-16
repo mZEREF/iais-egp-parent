@@ -410,11 +410,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public DonorSampleDto getDonorSampleDto(String idType, String idNumber,String donorSampleCodeType,String donorSampleCode, String sampleFromHciCode,
-            String sampleFromOthers) {
+    public DonorSampleDto getDonorSampleDto(boolean directedDonation,String idType, String idNumber,String donorSampleCodeType,String donorSampleCode) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
-                (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(donorSampleCode) || StringUtil.isEmpty(sampleFromHciCode))) ? null : arFeClient.getDonorSampleDto(
-                idType, idNumber,donorSampleCodeType, donorSampleCode, sampleFromHciCode, sampleFromOthers).getEntity();
+                (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
+                idType, idNumber,donorSampleCodeType, donorSampleCode).getEntity();
     }
 
     @Override

@@ -45,13 +45,11 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator sampleKey is -->:"+sampleKey));
         if(StringUtil.isEmpty(sampleKey)){
             String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(donorSampleDto.getIdType(),new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC,DataSubmissionConsts.AR_ID_TYPE_BLUE_IC,DataSubmissionConsts.AR_ID_TYPE_FIN_NO,DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
-             donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(
+             donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(donorSampleDto.isDirectedDonation(),
                      donorSampleDto.getIdType()
                     ,donorSampleDto.getIdNumber()
                      ,donorSampleCodeType
-                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber()
-                    ,donorSampleDto.getSampleFromHciCode()
-                    ,donorSampleDto.getSampleFromOthers());
+                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber());
 
         }else{
             List<DonorSampleDto> donorSampleDtos =  arDataSubmissionService.getDonorSampleDtoBySampleKey(sampleKey);
