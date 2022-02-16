@@ -25,6 +25,11 @@ $(function () {
         $("[name='action_value']").val(this.value);
         $("#mainForm").submit();
     });
+
+    $("#submitBtn").click(function () {
+        showWaiting();
+        $("#mainForm").submit();
+    });
 });
 
 
@@ -53,6 +58,13 @@ function multiAssignCancel() {
 function viewTaskDetail(id) {
     showWaiting();
     $("[name='action_type']").val("detail");
+    $("[name='action_value']").val(id);
+    $("#mainForm").submit();
+}
+
+function reassignTask(id) {
+    showWaiting();
+    $("[name='action_type']").val("reassign");
     $("[name='action_value']").val(id);
     $("#mainForm").submit();
 }

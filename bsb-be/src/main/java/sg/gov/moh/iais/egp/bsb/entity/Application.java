@@ -49,4 +49,10 @@ public class Application implements Serializable {
     private String bioName;
 
     private String riskLevel;
+
+    private String doUserId;
+
+    private String aoUserId;
+
+    private String hmUserId;
 }
