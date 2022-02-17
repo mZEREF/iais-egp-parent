@@ -155,11 +155,11 @@ var groupAjax = function (patientCode, divid) {
 function doClear() {
     $('input[type="text"]').val("");
     $('input[type="checkbox"]').prop("checked", false);
-    $("option:first").prop("selected", 'selected');
+    $("select option").prop("selected", false);
     $(".clearSel").children(".current").text("Please Select");
-    $(".clearMultiSel").prop("selected", false);
-    $('.date_picker').val("");
+    $("#patientInformationFilter input[type='checkbox']").prop('checked', false);
     $("#patientInformationFilter .multi-select-button").html("-- Select --");
+    $('.date_picker').val("");
 
     $('#cycleStageDisplay').attr("style","display: none");
 }

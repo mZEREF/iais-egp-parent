@@ -340,3 +340,16 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script>
+    function doClear() {
+        $('input[type="text"]').val("");
+        $('input[type="checkbox"]').prop("checked", false);
+        $("select option").prop("selected", false);
+        $(".clearSel").children(".current").text("Please Select");
+        $("#patientInformationFilter input[type='checkbox']").prop('checked', false);
+        $("#patientInformationFilter .multi-select-button").html("-- Select --");
+        $('.date_picker').val("");
+
+        $('#cycleStageDisplay').attr("style","display: none");
+    }
+</script>

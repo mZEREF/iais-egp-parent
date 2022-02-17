@@ -9,8 +9,9 @@ function doClear() {
     $('input[type="number"]').val("");
     $('input[type="radio"]').prop("checked", false);
     $('input[type="checkbox"]').prop("checked", false);
-    $("option:first").prop("selected", 'selected');
-    $(".clearMultiSel").prop("selected", false);
+    $("select option").prop("selected", false);
+    $("#searchCondition input[type='checkbox']").prop('checked', false);
+    $("#searchCondition .multi-select-button").html("-- Select --");
     $(".clearSel").children(".current").text("Please Select");
     $('.date_picker').val("");
 
