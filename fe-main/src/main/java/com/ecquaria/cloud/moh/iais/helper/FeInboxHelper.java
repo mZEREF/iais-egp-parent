@@ -19,7 +19,7 @@ public final class FeInboxHelper {
                                                                                DataSubmissionConsts.DS_STATUS_COMPLETED,
                                                                                DataSubmissionConsts.DS_STATUS_AMENDED, DataSubmissionConsts.DS_STATUS_LOCKED,
                                                                                DataSubmissionConsts.DS_STATUS_UNLOCKED,DataSubmissionConsts.DS_STATUS_WITHDRAW);
-    public final static List<String> dataInboxNoNeedShowStatuses =  Arrays.asList(DataSubmissionConsts.DS_STATUS_WITHDRAW,DataSubmissionConsts.DS_STATUS_UNLOCKED);
+    public final static List<String> dataInboxNoNeedShowStatuses =  Arrays.asList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
     public final  static Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
 
     public final static List<SelectOption> dataSubmissionStatusOptions = getInboxStatuses();
