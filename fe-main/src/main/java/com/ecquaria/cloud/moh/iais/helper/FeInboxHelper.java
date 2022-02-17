@@ -16,8 +16,10 @@ public final class FeInboxHelper {
     public final static List<String> allTypes = Arrays.asList(DataSubmissionConsts.DS_AR,DataSubmissionConsts.DS_DRP,
             DataSubmissionConsts.DS_LDT,DataSubmissionConsts.DS_TOP,DataSubmissionConsts.DS_VSS);
     public final static List<String> allDataSubmissionStatuses = Arrays.asList(DataSubmissionConsts.DS_STATUS_ACTIVE,DataSubmissionConsts.DS_STATUS_DRAFT,
-                                                                              DataSubmissionConsts.DS_STATUS_AMENDED,DataSubmissionConsts.DS_STATUS_WITHDRAW,
-                                                                              DataSubmissionConsts.DS_STATUS_LOCKED,DataSubmissionConsts.DS_STATUS_UNLOCKED);
+                                                                               DataSubmissionConsts.DS_STATUS_COMPLETED,
+                                                                               DataSubmissionConsts.DS_STATUS_AMENDED, DataSubmissionConsts.DS_STATUS_LOCKED,
+                                                                               DataSubmissionConsts.DS_STATUS_UNLOCKED,DataSubmissionConsts.DS_STATUS_WITHDRAW);
+    public final static List<String> dataInboxNoNeedShowStatuses =  Arrays.asList(DataSubmissionConsts.DS_STATUS_WITHDRAW,DataSubmissionConsts.DS_STATUS_UNLOCKED);
     public final  static Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
 
     public final static List<SelectOption> dataSubmissionStatusOptions = getInboxStatuses();
@@ -61,9 +63,9 @@ public final class FeInboxHelper {
     private static List<SelectOption> getInboxStatuses(){
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.DATA_SUBMISSION_STATUS);
         ListIterator<SelectOption> selectOptionVector = selectOptions.listIterator();
-        if(selectOptionVector.hasNext()){
+        while(selectOptionVector.hasNext()){
             SelectOption selectOption = selectOptionVector.next();
-            if(!allDataSubmissionStatuses.contains(selectOption.getValue())){
+            if(dataInboxNoNeedShowStatuses.contains(selectOption.getValue())){
                 selectOptionVector.remove();
             }
         }
