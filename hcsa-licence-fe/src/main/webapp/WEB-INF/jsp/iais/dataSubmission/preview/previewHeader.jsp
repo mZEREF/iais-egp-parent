@@ -13,7 +13,9 @@
 <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container" style="padding: 0 90px;">
         <div class="row d-flex">
+            <c:if test="${ DashboardTitle != 'Withdrawal From'}">
             <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
+            </c:if>
         </div>
         <div class="row">
             <div class="col-xs-12">

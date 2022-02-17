@@ -693,6 +693,124 @@
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+            UNION ALL
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
+           		CONCAT(case dcen2.CENTER_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dcen2.CENTER_NAME + ', ' end ,
+                  case dcen2.BLK_NO
+                  when null then null
+                  else ''+dcen2.BLK_NO end ,
+               case dcen2.STREET_NAME
+                  when null then null
+                  else ' '+dcen2.STREET_NAME end
+               , case dcen2.BUILDING_NAME
+                  when null then null
+                  else ' '+dcen2.BUILDING_NAME end
+               , case dcen2.FLOOR_NO
+                  when null then null
+                  else ' # '+dcen2.FLOOR_NO end
+               , case dcen2.UNIT_NO
+                  when null then null
+                  else '-'+dcen2.UNIT_NO end
+               ,case dcen2.POSTAL_CODE
+                  when null then null
+                  else ', '+dcen2.POSTAL_CODE end
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
+
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+            UNION ALL
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
+           		CONCAT(case dcen2.CENTER_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dcen2.CENTER_NAME + ', ' end ,
+                  case dcen2.BLK_NO
+                  when null then null
+                  else ''+dcen2.BLK_NO end ,
+               case dcen2.STREET_NAME
+                  when null then null
+                  else ' '+dcen2.STREET_NAME end
+               , case dcen2.BUILDING_NAME
+                  when null then null
+                  else ' '+dcen2.BUILDING_NAME end
+               , case dcen2.FLOOR_NO
+                  when null then null
+                  else ' # '+dcen2.FLOOR_NO end
+               , case dcen2.UNIT_NO
+                  when null then null
+                  else '-'+dcen2.UNIT_NO end
+               ,case dcen2.POSTAL_CODE
+                  when null then null
+                  else ', '+dcen2.POSTAL_CODE end
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
          ]]>
     </sql>
 

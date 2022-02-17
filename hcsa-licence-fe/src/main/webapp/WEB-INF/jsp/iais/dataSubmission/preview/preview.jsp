@@ -10,8 +10,7 @@
         continueURL = process.runtime.continueURL();
     }
 %>
-<webui:setLayout name="iais-internet"/>
-
+<webui:setLayout name="iais-blank"/>
 <%@ include file="previewHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
