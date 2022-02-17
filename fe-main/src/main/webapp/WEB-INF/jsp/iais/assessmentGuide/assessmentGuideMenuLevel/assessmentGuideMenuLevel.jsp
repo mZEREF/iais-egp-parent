@@ -1,3 +1,11 @@
+<c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
+    <c:if test="${privilege.id == 'HALP_HCSA_INBOX'}">
+        <c:set var="hcsaPrivilege" value="1"/>
+    </c:if>
+    <c:if test="${privilege.id == 'HALP_MOH_DS_LDT'}">
+        <c:set var="dataSubLDTPrivilege" value="1"/>
+    </c:if>
+</c:forEach>
 
 <div class="self-assessment-item completed">
     <div class="amendLicence">
@@ -18,6 +26,7 @@
                 }
             </style>
             <p class="form-check-title">What would you like to do today?</p>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="applyLicence"
                        type="radio" name="selfAssessmentType"
@@ -33,10 +42,11 @@
                 </label>
 
             </div>
-
+            </c:if>
             <%--
                 2
             --%>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check"
                  style="width: 70%">
                 <input class="form-check-input" style="position: relative;" id="renewLicence"
@@ -52,7 +62,8 @@
                     <span class="right-content">${self_ack002}</span>
                 </label>
             </div>
-
+            </c:if>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check"
                  style="width: 70%">
                 <input class="form-check-input" style="position: relative;"
@@ -65,9 +76,11 @@
                     <span class="right-content">${self_ack003}</span>
                 </label>
             </div>
+            </c:if>
             <%--
                 3
             --%>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <div style="padding-top: 0">
                     <input class="form-check-input" style="position: relative;" id="amendLicence"
@@ -109,9 +122,11 @@
 <%--                       data-original-title=""--%>
 <%--                    >i</a></div>--%>
             </div>
+            </c:if>
             <%--
                 8
             --%>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;"
                        id="updateAdminPersonnel" type="radio"
@@ -151,7 +166,8 @@
 <%--                       data-original-title=""--%>
 <%--                    >i</a></div>--%>
             </div>
-
+            </c:if>
+            <c:if test="${dataSubLDTPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="submitDataMoh"
                        type="radio" name="selfAssessmentType"
@@ -162,7 +178,8 @@
                     <span class="right-content">${self_ack006}</span>
                 </label>
             </div>
-
+            </c:if>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="withdrawApplication"
                        type="radio" name="selfAssessmentType"
@@ -202,6 +219,8 @@
 <%--                       data-original-title=""--%>
 <%--                    >i</a></div>--%>
             </div>
+            </c:if>
+            <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="ceaseLicence"
                        type="radio" name="selfAssessmentType"
@@ -240,6 +259,7 @@
 <%--                       data-original-title=""--%>
 <%--                    >i</a></div>--%>
             </div>
+            </c:if>
         </div>
     </div>
 </div>
