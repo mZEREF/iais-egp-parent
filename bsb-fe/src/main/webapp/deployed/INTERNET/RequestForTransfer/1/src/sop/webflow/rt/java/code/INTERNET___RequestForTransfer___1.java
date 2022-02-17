@@ -59,10 +59,12 @@ public class INTERNET___RequestForTransfer___1 extends BaseProcessClass {
 
 	public void formPageSaveDraft_OnStepProcess_0() throws Exception {
 		// 		formPageSaveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveDraft", this);
 	}
 
 	public void confirmPageSaveDraft_OnStepProcess_0() throws Exception {
 		// 		confirmPageSaveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveDraft", this);
 	}
 
 }

@@ -192,7 +192,14 @@
                                                                             <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityBat')}">
+                                                                        <c:forEach var="doc" items="${newDocMeta.get('ityBat')}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                        </c:forEach>
+                                                                        <c:forEach var="doc" items="${savedDocMeta.get('ityBat')}">
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
@@ -204,7 +211,14 @@
                                                                             <div class="col-10"><strong>Inventory: Toxins</strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
+                                                                        <c:forEach var="doc" items="${newDocMeta.get('ityToxin')}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                        </c:forEach>
+                                                                        <c:forEach var="doc" items="${savedDocMeta.get('ityToxin')}">
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>

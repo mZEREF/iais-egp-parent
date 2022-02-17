@@ -13,56 +13,50 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTERNET___AckOfReceiptOfTransfer___1 extends BaseProcessClass {
+public class INTERNET___AckOfReceiptOfTransferDraft___1 extends BaseProcessClass {
 	private static final String DELEGATOR = "ackOfTransferReceiptDelegator";
 
-
 	public void start_OnStepProcess_0() throws Exception {
-		// 		start->OnStepProcess
+	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
+	
+	public void init_OnStepProcess_0() throws Exception {
+		// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-		// 		prepareData->OnStepProcess
+	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void saveAndPreConfirm_OnStepProcess_0() throws Exception {
-		// 		saveAndPreConfirm->OnStepProcess
+	// 		saveAndPreConfirm->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveAndPreConfirm", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
-		// 		save->OnStepProcess
+	// 		save->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
 	public void prepareSwitch1_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch1->OnStepProcess
+	// 		prepareSwitch1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
 	}
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch2->OnStepProcess
-	}
-
-	public void preSelfFacSelect_OnStepProcess_0() throws Exception {
-		// 		preSelfFacSelect->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preSelfFacSelect", this);
-	}
-
-	public void preSwitch_OnStepProcess_0() throws Exception {
-		// 		preSwitch->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preSwitch", this);
+	// 		prepareSwitch2->OnStepProcess
 	}
 
 	public void formPageSaveDraft_OnStepProcess_0() throws Exception {
-		// 		formPageSaveDraft->OnStepProcess
+	// 		formPageSaveDraft->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveDraft", this);
 	}
 
 	public void confirmPageSaveDraft_OnStepProcess_0() throws Exception {
-		// 		confirmPageSaveDraft->OnStepProcess
+	// 		confirmPageSaveDraft->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveConfirmDraft", this);
 	}
 

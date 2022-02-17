@@ -5,13 +5,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.TransferRequestDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -23,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
  * @author YiMing
@@ -36,6 +44,7 @@ public class BsbRequestForTransferDelegator {
     public static final String KEY_FAC_ID = "facId";
     private static final String KEY_FACILITY_INFO = "facilityInfo";
     private static final String KEY_TRANSFER_REQUEST_DTO = "transferRequestDto";
+    public static final String KEY_DRAFT = "draft";
     private final TransferClient transferClient;
     private final BsbSubmissionCommon subCommon;
     private final DataSubmissionClient submissionClient;
@@ -61,6 +70,18 @@ public class BsbRequestForTransferDelegator {
     public void preFacSelect(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         selectOption(request);
+        DraftDto draft = (DraftDto) ParamUtil.getSessionAttr(request, KEY_DRAFT);
+        String dataSubmissionType = (String) ParamUtil.getSessionAttr(request, KEY_SUBMISSION_TYPE);
+        if (draft != null && dataSubmissionType != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                TransferRequestDto dto = mapper.readValue(draft.getDraftData(), TransferRequestDto.class);
+                ParamUtil.setSessionAttr(request, KEY_TRANSFER_REQUEST_DTO, dto);
+                ParamUtil.setSessionAttr(request, KEY_FAC_ID, dto.getFacId());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void preSwitch0(BaseProcessClass bpc){
@@ -112,13 +133,18 @@ public class BsbRequestForTransferDelegator {
     }
 
 
-    public Map<String,DocSetting> getDocSettingMap(){
-        Map<String,DocSetting> settingMap = new HashMap<>();
-        settingMap.put("ityBat",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
-        settingMap.put("ityToxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
-        settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
-        return settingMap;
+    public void saveDraft(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        TransferRequestDto dto = getTransferRequest(request);
+        dto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER);
+        dto.reqObjectMapping(request,subCommon);
+
+        //save draft
+        String draftAppNo = transferClient.saveDraftRequestTransfer(dto);
+        dto.setDraftAppNo(draftAppNo);
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }
+
 
     /**
      * just a method to do simple valid,maybe update in the future

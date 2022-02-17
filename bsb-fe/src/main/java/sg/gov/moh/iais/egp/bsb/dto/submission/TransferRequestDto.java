@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.action.BsbSubmissionCommon;
+import sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -34,6 +36,8 @@ public class TransferRequestDto implements Serializable {
     private  List<TransferList> transferLists;
     private String facId;
     private String receivingFacId;
+    private String draftAppNo;
+    private String dataSubmissionType;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -74,6 +78,22 @@ public class TransferRequestDto implements Serializable {
         this.receivingFacId = receivingFacId;
     }
 
+    public String getDataSubmissionType() {
+        return dataSubmissionType;
+    }
+
+    public void setDataSubmissionType(String dataSubmissionType) {
+        this.dataSubmissionType = dataSubmissionType;
+    }
+
+    public String getDraftAppNo() {
+        return draftAppNo;
+    }
+
+    public void setDraftAppNo(String draftAppNo) {
+        this.draftAppNo = draftAppNo;
+    }
+
     public boolean doValidation() {
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateRequestTransfer", new Object[]{this});
         return validationResultDto.isPass();
@@ -106,19 +126,21 @@ public class TransferRequestDto implements Serializable {
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request, BsbSubmissionCommon common){
-        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        String index = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferLists();
-        String[] idxArr = idxes.trim().split(" +");
-        for (String idx : idxArr) {
-            TransferList transferList = new TransferList();
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+idx));
-            transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+idx));
-            transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+idx));
-            transferList.setExpReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+idx));
-            transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
-            addTransferLists(transferList);
+        if(StringUtils.hasLength(index)){
+            String[] idxArr = index.trim().split(" +");
+            for (String idx : idxArr) {
+                TransferList transferList = new TransferList();
+                transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+idx));
+                transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+idx));
+                transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+idx));
+                transferList.setExpReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+idx));
+                transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
+                addTransferLists(transferList);
+            }
+            this.facId = common.getFacInfo(request).getFacId();
         }
-        this.facId = common.getFacInfo(request).getFacId();
     }
 
 }

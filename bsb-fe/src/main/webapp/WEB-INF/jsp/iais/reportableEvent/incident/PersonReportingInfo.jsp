@@ -137,6 +137,7 @@
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
                                                                         <label for="activityType">Activity Type(s)</label>
+                                                                        <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <select name="activityType" id="activityType">

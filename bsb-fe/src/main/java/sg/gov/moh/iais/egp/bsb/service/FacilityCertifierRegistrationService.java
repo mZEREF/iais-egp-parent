@@ -38,6 +38,10 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -275,27 +279,19 @@ public class FacilityCertifierRegistrationService {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         Assert.hasText(actionValue, "Invalid action value");
         boolean currentLetGo = true;  // if false, we have to stay current node
-        if (KEY_NAV_NEXT.equals(actionValue) || KEY_NAV_SAVE_DRAFT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
             currentLetGo = currentNode.doValidation();
             if (currentLetGo) {
                 Nodes.passValidation(facRegRoot, currentPath);
             }
         }
         if (currentLetGo) {
-            if(!KEY_NAV_SAVE_DRAFT.equals(actionValue)){
-                String destNode = computeDestNodePath(facRegRoot, actionValue);
-                String checkedDestNode = Nodes.jump(facRegRoot, destNode);
-                if (!checkedDestNode.equals(destNode)) {
-                    ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-                }
-                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
-            }else{
-                FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-                finalAllDataDto.setAppStatus("BSBAPST011");
-                ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
-                log.info("save as draft response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
-                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
+            String destNode = computeDestNodePath(facRegRoot, actionValue);
+            String checkedDestNode = Nodes.jump(facRegRoot, destNode);
+            if (!checkedDestNode.equals(destNode)) {
+                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             }
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
         } else {
             ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
