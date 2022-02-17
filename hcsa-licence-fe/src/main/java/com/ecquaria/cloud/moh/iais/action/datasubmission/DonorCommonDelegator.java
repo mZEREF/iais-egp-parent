@@ -134,6 +134,10 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         arDonorDto.setDonorSampleAgeDtos(ages);
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
         arDonorDto.setDonorSampleId(donorSampleDto.getId());
+        if(!donorSampleDto.isDirectedDonation()){
+            arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
+            arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
+        }
         if(IaisCommonUtils.isNotEmpty(ages)){
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
@@ -258,7 +262,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 return AppConsts.YES;
             }
             for(String key : errorMap.keySet()){
-                if(!(key.contains("age") || key.contains("relation"))){
+                if(!(key.contains("age")
+                        || key.contains("relation")
+                        || key.contains("source")
+                         || key.contains("otherSource")
+                        )){
                     return AppConsts.YES;
                 }
             }
