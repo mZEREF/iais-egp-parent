@@ -281,6 +281,7 @@ public class PatientUploadDelegate {
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
+            husbandDto.setEthnicGroupOther(patientInfoExcelDto.getEthnicGroupOtherHbd());
             DsRfcHelper.prepare(husbandDto);
             dto.setHusband(husbandDto);
             result.add(dto);
