@@ -4,14 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -24,14 +17,15 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * Process: MohDsAction
@@ -54,6 +48,9 @@ public class MohDsActionDelegator {
 
     @Autowired
     private LdtDataSubmissionService ldtDataSubmissionService;
+
+    @Autowired
+    private VssDataSubmissionService vssDataSubmissionService;
 
     @Autowired
     private ArCycleStageDelegator arCycleStageDelegator;
@@ -182,6 +179,8 @@ public class MohDsActionDelegator {
             uri = prepareDpRfc(submissionNo, bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             uri = prepareLdtRfc(submissionNo, bpc.request);
+        }else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
+            uri = prepareVssRfc(submissionNo, bpc.request);
         }
         log.info(StringUtil.changeForLog("------URI: " + uri));
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
@@ -223,6 +222,23 @@ public class MohDsActionDelegator {
             ldtSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
+        return uri;
+    }
+
+    private String prepareVssRfc(String submissionNo, HttpServletRequest request) {
+        String uri = "";
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
+        if (vssSuperDataSubmissionDto == null) {
+            uri = DEFAULT_URI;
+        } else {
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission";
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION,
+                    CopyUtil.copyMutableObject(vssSuperDataSubmissionDto));
+            vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            vssSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            vssSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        }
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
         return uri;
     }
 

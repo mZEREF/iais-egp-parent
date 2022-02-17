@@ -8,15 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.GuardianAppliedPartDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssDocumentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -32,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssUploadFileService;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import java.io.File;
 import java.io.IOException;
@@ -202,6 +195,7 @@ public class VssDataSubmissionDelegator {
 
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
+       // ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.ACTION_STATUS, status);
         ParamUtil.setRequestAttr(bpc.request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
     }
 
@@ -209,7 +203,9 @@ public class VssDataSubmissionDelegator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
-        treatmentDto.setSterilizationReason(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS);
+        if(StringUtil.isEmpty(treatmentDto.getSterilizationReason())){
+            treatmentDto.setSterilizationReason(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS);
+        }
         vssTreatmentDto.setTreatmentDto(treatmentDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
@@ -377,7 +373,7 @@ public class VssDataSubmissionDelegator {
             });
             vssDoc.sort(Comparator.comparing(VssDocumentDto :: getSeqNum));
         }
-        request.getSession().setAttribute("vssFiles", (Serializable)vssDoc);
+        request.getSession().setAttribute("vssFiles", vssDoc);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile", map);
         request.getSession().setAttribute("seesion_files_map_ajax_feselectedVssFile_MaxIndex", vssDoc.size());
 
@@ -389,7 +385,35 @@ public class VssDataSubmissionDelegator {
     }
 
     private int doPreview(HttpServletRequest request) {
-
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
+        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        ValidationResult result1 = WebValidationHelper.validateProperty(treatmentDto,"VSS");
+        ValidationResult result2 = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
+        ValidationResult result3 = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
+       /* int status = 0;
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);*/
+        if(result1 !=null){
+            errMap.putAll(result1.retrieveAll());
+            /*if(!errMap.isEmpty()){
+                status = 0;
+                currentConfig.setStatus(status);
+                DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
+            }*/
+        }
+        if(result2 !=null){
+            errMap.putAll(result2.retrieveAll());
+        }
+        if(result3 !=null){
+            errMap.putAll(result3.retrieveAll());
+        }
+        if(!errMap.isEmpty()){
+            return 0;
+        }
         return 2;
     }
     /**
@@ -404,15 +428,22 @@ public class VssDataSubmissionDelegator {
         DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
         CycleDto cycle = vssSuperDataSubmissionDto.getCycleDto();
         String cycleType = cycle.getCycleType();
-
+       String status = cycle.getStatus();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = vssDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_VSS);
             dataSubmissionDto.setSubmissionNo(submissionNo);
         }
-        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
-        cycle.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+
+        if (StringUtil.isEmpty(status)) {
+            status = DataSubmissionConsts.DS_STATUS_ACTIVE;
+        }
+        cycle.setStatus(status);
+        vssSuperDataSubmissionDto.setCycleDto(cycle);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
@@ -479,6 +510,14 @@ public class VssDataSubmissionDelegator {
      */
     public void doRfc(BaseProcessClass bpc) {
         log.info(" ----- DoRfc ------ ");
+        if(isRfc(bpc.request)){
+            VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getOldVssSuperDataSubmissionDto(bpc.request);
+            VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
+            if(vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getVssTreatmentDto()!= null && vssTreatmentDto.equals(vssSuperDataSubmissionDto.getVssTreatmentDto())){
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
+            }
+        }
     }
 
     /**
@@ -549,5 +588,10 @@ public class VssDataSubmissionDelegator {
                 .append(target);
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+    }
+
+    private boolean isRfc(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        return vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(vssSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
 }

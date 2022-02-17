@@ -4,10 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -17,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -43,6 +41,9 @@ public class MohDsDraftDelegator {
 
     @Autowired
     private LdtDataSubmissionService ldtDataSubmissionService;
+
+    @Autowired
+    private VssDataSubmissionService vssDataSubmissionService;
 
     private static final String DEFAULT_URI = "/main-web/eservice/INTERNET/MohDataSubmissionsInbox";
 
@@ -75,6 +76,8 @@ public class MohDsDraftDelegator {
             uri = prepareDp(draftNo, bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             uri = prepareLdt(draftNo, bpc.request);
+        } else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
+            uri = prepareVss(draftNo, bpc.request);
         }
 
         log.info(StringUtil.changeForLog("------URI: " + uri));
@@ -111,6 +114,18 @@ public class MohDsDraftDelegator {
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuper, request);
         return uri;
     }
+    private String prepareVss(String draftNo, HttpServletRequest request) {
+        String uri = "";
+        VssSuperDataSubmissionDto vssSuper = vssDataSubmissionService.getVssSuperDataSubmissionDtoByDraftNo(draftNo);
+        if (vssSuper == null) {
+            uri = DEFAULT_URI;
+        } else {
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission";
+        }
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuper, request);
+        return uri;
+    }
+
 
     private String prepareAr(String draftNo, HttpServletRequest request) {
         String uri = "";
