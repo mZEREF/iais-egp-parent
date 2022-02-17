@@ -1,6 +1,6 @@
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Biosafety Committee</h3>
 
-<div class="form-group ">
+<div class="form-group " style="display: none">
     <div class="col-sm-5 control-label">
         <label>Multiple Uploading</label>
     </div>

@@ -2,7 +2,7 @@
     <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of authorised personnel is always kept up to date i.e. prompt submission of updates to include newly authorized personnel or to remove personnel who are no longer authorized to access the facility.</p>">i</a>
 </h3>
 
-<div class="form-group ">
+<div class="form-group " style="display: none">
     <div class="col-sm-5 control-label">
         <label>Input Method</label>
     </div>
