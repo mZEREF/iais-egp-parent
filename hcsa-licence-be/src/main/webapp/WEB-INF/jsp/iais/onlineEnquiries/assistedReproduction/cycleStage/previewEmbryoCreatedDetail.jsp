@@ -1,6 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign} ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#embryoCreatedDetails">
                 Embryo Created
