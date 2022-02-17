@@ -504,9 +504,9 @@ public class DataSubmissionInboxDelegator {
 				}
 				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
 					 ) {
-					if(arWd.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
-						return 3;
-					}
+//					if(arWd.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+//						return 3;
+//					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
 						addWithdrawnDtoList.remove(arWd);
 					}
