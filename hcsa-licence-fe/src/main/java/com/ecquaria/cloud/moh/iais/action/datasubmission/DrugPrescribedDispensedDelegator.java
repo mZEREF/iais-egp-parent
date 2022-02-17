@@ -1,13 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +80,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         currentDpDataSubmission.setDrugPrescribedDispensedDto(drugPrescribedDispensed);
         String profile ="DRP";
         validatePageData(bpc.request, drugPrescribedDispensed, profile, ACTION_TYPE_CONFIRM);
+        if(DpCommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+            valRFC(request,drugPrescribedDispensed);
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }
     private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request) {
@@ -100,5 +102,14 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             drugMedicationDtos.add(drugMedication);
         }
         return drugMedicationDtos;
+    }
+    protected void valRFC(HttpServletRequest request, DrugPrescribedDispensedDto drugPrescribedDispensed){
+        if(isRfc(request)){
+            DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
+            if(dpOldSuperDataSubmissionDto != null && dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null && drugPrescribedDispensed.equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

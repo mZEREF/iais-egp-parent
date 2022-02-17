@@ -20,12 +20,9 @@ public class TreatmentValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION);
-        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
-        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         String lastChildBirthday = treatmentDto.getLastChildBirthday();
-        if(treatmentDto == null){
-            treatmentDto = new TreatmentDto();
-        }
         String residenceStatus = treatmentDto.getResidenceStatus();
         if(!StringUtil.isEmpty(residenceStatus) && residenceStatus.equals(DataSubmissionConsts.RESIDENCE_STATUS_OTHERS)){
            if(StringUtil.isEmpty(treatmentDto.getOtherResidenceStatus())){
@@ -41,7 +38,7 @@ public class TreatmentValidator implements CustomizeValidator {
         String livingChildrenNo = treatmentDto.getLivingChildrenNo();
 
         if(StringUtil.isNotEmpty(livingChildrenNo) && StringUtil.isNumber(livingChildrenNo)){
-            if(Integer.valueOf(livingChildrenNo) >=1){
+            if(Integer.parseInt(livingChildrenNo) >=1){
                 if(StringUtil.isEmpty(lastChildBirthday)){
                     errorMap.put("lastChildBirthday", "GENERAL_ERR0006");
                 }

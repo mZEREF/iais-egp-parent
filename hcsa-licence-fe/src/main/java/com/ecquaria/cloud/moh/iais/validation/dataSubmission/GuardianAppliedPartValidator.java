@@ -76,7 +76,8 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
             if(!StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartBirthday())){
                 try {
                     if(Formatter.compareDateByDay(Formatter.formatDate(guardianAppliedPartDto.getAppliedPartBirthday())) >0){
-                        errMap.put("appliedPartBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                        String errMsg = MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field");
+                        errMap.put("appliedPartBirthday", errMsg);
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(),e);

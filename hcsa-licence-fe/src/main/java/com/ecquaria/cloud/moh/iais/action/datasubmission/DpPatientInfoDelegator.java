@@ -70,7 +70,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         patientDto.setPatientCode(patientService.getPatientCode(patientDto.getPatientCode()));
         dpSuperDataSubmissionDto.setPatientDto(patientDto);
         validatePageData(request, patientDto,"DRP",ACTION_TYPE_CONFIRM);
-        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+        if(DpCommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
             valRFC(request,patientDto);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
