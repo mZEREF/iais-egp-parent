@@ -77,7 +77,7 @@
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
-                                                 value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
+                                                 cssClass="clearSel" value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
                                 </iais:value>
                             </iais:row>
                         </c:if>
