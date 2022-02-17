@@ -291,7 +291,10 @@
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
-                left join ds_donor_sample donor on donor.SUBMISSION_ID=dds.ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
+                left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
                 left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
                 left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
@@ -332,9 +335,11 @@
                 <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
-                <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
-                <#if donorIdType??> AND  :donorIdType = donor.ID_TYPE </#if>
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donorIdType??> AND  (:donorIdType = dad_donor.ID_TYPE or :donorIdType = did_donor.ID_TYPE) </#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.CYCLE_ID in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.CYCLE_ID not in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
@@ -347,12 +352,12 @@
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
                 <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
-                <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
-                <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
-                <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientIuiNo??> AND  'PICF001' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtYes??> AND  1 = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtNo??> AND  0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
@@ -390,7 +395,10 @@
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
-                left join ds_donor_sample donor on donor.SUBMISSION_ID=dds.ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
+                left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
                 left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
                 left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
@@ -431,9 +439,11 @@
                 <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
-                <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
-                <#if donorIdType??> AND  :donorIdType = donor.ID_TYPE </#if>
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donorIdType??> AND  (:donorIdType = dad_donor.ID_TYPE or :donorIdType = did_donor.ID_TYPE) </#if>
+                  <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.CYCLE_ID in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.CYCLE_ID not in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
@@ -446,12 +456,12 @@
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
                 <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
-                <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
-                <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
-                <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientIuiNo??> AND  'PICF001' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtYes??> AND  1 = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtNo??> AND  0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>

@@ -531,8 +531,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
             }
 
-            if(arDto.getDonorGameteUsed()!=null){//not found
-                filter.put("donorGameteUsed",Integer.parseInt(arDto.getDonorGameteUsed()));
+            if(arDto.getDonorGameteUsed()!=null){
+                if(Integer.parseInt(arDto.getDonorGameteUsed())==1){
+                    filter.put("donorUsedYes",Integer.parseInt(arDto.getDonorGameteUsed()));
+                }else {
+                    filter.put("donorUsedNo",Integer.parseInt(arDto.getDonorGameteUsed()));
+                }
             }
             if(arDto.getDonorName()!=null){
                 filter.put("donorName", arDto.getDonorName());
