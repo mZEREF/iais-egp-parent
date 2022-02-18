@@ -10,19 +10,19 @@
             <thead>
             <tr >
 
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 30%;"
                                      field="NAME"
                                      value="Name"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="ID_TYPE"
                                      value="ID Type"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="ID_NUMBER"
                                      value="ID No."/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NATIONALITY"
                                      value="Nationality"/>
             </tr>
@@ -96,19 +96,19 @@
             <thead>
             <tr >
 
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 30%;"
                                      field="NAME"
                                      value="Name"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="ID_TYPE"
                                      value="ID Type"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="ID_NUMBER"
                                      value="ID No."/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NATIONALITY"
                                      value="Nationality"/>
             </tr>
