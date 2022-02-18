@@ -170,8 +170,8 @@ public class CompareTwoObject {
     private static void addingStringDiff(List<DiffContent> diffs, Field declaredField, String beforeInvoke, String afterInvoke){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        String beforeField = StringUtils.hasLength(beforeInvoke) ? "" : beforeInvoke;
-        String afterField = StringUtils.hasLength(afterInvoke) ? "" : afterInvoke;
+        String beforeField = StringUtils.hasLength(beforeInvoke) ? beforeInvoke : "";
+        String afterField = StringUtils.hasLength(afterInvoke) ? afterInvoke : "";
         if (!beforeField.equals(afterField)) {
             DiffContent diff = new DiffContent();
             diff.setModifyField(annotation.aliasName().equals("") ? declaredField.getName() : annotation.aliasName());
