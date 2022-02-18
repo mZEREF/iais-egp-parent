@@ -16,7 +16,7 @@
 
                             <iais:sortableHeader needSort="false"
                                                  field="cycle_no"
-                                                 value="Cycle No"/>
+                                                 value="Cycle No."/>
                             <iais:sortableHeader needSort="false"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
@@ -89,7 +89,7 @@
 
                             <iais:sortableHeader needSort="false"
                                                  field="cycle_no"
-                                                 value="Cycle No"/>
+                                                 value="Cycle No."/>
                             <iais:sortableHeader needSort="false"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>

@@ -18,7 +18,7 @@
                                      value="ID Type"/>
                 <iais:sortableHeader needSort="false"
                                      field="ID_NUMBER"
-                                     value="ID No"/>
+                                     value="ID No."/>
                 <iais:sortableHeader needSort="false"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
@@ -101,7 +101,7 @@
                                      value="ID Type"/>
                 <iais:sortableHeader needSort="false"
                                      field="ID_NUMBER"
-                                     value="ID No"/>
+                                     value="ID No."/>
                 <iais:sortableHeader needSort="false"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
