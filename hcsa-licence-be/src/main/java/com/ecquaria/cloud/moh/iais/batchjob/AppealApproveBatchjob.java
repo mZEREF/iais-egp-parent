@@ -653,7 +653,7 @@ public class AppealApproveBatchjob {
             return;
         }
         if(licenceDto!=null && appPremisesRecommendationDto != null){
-            if("reject".equals(appPremisesRecommendationDto.getRecomDecision())){
+            if(InspectionReportConstants.RFC_REJECTED.equals(appPremisesRecommendationDto.getRecomDecision())||InspectionReportConstants.REJECTED.equals(appPremisesRecommendationDto.getRecomDecision())){
                 return;
             }
             rollBackLicence.add(licenceDto);
