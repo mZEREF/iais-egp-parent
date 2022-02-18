@@ -10,16 +10,11 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 
-import java.util.List;
-
 /**
  * @author Zhu Tangtang
  */
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "dataSubmission")
 public interface DataSubmissionClient {
-    @GetMapping(path = "/dataSubmission/{schedule}")
-    FeignResponseEntity<List<BiologicalDto>> queryBiologicalBySchedule(@PathVariable(name = "schedule") String schedule);
-
     @GetMapping(value = "/facList/getFacList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacListDto> queryAllApprovalFacList();
 
