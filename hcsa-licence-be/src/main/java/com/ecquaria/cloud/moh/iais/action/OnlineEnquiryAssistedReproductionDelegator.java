@@ -171,6 +171,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         if(patientIdTypeList != null){
             List<String> selectValList = Arrays.asList(patientIdTypeList);
             arFilterDto.setPatientIdTypeList(selectValList);
+        }else {
+            arFilterDto.setPatientIdTypeList(null);
         }
         arFilterDto.setPatientIdType(patientIdType);
         String patientIdNumber=ParamUtil.getString(request,"patientIdNumber");
@@ -215,6 +217,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         if(indicationArCycle != null){
             List<String> selectValList = Arrays.asList(indicationArCycle);
             arFilterDto.setIndicationArCycleList(selectValList);
+        }else {
+            arFilterDto.setIndicationArCycleList(null);
         }
         String IVM=ParamUtil.getString(request,"IVM");
         arFilterDto.setIVM(IVM);
