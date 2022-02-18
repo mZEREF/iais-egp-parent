@@ -160,7 +160,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String patientName=ParamUtil.getString(request,"patientName");
         arFilterDto.setPatientName(patientName);
         String patientIdType=ParamUtil.getString(request,"patientIdType");
-        arFilterDto.setPatientIdType(patientIdType);
         String[] patientIdTypeList=ParamUtil.getStrings(request,"patientIdTypeList");
         if(patientIdTypeList != null){
             List<String> selectValList = Arrays.asList(patientIdTypeList);
@@ -168,7 +167,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }else {
             arFilterDto.setPatientIdTypeList(null);
         }
-        arFilterDto.setPatientIdType(patientIdType);
         String patientIdNumber=ParamUtil.getString(request,"patientIdNumber");
         arFilterDto.setPatientIdNumber(patientIdNumber);
         String submissionId=ParamUtil.getString(request,"submissionId");
@@ -190,8 +188,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setPatientAgeNumberTo(patientAgeNumberTo);
         String husbandName=ParamUtil.getString(request,"husbandName");
         arFilterDto.setHusbandName(husbandName);
-        String husbandIdType=ParamUtil.getString(request,"husbandIdType");
-        arFilterDto.setHusbandIdType(husbandIdType);
         String husbandIdNumber=ParamUtil.getString(request,"husbandIdNumber");
         arFilterDto.setHusbandIdNumber(husbandIdNumber);
         String embryologist=ParamUtil.getString(request,"embryologist");
@@ -234,8 +230,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDonorGameteUsed(donorGameteUsed);
         String donorName=ParamUtil.getString(request,"donorName");
         arFilterDto.setDonorName(donorName);
-        String donorIdType=ParamUtil.getString(request,"donorIdType");
-        arFilterDto.setDonorIdType(donorIdType);
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
         arFilterDto.setDonorIdNumber(donorIdNumber);
         String removedFromStorage=ParamUtil.getString(request,"removedFromStorage");
@@ -427,9 +421,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
         }
         if(sqf==2){
-            if(arDto.getPatientIdType()!=null){
-                filter.put("patientIdType", arDto.getPatientIdType());
-            }
+
 
             if(arDto.getPatientAgeNumberFrom()!=null){
                 try {
@@ -461,9 +453,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getHusbandName()!=null){
                 filter.put("husbandName", arDto.getHusbandName());
             }
-            if(arDto.getHusbandIdType()!=null){
-                filter.put("husbandIdType", arDto.getHusbandIdType());
-            }
+
             if(arDto.getHusbandIdNumber()!=null){
                 filter.put("husbandIdNumber",arDto.getHusbandIdNumber());
             }

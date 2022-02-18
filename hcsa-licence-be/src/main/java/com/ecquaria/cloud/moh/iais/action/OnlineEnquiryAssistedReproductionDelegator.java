@@ -165,8 +165,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setArCentre(arCentre);
         String patientName=ParamUtil.getString(request,"patientName");
         arFilterDto.setPatientName(patientName);
-        String patientIdType=ParamUtil.getString(request,"patientIdType");
-        arFilterDto.setPatientIdType(patientIdType);
         String[] patientIdTypeList=ParamUtil.getStrings(request,"patientIdTypeList");
         if(patientIdTypeList != null){
             List<String> selectValList = Arrays.asList(patientIdTypeList);
@@ -174,7 +172,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }else {
             arFilterDto.setPatientIdTypeList(null);
         }
-        arFilterDto.setPatientIdType(patientIdType);
         String patientIdNumber=ParamUtil.getString(request,"patientIdNumber");
         arFilterDto.setPatientIdNumber(patientIdNumber);
         String submissionId=ParamUtil.getString(request,"submissionId");
@@ -196,8 +193,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setPatientAgeNumberTo(patientAgeNumberTo);
         String husbandName=ParamUtil.getString(request,"husbandName");
         arFilterDto.setHusbandName(husbandName);
-        String husbandIdType=ParamUtil.getString(request,"husbandIdType");
-        arFilterDto.setHusbandIdType(husbandIdType);
+        String[] husbandIdTypeList=ParamUtil.getStrings(request,"husbandIdTypeList");
+        if(husbandIdTypeList != null){
+            List<String> selectValList = Arrays.asList(husbandIdTypeList);
+            arFilterDto.setHusbandIdTypeList(selectValList);
+        }else {
+            arFilterDto.setHusbandIdTypeList(null);
+        }
         String husbandIdNumber=ParamUtil.getString(request,"husbandIdNumber");
         arFilterDto.setHusbandIdNumber(husbandIdNumber);
         String embryologist=ParamUtil.getString(request,"embryologist");
@@ -240,8 +242,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDonorGameteUsed(donorGameteUsed);
         String donorName=ParamUtil.getString(request,"donorName");
         arFilterDto.setDonorName(donorName);
-        String donorIdType=ParamUtil.getString(request,"donorIdType");
-        arFilterDto.setDonorIdType(donorIdType);
+        String[] donorIdTypeList=ParamUtil.getStrings(request,"donorIdTypeList");
+        if(donorIdTypeList != null){
+            List<String> selectValList = Arrays.asList(donorIdTypeList);
+            arFilterDto.setDonorIdTypeList(selectValList);
+        }else {
+            arFilterDto.setDonorIdTypeList(null);
+        }
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
         arFilterDto.setDonorIdNumber(donorIdNumber);
         String removedFromStorage=ParamUtil.getString(request,"removedFromStorage");
@@ -433,9 +440,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
         }
         if(sqf==2){
-            if(arDto.getPatientIdType()!=null){
-                filter.put("patientIdType", arDto.getPatientIdType());
-            }
+
 
             if(arDto.getPatientAgeNumberFrom()!=null){
                 try {
@@ -467,9 +472,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getHusbandName()!=null){
                 filter.put("husbandName", arDto.getHusbandName());
             }
-            if(arDto.getHusbandIdType()!=null){
-                filter.put("husbandIdType", arDto.getHusbandIdType());
-            }
+
             if(arDto.getHusbandIdNumber()!=null){
                 filter.put("husbandIdNumber",arDto.getHusbandIdNumber());
             }
@@ -545,9 +548,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getDonorName()!=null){
                 filter.put("donorName", arDto.getDonorName());
             }
-            if(arDto.getDonorIdType()!=null){
-                filter.put("donorIdType", arDto.getDonorIdType());
-            }
+
             if(arDto.getDonorIdNumber()!=null){
                 filter.put("donorIdNumber",arDto.getDonorIdNumber());
             }
@@ -1018,6 +1019,33 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 patientParam.addParam("indicationArCycleList", mainIndicationListStr);
                 for(int i = 0; i < arFilterDto.getIndicationArCycleList().size(); i++){
                     patientParam.addFilter("dacs.MAIN_INDICATION" + i, arFilterDto.getIndicationArCycleList().get(i));
+                }
+            }
+            if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
+                String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
+                patientParam.addParam("patient_id_types", patientIdTypeListStr);
+                for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
+                    patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
+                }
+            }
+            if(IaisCommonUtils.isNotEmpty(arFilterDto.getHusbandIdTypeList())){
+                String husbandIdTypeListStr = SqlHelper.constructInCondition("dh.ID_TYPE", arFilterDto.getHusbandIdTypeList().size());
+                patientParam.addParam("husband_id_types", husbandIdTypeListStr);
+                for(int i = 0; i < arFilterDto.getHusbandIdTypeList().size(); i++){
+                    patientParam.addFilter("dh.ID_TYPE" + i, arFilterDto.getHusbandIdTypeList().get(i));
+                }
+            }
+            if(IaisCommonUtils.isNotEmpty(arFilterDto.getDonorIdTypeList())){
+                String donorIdTypeListStrAr = SqlHelper.constructInCondition("dad_donor.ID_TYPE", arFilterDto.getDonorIdTypeList().size());
+                patientParam.addParam("donor_id_types_ar", donorIdTypeListStrAr);
+                for(int i = 0; i < arFilterDto.getDonorIdTypeList().size(); i++){
+                    patientParam.addFilter("dad_donor.ID_TYPE" + i, arFilterDto.getDonorIdTypeList().get(i));
+                }
+
+                String donorIdTypeListStrIui = SqlHelper.constructInCondition("did_donor.ID_TYPE", arFilterDto.getDonorIdTypeList().size());
+                patientParam.addParam("donor_id_types_iui", donorIdTypeListStrIui);
+                for(int i = 0; i < arFilterDto.getDonorIdTypeList().size(); i++){
+                    patientParam.addFilter("did_donor.ID_TYPE" + i, arFilterDto.getDonorIdTypeList().get(i));
                 }
             }
             if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
