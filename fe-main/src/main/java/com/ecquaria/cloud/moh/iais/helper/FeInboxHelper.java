@@ -60,6 +60,19 @@ public final class FeInboxHelper {
         return types;
     }
 
+    public static List<String> getDsAndHcsaTypes(List<String> privilegeIds){
+        List<String> types = getDsTypes(privilegeIds);
+        if(types == null){
+            return null;
+        }
+        for (String privilegeId: privilegeIds ) {
+            if(PrivilegeConsts.USER_PRIVILEGE_HALP_HCSA_DASHBOARD.equalsIgnoreCase(privilegeId)){
+                types.add(PrivilegeConsts.USER_PRIVILEGE_HALP_HCSA_DASHBOARD);
+                break;
+            }
+        }
+        return types;
+    }
     private static List<SelectOption> getInboxStatuses(){
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.DATA_SUBMISSION_STATUS);
         ListIterator<SelectOption> selectOptionVector = selectOptions.listIterator();
