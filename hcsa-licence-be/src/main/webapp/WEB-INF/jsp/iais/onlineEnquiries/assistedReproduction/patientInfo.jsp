@@ -30,7 +30,7 @@
             </thead>
             <tbody class="form-horizontal">
                 <c:choose>
-                    <c:when test="${empty patientInfoDto}">
+                    <c:when test="${empty patientInfoDto.patient}">
                         <tr>
                             <td colspan="15">
                                 <iais:message key="GENERAL_ACK018"
@@ -120,7 +120,7 @@
             </thead>
             <tbody class="form-horizontal">
             <c:choose>
-                <c:when test="${empty patientInfoDto}">
+                <c:when test="${empty patientInfoDto.previous}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="GENERAL_ACK018"
