@@ -39,7 +39,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         int ageCount = 1;
 
         if(donorSampleDto != null && donorSampleDto.getAges() != null){
-            ageCount = donorSampleDto.getAges().length;
+            ageCount = donorSampleDto.getAges().length+1;
         }
         bpc.request.setAttribute("ageCount",ageCount);
     }

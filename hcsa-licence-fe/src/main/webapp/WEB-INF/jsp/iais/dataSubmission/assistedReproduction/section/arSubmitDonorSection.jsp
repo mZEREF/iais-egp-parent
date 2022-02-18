@@ -11,7 +11,7 @@
     <div id="arDonorSampleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
-                <div class="panel-main-content form-horizontal">
+                <div class="panel-main-content form-horizontal donorSample">
 
                     <iais:row>
                         <iais:field width="5" value="Is Sample from a Directed Donation?" mandatory="true"/>
@@ -163,9 +163,9 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
-                                <iais:row id = "donorAge${idxStatus.index}">
+                                <iais:row id = "donorAge${idxStatus.index+1}">
                                     <label class="col-xs-5 col-md-4 control-label">
-                                        <c:if test="${idxStatus.first==true && donorSampleDto.donorSampleAgeDtos == null}">
+                                        <c:if test="${idxStatus.first && donorSampleDto.donorSampleAgeDtos == null}">
                                             Donor's Age when Sample was Collected
                                             <span class="mandatory">*</span>
                                         </c:if>
@@ -174,10 +174,10 @@
                                         <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
                                         <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                     </iais:value>
-                                    <c:if test="${idxStatus.first!=true}">
+                                    <c:if test="${!idxStatus.first || donorSampleDto.donorSampleAgeDtos != null}">
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
                                             <h4 class="text-danger">
-                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')"></em>
+                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index+1}')"></em>
                                             </h4>
                                         </div>
                                     </c:if>
@@ -187,7 +187,7 @@
                     </c:choose>
 
 
-                    <div id ="donorAge">
+                    <div id ="donorAge" class="donorSampleAdd">
 
                     </div>
                 </div>
@@ -218,6 +218,10 @@
         });
         dikChange();
         arCentreChange();
+        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+        //disableContent('div.donorSample');
+        //unDisableContent('div.donorSampleAdd');
+        </c:if>
     });
     function showDonationYes(){
      $("#directedDonationYes").show();
