@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -162,8 +160,6 @@ public class RfcFacCertifierRegistrationDelegator {
                         }
 
                         // save data
-                        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                        finalAllDataDto.setAuditTrailDto(auditTrailDto);
                         finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                         String response = facilityCertifierRegistrationService.saveAmendmentFacCertifier(finalAllDataDto);
                         log.info("save rfc facility certifier registration response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
@@ -211,6 +207,6 @@ public class RfcFacCertifierRegistrationDelegator {
     }
 
     public void controlSwitch(BaseProcessClass bpc){
-        facilityCertifierRegistrationService.controlSwitch(bpc);
+        facilityCertifierRegistrationService.controlSwitch(bpc, MasterCodeConstants.APP_TYPE_RFC);
     }
 }

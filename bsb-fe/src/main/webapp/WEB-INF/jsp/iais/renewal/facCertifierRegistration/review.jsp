@@ -329,6 +329,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <a class="btn btn-secondary" href="javascript:void(0);">PRINT</a>
+                                                <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
                                                 <a class="btn btn-primary next" id="submit" >SUBMIT</a>
                                             </div>
                                         </div>
@@ -336,6 +337,7 @@
                                 </div>
                             </div>
                         </div>
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

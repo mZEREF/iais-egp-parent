@@ -21,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
@@ -488,7 +490,11 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
-    public void actionFilter(BaseProcessClass bpc) {
+    public void preAcknowledge(BaseProcessClass bpc) {
+        //do nothing now
+    }
+
+    public void actionFilter(BaseProcessClass bpc, String appType) {
         HttpServletRequest request = bpc.request;
         // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
@@ -499,7 +505,7 @@ public class FacilityRegistrationService {
             // set, if the action is 'save draft', we save it and route back to that page
             if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
                 actionType = KEY_ACTION_JUMP;
-                saveDraft(request);
+                saveDraft(request, appType);
             }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
@@ -576,7 +582,7 @@ public class FacilityRegistrationService {
         }
     }
 
-    public void saveDraft(HttpServletRequest request) {
+    public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
 
         // save docs
@@ -589,7 +595,15 @@ public class FacilityRegistrationService {
         newFilesToSync.addAll(profileNewFiles);
 
         // save data
-        FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+        FacilityRegisterDto finalAllDataDto = null;
+        if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
+            finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }else if (appType.equals(MasterCodeConstants.APP_TYPE_RENEW)){
+            NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+            finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }
         String draftAppNo = facRegClient.saveNewFacilityDraft(finalAllDataDto);
         // set draft app No. into the NodeGroup
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();

@@ -21,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -38,10 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ACTION_VALUE;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_NAV_NEXT;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_SHOW_ERROR_SWITCH;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -176,7 +173,7 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, orgProfileNode);
-        }  else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
@@ -253,7 +250,7 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
 
-    public void controlSwitch(BaseProcessClass bpc){
+    public void controlSwitch(BaseProcessClass bpc, String appType){
         HttpServletRequest request = bpc.request;
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
@@ -262,7 +259,7 @@ public class FacilityCertifierRegistrationService {
             // set, if the action is 'save draft', we save it and route back to that page
             if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
                 actionType = KEY_ACTION_JUMP;
-                saveDraft(request);
+                saveDraft(request, appType);
             }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
@@ -606,7 +603,7 @@ public class FacilityCertifierRegistrationService {
         }
     }
 
-    public void saveDraft(HttpServletRequest request) {
+    public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
 
         // save docs
@@ -615,8 +612,16 @@ public class FacilityCertifierRegistrationService {
         List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
 
         // save data
-        FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-        String draftAppNo = facCertifierRegisterClient.saveNewFacCertifierDraft(finalAllDataDto);
+        FacilityCertifierRegisterDto finalAllDataDto = null;
+        if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
+            finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }else if (appType.equals(MasterCodeConstants.APP_TYPE_RENEW)){
+            NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+            finalAllDataDto = FacilityCertifierRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }
+        String draftAppNo = facCertifierRegisterClient.saveFacCertifierDraft(finalAllDataDto);
         // set draft app No. into the NodeGroup
         OrganisationProfileDto profileDto = (OrganisationProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue();
         profileDto.setDraftAppNo(draftAppNo);

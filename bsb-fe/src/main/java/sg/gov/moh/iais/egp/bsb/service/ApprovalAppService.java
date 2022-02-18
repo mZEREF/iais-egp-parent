@@ -459,7 +459,7 @@ public class ApprovalAppService {
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
-    public void actionFilter(BaseProcessClass bpc){
+    public void actionFilter(BaseProcessClass bpc, String appType){
         HttpServletRequest request = bpc.request;
         // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
@@ -470,7 +470,7 @@ public class ApprovalAppService {
             // set, if the action is 'save draft', we save it and route back to that page
             if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
                 actionType = KEY_ACTION_JUMP;
-                saveDraft(request);
+                saveDraft(request, appType);
             }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
@@ -492,7 +492,7 @@ public class ApprovalAppService {
         // do nothing now
     }
 
-    public void saveDraft(HttpServletRequest request) {
+    public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
 
         // save docs
@@ -502,7 +502,8 @@ public class ApprovalAppService {
 
         // save data
         ApprovalAppDto finalAllDataDto = ApprovalAppDto.from(approvalAppRoot);
-        String draftAppNo = approvalAppClient.saveNewApprovalAppDraft(finalAllDataDto);
+        finalAllDataDto.setAppType(appType);
+        String draftAppNo = approvalAppClient.saveApprovalAppDraft(finalAllDataDto);
         // set draft app No. into the NodeGroup
         ActivityDto activityDto = (ActivityDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_ACTIVITY)).getValue();
         activityDto.setDraftAppNo(draftAppNo);

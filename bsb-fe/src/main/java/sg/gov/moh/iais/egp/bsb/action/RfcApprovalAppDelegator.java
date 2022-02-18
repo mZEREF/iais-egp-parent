@@ -19,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
@@ -196,7 +197,7 @@ public class RfcApprovalAppDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc){
-        approvalAppService.actionFilter(bpc);
+        approvalAppService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_RFC);
     }
 
     public void jumpFilter(BaseProcessClass bpc){

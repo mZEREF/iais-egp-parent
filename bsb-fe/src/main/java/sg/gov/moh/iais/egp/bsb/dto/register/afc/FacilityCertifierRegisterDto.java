@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -25,12 +24,14 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 @Slf4j
 public class FacilityCertifierRegisterDto implements Serializable {
     private String appStatus;
+    //this is used to saveDraft module
+    private String appType;
+
     private OrganisationProfileDto profileDto;
     private CertifyingTeamDto certifyingTeamDto;
     private AdministratorDto administratorDto;
     private Collection<DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
-    private AuditTrailDto auditTrailDto;
 
     //renewal special dto
     private InstructionDto instructionDto;

@@ -11,7 +11,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDto;
 
 
@@ -33,7 +32,7 @@ public interface FacCertifierRegisterClient {
     ValidationResultDto validateFaCerPreviewSubmit(@RequestBody PreviewSubmitDto dto);
 
     @PostMapping(path = "/register/faCer/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String saveNewFacCertifierDraft(@RequestBody FacilityCertifierRegisterDto dto);
+    String saveFacCertifierDraft(@RequestBody FacilityCertifierRegisterDto dto);
 
     @PostMapping(path = "/register/faCer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacCertifier(@RequestBody FacilityCertifierRegisterDto dto);

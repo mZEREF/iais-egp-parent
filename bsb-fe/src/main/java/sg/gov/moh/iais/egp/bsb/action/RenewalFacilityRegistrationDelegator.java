@@ -1,27 +1,21 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
@@ -45,20 +39,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Slf4j
 @Delegator("renewalFacilityRegisterDelegator")
 public class RenewalFacilityRegistrationDelegator {
-    private static final String MODULE_NAME = "Renewal Facility Registration";
-
     private final FacilityRegisterClient facRegClient;
-    private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final FacilityRegistrationService facilityRegistrationService;
     private final DocSettingService docSettingService;
 
-    public RenewalFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient,
-                                                BsbFileClient bsbFileClient,
-                                                FacilityRegistrationService facilityRegistrationService, DocSettingService docSettingService) {
+    public RenewalFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService, DocSettingService docSettingService) {
         this.facRegClient = facRegClient;
-        this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
         this.facilityRegistrationService = facilityRegistrationService;
         this.docSettingService = docSettingService;
     }
@@ -68,7 +54,7 @@ public class RenewalFacilityRegistrationDelegator {
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
         request.getSession().removeAttribute(KEY_INSTRUCTION_INFO);
         request.getSession().removeAttribute(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+        AuditTrailHelper.auditFunction(MODULE_NAME_RENEWAL, MODULE_NAME_RENEWAL);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -220,43 +206,34 @@ public class RenewalFacilityRegistrationDelegator {
                     reviewNode.passValidation();
 
                     // save docs
-                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    List<NewFileSyncDto> newFilesToSync = null;
-                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
-                    }
+                    log.info("Save documents into file-repo");
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+                    List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
+                    FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+                    List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
+                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+                    newFilesToSync.addAll(primaryDocNewFiles);
+                    newFilesToSync.addAll(profileNewFiles);
 
                     // save data
+                    log.info("Save renewal facility registration data");
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
                     log.info("save renewal facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
                     try {
-                        // sync files to BE file-repo (save new added files, delete useless files)
-                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                            /* Ignore the failure of sync files currently.
-                             * We should add a mechanism to retry synchronization of files in the future */
-                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                            syncDto.setNewFiles(newFilesToSync);
-                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                            bsbFileClient.saveFiles(syncDto);
-                        }
-
-                        // delete docs in FE file-repo
-                        /* Ignore the failure when try to delete FE files because this is not a big issue.
-                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                            FileRepoDto fileRepoDto = new FileRepoDto();
-                            fileRepoDto.setId(id);
-                            fileRepoClient.removeFileById(fileRepoDto);
-                        }
+                        // delete docs
+                        log.info("Delete already saved documents in file-repo");
+                        List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
+                        List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
+                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+                        toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
+                        toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
+                        // sync docs
+                        log.info("Sync new uploaded documents to BE");
+                        facilityRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
                     } catch (Exception e) {
-                        log.error("Fail to sync files to BE", e);
+                        log.error("Fail to synchronize documents", e);
                     }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
@@ -268,6 +245,9 @@ public class RenewalFacilityRegistrationDelegator {
                 facilityRegistrationService.jumpHandler(request, viewApprovalRoot, NODE_NAME_REVIEW, reviewNode);
             }
 
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_REVIEW);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -353,6 +333,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facAuthNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAuthNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -372,6 +355,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facAdminNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAdminNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -391,6 +377,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facOfficerNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOfficerNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -410,6 +399,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facCommitteeNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -429,6 +421,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, batNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, batNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -465,6 +460,9 @@ public class RenewalFacilityRegistrationDelegator {
             facilityRegistrationService.renewalJumpHandle(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -472,7 +470,7 @@ public class RenewalFacilityRegistrationDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc) {
-        facilityRegistrationService.actionFilter(bpc);
+        facilityRegistrationService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_RENEW);
     }
 
     public void jumpFilter(BaseProcessClass bpc) {
@@ -480,6 +478,6 @@ public class RenewalFacilityRegistrationDelegator {
     }
 
     public void preAcknowledgement(BaseProcessClass bpc) {
-        //do nothing now
+        facilityRegistrationService.preAcknowledge(bpc);
     }
 }

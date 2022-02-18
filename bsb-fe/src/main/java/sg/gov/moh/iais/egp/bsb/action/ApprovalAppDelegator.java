@@ -17,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -186,7 +187,7 @@ public class ApprovalAppDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc){
-        approvalAppService.actionFilter(bpc);
+        approvalAppService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 
     public void jumpFilter(BaseProcessClass bpc){

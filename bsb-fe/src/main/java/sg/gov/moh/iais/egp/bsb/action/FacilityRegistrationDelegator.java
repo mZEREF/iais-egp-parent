@@ -2,8 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,6 +12,7 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
@@ -34,8 +33,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Slf4j
 @Delegator("bsbFacilityRegisterDelegator")
 public class FacilityRegistrationDelegator {
-    private static final String MODULE_NAME = "Facility Registration";
-
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
 
@@ -48,8 +45,7 @@ public class FacilityRegistrationDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+        AuditTrailHelper.auditFunction(MODULE_NAME_NEW, MODULE_NAME_NEW);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -203,8 +199,6 @@ public class FacilityRegistrationDelegator {
                     // save data
                     log.info("Save facility registration data");
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
@@ -250,7 +244,7 @@ public class FacilityRegistrationDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc) {
-        facilityRegistrationService.actionFilter(bpc);
+        facilityRegistrationService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {

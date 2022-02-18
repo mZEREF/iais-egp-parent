@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,7 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
@@ -134,8 +131,6 @@ public class FacCertifierRegistrationDelegator {
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                     String response = facilityCertifierRegistrationService.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facilityCertifierRegister response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
@@ -171,6 +166,6 @@ public class FacCertifierRegistrationDelegator {
     }
 
     public void controlSwitch(BaseProcessClass bpc){
-        facilityCertifierRegistrationService.controlSwitch(bpc);
+        facilityCertifierRegistrationService.controlSwitch(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 }

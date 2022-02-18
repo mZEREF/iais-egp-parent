@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -34,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_REVIEW;
 
 /**
  * @author : LiRan
@@ -166,8 +163,6 @@ public class RenewalFacilityCertifierRegisterDelegator {
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                     String response = facilityCertifierRegistrationService.saveRenewalRegisteredFacCertifier(finalAllDataDto);
                     log.info("save renewal facilityCertifierRegister response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
@@ -232,8 +227,11 @@ public class RenewalFacilityCertifierRegisterDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){
             facilityCertifierRegistrationService.renewalJumpHandle(request, facCertifierRegRoot, currentNodePath, administratorNode);
-        }else if (KEY_ACTION_JUMP.equals(actionType)) {
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityCertifierRegistrationService.jumpHandler(request, facCertifierRegRoot, currentNodePath, administratorNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -254,8 +252,11 @@ public class RenewalFacilityCertifierRegisterDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){
             facilityCertifierRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, certifyingTeamNode);
-        }else if (KEY_ACTION_JUMP.equals(actionType)) {
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityCertifierRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, certifyingTeamNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -277,9 +278,12 @@ public class RenewalFacilityCertifierRegisterDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){
             facilityCertifierRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, orgProfileNode);
-        }else if (KEY_ACTION_JUMP.equals(actionType)) {
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityCertifierRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, orgProfileNode);
-        }else {
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -300,8 +304,11 @@ public class RenewalFacilityCertifierRegisterDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){
             facilityCertifierRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, primaryDocNode);
-        }else if (KEY_ACTION_JUMP.equals(actionType)) {
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
             facilityCertifierRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, primaryDocNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -317,6 +324,6 @@ public class RenewalFacilityCertifierRegisterDelegator {
     }
 
     public void controlSwitch(BaseProcessClass bpc) {
-        facilityCertifierRegistrationService.controlSwitch(bpc);
+        facilityCertifierRegistrationService.controlSwitch(bpc, MasterCodeConstants.APP_TYPE_RENEW);
     }
 }
