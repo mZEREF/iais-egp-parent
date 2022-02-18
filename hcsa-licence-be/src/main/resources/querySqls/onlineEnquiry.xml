@@ -287,12 +287,13 @@
                 join ds_cycle dc on dds.CYCLE_ID=dc.ID and dds.STATUS != 'DS002' and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')  and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                join ds_patient_information dpi on (dc.PATIENT_CODE =dpi.PATIENT_CODE or dpi.SUBMISSION_ID = dds.ID)
+                join ds_patient_information dpi on (dc.PATIENT_CODE =dpi.PATIENT_CODE or dpi.SUBMISSION_ID = dds.ID) and dpi.ID not in (select PREVIOUS_IDENTIFICATION_ID from ds_patient_information )
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
-                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dds.CYCLE_ID
-                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
                 left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
@@ -338,8 +339,8 @@
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
                 <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
                 <#if donorIdType??> AND  (:donorIdType = dad_donor.ID_TYPE or :donorIdType = did_donor.ID_TYPE) </#if>
-                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.CYCLE_ID in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
-                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.CYCLE_ID not in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID UNION ALL select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID UNION ALL select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
@@ -395,8 +396,9 @@
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
-                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dds.CYCLE_ID
-                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dds.CYCLE_ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
                 left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
@@ -442,8 +444,8 @@
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
                 <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
                 <#if donorIdType??> AND  (:donorIdType = dad_donor.ID_TYPE or :donorIdType = did_donor.ID_TYPE) </#if>
-                  <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.CYCLE_ID in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
-                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.CYCLE_ID not in (select CYCLE_STAGE_ID from ds_ar_donor UNION ALL select CYCLE_STAGE_ID as IUI_CYCLE_STAGE_ID from ds_iui_donor) </#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID UNION ALL select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID UNION ALL select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
                 <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
                 <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
