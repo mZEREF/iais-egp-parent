@@ -75,7 +75,7 @@ public interface ArDataSubmissionService {
 
     Date getLastCompletedCycleStartDate(String patientCode, String hciCode);
 
-    DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCodeType,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
+    DonorSampleDto getDonorSampleDto(boolean directedDonation,String idType,String idNumber,String donorSampleCodeType,String donorSampleCode);
 
     /**
       * @author: shicheng

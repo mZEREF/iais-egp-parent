@@ -1,8 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.common.node;
 
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -27,20 +27,6 @@ public class Nodes {
             destNodePath = nodePath + root.getPathSeparator() + ((NodeGroup) node).getCurrentVisibleNode();
         }
         return destNodePath;
-    }
-
-    /**
-     * Get the first not validated visible node.
-     * @param nodeName node name of the group
-     * @return the first not validated node; will not point to a node group
-     */
-    public static String expandFailNode(NodeGroup root, String nodeName) {
-        String result = nodeName;
-        Node failNode = root.getNode(nodeName);
-        if (failNode instanceof NodeGroup) {
-            result = nodeName + root.getPathSeparator() + ((NodeGroup) failNode).getFirstNotValidatedNodePath();
-        }
-        return result;
     }
 
     /**
@@ -126,7 +112,7 @@ public class Nodes {
          * we need to let user pass by one click. */
         /* In order to avoid infinite loop, we use a map to count fail amount for each node path,
          * if it fails 3 times for the same path, we think the code has error */
-        Map<String, Integer> failCountMap = new HashMap<>();
+        Map<String, Integer> failCountMap = Maps.newHashMapWithExpectedSize(facRegRoot.count());
         int failCount;
 
         while (!checkedDestNode.equals(destNode)) {

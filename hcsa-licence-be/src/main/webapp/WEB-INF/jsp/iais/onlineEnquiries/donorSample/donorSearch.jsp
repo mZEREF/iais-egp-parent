@@ -36,7 +36,7 @@
 
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
-                                <iais:field width="4" value="SEARCH BY" />
+                                <iais:field width="4" value="SEARCH" />
                                 <div class="col-md-8">
                                 </div>
                             </iais:row>
@@ -53,7 +53,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Donor Sample Code"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="20" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
+                                    <input type="text"  id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -71,7 +71,7 @@
                                 </iais:value>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <div id="othersDisplay" <c:if test="${arEnquiryDonorSampleFilterDto.sampleHciCode!='AR_SC_001'}">style="display: none"</c:if> >
-                                        <input type="text" maxlength="100" id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
+                                        <input type="text"  id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
 
                                     </div>
                                 </iais:value>
@@ -86,13 +86,13 @@
                             <iais:row>
                                 <iais:field width="4" value="Donor's ID No."/>
                                 <iais:value width="4" cssClass="col-md-4"  >
-                                    <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
+                                    <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="No of Live Birth Events Recorded" />
-                                <div class="col-md-4">
-                                    <iais:value width="2" cssClass="col-md-2">
+                                <div class="col-md-4 row ">
+                                    <iais:value width="2" cssClass="col-md-2  row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="checkbox"
@@ -169,7 +169,7 @@
                     </div>
                     <br>
 
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 row">
                         <div class="components">
 
                             <iais:pagination param="donorSampleParam" result="donorSampleResult"/>
@@ -184,7 +184,7 @@
                                                                  value="AR Centre"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="DONOR_SAMPLE_CODE"
-                                                                 value="Donor Sample Code / ID No"/>
+                                                                 value="Donor Sample Code / ID No."/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="SAMPLE_TYPE_DESC"
                                                                  value="Sample Type"/>
@@ -237,7 +237,7 @@
                                                             <c:out value="${donorSample.ageNumber}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}')" class="btn btn-default btn-sm">
+                                                            <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
                                                         </td>

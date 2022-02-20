@@ -21,6 +21,13 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#saveDraft").click(function () {
+        showWaiting();
+        sumbitRemoveDisable();
+        $("input[name='action_type']").val("draft");
+        $("#mainForm").submit();
+    });
+
     $("a[data-step-key]").click(function (){
         showWaiting();
         sumbitRemoveDisable();

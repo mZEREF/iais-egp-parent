@@ -49,48 +49,48 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesInseminatedNum())){
                             errorMap.put("freshOocytesInseminatedNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesInseminatedNum())){
-                            totalFreshSum+=Integer.valueOf(fertilisationDto.getFreshOocytesInseminatedNum());
+                            totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesInseminatedNum());
                         }
                         if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesInseminatedNum())){
                             errorMap.put("thawedOocytesInseminatedNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesInseminatedNum())){
-                            totalThawedSum+=Integer.valueOf(fertilisationDto.getThawedOocytesInseminatedNum());
+                            totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesInseminatedNum());
                         }
                     }
                     if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())){
                             errorMap.put("freshOocytesMicroInjectedNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())){
-                            totalFreshSum+=Integer.valueOf(fertilisationDto.getFreshOocytesMicroInjectedNum());
+                            totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesMicroInjectedNum());
                         }
                         if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesMicroinjectedNum())){
                             errorMap.put("thawedOocytesMicroinjectedNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesMicroinjectedNum())){
-                            totalThawedSum+=Integer.valueOf(fertilisationDto.getThawedOocytesMicroinjectedNum());
+                            totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesMicroinjectedNum());
                         }
                     }
                     if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT)){
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesGiftNum())){
                             errorMap.put("freshOocytesGiftNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesGiftNum())){
-                            totalFreshSum+=Integer.valueOf(fertilisationDto.getFreshOocytesGiftNum());
+                            totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesGiftNum());
                         }
                         if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesGiftNum())){
                             errorMap.put("thawedOocytesGiftNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesGiftNum())){
-                            totalThawedSum+=Integer.valueOf(fertilisationDto.getThawedOocytesGiftNum());
+                            totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesGiftNum());
                         }
                     }
                     if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT)){
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesZiftNum())){
                             errorMap.put("freshOocytesZiftNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesZiftNum())){
-                            totalFreshSum+=Integer.valueOf(fertilisationDto.getFreshOocytesZiftNum());
+                            totalFreshSum+=Integer.parseInt(fertilisationDto.getFreshOocytesZiftNum());
                         }
                         if (StringUtil.isEmpty(fertilisationDto.getThawedOocytesZiftNum())){
                             errorMap.put("thawedOocytesZiftNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getThawedOocytesZiftNum())){
-                            totalThawedSum+=Integer.valueOf(fertilisationDto.getThawedOocytesZiftNum());
+                            totalThawedSum+=Integer.parseInt(fertilisationDto.getThawedOocytesZiftNum());
                         }
                     }
 

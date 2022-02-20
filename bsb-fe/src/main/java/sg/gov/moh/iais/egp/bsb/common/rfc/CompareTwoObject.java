@@ -107,8 +107,8 @@ public class CompareTwoObject {
     private static <T> void specialListHandle(T before, List<DiffContent> diffs, Field declaredField, Object beforeInvoke, Object afterInvoke, Class<?>... customerClass){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        List<?> beforeList = (ArrayList<?>) beforeInvoke;
-        List<?> afterList = (ArrayList<?>) afterInvoke;
+        List<?> beforeList = (List<?>) beforeInvoke;
+        List<?> afterList = (List<?>) afterInvoke;
         //return when two list size not equals
         if (afterList.size() != beforeList.size()){
             DiffContent diff = new DiffContent();
@@ -170,8 +170,8 @@ public class CompareTwoObject {
     private static void addingStringDiff(List<DiffContent> diffs, Field declaredField, String beforeInvoke, String afterInvoke){
         //get field annotation
         RfcAttributeDesc annotation = declaredField.getAnnotation(RfcAttributeDesc.class);
-        String beforeField = StringUtils.hasLength(beforeInvoke) ? "" : beforeInvoke;
-        String afterField = StringUtils.hasLength(afterInvoke) ? "" : afterInvoke;
+        String beforeField = StringUtils.hasLength(beforeInvoke) ? beforeInvoke : "";
+        String afterField = StringUtils.hasLength(afterInvoke) ? afterInvoke : "";
         if (!beforeField.equals(afterField)) {
             DiffContent diff = new DiffContent();
             diff.setModifyField(annotation.aliasName().equals("") ? declaredField.getName() : annotation.aliasName());

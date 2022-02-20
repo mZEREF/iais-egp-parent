@@ -53,15 +53,14 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
-                                    <iais:value width="7" cssClass="col-md-7"  >
-                                        <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.patientIdType}" />
-                                    </iais:value>
+                                    <div class="col-md-7 multi-select col-xs-7">
+                                        <iais:select cssClass="clearMultiSel" name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                        <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -115,10 +114,9 @@
 
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID Type"/>
-                                    <iais:value width="7" cssClass="col-md-7"  >
-                                        <iais:select name="husbandIdType" id="husbandIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     cssClass="clearSel" value="${assistedReproductionEnquiryFilterDto.husbandIdType}" />
-                                    </iais:value>
+                                    <div class="col-md-7 multi-select col-xs-7">
+                                        <iais:select cssClass="clearMultiSel" name="husbandIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.husbandIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID No."/>
@@ -350,10 +348,9 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID Type"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.donorIdType}" cssClass="idTypeSel" />
-                                    </iais:value>
+                                    <div class="col-md-7 multi-select col-xs-7">
+                                        <iais:select cssClass="clearMultiSel" name="donorIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.donorIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID No."/>
@@ -1245,7 +1242,7 @@
                     </div>
                     <br>
 
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 row">
                             <div class="components">
 
                                 <iais:pagination param="patientAdvParam" result="patientAdvResult"/>

@@ -53,6 +53,7 @@
                                 <%@ include file="InnerFooter.jsp" %>
                             </div>
                         </div>
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

@@ -133,4 +133,7 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 		EngineHelper.delegate(DELEGATOR, "actionFilter", this);
 	}
 
+	public void print_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "print", this);
+	}
 }

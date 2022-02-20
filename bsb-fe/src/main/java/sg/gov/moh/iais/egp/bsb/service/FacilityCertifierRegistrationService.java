@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -10,16 +11,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -32,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
  * Facility Certifier Registration(new application, rfc, renewal) delegator common method.
@@ -41,9 +49,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 @Service
 @Slf4j
 public class FacilityCertifierRegistrationService {
+    private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
     private final FacCertifierRegisterClient facCertifierRegisterClient;
 
-    public FacilityCertifierRegistrationService(FacCertifierRegisterClient facCertifierRegisterClient) {
+    public FacilityCertifierRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, FacCertifierRegisterClient facCertifierRegisterClient) {
+        this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
         this.facCertifierRegisterClient = facCertifierRegisterClient;
     }
 
@@ -58,6 +70,9 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
+        }else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -89,6 +104,9 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facCertifierRegRoot, currentNodePath, administratorNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -121,6 +139,9 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, certifyingTeamNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -152,7 +173,10 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, orgProfileNode);
-        }else {
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -188,6 +212,9 @@ public class FacilityCertifierRegistrationService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, primaryDocNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -223,11 +250,17 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
 
-    public void controlSwitch(BaseProcessClass bpc){
+    public void controlSwitch(BaseProcessClass bpc, String appType){
         HttpServletRequest request = bpc.request;
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
             actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        }else {
+            // set, if the action is 'save draft', we save it and route back to that page
+            if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+                actionType = KEY_ACTION_JUMP;
+                saveDraft(request, appType);
+            }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
@@ -243,27 +276,19 @@ public class FacilityCertifierRegistrationService {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         Assert.hasText(actionValue, "Invalid action value");
         boolean currentLetGo = true;  // if false, we have to stay current node
-        if (KEY_NAV_NEXT.equals(actionValue) || KEY_NAV_SAVE_DRAFT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
             currentLetGo = currentNode.doValidation();
             if (currentLetGo) {
                 Nodes.passValidation(facRegRoot, currentPath);
             }
         }
         if (currentLetGo) {
-            if(!KEY_NAV_SAVE_DRAFT.equals(actionValue)){
-                String destNode = computeDestNodePath(facRegRoot, actionValue);
-                String checkedDestNode = Nodes.jump(facRegRoot, destNode);
-                if (!checkedDestNode.equals(destNode)) {
-                    ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-                }
-                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
-            }else{
-                FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-                finalAllDataDto.setAppStatus("BSBAPST011");
-                ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
-                log.info("save as draft response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
-                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
+            String destNode = computeDestNodePath(facRegRoot, actionValue);
+            String checkedDestNode = Nodes.jump(facRegRoot, destNode);
+            if (!checkedDestNode.equals(destNode)) {
+                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             }
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
         } else {
             ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
@@ -528,5 +553,89 @@ public class FacilityCertifierRegistrationService {
      */
     public String saveRenewalRegisteredFacCertifier(FacilityCertifierRegisterDto dto){
         return facCertifierRegisterClient.saveRenewalRegisteredFacCertifier(dto).getEntity();
+    }
+
+    /** Save new uploaded documents into FE file repo.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of DTOs can be used to sync to BE
+     */
+    public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
+        List<NewFileSyncDto> newFilesToSync = null;
+        if (!primaryDocDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+        }
+        return newFilesToSync;
+    }
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will remove the repoId from the toBeDeletedRepoIds set after a call of removal.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of repo IDs deleted in FE file repo
+     */
+    public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
+        /* Ignore the failure when try to delete FE files because this is not a big issue.
+         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            primaryDocDto.getToBeDeletedRepoIds().remove(id);
+        }
+        return toBeDeletedRepoIds;
+    }
+
+    /** Sync new uploaded documents to BE; delete unwanted documents in BE too.
+     * @param newFilesToSync a list of DTOs contains ID and data
+     * @param toBeDeletedRepoIds a list of repo IDs to be deleted in BE
+     */
+    public void syncNewDocsAndDeleteFiles(List<NewFileSyncDto> newFilesToSync, List<String> toBeDeletedRepoIds) {
+        // sync files to BE file-repo (save new added files, delete useless files)
+        if (!CollectionUtils.isEmpty(newFilesToSync) || !CollectionUtils.isEmpty(toBeDeletedRepoIds)) {
+            /* Ignore the failure of sync files currently.
+             * We should add a mechanism to retry synchronization of files in the future */
+            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+            syncDto.setNewFiles(newFilesToSync);
+            syncDto.setToDeleteIds(toBeDeletedRepoIds);
+            bsbFileClient.saveFiles(syncDto);
+        }
+    }
+
+    public void saveDraft(HttpServletRequest request, String appType) {
+        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
+
+        // save docs
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+
+        // save data
+        FacilityCertifierRegisterDto finalAllDataDto = null;
+        if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
+            finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }else if (appType.equals(MasterCodeConstants.APP_TYPE_RENEW)){
+            NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+            finalAllDataDto = FacilityCertifierRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }
+        String draftAppNo = facCertifierRegisterClient.saveFacCertifierDraft(finalAllDataDto);
+        // set draft app No. into the NodeGroup
+        OrganisationProfileDto profileDto = (OrganisationProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue();
+        profileDto.setDraftAppNo(draftAppNo);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+
+        try {
+            // delete docs
+            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            // sync docs
+            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
+
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }
 }

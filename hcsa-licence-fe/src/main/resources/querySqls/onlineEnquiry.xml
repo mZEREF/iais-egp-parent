@@ -3,7 +3,8 @@
 
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE,
+            case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
             CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
@@ -33,9 +34,10 @@
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             UNION ALL
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE,
+            case dds.SUBMISSION_TYPE when 'AR_TP002' then  dds.CYCLE_STAGE  else '-' end as CYCLE_STAGE, dds.SUBMIT_DT ,
             CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -54,14 +56,14 @@
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
             <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
          ]]>
     </sql>
 
 
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct  dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
                 join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
@@ -184,7 +186,7 @@
 
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
+           SELECT distinct dc.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
@@ -225,10 +227,10 @@
                 <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER</#if>
                 <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
-                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateTo)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
                 <#if husbandName??> AND  charindex(:husbandName, dh.NAME) >0</#if>
                 <#if husbandIdType??> AND  charindex(:husbandIdType, dh.ID_TYPE) >0</#if>
@@ -241,7 +243,7 @@
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
 
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
-                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
+                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(datetime,:cycleStagesDateTo)</#if>
                 <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
@@ -265,7 +267,7 @@
                 <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
-                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(date,:deliveryDateTo)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
                 <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
                 <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
                 <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
@@ -275,13 +277,13 @@
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
-                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(date,:disposalDateTo)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
                 <#if transferredList??> AND  (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
                 <#if transferredInFrom??> AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
-                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(date,:transferDateTo)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
                 <#if pgtNo??> AND  dps.ID is null </#if>
                 <#if pgtYes??> AND  dps.ID is not null </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
@@ -332,7 +334,7 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
             UNION ALL
@@ -358,7 +360,7 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
@@ -503,6 +505,124 @@
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
                 left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+            UNION ALL
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO when null then null else ''+p.BLK_NO end ,
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
+               case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
+           		CONCAT(case dcen2.CENTER_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dcen2.CENTER_NAME + ', ' end ,
+                  case dcen2.BLK_NO
+                  when null then null
+                  else ''+dcen2.BLK_NO end ,
+               case dcen2.STREET_NAME
+                  when null then null
+                  else ' '+dcen2.STREET_NAME end
+               , case dcen2.BUILDING_NAME
+                  when null then null
+                  else ' '+dcen2.BUILDING_NAME end
+               , case dcen2.FLOOR_NO
+                  when null then null
+                  else ' # '+dcen2.FLOOR_NO end
+               , case dcen2.UNIT_NO
+                  when null then null
+                  else '-'+dcen2.UNIT_NO end
+               ,case dcen2.POSTAL_CODE
+                  when null then null
+                  else ', '+dcen2.POSTAL_CODE end
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
+
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+            <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
+            <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+            UNION ALL
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
+                  case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
+               case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
+               , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
+               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
+               ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+            case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
+            else
+           		CONCAT(case dcen2.CENTER_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else dcen2.CENTER_NAME + ', ' end ,
+                  case dcen2.BLK_NO
+                  when null then null
+                  else ''+dcen2.BLK_NO end ,
+               case dcen2.STREET_NAME
+                  when null then null
+                  else ' '+dcen2.STREET_NAME end
+               , case dcen2.BUILDING_NAME
+                  when null then null
+                  else ' '+dcen2.BUILDING_NAME end
+               , case dcen2.FLOOR_NO
+                  when null then null
+                  else ' # '+dcen2.FLOOR_NO end
+               , case dcen2.UNIT_NO
+                  when null then null
+                  else '-'+dcen2.UNIT_NO end
+               ,case dcen2.POSTAL_CODE
+                  when null then null
+                  else ', '+dcen2.POSTAL_CODE end
+              ) end
+             AS SAMPLE_FROM_HCI_CODE ,
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>

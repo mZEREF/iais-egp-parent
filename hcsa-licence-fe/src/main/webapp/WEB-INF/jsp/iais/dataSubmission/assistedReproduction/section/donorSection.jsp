@@ -121,18 +121,19 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
-                     <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
-                         <iais:select name="source${arDonorIndex}"  options="donorSourseDropDown" value="${donorDto.source}"
-                                      cssClass="source${arDonorIndex}" onchange="sourceChange(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row','${arDonorIndex}');"/>
+                 <iais:row id="source${arDonorIndex}Row" style="${(!donorDto.directedDonation && donorDto.donorSampleKey != null) ? '': 'display: none;' }">
+                     <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
+                     <iais:value width="7" cssClass="col-md-7" display="true" >
+                         <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
+                         <input type="hidden" name="source${arDonorIndex}" id="source${arDonorIndex}" value="${donorDto.source}" onchange="sourceChange(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row','${arDonorIndex}');"/>
                      </iais:value>
                  </iais:row>
 
                  <iais:row id="otherSource${arDonorIndex}Row" style="${donorDto.source eq DataSubmissionConsts.AR_SOURCE_OTHER ? '' : 'display: none'}">
-                     <iais:field width="5" value="Source (Others)" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
-                         <iais:input maxLength="100" type="text" name="otherSource${arDonorIndex}" id="otherSource${arDonorIndex}" value="${donorDto.otherSource}" onchange="removeAges('${arDonorIndex}')" />
+                     <iais:field width="5" value="Source (Others)" />
+                     <iais:value width="7" cssClass="col-md-7" display="true" >
+                         <c:out value="${donorDto.otherSource}" />
+                         <iais:input maxLength="100" type="hidden" name="otherSource${arDonorIndex}" id="otherSource${arDonorIndex}" value="${donorDto.otherSource}" onchange="removeAges('${arDonorIndex}')" />
                      </iais:value>
                  </iais:row>
 

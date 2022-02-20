@@ -4,7 +4,7 @@
 
 <c:set var="isNew" value="${'DSTY_002' == arSuperDataSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'DSTY_005' == arSuperDataSubmissionDto.appType}" />
-<c:set var="showPrevious" value="${patient.previousIdentification && isRFC}" />
+<c:set var="showPrevious" value="${patient.previousIdentification}" />
 
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
@@ -27,7 +27,7 @@
                     </iais:row>
                 </div>
                 </c:if>
-                <c:if test="${showPrevious || isNew}">
+                <c:if test="${showPrevious}">
                     <c:set var="person" value="${previous}" />
                     <%@include file="previewPatientPreviousSection.jsp" %>
                 </c:if>

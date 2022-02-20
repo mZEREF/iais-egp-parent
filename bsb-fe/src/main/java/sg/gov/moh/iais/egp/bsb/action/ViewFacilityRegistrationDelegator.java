@@ -12,14 +12,18 @@ import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -30,10 +34,13 @@ public class ViewFacilityRegistrationDelegator {
     private static final String FUNCTION_NAME = "View Application";
 
     private final FacilityRegisterClient facRegClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
+    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient,
+                                             DocSettingService docSettingService) {
         this.facRegClient = facRegClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc) { // NOSONAR
@@ -77,6 +84,11 @@ public class ViewFacilityRegistrationDelegator {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
+
+            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");
         }

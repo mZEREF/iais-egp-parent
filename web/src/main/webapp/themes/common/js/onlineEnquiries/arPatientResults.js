@@ -155,11 +155,11 @@ var groupAjax = function (patientCode, divid) {
 function doClear() {
     $('input[type="text"]').val("");
     $('input[type="checkbox"]').prop("checked", false);
-    $("option:first").prop("selected", 'selected');
-    $(".clearSel").text("Please Select");
-    $(".clearMultiSel").prop("selected", false);
-    $('.date_picker').val("");
+    $("select option").prop("selected", false);
+    $(".clearSel").children(".current").text("Please Select");
+    $("#patientInformationFilter input[type='checkbox']").prop('checked', false);
     $("#patientInformationFilter .multi-select-button").html("-- Select --");
+    $('.date_picker').val("");
 
     $('#cycleStageDisplay').attr("style","display: none");
 }
@@ -224,10 +224,12 @@ var fullDetailsView = function (patientCode) {
     $('#mainForm').submit();
 }
 
-var fullDetailsViewBySubId = function (submissionId) {
+var fullDetailsViewBySubId = function (submissionId,submissionType,submissionIdNo) {
 
     showWaiting();
     $("[name='crud_action_additional']").val('submission');
+    $("[name='crud_action_type']").val(submissionType);
+    $("[name='crud_type']").val(submissionIdNo);
     $("[name='crud_action_value']").val(submissionId);
     $("[name='base_action_type']").val('viewFull');
     $('#mainForm').submit();

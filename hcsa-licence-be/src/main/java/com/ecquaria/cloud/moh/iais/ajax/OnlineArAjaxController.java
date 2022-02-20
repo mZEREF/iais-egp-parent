@@ -272,8 +272,8 @@ public class OnlineArAjaxController {
             ) {
                 switch (subResultsDto.getSubmissionType()){
                     case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
-                    case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
-                    case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                    case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stage");break;
+                    case "AR_TP003":subResultsDto.setSubmissionType("Donor Sample");break;
                     default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
                 }
             }

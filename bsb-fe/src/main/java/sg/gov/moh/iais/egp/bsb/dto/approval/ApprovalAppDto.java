@@ -23,6 +23,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 @Data
 @NoArgsConstructor
 public class ApprovalAppDto implements Serializable {
+    //this is used to saveDraft module
+    private String appType;
 
     private ActivityDto activityDto;
     private Map<String, ApprovalProfileDto> approvalProfileMap;

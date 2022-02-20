@@ -55,20 +55,10 @@
                                         <%@ include file="../../mainAppCommon/facRegistration/primaryDocuments.jsp" %>
                                     </div>
                                 </div>
-                                <div class="application-tab-footer">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-6 ">
-                                            <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group">
-                                                <a class="btn btn-primary" id="previewButton" >Preview</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <%@ include file="../common/InnerFooter.jsp" %>
                             </div>
                         </div>
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

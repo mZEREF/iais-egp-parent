@@ -191,6 +191,6 @@ function doInvClear() {
     $('input[type="number"]').val("");
     $('input[type="checkbox"]').prop("checked", false);
     $("option:first").prop("selected", 'selected');
-    $(".clearSel").text("Please Select");
+    $(".clearSel").children(".current").text("Please Select");
     $('.date_picker').val("");
 }

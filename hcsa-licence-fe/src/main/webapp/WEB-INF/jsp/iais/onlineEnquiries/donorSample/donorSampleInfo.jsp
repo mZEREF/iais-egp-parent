@@ -1,7 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -69,27 +67,45 @@
                                 </div>
                             </div>
                             <hr>
+                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
+                                <div class="row">
+                                    <iais:field width="6" value="ID Type"/>
+
+                                    <div class="col-md-6">
+                                        <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.idType}"/>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <iais:field width="6" value="ID No."/>
+
+                                    <div class="col-md-6">
+                                        <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <iais:field width="6" value="Name"/>
+
+                                    <div class="col-md-6">
+                                        <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorName}" />
+                                    </div>
+                                </div>
+                                <hr>
+                            </c:if>
                             <div class="row">
-                                <iais:field width="6" value="ID Type"/>
+                                <iais:field width="6" value="Donor Sample Code"/>
 
                                 <div class="col-md-6">
-                                    <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.idType}"/>
+                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <iais:field width="6" value="ID No."/>
+                                <iais:field width="6" value="Name of Bank / AR Centre where Sample is from"/>
 
                                 <div class="col-md-6">
-                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}" />
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <iais:field width="6" value="Name"/>
-
-                                <div class="col-md-6">
-                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorName}" />
+                                    <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
                                 </div>
                             </div>
                             <hr>
@@ -172,8 +188,13 @@
                             </div>
                         </div>
                         <div class="tab-content row">
-                            <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
-                        </div>
+                            <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_AR}">
+                                <a href="/hcsa-licence-web/eservice/INTERNET/MohOnlineEnquiryAssistedReproduction/1/baseSearch?crud_action_type=backBase"  ><em class="fa fa-angle-left"> </em> Back</a>
+
+                            </c:if>
+                            <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS}">
+                                <a href="#" onclick="javascript:$('#mainForm').submit();" ><em class="fa fa-angle-left"> </em> Back</a>
+                            </c:if>                        </div>
                     </div>
                 </iais:body>
             </div>

@@ -115,3 +115,8 @@ function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
+
+function downloadFileFromRepo(maskedRepoId, filename) {
+    var url = "/bsb-fe/ajax/doc/download/repo/" + maskedRepoId + "?filename=" + filename;
+    window.open(url)
+}

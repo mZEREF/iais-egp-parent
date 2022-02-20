@@ -170,6 +170,24 @@
                                                                         <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY002' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY003' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Edit</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Continue</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST011'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
+                                                                        </c:when>
                                                                         <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationFacility?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                         </c:when>
@@ -178,12 +196,6 @@
                                                                         </c:when>
                                                                         <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/ApplicantDeRegistrationAFC?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
-                                                                        </c:when>
-                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004') and app.status eq 'BSBAPST001'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>&processType=${app.processType}">Edit</option>
-                                                                        </c:when>
-                                                                        <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
                                                                         <c:when test="${app.processType eq 'PROTYPE006' and app.status eq 'BSBAPST011'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/JudgeDataSubmissionType?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>

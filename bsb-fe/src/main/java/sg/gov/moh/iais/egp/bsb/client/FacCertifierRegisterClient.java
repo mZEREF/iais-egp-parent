@@ -31,6 +31,9 @@ public interface FacCertifierRegisterClient {
     @PostMapping(path = "/register/faCer/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFaCerPreviewSubmit(@RequestBody PreviewSubmitDto dto);
 
+    @PostMapping(path = "/register/faCer/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveFacCertifierDraft(@RequestBody FacilityCertifierRegisterDto dto);
+
     @PostMapping(path = "/register/faCer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacCertifier(@RequestBody FacilityCertifierRegisterDto dto);
 

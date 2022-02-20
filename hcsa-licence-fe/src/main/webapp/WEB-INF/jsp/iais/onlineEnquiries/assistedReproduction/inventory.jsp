@@ -81,7 +81,8 @@
                 <iais:value width="4" cssClass="col-md-4">
                     <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${arTransactionHistoryFilterDto.submissionDateFrom}"/>
                 </iais:value>
-                <iais:value width="4" cssClass="col-md-4">
+                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                <iais:value width="3" cssClass="col-md-3">
                     <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${arTransactionHistoryFilterDto.submissionDateTo}"/>
                 </iais:value>
             </iais:row>
@@ -93,8 +94,8 @@
             </iais:row>
             <iais:row>
                 <iais:field width="4" value="Include Transfers?" />
-                <div class="col-md-8">
-                    <iais:value width="8" cssClass="col-md-12">
+                <div class="col-md-8 row">
+                    <iais:value width="8" cssClass="col-md-12 row">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="checkbox"
@@ -127,7 +128,7 @@
     </div>
     <br>
 
-    <div class="col-xs-12">
+    <div class="col-xs-12 row">
         <div class="components">
 
             <iais:pagination param="transactionParam" result="transactionResult"/>
@@ -144,7 +145,7 @@
                                                  value="Submission ID"/>
                             <iais:sortableHeader needSort="true"
                                                  field="SUBMIT_DT"
-                                                 value="Submission Date"/>
+                                                 value="Date of Submission"/>
                             <iais:sortableHeader needSort="true"
                                                  field="CYCLE_STAGE_DESC"
                                                  value="Stage"/>

@@ -54,7 +54,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
     private AssistedReproductionService assistedReproductionService;
 
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_LDT);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -101,7 +101,7 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         }
         if(dsFilterDto.getLdtDateTo()!=null){
             String ldtDateToStr = Formatter.formatDateTime(dsFilterDto.getLdtDateTo(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
+                    SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
             filter.put("ldtDateTo", ldtDateToStr);
         }
         if(dsFilterDto.getLdtTestName()!=null){

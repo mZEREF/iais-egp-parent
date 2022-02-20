@@ -17,14 +17,14 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="bsbApprovalAppDelegator";
 	
-	public void init_OnStepProcess_0() throws Exception {
-	// 		Init->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "init", this);
-	}
-
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
+
+	public void init_OnStepProcess_0() throws Exception {
+	// 		Init->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void preCompInfo_OnStepProcess_0() throws Exception {
@@ -32,14 +32,14 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preCompInfo", this);
 	}
 
-	public void prepareApprovalProfile_OnStepProcess_0() throws Exception {
-	// 		PrepareApprovalProfile->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareApprovalProfile", this);
-	}
-
 	public void prepareActivity_OnStepProcess_0() throws Exception {
 	// 		PrepareActivity->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareActivity", this);
+	}
+
+	public void prepareApprovalProfile_OnStepProcess_0() throws Exception {
+	// 		PrepareApprovalProfile->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareApprovalProfile", this);
 	}
 
 	public void prePrimaryDoc_OnStepProcess_0() throws Exception {
@@ -57,14 +57,14 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "handleCompInfo", this);
 	}
 
+	public void handleActivity_OnStepProcess_0() throws Exception {
+	// 		HandleActivity->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleActivity", this);
+	}
+
 	public void handleApprovalProfile_OnStepProcess_0() throws Exception {
 	// 		HandleApprovalProfile->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "handleApprovalProfile", this);
-	}
-
-	public void handleActivity_OnStepProcess_0() throws Exception {
-		// 		HandleActivity->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleActivity", this);
 	}
 
 	public void handlePrimaryDoc_OnStepProcess_0() throws Exception {
@@ -87,14 +87,9 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "jumpFilter", this);
 	}
 
-	public void doSaveDraft_OnStepProcess_0() throws Exception {
-	// 		DoSaveDraft->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSaveDraft", this);
-	}
-
-	public void doSubmit_OnStepProcess_0() throws Exception {
-	// 		DoSubmit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
+	public void preAcknowledge_OnStepProcess_0() throws Exception {
+	// 		PreAcknowledge->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preAcknowledge", this);
 	}
 
 }

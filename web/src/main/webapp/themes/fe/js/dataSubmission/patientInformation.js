@@ -6,10 +6,12 @@ $(document).ready(function() {
     $('input[name="birthDate"]').on('blur, change', function () {
         checkAge($(this).val(), 'ageMsgDiv');
     });
+    /*
     if($('#saveDraftSuccess').val() != 'success') {
         $('input[name="birthDateHbd"]').trigger('change');
         $('input[name="birthDate"]').trigger('change');
     }
+    */
 });
 
 function checkAge(birthDate, modalId) {

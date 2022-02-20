@@ -94,8 +94,8 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
         if(valiateArDonor >-1){
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
-            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),arDonorDto.getIdType(),
-                    arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
+            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.isDirectedDonation(),arDonorDto.getIdType(),arDonorDto.getIdNumber(),arDonorDto.getIdType(),
+                    arDonorDto.getDonorSampleCode());
             if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
@@ -134,6 +134,10 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         arDonorDto.setDonorSampleAgeDtos(ages);
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
         arDonorDto.setDonorSampleId(donorSampleDto.getId());
+        if(!donorSampleDto.isDirectedDonation()){
+            arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
+            arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
+        }
         if(IaisCommonUtils.isNotEmpty(ages)){
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
@@ -258,7 +262,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 return AppConsts.YES;
             }
             for(String key : errorMap.keySet()){
-                if(!(key.contains("age") || key.contains("relation"))){
+                if(!(key.contains("age")
+                        || key.contains("relation")
+                        || key.contains("source")
+                         || key.contains("otherSource")
+                        )){
                     return AppConsts.YES;
                 }
             }

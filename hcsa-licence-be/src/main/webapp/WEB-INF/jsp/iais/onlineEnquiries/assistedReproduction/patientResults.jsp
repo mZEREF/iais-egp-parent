@@ -34,8 +34,8 @@
                         <div class="col-xs-12 col-md-12">
                             <iais:row>
                                 <iais:field width="4" value="SEARCH BY" />
-                                <div class="col-md-8">
-                                    <iais:value width="4" cssClass="col-md-4">
+                                <div class="col-md-8 row">
+                                    <iais:value width="4" cssClass="col-md-4 row">
                                         <div class="form-check">
                                             <input class="form-check-input"
                                                    type="radio"
@@ -76,7 +76,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
                                     <iais:value width="4" cssClass="col-md-4" >
-                                        <input type="text" maxlength="66" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
+                                        <input type="text"  id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -88,7 +88,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
                                     <iais:value width="4" cssClass="col-md-4"  >
-                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                        <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                     </iais:value>
                                 </iais:row>
 
@@ -119,7 +119,8 @@
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateFrom}"/>
                                     </iais:value>
-                                    <iais:value width="4" cssClass="col-md-4">
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                    <iais:value width="3" cssClass="col-md-3">
                                         <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateTo}"/>
                                     </iais:value>
                                 </iais:row>
@@ -147,7 +148,7 @@
 
 
                     <div id="patientResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 row">
                             <div class="components">
 
                                 <iais:pagination param="patientParam" result="patientResult"/>
@@ -253,7 +254,7 @@
 
 
                     <div id="submissionResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">style="display: none"</c:if>>
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 row">
                             <div class="components">
 
                                 <iais:pagination param="submissionParam" result="submissionResult"/>
@@ -299,7 +300,7 @@
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
                                                             <td style="vertical-align:middle;">
-                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
+                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}','${submission.submissionType}','${submission.submissionIdNo}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
                                                             <td style="vertical-align:middle;">

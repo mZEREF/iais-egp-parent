@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +24,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Data
 @NoArgsConstructor
 public class FacilityRegisterDto implements Serializable{
+    //this is used to saveDraft module
+    private String appType;
+
     private FacilitySelectionDto facilitySelectionDto;
     private FacilityProfileDto facilityProfileDto;
     private FacilityOperatorDto facilityOperatorDto;
@@ -35,7 +37,6 @@ public class FacilityRegisterDto implements Serializable{
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
     private Collection<DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
-    private AuditTrailDto auditTrailDto;
 
     //renewal special dto
     private InstructionDto instructionDto;

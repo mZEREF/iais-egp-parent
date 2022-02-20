@@ -1,22 +1,14 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityCertifierRegistrationService;
@@ -24,7 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
@@ -37,13 +28,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 @Slf4j
 @Delegator("bsbFacCertifierRegisterDelegator")
 public class FacCertifierRegistrationDelegator {
-    private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final FacilityCertifierRegistrationService facilityCertifierRegistrationService;
 
-    public FacCertifierRegistrationDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, FacilityCertifierRegistrationService facilityCertifierRegistrationService) {
-        this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
+    public FacCertifierRegistrationDelegator(FacilityCertifierRegistrationService facilityCertifierRegistrationService) {
         this.facilityCertifierRegistrationService = facilityCertifierRegistrationService;
     }
 
@@ -140,40 +127,19 @@ public class FacCertifierRegistrationDelegator {
                     //upload document
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    List<NewFileSyncDto> newFilesToSync = null;
-                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
-                    }
+                    List<NewFileSyncDto> newFilesToSync = facilityCertifierRegistrationService.saveNewUploadedDoc(primaryDocDto);
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                     String response = facilityCertifierRegistrationService.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facilityCertifierRegister response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
 
                     try {
-                        // sync files to BE file-repo (save new added files, delete useless files)
-                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                            /* Ignore the failure of sync files currently.
-                             * We should add a mechanism to retry synchronization of files in the future */
-                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                            syncDto.setNewFiles(newFilesToSync);
-                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                            bsbFileClient.saveFiles(syncDto);
-                        }
-
-                        // delete docs in FE file-repo
-                        /* Ignore the failure when try to delete FE files because this is not a big issue.
-                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                            FileRepoDto fileRepoDto = new FileRepoDto();
-                            fileRepoDto.setId(id);
-                            fileRepoClient.removeFileById(fileRepoDto);
-                        }
+                        // delete docs
+                        List<String> toBeDeletedRepoIds = facilityCertifierRegistrationService.deleteUnwantedDoc(primaryDocDto);
+                        // sync docs
+                        facilityCertifierRegistrationService.syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
                     } catch (Exception e) {
                         log.error("Fail to sync files to BE", e);
                     }
@@ -186,7 +152,10 @@ public class FacCertifierRegistrationDelegator {
             } else {
                 facilityCertifierRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, previewSubmitNode);
             }
-        } else {
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+        ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_FAC_PRIMARY_DOCUMENT);
+    } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -197,6 +166,6 @@ public class FacCertifierRegistrationDelegator {
     }
 
     public void controlSwitch(BaseProcessClass bpc){
-        facilityCertifierRegistrationService.controlSwitch(bpc);
+        facilityCertifierRegistrationService.controlSwitch(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 }

@@ -406,13 +406,27 @@ public class NodeGroup extends Node {
             if (subGroup.name.equals(result)) {
                 result = namePart[0] + pathSeparator + subGroup.checkMemberNodeAccessCondition(namePart[1]);
             } else {
-                result = Nodes.expandFailNode(this, result);
+                result = expandFailNode(result);
             }
         } else {
             result = this.nodes.get(path).checkAccessCondition();
             if (!path.equals(result)) {
-                result = Nodes.expandFailNode(this, result);
+                result = expandFailNode(result);
             }
+        }
+        return result;
+    }
+
+    /**
+     * Get the first not validated visible node.
+     * @param nodeName node name of the group
+     * @return the first not validated node; will not point to a node group
+     */
+    public String expandFailNode(String nodeName) {
+        String result = nodeName;
+        Node failNode = getNode(nodeName);
+        if (failNode instanceof NodeGroup) {
+            result = nodeName + this.pathSeparator + ((NodeGroup) failNode).getFirstNotValidatedNodePath();
         }
         return result;
     }

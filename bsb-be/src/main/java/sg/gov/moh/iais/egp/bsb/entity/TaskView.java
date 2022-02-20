@@ -31,4 +31,5 @@ public class TaskView extends BaseEntity {
     private String roleId;
     private int updateCount;
     private Date modifiedDate;
+    private String curOwner;
 }

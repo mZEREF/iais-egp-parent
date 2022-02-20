@@ -2114,7 +2114,7 @@ public class HalpAssessmentGuideDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_MAIN_WEB_MODULE+"IaisSubmissionData").append("?selfAssessmentGuide=true");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLDTDataSubmission");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
@@ -2561,19 +2561,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public static void setParamByField(SearchParam searchParam,String key,List<String> values){
-       if(IaisCommonUtils.isNotEmpty(values)){
-           StringBuilder sb = new StringBuilder("(");
-           for (int i = 0; i < values.size(); i++) {
-               sb.append(":").append(key)
-                       .append(i)
-                       .append(',');
-               searchParam.addFilter(key + i, values.get(i));
-           }
-           String inSql = sb.substring(0, sb.length() - 1) + ")";
-           searchParam.addParam(key, inSql);
-       }else {
-           searchParam.removeFilter(key);
-       }
+        HalpSearchResultHelper.setParamByField(searchParam,key,values);
     }
 
     public static void setParamForDate(HttpServletRequest request,SearchParam searchParam,String key,String value){

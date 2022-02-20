@@ -38,7 +38,6 @@
                             <div class="tab-pane fade in active">
                                 <div id="otherInfoPanel" role="tabpanel">
                                     <div class="panel panel-default">
-                                        <div class="text-right"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
                                         <div class="panel-heading" role="tab">
                                             <h4 class="panel-title">Declaration</h4>
                                         </div>
@@ -47,10 +46,22 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <%@ include file="../common/InnerFooter.jsp" %>
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 ">
+                                            <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="button-group">
+                                                <a class="btn btn-primary" id="previewButton" >Preview</a>
+                                                <a class="btn btn-primary next" id="next" >Next</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                     </div>
                 </div>
             </div>

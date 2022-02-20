@@ -38,15 +38,21 @@ public interface TransferClient {
     @PostMapping(path = "/transfer/req/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveRequestTransfer(@RequestBody TransferRequestDto dto);
 
+    @PostMapping(value = "/transfer/draft/request", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftRequestTransfer(@RequestBody TransferRequestDto dto);
+
     @PostMapping(path = "/transfer/validate/ack", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptMeta dto);
 
     @PostMapping(path = "/transfer/ack/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved dto);
 
-    @GetMapping(path = "/transfer//get/{facId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/transfer/get/{facId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AckTransferReceiptDto> getReceiptDataSubNoMap(@PathVariable("facId") String facId);
 
     @PostMapping(value = "/transfer/draft/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftTransfer(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
+
+    @PostMapping(path = "/transfer/draft/receipt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    String saveTransferReceiptDraft(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved saved);
 }

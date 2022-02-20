@@ -198,7 +198,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = null;
+        SearchParam inboxParam;
         String page = ParamUtil.getRequestString(request,"msg_action_type");
         if("msgToArchive".equals(page)){
             inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);

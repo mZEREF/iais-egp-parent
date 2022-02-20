@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -9,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalAppClient;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -18,7 +22,9 @@ import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -28,13 +34,9 @@ import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.NODE_NAME_APPROVAL_PROFILE;
 
 /**
  * @author : LiRan
@@ -44,9 +46,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.NODE_NAME_AP
 @Slf4j
 public class ApprovalAppService {
     private final ApprovalAppClient approvalAppClient;
+    private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
 
-    public ApprovalAppService(ApprovalAppClient approvalAppClient) {
+    public ApprovalAppService(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
         this.approvalAppClient = approvalAppClient;
+        this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
     }
 
     /**
@@ -311,7 +317,6 @@ public class ApprovalAppService {
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        Assert.hasText(actionValue, "Invalid action value");
         boolean currentLetGo;
         if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
             currentLetGo = activityNode.doValidation();
@@ -341,6 +346,9 @@ public class ApprovalAppService {
         }
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_ACTIVITY);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -388,6 +396,9 @@ public class ApprovalAppService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, approvalAppRoot, currentNodePath, approvalProfileNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -423,6 +434,9 @@ public class ApprovalAppService {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, approvalAppRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PRIMARY_DOC);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -445,11 +459,19 @@ public class ApprovalAppService {
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
-    public void actionFilter(BaseProcessClass bpc){
+    public void actionFilter(BaseProcessClass bpc, String appType){
         HttpServletRequest request = bpc.request;
+        // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
+            // not set, use action from user's client
             actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        } else {
+            // set, if the action is 'save draft', we save it and route back to that page
+            if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+                actionType = KEY_ACTION_JUMP;
+                saveDraft(request, appType);
+            }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
@@ -466,11 +488,83 @@ public class ApprovalAppService {
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
 
-    public void doSaveDraft(BaseProcessClass bpc){
+    public void preAcknowledge(BaseProcessClass bpc){
         // do nothing now
     }
 
-    public void doSubmit(BaseProcessClass bpc){
-        // do nothing now
+    public void saveDraft(HttpServletRequest request, String appType) {
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+
+        // save docs
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+
+        // save data
+        ApprovalAppDto finalAllDataDto = ApprovalAppDto.from(approvalAppRoot);
+        finalAllDataDto.setAppType(appType);
+        String draftAppNo = approvalAppClient.saveApprovalAppDraft(finalAllDataDto);
+        // set draft app No. into the NodeGroup
+        ActivityDto activityDto = (ActivityDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_ACTIVITY)).getValue();
+        activityDto.setDraftAppNo(draftAppNo);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
+
+        try {
+            // delete docs
+            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
+            // sync docs
+            syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
+
+        ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
+    }
+
+    /** Save new uploaded documents into FE file repo.
+     * @param primaryDocDto document DTO have the specific structure
+     * @return a list of DTOs can be used to sync to BE
+     */
+    public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
+        List<NewFileSyncDto> newFilesToSync;
+        if (!primaryDocDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+        } else {
+            newFilesToSync = new ArrayList<>(0);
+        }
+        return newFilesToSync;
+    }
+
+    /** Delete unwanted documents in FE file repo.
+     * This method will clear deleted files in DTO too.
+     * @param refInDto reference of the toBeDeletedRepoIds in DTO
+     * @return a list of repo IDs deleted in FE file repo */
+    public List<String> deleteUnwantedDoc(Set<String> refInDto) {
+        List<String> toBeDeletedRepoIds = new ArrayList<>(refInDto);
+        for (String id: toBeDeletedRepoIds) {
+            FileRepoDto fileRepoDto = new FileRepoDto();
+            fileRepoDto.setId(id);
+            fileRepoClient.removeFileById(fileRepoDto);
+            refInDto.remove(id);
+        }
+        return toBeDeletedRepoIds;
+    }
+
+    /** Sync new uploaded documents to BE; delete unwanted documents in BE too.
+     * @param newFilesToSync a list of DTOs contains ID and data
+     * @param toBeDeletedRepoIds a list of repo IDs to be deleted in BE
+     */
+    public void syncNewDocsAndDeleteFiles(List<NewFileSyncDto> newFilesToSync, List<String> toBeDeletedRepoIds) {
+        // sync files to BE file-repo (save new added files, delete useless files)
+        if (!org.springframework.util.CollectionUtils.isEmpty(newFilesToSync) || !org.springframework.util.CollectionUtils.isEmpty(toBeDeletedRepoIds)) {
+            /* Ignore the failure of sync files currently.
+             * We should add a mechanism to retry synchronization of files in the future */
+            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+            syncDto.setNewFiles(newFilesToSync);
+            syncDto.setToDeleteIds(toBeDeletedRepoIds);
+            bsbFileClient.saveFiles(syncDto);
+        }
     }
 }

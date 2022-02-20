@@ -14,19 +14,19 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 30%;"
                                                  field="cycle_no"
-                                                 value="Cycle No"/>
-                            <iais:sortableHeader needSort="false"
+                                                 value="Cycle No."/>
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CYCLE_TYPE"
                                                  value="AR/IUI/EFO"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="CYCLE_STAGE"
                                                  value="Last Stage Submitted"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="STATUS"
                                                  value="Status"/>
                         </tr>
@@ -87,19 +87,19 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 30%;"
                                                  field="cycle_no"
-                                                 value="Cycle No"/>
-                            <iais:sortableHeader needSort="false"
+                                                 value="Cycle No."/>
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CYCLE_TYPE"
                                                  value="AR/IUI/EFO"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="CYCLE_STAGE"
                                                  value="Last Stage Submitted"/>
-                            <iais:sortableHeader needSort="false"
+                            <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="STATUS"
                                                  value="Status"/>
                         </tr>

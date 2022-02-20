@@ -96,6 +96,7 @@ public class ArWithdrawalDelegator {
         dataSubmissionDto.setDeclaration(null);
         dataSubmissionDto.setSubmissionType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         dataSubmissionDto.setCycleStage("");
+        dataSubmissionDto.setLockStatus(0);
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
         ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);
@@ -150,6 +151,7 @@ public class ArWithdrawalDelegator {
         for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+            arSuperDataSubmission.getDataSubmissionDto().setLockStatus(arSuperDataSubmission.getDataSubmissionDto().getLockStatus()+1);
             DsWithdrawCorrelationDto dsWithdrawCorrelationDto=new DsWithdrawCorrelationDto();
             dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
             list.add(dsWithdrawCorrelationDto);

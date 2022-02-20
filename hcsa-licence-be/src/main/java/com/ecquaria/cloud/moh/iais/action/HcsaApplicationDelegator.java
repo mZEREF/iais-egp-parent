@@ -517,7 +517,9 @@ public class HcsaApplicationDelegator {
                     nextStage = stage;
                 }
             }
-
+              if(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY.equals(stage)){
+                  nextStage = stage;
+              }
             if (!StringUtil.isEmpty(rollBack) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(stage)) {
                 nextStage = "PROCRB";
             } else if (!StringUtil.isEmpty(verified) && ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(stage)) {
@@ -1039,7 +1041,7 @@ public class HcsaApplicationDelegator {
                     null, null, null,0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST, IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(),
-                    taskDto.getTaskKey(), null, taskDto.getWkGrpId(), null, null, null, RoleConsts.USER_ROLE_AO3);
+                    taskDto.getTaskKey(), null, taskDto.getWkGrpId(), null, null, null, taskDto.getRoleId());
             broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             //save the broadcast
             broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1127,14 +1129,7 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)) {
-            getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
-            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
-            //delete template working group
-            deleteTempWorkingGroup(applicationDto,bpc);
-        } else if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)) {
-            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
-        }
+
         log.info(StringUtil.changeForLog("----------- route back historyStatus : " + getHistoryStatus + "----------"));
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
                 applicationViewDto.getApplicationDto().getApplicationNo(), getHistoryStatus);
@@ -1142,7 +1137,13 @@ public class HcsaApplicationDelegator {
         String roleId = appPremisesRoutingHistoryDto.getRoleId();
         String stageId = appPremisesRoutingHistoryDto.getStageId();
         String userId = appPremisesRoutingHistoryDto.getActionby();
-        String subStageId = appPremisesRoutingHistoryDto.getSubStage();
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)) {
+            nextStatus = appPremisesRoutingHistoryDto.getAppStatus();
+            //delete template working group
+            deleteTempWorkingGroup(applicationDto,bpc);
+        } else if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
 
         if (!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
@@ -3789,53 +3790,73 @@ public class HcsaApplicationDelegator {
     }
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto) {
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue start ... "));
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        String applicationStatus = applicationViewDto.getApplicationDto().getStatus();
+        String applicationGroupId = applicationViewDto.getApplicationDto().getAppGrpId();
+        String taskRole = taskDto.getRoleId();
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue applicationGroupId is -->: "+applicationGroupId));
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue applicationNo is -->: "+applicationNo));
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue applicationType is -->: "+applicationType));
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue applicationStatus is -->: "+applicationStatus));
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue taskRole is -->: "+taskRole));
         List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationViewDto.getRollBackHistroyList();
         boolean hasRollBackHistoryList = rollBackHistroyList != null && rollBackHistroyList.size() > 0;
-        boolean isCessationOrWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
+        boolean isCessationOrWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)
+                || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean finalStage = isFinalStage(taskDto, applicationViewDto);
         boolean routeBackFlag = true;
         //if be cessation flow
         boolean isBeCessationFlow = false;
         if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
-            List<AppPremisesRoutingHistoryDto> temp = applicationClient.getHistoryByAppNoAndDecision(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
+            List<AppPremisesRoutingHistoryDto> temp = applicationClient.getHistoryByAppNoAndDecision(applicationNo,
+                    ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION).getEntity();
             if (!IaisCommonUtils.isEmpty(temp) && temp.size() < 2) {
                 isBeCessationFlow = true;
             }
         }
-
-        if (RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) && !finalStage) {
-//            nextStageList.add(new SelectOption("VERIFIED", "Support"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
-        } else {
-            //62875
-            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-            if (!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())) && !finalStage) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+        if (!isBeCessationFlow){
+            if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY, "Broadcast"));
             }
         }
+        if(!finalStage){
+            if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
+            } else {
+                //62875
+                //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+                if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+                }
+            }
+        }
+
         List<String> status = new ArrayList<>(3);
         status.add(ApplicationConsts.PENDING_ASO_REPLY);
         status.add(ApplicationConsts.PENDING_PSO_REPLY);
         status.add(ApplicationConsts.PENDING_INP_REPLY);
         //62761
-        Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+        Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationGroupId,
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
-        if (!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))) {
+        if (!(RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)
+                || RoleConsts.USER_ROLE_AO3.equals(taskRole))) {
             if (rfiCount == 0) {
                 nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
             }
         }
 
         //62875
-        if (!isBeCessationFlow && (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))) {
+        if (!isBeCessationFlow
+                && (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskRole) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY, "Broadcast"));
-            if ((status.contains(applicationViewDto.getApplicationDto().getStatus())
-                    || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
-                    && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())) {
+            if ((status.contains(applicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationStatus))
+                    && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
 
             } else {
                 if (hasRollBackHistoryList) {
@@ -3850,15 +3871,15 @@ public class HcsaApplicationDelegator {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
             if (isBeCessationFlow) {
-                if (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())) {
+                if (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskRole) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())) {
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS, "Trigger to DMS"));
                 }
                 finalStage = true;
             }
         }
-        if ((status.contains(applicationViewDto.getApplicationDto().getStatus())
-                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
-                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())) {
+        if ((status.contains(applicationStatus)
+                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationStatus))
+                && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
 
         } else {
             if (hasRollBackHistoryList && routeBackFlag) {
@@ -3868,6 +3889,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);
         ParamUtil.setRequestAttr(request, "hasRollBackHistoryList", hasRollBackHistoryList);
         ParamUtil.setSessionAttr(request, "nextStages", (Serializable) nextStageList);
+        log.info(StringUtil.changeForLog("The setNormalProcessingDecisionDropdownValue end ... "));
     }
 
     public void setReplyProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {

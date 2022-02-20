@@ -31,6 +31,12 @@ $(function () {
         $("#activityType").val($("#activityId").find("option:checked").text());
     })
 
+    $("#saveDraft").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("draft");
+        $("#mainForm").submit();
+    });
+
     // doc upload
     $("a[data-upload-file]").click(function () {
         // create input file

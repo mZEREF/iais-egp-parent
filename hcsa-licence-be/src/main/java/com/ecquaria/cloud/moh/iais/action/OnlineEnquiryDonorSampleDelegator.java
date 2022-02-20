@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -54,7 +56,7 @@ public class OnlineEnquiryDonorSampleDelegator {
     private AssistedReproductionService assistedReproductionService;
     
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -197,9 +199,18 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        String submissionNo = ParamUtil.getString(request,"crud_action_value");
+        String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
+                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        if(dto.getFunctionName().equals(AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_AR)){
+            submissionNo= (String) ParamUtil.getSessionAttr(request,"submissionIdNo");
 
+        }
         ArSuperDataSubmissionDto donorInfo = assistedReproductionService.getArSuperDataSubmissionDto(submissionNo);
+        if(StringUtil.isNotEmpty(sampleHciCode)){
+            donorInfo.getDonorSampleDto().setSampleFromHciCode(sampleHciCode);
+        }
         ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
     }
 

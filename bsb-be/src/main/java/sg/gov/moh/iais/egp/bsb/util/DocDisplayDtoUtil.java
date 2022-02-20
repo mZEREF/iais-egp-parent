@@ -1,9 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
+import com.google.common.collect.Maps;
 import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class DocDisplayDtoUtil {
      * Convert docDisplayDto list to map, key is doc fileRepoId, value is docName,
      */
     public static Map<String, String> getRepoIdDocNameMap(List<DocDisplayDto> docDisplayDtoList){
-        Map<String, String> map = new HashMap<>(docDisplayDtoList.size());
+        Map<String, String> map = Maps.newHashMapWithExpectedSize(docDisplayDtoList.size());
         if (!CollectionUtils.isEmpty(docDisplayDtoList)){
             for (DocDisplayDto docDisplayDto : docDisplayDtoList) {
                 map.put(docDisplayDto.getFileRepoId(), docDisplayDto.getDocName());

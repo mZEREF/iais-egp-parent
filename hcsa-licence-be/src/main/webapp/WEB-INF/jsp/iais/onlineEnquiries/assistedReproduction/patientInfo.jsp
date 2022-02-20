@@ -9,28 +9,28 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <iais:sortableHeader field="BUSINESS_NAME" needSort="false"
+                <iais:sortableHeader field="BUSINESS_NAME" needSort="false" style="width: 35%;"
                                      value="AR Centre"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NAME"
                                      value="Name"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_TYPE"
                                      value="ID Type"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_NUMBER"
-                                     value="ID No"/>
-                <iais:sortableHeader needSort="false"
+                                     value="ID No."/>
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="NATIONALITY"
                                      value="Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
                 <c:choose>
-                    <c:when test="${empty patientInfoDto}">
+                    <c:when test="${empty patientInfoDto.patient}">
                         <tr>
                             <td colspan="15">
                                 <iais:message key="GENERAL_ACK018"
@@ -99,28 +99,28 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <iais:sortableHeader field="BUSINESS_NAME" needSort="false"
+                <iais:sortableHeader field="BUSINESS_NAME" needSort="false" style="width: 35%;"
                                      value="AR Centre"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 20%;"
                                      field="NAME"
                                      value="Name"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_TYPE"
                                      value="ID Type"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="ID_NUMBER"
-                                     value="ID No"/>
-                <iais:sortableHeader needSort="false"
+                                     value="ID No."/>
+                <iais:sortableHeader needSort="false" style="width: 10%;"
                                      field="DATE_OF_BIRTH"
                                      value="Date of Birth"/>
-                <iais:sortableHeader needSort="false"
+                <iais:sortableHeader needSort="false" style="width: 15%;"
                                      field="NATIONALITY"
                                      value="Nationality"/>
             </tr>
             </thead>
             <tbody class="form-horizontal">
             <c:choose>
-                <c:when test="${empty patientInfoDto}">
+                <c:when test="${empty patientInfoDto.previous}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="GENERAL_ACK018"

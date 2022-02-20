@@ -17,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -179,6 +180,9 @@ public class ApprovalAppDelegator {
             } else {
                 approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -186,18 +190,14 @@ public class ApprovalAppDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc){
-        approvalAppService.actionFilter(bpc);
+        approvalAppService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_NEW);
     }
 
     public void jumpFilter(BaseProcessClass bpc){
         approvalAppService.jumpFilter(bpc);
     }
 
-    public void doSaveDraft(BaseProcessClass bpc){
-        approvalAppService.doSaveDraft(bpc);
-    }
-
-    public void doSubmit(BaseProcessClass bpc){
-        approvalAppService.doSubmit(bpc);
+    public void preAcknowledge(BaseProcessClass bpc){
+        approvalAppService.preAcknowledge(bpc);
     }
 }

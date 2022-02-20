@@ -52,6 +52,9 @@ public class AckTransferReceiptDto implements Serializable {
     public static class AckTransferReceiptSaved implements Serializable {
         private List<AckReceiptBat>  ackReceiptBats;
         private List<PrimaryDocDto.DocRecordInfo> docRecordInfos;
+        private String draftAppNo;
+        private String dataSubNo;
+        private String dataSubmissionType;
         private String facId;
         private String receivingFacId;
         private String receivingFacName;
@@ -88,14 +91,18 @@ public class AckTransferReceiptDto implements Serializable {
     //used to get AckTransferReceiptSaved and DataSubmission No
     private Map<String,AckTransferReceiptSaved> receiptSavedMap;
 
+    private final Set<String> toBeDeletedRepoIds;
+
     private AckTransferReceiptSaved ackTransferReceiptSaved;
 
     private AckTransferReceiptMeta ackTransferReceiptMeta;
 
 
+
     public AckTransferReceiptDto() {
         this.newDocInfoMap = new LinkedHashMap<>();
         this.savedDocMap = new LinkedHashMap<>();
+        toBeDeletedRepoIds = new HashSet<>();
     }
 
     @JsonIgnore
@@ -141,6 +148,10 @@ public class AckTransferReceiptDto implements Serializable {
         this.savedDocMap = savedDocMap;
     }
 
+    public Set<String> getToBeDeletedRepoIds() {
+        return toBeDeletedRepoIds;
+    }
+
     /**
      * get a structure used to display new selected docs
      * these docs have not been saved into DB, if user wants to show it
@@ -153,6 +164,14 @@ public class AckTransferReceiptDto implements Serializable {
         return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(this.newDocInfoMap.values(), PrimaryDocDto.NewDocInfo::getIndex);
     }
 
+
+    public Map<Integer,List<PrimaryDocDto.DocRecordInfo>> getExistSavedDocInfoIndexMap(){
+        if(CollectionUtils.isEmpty(this.savedDocMap)){
+            return Collections.emptyMap();
+        }
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), PrimaryDocDto.DocRecordInfo::getIndex);
+    }
+
     /**
      * get a structure used to display new selected docs
      * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
@@ -163,16 +182,14 @@ public class AckTransferReceiptDto implements Serializable {
     }
 
     /**
-     * this is a method to get all file list of masked tmpId
-     * */
-    public String getRepoIdNewString(){
-        if(CollectionUtils.isEmpty(this.newDocInfoMap.keySet())){
-            log.info("has no new file");
-            return null;
-        }
-        Set<String> ids = this.newDocInfoMap.keySet();
-        return ids.stream().map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
+     * get a structure used to display new selected docs
+     * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
+     * @return a map, the key is the doc type, the value is the new doc info list
+     */
+    public Map<String, List<PrimaryDocDto.DocRecordInfo>> getSavedDocTypeMap() {
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), PrimaryDocDto.DocRecordInfo::getDocType);
     }
+
     /**
      * This method will put new added files to the important data structure which is used to update the FacilityDoc.
      * This file is called when new uploaded files are saved and we get the repo Ids.
@@ -192,6 +209,7 @@ public class AckTransferReceiptDto implements Serializable {
             String repoId = repoIdIt.next();
             PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
             PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setIndex(newDocInfo.getIndex());
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -236,7 +254,9 @@ public class AckTransferReceiptDto implements Serializable {
     private static final String KEY_ACTUAL_RECEIPT_TIME         ="actualReceiptTime";
     private static final String KEY_REMARK                      = "remark";
     private static final String KEY_DELETED_NEW_FILES           = "deleteNewFiles";
+    private static final String KEY_DELETED_SAVED_FILES         = "deleteExistFiles";
     private static final String MASK_PARAM                      = "file";
+    private static final String KEY_DATA_SUB_NO = "dataSubNo";
     public void reqObjectMapping(HttpServletRequest request,AckTransferReceiptSaved receiptSaved) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -255,6 +275,7 @@ public class AckTransferReceiptDto implements Serializable {
         String actualReceiptDate = ParamUtil.getString(request,KEY_ACTUAL_RECEIPT_DATE);
         String actualReceiptTime = ParamUtil.getString(request,KEY_ACTUAL_RECEIPT_TIME);
         receiptSaved.setActualReceiptTime(actualReceiptTime);
+        receiptSaved.setDataSubNo((String) ParamUtil.getSessionAttr(request,KEY_DATA_SUB_NO));
         receiptSaved.setActualReceiptDate(actualReceiptDate);
         receiptSaved.setRemark(ParamUtil.getString(request,KEY_REMARK));
 
@@ -276,6 +297,8 @@ public class AckTransferReceiptDto implements Serializable {
     private void reqDocMapping (MultipartHttpServletRequest mulReq,LoginContext loginContext, String docType, String amt){
         //delete new files
         deleteNewFiles(mulReq);
+
+        deleteSavedFiles(mulReq);
 
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
@@ -332,6 +355,22 @@ public class AckTransferReceiptDto implements Serializable {
         }
     }
 
+    public void deleteSavedFiles(MultipartHttpServletRequest mulReq){
+        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
+        }
+        if (StringUtils.hasLength(deleteSavedFilesString)) {
+            List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                    .collect(Collectors.toList());
+            deleteFileRepoIds.forEach(it -> {
+                this.savedDocMap.remove(it);
+                toBeDeletedRepoIds.add(it);
+            });
+        }
+    }
+
     //this method is used to get docType by scheduleType
     private String getDocType(String scheduleType){
         String docType = "";
@@ -353,6 +392,7 @@ public class AckTransferReceiptDto implements Serializable {
         }
         return docType;
     }
+
 
 
 }

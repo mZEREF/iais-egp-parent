@@ -234,7 +234,7 @@ public abstract class CommonDelegator {
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
         } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
-            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
         String stage = dataSubmissionDto.getCycleStage();
         // Spec: 3.3.3.1.9

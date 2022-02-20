@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -9,11 +11,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.privilege.Privilege;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HalpSearchResultHelper {
+
+    public final static List<String> allDsTypes = Arrays.asList(DataSubmissionConsts.DS_AR,DataSubmissionConsts.DS_DRP,
+            DataSubmissionConsts.DS_LDT,DataSubmissionConsts.DS_TOP,DataSubmissionConsts.DS_VSS);
+
     public static SearchParam getSearchParam(HttpServletRequest request, String searchClassName) {
         return getSearchParam(request, searchClassName,false);
     }
@@ -43,6 +51,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageSize(defaultPageSize);
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
+                    initMsgControlSearchParam(searchParam,request);
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
                 break;
@@ -102,5 +111,63 @@ public class HalpSearchResultHelper {
     public static void setMasterCodeForSearchParam(SearchParam searchParam,String key,String value, String cateId){
             searchParam.setMasterCode(new MasterCodePair(key, value,
                     MasterCodeUtil.retrieveOptionsByCate(cateId)));
+    }
+
+    public static void initMsgControlSearchParam(SearchParam searchParam,HttpServletRequest request){
+        List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
+        if(privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_HALP_HCSA_DASHBOARD)){
+            List<String> dsTypes = getDsTypes(privilegeIds);
+            if(dsTypes.size() < allDsTypes.size()){
+                 List<String> allTypes = new ArrayList<>(allDsTypes);
+                 allTypes.removeAll(dsTypes);
+                setParamByField(searchParam,"interServiceHcsaShow",allTypes);
+            }
+        }else {
+            setParamByField(searchParam,"interServiceDsShow", getDsTypes(privilegeIds));
+        }
+    }
+
+    public static List<String> getDsTypes(List<String> privilegeIds){
+        if(IaisCommonUtils.isEmpty(privilegeIds)){
+            return null;
+        }
+        List<String> types = IaisCommonUtils.genNewArrayList(5);
+        privilegeIds.stream().forEach(privilegeId ->{
+            switch(privilegeId){
+                case PrivilegeConsts.USER_PRIVILEGE_DS_AR :
+                    types.add(DataSubmissionConsts.DS_AR);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_DP :
+                    types.add(DataSubmissionConsts.DS_DRP);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_TOP:
+                    types.add(DataSubmissionConsts.DS_TOP);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_VSS:
+                    types.add(DataSubmissionConsts.DS_VSS);
+                    break;
+                case PrivilegeConsts.USER_PRIVILEGE_DS_LDT:
+                    types.add(DataSubmissionConsts.DS_LDT);
+                    break;
+                default: break;
+            }
+        });
+        return types;
+    }
+
+    public static void setParamByField(SearchParam searchParam,String key,List<String> values){
+        if(IaisCommonUtils.isNotEmpty(values)){
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; i < values.size(); i++) {
+                sb.append(":").append(key)
+                        .append(i)
+                        .append(',');
+                searchParam.addFilter(key + i, values.get(i));
+            }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam(key, inSql);
+        }else {
+            searchParam.removeFilter(key);
+        }
     }
 }

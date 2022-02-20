@@ -31,26 +31,18 @@ function sumbitPage(donorAction){
 
 function showDonor(index){
     $("#deleteDonor"+index).show();
-    $("#source"+index+"Row").hide();
-    $("#otherSource"+index+"Row").hide();
     $("#donorSampleCode"+index+"Row").hide();
-    //$("#source"+index).val("");
-    $("#otherSource"+index).val("");
     $("#donorSampleCode"+index).val("");
     $("#idNo"+index+"Row").show();
-    $("#relation"+index+"Row").hide();
-    $("#age"+index).val("");
-    $("#age"+index+"Row").hide();
+    removeAges(index);
 }
 function hideDonor(index){
-    $("#source"+index+"Row").show();
+    // $("#source"+index+"Row").show();
     $("#donorSampleCode"+index+"Row").show();
     $("#idNo"+index+"Row").hide();
     //$("#idType"+index).val("");
     $("#idNumber"+index).val("");
-    $("#age"+index).val("");
-    $("#age"+index+"Row").hide();
-    $("#relation"+index+"Row").hide();
+    removeAges(index);
 }
 
 function showUsedDonorOocyteControlClass(flag){
@@ -74,6 +66,10 @@ function removeAges(index){
     $("#age"+index).val("");
     $("#resetDonor"+index).val("1");
     $("#relation"+index+"Row").hide();
+    $("#source"+index+"Row").hide();
+    $("#otherSource"+index+"Row").hide();
+    $("#source"+index).val("");
+    $("#otherSource"+index).val("");
 }
 
 function sourceChange(own,value,row,index){

@@ -21,14 +21,13 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
@@ -53,13 +53,16 @@ public class FacilityRegistrationService {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final FacilityRegisterClient facRegClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
     public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
-                                       FacilityRegisterClient facRegClient) {
+                                       FacilityRegisterClient facRegClient,
+                                       DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
+        this.docSettingService = docSettingService;
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
@@ -422,7 +425,7 @@ public class FacilityRegistrationService {
         }
         Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -451,6 +454,13 @@ public class FacilityRegistrationService {
 
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        preparePreviewData(request);
+
+        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
+        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
+    }
+
+    public void preparePreviewData(HttpServletRequest request) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
@@ -472,18 +482,19 @@ public class FacilityRegistrationService {
         List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
-
-        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
-        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
     }
 
-    public void actionFilter(BaseProcessClass bpc) {
+    public void preAcknowledge(BaseProcessClass bpc) {
+        //do nothing now
+    }
+
+    public void actionFilter(BaseProcessClass bpc, String appType) {
         HttpServletRequest request = bpc.request;
         // check if there is action set to override the action from request
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
@@ -494,7 +505,7 @@ public class FacilityRegistrationService {
             // set, if the action is 'save draft', we save it and route back to that page
             if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
                 actionType = KEY_ACTION_JUMP;
-                saveDraft(request);
+                saveDraft(request, appType);
             }
         }
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
@@ -513,7 +524,7 @@ public class FacilityRegistrationService {
      * @return a list of DTOs can be used to sync to BE
      */
     public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
-        List<NewFileSyncDto> newFilesToSync = null;
+        List<NewFileSyncDto> newFilesToSync;
         if (!primaryDocDto.getNewDocMap().isEmpty()) {
             MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
@@ -528,7 +539,7 @@ public class FacilityRegistrationService {
      * @see #saveNewUploadedDoc(PrimaryDocDto)
      */
     public List<NewFileSyncDto> saveProfileNewUploadedDoc(FacilityProfileDto profileDto) {
-        List<NewFileSyncDto> newFilesToSync = null;
+        List<NewFileSyncDto> newFilesToSync;
         if (!profileDto.getNewDocMap().isEmpty()) {
             MultipartFile[] files = profileDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
@@ -571,7 +582,7 @@ public class FacilityRegistrationService {
         }
     }
 
-    public void saveDraft(HttpServletRequest request) {
+    public void saveDraft(HttpServletRequest request, String appType) {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
 
         // save docs
@@ -584,7 +595,15 @@ public class FacilityRegistrationService {
         newFilesToSync.addAll(profileNewFiles);
 
         // save data
-        FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+        FacilityRegisterDto finalAllDataDto = null;
+        if (appType.equals(MasterCodeConstants.APP_TYPE_NEW) || appType.equals(MasterCodeConstants.APP_TYPE_RFC)){
+            finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }else if (appType.equals(MasterCodeConstants.APP_TYPE_RENEW)){
+            NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+            finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
+            finalAllDataDto.setAppType(appType);
+        }
         String draftAppNo = facRegClient.saveNewFacilityDraft(finalAllDataDto);
         // set draft app No. into the NodeGroup
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
@@ -864,20 +883,6 @@ public class FacilityRegistrationService {
         return personnelRoleOps;
     }
 
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(9);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
-    }
 
     /**
      * only use to 'rfc' module

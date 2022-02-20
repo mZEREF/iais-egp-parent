@@ -19,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
@@ -189,6 +190,9 @@ public class RfcApprovalAppDelegator {
             } else {
                 approvalAppService.jumpHandler(request, approvalAppRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -196,18 +200,14 @@ public class RfcApprovalAppDelegator {
     }
 
     public void actionFilter(BaseProcessClass bpc){
-        approvalAppService.actionFilter(bpc);
+        approvalAppService.actionFilter(bpc, MasterCodeConstants.APP_TYPE_RFC);
     }
 
     public void jumpFilter(BaseProcessClass bpc){
         approvalAppService.jumpFilter(bpc);
     }
 
-    public void doSaveDraft(BaseProcessClass bpc){
-        approvalAppService.doSaveDraft(bpc);
-    }
-
     public void doSubmit(BaseProcessClass bpc){
-        approvalAppService.doSubmit(bpc);
+        approvalAppService.preAcknowledge(bpc);
     }
 }

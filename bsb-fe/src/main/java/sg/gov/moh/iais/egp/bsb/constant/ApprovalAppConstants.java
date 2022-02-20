@@ -52,5 +52,8 @@ public class ApprovalAppConstants {
     public static final String KEY_APP_ID = "appId";
     public static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
 
+    public static final String KEY_ACTION_SAVE_AS_DRAFT = "draft";
 
+    // draft
+    public static final String KEY_IND_AFTER_SAVE_AS_DRAFT          = "AFTER_SAVE_AS_DRAFT";
 }

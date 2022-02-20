@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
@@ -26,6 +26,9 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
+    <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <div id="fileUploadInputDiv" style="display: none"></div>
     <%--<div class="main-content">--%>
     <div class="container">
         <div class="row">
@@ -70,6 +73,7 @@
                                         <%@include file="tranReceiptBat.jsp" %>
                                     </div>
                                 </div>
+                                <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
                             </div>
                         </div>
                     </iais:body>
