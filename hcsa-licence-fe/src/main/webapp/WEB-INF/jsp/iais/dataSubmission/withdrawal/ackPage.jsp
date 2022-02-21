@@ -20,7 +20,7 @@
 </style>
 
 <%-- current page: ack --%>
-<c:set var="title" value="Withdrawal From" />
+<c:set var="title" value="Withdrawal Form" />
 <%@ include file="../assistedReproduction/common/arHeader.jsp" %>
 <input type="hidden" value="${RFC_NO_CHANGE_ERROR}" id="rfcNoChangeShow">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

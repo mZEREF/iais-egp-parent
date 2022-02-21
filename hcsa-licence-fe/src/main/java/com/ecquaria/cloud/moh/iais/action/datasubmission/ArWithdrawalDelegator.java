@@ -75,7 +75,7 @@ public class ArWithdrawalDelegator {
         ) {
             addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
         }
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal From");
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal Form");
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
