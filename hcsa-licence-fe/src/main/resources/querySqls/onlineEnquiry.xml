@@ -27,7 +27,7 @@
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                where dds.STATUS not in ('DS002','DS012')
+                where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
@@ -49,7 +49,7 @@
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
-                where dds.STATUS not in ('DS002','DS012')
+                where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
@@ -102,7 +102,7 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
@@ -119,7 +119,7 @@
               ) AS BUSINESS_NAME  ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
                 where dc.CYCLE_TYPE ='DSCL_008'
@@ -151,7 +151,7 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
@@ -173,7 +173,7 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
                 where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011')
 
@@ -206,7 +206,7 @@
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_data_submission dds
-                join ds_cycle dc on dds.CYCLE_ID=dc.ID and dds.STATUS not in ('DS002','DS012') and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007')
+                join ds_cycle dc on dds.CYCLE_ID=dc.ID and dds.STATUS != 'DS002' and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 join ds_patient_information dpi on (dc.PATIENT_CODE =dpi.PATIENT_CODE or dpi.SUBMISSION_ID = dds.ID)
@@ -327,10 +327,10 @@
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
-                where dds.STATUS not in ('DS002','DS012')
+                where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
@@ -353,10 +353,10 @@
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
-                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
-                where dds.STATUS not in ('DS002','DS012')
+                where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
@@ -372,7 +372,7 @@
             SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002') cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
-             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007') and dds.STATUS not in ('DS002','DS012')
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007') and dds.STATUS != 'DS002'
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>
@@ -443,7 +443,7 @@
 				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
                 left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
 
-                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
@@ -505,7 +505,7 @@
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
                 left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
-                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
@@ -570,7 +570,7 @@
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
 
-                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
@@ -623,7 +623,7 @@
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE
-                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
+                where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
