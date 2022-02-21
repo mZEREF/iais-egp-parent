@@ -25,22 +25,22 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE001'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/facility/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/approval/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE005'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/afc/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE001'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationFacilityView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY004' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewCancellationApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/cancellationApprovalView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE005'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationAFCView.jsp" %>
                                                     </c:if>
                                                 </div>

@@ -11,6 +11,5 @@ import java.io.Serializable;
 @Data
 public class AppViewDto implements Serializable {
     private String applicationId;
-    private String processType;
-    private String appType;
+    private String moduleType;
 }

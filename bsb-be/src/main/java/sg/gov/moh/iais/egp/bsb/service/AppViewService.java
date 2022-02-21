@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.service;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
 
@@ -43,11 +45,48 @@ public class AppViewService {
         this.appViewClient = appViewClient;
     }
 
-    public void createAndSetAppViewDtoInSession(String appId, String processType, String appType, HttpServletRequest request){
+    /**
+     * only use for process new, rfc, renewal, deregistration, cancellation module
+     */
+    public String judgeProcessAppModuleType(String processType, String appType){
+        String module = "";
+        if (org.springframework.util.StringUtils.hasLength(processType) && org.springframework.util.StringUtils.hasLength(appType)){
+            switch (processType) {
+                case PROCESS_TYPE_FAC_REG:
+                    if (appType.equals(APP_TYPE_NEW)){
+                        module = MODULE_VIEW_NEW_FACILITY;
+                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
+                        module = MODULE_VIEW_DEREGISTRATION_FACILITY;
+                    }
+                    break;
+                case PROCESS_TYPE_APPROVE_POSSESS:
+                case PROCESS_TYPE_APPROVE_LSP:
+                case PROCESS_TYPE_SP_APPROVE_HANDLE:
+                    if (appType.equals(APP_TYPE_NEW)){
+                        module = MODULE_VIEW_NEW_APPROVAL_APP;
+                    }else if (appType.equals(APP_TYPE_CANCEL)){
+                        module = MODULE_VIEW_CANCELLATION_APPROVAL_APP;
+                    }
+                    break;
+                case PROCESS_TYPE_FAC_CERTIFIER_REG:
+                    if (appType.equals(APP_TYPE_NEW)){
+                        module = MODULE_VIEW_NEW_FAC_CER_REG;
+                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
+                        module = MODULE_VIEW_DEREGISTRATION_FAC_CER_REG;
+                    }
+                    break;
+                default:
+                    log.info("don't have such processType {}", StringUtils.normalizeSpace(processType));
+                    break;
+            }
+        }
+        return module;
+    }
+
+    public void createAndSetAppViewDtoInSession(String appId, String moduleType, HttpServletRequest request){
         AppViewDto appViewDto = new AppViewDto();
         appViewDto.setApplicationId(appId);
-        appViewDto.setProcessType(processType);
-        appViewDto.setAppType(appType);
+        appViewDto.setModuleType(moduleType);
         ParamUtil.setSessionAttr(request, KEY_APP_VIEW_DTO, appViewDto);
     }
 

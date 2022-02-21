@@ -69,8 +69,8 @@ public class MohDOScreeningDelegator {
         ParamUtil.setSessionAttr(request, KEY_DO_SCREENING_DTO, doScreeningDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, doScreeningDto.getSubmitDetailsDto());
         //view application process need need set appViewDto
-        appViewService.createAndSetAppViewDtoInSession(appId, doScreeningDto.getSubmitDetailsDto().getProcessType(),
-                doScreeningDto.getSubmitDetailsDto().getAppType(), request);
+        String moduleType = appViewService.judgeProcessAppModuleType(doScreeningDto.getSubmitDetailsDto().getProcessType(), doScreeningDto.getSubmitDetailsDto().getAppType());
+        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(doScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

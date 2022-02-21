@@ -34,4 +34,11 @@ public class AppViewConstants {
     public static final String KEY_DE_REGISTRATION_FACILITY_DTO             = "deRegistrationFacilityDto";
     public static final String KEY_CANCELLATION_APPROVAL_DTO                = "cancellationApprovalDto";
     public static final String KEY_DE_REGISTRATION_AFC_DTO                  = "deRegistrationAFCDto";
+
+    public static final String MODULE_VIEW_NEW_FACILITY                     = "viewNewFacility";
+    public static final String MODULE_VIEW_NEW_APPROVAL_APP                 = "viewNewApprovalApp";
+    public static final String MODULE_VIEW_NEW_FAC_CER_REG                  = "viewNewFacCerReg";
+    public static final String MODULE_VIEW_DEREGISTRATION_FACILITY          = "viewDeRegistrationFacility";
+    public static final String MODULE_VIEW_CANCELLATION_APPROVAL_APP        = "viewCancellationApprovalApp";
+    public static final String MODULE_VIEW_DEREGISTRATION_FAC_CER_REG       = "viewDeRegistrationFacCerReg";
 }

@@ -74,8 +74,8 @@ public class AOProcessDeregistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_AO_PROCESS_DTO, aoProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, aoProcessDto.getSubmissionDetailsDto());
         //view application process need set appViewDto
-        appViewService.createAndSetAppViewDtoInSession(appId, aoProcessDto.getSubmissionDetailsDto().getProcessType(),
-                aoProcessDto.getSubmissionDetailsDto().getApplicationType(), request);
+        String moduleType = appViewService.judgeProcessAppModuleType(aoProcessDto.getSubmissionDetailsDto().getProcessType(), aoProcessDto.getSubmissionDetailsDto().getApplicationType());
+        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(aoProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc
