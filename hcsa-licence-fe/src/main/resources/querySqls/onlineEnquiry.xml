@@ -372,7 +372,7 @@
             SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS not in ('DS002','DS012')) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
-             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007') and dds.STATUS not in ('DS002','DS012')
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007') and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>
