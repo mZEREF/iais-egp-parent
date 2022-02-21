@@ -73,8 +73,8 @@ public interface AssistedReproductionClient {
     FeignResponseEntity<SearchResult<ArEnquiryDonorSampleDto>> searchDonorSampleByParam(
             @RequestBody SearchParam searchParam);
 
-    @GetMapping(value = "/ar-common/cycle-stage-id", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
+    @GetMapping(value = "/ar-common/action-ds-cycle-stage-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DataSubmissionDto>> getActionAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
 
     @GetMapping(value = "/ar-common/ar-center-premises-patient-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getAllArCenterPremisesDtoByPatientCode(@RequestParam(name = "patientCode") String patientCode,@RequestParam(name = "orgId") String orgId);
