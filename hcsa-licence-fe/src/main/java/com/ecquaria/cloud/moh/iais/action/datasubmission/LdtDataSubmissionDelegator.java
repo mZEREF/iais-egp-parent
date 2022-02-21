@@ -454,6 +454,7 @@ public class LdtDataSubmissionDelegator {
         emailParam.setTemplateContent(msgContentMap);
         emailParam.setQueryCode(LDTId);
         emailParam.setReqRefNum(LDTId);
+        emailParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
         emailParam.setRefId(licenceId);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setSubject(subject);
