@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
@@ -1457,6 +1458,22 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         if (arSuper != null) {
+            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+            Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
+            if(IaisCommonUtils.isNotEmpty(premisesDtos)){
+                for (PremisesDto premisesDto : premisesDtos) {
+                    if(premisesDto!=null){
+                        premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                    }
+                }
+            }
+
+            Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
+            if (!premisesMap.isEmpty()) {
+                for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
+                    map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+                }
+            }
             if (arSuper.getArCycleStageDto() != null) {
 
                 if(arSuper.getPatientInfoDto() != null && arSuper.getPatientInfoDto().getPatient() !=null){
@@ -1472,8 +1489,24 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
                 }
                 setEnhancedCounsellingTipShow(request, arSuper.getArCycleStageDto(), true);
+                if(IaisCommonUtils.isNotEmpty(arSuper.getArCycleStageDto().getDonorDtos())){
+                    for (DonorDto donor:arSuper.getArCycleStageDto().getDonorDtos()
+                         ) {
+                        if(!DataSubmissionConsts.AR_SOURCE_OTHER.equals(donor.getSource())&&map.containsKey(donor.getSource())){
+                            donor.setSource(map.get(donor.getSource()));
+                        }
+                    }
+                }
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 setIuiCycleStageDtoDefaultVal(arSuper);
+                if(IaisCommonUtils.isNotEmpty(arSuper.getIuiCycleStageDto().getDonorDtos())){
+                    for (DonorDto donor:arSuper.getIuiCycleStageDto().getDonorDtos()
+                    ) {
+                        if(!DataSubmissionConsts.AR_SOURCE_OTHER.equals(donor.getSource())&&map.containsKey(donor.getSource())){
+                            donor.setSource(map.get(donor.getSource()));
+                        }
+                    }
+                }
             }
         }
 

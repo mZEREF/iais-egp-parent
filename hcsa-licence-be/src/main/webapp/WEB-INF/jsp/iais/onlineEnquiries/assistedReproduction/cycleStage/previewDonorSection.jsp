@@ -54,7 +54,8 @@
                         <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
                             <iais:field width="5" value="Donor Sample Code / ID" />
                             <iais:value width="7" cssClass="col-md-3" display="true">
-                                <iais:code code="${donorDto.idType}"/>
+                                <c:if test="${donorDto.idType = 'AR_IT_005'}">Code</c:if>
+                                <c:if test="${donorDto.idType != 'AR_IT_005'}"><iais:code code="${donorDto.idType}"/></c:if>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -66,11 +67,16 @@
                         <iais:row  cssClass="usedDonorOocyteControlClass" id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
                             <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
+                                <c:if test="${donorDto.source == 'AR_SC_001'}">
+                                    Others
+                                </c:if>
+                                <c:if test="${donorDto.source != 'AR_SC_001'}">
+                                    ${donorDto.source}
+                                </c:if>
                             </iais:value>
                         </iais:row>
 
-                        <c:if test="${donorDto.source == DataSubmissionConsts.AR_SOURCE_OTHER}">
+                        <c:if test="${donorDto.source == 'AR_SC_001'}">
                             <iais:row cssClass="usedDonorOocyteControlClass" id="otherSource${arDonorIndex}Row" >
                                 <iais:field width="5" value="Source (Others)" />
                                 <iais:value width="7" cssClass="col-md-7" display="true">
