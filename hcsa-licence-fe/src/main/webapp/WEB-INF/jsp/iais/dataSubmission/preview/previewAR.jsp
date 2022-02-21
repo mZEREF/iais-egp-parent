@@ -104,6 +104,4 @@
     </c:when>
 
 </c:choose>
-<c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
-</c:if>
