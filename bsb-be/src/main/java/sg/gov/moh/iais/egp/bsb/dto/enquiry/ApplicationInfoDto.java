@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import lombok.Data;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -31,7 +32,7 @@ public class ApplicationInfoDto implements Serializable{
     private Date applicationDt;
 
     @ExcelProperty(cellIndex = 5, cellName = "Approval  Date")
-    private Date approvalDate;
+    private LocalDate approvalDate;
 
     @ExcelProperty(cellIndex = 6, cellName = "Facility Classfiication")
     private String facilityClassification;
