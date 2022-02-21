@@ -37,7 +37,7 @@
                 <p class="col-xs-12 margin-btm"></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
-                    <p class="col-xs-12 margin-btm">You have successfully withdrawed your submission.</p>
+                    <p class="col-xs-12 margin-btm"><iais:message key="DS_ACK051" escape="false"></iais:message></p>
                 </div>
                 <div class="ack-font-16">
                     <p class="col-xs-12">Submission details:</p>
