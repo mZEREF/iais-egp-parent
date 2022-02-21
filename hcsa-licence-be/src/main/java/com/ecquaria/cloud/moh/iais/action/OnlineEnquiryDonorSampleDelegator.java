@@ -67,6 +67,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         pageSize= Integer.valueOf(defaultValue);
         donorSampleParameter.setPageSize(pageSize);
         donorSampleParameter.setPageNo(1);
+        donorSampleParameter.setSortField("ID");
+        donorSampleParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
 
