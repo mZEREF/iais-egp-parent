@@ -562,7 +562,7 @@
             SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS not in ('DS002','DS012')) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
-             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007') and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011') and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>
@@ -570,7 +570,8 @@
 
     <sql key = "searchDonorSampleByAssistedReproduction" remarks="search Donor Sample">
         <![CDATA[
-            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+        SELECT distinct tt.* from (
+        SELECT  dds2.ID ,dds.SUBMISSION_NO,
             CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
@@ -644,7 +645,7 @@
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             UNION ALL
-            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            SELECT  dds2.ID ,dds.SUBMISSION_NO,
             CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -706,7 +707,7 @@
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             UNION ALL
-            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            SELECT  dds2.ID ,dds.SUBMISSION_NO,
             CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
@@ -771,7 +772,7 @@
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
             UNION ALL
-            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
+            SELECT  dds2.ID ,dds.SUBMISSION_NO,
             CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
@@ -823,6 +824,8 @@
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
             <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
+        ) tt
+
          ]]>
     </sql>
 
