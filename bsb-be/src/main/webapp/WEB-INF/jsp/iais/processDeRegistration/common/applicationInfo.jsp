@@ -38,6 +38,13 @@
         </div>
     </div>
 </div>
+<div style="text-align: center">
+    <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
+        <button type="button" class="btn btn-primary">
+            View Application
+        </button>
+    </a>
+</div>
 <div>&nbsp</div>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Applicant Details</strong></div>
@@ -74,13 +81,6 @@
             </div>
         </div>
     </div>
-</div>
-<div style="text-align: center">
-    <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
-        <button type="button" class="btn btn-primary">
-            View Application
-        </button>
-    </a>
 </div>
 <div style="text-align: left">
     <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
