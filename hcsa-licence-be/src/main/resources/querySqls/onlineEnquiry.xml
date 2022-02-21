@@ -87,7 +87,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -119,7 +119,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.PATIENT_CODE
@@ -164,7 +164,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -191,7 +191,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME  ,dc.CREATED_DT ,dc.STATUS
@@ -213,7 +213,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -245,7 +245,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
@@ -269,7 +269,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -385,7 +385,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,dpi.PATIENT_CODE
@@ -496,7 +496,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -533,7 +533,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
@@ -575,7 +575,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -607,7 +607,7 @@
                   else ' '+dds2p.BUILDING_NAME end
                , case dds2p.FLOOR_NO
                   when null then null
-                  else ' # '+dds2p.FLOOR_NO end
+                  else ' #'+dds2p.FLOOR_NO end
                , case dds2p.UNIT_NO
                   when null then null
                   else '-'+dds2p.UNIT_NO end
@@ -649,7 +649,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
@@ -671,7 +671,7 @@
                   else ' '+dds2p.BUILDING_NAME end
                , case dds2p.FLOOR_NO
                   when null then null
-                  else ' # '+dds2p.FLOOR_NO end
+                  else ' #'+dds2p.FLOOR_NO end
                , case dds2p.UNIT_NO
                   when null then null
                   else '-'+dds2p.UNIT_NO end
@@ -711,7 +711,7 @@
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
                case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
-               , case p.FLOOR_NO when null then null else ' # '+p.FLOOR_NO end
+               , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
                ,
                SUBSTRING ((
@@ -743,7 +743,7 @@
                   else ' '+dcen2.BUILDING_NAME end
                , case dcen2.FLOOR_NO
                   when null then null
-                  else ' # '+dcen2.FLOOR_NO end
+                  else ' #'+dcen2.FLOOR_NO end
                , case dcen2.UNIT_NO
                   when null then null
                   else '-'+dcen2.UNIT_NO end
@@ -776,7 +776,7 @@
                   case dcen.BLK_NO when null then null else ''+dcen.BLK_NO end ,
                case dcen.STREET_NAME when null then null else ' '+dcen.STREET_NAME end
                , case dcen.BUILDING_NAME when null then null else ' '+dcen.BUILDING_NAME end
-               , case dcen.FLOOR_NO when null then null else ' # '+dcen.FLOOR_NO end
+               , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
@@ -798,7 +798,7 @@
                   else ' '+dcen2.BUILDING_NAME end
                , case dcen2.FLOOR_NO
                   when null then null
-                  else ' # '+dcen2.FLOOR_NO end
+                  else ' #'+dcen2.FLOOR_NO end
                , case dcen2.UNIT_NO
                   when null then null
                   else '-'+dcen2.UNIT_NO end
