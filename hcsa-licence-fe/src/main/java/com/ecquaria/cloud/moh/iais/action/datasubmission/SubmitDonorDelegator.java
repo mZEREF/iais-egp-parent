@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
@@ -51,7 +52,13 @@ public class SubmitDonorDelegator extends CommonDelegator {
         if(donorSampleDto == null){
             donorSampleDto =  new DonorSampleDto();
         }
-        donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
+        if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType())){
+           String[] ages =  bpc.request.getParameterValues("ages");
+            donorSampleDto.setAges(ages);
+        }else{
+            donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
+        }
+
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
 
         //RFC

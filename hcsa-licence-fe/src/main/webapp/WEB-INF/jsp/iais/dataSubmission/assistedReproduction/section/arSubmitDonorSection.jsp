@@ -162,27 +162,29 @@
                             </c:if>
                         </c:when>
                         <c:otherwise>
+                          <div class="donorSampleAdd">
                             <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
-                                <iais:row id = "donorAge${idxStatus.index+1}">
-                                    <label class="col-xs-5 col-md-4 control-label">
-                                        <c:if test="${idxStatus.first && donorSampleDto.donorSampleAgeDtos == null}">
-                                            Donor's Age when Sample was Collected
-                                            <span class="mandatory">*</span>
-                                        </c:if>
-                                    </label>
-                                    <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
-                                        <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                    </iais:value>
-                                    <c:if test="${!idxStatus.first || donorSampleDto.donorSampleAgeDtos != null}">
-                                        <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
-                                            <h4 class="text-danger">
-                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index+1}')"></em>
-                                            </h4>
-                                        </div>
-                                    </c:if>
-                                </iais:row>
+                              <iais:row id = "donorAge${idxStatus.index+1}">
+                                <label class="col-xs-5 col-md-4 control-label">
+                                  <c:if test="${idxStatus.first && donorSampleDto.donorSampleAgeDtos == null}">
+                                    Donor's Age when Sample was Collected
+                                    <span class="mandatory">*</span>
+                                  </c:if>
+                                </label>
+                                <iais:value width="7" cssClass="col-md-7">
+                                  <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
+                                  <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                </iais:value>
+                                <c:if test="${!idxStatus.first || donorSampleDto.donorSampleAgeDtos != null}">
+                                  <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
+                                    <h4 class="text-danger">
+                                      <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index+1}')"></em>
+                                    </h4>
+                                  </div>
+                                </c:if>
+                              </iais:row>
                             </c:forEach>
+                          </div>
                         </c:otherwise>
                     </c:choose>
 
@@ -219,8 +221,8 @@
         dikChange();
         arCentreChange();
         <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-        //disableContent('div.donorSample');
-        //unDisableContent('div.donorSampleAdd');
+        disableContent('div.donorSample');
+        unDisableContent('div.donorSampleAdd');
         </c:if>
     });
     function showDonationYes(){
