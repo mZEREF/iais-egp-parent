@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -114,17 +115,30 @@ public class HalpSearchResultHelper {
     }
 
     public static void initMsgControlSearchParam(SearchParam searchParam,HttpServletRequest request){
+        InterMessageSearchDto interMessageSearchDto =  initInterMessageSearchDto(request);
+        if(interMessageSearchDto.getSearchSql() == 1){
+            setParamByField(searchParam,"interServiceDsShow",interMessageSearchDto.getServiceCodes());
+        }else if(interMessageSearchDto.getSearchSql() == 2){
+            setParamByField(searchParam,"interServiceHcsaShow",interMessageSearchDto.getServiceCodes());
+        }
+    }
+
+    public static InterMessageSearchDto initInterMessageSearchDto(HttpServletRequest request){
+        InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
         List<String> privilegeIds = AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
         if(privilegeIds.contains(PrivilegeConsts.USER_PRIVILEGE_HALP_HCSA_DASHBOARD)){
             List<String> dsTypes = getDsTypes(privilegeIds);
             if(dsTypes.size() < allDsTypes.size()){
-                 List<String> allTypes = new ArrayList<>(allDsTypes);
-                 allTypes.removeAll(dsTypes);
-                setParamByField(searchParam,"interServiceHcsaShow",allTypes);
+                List<String> allTypes = new ArrayList<>(allDsTypes);
+                allTypes.removeAll(dsTypes);
+                interMessageSearchDto.setSearchSql(2);
+                interMessageSearchDto.setServiceCodes(allTypes);
             }
         }else {
-            setParamByField(searchParam,"interServiceDsShow", getDsTypes(privilegeIds));
+            interMessageSearchDto.setSearchSql(1);
+            interMessageSearchDto.setServiceCodes(getDsTypes(privilegeIds));
         }
+        return interMessageSearchDto;
     }
 
     public static List<String> getDsTypes(List<String> privilegeIds){
