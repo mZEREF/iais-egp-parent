@@ -117,7 +117,7 @@
         let url = "";
         console.log(submissionNo);
         console.log(dsType);
-        url = '${pageContext.request.contextPath}/eservice/INTERNET/MohDsAction?dsType='+dsType +"&type=preview"+"&submissionNo="+ submissionNo ;
+        url = '${pageContext.request.contextPath}/eservice/INTERNET/MohDsAction?dsType='+dsType +"&type=preview"+"&submissionNo="+ submissionNo +"&submissionType=WD";
         showPopupWindow(url);
     }
 
