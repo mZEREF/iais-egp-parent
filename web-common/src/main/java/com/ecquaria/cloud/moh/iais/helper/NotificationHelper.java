@@ -280,7 +280,7 @@ public class NotificationHelper {
 				subject = replaceText(subject, subjectParams);
 			}
 
-			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList,isSendNewLicensee);
+			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList,isSendNewLicensee,emailParam.getServiceTypes());
 			if (jrDto != null) {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 				jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -467,7 +467,7 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee) {
+	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee,String serviceTypes) {
 		String licenseeId;
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		if(grpDto != null) {
@@ -494,16 +494,21 @@ public class NotificationHelper {
 		interMessageDto.setMessageType(refIdType);
 		String mesNO = getHelperMessageNo();
 		interMessageDto.setRefNo(mesNO);
-		if(IaisCommonUtils.isEmpty(svcCodeList)){
-			interMessageDto.setService_id("");
-		} else {
-			StringBuilder svcCodeShow = new StringBuilder();
-			for(String svcCode : svcCodeList){
-				svcCodeShow.append(svcCode);
-				svcCodeShow.append('@');
+		if(StringUtil.isEmpty(serviceTypes)){
+			if(IaisCommonUtils.isEmpty(svcCodeList)){
+				interMessageDto.setService_id("");
+			} else {
+				StringBuilder svcCodeShow = new StringBuilder();
+				for(String svcCode : svcCodeList){
+					svcCodeShow.append(svcCode);
+					svcCodeShow.append('@');
+				}
+				interMessageDto.setService_id(svcCodeShow.toString());
 			}
-			interMessageDto.setService_id(svcCodeShow.toString());
+		}else {
+			interMessageDto.setService_id(serviceTypes);
 		}
+
 		interMessageDto.setUserId(licenseeId);
 		interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
 		interMessageDto.setMsgContent(mesContext);
