@@ -70,6 +70,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
             arSuperDataSubmission.getIuiCycleStageDto().setOldDonorDtos(IaisCommonUtils.isNotEmpty(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) ?(List<DonorDto>) CopyUtil.copyMutableObjectList(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) : null);
             DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission),request);
         }
+        initOldDonorSelectSession(request,2);
     }
 
     @Override

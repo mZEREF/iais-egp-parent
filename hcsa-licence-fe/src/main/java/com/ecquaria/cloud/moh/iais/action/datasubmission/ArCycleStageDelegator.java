@@ -108,6 +108,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             }
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
+        initOldDonorSelectSession(request,1);
     }
 
     public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){
