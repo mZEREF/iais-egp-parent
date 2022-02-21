@@ -25,11 +25,11 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityActivityBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
-import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -277,18 +277,18 @@ public class ApprovalAppService {
 
     public void prepareActivity(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        List<Facility> facilityList = approvalAppClient.getAllMainActApprovalFac().getEntity();
-        List<SelectOption> facilityIdList = new ArrayList<>(facilityList.size());
+        List<FacilityBasicInfo> facilityBasicInfoList = approvalAppClient.getAllMainActivityApprovedFacility();
+        List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
         facilityIdList.add(new SelectOption("Please Select","Please Select"));
         List<FacilityActivitySelectDto> facilityActivitySelectDtoList = new ArrayList<>();
-        if (!facilityList.isEmpty()){
-            for (Facility fac : facilityList) {
+        if (!facilityBasicInfoList.isEmpty()){
+            for (FacilityBasicInfo fac : facilityBasicInfoList) {
                 //initialize facility selectOption
-                facilityIdList.add(new SelectOption(fac.getId(),fac.getFacilityName()));
+                facilityIdList.add(new SelectOption(fac.getId(),fac.getName()));
                 //initialize facilityActivity selectOption
-                List<FacilityActivity> facilityActivityList = approvalAppClient.getApprovalFAByFacId(fac.getId()).getEntity();
+                List<FacilityActivityBasicInfo> facilityActivityList = approvalAppClient.getApprovalFAByFacId(fac.getId());
                 List<SelectOption> activityIdList = new ArrayList<>(facilityActivityList.size());
-                for (FacilityActivity facilityActivity : facilityActivityList) {
+                for (FacilityActivityBasicInfo facilityActivity : facilityActivityList) {
                     activityIdList.add(new SelectOption(facilityActivity.getId(),facilityActivity.getActivityType()));
                 }
                 facilityActivitySelectDtoList.add(new FacilityActivitySelectDto(fac.getId(),activityIdList));
@@ -374,10 +374,10 @@ public class ApprovalAppService {
         ActivityDto activityDto = (ActivityDto) activityNode.getValue();
         ParamUtil.setRequestAttr(request, "schedules", activityDto.getSchedules());
         String currentSchedule = approvalProfileNode.getName();
-        List<Biological> biologicalList = this.approvalAppClient.getBiologicalBySchedule(currentSchedule).getEntity();
+        List<BatBasicInfo> biologicalList = this.approvalAppClient.getBiologicalBySchedule(currentSchedule);
         List<SelectOption> batIdOps = new ArrayList<>(biologicalList.size());
         if (!biologicalList.isEmpty()){
-            for (Biological biological : biologicalList) {
+            for (BatBasicInfo biological : biologicalList) {
                 batIdOps.add(new SelectOption(biological.getId(),biological.getName()));
             }
         }
