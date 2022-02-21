@@ -75,6 +75,7 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
         session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
+        session.removeAttribute(DataSubmissionConstant.LDT_IS_GUIDE);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
