@@ -206,7 +206,7 @@
 
                                                                 <td style="vertical-align:middle;">
 
-                                                                    <p style="width: 165px;"><c:out value="${patient.patientName}"/>
+                                                                    <p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                                                                         <c:if test="${not empty patient.cdPatientCode}">
                                                                             <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                                                                             </a>

@@ -48,7 +48,7 @@
                                         <tr id="advfilter${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                             <td style="vertical-align:middle;">
 
-                                                <p style="width: 165px;"><c:out value="${cycleStage.cycleNo}"/>
+                                                <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                     </a>
                                                 </p>
@@ -121,7 +121,7 @@
                                     <tr id="advfilterNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                         <td style="vertical-align:middle;">
 
-                                            <p style="width: 165px;"><c:out value="${cycleStage.cycleNo}"/>
+                                            <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
                                                 <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdownNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByNonCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                 </a>
                                             </p>

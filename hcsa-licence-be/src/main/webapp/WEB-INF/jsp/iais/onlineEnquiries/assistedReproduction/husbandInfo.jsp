@@ -42,7 +42,7 @@
 
                         <td style="vertical-align:middle;">
 
-                            <p style="width: 165px;"><c:out value="${patientInfoDto.husband.name}"/>
+                            <p ><c:out value="${patientInfoDto.husband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
@@ -128,7 +128,7 @@
 
                         <td style="vertical-align:middle;">
 
-                            <p style="width: 165px;"><c:out value="${patientInfoDto.previousHusband.name}"/>
+                            <p ><c:out value="${patientInfoDto.previousHusband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
