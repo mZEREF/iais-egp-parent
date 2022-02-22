@@ -1,5 +1,5 @@
 <div class="panel panel-default" style="${!empty donorDtos ?  '' : 'display: none;'}">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4  class="panel-title" >
             <a class="collapsed" href="#donorDtoDetails" data-toggle="collapse"  >
                 Details of Donor(s)

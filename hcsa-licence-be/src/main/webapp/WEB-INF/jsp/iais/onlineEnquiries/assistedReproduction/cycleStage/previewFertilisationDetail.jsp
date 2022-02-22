@@ -1,7 +1,7 @@
-<c:set var="headingSign" value="${isPrint?'':'completed'}"/>
+
 <c:set var="fertilisationDto" value="${arSuperDataSubmissionDto.fertilisationDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
                 Fertilisation

@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title" >
             <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission

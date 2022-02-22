@@ -1,6 +1,5 @@
-<c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title" >
             <a href="#viewArDonorSampleDetails" data-toggle="collapse" >
                 Donor Sample

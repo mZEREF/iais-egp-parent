@@ -5,9 +5,9 @@
   Time: 9:44
   To change this template use File | Settings | File Templates.
 --%>
-<c:set var="headingSign" value="${isPrint?'':'completed'}"/>
+
 <div class="panel panel-default">
-  <div class="panel-heading ${headingSign}">
+  <div class="panel-heading ">
     <h4 class="panel-title">
       <a href="#freezingDetails" data-toggle="collapse">
         Freezing

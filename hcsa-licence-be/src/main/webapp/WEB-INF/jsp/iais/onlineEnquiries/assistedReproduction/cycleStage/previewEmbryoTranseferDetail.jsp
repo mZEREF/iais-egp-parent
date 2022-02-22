@@ -1,8 +1,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="embryoTransferStageDto" value="${arSuperDataSubmissionDto.embryoTransferStageDto}"/>
-<c:set var="headingSign" value="${isPrint?'':'completed'}"/>
+
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title">
             <a href="#cycleDetails" data-toggle="collapse">
                 Embryo Transfer

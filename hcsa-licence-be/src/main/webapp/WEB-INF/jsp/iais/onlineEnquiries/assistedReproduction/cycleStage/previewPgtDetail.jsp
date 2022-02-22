@@ -1,6 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign} ">
+    <div class="panel-heading  ">
         <h4 class="panel-title">
             <a href="#pgtDetailsPreview" data-toggle="collapse">
                 Preimplantation Genetic Testing

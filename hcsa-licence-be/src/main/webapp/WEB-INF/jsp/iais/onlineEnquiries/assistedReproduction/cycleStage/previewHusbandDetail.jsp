@@ -1,7 +1,7 @@
 <c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
                 Details of Patient
