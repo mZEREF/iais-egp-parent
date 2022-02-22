@@ -15,7 +15,7 @@
 %>
 <style>
     .table-info-display {
-        margin: 20px 15px 25px 12px;
+        margin: 20px 0px 25px 0px;
         background: #efefef;
         padding: 8px;
         border-radius: 8px;
@@ -37,6 +37,7 @@
         border-radius: 30px;
         border: 1px solid grey;
     }
+
 </style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
