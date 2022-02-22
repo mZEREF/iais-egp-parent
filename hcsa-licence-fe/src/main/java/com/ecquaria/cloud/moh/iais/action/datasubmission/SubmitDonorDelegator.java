@@ -4,14 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import java.io.Serializable;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -55,6 +59,10 @@ public class SubmitDonorDelegator extends CommonDelegator {
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType())){
            String[] ages =  bpc.request.getParameterValues("ages");
             donorSampleDto.setAges(ages);
+            String[] ageCheckName =  bpc.request.getParameterValues("ageCheckName");
+            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
+            changeAvailable(donorSampleAgeDtos,ageCheckName);
+            donorSampleDto.setDonorSampleAgeDtos(donorSampleAgeDtos);
         }else{
             donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
         }
@@ -84,4 +92,20 @@ public class SubmitDonorDelegator extends CommonDelegator {
     }
 
 
+    private  void changeAvailable(List<DonorSampleAgeDto> donorSampleAgeDtos,String[] ageCheckName){
+        log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable start ..."));
+        if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
+            for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
+               String donorSampleId = donorSampleAgeDto.getId();
+               boolean IsAvailable = false;
+               if(ageCheckName != null){
+                   IsAvailable = ArrayUtils.contains(ageCheckName,donorSampleId);
+               }
+                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable donorSampleId is-->："+donorSampleId));
+                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable IsAvailable is-->："+IsAvailable));
+               donorSampleAgeDto.setAvailable(IsAvailable);
+            }
+        }
+        log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable end ..."));
+    }
 }

@@ -11,8 +11,8 @@
     <div id="arDonorSampleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
-                <div class="panel-main-content form-horizontal donorSample">
-
+                <div class="panel-main-content form-horizontal">
+                    <div class="donorSample">
                     <iais:row>
                         <iais:field width="5" value="Is Sample from a Directed Donation?" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
@@ -129,7 +129,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-
+                    </div>
                     <c:choose>
                         <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
                             <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
@@ -140,9 +140,22 @@
                                             <span class="mandatory">*</span>
                                         </c:if>
                                     </label>
-                                    <iais:value width="7" cssClass="col-md-7">
+                                    <iais:value width="4" cssClass="col-md-4">
                                         <input type="text" name="oldAges" value="${donorSampleAgeDto.age}" maxlength="2" autocomplete="off" disabled =true>
                                         <span id="error_oldAges" name="iaisErrorMsg" class="error-msg"></span>
+                                    </iais:value>
+                                    <iais:value width="3" cssClass="col-md-3">
+                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}"
+                                            <c:choose>
+                                        <c:when test="${donorSampleAgeDto.available}">
+                                              checked
+                                        </c:when>
+                                        <c:otherwise>
+                                               disabled =true
+                                        </c:otherwise>
+                                        </c:choose>
+                                        >Available
+                                       </input>
                                     </iais:value>
                                 </iais:row>
                             </c:forEach>

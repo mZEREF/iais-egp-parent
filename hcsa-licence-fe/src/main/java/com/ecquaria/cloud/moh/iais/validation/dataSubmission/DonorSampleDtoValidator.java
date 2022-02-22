@@ -133,6 +133,10 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                     }
                 }
                 //Repetition
+                List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
+                if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
+                    donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
+                }
                 if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
                     map.put("ages"+i,"DS_ERR046");
                 }
@@ -193,7 +197,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
             if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
                 for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
-                    if(StringUtil.isNotEmpty(age) && Integer.parseInt(age) == donorSampleAgeDto.getAge()){
+                    if(StringUtil.isNotEmpty(age) && Integer.parseInt(age) == donorSampleAgeDto.getAge()
+                            && donorSampleAgeDto.isAvailable()){
                         result = true;
                         log.info(StringUtil.changeForLog("The isRepetition exit in the old DonorSampleAgeDto"));
                         break;
