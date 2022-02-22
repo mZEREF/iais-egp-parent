@@ -12,17 +12,15 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 
-/**
- * @author tangtang
- **/
+
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "withdrawn")
 public interface WithdrawnClient {
-    @PostMapping(path = "/bsbWithdrawnFE/validate/withdrawnApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/withdraw/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateWithdrawnDto(@RequestBody AppSubmitWithdrawnDto dto);
 
-    @GetMapping(path = "/bsbWithdrawnFE/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/withdraw/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AppSubmitWithdrawnDto> getWithdrawnDataByApplicationId(@PathVariable("appId") String applicationId);
 
-    @PostMapping(value = "/bsbWithdrawnFE/saveWithdrawn", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/withdraw", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
 }

@@ -17,52 +17,52 @@ import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationFacilityDto
 public interface DeRegOrCancellationClient {
     /**************************DeRegistrationFacility**********************************/
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationFacility/validate/deRegistrationFacilityDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/facility/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateDeRegistrationFacilityDto(@RequestBody DeRegistrationFacilityDto deRegistrationFacilityDto);
 
-    @GetMapping(path = "/deRegOrCancellation/deRegistrationFacility/getData/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel/facility/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DeRegistrationFacilityDto> getDeRegistrationFacilityData(@PathVariable("approvalId") String approvalId);
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationFacility/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/facility/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveNewDeRegistrationFacilityDraft(@RequestBody DeRegistrationFacilityDto dto);
 
-    @GetMapping(path = "/deRegOrCancellation/deRegistrationFacility/getDraftData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DeRegistrationFacilityDto> getDraftDeRegistrationFacilityData(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/deregister-cancel/facility/draft/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DeRegistrationFacilityDto> getDraftDeRegistrationFacilityData(@PathVariable("appId") String applicationId);
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationFacility/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/facility", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveDeRegistrationFacilityDto(@RequestBody DeRegistrationFacilityDto dto);
 
     /**************************CancellationApproval**********************************/
 
-    @PostMapping(path = "/deRegOrCancellation/cancellationApproval/validate/cancellationApprovalDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/bat-approval/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateCancellationApprovalDto(@RequestBody CancellationApprovalDto cancellationApprovalDto);
 
-    @GetMapping(path = "/deRegOrCancellation/cancellationApproval/getData/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel/bat-approval/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<CancellationApprovalDto> getCancellationApprovalData(@PathVariable("approvalId") String approvalId);
 
-    @PostMapping(path = "/deRegOrCancellation/cancellationApproval/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/bat-approval/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveNewCancellationApprovalDraft(@RequestBody CancellationApprovalDto dto);
 
-    @GetMapping(path = "/deRegOrCancellation/cancellationApproval/getDraftData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<CancellationApprovalDto> getDraftCancellationApprovalData(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/deregister-cancel/bat-approval/draft/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<CancellationApprovalDto> getDraftCancellationApprovalData(@PathVariable("appId") String applicationId);
 
-    @PostMapping(path = "/deRegOrCancellation/cancellationApproval/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/bat-approval", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveCancellationApprovalDto(@RequestBody CancellationApprovalDto dto);
 
     /**************************DeRegistrationAFC**********************************/
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationAFC/validate/deRegistrationAFCDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/afc/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateDeRegistrationAFCDto(@RequestBody DeRegistrationAFCDto deRegistrationAFCDto);
 
-    @GetMapping(path = "/deRegOrCancellation/deRegistrationAFC/getData/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel/afc/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DeRegistrationAFCDto> getDeRegistrationAFCData(@PathVariable("approvalId") String approvalId);
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationAFC/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/afc/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveNewDeRegistrationAFCDraft(@RequestBody DeRegistrationAFCDto dto);
 
-    @GetMapping(path = "/deRegOrCancellation/deRegistrationAFC/getDraftData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DeRegistrationAFCDto> getDraftDeRegistrationAFCData(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/deregister-cancel/afc/draft/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DeRegistrationAFCDto> getDraftDeRegistrationAFCData(@PathVariable("appId") String applicationId);
 
-    @PostMapping(path = "/deRegOrCancellation/deRegistrationAFC/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel/afc", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveDeRegistrationAFCDto(@RequestBody DeRegistrationAFCDto dto);
 }

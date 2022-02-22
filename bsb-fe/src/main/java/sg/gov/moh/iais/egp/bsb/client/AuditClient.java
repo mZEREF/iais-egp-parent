@@ -12,33 +12,30 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-
 import java.util.List;
 
-/**
- * @author Zhu Tangtang
- */
+
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "audit")
 public interface AuditClient {
-    @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/audit", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
 
-    @GetMapping(value = "/bsb-audit/getFacilityByApproval")
+    @GetMapping(value = "/audit/getFacilityByApproval")
     FeignResponseEntity<Facility> getFacilityByApproval(@RequestParam("approvalId") String approvalId,@RequestParam("processType") String processType);
 
-    @PostMapping(value = "/bsb-audit/specifyAndChangeAuditDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/audit/self-audit/date",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> specifyAndChangeAuditDt(@RequestBody FacilitySubmitSelfAuditDto dto);
 
-    @GetMapping(value = "/bsb-audit/facName")
+    @GetMapping(value = "/facility-info/names")
     FeignResponseEntity<List<String>> queryDistinctFN();
 
-    @GetMapping(value = "/bsb-audit/getSelfAuditDataByAuditId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilitySubmitSelfAuditDto> getSelfAuditDataByAuditId(@RequestParam("auditId") String auditId);
+    @GetMapping(value = "/audit/self-audit/{auditId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilitySubmitSelfAuditDto> getSelfAuditDataByAuditId(@PathVariable("auditId") String auditId);
 
-    @PostMapping(value = "/bsb-audit/facilitySelfAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/audit/self-audit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> facilitySubmitSelfAudit(@RequestBody FacilitySubmitSelfAuditDto dto);
 
-    @PostMapping(path = "/bsb-audit/validate/auditDt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/audit/form-validation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateAuditDt(@RequestBody FacilitySubmitSelfAuditDto dto);
 
 }
