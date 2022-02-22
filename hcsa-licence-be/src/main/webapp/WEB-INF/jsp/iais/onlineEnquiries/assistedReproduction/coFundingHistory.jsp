@@ -30,14 +30,14 @@
     </div>
     <hr>
     <div class="row">
-        <iais:field width="6" value="Total No. of co-funded ART cycles claimed by patient when she is 40 years old and above"/>
+        <iais:field width="6" value="Total No. of Co-funded ART cycles claimed by patient when she is 40 years old and above"/>
         <div class="col-md-6">
             <c:if test="${empty arCoFundingDto}">-</c:if>${arCoFundingDto.artCoFundedOldAgeTotal}
         </div>
     </div>
     <hr>
     <div class="row">
-        <iais:field width="6" value="Total No. of co-funded PGT cycles claimed by patient when she is 40 years old and above"/>
+        <iais:field width="6" value="Total No. of Co-funded PGT cycles claimed by patient when she is 40 years old and above"/>
         <div class="col-md-6">
             <c:if test="${empty arCoFundingDto}">-</c:if>${arCoFundingDto.pgtCoFundedOldAgeTotal}
         </div>

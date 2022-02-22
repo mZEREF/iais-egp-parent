@@ -195,25 +195,25 @@
                                     <thead>
                                     <tr >
 
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="BUSINESS_NAME"
                                                              value="AR Centre"/>
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="DONOR_SAMPLE_CODE"
                                                              value="Donor Sample Code / ID No."/>
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="SAMPLE_TYPE_DESC"
                                                              value="Sample Type"/>
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="SAMPLE_FROM_HCI_CODE"
                                                              value="Name of Bank / AR Centre where sample is collected"/>
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="DONOR_NAME"
                                                              value="Donor's Name"/>
-                                        <iais:sortableHeader needSort="true"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                              field="age_no"
                                                              value="No of Live Birth Events Recorded"/>
-                                        <iais:sortableHeader needSort="false"
+                                        <iais:sortableHeader needSort="false" style="white-space: nowrap;"
                                                              field=""
                                                              value="Action"/>
                                     </tr>

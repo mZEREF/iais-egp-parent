@@ -14,10 +14,10 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false" style="width: 30%;"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="cycle_no"
                                                  value="Cycle No."/>
-                            <iais:sortableHeader needSort="false" style="width: 15%;"
+                            <iais:sortableHeader needSort="false" style="width: 20%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
@@ -87,10 +87,10 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false" style="width: 30%;"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="cycle_no"
                                                  value="Cycle No."/>
-                            <iais:sortableHeader needSort="false" style="width: 15%;"
+                            <iais:sortableHeader needSort="false" style="width: 20%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
