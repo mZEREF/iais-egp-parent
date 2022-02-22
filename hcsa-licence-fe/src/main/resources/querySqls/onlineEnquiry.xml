@@ -304,11 +304,11 @@
 
     <sql key = "searchTransactionHistoryByAssistedReproduction" remarks="search Transaction History">
         <![CDATA[
-        SELECT distinct tt.* from () tt
-            SELECT  dds.ID ,
+        SELECT distinct tt.* from (
+        SELECT  dds.ID ,
             CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
                   case p.BLK_NO when null then null else ''+p.BLK_NO end ,
-               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end , 
+               case p.STREET_NAME when null then null else ' '+p.STREET_NAME end ,
                case p.BUILDING_NAME when null then null else ' '+p.BUILDING_NAME end
                , case p.FLOOR_NO when null then null else ' #'+p.FLOOR_NO end
                , case p.UNIT_NO when null then null else '-'+p.UNIT_NO end
@@ -367,6 +367,8 @@
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
             <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+        ) tt
+
 
          ]]>
     </sql>
