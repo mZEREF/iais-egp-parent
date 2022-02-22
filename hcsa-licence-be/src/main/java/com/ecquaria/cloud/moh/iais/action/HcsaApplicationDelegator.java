@@ -2029,9 +2029,12 @@ public class HcsaApplicationDelegator {
                             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         }
                     }
-                    ApplicationGroupDto oldAppGrpDto=applicationGroupService.getApplicationGroupDtoById(appGrpId);
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                    if (ApplicationConsts.APPLICATION_STATUS_DELETED.equals(oldApplication.getStatus())) {
+                        oldApplication = applicationClient.getAppByNo(oldApplication.getApplicationNo()).getEntity();
+                    }
                     if (oldApplication != null) {
+                        ApplicationGroupDto oldAppGrpDto = applicationGroupService.getApplicationGroupDtoById(oldApplication.getAppGrpId());
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                         if (licenseeDto != null) {
                             LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
