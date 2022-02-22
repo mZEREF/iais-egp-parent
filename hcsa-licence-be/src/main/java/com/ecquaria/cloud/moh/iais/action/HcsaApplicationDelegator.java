@@ -2030,7 +2030,7 @@ public class HcsaApplicationDelegator {
                         }
                     }
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                    if (ApplicationConsts.APPLICATION_STATUS_DELETED.equals(oldApplication.getStatus())) {
+                    if (oldApplication != null && ApplicationConsts.APPLICATION_STATUS_DELETED.equals(oldApplication.getStatus())) {
                         oldApplication = applicationClient.getAppByNo(oldApplication.getApplicationNo()).getEntity();
                     }
                     if (oldApplication != null) {
