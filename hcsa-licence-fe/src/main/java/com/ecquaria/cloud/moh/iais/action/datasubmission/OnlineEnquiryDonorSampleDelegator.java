@@ -115,7 +115,7 @@ public class OnlineEnquiryDonorSampleDelegator {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
-        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null","null");
+        List<SelectOption> arCentreSelectOptionFrom  = assistedReproductionService.genPremisesOptions("null",loginContext.getOrgId());
         SelectOption otherSelectOption=new SelectOption();
         otherSelectOption.setText("Others");
         otherSelectOption.setValue("AR_SC_001");
