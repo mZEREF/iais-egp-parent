@@ -101,8 +101,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
                if(ageCheckName != null){
                    IsAvailable = ArrayUtils.contains(ageCheckName,donorSampleId);
                }
-                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable donorSampleId is-->："+donorSampleId));
-                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable IsAvailable is-->："+IsAvailable));
+                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable donorSampleId is-->"+donorSampleId));
+                log.info(StringUtil.changeForLog("submitDonorDelegator changeAvailable IsAvailable is-->"+IsAvailable));
                donorSampleAgeDto.setAvailable(IsAvailable);
             }
         }
