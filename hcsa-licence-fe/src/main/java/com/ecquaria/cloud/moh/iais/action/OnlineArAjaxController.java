@@ -276,7 +276,12 @@ public class OnlineArAjaxController {
                     default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
                 }
             }
-            queryList.forEach(i -> i.setSubmissionSubtype(MasterCodeUtil.getCodeDesc(i.getSubmissionSubtype())));
+            for (AssistedReproductionEnquirySubResultsDto subResultsDto:results.getRows()
+            ) {
+                if(!"-".equals(subResultsDto.getSubmissionSubtype())){
+                    subResultsDto.setSubmissionSubtype(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionSubtype()));
+                }
+            }
             queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
