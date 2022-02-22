@@ -105,6 +105,7 @@ function isInArray(arr,value){
     return false;
 };
 var groupAjax = function (patientCode, divid) {
+    showWaiting();
     dividajaxlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/patientDetail.do',
@@ -150,6 +151,7 @@ var groupAjax = function (patientCode, divid) {
             }
         }
     )
+    dismissWaiting();
 };
 
 function doClear() {

@@ -108,6 +108,7 @@ function isInArray(arr,value){
     return false;
 };
 var stageAjax = function (cycleIder, divid) {
+    showWaiting();
     dividajaxlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/cycleStageDetail.do',
@@ -145,9 +146,11 @@ var stageAjax = function (cycleIder, divid) {
             }
         }
     )
+    dismissWaiting();
 };
 
 var stageAjaxNon = function (cycleIder, divid) {
+    showWaiting();
     dividajaxNonlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/cycleStageDetail.do',
@@ -185,6 +188,7 @@ var stageAjaxNon = function (cycleIder, divid) {
             }
         }
     )
+    dismissWaiting();
 };
 
 function doInvClear() {
