@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -13,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -51,7 +54,6 @@ public class OutcomeDelegator extends CommonDelegator{
             String pregnancyDetected = ParamUtil.getString(bpc.request, "pregnancyDetected");
             outcomeStageDto.setPregnancyDetected(Boolean.valueOf(pregnancyDetected));
             arSuperDataSubmissionDto.setOutcomeStageDto(outcomeStageDto);
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(outcomeStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
             if(StringUtil.isEmpty(pregnancyDetected)){
@@ -63,5 +65,18 @@ public class OutcomeDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
                 return;
             }
+        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+            valRFC(bpc.request,outcomeStageDto);
+        }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+    protected void valRFC(HttpServletRequest request, OutcomeStageDto outcomeStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getOutcomeStageDto()!= null && outcomeStageDto.equals(arOldSuperDataSubmissionDto.getOutcomeStageDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }
