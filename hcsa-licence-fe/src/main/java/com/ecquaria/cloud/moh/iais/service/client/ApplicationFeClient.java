@@ -413,4 +413,8 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-submission/active-pending-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(@PathVariable("licenseeId") String licenseeId);
 
+    @GetMapping(value="/iais-application/app-premise-miscs", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(@RequestParam("type") String type, @RequestParam("appId") String appId,
+            @RequestParam(value = "excludeStatus", required = false) List<String> excludeStatus);
+
 }

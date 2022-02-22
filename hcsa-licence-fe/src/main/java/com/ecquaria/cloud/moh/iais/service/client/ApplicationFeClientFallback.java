@@ -1049,4 +1049,10 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         return getFeignResponseEntity(licenseeId);
     }
 
+    @Override
+    public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
+            List<String> excludeStatus) {
+        return getFeignResponseEntity(type, appId, excludeStatus);
+    }
+
 }
