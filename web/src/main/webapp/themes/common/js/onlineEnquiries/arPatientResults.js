@@ -43,31 +43,11 @@ $(document).ready(function () {
     }
 
     $('#searchByPatient').change(function () {
-        if($(this).is(':checked')){
-            $('#patientInformationFilter').attr("style","display: block");
-            $('#patientResultDisplay').attr("style","display: block");
-            $('#submissionFilter').attr("style","display: none");
-            $('#submissionResultDisplay').attr("style","display: none");
-        }else {
-            $('#patientInformationFilter').attr("style","display: none");
-            $('#patientResultDisplay').attr("style","display: none");
-            $('#submissionFilter').attr("style","display: block");
-            $('#submissionResultDisplay').attr("style","display: block");
-        }
+        search();
     });
 
     $('#searchBySubmission').change(function () {
-        if($(this).is(':checked')){
-            $('#patientInformationFilter').attr("style","display: none");
-            $('#patientResultDisplay').attr("style","display: none");
-            $('#submissionFilter').attr("style","display: block");
-            $('#submissionResultDisplay').attr("style","display: block");
-        }else {
-            $('#patientInformationFilter').attr("style","display: block");
-            $('#patientResultDisplay').attr("style","display: block");
-            $('#submissionFilter').attr("style","display: none");
-            $('#submissionResultDisplay').attr("style","display: none");
-        }
+        search();
     });
 
     $('#submissionType').change(function () {
