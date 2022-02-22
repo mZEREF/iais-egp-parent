@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -12,7 +14,9 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -108,6 +112,12 @@ public final class HcsaServiceCacheHelper {
 			flushServiceMapping();
 			return redisCacheHelper.get(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST);
 		}
+	}
+
+	public static List<SelectOption> getAllServiceSelectOptions(){
+		List<SelectOption> selectOptions = receiveAllHcsaService().stream().map(obj-> new SelectOption(obj.getSvcCode(),obj.getSvcName())).collect(Collectors.toList());
+		selectOptions.add(0,new SelectOption(AppServicesConsts.SERVICE_MATRIX_ALL,AppServicesConsts.SERVICE_MATRIX_ALL_NAME));
+		return selectOptions;
 	}
 
 }
