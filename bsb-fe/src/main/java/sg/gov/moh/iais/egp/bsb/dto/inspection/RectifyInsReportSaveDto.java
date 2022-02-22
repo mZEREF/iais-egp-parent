@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author YiMing
@@ -18,6 +19,7 @@ public class RectifyInsReportSaveDto implements Serializable{
     private String configId;
     private List<DocRecordInfo> attachmentList;
     private List<RectifyItemSaveDto> itemSaveDtoList;
+    private Set<String> toBeDeletedDocIds;
 
     @Data
     //dto used to save all remarks from jsp
@@ -63,7 +65,15 @@ public class RectifyInsReportSaveDto implements Serializable{
         this.itemSaveDtoList = itemSaveDtoList;
     }
 
-    public void reqObjMapping(HttpServletRequest request,String itemValue){
+    public Set<String> getToBeDeletedDocIds() {
+        return toBeDeletedDocIds;
+    }
+
+    public void setToBeDeletedDocIds(Set<String> toBeDeletedDocIds) {
+        this.toBeDeletedDocIds = toBeDeletedDocIds;
+    }
+
+    public void reqObjMapping(HttpServletRequest request, String itemValue){
         //add remark into dto
         RectifyItemSaveDto dto = new RectifyItemSaveDto();
         dto.setItemValue(itemValue);

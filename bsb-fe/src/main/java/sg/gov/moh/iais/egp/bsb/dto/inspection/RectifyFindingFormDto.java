@@ -6,6 +6,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,11 @@ public class RectifyFindingFormDto implements Serializable {
         private String deadline;
     }
 
+    public RectifyFindingFormDto() {
+        docDtoList = new ArrayList<>();
+        itemDtoList = new ArrayList<>();
+    }
+
     /**
      * getDocRecordInfoBySubType
      * get a map key is docSubType and value is Document
@@ -41,13 +47,14 @@ public class RectifyFindingFormDto implements Serializable {
         return CollectionUtils.uniqueIndexMap(docDtoList,DocRecordInfo::getDocSubType);
     }
 
-    /**
-     * isRectify
-     * this method is used to charge this item if rectify
-     * @param itemKey:itemKey is is sectionId--v--itemId and also value of docSubType
-     * */
-    public boolean isRectify(String itemKey){
-        Assert.hasLength(itemKey,"itemKey is null");
-        return getDocRecordInfoBySubType().containsKey(itemKey);
+    public RectifyFindingItemDto getRectifyFindingItemDtoByItemValue(String itemKey){
+        Assert.hasLength(itemKey,"item value key is null");
+        if(itemDtoList.isEmpty()){
+            return null;
+        }
+        RectifyFindingItemDto itemDto = CollectionUtils.uniqueIndexMap(itemDtoList,RectifyFindingItemDto::getItemValue).get(itemKey);
+        Assert.notNull(itemDto,"item find key is null");
+        return itemDto;
     }
+
 }

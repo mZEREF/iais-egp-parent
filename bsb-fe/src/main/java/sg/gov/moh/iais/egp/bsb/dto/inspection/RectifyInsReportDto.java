@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.file;
+package sg.gov.moh.iais.egp.bsb.dto.inspection;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
@@ -6,19 +6,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
-import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
@@ -28,10 +31,14 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author YiMing
+ * @version 2022/2/21 9:35
+ **/
 
 @Slf4j
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommonDocDto extends ValidatableNodeValue {
+@Data
+public class RectifyInsReportDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -45,6 +52,7 @@ public class CommonDocDto extends ValidatableNodeValue {
     private final Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
+    private final Set<String> toBeDeletedDocIds;
 
 
 
@@ -52,18 +60,17 @@ public class CommonDocDto extends ValidatableNodeValue {
     private ValidationResultDto validationResultDto;
 
 
-    public CommonDocDto() {
+    public RectifyInsReportDto() {
         savedDocMap = new LinkedHashMap<>();
         newDocMap = new LinkedHashMap<>();
         toBeDeletedRepoIds = new HashSet<>();
+        toBeDeletedDocIds = new HashSet<>();
     }
 
-    @Override
     public boolean doValidation() {
         return true;
     }
 
-    @Override
     public String retrieveValidationResult() {
         if (this.validationResultDto == null) {
             throw new IllegalStateException("This DTO is not validated");
@@ -71,7 +78,6 @@ public class CommonDocDto extends ValidatableNodeValue {
         return this.validationResultDto.toErrorMsg();
     }
 
-    @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
     }
@@ -105,6 +111,14 @@ public class CommonDocDto extends ValidatableNodeValue {
      */
     public Map<String, List<NewDocInfo>> getNewDocTypeMap() {
         return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), NewDocInfo::getDocType);
+    }
+
+    public Map<String,List<NewDocInfo>> getNewDocSubTypeMap(){
+        return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), NewDocInfo::getDocSubType);
+    }
+
+    public Map<String,List<DocRecordInfo>> getSavedDocSubTypeMap(){
+        return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), DocRecordInfo::getDocSubType);
     }
 
     /**
@@ -167,6 +181,7 @@ public class CommonDocDto extends ValidatableNodeValue {
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
             docRecordInfo.setRepoId(repoId);
+            docRecordInfo.setDocSubType(newDocInfo.getDocSubType());
             docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
             docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
             savedDocMap.put(repoId, docRecordInfo);
@@ -206,9 +221,12 @@ public class CommonDocDto extends ValidatableNodeValue {
 
     private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
     private static final String KEY_DELETED_NEW_FILES = "deleteNewFiles";
+    private static final String KEY_ATTACHMENT = "attachment";
 
-    public void reqObjMapping(HttpServletRequest request) {
+    public void reqObjMapping(HttpServletRequest request,String docType,String docSubType) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        Assert.hasLength(docType,"key docType is null");
+        Assert.hasLength(docSubType,"key docSubType is null");
 
         String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
         if (log.isInfoEnabled()) {
@@ -218,7 +236,10 @@ public class CommonDocDto extends ValidatableNodeValue {
             List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
                     .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
                     .collect(Collectors.toList());
-            deleteFileRepoIds.forEach(it -> {this.savedDocMap.remove(it); toBeDeletedRepoIds.add(it);});
+            deleteFileRepoIds.forEach(it -> {
+                this.toBeDeletedDocIds.add(this.savedDocMap.remove(it).getDocEntityId());
+                toBeDeletedRepoIds.add(it);
+            });
         }
 
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
@@ -234,39 +255,34 @@ public class CommonDocDto extends ValidatableNodeValue {
 
 
         // read new uploaded files
-        Iterator<String> inputNameIt = mulReq.getFileNames();
-        Date currentDate = new Date();
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        while (inputNameIt.hasNext()) {
-            String inputName = inputNameIt.next();
-            String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
-            if (docType != null && !docType.equals(inputName)) {
-                List<MultipartFile> files = mulReq.getFiles(inputName);
-                for (MultipartFile f : files) {
-                    if (log.isInfoEnabled()) {
-                        log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+        List<MultipartFile> files = mulReq.getFiles(KEY_ATTACHMENT);
+        if (files.isEmpty()) {
+            log.info("No new file uploaded");
+        } else {
+            Date currentDate = new Date();
+            LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            for (MultipartFile f : files) {
+                if (f.isEmpty()) {
+                    log.warn("File is empty, ignore it");
+                } else {
+                    NewDocInfo newDocInfo = new NewDocInfo();
+                    String tmpId = docType + f.getSize() + System.nanoTime();
+                    newDocInfo.setTmpId(tmpId);
+                    newDocInfo.setDocType(docType);
+                    newDocInfo.setFilename(f.getOriginalFilename());
+                    newDocInfo.setDocSubType(docSubType);
+                    newDocInfo.setSize(f.getSize());
+                    newDocInfo.setSubmitDate(currentDate);
+                    newDocInfo.setSubmitBy(loginContext.getUserId());
+                    byte[] bytes = new byte[0];
+                    try {
+                        bytes = f.getBytes();
+                    } catch (IOException e) {
+                        log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
                     }
-                    if (f.isEmpty()) {
-                        log.warn("File is empty, ignore it");
-                    } else {
-                        NewDocInfo newDocInfo = new NewDocInfo();
-                        String tmpId = inputName + f.getSize() + System.nanoTime();
-                        newDocInfo.setTmpId(tmpId);
-                        newDocInfo.setDocType(docType);
-                        newDocInfo.setFilename(f.getOriginalFilename());
-                        newDocInfo.setSize(f.getSize());
-                        newDocInfo.setSubmitDate(currentDate);
-                        newDocInfo.setSubmitBy(loginContext.getUserId());
-                        byte[] bytes = new byte[0];
-                        try {
-                            bytes = f.getBytes();
-                        } catch (IOException e) {
-                            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                        }
-                        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                        newDocInfo.setMultipartFile(multipartFile);
-                        this.newDocMap.put(tmpId, newDocInfo);
-                    }
+                    ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+                    newDocInfo.setMultipartFile(multipartFile);
+                    this.newDocMap.put(tmpId, newDocInfo);
                 }
             }
         }

@@ -14,18 +14,19 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection-ncs.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <%@include file="dashboard.jsp"%>
 
-<%--@elvariable id="commentInsReportDTO" type="sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <input type="hidden" name="itemValue" value="">
+    <input type="hidden" name="isAllRectify" value="${isAllRectify}">
 
     <div class="main-content">
         <div class="container">
@@ -41,14 +42,30 @@
                             <div class="col-md-2">Rectification uploaded?</div>
                             <div class="col-md-2">Status</div>
                         </div>
-                        <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
-                            <div class="col-md-1">1</div>
-                            <div class="col-md-4">The requirement for document control and record retention for BC meeting minutes and other relevant records.</div>
-                            <div class="col-md-2">-</div>
-                            <div class="col-md-1"><button type="button" class="btn btn-default btn-sm">Rectify</button></div>
-                            <div class="col-md-2"><h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
-                            <div class="col-md-2">Pending Inspection/ Certification</div>
-                        </div>
+                        <c:choose>
+                            <c:when test="${empty ncsPreData.itemDtoList}">
+                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="item" items="${ncsPreData.itemDtoList}" varStatus="status">
+                                    <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
+                                        <div class="col-md-1"><c:out value="${status.index+1}"/></div>
+                                        <div class="col-md-4"><c:out value="${item.itemText}"/></div>
+                                        <div class="col-md-2"><c:out value="${item.remarks}"/></div>
+                                        <div class="col-md-1"><button type="button" class="btn btn-default btn-sm" onclick="rectifyItem('<iais:mask name="itemVal" value="${item.itemValue}"/>')">Rectify</button></div>
+                                        <div class="col-md-2">
+                                            <c:if test="${rectifyMap.get(item.itemValue) eq null or rectifyMap.get(item.itemValue) eq 'N'}">
+                                                <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
+                                            </c:if>
+                                            <c:if test="${rectifyMap.get(item.itemValue) eq 'Y'}">
+                                                <h4 class="text-success"><em class="fa fa-check-circle del-size-36"></em></h4>
+                                            </c:if>
+                                        </div>
+                                        <div class="col-md-2">Pending Inspection/ Certification</div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="row" style="border-top: 1px solid #D1D1D1;margin-top: 100px;padding: 20px 0">
                         <div class="col-xs-12 col-sm-6 ">
@@ -57,6 +74,21 @@
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group" style="float: right">
                                 <a class="btn btn-primary" id="submitBtn" >Submit</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="submitModal" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12"><span style="font-size: 2rem">Make sure you have rectified all NCs</span></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>

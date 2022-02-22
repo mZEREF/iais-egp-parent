@@ -12,6 +12,7 @@ import java.util.Date;
 public class NewDocInfo implements Serializable {
     private String tmpId;
     private String docType;
+    private String docSubType;
     private String filename;
     private long size;
     private Date submitDate;
