@@ -50,8 +50,9 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="guardianRelationship" firstOption="Please Select" codeCategory=""
-                         value="${guardianAppliedPartDto.guardianRelationship}"/>
+            <%--<iais:select name="guardianRelationship" firstOption="Please Select" codeCategory=""
+                         value="${guardianAppliedPartDto.guardianRelationship}"/>--%>
+            <iais:input maxLength="15" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianRelationship"></span>
         </iais:value>
     </iais:row>

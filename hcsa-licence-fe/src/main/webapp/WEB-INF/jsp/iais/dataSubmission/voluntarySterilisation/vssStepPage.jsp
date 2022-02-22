@@ -16,7 +16,7 @@
 <%@ include file="common/vssHeader.jsp" %>
 
 <c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
-<c:set var="headingSign" value="completed"/>
+<%--<c:set var="headingSign" value="${headingStatus = 1 ? 'completed' : 'incompleted' }"/>--%>
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <div class="main-content">
@@ -65,3 +65,10 @@
         </div>
     </div>
 </form>
+<%--<c:if test="${hasDraft}">
+    <iais:confirm
+            msg="There is an existing draft for the Voluntary Sterilisation. Please either continue the draft submission or delete the draft if you wish to submit a different patient"
+            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
+            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
+</c:if>--%>

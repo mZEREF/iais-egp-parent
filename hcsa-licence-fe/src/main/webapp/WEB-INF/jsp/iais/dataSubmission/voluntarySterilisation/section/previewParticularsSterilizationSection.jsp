@@ -1,7 +1,7 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="sexualSterilizationDto" value="${vssTreatmentDto.sexualSterilizationDto}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ${sexualSterilizationDto != null && sexualSterilizationDto.headStatus == true ? 'completed':'incompleted' }">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#pssDetails">
                 Particulars of Person Who Applied for Court Order

@@ -78,7 +78,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Date of HEC Review" mandatory="true"/>
+        <iais:field width="5" value="Date of HEC Review" />
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker id="" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewDate"></span>
