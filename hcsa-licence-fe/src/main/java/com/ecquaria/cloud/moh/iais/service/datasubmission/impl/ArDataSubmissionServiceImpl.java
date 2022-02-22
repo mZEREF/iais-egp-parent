@@ -415,7 +415,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
                 idType, idNumber,donorSampleCodeType, donorSampleCode).getEntity();
     }
-
+    @Override
+    public DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto){
+        String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(donorSampleDto.getIdType(),new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC,DataSubmissionConsts.AR_ID_TYPE_BLUE_IC,DataSubmissionConsts.AR_ID_TYPE_FIN_NO,DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
+        return getDonorSampleDto(donorSampleDto.isDirectedDonation(),
+                donorSampleDto.getIdType()
+                ,donorSampleDto.getIdNumber()
+                ,donorSampleCodeType
+                ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber());
+    }
     @Override
     public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
         if (arSuperDataSubmission != null) {

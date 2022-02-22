@@ -161,6 +161,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                             }
                         }
                         if(!isHaveSel){
+                            donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
                             ages.add(donorSampleAgeDto);
                         }
                     }
@@ -317,11 +318,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     protected void initOldDonorSelectSession(HttpServletRequest request,int stage){
         if(isRfc(request)){
             List<DonorDto> arDonorDtos = null;
-            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(stage == 1 && arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto()!= null){
-                arDonorDtos = arOldSuperDataSubmissionDto.getArCycleStageDto().getDonorDtos();
-            }else if(stage == 2 && arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getIuiCycleStageDto()!= null){
-                arDonorDtos = arOldSuperDataSubmissionDto.getIuiCycleStageDto().getDonorDtos();
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            if(stage == 1 && arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getArCycleStageDto()!= null){
+                arDonorDtos = arSuperDataSubmissionDto.getArCycleStageDto().getOldDonorDtos();
+            }else if(stage == 2 && arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getIuiCycleStageDto()!= null){
+                arDonorDtos = arSuperDataSubmissionDto.getIuiCycleStageDto().getOldDonorDtos();
             }
             if(IaisCommonUtils.isNotEmpty(arDonorDtos)){
                 List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
