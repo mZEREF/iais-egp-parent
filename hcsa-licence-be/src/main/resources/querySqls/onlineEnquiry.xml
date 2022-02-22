@@ -761,8 +761,7 @@
                , case dcen.FLOOR_NO when null then null else ' #'+dcen.FLOOR_NO end
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
-              )
-              )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
+              ) LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
               case ldt.TEST_STATUS
               when 1 then 'Active'
               when 0 then 'Inactive'
