@@ -90,4 +90,7 @@ public interface InspectionClient {
     void reviewInspectionReportApprove(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/validate/do-review-follow-up-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validatePostInspectionDOReviewFollowUpItems(@RequestBody DOReviewFollowUpItemsDto doReviewFollowUpItemsDto);
 }
