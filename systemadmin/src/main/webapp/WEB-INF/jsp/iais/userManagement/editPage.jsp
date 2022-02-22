@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -155,6 +156,34 @@
                                 <label class="col-md-2 control-label" >No</label>
                             </div>
                         </iais:row>
+                        <iais:row>
+                            <iais:field value="Service" width="5" required="false" />
+                            <iais:value width="7" cssClass="col-md-7">
+                                <c:set var="selectServices" value="${inter_user_attr.selectServices}"/>
+                                <c:set var="serviceSize" value="${AllServicesForHcsaRole.size()}"/>
+                                <c:set var="allServicesSelect" value="${selectServices == 'All_Services'}"/>
+                                <c:forEach var="service" items="${AllServicesForHcsaRole}" varStatus="status">
+                                    <c:set var="value" value="${service.value}"/>
+                                    <div class="form-check col-xs-7" style="padding-left: 0px;">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="service"
+                                               value="${value}"
+                                               id="service${status.index}"
+                                               <c:if test="${StringUtil.stringContain(selectServices,value)}">checked</c:if>
+                                               aria-invalid="false"   <c:if test="${allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0}">disabled</c:if>
+                                               onchange="mutualExclusionServiceCheckBox('${value}',${serviceSize})">
+                                        <label class="form-check-label"
+                                               for="service${value}"><span
+                                                class="check-square"></span>
+                                            <c:out value="${service.text}"/></label>
+                                    </div>
+                                </c:forEach>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4"/>
+                            <iais:value width="3" cssClass="col-md-3">
+                                <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:value>
+                        </iais:row>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
@@ -194,6 +223,32 @@
 
     function doChangeUserRole(){
        $('#role').val('user');
+    }
+
+    function mutualExclusionServiceCheckBox(key1,key2){
+        if("All_Services" == key1){
+            if($(key1).is(':checked')){
+                for (let i = 1; i <key2 ; i++) {
+                    $("#service"+i).attr("disabled",true);
+                }
+            }else {
+                for (let i = 1; i <key2 ; i++) {
+                    $("#service"+i).attr("disabled",false);
+                }
+            }
+        }else {
+            let checkAll = false;
+            for (let i = 1; i <key2 ; i++) {
+                if($("#service"+i).is(':checked')){
+                    $("#service0").attr("disabled",true);
+                    checkAll = true;
+                    break;
+                }
+            }
+            if(!checkAll){
+                $("#service0").attr("disabled",false);
+            }
+        }
     }
 
 </script>
