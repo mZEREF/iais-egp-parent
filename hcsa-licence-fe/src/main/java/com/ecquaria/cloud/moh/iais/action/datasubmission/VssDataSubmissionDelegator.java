@@ -67,7 +67,7 @@ public class VssDataSubmissionDelegator {
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.initVssConfig(bpc.request);
-       /* DataSubmissionHelper.clearSession(bpc.request);*/
+        DataSubmissionHelper.clearSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "vssFiles", null);
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile",null);
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
