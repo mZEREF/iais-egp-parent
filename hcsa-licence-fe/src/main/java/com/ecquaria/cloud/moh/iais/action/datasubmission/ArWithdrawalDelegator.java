@@ -96,7 +96,6 @@ public class ArWithdrawalDelegator {
         dataSubmissionDto.setDeclaration(null);
         dataSubmissionDto.setSubmissionType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         dataSubmissionDto.setCycleStage("");
-        dataSubmissionDto.setLockStatus(0);
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
         ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);

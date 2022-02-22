@@ -10,7 +10,13 @@
         continueURL = process.runtime.continueURL();
     }
 %>
-<webui:setLayout name="iais-blank"/>
+
+<c:if test="${ DashboardTitle != 'Withdrawal Form'}">
+    <webui:setLayout name="iais-internet"/>
+</c:if>
+<c:if test="${ DashboardTitle == 'Withdrawal Form'}">
+    <webui:setLayout name="iais-blank"/>
+</c:if>
 <%@ include file="previewHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
