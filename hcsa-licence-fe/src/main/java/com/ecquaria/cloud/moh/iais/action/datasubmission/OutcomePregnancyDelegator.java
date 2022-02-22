@@ -91,6 +91,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             valRFC(request, pregnancyOutcomeStageDto);
         }
 
@@ -220,7 +221,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, PregnancyOutcomeStageDto pregnancyOutcomeStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && pregnancyOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getPregnancyOutcomeStageDto())) {
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getPregnancyOutcomeStageDto() != null && pregnancyOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getPregnancyOutcomeStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }

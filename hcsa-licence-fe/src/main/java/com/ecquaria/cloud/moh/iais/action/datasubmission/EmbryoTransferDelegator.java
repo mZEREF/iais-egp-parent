@@ -129,6 +129,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             valRFC(request, embryoTransferStageDto);
         }
 
@@ -245,7 +246,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, EmbryoTransferStageDto embryoTransferStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && embryoTransferStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferStageDto())) {
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEmbryoTransferStageDto() != null && embryoTransferStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }
