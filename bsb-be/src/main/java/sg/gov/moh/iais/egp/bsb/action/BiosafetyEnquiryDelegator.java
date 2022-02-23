@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
+import sg.gov.moh.iais.egp.bsb.dto.entity.BiologicalDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -581,10 +582,6 @@ public class BiosafetyEnquiryDelegator {
     }
 
 
-    public Biological getBiologicalById(String bioId){
-       return biosafetyEnquiryClient.getBiologicalById(bioId).getEntity();
-    }
-
     public Map<String,String> joinBioNameAndRiskLevelFromAgents(List<FacilityBiologicalAgent> agents){
         List<String> newBioNameList = new ArrayList<>(agents.size());
         List<String> newRiskLevelList = new ArrayList<>(agents.size());
@@ -602,7 +599,7 @@ public class BiosafetyEnquiryDelegator {
     private Map<String,String> getRiskLevelAndBioName(FacilityBiologicalAgent agent){
         Map<String,String> riskLevelAndBioNamesMap = Maps.newHashMapWithExpectedSize(2);
         if(agent != null){
-            Biological biological = getBiologicalById(agent.getBiologicalId());
+            BiologicalDto biological = biosafetyEnquiryClient.getBiologicalById(agent.getBiologicalId());
             riskLevelAndBioNamesMap.put(PARAM_BIOLOGICAL_NAME,biological.getName());
             riskLevelAndBioNamesMap.put(PARAM_RISK_LEVEL,biological.getRiskLevel());
         }

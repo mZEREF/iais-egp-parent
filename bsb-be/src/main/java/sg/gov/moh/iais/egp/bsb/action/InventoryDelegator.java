@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InventoryClient;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.*;
-import sg.gov.moh.iais.egp.bsb.entity.DataSubmissionBat;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * AUTHOR: YiMing
  * DATE:2021/7/15 18:24
  **/
+// TODO Yiming -> Change name, clarify the usage of this class
 @Delegator(value = "inventoryDelegator")
 @Slf4j
 public class InventoryDelegator {
@@ -228,19 +229,19 @@ public class InventoryDelegator {
         ParamUtil.setRequestAttr(request, name, selectModel);
     }
 
-    public void selectDtOption(HttpServletRequest request, String name,List<FacilityDto> facilityDtoList){
+    public void selectDtOption(HttpServletRequest request, String name,List<FacilityBasicInfo> facilityDtoList){
         List<SelectOption> selectModel = new ArrayList<>(facilityDtoList.size());
         if(!CollectionUtils.isEmpty(facilityDtoList)){
-            for (FacilityDto dto : facilityDtoList) {
-                selectModel.add(new SelectOption(dto.getFacId(),dto.getFacName()));
+            for (FacilityBasicInfo dto : facilityDtoList) {
+                selectModel.add(new SelectOption(dto.getId(),dto.getName()));
             }
         }
         ParamUtil.setRequestAttr(request,name,selectModel);
     }
 
     public void preSelectOption(HttpServletRequest request) {
-        List<FacilityDto> facilityInfo = inventoryClient.queryAllFacilityInfo();
-        List<String> facName = facilityInfo.stream().map(FacilityDto::getFacName).collect(Collectors.toList());
+        List<FacilityBasicInfo> facilityInfo = inventoryClient.queryAllFacilityInfo();
+        List<String> facName = facilityInfo.stream().map(FacilityBasicInfo::getName).collect(Collectors.toList());
         selectOption(request, KEY_FACILITY_NAME, facName);
         List<String> bioNames = inventoryClient.queryDistinctFA().getEntity();
         selectOption(request, KEY_BIOLOGICAL_NAME, bioNames);

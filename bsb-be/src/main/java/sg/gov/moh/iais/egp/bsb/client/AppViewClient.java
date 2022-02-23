@@ -14,29 +14,26 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFac
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 
-/**
- * @author : LiRan
- * @date : 2021/12/27
- */
+
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface AppViewClient {
-    @GetMapping(path = "/applicationView/facilityRegisterDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilityRegisterDto> getFacRegDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/register/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityRegisterDto> getFacRegDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(path = "/applicationView/approvalAppDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalAppDto> getApprovalAppDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/register/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovalAppDto> getApprovalAppDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(path = "/applicationView/facilityCertifierRegisterDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilityCertifierRegisterDto> getFacCerRegDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/register/facility-certifier/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityCertifierRegisterDto> getFacCerRegDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(path = "/applicationView/deRegistrationFacilityDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DeRegistrationFacilityDto> getDeRegistrationFacilityDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/deregister-cancel/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DeRegistrationFacilityDto> getDeRegistrationFacilityDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(path = "/applicationView/cancellationApprovalDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<CancellationApprovalDto> getCancellationApprovalDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/deregister-cancel/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<CancellationApprovalDto> getCancellationApprovalDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(path = "/applicationView/deRegistrationAFCDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DeRegistrationAFCDto> getDeRegistrationAFCDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/app-view/deregister-cancel/facility-certifier/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DeRegistrationAFCDto> getDeRegistrationAFCDtoByAppId(@PathVariable("appId") String applicationId);
 
     @GetMapping(value = "/applicationView/dataSubmissionInfo/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable(name = "applicationId") String appId);
