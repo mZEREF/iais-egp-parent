@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubT
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
