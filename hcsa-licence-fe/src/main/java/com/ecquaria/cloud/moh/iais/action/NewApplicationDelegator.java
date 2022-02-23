@@ -2495,6 +2495,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
+        log.info(StringUtil.changeForLog("The original licence No.: " + appSubmissionDto.getLicenceNo()));
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");

@@ -1770,11 +1770,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
         if(activeHcsaServiceDtoByName!=null){
             String svcType = activeHcsaServiceDtoByName.getSvcType();
+            log.info(StringUtil.changeForLog("The Svc Type: " + svcType));
             if(ApplicationConsts.SERVICE_TYPE_BASE.equals(svcType)){
                 return flag==true ? String.valueOf(true): activeHcsaServiceDtoByName.getId();
             }else if(ApplicationConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)){
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null ||serviceCorrelationDtos.isEmpty()){
+                    log.info(StringUtil.changeForLog("The service correlations is empty!"));
                     return flag==true ? String.valueOf(false): "";
                 }
                 String baseService="";
@@ -1787,11 +1789,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
                 if(StringUtil.isEmpty(baseService)){
+                    log.info(StringUtil.changeForLog("The base service is empty!"));
                     return flag==true ?String.valueOf(false):"";
                 }
 
                 List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId()).getEntity();
                 if(entity==null||entity.isEmpty()){
+                    log.info(StringUtil.changeForLog("The related base service is empty!"));
                     return flag==true ? String.valueOf(false): "";
                 }
                 Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
@@ -1801,6 +1805,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String baseLicId = next.getBaseLicId();
                         LicenceDto licenceDto1 = licenceClient.getLicBylicId(baseLicId).getEntity();
                         if(licenceDto1==null){
+                            log.info(StringUtil.changeForLog("The base Licence is empty!"));
                             return flag==true ? String.valueOf(false): "";
                         }
                         String svcName1 = licenceDto1.getSvcName();
@@ -1813,6 +1818,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
             }
         }
+        log.info("The baseSpecLicenceRelation end!");
         return flag==true ? String.valueOf(false): "";
     }
 
