@@ -258,7 +258,7 @@
                     </c:if>
 
 
-                    <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">
+                    <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy =='0' }">
                         <div id="submissionResultDisplay" >
                             <div class="col-xs-12 row">
                                 <div class="components">

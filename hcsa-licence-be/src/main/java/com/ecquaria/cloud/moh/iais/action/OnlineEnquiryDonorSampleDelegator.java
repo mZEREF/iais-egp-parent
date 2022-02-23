@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -234,7 +235,9 @@ public class OnlineEnquiryDonorSampleDelegator {
                     map.put(entry.getKey(), entry.getValue().getPremiseLabel());
                 }
             }
-            if(StringUtil.isNotEmpty(donorInfo.getDonorSampleDto().getSampleFromHciCode())&&map.containsKey(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
+            if(donorInfo.getDonorSampleDto().getSampleFromHciCode().equals(DataSubmissionConsts.AR_SOURCE_OTHER)){
+                donorInfo.getDonorSampleDto().setSampleFromHciCode("Others - "+donorInfo.getDonorSampleDto().getSampleFromOthers());
+            }else if(StringUtil.isNotEmpty(donorInfo.getDonorSampleDto().getSampleFromHciCode())&&map.containsKey(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
                 donorInfo.getDonorSampleDto().setSampleFromHciCode(map.get(donorInfo.getDonorSampleDto().getSampleFromHciCode()));
             }
         }
