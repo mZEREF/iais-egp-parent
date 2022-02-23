@@ -23,6 +23,7 @@
                                     <div class="preview-gp">
                                         <div class="row">
                                             <div class="col-xs-12">
+                                                <%--@elvariable id="appViewDto" type="sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto"--%>
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
                                                     <c:if test="${appViewDto.moduleType eq 'viewNewFacility'}">
@@ -42,6 +43,29 @@
                                                     </c:if>
                                                     <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationAFCView.jsp" %>
+                                                    </c:if>
+
+                                                    <%-- Data Submission --%>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE001'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewConsumePage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE002'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewDisposalPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE003'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewExportPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE005'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewTransferPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE006'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewReceiptPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE007'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewRedTeamingReportPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE008'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewBatInventory.jsp" %>
                                                     </c:if>
                                                 </div>
                                             </div>

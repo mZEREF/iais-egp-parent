@@ -12,6 +12,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
 
 /**
@@ -60,6 +61,15 @@ public class MohBeAppViewDelegator {
                     break;
                 case MODULE_VIEW_DEREGISTRATION_FAC_CER_REG:
                     appViewService.retrieveDeRegistrationAFC(request, applicationId);
+                    break;
+                case KEY_DATA_SUBMISSION_TYPE_CONSUME:
+                case KEY_DATA_SUBMISSION_TYPE_DISPOSAL:
+                case KEY_DATA_SUBMISSION_TYPE_EXPORT:
+                case KEY_DATA_SUBMISSION_TYPE_TRANSFER:
+                case KEY_DATA_SUBMISSION_TYPE_RECEIPT:
+                case KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT:
+                case KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY:
+                    appViewService.retrieveDataSubmissionInfo(request,applicationId);
                     break;
                 default:
                     log.info("don't have such moduleType {}", StringUtils.normalizeSpace(moduleType));

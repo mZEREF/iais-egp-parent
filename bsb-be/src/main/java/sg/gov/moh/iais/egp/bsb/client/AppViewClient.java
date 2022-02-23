@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationAppro
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 
 /**
  * @author : LiRan
@@ -36,4 +37,7 @@ public interface AppViewClient {
 
     @GetMapping(path = "/applicationView/deRegistrationAFCDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DeRegistrationAFCDto> getDeRegistrationAFCDtoByAppId(@PathVariable("applicationId") String applicationId);
+
+    @GetMapping(value = "/applicationView/dataSubmissionInfo/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable(name = "applicationId") String appId);
 }

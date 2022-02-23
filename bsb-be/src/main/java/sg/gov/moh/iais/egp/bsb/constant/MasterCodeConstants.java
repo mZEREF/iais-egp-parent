@@ -244,4 +244,15 @@ public class MasterCodeConstants {
     public static final String REASONS_FOR_AFC_DEREGISTRATION_3 = "BSBRFAD003";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD004";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD005";
+
+    public static final String KEY_DATA_SUBMISSION_TYPE_CONSUME = "DATTYPE001";
+    public static final String KEY_DATA_SUBMISSION_TYPE_DISPOSAL = "DATTYPE002";
+    public static final String KEY_DATA_SUBMISSION_TYPE_EXPORT = "DATTYPE003";
+    public static final String KEY_DATA_SUBMISSION_TYPE_IMPORT = "DATTYPE004";
+    public static final String KEY_DATA_SUBMISSION_TYPE_TRANSFER = "DATTYPE005";
+    public static final String KEY_DATA_SUBMISSION_TYPE_RECEIPT = "DATTYPE006";
+    public static final String KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT = "DATTYPE007";
+    public static final String KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY = "DATTYPE008";
+    public static final String KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER = "DATTYPE009";
+    public static final String KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER = "DATTYPE010";
 }

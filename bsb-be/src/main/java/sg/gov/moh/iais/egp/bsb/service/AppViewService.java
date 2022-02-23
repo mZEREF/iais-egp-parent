@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFC
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -39,6 +40,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMA
 @Service
 @Slf4j
 public class AppViewService {
+    private static final String DOC_TYPE_OF_OTHERS = "Others";
     private final AppViewClient appViewClient;
 
     public AppViewService(AppViewClient appViewClient) {
@@ -64,7 +66,7 @@ public class AppViewService {
                 case PROCESS_TYPE_SP_APPROVE_HANDLE:
                     if (appType.equals(APP_TYPE_NEW)){
                         module = MODULE_VIEW_NEW_APPROVAL_APP;
-                    }else if (appType.equals(APP_TYPE_CANCEL)){
+                    } else if (appType.equals(APP_TYPE_CANCEL)){
                         module = MODULE_VIEW_CANCELLATION_APPROVAL_APP;
                     }
                     break;
@@ -222,6 +224,25 @@ public class AppViewService {
         }
     }
 
+    /**
+     * retrieve data submission app view data
+     */
+    public void retrieveDataSubmissionInfo(HttpServletRequest request, String applicationId){
+        ResponseDto<DataSubmissionInfo> resultDto = appViewClient.getDataSubmissionInfo(applicationId);
+        if (resultDto.ok()){
+            DataSubmissionInfo dataSubmissionInfo = resultDto.getEntity();
+            ParamUtil.setRequestAttr(request, KEY_VIEW_DATA_SUBMISSION, dataSubmissionInfo);
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getDataSubmissionDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(dataSubmissionInfo.getDocs(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
+        }else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
+    }
+
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getFacRegDocSettings () {
         List<DocSetting> docSettings = new ArrayList<>(9);
@@ -233,7 +254,7 @@ public class AppViewService {
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
         return docSettings;
     }
 
@@ -244,7 +265,7 @@ public class AppViewService {
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
         return docSettings;
     }
 
@@ -253,7 +274,7 @@ public class AppViewService {
         List<DocSetting> docSettings = new ArrayList<>(5);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_TESTIMONIALS, "Testimonials", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_CURRICULUM_VITAE, "Curriculum Vitae", true));
         return docSettings;
@@ -263,6 +284,15 @@ public class AppViewService {
     public List<DocSetting> getDeRegistrationDocSettings () {
         List<DocSetting> docSettings = new ArrayList<>(1);
         docSettings.add(new DocSetting("attachments", "Attachments", true));
+        return docSettings;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    public List<DocSetting> getDataSubmissionDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>(3);
+        docSettings.add(new DocSetting("ityBat", "ItyBat", false));
+        docSettings.add(new DocSetting("ityToxin", "ItyToxin", false));
+        docSettings.add(new DocSetting("others", DOC_TYPE_OF_OTHERS, false));
         return docSettings;
     }
 }
