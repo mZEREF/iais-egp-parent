@@ -9,9 +9,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportSaveDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsCommentReportDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
@@ -40,4 +38,12 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveCommentReportForm(CommentInsReportSaveDto saveDto);
+
+    //TODO update
+    @GetMapping(path = "/inspection/followUpItems/{appId}")
+    ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String appId);
+
+    //TODO update
+    @PostMapping(value = "/inspection/followUpItems", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveRectifyInsReport(@RequestBody RectifyInsReportSaveDto saveDto);
 }
