@@ -88,10 +88,10 @@
                                                                    value="${value}"
                                                                    id="service${status.index}"
                                                                    <c:if test="${StringUtil.stringContain(selectServices,value)}">checked</c:if>
-                                                                   aria-invalid="false"   <c:if test="${allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0}">disabled</c:if>
+                                                                   aria-invalid="false"   <c:if test="${!empty selectServices && (allServicesSelect && status.index != 0 || !allServicesSelect && status.index ==0)}">disabled</c:if>
                                                                    onchange="mutualExclusionServiceCheckBox('${value}',${serviceSize})">
                                                             <label class="form-check-label"
-                                                                   for="service${value}"><span
+                                                                   for="service${status.index}"><span
                                                                     class="check-square"></span>
                                                                 <c:out value="${service.text}"/></label>
                                                         </div>
