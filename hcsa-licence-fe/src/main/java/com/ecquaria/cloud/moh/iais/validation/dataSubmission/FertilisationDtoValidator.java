@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -100,23 +101,34 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                 if(IaisCommonUtils.isEmpty(sosList)){
                     errorMap.put("sourceOfSemen","GENERAL_ERR0006");
                 }
-        String errMsgFresh = "Total sum of data item 5, 6, 7 and 8 cannot be greater than number of fresh oocytes tagged to patien";
-        String errMsgThawed = "Total sum of data item 9, 10, 11 and 12 cannot be greater than number of thawed oocytes tagged to patient";
         if(totalThawedSum>thawedMaxNum){
-            errorMap.put("thawedOocytesZiftNum", errMsgThawed);
+            Map<String, String> errMsgThawed =IaisCommonUtils.genNewHashMap();
+            errMsgThawed.put("item","No. of Thawed Oocytes Inseminated, No. of Thawed Oocytes Microinjected, No. of Thawed Oocytes Used for GIFT and No. of Thawed Oocytes Used for ZIFT");
+            errMsgThawed.put("inventory","thawed oocytes");
+            String errMsg = MessageUtil.getMessageDesc("DS_ERR060",errMsgThawed);
+            errorMap.put("thawedOocytesZiftNum", errMsg);
+
         }
         if(totalFreshSum>freshMaxNum){
-            errorMap.put("freshOocytesZiftNum", errMsgFresh);
+            Map<String, String> errMsgFresh =IaisCommonUtils.genNewHashMap();
+            errMsgFresh.put("item","No. of Fresh Oocytes Inseminated, No. of Fresh Oocytes Microinjected, No. of Fresh Oocytes Used for GIFT and No. of Fresh Oocytes Used for ZIFT");
+            errMsgFresh.put("inventory","fresh oocytes");
+            String errMsg = MessageUtil.getMessageDesc("DS_ERR060",errMsgFresh);
+            errorMap.put("freshOocytesZiftNum", errMsg);
         }
         if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) &&StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
             Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
             Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
-
             if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
                 if(extractedSpermVialsNum != null) {
                     int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
                     if(usedSpermVialsNum > FrozenSumNum) {
-                        errorMap.put("usedSpermVialsNum", "Cannot be greater than 'How many vials of sperm were extracted?' + frozen sperm tagged to patient");
+                        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                        repMap.put("field1","How many vials of sperm were used in this cycle?");
+                        repMap.put("field2","'How many vials of sperm were extracted?'");
+                        repMap.put("field3","frozen sperm tagged to patient");
+                        String errMsg = MessageUtil.getMessageDesc("DS_ERR011",repMap);
+                        errorMap.put("usedSpermVialsNum", errMsg);
                     }
                 }
             }
