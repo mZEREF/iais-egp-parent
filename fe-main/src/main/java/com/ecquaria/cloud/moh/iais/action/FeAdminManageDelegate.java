@@ -283,6 +283,10 @@ public class FeAdminManageDelegate {
         feUserDto.setOfficeTelNo(null);
         feUserDto.setEmail(null);
         feUserDto.setFromMyInfo(0);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+            feUserDto.setSelectServices(null);
+        }
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.NO);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
