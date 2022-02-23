@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
@@ -58,7 +57,6 @@ public class BsbTransferNotificationDelegator {
     private static final String PARAM_SAVED_OTHERS_DOC = "savedOthersDoc";
     public static final String KEY_DRAFT = "draft";
 
-    private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
     private final DataSubmissionClient submissionClient;
@@ -66,8 +64,7 @@ public class BsbTransferNotificationDelegator {
     private final FacilityRegistrationService facilityRegistrationService;
 
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient, BsbFileClient bsbFileClient, FacilityRegistrationService facilityRegistrationService) {
-        this.transferClient = transferClient;
+    public BsbTransferNotificationDelegator(FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient, BsbFileClient bsbFileClient, FacilityRegistrationService facilityRegistrationService) {
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;
         this.submissionClient = submissionClient;
@@ -218,7 +215,7 @@ public class BsbTransferNotificationDelegator {
         }
         TransferNotificationDto.TransferDto transferDto = dto.getTransferNotNeedR();
         //save draft
-        String draftAppNo = transferClient.saveDraftTransfer(transferDto);
+        String draftAppNo = submissionClient.saveDraftTransferNotification(transferDto);
         dto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -250,7 +247,7 @@ public class BsbTransferNotificationDelegator {
         String ensure = ParamUtil.getString(request, "ensure");
         notificationDto.setEnsure(ensure);
         TransferNotificationDto.TransferDto transferDto = notificationDto.getTransferNotNeedR();
-        transferClient.saveNewTransferNot(transferDto);
+        submissionClient.saveNewTransferNotification(transferDto);
         try {
             // sync files to BE file-repo (save new added files, delete useless files)
             if (newFilesToSync != null && !newFilesToSync.isEmpty()) {

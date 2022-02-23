@@ -16,8 +16,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.TransferClient;
-import sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -46,7 +44,6 @@ public class AckOfReceiptOfTransferDelegator {
     private final DataSubmissionClient dataSubmissionClient;
     private final BsbSubmissionCommon subCommon;
     private final FileRepoClient fileRepoClient;
-    private final TransferClient transferClient;
     private final BsbFileClient bsbFileClient;
     public static final String KEY_FAC_ID = "facId";
     public static final String KEY_DATA_SUB_NO = "dataSubNo";
@@ -58,11 +55,10 @@ public class AckOfReceiptOfTransferDelegator {
     public static final String KEY_DRAFT = "draft";
 
 
-    public AckOfReceiptOfTransferDelegator(DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, TransferClient transferClient, BsbFileClient bsbFileClient) {
+    public AckOfReceiptOfTransferDelegator(DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
         this.dataSubmissionClient = dataSubmissionClient;
         this.subCommon = subCommon;
         this.fileRepoClient = fileRepoClient;
-        this.transferClient = transferClient;
         this.bsbFileClient = bsbFileClient;
     }
 
@@ -149,7 +145,7 @@ public class AckOfReceiptOfTransferDelegator {
         String ensure = ParamUtil.getString(request,"ensure");
         saved.setEnsure(ensure);
         ackTransferReceiptDto.setAckTransferReceiptSaved(saved);
-        transferClient.saveTransferReceipt(saved);
+        dataSubmissionClient.saveTransferReceipt(saved);
         try {
             // sync files to BE file-repo (save new added files, delete useless files)
             if (newFilesToSync!= null && !newFilesToSync.isEmpty()) {
@@ -230,7 +226,7 @@ public class AckOfReceiptOfTransferDelegator {
             saved.setDocRecordInfos(new ArrayList<>(dto.getSavedDocMap().values()));
         }
         //save draft
-        String draftAppNo = transferClient.saveTransferReceiptDraft(saved);
+        String draftAppNo = dataSubmissionClient.saveTransferReceiptDraft(saved);
         saved.setDraftAppNo(draftAppNo);
         try {
             // delete docs

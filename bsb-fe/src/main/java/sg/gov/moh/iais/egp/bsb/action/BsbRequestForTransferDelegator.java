@@ -7,29 +7,19 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
-import sg.gov.moh.iais.egp.bsb.client.TransferClient;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -45,12 +35,10 @@ public class BsbRequestForTransferDelegator {
     private static final String KEY_FACILITY_INFO = "facilityInfo";
     private static final String KEY_TRANSFER_REQUEST_DTO = "transferRequestDto";
     public static final String KEY_DRAFT = "draft";
-    private final TransferClient transferClient;
     private final BsbSubmissionCommon subCommon;
     private final DataSubmissionClient submissionClient;
 
-    public BsbRequestForTransferDelegator(TransferClient transferClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient) {
-        this.transferClient = transferClient;
+    public BsbRequestForTransferDelegator(BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient) {
         this.subCommon = subCommon;
         this.submissionClient = submissionClient;
     }
@@ -129,7 +117,7 @@ public class BsbRequestForTransferDelegator {
     public void save(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         TransferRequestDto dto = getTransferRequest(request);
-        transferClient.saveRequestTransfer(dto);
+        submissionClient.saveRequestTransfer(dto);
     }
 
 
@@ -140,7 +128,7 @@ public class BsbRequestForTransferDelegator {
         dto.reqObjectMapping(request,subCommon);
 
         //save draft
-        String draftAppNo = transferClient.saveDraftRequestTransfer(dto);
+        String draftAppNo = submissionClient.saveDraftRequestTransfer(dto);
         dto.setDraftAppNo(draftAppNo);
         ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
     }

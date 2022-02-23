@@ -62,4 +62,40 @@ public interface DataSubmissionClient {
 
     @GetMapping(value = "/data-submission/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DraftDto> getDraftDto(@RequestParam("appId") String appId);
+
+    @PostMapping(path = "/data-submission/transfer/notification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveNewTransferNotification(@RequestBody TransferNotificationDto.TransferDto transferDto);
+
+    @PostMapping(path = "/data-submission/form-validation/transfer/notification", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateTransferNotification(@RequestBody TransferNotificationDto.TransferDto transferDto);
+
+    @PostMapping(path = "/data-submission/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveNewReportAndInventory(@RequestBody ReportInventoryDto.SaveDocDto saveDocDto);
+
+    @PostMapping(path = "/data-submission/form-validation/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateReportAndInventory(@RequestBody ReportInventoryDto.DocsMetaDto dto);
+
+    @PostMapping(path = "/data-submission/form-validation/transfer/request", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateRequestTransfer(@RequestBody TransferRequestDto dto);
+
+    @PostMapping(path = "/data-submission/transfer/request", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveRequestTransfer(@RequestBody TransferRequestDto dto);
+
+    @PostMapping(value = "/data-submission/draft/transfer/request", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftRequestTransfer(@RequestBody TransferRequestDto dto);
+
+    @PostMapping(path = "/data-submission/form-validation/transfer/receipt", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptMeta dto);
+
+    @PostMapping(path = "/data-submission/transfer/receipt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved dto);
+
+    @GetMapping(path = "/data-submission/transfer/receipt/{facId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AckTransferReceiptDto> getReceiptDataSubNoMap(@PathVariable("facId") String facId);
+
+    @PostMapping(value = "/data-submission/draft/transfer/notification", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String saveDraftTransferNotification(@RequestBody TransferNotificationDto.TransferDto transferDto);
+
+    @PostMapping(path = "/data-submission/draft/transfer/receipt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    String saveTransferReceiptDraft(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved saved);
 }
