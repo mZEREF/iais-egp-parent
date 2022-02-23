@@ -227,7 +227,7 @@
 
     function mutualExclusionServiceCheckBox(key1,key2){
         if("All_Services" == key1){
-            if($(key1).is(':checked')){
+            if($("#service0").is(':checked')){
                 for (let i = 1; i <key2 ; i++) {
                     $("#service"+i).attr("disabled",true);
                 }
