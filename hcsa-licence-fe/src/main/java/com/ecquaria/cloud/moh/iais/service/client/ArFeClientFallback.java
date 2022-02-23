@@ -14,10 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import java.util.List;
 public class ArFeClientFallback implements ArFeClient {
 
     private FeignResponseEntity getFeignResponseEntity(Object... params) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(params)));
         return IaisEGPHelper.getFeignResponseEntity(params);
     }
 

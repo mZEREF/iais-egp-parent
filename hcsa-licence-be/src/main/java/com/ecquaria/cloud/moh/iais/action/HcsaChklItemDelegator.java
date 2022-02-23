@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -788,7 +789,7 @@ public class HcsaChklItemDelegator {
                             values.toArray(new String[values.size()]), excelConfigIndex);
                 }
                 // write service name
-                List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+                List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices(AppServicesConsts.SVC_TYPE_ALL).getEntity();
                 if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
                     Collections.sort(hcsaServiceDtos, Comparator.comparing(HcsaServiceDto::getSvcName));
                     List<String> values = IaisCommonUtils.genNewArrayList(hcsaServiceDtos.size());
