@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts" %>
 <div class="alert alert-info" role="alert"><strong>
     <h4>Supporting Document</h4>
 </strong></div>
@@ -150,12 +151,15 @@
                 </tbody>
             </table>
             <%--upload file--%>
-            <iais:action>
-                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
-                    Upload Document
-                </button>
-            </iais:action>
+            <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                <iais:action>
+                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                    <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
+                        Upload Document
+                    </button>
+                </iais:action>
+            </c:if>
+
         </div>
     </div>
 </div>
