@@ -235,7 +235,7 @@ public class OnlineEnquiryDonorSampleDelegator {
                     map.put(entry.getKey(), entry.getValue().getPremiseLabel());
                 }
             }
-            if(donorInfo.getDonorSampleDto().getSampleFromHciCode().equals(DataSubmissionConsts.AR_SOURCE_OTHER)){
+            if(DataSubmissionConsts.AR_SOURCE_OTHER.equals(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
                 donorInfo.getDonorSampleDto().setSampleFromHciCode("Others - "+donorInfo.getDonorSampleDto().getSampleFromOthers());
             }else if(StringUtil.isNotEmpty(donorInfo.getDonorSampleDto().getSampleFromHciCode())&&map.containsKey(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
                 donorInfo.getDonorSampleDto().setSampleFromHciCode(map.get(donorInfo.getDonorSampleDto().getSampleFromHciCode()));
