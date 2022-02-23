@@ -239,7 +239,8 @@ public class FeUserManagement {
             OrgUserRoleDto orgUserRoleDtoUser = new OrgUserRoleDto();
             orgUserRoleDtoAdmin.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-
+            userAttr.setSelectServices(ParamUtil.getStringsToString(bpc.request,"service"));
+            orgUserRoleDtoUser.setSelectServices(userAttr.getSelectServices());
             if("admin".equals(role)){
                 orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
