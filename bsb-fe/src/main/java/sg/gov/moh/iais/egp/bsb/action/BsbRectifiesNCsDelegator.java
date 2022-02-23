@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.InspectionNCsClient;
+import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Delegator("rectifiesNCsDelegator")
 public class BsbRectifiesNCsDelegator {
-    private final InspectionNCsClient nCsClient;
+    private final InspectionClient inspectionClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private static final String KEY_RECTIFY_FINDING_FORM = "ncsPreData";
@@ -50,8 +50,8 @@ public class BsbRectifiesNCsDelegator {
     private static final String KEY_ITEM_RECTIFY_MAP = "rectifyMap";
     private static final String KEY_ALL_ITEM_RECTIFY = "isAllRectify";
 
-    public BsbRectifiesNCsDelegator(InspectionNCsClient nCsClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
-        this.nCsClient = nCsClient;
+    public BsbRectifiesNCsDelegator(InspectionClient inspectionClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+        this.inspectionClient = inspectionClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
     }
@@ -69,7 +69,7 @@ public class BsbRectifiesNCsDelegator {
         HttpServletRequest request = bpc.request;
         //get application id
         //search NCs list info
-        RectifyFindingFormDto rectifyFindingFormDto = nCsClient.getRectifyFindingFormDtoByAppId("B861509B-946F-EC11-BE74-000C298D317C").getEntity();
+        RectifyFindingFormDto rectifyFindingFormDto = inspectionClient.getNonComplianceFindingFormDtoByAppId("B861509B-946F-EC11-BE74-000C298D317C").getEntity();
         //save basic info such as appId and config id
         if(rectifyFindingFormDto != null){
             RectifyInsReportSaveDto savedDto = getRectifyNCsSavedDto(request);
@@ -123,7 +123,7 @@ public class BsbRectifiesNCsDelegator {
             savedDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
             savedDto.setToBeDeletedDocIds(docDto.getToBeDeletedDocIds());
         }
-        nCsClient.saveRectifyInsReport(savedDto);
+        inspectionClient.saveInsNonComplianceReport(savedDto);
         //save all info into database
         try {
             // delete docs
