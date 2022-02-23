@@ -126,7 +126,7 @@
               ) AS BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 where dds.STATUS != 'DS002'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
@@ -202,7 +202,7 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 where dc.CYCLE_TYPE ='DSCL_008'
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
@@ -255,7 +255,7 @@
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011')
 
             ) ajax
@@ -394,7 +394,7 @@
               ) AS BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_data_submission dds
                 join ds_cycle dc on dds.CYCLE_ID=dc.ID and dds.STATUS != 'DS002' and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011','DSCL_001','DSCL_007')
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 join ds_patient_information dpi on (dc.PATIENT_CODE =dpi.PATIENT_CODE or dpi.SUBMISSION_ID = dds.ID)
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
@@ -546,7 +546,7 @@
                 daic.FROZEN_OOCY_NUM, daic.THAWED_OOCY_NUM, daic.FRESH_OOCY_NUM, daic.FROZEN_EMBR_NUM, daic.THAWED_EMBR_NUM, daic.FRESH_EMBR_NUM, daic.FROZEN_SPERM_NUM
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
-                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE
+                join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
