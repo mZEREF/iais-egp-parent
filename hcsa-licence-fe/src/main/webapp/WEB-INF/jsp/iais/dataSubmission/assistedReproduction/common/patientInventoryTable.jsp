@@ -5,6 +5,7 @@
     ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(request);
     ArCurrentInventoryDto arCurrentInventoryDto = ArCurrentInventoryDto.addChange(DataSubmissionHelper.getCurrentArCurrentInventoryDto(request), arChangeInventoryDto);
 %>
+<c:if test="${empty perStageInfo}">
 <h3>Patient's Inventory</h3>
 <table aria-describedby="" class="table discipline-table">
     <thead>
@@ -56,3 +57,4 @@
     </tr>
     </tbody>
 </table>
+</c:if>

@@ -1360,6 +1360,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
 
+        ParamUtil.setRequestAttr(request,"perStageInfo","no view");
+
     }
 
     public void perNext(BaseProcessClass bpc){
