@@ -918,7 +918,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
                 ParamUtil.setRequestAttr(request,"patientResult",patientResult);
                 ParamUtil.setSessionAttr(request,"patientParam",patientParam);
-            }else if("1".equals(arFilterDto.getSearchBy())){
+            }else if("0".equals(arFilterDto.getSearchBy())){
                 if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
                     if(submissionSortFieldNames.contains(sortFieldName)){
                         submissionParameter.setSortType(sortType);
