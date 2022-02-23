@@ -259,16 +259,12 @@ public final class DataSubmissionHelper {
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(lastCycle)) {
-            result.add(DataSubmissionConsts.AR_CYCLE_AR);
-            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+            addStartStages(result);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || DsHelper.isCycleFinalStatus(lastStatus)) {
             if (!undergoingCycle) {
-                result.add(DataSubmissionConsts.AR_CYCLE_AR);
-                result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-                result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+                addStartStages(result);
             }
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
@@ -299,6 +295,9 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(lastStage)) {
+                if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
+                    addStartStages(result);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
@@ -322,6 +321,9 @@ public final class DataSubmissionHelper {
             if (DataSubmissionConsts.AR_CYCLE_IUI.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(lastStage)) {
+                if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
+                    addStartStages(result);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
@@ -339,6 +341,12 @@ public final class DataSubmissionHelper {
             }
         }
         return result;
+    }
+
+    private static void addStartStages(List<String> result) {
+        result.add(DataSubmissionConsts.AR_CYCLE_AR);
+        result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+        result.add(DataSubmissionConsts.AR_CYCLE_EFO);
     }
 
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode, String licenseeId) {

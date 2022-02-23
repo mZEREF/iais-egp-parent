@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -93,8 +94,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private DsLicenceService dsLicenceService;
-
-    private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
@@ -291,7 +290,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                     DataSubmissionConsts.DS_CYCLE_EFO});
             isNonCycle = DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle());
             if (islinkableCycle && selectionDto.getLastCycleDto() != null
-                    && !statuses.contains(selectionDto.getLastCycleDto().getStatus())
+                    && !DsHelper.isCycleFinalStatus(selectionDto.getLastCycleDto().getStatus())
+                    && !DsHelper.isStartStage(selectionDto.getStage())
                     && selectionDto.getLastDataSubmission() != null) {
                 submissionNo = selectionDto.getLastDataSubmission().getSubmissionNo();
             } else if (isNonCycle && selectionDto.getLastCycleDto() != null
@@ -387,7 +387,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         cycleDto.setPatientCode(patientCode);
         cycleDto.setHciCode(hciCode);
         cycleDto.setCycleType(cycleType);
-        cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? statuses : Arrays.asList(status));
+        cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? DsHelper.getDsCycleFinalStatus() : Arrays.asList(status));
         return arFeClient.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(cycleDto).getEntity();
     }
 
