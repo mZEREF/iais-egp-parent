@@ -141,9 +141,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                     map.put("ages"+i,"DS_ERR046");
                 }
             }
-        }else{
-//            map.put("oldAges","GENERAL_ERR0006");
-//            log.info(StringUtil.changeForLog("The Ages is null"));
+        }else if(IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
+            map.put("nullAges","GENERAL_ERR0006");
+            log.info(StringUtil.changeForLog("The Ages is null"));
         }
 
         //RFC

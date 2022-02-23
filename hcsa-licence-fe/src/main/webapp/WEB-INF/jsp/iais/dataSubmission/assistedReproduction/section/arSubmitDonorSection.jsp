@@ -134,6 +134,7 @@
                         <iais:field width="5" value="Donor\'s Age when Sample was Collected"/>
                         <iais:field width="4" value="Donor\'s Age" />
                         <iais:field width="3" value="Available" mandatory="true"/>
+                        <span id="error_nullAges" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:row>
                     <c:choose>
                         <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
