@@ -131,8 +131,8 @@
                     </div>
                     </div>
                     <iais:row >
-                        <iais:field width="5" value="Donor's Age when Sample was Collected"/>
-                        <iais:field width="4" value="Donor's Age" />
+                        <iais:field width="5" value="Donor\'s Age when Sample was Collected"/>
+                        <iais:field width="4" value="Donor\'s Age" />
                         <iais:field width="3" value="Available" mandatory="true"/>
                     </iais:row>
                     <c:choose>
@@ -172,7 +172,7 @@
                                             <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                         </iais:value>
                                         <iais:value width="3" cssClass="col-md-3">
-                                            <input type="checkbox" name ="ageCheckName" value = "" checked  disabled =true></input>
+                                            <input type="checkbox" name ="ageCheckNameNew" value = "" checked=""  disabled ="true"></input>
                                         </iais:value>
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
                                             <h4 class="text-danger">
@@ -219,7 +219,7 @@
         arCentreChange();
         <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.donorSample');
-        unDisableContent('div.donorSampleAdd');
+        //unDisableContent('div.donorSampleAdd');
         </c:if>
     });
     function showDonationYes(){
@@ -247,10 +247,13 @@
         var str = "<div class=\"form-group\" id =\"donorAge" +index +
             "\">\n" +
             "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
-            "                            <div class=\"col-sm-4 col-md-4 col-xs-4 col-md-4\">\n" +
+            "                            <div class=\"col-sm-4 col-md-2 col-xs-4 col-md-4\">\n" +
             "                                <input type=\"text\" name=\"ages\" maxlength=\"2\" onblur='checkAge(this)' autocomplete=\"off\">\n" +
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +
+            "<div class=\"col-sm-4 col-md-2 col-xs-3 col-md-3\">\n" +
+            "                                            <input type=\"checkbox\" name=\"ageCheckNameNew\" value=\"\" checked=\"\" disabled =\"true\">\n" +
+            "                                        </div>"+
             "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
             "                               <h4 class=\"text-danger\">"+
             "<em class=\"fa fa-times-circle del-size-36 removeBtn cursorPointer\" class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index+ "')\"></em>"+
