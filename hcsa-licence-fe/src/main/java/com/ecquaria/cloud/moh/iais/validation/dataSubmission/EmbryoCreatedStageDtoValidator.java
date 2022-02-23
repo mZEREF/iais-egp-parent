@@ -105,16 +105,20 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             totalThawedNum+=embryoCreatedStageDto.getPoorDevThawOccNum();
         }
 
-        String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
-        String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
 
         if(totalThawedNum>totalThawedMax&&!errorMap.containsKey("poorDevThawOccNum")){
+            Map<String, String> repMap2=IaisCommonUtils.genNewHashMap();
+            repMap2.put("item","No. Transferrable embryos created and No. of Poor Quality / Unhealthy / Abnormally / Developed created");
+            repMap2.put("inventory","thawed oocytes");
+            String errMsgThawed = MessageUtil.getMessageDesc("DS_ERR060",repMap2);
             errorMap.put("poorDevThawOccNum", errMsgThawed);
-
         }
         if(totalFreshNum>totalFreshMax&&!errorMap.containsKey("poorDevFreshOccNum")){
+            Map<String, String> repMap1=IaisCommonUtils.genNewHashMap();
+            repMap1.put("item","No. Transferrable embryos created and No. of Poor Quality / Unhealthy / Abnormally / Developed created");
+            repMap1.put("inventory","fresh oocytes");
+            String errMsgFresh = MessageUtil.getMessageDesc("DS_ERR060",repMap1);
             errorMap.put("poorDevFreshOccNum", errMsgFresh);
-
         }
         return errorMap;
     }
