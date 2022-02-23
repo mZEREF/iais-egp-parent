@@ -132,7 +132,7 @@ public class ReceiptNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReceiptNotNeed {
+    public static class ReceiptBatDto {
         private String scheduleType;
         private String bat;
         private String receiveQty;
@@ -143,10 +143,10 @@ public class ReceiptNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class ReceiptNotNeedR {
+    public static class ReceiptDto {
         private String dataSubmissionType;
         private String draftAppNo;
-        private List<ReceiptNotNeed> needList;
+        private List<ReceiptBatDto> needList;
         private String facId;
         private String modeProcurement;
         private String sourceFacilityName;
@@ -408,36 +408,36 @@ public class ReceiptNotificationDto implements Serializable {
      *
      * @return ReceiptNotNeedR
      */
-    public ReceiptNotNeedR getReceiptNotNeedR() {
-        List<ReceiptNotNeed> receiptNotNeeds = receiptNotList.stream().map(t -> {
-            ReceiptNotNeed receiptNotNeed = new ReceiptNotNeed();
-            receiptNotNeed.setScheduleType(t.getScheduleType());
-            receiptNotNeed.setBat(t.getBat());
-            receiptNotNeed.setReceiveQty(t.getReceiveQty());
-            receiptNotNeed.setMeaUnit(t.getMeaUnit());
-            receiptNotNeed.setIndex(t.getIndex());
-            return receiptNotNeed;
+    public ReceiptDto getReceiptNotNeedR() {
+        List<ReceiptBatDto> receiptBatDtos = receiptNotList.stream().map(t -> {
+            ReceiptBatDto receiptBatDto = new ReceiptBatDto();
+            receiptBatDto.setScheduleType(t.getScheduleType());
+            receiptBatDto.setBat(t.getBat());
+            receiptBatDto.setReceiveQty(t.getReceiveQty());
+            receiptBatDto.setMeaUnit(t.getMeaUnit());
+            receiptBatDto.setIndex(t.getIndex());
+            return receiptBatDto;
         }).collect(Collectors.toList());
-        ReceiptNotNeedR receiptNotNeedR = new ReceiptNotNeedR();
-        receiptNotNeedR.setNeedList(receiptNotNeeds);
-        receiptNotNeedR.setEnsure(this.ensure);
-        receiptNotNeedR.setModeProcurement(this.modeProcurement);
-        receiptNotNeedR.setSourceFacilityName(this.sourceFacilityName);
-        receiptNotNeedR.setSourceFacilityAddress(this.sourceFacilityAddress);
-        receiptNotNeedR.setSourceFacilityContactPerson(this.sourceFacilityContactPerson);
-        receiptNotNeedR.setContactPersonEmail(this.contactPersonEmail);
-        receiptNotNeedR.setContactPersonTel(this.contactPersonTel);
-        receiptNotNeedR.setFlightNo(this.flightNo);
-        receiptNotNeedR.setProvider(this.provider);
-        receiptNotNeedR.setActualArrivalDate(this.actualArrivalDate);
-        receiptNotNeedR.setActualArrivalTime(this.actualArrivalTime);
-        receiptNotNeedR.setRemarks(this.remarks);
-        receiptNotNeedR.setFacId(this.facId);
-        receiptNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
-        receiptNotNeedR.setDocMetas(this.docMetaInfos);
-        receiptNotNeedR.setDraftAppNo(this.draftAppNo);
-        receiptNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_RECEIPT);
-        return receiptNotNeedR;
+        ReceiptDto receiptDto = new ReceiptDto();
+        receiptDto.setNeedList(receiptBatDtos);
+        receiptDto.setEnsure(this.ensure);
+        receiptDto.setModeProcurement(this.modeProcurement);
+        receiptDto.setSourceFacilityName(this.sourceFacilityName);
+        receiptDto.setSourceFacilityAddress(this.sourceFacilityAddress);
+        receiptDto.setSourceFacilityContactPerson(this.sourceFacilityContactPerson);
+        receiptDto.setContactPersonEmail(this.contactPersonEmail);
+        receiptDto.setContactPersonTel(this.contactPersonTel);
+        receiptDto.setFlightNo(this.flightNo);
+        receiptDto.setProvider(this.provider);
+        receiptDto.setActualArrivalDate(this.actualArrivalDate);
+        receiptDto.setActualArrivalTime(this.actualArrivalTime);
+        receiptDto.setRemarks(this.remarks);
+        receiptDto.setFacId(this.facId);
+        receiptDto.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        receiptDto.setDocMetas(this.docMetaInfos);
+        receiptDto.setDraftAppNo(this.draftAppNo);
+        receiptDto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_RECEIPT);
+        return receiptDto;
     }
 
     /**
@@ -482,8 +482,8 @@ public class ReceiptNotificationDto implements Serializable {
 
     //------------------------------------------Validation---------------------------------------------
     public boolean doValidation() {
-        ReceiptNotNeedR receiptNotNeedR = getReceiptNotNeedR();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateReceiptNot", new Object[]{receiptNotNeedR});
+        ReceiptDto receiptDto = getReceiptNotNeedR();
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateReceiptNot", new Object[]{receiptDto});
         return validationResultDto.isPass();
     }
 

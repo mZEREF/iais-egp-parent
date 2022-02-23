@@ -21,10 +21,10 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 public interface TransferClient {
 
     @PostMapping(path = "/transfer/not/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveNewTransferNot(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
+    ResponseDto<String> saveNewTransferNot(@RequestBody TransferNotificationDto.TransferDto transferDto);
 
     @PostMapping(path = "/transfer/validate/trNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateTransferNot(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
+    ValidationResultDto validateTransferNot(@RequestBody TransferNotificationDto.TransferDto transferDto);
 
     @PostMapping(path = "/transfer/report/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewReportAndInventory(@RequestBody ReportInventoryDto.SaveDocDto saveDocDto);
@@ -51,7 +51,7 @@ public interface TransferClient {
     ResponseDto<AckTransferReceiptDto> getReceiptDataSubNoMap(@PathVariable("facId") String facId);
 
     @PostMapping(value = "/transfer/draft/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String saveDraftTransfer(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
+    String saveDraftTransfer(@RequestBody TransferNotificationDto.TransferDto transferDto);
 
     @PostMapping(path = "/transfer/draft/receipt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     String saveTransferReceiptDraft(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved saved);

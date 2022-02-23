@@ -126,7 +126,7 @@ public class TransferNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class  TransferNotNeed{
+    public static class TransferBatDto {
         private String scheduleType;
         private String batCode;
         private String transferType;
@@ -139,10 +139,10 @@ public class TransferNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class TransferNotNeedR{
+    public static class TransferDto {
         private String dataSubmissionType;
         private String draftAppNo;
-        private List<TransferNotNeed> needList;
+        private List<TransferBatDto> needList;
         private String facId;
         private String receiveFacility;
         private String expectedTfDate;
@@ -340,32 +340,32 @@ public class TransferNotificationDto implements Serializable {
      * setTransferNotNeedR
      * @return TransferNotNeedR
      * */
-    public TransferNotNeedR getTransferNotNeedR(){
+    public TransferDto getTransferNotNeedR(){
         //get doc need validation
-        List<TransferNotNeed> transferNotNeeds = transferNotList.stream().map(t->{
-            TransferNotNeed transferNotNeed = new TransferNotNeed();
-            transferNotNeed.setScheduleType(t.getScheduleType());
-            transferNotNeed.setBatCode(t.getBatCode());
-            transferNotNeed.setTransferType(t.getTransferType());
-            transferNotNeed.setTransferQty(t.getTransferQty());
-            transferNotNeed.setBatQty(t.getBatQty());
-            transferNotNeed.setMstUnit(t.getMstUnit());
-            transferNotNeed.setIndex(t.getIndex());
-            return transferNotNeed; }).collect(Collectors.toList());
-        TransferNotNeedR transferNotNeedR = new TransferNotNeedR();
-        transferNotNeedR.setNeedList(transferNotNeeds);
-        transferNotNeedR.setEnsure(this.ensure);
-        transferNotNeedR.setRemarks(this.remarks);
-        transferNotNeedR.setFacId(this.facId);
-        transferNotNeedR.setExpectedTfDate(this.expectedTfDate);
-        transferNotNeedR.setProviderName(this.providerName);
-        transferNotNeedR.setExpArrivalTime(this.expArrivalTime);
-        transferNotNeedR.setReceiveFacility(this.receiveFacility);
-        transferNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
-        transferNotNeedR.setDocMetas(this.docMetaInfos);
-        transferNotNeedR.setDraftAppNo(this.draftAppNo);
-        transferNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_TRANSFER);
-        return transferNotNeedR;
+        List<TransferBatDto> transferBatDtos = transferNotList.stream().map(t->{
+            TransferBatDto transferBatDto = new TransferBatDto();
+            transferBatDto.setScheduleType(t.getScheduleType());
+            transferBatDto.setBatCode(t.getBatCode());
+            transferBatDto.setTransferType(t.getTransferType());
+            transferBatDto.setTransferQty(t.getTransferQty());
+            transferBatDto.setBatQty(t.getBatQty());
+            transferBatDto.setMstUnit(t.getMstUnit());
+            transferBatDto.setIndex(t.getIndex());
+            return transferBatDto; }).collect(Collectors.toList());
+        TransferDto transferDto = new TransferDto();
+        transferDto.setNeedList(transferBatDtos);
+        transferDto.setEnsure(this.ensure);
+        transferDto.setRemarks(this.remarks);
+        transferDto.setFacId(this.facId);
+        transferDto.setExpectedTfDate(this.expectedTfDate);
+        transferDto.setProviderName(this.providerName);
+        transferDto.setExpArrivalTime(this.expArrivalTime);
+        transferDto.setReceiveFacility(this.receiveFacility);
+        transferDto.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        transferDto.setDocMetas(this.docMetaInfos);
+        transferDto.setDraftAppNo(this.draftAppNo);
+        transferDto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_TRANSFER);
+        return transferDto;
     }
 
     /**
@@ -412,8 +412,8 @@ public class TransferNotificationDto implements Serializable {
     //------------------------------------------Validation---------------------------------------------
 
     public boolean doValidation() {
-        TransferNotNeedR transferNotNeedR = getTransferNotNeedR();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{transferNotNeedR});
+        TransferDto transferDto = getTransferNotNeedR();
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{transferDto});
         return validationResultDto.isPass();
     }
 

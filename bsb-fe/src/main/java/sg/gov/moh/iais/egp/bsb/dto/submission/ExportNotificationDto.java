@@ -124,7 +124,7 @@ public class ExportNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ExportNotNeed {
+    public static class ExportBatDto {
         private String scheduleType;
         private String bat;
         private String transferType;
@@ -136,10 +136,10 @@ public class ExportNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class ExportNotNeedR {
+    public static class ExportDto {
         private String dataSubmissionType;
         private String draftAppNo;
-        private List<ExportNotNeed> needList;
+        private List<ExportBatDto> needList;
         private String facId;
         private String receivedFacility;
         private String receivedCountry;
@@ -356,32 +356,32 @@ public class ExportNotificationDto implements Serializable {
      *
      * @return ExportNotNeedR
      */
-    public ExportNotNeedR getExportNotNeedR() {
-        List<ExportNotNeed> exportNotNeeds = exportNotList.stream().map(t -> {
-            ExportNotNeed exportNotNeed = new ExportNotNeed();
-            exportNotNeed.setScheduleType(t.getScheduleType());
-            exportNotNeed.setBat(t.getBat());
-            exportNotNeed.setTransferType(t.getTransferType());
-            exportNotNeed.setTransferQty(t.getTransferQty());
-            exportNotNeed.setMeaUnit(t.getMeaUnit());
-            exportNotNeed.setIndex(t.getIndex());
-            return exportNotNeed;
+    public ExportDto getExportNotNeedR() {
+        List<ExportBatDto> exportBatDtos = exportNotList.stream().map(t -> {
+            ExportBatDto exportBatDto = new ExportBatDto();
+            exportBatDto.setScheduleType(t.getScheduleType());
+            exportBatDto.setBat(t.getBat());
+            exportBatDto.setTransferType(t.getTransferType());
+            exportBatDto.setTransferQty(t.getTransferQty());
+            exportBatDto.setMeaUnit(t.getMeaUnit());
+            exportBatDto.setIndex(t.getIndex());
+            return exportBatDto;
         }).collect(Collectors.toList());
-        ExportNotNeedR exportNotNeedR = new ExportNotNeedR();
-        exportNotNeedR.setNeedList(exportNotNeeds);
-        exportNotNeedR.setReceivedFacility(this.receivedFacility);
-        exportNotNeedR.setReceivedCountry(this.receivedCountry);
-        exportNotNeedR.setExportDate(this.exportDate);
-        exportNotNeedR.setProvider(this.provider);
-        exportNotNeedR.setFlightNo(this.flightNo);
-        exportNotNeedR.setRemarks(this.remarks);
-        exportNotNeedR.setFacId(this.facId);
-        exportNotNeedR.setEnsure(this.ensure);
-        exportNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
-        exportNotNeedR.setDocMetas(this.docMetaInfos);
-        exportNotNeedR.setDraftAppNo(this.draftAppNo);
-        exportNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_EXPORT);
-        return exportNotNeedR;
+        ExportDto exportDto = new ExportDto();
+        exportDto.setNeedList(exportBatDtos);
+        exportDto.setReceivedFacility(this.receivedFacility);
+        exportDto.setReceivedCountry(this.receivedCountry);
+        exportDto.setExportDate(this.exportDate);
+        exportDto.setProvider(this.provider);
+        exportDto.setFlightNo(this.flightNo);
+        exportDto.setRemarks(this.remarks);
+        exportDto.setFacId(this.facId);
+        exportDto.setEnsure(this.ensure);
+        exportDto.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        exportDto.setDocMetas(this.docMetaInfos);
+        exportDto.setDraftAppNo(this.draftAppNo);
+        exportDto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_EXPORT);
+        return exportDto;
     }
 
     /**
@@ -428,8 +428,8 @@ public class ExportNotificationDto implements Serializable {
     //------------------------------------------Validation---------------------------------------------
 
     public boolean doValidation() {
-        ExportNotNeedR exportNotNeedR = getExportNotNeedR();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateExportNot", new Object[]{exportNotNeedR});
+        ExportDto exportDto = getExportNotNeedR();
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateExportNot", new Object[]{exportDto});
         return validationResultDto.isPass();
     }
 
