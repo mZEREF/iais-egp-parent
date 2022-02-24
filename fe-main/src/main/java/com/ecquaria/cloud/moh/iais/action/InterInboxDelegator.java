@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
@@ -28,11 +29,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -198,7 +196,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = null;
+        SearchParam inboxParam;
         String page = ParamUtil.getRequestString(request,"msg_action_type");
         if("msgToArchive".equals(page)){
             inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
@@ -1529,11 +1527,13 @@ public class InterInboxDelegator {
         }
     }
 
-    private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
+    public void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         if(interInboxUserDto != null) {
-            Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
-            Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
-            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getLicenseeId());
+            LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+            Integer licActiveNum = inboxService.licActiveStatusNum(HcsaServiceCacheHelper.controlServices(2,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
+            Integer appDraftNum = inboxService.appDraftNum(HcsaServiceCacheHelper.controlServices(1,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
+            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(HcsaServiceCacheHelper.controlServices(0,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
             ParamUtil.setRequestAttr(request, "unreadAndresponseNum", unreadAndresponseNum);
             ParamUtil.setRequestAttr(request, "licActiveNum", licActiveNum);
             ParamUtil.setRequestAttr(request, "appDraftNum", appDraftNum);
