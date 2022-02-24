@@ -16,3 +16,17 @@ function nextTab(subNo){
     $("[name='crud_action_type']").val('step');
     $('#mainForm').submit();
 }
+
+$(document).ready(function () {
+    $('#oldDsSelect').change(function () {
+
+        var reason= $('#oldDsSelect option:selected').val();
+
+        showWaiting();
+        $("[name='crud_action_additional']").val('${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}');
+        $("[name='crud_type']").val(reason);
+        $("[name='crud_action_type']").val('step');
+        $('#mainForm').submit();
+
+    });
+})
