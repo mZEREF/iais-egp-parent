@@ -122,7 +122,7 @@ public final class HcsaServiceCacheHelper {
 		return selectOptions;
 	}
 
-	// 0 -> msg, 1-> app, 2 -> lic serviceCodes set serviceNames;
+	// 0 -> msg, serviceCodes= serviceCodes+@ ; 1-> app, serviceCodes= serviceCodes+@ ; 2 -> lic serviceCodes = serviceNames; 3->serviceCodes = serviceCodes
 	public static InterMessageSearchDto controlServices(int searchDataTab,String licenseeId, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
 		InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
 		interMessageSearchDto.setLicenseeId(licenseeId);
@@ -139,6 +139,9 @@ public final class HcsaServiceCacheHelper {
 					if(searchDataTab == 2){
 						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList()));
 					}
+					if(searchDataTab == 3){
+						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList()));
+					}
 					return interMessageSearchDto;
 				}
 		   }
@@ -149,6 +152,9 @@ public final class HcsaServiceCacheHelper {
 		   if(searchDataTab == 2){
 			   Map<String,String> map = receiveAllHcsaService().stream().collect(Collectors.toMap(HcsaServiceDto::getSvcCode, HcsaServiceDto::getSvcName, (v1, v2) -> v1));
 			   interMessageSearchDto.setServiceCodes( userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> map.get(userRoleAccessMatrixDto.getMatrixValue())).collect(Collectors.toList()));
+		   }
+		   if(searchDataTab == 3){
+			   interMessageSearchDto.setServiceCodes(userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList()));
 		   }
 		   return interMessageSearchDto;
 
