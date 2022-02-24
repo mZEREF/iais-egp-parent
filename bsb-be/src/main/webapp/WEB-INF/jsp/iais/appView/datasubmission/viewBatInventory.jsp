@@ -1,3 +1,4 @@
+<%--@elvariable id="dataSubInfo" type="sg.gov.moh.iais.egp.bsb.dto.submission.DataSubmissionInfo"--%>
 <div class="panel-group" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading completed">

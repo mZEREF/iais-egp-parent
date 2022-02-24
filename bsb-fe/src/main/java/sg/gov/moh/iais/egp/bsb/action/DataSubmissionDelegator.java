@@ -634,6 +634,7 @@ public class DataSubmissionDelegator {
     private void selectOption(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, KEY_FAC_LISTS, null);
         FacListDto facListDto = dataSubmissionClient.queryAllApprovalFacList().getEntity();
+        ParamUtil.setSessionAttr(request, KEY_FAC_LIST_DTO, facListDto);
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);

@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/inbox/dataSubmission/view/viewBatInventory.jsp"%>

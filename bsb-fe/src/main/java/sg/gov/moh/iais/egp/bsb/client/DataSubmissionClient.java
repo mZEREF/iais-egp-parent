@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 
 /**
@@ -17,9 +16,6 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 public interface DataSubmissionClient {
     @GetMapping(value = "/facility-info/getFacList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacListDto> queryAllApprovalFacList();
-
-    @GetMapping(value = "/facList/getAll", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacListDto.ReceiptFacility> queryAllFacility();
 
     @PostMapping(value = "/data-submission/consumption", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeDto consumeDto);
@@ -59,9 +55,6 @@ public interface DataSubmissionClient {
 
     @PostMapping(value = "/data-submission/draft/receipt", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftReceipt(@RequestBody ReceiptNotificationDto.ReceiptDto receiptDto);
-
-    @GetMapping(value = "/data-submission/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DraftDto> getDraftDto(@RequestParam("appId") String appId);
 
     @PostMapping(path = "/data-submission/transfer/notification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewTransferNotification(@RequestBody TransferNotificationDto.TransferDto transferDto);

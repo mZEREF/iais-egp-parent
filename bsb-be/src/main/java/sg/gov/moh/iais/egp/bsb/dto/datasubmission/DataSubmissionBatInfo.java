@@ -18,4 +18,7 @@ public class DataSubmissionBatInfo {
     private String handleType;
     private String biologicalName;
     private String schedule;
+    private String transferredQty;
+    private String transferredUnit;
+    private String reason;
 }

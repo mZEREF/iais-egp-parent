@@ -17,7 +17,7 @@
                         <div>
                             <c:forEach var="file" items="${savedFileList}">
                                 <div class="form-group">
-                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('saved', '<iais:mask name="file" value="${file.repoId}"/>')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadSavedFile('<iais:mask name="file" value="${file.repoId}"/>')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
                                     <div class="clear"></div>
                                 </div>
                             </c:forEach>
