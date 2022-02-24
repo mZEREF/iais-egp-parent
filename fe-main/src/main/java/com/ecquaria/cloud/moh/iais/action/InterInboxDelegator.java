@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author: Hc
@@ -1545,7 +1546,7 @@ public class InterInboxDelegator {
      * @description Data to Form select part
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
-        ParamUtil.setRequestAttr(request, "inboxServiceSelect", getInboxServiceSelectList(true,true));
+        ParamUtil.setRequestAttr(request, "inboxServiceSelect", getInboxServiceSelectList(true,true,request));
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_NOTIFICATION)));
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT)));
@@ -1553,14 +1554,18 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "inboxTypeSelect", inboxTypSelectList);
     }
 
-    private List<SelectOption> getInboxServiceSelectList(boolean specialIdentification,boolean serviceCode){
+    private List<SelectOption> getInboxServiceSelectList(boolean specialIdentification,boolean serviceCode,HttpServletRequest request){
         String specialIdentificationString  = specialIdentification ? "@" : "";
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
-        if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                inboxServiceSelectList.add(new SelectOption((serviceCode ? hcsaServiceDto.getSvcCode() :hcsaServiceDto.getSvcName()) +specialIdentificationString, hcsaServiceDto.getSvcName()));
-            }
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        InterMessageSearchDto interMessageSearchDto = HcsaServiceCacheHelper.controlServices(2,null,userRoleAccessMatrixDtos);
+        if(IaisCommonUtils.isNotEmpty(interMessageSearchDto.getServiceCodes())){
+            Map<String,String> map = HcsaServiceCacheHelper.receiveAllHcsaService().stream().collect(Collectors.toMap( HcsaServiceDto::getSvcName,HcsaServiceDto::getSvcCode, (v1, v2) -> v1));
+            interMessageSearchDto.getServiceCodes().stream().forEach(svcName -> {
+                String svcCode = map.get(svcName);
+                inboxServiceSelectList.add(new SelectOption((serviceCode ?  svcCode: svcName) +specialIdentificationString,svcName));
+            });
         }
         return inboxServiceSelectList;
     }
@@ -1594,7 +1599,7 @@ public class InterInboxDelegator {
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
-        ParamUtil.setRequestAttr(request, "appServiceType", getInboxServiceSelectList(false,false));
+        ParamUtil.setRequestAttr(request, "appServiceType", getInboxServiceSelectList(false,false,request));
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
@@ -1610,7 +1615,7 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
-        ParamUtil.setRequestAttr(request, "licType", getInboxServiceSelectList(false,false));
+        ParamUtil.setRequestAttr(request, "licType", getInboxServiceSelectList(false,false,request));
 
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();
         LicenceActionsList.add(new SelectOption("Appeal", "Appeal"));

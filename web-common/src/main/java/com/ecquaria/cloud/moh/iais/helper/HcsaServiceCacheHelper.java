@@ -16,7 +16,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -123,7 +122,7 @@ public final class HcsaServiceCacheHelper {
 		return selectOptions;
 	}
 
-	// 0 -> msg, 1-> app,2 -> lic
+	// 0 -> msg, 1-> app, 2 -> lic serviceCodes set serviceNames;
 	public static InterMessageSearchDto controlServices(int searchDataTab,String licenseeId, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
 		InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
 		interMessageSearchDto.setLicenseeId(licenseeId);
