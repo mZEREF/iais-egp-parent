@@ -51,7 +51,7 @@
                                 <div class="document-upload-list">
                                     <h3>Attachment</h3>
                                     <div class="file-upload-gp">
-                                        <c:forEach var="info" items="${ncsSavedDocDto.newDocMap.values()}">
+                                        <c:forEach var="info" items="${newSavedDoc}">
                                             <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
                                             <div id="${tmpId}FileDiv">
                                                 <span id="${tmpId}Span"><a href="/bsb-fe/ajax/doc/download/commentInsReport/comment/${tmpId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span><button
@@ -59,7 +59,7 @@
                                                 <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                                             </div>
                                         </c:forEach>
-                                        <c:forEach var="info" items="${ncsSavedDocDto.savedDocMap.values()}">
+                                        <c:forEach var="info" items="${oldSavedDoc}">
                                             <c:set var="repoId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
                                             <div id="${repoId}FileDiv">
                                                 <span id="${repoId}Span"><a href="/bsb-fe/ajax/doc/download/commentInsReport/comment/${repoId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span><button
@@ -75,7 +75,7 @@
                             <h3>Remarks</h3>
                             <div class="form-group">
                                 <div class="col-md-12 col-sm-12">
-                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"></textarea>
+                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${remarks}"/></textarea>
                                     <span data-err-ind="remarks" class="error-msg"></span>
                                 </div>
                             </div>

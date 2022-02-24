@@ -50,7 +50,7 @@ public class InspectionFollowUpItemsDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute("");
-        session.removeAttribute(KEY_APPLICATION_ID);
+        session.removeAttribute(KEY_APP_ID);
         session.removeAttribute(KEY_RECTIFY_SAVED_DTO);
         session.removeAttribute(KEY_RECTIFY_FINDING_FORM);
         session.removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);

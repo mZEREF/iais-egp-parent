@@ -47,9 +47,6 @@
                                         <li <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">class="active"</c:if> id="info" role="presentation">
                                             <a href="#${InspectionConstants.TAB_FAC_INFO}" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
                                         </li>
-                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_DETAIL}">class="active"</c:if> id="insDetails" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_INS_DETAIL}" id="doInsDetails" aria-controls="tabInsDetails" role="tab" data-toggle="tab">Inspection Details</a>
-                                        </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                         </li>
@@ -66,9 +63,6 @@
                                                 <a href="#${InspectionConstants.TAB_FAC_INFO}" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
                                             </div>
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_INS_DETAIL}" aria-controls="tabInsDetails" role="tab" data-toggle="tab">Inspection Details</a>
-                                            </div>
-                                            <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </div>
                                             <div class="swiper-slide">
@@ -82,9 +76,6 @@
                                     <div class="tab-content">
                                         <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">active</c:if>" id="${InspectionConstants.TAB_FAC_INFO}" role="tabpanel">
                                             <%@include file="../actual/facilityInfo.jsp" %>
-                                        </div>
-                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_DETAIL}">active</c:if>" id="${InspectionConstants.TAB_INS_DETAIL}" role="tabpanel">
-                                            <%@include file="../actual/inspectionDetail.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>

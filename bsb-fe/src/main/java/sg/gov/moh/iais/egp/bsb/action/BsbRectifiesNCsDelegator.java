@@ -44,7 +44,7 @@ public class BsbRectifiesNCsDelegator {
 
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_APPLICATION_ID);
+        request.getSession().removeAttribute(KEY_APP_ID);
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DTO);
         request.getSession().removeAttribute(KEY_RECTIFY_FINDING_FORM);
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
@@ -123,8 +123,32 @@ public class BsbRectifiesNCsDelegator {
 
     public void prepareRectifyData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        RectifyFindingFormDto findingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
         String itemValue = (String) ParamUtil.getSessionAttr(request,KEY_ITEM_VALUE);
+        RectifyFindingFormDto findingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
+        RectifyInsReportSaveDto saveDto = inspectionService.getRectifyNCsSavedDto(request);
+        RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
+        List<RectifyInsReportSaveDto.RectifyItemSaveDto> itemSaveDtoList = saveDto.getItemSaveDtoList();
+        //Prepare the data pre-displayed on the Rectify page
+        //remarks
+        if(!itemSaveDtoList.isEmpty()){
+            for (RectifyInsReportSaveDto.RectifyItemSaveDto itemSaveDto : itemSaveDtoList) {
+                if(itemSaveDto.getItemValue().equals(itemValue)){
+                    ParamUtil.setRequestAttr(request, KEY_REMARKS,itemSaveDto.getRemarks());
+                }
+            }
+        }
+        //new saved document
+        if(!reportDto.getNewDocMap().isEmpty()){
+            Map<String,List<NewDocInfo>> newDocSubTypeMap = reportDto.getNewDocSubTypeMap();
+            List<NewDocInfo> newDocInfos = newDocSubTypeMap.get(itemValue);
+            ParamUtil.setRequestAttr(request,KEY_NEW_SAVED_DOCUMENT,newDocInfos);
+        }
+        //document search from database
+        if(!reportDto.getSavedDocMap().isEmpty()){
+            Map<String,List<DocRecordInfo>> savedDocSubTypeMap = reportDto.getSavedDocSubTypeMap();
+            List<DocRecordInfo> savedDocInfos = savedDocSubTypeMap.get(itemValue);
+            ParamUtil.setRequestAttr(request,KEY_SAVED_DOCUMENT,savedDocInfos);
+        }
         RectifyFindingFormDto.RectifyFindingItemDto itemDto = findingFormDto.getRectifyFindingItemDtoByItemValue(itemValue);
         ParamUtil.setRequestAttr(request,"rectifyItemDto",itemDto);
     }
