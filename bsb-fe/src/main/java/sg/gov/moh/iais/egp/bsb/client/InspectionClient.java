@@ -45,7 +45,7 @@ public interface InspectionClient {
 
     //TODO update
     @PostMapping(value = "/inspection/followUpItems", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void saveRectifyInsReport(@RequestBody RectifyInsReportSaveDto saveDto);
+    void saveFollowUpItemsData(@RequestBody RectifyInsReportSaveDto saveDto);
 
     @GetMapping(path = "/inspection/non-compliance/items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<RectifyFindingFormDto> getNonComplianceFindingFormDtoByAppId(@PathVariable("appId") String appId);

@@ -13,6 +13,7 @@ public class ModuleCommonConstants {
     public static final String KEY_NAV_PREPARE                      = "prepare";
     public static final String KEY_NAV_DRAFT                        = "draft";
     public static final String KEY_NAV_RECTIFY                      = "rectify";
+    public static final String KEY_NAV_FOLLOW_UP_ITEMS              = "followUpItems";
 
     public static final String KEY_SUBMIT                           = "submit";
     public static final String KEY_SAVE                             = "save";
