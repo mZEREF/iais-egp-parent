@@ -144,9 +144,10 @@ var stageAjax = function (cycleIder, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilter' + divid).after(html);
             }
+            dismissWaiting();
         }
     )
-    dismissWaiting();
+
 };
 
 var stageAjaxNon = function (cycleIder, divid) {
@@ -186,9 +187,9 @@ var stageAjaxNon = function (cycleIder, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilterNon' + divid).after(html);
             }
+            dismissWaiting();
         }
     )
-    dismissWaiting();
 };
 
 function doInvClear() {

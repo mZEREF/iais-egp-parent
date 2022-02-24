@@ -129,9 +129,10 @@ var groupAjax = function (patientCode, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilter' + divid).after(html);
             }
+            dismissWaiting();
         }
     )
-    dismissWaiting();
+
 };
 
 function doClear() {
