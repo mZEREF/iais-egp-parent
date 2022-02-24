@@ -21,6 +21,7 @@
             <#if msgStatus??> AND inbox.status in :msgStatus</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
             <#if interService??> AND CHARINDEX(:interService, inbox.service_codes) >0 </#if>
+             <#if hcsaServicesShow??> AND ${hcsaServicesShow} </#if>
         ]]>
     </sql>
 
@@ -107,6 +108,7 @@
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
+             <#if appServicesShow??> AND ${appServicesShow} </#if>
             ) a
         ]]>
     </sql>
@@ -164,6 +166,7 @@
             <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
             <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
             <#if licNo??> AND CHARINDEX(:licNo, lic.licence_no) >0 </#if>
+            <#if serviceTypesShow??> AND lic.svc_name in ${serviceTypesShow}</#if>
         ]]>
     </sql>
 
