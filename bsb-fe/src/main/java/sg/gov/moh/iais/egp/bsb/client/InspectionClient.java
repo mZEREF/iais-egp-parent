@@ -14,13 +14,13 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
-    @GetMapping(path = "/assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/self-assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<PreAssessmentDto> getAssessmentState(@PathVariable("appId") String appId);
 
-    @GetMapping(path = "/checklist/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
 
-    @PostMapping(value = "/assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inspection/self-assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void submitSelfAssessment(@RequestBody SelfAssessmtChklDto selfAssessmtChklDto);
 
     @GetMapping(value = "/checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)

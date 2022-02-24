@@ -15,15 +15,15 @@ import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
 public interface WithdrawnClient {
-    @PostMapping(path = "/withdraw/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/withdraw-be/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateWithdrawnDto(@RequestBody AppSubmitWithdrawnDto dto);
 
-    @GetMapping(path = "/withdraw/{appId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/withdraw-be/{appId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AppSubmitWithdrawnDto> getWithdrawnDataByApplicationId(@PathVariable("appId") String applicationId);
 
-    @PostMapping(value = "/withdraw/do-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/withdraw-be/do-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doProcessWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
 
-    @PostMapping(value = "/withdraw/ao-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/withdraw-be/ao-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> aoProcessWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
 }

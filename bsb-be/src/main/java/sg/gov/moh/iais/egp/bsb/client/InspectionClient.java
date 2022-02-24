@@ -23,7 +23,7 @@ public interface InspectionClient {
     @GetMapping(value = "/inspection/actual/submit-report/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitReportDataDto getInitInsSubmitReportData(@RequestParam("appId") String appId);
 
-    @GetMapping(path = "/checklist/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/pre/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
 
     @GetMapping(path = "/checklist/inspection", produces = MediaType.APPLICATION_JSON_VALUE)
