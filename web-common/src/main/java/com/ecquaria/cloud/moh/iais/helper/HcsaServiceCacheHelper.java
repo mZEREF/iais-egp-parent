@@ -128,14 +128,14 @@ public final class HcsaServiceCacheHelper {
 		InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
 		interMessageSearchDto.setLicenseeId(licenseeId);
 		interMessageSearchDto.setSearchTable(searchDataTab);
+		if(searchDataTab == 0){
+			interMessageSearchDto.setSearchSql(3);
+		}
        if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
-       	    if(searchDataTab == 1){
-				interMessageSearchDto.setSearchSql(3);
-			}
 		   for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
 		   	    if(AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())){
 					if(searchDataTab == 0 || searchDataTab == 1){
-						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcType()+ "@").collect(Collectors.toList()));
+						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList()));
 					}
 					if(searchDataTab == 2){
 						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList()));
