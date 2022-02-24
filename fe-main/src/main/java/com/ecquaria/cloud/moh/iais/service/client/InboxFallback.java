@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +26,7 @@ public class InboxFallback implements InboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(String userId) {
+    public FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(InterMessageSearchDto interMessageSearchDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

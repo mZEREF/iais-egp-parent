@@ -10,11 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 
 import java.util.List;
 import java.util.Map;
@@ -32,9 +28,9 @@ public interface InboxService {
     SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam);
     SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
-    Integer licActiveStatusNum(String licenseeId);
-    Integer appDraftNum(String licenseeId);
-    Integer unreadAndUnresponseNum(String userId);
+    Integer licActiveStatusNum(InterMessageSearchDto interMessageSearchDto);
+    Integer appDraftNum(InterMessageSearchDto interMessageSearchDto);
+    Integer unreadAndUnresponseNum(InterMessageSearchDto interMessageSearchDto);
     void updateDraftStatus(String draftNo, String status);
     boolean updateMsgStatus(String[] msgId);
     Boolean canRecallApplication(RecallApplicationDto recallApplicationDto);
