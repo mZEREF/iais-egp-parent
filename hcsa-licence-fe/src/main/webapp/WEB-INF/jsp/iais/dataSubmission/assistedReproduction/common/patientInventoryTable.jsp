@@ -57,4 +57,5 @@
     </tr>
     </tbody>
 </table>
+<span id="error_inventoryLessZero" name="iaisErrorMsg" class="error-msg col-md-12" style="padding: 0px;"></span>
 </c:if>
