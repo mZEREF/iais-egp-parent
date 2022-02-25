@@ -85,7 +85,7 @@ function isInArray(arr,value){
         }
     }
     return false;
-};
+}
 var groupAjax = function (patientCode, divid) {
     dividajaxlist.push(divid);
     $.post(
