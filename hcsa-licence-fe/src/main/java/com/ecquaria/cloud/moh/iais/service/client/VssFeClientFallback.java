@@ -60,13 +60,13 @@ public class VssFeClientFallback implements VssFeClient{
     }
 
     @Override
-    public FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDtoDraftByConds(String orgId, String type, String svcName, String hciCode) {
-        return getFeignResponseEntity(orgId, type, svcName, hciCode);
+    public FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDtoDraftByConds(String orgId, String type) {
+        return getFeignResponseEntity(orgId, type);
     }
 
     @Override
-    public void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-
+    public FeignResponseEntity<Void> deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        return getFeignResponseEntity(orgId, submissionType);
     }
 
 }

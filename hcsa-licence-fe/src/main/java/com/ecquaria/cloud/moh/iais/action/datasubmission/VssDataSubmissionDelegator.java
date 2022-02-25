@@ -92,6 +92,7 @@ public class VssDataSubmissionDelegator {
             smallTitle = config.getText();
         }
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
+
     }
 
     private String getActionType(HttpServletRequest request) {
@@ -120,6 +121,23 @@ public class VssDataSubmissionDelegator {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
 
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        //draft
+        VssSuperDataSubmissionDto dataSubmissionDraft = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
+        if (dataSubmissionDraft != null) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+        }
+        if (crud_action_type.equals("resume")) {
+            vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
+            if (vssSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
+            }
+            DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
+        } else if (crud_action_type.equals("delete")) {
+            vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+        }
+
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
@@ -144,7 +162,6 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.VSS_TYPE_SBT_VSS);
         vssSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         vssSuperDataSubmissionDto.setFe(true);
-        vssSuperDataSubmissionDto.setSvcName(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY);
         vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto,
