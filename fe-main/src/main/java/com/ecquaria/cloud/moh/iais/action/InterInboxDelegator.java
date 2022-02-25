@@ -1559,10 +1559,10 @@ public class InterInboxDelegator {
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
-        InterMessageSearchDto interMessageSearchDto = HcsaServiceCacheHelper.controlServices(2,null,userRoleAccessMatrixDtos);
-        if(IaisCommonUtils.isNotEmpty(interMessageSearchDto.getServiceCodes())){
+        List<String> serviceNames = HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos);
+        if(IaisCommonUtils.isNotEmpty(serviceNames)){
             Map<String,String> map = HcsaServiceCacheHelper.receiveAllHcsaService().stream().collect(Collectors.toMap( HcsaServiceDto::getSvcName,HcsaServiceDto::getSvcCode, (v1, v2) -> v1));
-            interMessageSearchDto.getServiceCodes().stream().forEach(svcName -> {
+             serviceNames.stream().forEach(svcName -> {
                 String svcCode = map.get(svcName);
                 inboxServiceSelectList.add(new SelectOption((serviceCode ?  svcCode: svcName) +specialIdentificationString,svcName));
             });

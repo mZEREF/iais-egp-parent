@@ -131,35 +131,41 @@ public final class HcsaServiceCacheHelper {
 			interMessageSearchDto.setSearchSql(3);
 		}
        if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
-		   for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
-		   	    if(AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())){
-					if(searchDataTab == 0 || searchDataTab == 1){
-						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList()));
-					}
-					if(searchDataTab == 2){
-						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList()));
-					}
-					if(searchDataTab == 3){
-						interMessageSearchDto.setServiceCodes(receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList()));
-					}
-					return interMessageSearchDto;
-				}
-		   }
-		   if(searchDataTab == 0 || searchDataTab == 1){
-			   interMessageSearchDto.setServiceCodes( userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue()+ "@").collect(Collectors.toList()));
-		   }
-
-		   if(searchDataTab == 2){
-			   Map<String,String> map = receiveAllHcsaService().stream().collect(Collectors.toMap(HcsaServiceDto::getSvcCode, HcsaServiceDto::getSvcName, (v1, v2) -> v1));
-			   interMessageSearchDto.setServiceCodes( userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> map.get(userRoleAccessMatrixDto.getMatrixValue())).collect(Collectors.toList()));
-		   }
-		   if(searchDataTab == 3){
-			   interMessageSearchDto.setServiceCodes(userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList()));
-		   }
-		   return interMessageSearchDto;
-
+		   interMessageSearchDto.setServiceCodes(controlServices(searchDataTab,userRoleAccessMatrixDtos));
 	   }
        return interMessageSearchDto;
+	}
+
+	// 0 -> msg, serviceCodes= serviceCodes+@ ; 1-> app, serviceCodes= serviceCodes+@ ; 2 -> lic serviceCodes = serviceNames; 3->serviceCodes = serviceCodes
+	public static List<String> controlServices(int searchDataTab, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
+		if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
+			for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
+				if(AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())){
+					if(searchDataTab == 0 || searchDataTab == 1){
+						return receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList());
+					}
+					if(searchDataTab == 2){
+						return receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList());
+					}
+					if(searchDataTab == 3){
+						return receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
+					}
+				}
+			}
+			if(searchDataTab == 0 || searchDataTab == 1){
+				return userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> userRoleAccessMatrixDto.getMatrixValue()+ "@").collect(Collectors.toList());
+			}
+
+			if(searchDataTab == 2){
+				Map<String,String> map = receiveAllHcsaService().stream().collect(Collectors.toMap(HcsaServiceDto::getSvcCode, HcsaServiceDto::getSvcName, (v1, v2) -> v1));
+				return userRoleAccessMatrixDtos.stream().map(userRoleAccessMatrixDto -> map.get(userRoleAccessMatrixDto.getMatrixValue())).collect(Collectors.toList());
+			}
+			if(searchDataTab == 3){
+				return userRoleAccessMatrixDtos.stream().map(UserRoleAccessMatrixDto::getMatrixValue).collect(Collectors.toList());
+			}
+
+		}
+		return null;
 	}
 
 }
