@@ -57,7 +57,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="displayName" type="text" name="displayName" maxlength="20"
+                                            <input id="displayName" type="text" name="displayName" maxlength="110"
                                                    value="${orgUserDto.displayName}">
                                             <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>

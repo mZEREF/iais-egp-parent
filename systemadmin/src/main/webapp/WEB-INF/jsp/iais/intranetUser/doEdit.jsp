@@ -49,7 +49,7 @@
                                         <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name <span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                                <input id="displayName" type="text" maxlength="20" name="displayName" value="${orgUserDto.displayName}">
+                                                <input id="displayName" type="text" maxlength="110" name="displayName" value="${orgUserDto.displayName}">
                                                 <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
                                             </div>
                                         </iais:value>
