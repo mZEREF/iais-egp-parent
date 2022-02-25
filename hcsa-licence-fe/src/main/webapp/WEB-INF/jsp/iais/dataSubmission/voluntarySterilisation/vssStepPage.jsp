@@ -65,10 +65,10 @@
         </div>
     </div>
 </form>
-<%--<c:if test="${hasDraft}">
+<c:if test="${hasDraft}">
     <iais:confirm
             msg="There is an existing draft for the Voluntary Sterilisation. Please either continue the draft submission or delete the draft if you wish to submit a different patient"
             callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
             cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
             cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
-</c:if>--%>
+</c:if>
