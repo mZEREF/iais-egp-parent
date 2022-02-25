@@ -50,7 +50,7 @@ public class SoloEditValidator implements CustomizeValidator {
         if (Objects.isNull(licenseeDto) || Objects.isNull(dto)) {
             return map;
         }
-        valCol("name",66,dto.getDisplayName(),map);
+        valCol("name",110,dto.getDisplayName(),map);
         boolean postalVal = valCol("postalCode",6,licenseeDto.getPostalCode(),map);
         if( !postalVal && !CommonValidator.isValidePostalCode(licenseeDto.getPostalCode())){
             map.put("postalCode", MessageUtil.getMessageDesc("NEW_ERR0004"));
