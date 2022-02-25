@@ -152,7 +152,7 @@
                         <div class="col-md-12 text-right">
                             <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
                             <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
-                            <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
                             <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-amend">Amend</a>
                             <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
                             <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
@@ -216,7 +216,6 @@
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
-            $('#ds-deleteDraft').addClass("disabled");
         }
     }
 
