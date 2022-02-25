@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -2164,22 +2165,23 @@ public class NewApplicationDelegator {
         str=stringBuilder.toString();
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + str));
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
-        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if (!doComChangeMap.isEmpty()) {
-            //set audit
-            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),doComChangeMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-            ParamUtil.setRequestAttr(bpc.request, "Msg", doComChangeMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            initAction("preview", doComChangeMap, appSubmissionDto, bpc.request);
             return;
         }
         log.info("doComChange is ok ...");
         Map<String, String> map = appSubmissionService.doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
-            //set audit
-            ParamUtil.setRequestAttr(bpc.request, "Msg", map);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            initAction("preview", map, appSubmissionDto, bpc.request);
+            return;
+        }
+        // check whether it has been withdrew or not
+        String appId = getCurrentRfiAppId(oldAppSubmissionDto);
+        List<AppPremiseMiscDto> appPremiseMiscs = appSubmissionService.getActiveWithdrawAppPremiseMiscsByApp(appId);
+        if (IaisCommonUtils.isNotEmpty(appPremiseMiscs)) {
+            // RFI_ERR002: There is a withdrawal for this application.
+            ParamUtil.setRequestAttr(bpc.request, "showRfiWithdrawal", AppConsts.YES);
+            initAction("preview", null, appSubmissionDto, bpc.request);
             return;
         }
         //sync person data
@@ -2288,6 +2290,32 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
         ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "The request for information save success");
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
+    }
+
+    private void initAction(String action, Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
+            HttpServletRequest request) {
+        if (IaisCommonUtils.isNotEmpty(errorMap)) {
+            boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+            if (isRfi) {
+                NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
+                        appSubmissionDto.getLicenceNo());
+            }
+        }
+        ParamUtil.setRequestAttr(request, "Msg", errorMap);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, action);
+        ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
+    }
+
+    private String getCurrentRfiAppId(AppSubmissionDto oldAppSubmissionDto) {
+        if (oldAppSubmissionDto == null || IaisCommonUtils.isEmpty(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+            return null;
+        }
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : oldAppSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+            if (Objects.equals(oldAppSubmissionDto.getRfiAppNo(), appSvcRelatedInfoDto.getAppNo())) {
+                return appSvcRelatedInfoDto.getAppId();
+            }
+        }
+        return null;
     }
 
     private void resetRelatedInfoRFI(AppSvcRelatedInfoDto appSvcRelatedInfoDto, AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
@@ -2467,6 +2495,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
+        log.info(StringUtil.changeForLog("The original licence No.: " + appSubmissionDto.getLicenceNo()));
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");

@@ -187,9 +187,15 @@
 <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
 <input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
+<%--RFI_ERR002: There is a withdrawal for this application.--%>
+<iais:confirm msg="RFI_ERR002" callBack="$('#rfiWithdrawalMdl').modal('hide');" needCancel="false" popupOrder="rfiWithdrawalMdl" />
+<input type="hidden" value="${showRfiWithdrawal}" id="showRfiWithdrawal">
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
+        if(!isEmpty($('#showRfiWithdrawal').val())){
+            $('#rfiWithdrawalMdl').modal('show');
+        }
         if(!isEmpty($('#showInvalidLic').val())){
             $('#rfcInvalidLic').modal('show');
         }
