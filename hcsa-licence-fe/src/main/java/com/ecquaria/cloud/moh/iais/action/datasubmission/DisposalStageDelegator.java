@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInvent
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -78,9 +79,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String immatureString=ParamUtil.getString(request, "immature");
                         disposalStageDto.setImmatureString(immatureString);
-                        immature =  ParamUtil.getInt(request, "immature");
-                        totalNum+=immature;
-                        disposalStageDto.setImmature(immature);
+                        if(StringUtil.isEmpty(immatureString)){
+                            disposalStageDto.setImmature(null);
+                        }else {
+                            immature =  ParamUtil.getInt(request, "immature");
+                            totalNum+=immature;
+                            disposalStageDto.setImmature(immature);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -88,9 +94,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String abnormallyFertilisedString=ParamUtil.getString(request, "abnormallyFertilised");
                         disposalStageDto.setAbnormallyFertilisedString(abnormallyFertilisedString);
-                        abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
-                        totalNum+=abnormallyFertilised;
-                        disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
+                        if(StringUtil.isEmpty(abnormallyFertilisedString)){
+                            disposalStageDto.setAbnormallyFertilised(null);
+                        }else {
+                            abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
+                            totalNum+=abnormallyFertilised;
+                            disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -98,9 +109,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String unfertilisedString=ParamUtil.getString(request, "unfertilised");
                         disposalStageDto.setUnfertilisedString(unfertilisedString);
-                        unfertilised =  ParamUtil.getInt(request, "unfertilised");
-                        totalNum+=unfertilised;
-                        disposalStageDto.setUnfertilised(unfertilised);
+                        if(StringUtil.isEmpty(unfertilisedString)){
+                            disposalStageDto.setUnfertilised(null);
+                        }else {
+                            unfertilised =  ParamUtil.getInt(request, "unfertilised");
+                            totalNum+=unfertilised;
+                            disposalStageDto.setUnfertilised(unfertilised);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -108,9 +124,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String atreticString=ParamUtil.getString(request, "atretic");
                         disposalStageDto.setAtreticString(atreticString);
-                        atretic =  ParamUtil.getInt(request, "atretic");
-                        totalNum+=atretic;
-                        disposalStageDto.setAtretic(atretic);
+                        if(StringUtil.isEmpty(atreticString)){
+                            disposalStageDto.setAtretic(null);
+                        }else {
+                            atretic =  ParamUtil.getInt(request, "atretic");
+                            totalNum+=atretic;
+                            disposalStageDto.setAtretic(atretic);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -118,9 +139,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String damagedString=ParamUtil.getString(request, "damaged");
                         disposalStageDto.setDamagedString(damagedString);
-                        damaged =  ParamUtil.getInt(request, "damaged");
-                        totalNum+=damaged;
-                        disposalStageDto.setDamaged(damaged);
+                        if(StringUtil.isEmpty(damagedString)){
+                            disposalStageDto.setDamaged(null);
+                        }else {
+                            damaged =  ParamUtil.getInt(request, "damaged");
+                            totalNum+=damaged;
+                            disposalStageDto.setDamaged(damaged);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -128,9 +154,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String lysedOrDegeneratedString=ParamUtil.getString(request, "lysedOrDegenerated");
                         disposalStageDto.setLysedOrDegeneratedString(lysedOrDegeneratedString);
-                        lysedOrDegenerated =  ParamUtil.getInt(request, "lysedOrDegenerated");
-                        totalNum+=lysedOrDegenerated;
-                        disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
+                        if(StringUtil.isEmpty(lysedOrDegeneratedString)){
+                            disposalStageDto.setLysedOrDegenerated(null);
+                        }else {
+                            lysedOrDegenerated =  ParamUtil.getInt(request, "lysedOrDegenerated");
+                            totalNum+=lysedOrDegenerated;
+                            disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -143,9 +174,14 @@ public class DisposalStageDelegator extends CommonDelegator{
                     try {
                         String unhealthyNumString=ParamUtil.getString(request, "unhealthyNum");
                         disposalStageDto.setUnhealthyNumString(unhealthyNumString);
-                        unhealthyNum =  ParamUtil.getInt(request, "unhealthyNum");
-                        totalNum+=unhealthyNum;
-                        disposalStageDto.setUnhealthyNum(unhealthyNum);
+                        if(StringUtil.isEmpty(unhealthyNumString)){
+                            disposalStageDto.setUnhealthyNum(null);
+                        }else {
+                            unhealthyNum =  ParamUtil.getInt(request, "unhealthyNum");
+                            totalNum+=unhealthyNum;
+                            disposalStageDto.setUnhealthyNum(unhealthyNum);
+                        }
+
                     }catch (Exception e){
                         log.error("no int");
                     }
@@ -161,9 +197,14 @@ public class DisposalStageDelegator extends CommonDelegator{
         try {
             String otherDiscardedNumString=ParamUtil.getString(request, "otherDiscardedNum");
             disposalStageDto.setOtherDiscardedNumString(otherDiscardedNumString);
-            otherDiscardedNum =  ParamUtil.getInt(request, "otherDiscardedNum");
-            totalNum+=otherDiscardedNum;
-            disposalStageDto.setOtherDiscardedNum(otherDiscardedNum);
+            if(StringUtil.isEmpty(otherDiscardedNumString)){
+                disposalStageDto.setOtherDiscardedNum(null);
+            }else {
+                otherDiscardedNum =  ParamUtil.getInt(request, "otherDiscardedNum");
+                totalNum+=otherDiscardedNum;
+                disposalStageDto.setOtherDiscardedNum(otherDiscardedNum);
+            }
+
         }catch (Exception e){
             log.error("no int");
         }
