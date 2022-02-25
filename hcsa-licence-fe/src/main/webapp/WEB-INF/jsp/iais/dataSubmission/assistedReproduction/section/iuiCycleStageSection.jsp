@@ -90,7 +90,7 @@
                         <div class="form-check" col-xs-7 style="padding-left: 0px;">
                           <c:set var="value" value="${sourceOfSemen.value}"></c:set>
                             <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
-                                   type="checkbox" name="sourceOfSemenOp" id="sourceOfSemenOp${value}" <c:if test="${value == DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR}"> onclick="showDonorArea('sourceOfSemenOpAR_SOS_003',1)" </c:if>
+                                   type="checkbox" name="sourceOfSemenOp" id="sourceOfSemenOp${value}" <c:if test="${value == DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR || value == DataSubmissionConsts.AR_SOURCE_OF_D_SEMEN_TESTICULAR}"> onclick="showDonorArea('sourceOfSemenOpAR_SOS_003','sourceOfSemenOpAR_SOS_004',1)" </c:if>
                             <c:forEach items="${iuiCycleStageDto.semenSources}" var="checkSemen">
                                    <c:if test="${checkSemen eq value}">checked</c:if>
                             </c:forEach> >
@@ -102,6 +102,7 @@
                       </c:forEach>
                       <span class="error-msg" name="iaisErrorMsg" id="error_semenSource"></span>
                     </iais:value>
+                    <input type="hidden" name="sourceOfSemenShowDonorNum" id="sourceOfSemenShowDonorNum" value="0">
                   </iais:row>
                   <iais:row>
                     <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
