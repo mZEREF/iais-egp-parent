@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.inbox;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.BsbInbox;
+import sg.gov.moh.iais.egp.bsb.dto.entity.BsbInboxDto;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ import java.util.List;
 @Data
 public class InboxMsgSearchResultDto {
     private PageInfo pageInfo;
-    private List<BsbInbox> bsbInboxes;
+    private List<BsbInboxDto> bsbInboxes;
     private long unreadMsgAmt;
 }

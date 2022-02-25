@@ -115,7 +115,7 @@
                                             </thead>
                                             <tbody>
                                             <c:choose>
-                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
+                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo>"--%>
                                                 <c:when test="${empty dataList}">
                                                     <tr>
                                                         <td colspan="6">
@@ -139,7 +139,7 @@
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <c:out value="${app.applicationNo}"/>
+                                                                        <c:out value="${app.appNo}"/>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
@@ -157,7 +157,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                                <p><fmt:formatDate value="${app.applicationDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                                                <p><fmt:formatDate value="${app.date}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
