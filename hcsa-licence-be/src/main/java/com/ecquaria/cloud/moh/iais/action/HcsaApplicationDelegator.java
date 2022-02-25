@@ -2029,9 +2029,12 @@ public class HcsaApplicationDelegator {
                             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         }
                     }
-                    ApplicationGroupDto oldAppGrpDto=applicationGroupService.getApplicationGroupDtoById(appGrpId);
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                    if (oldApplication != null && ApplicationConsts.APPLICATION_STATUS_DELETED.equals(oldApplication.getStatus())) {
+                        oldApplication = applicationClient.getAppByNo(oldApplication.getApplicationNo()).getEntity();
+                    }
                     if (oldApplication != null) {
+                        ApplicationGroupDto oldAppGrpDto = applicationGroupService.getApplicationGroupDtoById(oldApplication.getAppGrpId());
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                         if (licenseeDto != null) {
                             LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
@@ -2507,17 +2510,19 @@ public class HcsaApplicationDelegator {
 //                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
                         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
                             try {
-                                //WITHDRAWAL To restore the old task
-                                List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos=applicationClient.getAppPremisesCorrelationsByAppId(oldAppId).getEntity();
-                                String corrId=oldAppPremisesCorrelationDtos.get(0).getId();
-                                List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
-                                TaskDto oldTaskDto=taskDtos.get(0);
-                                oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
-                                oldTaskDto.setId(null);
-                                taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                                List<TaskDto> newTaskDto=IaisCommonUtils.genNewArrayList();
-                                newTaskDto.add(oldTaskDto);
-                                taskService.createTasks(newTaskDto);
+                                if(!oldApplication.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
+                                    //WITHDRAWAL To restore the old task
+                                    List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos=applicationClient.getAppPremisesCorrelationsByAppId(oldAppId).getEntity();
+                                    String corrId=oldAppPremisesCorrelationDtos.get(0).getId();
+                                    List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
+                                    TaskDto oldTaskDto=taskDtos.get(0);
+                                    oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
+                                    oldTaskDto.setId(null);
+                                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                                    List<TaskDto> newTaskDto=IaisCommonUtils.genNewArrayList();
+                                    newTaskDto.add(oldTaskDto);
+                                    taskService.createTasks(newTaskDto);
+                                }
                             }catch (Exception e){
                                 log.error(e.getMessage(),e);
                             }
