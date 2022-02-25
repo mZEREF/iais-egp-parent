@@ -65,6 +65,7 @@ $(document).ready(function () {
 
 
 var getPatientByPatientCode = function (patientCode, divid) {
+    showWaiting();
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
     } else {
@@ -75,6 +76,7 @@ var getPatientByPatientCode = function (patientCode, divid) {
             $('#advfilterson' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 function isInArray(arr,value){
     for(var i = 0; i < arr.length; i++){
@@ -85,7 +87,6 @@ function isInArray(arr,value){
     return false;
 };
 var groupAjax = function (patientCode, divid) {
-    showWaiting();
     dividajaxlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/patientDetail.do',
@@ -129,7 +130,6 @@ var groupAjax = function (patientCode, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilter' + divid).after(html);
             }
-            dismissWaiting();
         }
     )
 

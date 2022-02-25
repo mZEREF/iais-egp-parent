@@ -74,6 +74,7 @@ function sortRecords(sortFieldName, sortType) {
 }
 
 var getStageByCycleId = function (cycleId, divid) {
+    showWaiting();
     if (!isInArray(dividajaxlist,divid)) {
         stageAjax(cycleId, divid);
     } else {
@@ -84,9 +85,11 @@ var getStageByCycleId = function (cycleId, divid) {
             $('#advfilterson' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 
 var getStageByNonCycleId = function (cycleId, divid) {
+    showWaiting();
     if (!isInArray(dividajaxNonlist,divid)) {
         stageAjaxNon(cycleId, divid);
     } else {
@@ -97,6 +100,7 @@ var getStageByNonCycleId = function (cycleId, divid) {
             $('#advfiltersonNon' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 
 function isInArray(arr,value){
@@ -108,7 +112,6 @@ function isInArray(arr,value){
     return false;
 };
 var stageAjax = function (cycleIder, divid) {
-    showWaiting();
     dividajaxlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/cycleStageDetail.do',
@@ -144,14 +147,12 @@ var stageAjax = function (cycleIder, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilter' + divid).after(html);
             }
-            dismissWaiting();
         }
     )
 
 };
 
 var stageAjaxNon = function (cycleIder, divid) {
-    showWaiting();
     dividajaxNonlist.push(divid);
     $.post(
         '/hcsa-licence-web/hcsa/enquiry/ar/cycleStageDetail.do',
@@ -187,7 +188,6 @@ var stageAjaxNon = function (cycleIder, divid) {
                 html += '</tbody></table></div></td></tr>';
                 $('#advfilterNon' + divid).after(html);
             }
-            dismissWaiting();
         }
     )
 };
