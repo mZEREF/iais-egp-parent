@@ -110,6 +110,7 @@ public class FreezingStageDelegator extends CommonDelegator {
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(arSubFreezingStageDto, "common");
             errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(bpc.request, errorMap);
             valRFC(bpc.request, arSubFreezingStageDto);
         }
 
@@ -125,7 +126,7 @@ public class FreezingStageDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, ArSubFreezingStageDto arSubFreezingStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && arSubFreezingStageDto.equals(arOldSuperDataSubmissionDto.getArSubFreezingStageDto())) {
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArSubFreezingStageDto() != null && arSubFreezingStageDto.equals(arOldSuperDataSubmissionDto.getArSubFreezingStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }

@@ -12,6 +12,7 @@
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">
+                 <c:if test="${donorFrom == 'ar'}">
                 <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
                     <iais:field width="5" value="Please Indicate" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
@@ -20,6 +21,7 @@
                         </c:forEach>
                     </iais:value>
                 </iais:row>
+                 </c:if>
 
                  <iais:row>
                      <iais:field width="5" value="Donor ${donorDto.arDonorIndex+1}" />
@@ -58,7 +60,7 @@
                          </iais:value>
                      </iais:row>
                      <iais:row>
-                         <iais:field width="5" value="" />
+                         <iais:field width="5" cssClass="col-md-5"  value="" />
                          <iais:value width="7" cssClass="col-md-4" display="true">
                              <c:out value="${donorDto.donorSampleCode}" />
                          </iais:value>

@@ -11,8 +11,8 @@
     <div id="arDonorSampleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
-                <div class="panel-main-content form-horizontal donorSample">
-
+                <div class="panel-main-content form-horizontal">
+                    <div class="donorSample">
                     <iais:row>
                         <iais:field width="5" value="Is Sample from a Directed Donation?" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
@@ -129,20 +129,32 @@
                             </iais:value>
                         </iais:row>
                     </div>
-
+                    </div>
+                    <iais:row >
+                        <iais:field width="5" value="Donor\'s Age when Sample was Collected"/>
+                        <iais:field width="4" value="Donor\'s Age" />
+                        <iais:field width="3" value="Available" mandatory="true"/>
+                        <span id="error_nullAges" name="iaisErrorMsg" class="error-msg"></span>
+                    </iais:row>
                     <c:choose>
                         <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
                             <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
                                 <iais:row id = "donorAge0">
                                     <label class="col-xs-5 col-md-4 control-label">
-                                        <c:if test="${idxStatus.first==true}">
-                                            Donor's Age when Sample was Collected
-                                            <span class="mandatory">*</span>
-                                        </c:if>
                                     </label>
-                                    <iais:value width="7" cssClass="col-md-7">
-                                        <input type="text" name="oldAges" value="${donorSampleAgeDto.age}" maxlength="2" autocomplete="off" disabled =true>
-                                        <span id="error_oldAges" name="iaisErrorMsg" class="error-msg"></span>
+                                    <iais:field width="4" value="${donorSampleAgeDto.age}" />
+                                    <iais:value width="3" cssClass="col-md-3">
+                                        <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}"
+                                            <c:choose>
+                                        <c:when test="${donorSampleAgeDto.available}">
+                                              checked
+                                        </c:when>
+                                        <c:otherwise>
+                                               disabled =true
+                                        </c:otherwise>
+                                        </c:choose>
+                                        >
+                                       </input>
                                     </iais:value>
                                 </iais:row>
                             </c:forEach>
@@ -150,40 +162,28 @@
                     </c:choose>
 
                     <c:choose>
-                        <c:when test="${donorSampleDto.ages == null}">
-                            <c:if test="${donorSampleDto.donorSampleAgeDtos == null}">
-                                <iais:row  id = "donorAge0">
-                                    <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
-                                    <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="ages" value="" onblur='checkAge(this)'/>
-                                        <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
-                                    </iais:value>
-                                </iais:row>
-                            </c:if>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
-                                <iais:row id = "donorAge${idxStatus.index+1}">
-                                    <label class="col-xs-5 col-md-4 control-label">
-                                        <c:if test="${idxStatus.first && donorSampleDto.donorSampleAgeDtos == null}">
-                                            Donor's Age when Sample was Collected
-                                            <span class="mandatory">*</span>
-                                        </c:if>
-                                    </label>
-                                    <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
-                                        <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                    </iais:value>
-                                    <c:if test="${!idxStatus.first || donorSampleDto.donorSampleAgeDtos != null}">
+                        <c:when test="${donorSampleDto.ages != null}">
+                            <div class="donorSampleAdd">
+                                <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
+                                    <iais:row id = "donorAge${idxStatus.index+1}">
+                                        <label class="col-xs-5 col-md-4 control-label">
+                                        </label>
+                                        <iais:value width="4" cssClass="col-md-4">
+                                            <iais:input maxLength="2" type="text" name="ages" value="${age}" onblur='checkAge(this)'/>
+                                            <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                        </iais:value>
+                                        <iais:value width="3" cssClass="col-md-3">
+                                            <input type="checkbox" name ="ageCheckNameNew" value = "" checked=""  disabled ="true"></input>
+                                        </iais:value>
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
                                             <h4 class="text-danger">
                                                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index+1}')"></em>
                                             </h4>
                                         </div>
-                                    </c:if>
-                                </iais:row>
-                            </c:forEach>
-                        </c:otherwise>
+                                    </iais:row>
+                                </c:forEach>
+                            </div>
+                        </c:when>
                     </c:choose>
 
 
@@ -219,7 +219,7 @@
         dikChange();
         arCentreChange();
         <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-        //disableContent('div.donorSample');
+        disableContent('div.donorSample');
         //unDisableContent('div.donorSampleAdd');
         </c:if>
     });
@@ -248,10 +248,13 @@
         var str = "<div class=\"form-group\" id =\"donorAge" +index +
             "\">\n" +
             "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
-            "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
+            "                            <div class=\"col-sm-4 col-md-2 col-xs-4 col-md-4\">\n" +
             "                                <input type=\"text\" name=\"ages\" maxlength=\"2\" onblur='checkAge(this)' autocomplete=\"off\">\n" +
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +
+            "<div class=\"col-sm-4 col-md-2 col-xs-3 col-md-3\">\n" +
+            "                                            <input type=\"checkbox\" name=\"ageCheckNameNew\" value=\"\" checked=\"\" disabled =\"true\">\n" +
+            "                                        </div>"+
             "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
             "                               <h4 class=\"text-danger\">"+
             "<em class=\"fa fa-times-circle del-size-36 removeBtn cursorPointer\" class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index+ "')\"></em>"+

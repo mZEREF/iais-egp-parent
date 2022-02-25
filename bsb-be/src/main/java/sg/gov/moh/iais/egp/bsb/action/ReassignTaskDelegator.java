@@ -26,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.TaskView;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,19 +99,19 @@ public class ReassignTaskDelegator {
             List<String> aoUserIds = new ArrayList<>(tasks.size());
             List<String> hmUserIds = new ArrayList<>(tasks.size());
             //get the do/ao/hm user id from task
-            setUserIdList(tasks,doUserIds,aoUserIds,hmUserIds);
+            setUserIdList(tasks, doUserIds, aoUserIds, hmUserIds);
             //
             List<OrgUserDto> userDtoList = new ArrayList<>();
             if (curRoleId.equals(ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
-                userDtoList=organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
+                userDtoList = organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
             } else if (curRoleId.equals(ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
-                userDtoList=organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
+                userDtoList = organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
             } else if (curRoleId.equals(ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
-                userDtoList=organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
+                userDtoList = organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
             }
             Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
             //set current owner by current role and the user id from task
-            setTaskCurOwner(tasks,curRoleId,userDtoMap);
+            setTaskCurOwner(tasks, curRoleId, userDtoMap);
             //
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, tasks);
         } else {
@@ -124,7 +125,7 @@ public class ReassignTaskDelegator {
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, curRoleId);
     }
 
-    private void setUserIdList(List<TaskView> tasks,List<String> doUserIds,List<String> aoUserIds,List<String> hmUserIds){
+    private void setUserIdList(List<TaskView> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
         for (TaskView task : tasks) {
             if (task.getApplication() != null) {
                 if (StringUtils.hasLength(task.getApplication().getDoUserId())) {
@@ -140,7 +141,7 @@ public class ReassignTaskDelegator {
         }
     }
 
-    private void setTaskCurOwner(List<TaskView> tasks,String curRoleId,Map<String, OrgUserDto> userDtoMap){
+    private void setTaskCurOwner(List<TaskView> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
         for (TaskView task : tasks) {
             if (task.getApplication() != null) {
                 if (curRoleId.equals(ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
@@ -205,24 +206,16 @@ public class ReassignTaskDelegator {
     public void preReassignData(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
         HttpServletRequest request = bpc.request;
-        String maskedTaskId = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        if (StringUtils.hasLength(maskedTaskId)) {
-            if (log.isInfoEnabled()) {
-                log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
-            }
-            String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
-            if (taskId == null || taskId.equals(maskedTaskId)) {
-                throw new IaisRuntimeException("Invalid masked task ID");
-            }
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            String curRoleId = loginContext.getCurRoleId();
-            List<OrgUserDto> dtoList = organizationClient.retrieveOrgUserAccountByRoleId(curRoleId).getEntity();
+        MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
+        //
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String curRoleId = loginContext.getCurRoleId();
+        List<OrgUserDto> dtoList = organizationClient.retrieveOrgUserAccountByRoleId(curRoleId).getEntity();
 
-            List<SelectOption> opts = new ArrayList<>();
-            dtoList.forEach(orgUserDto -> opts.add(new SelectOption(MaskUtil.maskValue(MASK_USER_ID, orgUserDto.getId()), orgUserDto.getUserId())));
-            ParamUtil.setSessionAttr(request, USER_OPTION, (Serializable) opts);
-            ParamUtil.setSessionAttr(request, TASK_ID, taskId);
-        }
+        List<SelectOption> opts = new ArrayList<>();
+        dtoList.forEach(orgUserDto -> opts.add(new SelectOption(MaskUtil.maskValue(MASK_USER_ID, orgUserDto.getId()), orgUserDto.getUserId())));
+        ParamUtil.setSessionAttr(request, USER_OPTION, (Serializable) opts);
+
     }
 
     public void validateReassign(BaseProcessClass bpc) {
@@ -239,8 +232,8 @@ public class ReassignTaskDelegator {
             String userId = MaskUtil.unMaskValue(MASK_USER_ID, maskedUserId);
             ParamUtil.setRequestAttr(request, USER_ID, userId);
         } else {
-            Map<String,String> errorMap = Maps.newHashMapWithExpectedSize(1);
-            errorMap.put(USER_ID,"This is a mandatory field");
+            Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
+            errorMap.put(USER_ID, "This is a mandatory field");
             validationResultDto.setErrorMap(errorMap);
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
@@ -251,12 +244,16 @@ public class ReassignTaskDelegator {
 
     public void reassignTask(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String userId = ParamUtil.getRequestString(request,USER_ID);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String curRoleId = loginContext.getCurRoleId();
+        String userId = ParamUtil.getRequestString(request, USER_ID);
         String taskId = ParamUtil.getRequestString(request, TASK_ID);
-        ResponseDto<String> responseDto = bsbTaskClient.reassignTask(taskId, userId);
-        if (responseDto.ok()){
+        String appId = ParamUtil.getRequestString(request, USER_ID);
+        MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
+        ResponseDto<String> responseDto = bsbTaskClient.reassignTask(taskId, userId, appId, curRoleId);
+        if (responseDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "Task has been reassigned successfully!");
-        }else {
+        } else {
             ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "Fail to reassign this task!");
         }
     }

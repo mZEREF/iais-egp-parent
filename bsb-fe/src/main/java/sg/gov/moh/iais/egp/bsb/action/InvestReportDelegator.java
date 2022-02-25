@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.InvestReportClient;
+import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -33,7 +33,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
-import sg.gov.moh.iais.egp.bsb.dto.report.notification.IncidentNotificationDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -61,16 +60,16 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class InvestReportDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
-    private final InvestReportClient investReportClient;
+    private final IncidentInvestigationReportClient incidentInvestigationReportClient;
     private static final String PARAM_REFERENCE_NO = "refNo";
     private static final String PARAM_INCIDENT_DTO = "incidentDto";
     private static final String KEY_EDIT_REF_ID = "editId";
     private static final String KEY_DRAFT = "draft";
 
-    public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, InvestReportClient investReportClient) {
+    public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, IncidentInvestigationReportClient incidentInvestigationReportClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
-        this.investReportClient = investReportClient;
+        this.incidentInvestigationReportClient = incidentInvestigationReportClient;
     }
 
     public void start(BaseProcessClass bpc){
@@ -160,7 +159,7 @@ public class InvestReportDelegator {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         if(StringUtils.hasLength(maskReferenceNo)){
-            IncidentDto incidentDto = investReportClient.queryIncidentByRefNo(referenceNo);
+            IncidentDto incidentDto = incidentInvestigationReportClient.queryIncidentByRefNo(referenceNo);
             ParamUtil.setSessionAttr(request,PARAM_INCIDENT_DTO,incidentDto);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
@@ -342,7 +341,7 @@ public class InvestReportDelegator {
                 InvestReportDto investReportDto = InvestReportDto.from(investRepoRoot);
                 AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                 investReportDto.setAuditTrailDto(auditTrailDto);
-                ResponseDto<String> responseDto = investReportClient.saveNewIncidentInvest(investReportDto);
+                ResponseDto<String> responseDto = incidentInvestigationReportClient.saveNewIncidentInvest(investReportDto);
                 if(log.isInfoEnabled()){
                     log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
                 }
@@ -504,7 +503,7 @@ public class InvestReportDelegator {
     }
 
     public List<SelectOption> tempReferenceNoOps(){
-        List<String> referNoList  = investReportClient.queryAllRefNo();
+        List<String> referNoList = incidentInvestigationReportClient.queryAllRefNo();
         if(CollectionUtils.isEmpty(referNoList)){
             return originalOps();
         }
@@ -580,7 +579,7 @@ public class InvestReportDelegator {
 
         // save data
         InvestReportDto finalAllDataDto = InvestReportDto.from(investRepoRoot);
-        String draftAppNo = investReportClient.saveDraftInvestigationReport(finalAllDataDto);
+        String draftAppNo = incidentInvestigationReportClient.saveDraftInvestigationReport(finalAllDataDto);
         // set draft app No. into the NodeGroup
         ReferNoSelectionDto referNoSelectionDto = (ReferNoSelectionDto) ((SimpleNode) investRepoRoot.at(NODE_NAME_REFERENCE_NO_SELECTION)).getValue();
         referNoSelectionDto.setDraftAppNo(draftAppNo);

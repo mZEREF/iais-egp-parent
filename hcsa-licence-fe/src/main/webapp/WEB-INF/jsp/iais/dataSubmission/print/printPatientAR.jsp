@@ -5,9 +5,5 @@
 
 <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
 <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
-<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-    <%@include file="../assistedReproduction/common/dsAmendment.jsp" %>
-</c:if>
-<c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
-    <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
-</c:if>
+<%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
+<%@include file="../assistedReproduction/common/arDeclaration.jsp" %>

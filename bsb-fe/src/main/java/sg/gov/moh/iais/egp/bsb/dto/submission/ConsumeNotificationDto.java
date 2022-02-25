@@ -115,7 +115,7 @@ public class ConsumeNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ConsumeNotNeed {
+    public static class ConsumeBatDto {
         private String scheduleType;
         private String bat;
         private String consumeType;
@@ -127,10 +127,10 @@ public class ConsumeNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class ConsumeNotNeedR {
+    public static class ConsumeDto {
         private String dataSubmissionType;
         private String draftAppNo;
-        private List<ConsumeNotNeed> needList;
+        private List<ConsumeBatDto> needList;
         private String facId;
         private String remarks;
         private String ensure;
@@ -304,28 +304,28 @@ public class ConsumeNotificationDto implements Serializable {
      *
      * @return ConsumeNotNeedR
      */
-    public ConsumeNotNeedR getConsumeNotNeedR() {
+    public ConsumeDto getConsumeNotNeedR() {
         //get doc need validation
-        List<ConsumeNotNeed> consumeNotNeeds = consumptionNotList.stream().map(t -> {
-            ConsumeNotNeed consumeNotNeed = new ConsumeNotNeed();
-            consumeNotNeed.setScheduleType(t.getScheduleType());
-            consumeNotNeed.setConsumeType(t.getConsumeType());
-            consumeNotNeed.setConsumedQty(t.getConsumedQty());
-            consumeNotNeed.setBat(t.getBat());
-            consumeNotNeed.setMeaUnit(t.getMeaUnit());
-            consumeNotNeed.setIndex(t.getIndex());
-            return consumeNotNeed;
+        List<ConsumeBatDto> consumeBatDtos = consumptionNotList.stream().map(t -> {
+            ConsumeBatDto consumeBatDto = new ConsumeBatDto();
+            consumeBatDto.setScheduleType(t.getScheduleType());
+            consumeBatDto.setConsumeType(t.getConsumeType());
+            consumeBatDto.setConsumedQty(t.getConsumedQty());
+            consumeBatDto.setBat(t.getBat());
+            consumeBatDto.setMeaUnit(t.getMeaUnit());
+            consumeBatDto.setIndex(t.getIndex());
+            return consumeBatDto;
         }).collect(Collectors.toList());
-        ConsumeNotNeedR consumeNotNeedR = new ConsumeNotNeedR();
-        consumeNotNeedR.setNeedList(consumeNotNeeds);
-        consumeNotNeedR.setEnsure(this.ensure);
-        consumeNotNeedR.setRemarks(this.remarks);
-        consumeNotNeedR.setFacId(this.facId);
-        consumeNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
-        consumeNotNeedR.setDocMetas(this.docMetaInfos);
-        consumeNotNeedR.setDraftAppNo(this.draftAppNo);
-        consumeNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_CONSUME);
-        return consumeNotNeedR;
+        ConsumeDto consumeDto = new ConsumeDto();
+        consumeDto.setNeedList(consumeBatDtos);
+        consumeDto.setEnsure(this.ensure);
+        consumeDto.setRemarks(this.remarks);
+        consumeDto.setFacId(this.facId);
+        consumeDto.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        consumeDto.setDocMetas(this.docMetaInfos);
+        consumeDto.setDraftAppNo(this.draftAppNo);
+        consumeDto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_CONSUME);
+        return consumeDto;
     }
 
     /**
@@ -372,8 +372,8 @@ public class ConsumeNotificationDto implements Serializable {
 
     //------------------------------------------Validation---------------------------------------------
     public boolean doValidation() {
-        ConsumeNotNeedR consumeNotNeedR = getConsumeNotNeedR();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateConsumeNot", new Object[]{consumeNotNeedR});
+        ConsumeDto consumeDto = getConsumeNotNeedR();
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateConsumeNot", new Object[]{consumeDto});
         return validationResultDto.isPass();
     }
 

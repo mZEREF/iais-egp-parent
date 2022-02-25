@@ -23,15 +23,16 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * CommonDelegator
@@ -392,6 +393,24 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }*/
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if (isRfc(bpc.request)){
+            ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+            ArCurrentInventoryDto arCurrentInventoryDto = ArCurrentInventoryDto.addChange(DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request), arChangeInventoryDto);
+            if (arCurrentInventoryDto.getFrozenOocyteNum() < 0
+                    || arCurrentInventoryDto.getFreshOocyteNum() < 0
+                    || arCurrentInventoryDto.getThawedOocyteNum() < 0
+                    || arCurrentInventoryDto.getFrozenEmbryoNum() < 0
+                    || arCurrentInventoryDto.getFreshEmbryoNum() < 0
+                    || arCurrentInventoryDto.getThawedEmbryoNum() < 0
+                    || arCurrentInventoryDto.getFrozenSpermNum() < 0) {
+                errorMap.put("inventoryLessZero","Patient's inventory cannot be less than zero");
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+        }
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,

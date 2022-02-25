@@ -27,7 +27,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto();
-
+        String errMsg =  MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field");
         if(treatmentDto.getAge()<21 && !treatmentDto.getMaritalStatus().equals(DataSubmissionConsts.MARITAL_STATUS_MARRIED)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getGuardianName())){
                 errMap.put("guardianName", "GENERAL_ERR0006");
@@ -47,7 +47,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
            if(!StringUtil.isEmpty(guardianAppliedPartDto.getGuardianBirthday())){
                try {
                    if(Formatter.compareDateByDay(Formatter.formatDate(guardianAppliedPartDto.getGuardianBirthday())) >0){
-                       errMap.put("guardianBirthday", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                       errMap.put("guardianBirthday",errMsg);
                    }
                }catch (Exception e){
                    log.error(e.getMessage(),e);
@@ -76,7 +76,6 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
             if(!StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartBirthday())){
                 try {
                     if(Formatter.compareDateByDay(Formatter.formatDate(guardianAppliedPartDto.getAppliedPartBirthday())) >0){
-                        String errMsg = MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field");
                         errMap.put("appliedPartBirthday", errMsg);
                     }
                 }catch (Exception e){

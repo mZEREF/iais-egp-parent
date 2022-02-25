@@ -38,36 +38,41 @@ public class MohBeAppViewDelegator {
     public void prepareViewForm(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppViewDto appViewDto = (AppViewDto) ParamUtil.getSessionAttr(request, KEY_APP_VIEW_DTO);
+        ParamUtil.setRequestAttr(request, KEY_APP_VIEW_DTO, appViewDto);
+        request.getSession().removeAttribute(KEY_APP_VIEW_DTO);
         if (appViewDto != null){
             String applicationId = appViewDto.getApplicationId();
-            String processType = appViewDto.getProcessType();
-            String appType = appViewDto.getAppType();
-            switch (processType) {
-                case PROCESS_TYPE_FAC_REG:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        appViewService.retrieveFacReg(request, applicationId);
-                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
-                        appViewService.retrieveDeregistrationFac(request, applicationId);
-                    }
+            String moduleType = appViewDto.getModuleType();
+            switch (moduleType) {
+                case MODULE_VIEW_NEW_FACILITY:
+                    appViewService.retrieveFacReg(request, applicationId);
                     break;
-                case PROCESS_TYPE_APPROVE_POSSESS:
-                case PROCESS_TYPE_APPROVE_LSP:
-                case PROCESS_TYPE_SP_APPROVE_HANDLE:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        appViewService.retrieveApprovalApp(request, applicationId);
-                    }else if (appType.equals(APP_TYPE_CANCEL)){
-                        appViewService.retrieveCancellationApproval(request, applicationId);
-                    }
+                case MODULE_VIEW_DEREGISTRATION_FACILITY:
+                    appViewService.retrieveDeregistrationFac(request, applicationId);
                     break;
-                case PROCESS_TYPE_FAC_CERTIFIER_REG:
-                    if (appType.equals(APP_TYPE_NEW)){
-                        appViewService.retrieveFacCerReg(request, applicationId);
-                    }else if (appType.equals(APP_TYPE_DEREGISTRATION)){
-                        appViewService.retrieveDeRegistrationAFC(request, applicationId);
-                    }
+                case MODULE_VIEW_NEW_APPROVAL_APP:
+                    appViewService.retrieveApprovalApp(request, applicationId);
+                    break;
+                case MODULE_VIEW_CANCELLATION_APPROVAL_APP:
+                    appViewService.retrieveCancellationApproval(request, applicationId);
+                    break;
+                case MODULE_VIEW_NEW_FAC_CER_REG:
+                    appViewService.retrieveFacCerReg(request, applicationId);
+                    break;
+                case MODULE_VIEW_DEREGISTRATION_FAC_CER_REG:
+                    appViewService.retrieveDeRegistrationAFC(request, applicationId);
+                    break;
+                case KEY_DATA_SUBMISSION_TYPE_CONSUME:
+                case KEY_DATA_SUBMISSION_TYPE_DISPOSAL:
+                case KEY_DATA_SUBMISSION_TYPE_EXPORT:
+                case KEY_DATA_SUBMISSION_TYPE_TRANSFER:
+                case KEY_DATA_SUBMISSION_TYPE_RECEIPT:
+                case KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT:
+                case KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY:
+                    appViewService.retrieveDataSubmissionInfo(request,applicationId);
                     break;
                 default:
-                    log.info("don't have such processType {}", StringUtils.normalizeSpace(processType));
+                    log.info("don't have such moduleType {}", StringUtils.normalizeSpace(moduleType));
                     break;
             }
         }

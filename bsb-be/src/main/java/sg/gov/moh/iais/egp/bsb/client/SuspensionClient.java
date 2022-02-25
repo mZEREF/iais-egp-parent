@@ -14,47 +14,45 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author tangtang
- **/
+
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
 public interface SuspensionClient {
-    @GetMapping(path = "/bsbSuspension/getSuspensionDataByApprovalId/{appId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<SuspensionReinstatementDto> getSuspensionDataByApprovalId(@PathVariable("appId") String approvalId);
+    @GetMapping(path = "/suspension/init-data/{approvalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<SuspensionReinstatementDto> getSuspensionDataByApprovalId(@PathVariable("approvalId") String approvalId);
 
-    @GetMapping(path = "/bsbSuspension/getSuspensionDataByApplicationId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/suspension/init-data", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<SuspensionReinstatementDto> getSuspensionDataByApplicationId(@RequestParam("appId") String applicationId);
 
-    @PostMapping(path = "/bsbSuspension/validate/suspension", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/suspension/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateSuspensionDto(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/doSuspension", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/do-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doSuspension(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/aoSuspension", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/ao-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> aoSuspension(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/hmSuspension", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/hm-process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> hmSuspension(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/doReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/doReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doReinstatement(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/aoReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/aoReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> aoReinstatement(@RequestBody SuspensionReinstatementDto dto);
 
-    @PostMapping(value = "/bsbSuspension/hmReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/hmReinstatement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> hmReinstatement(@RequestBody SuspensionReinstatementDto dto);
 
-    @GetMapping(value = "/bsbSuspension/job/needRemindApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/suspension/job/needRemindApproval", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<ApprovalDto>>> getNeedRemindApproval(@RequestBody Map<String, LocalDate> dateMap);
 
-    @GetMapping(value = "/bsbSuspension/job/needSuspendApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/suspension/job/needSuspendApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApprovalDto>> getNeedSuspendApprovals();
 
-    @GetMapping(value = "/bsbSuspension/job/needReinstateApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/suspension/job/needReinstateApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApprovalDto>> getNeedReinstateApprovals();
 
-    @PostMapping(value = "/bsbSuspension/job/allNeedUpdate", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/suspension/job/allNeedUpdate", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateAllNeedUpdateApproval(@RequestBody Map<String, List<ApprovalDto>> map);
 }

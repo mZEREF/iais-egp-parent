@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -75,12 +77,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
             iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
         }
             String pleaseIndicateIui = ParamUtil.getString(bpc.request, "pleaseIndicateIui");
-            String thereAppeal=ParamUtil.getRequestString(bpc.request,"thereAppeal");
+            String thereAppeal = ParamUtil.getRequestString(bpc.request, "thereAppeal");
             iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
             iuiTreatmentSubsidiesDto.setThereAppeal(Boolean.parseBoolean(thereAppeal));
             arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-
             ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
@@ -89,5 +89,18 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
                 return;
             }
+            if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
+                valRFC(bpc.request,iuiTreatmentSubsidiesDto);
+            }
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+    protected void valRFC(HttpServletRequest request, IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto()!= null && iuiTreatmentSubsidiesDto.equals(arOldSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

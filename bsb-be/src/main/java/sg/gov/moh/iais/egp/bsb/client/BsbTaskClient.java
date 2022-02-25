@@ -26,7 +26,7 @@ public interface BsbTaskClient {
     ResponseDto<String> assignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId, @RequestParam("appId") String appId, @RequestParam("roleId")String curRoleId);
 
     @PutMapping(value = "/task/reassign", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> reassignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId);
+    ResponseDto<String> reassignTask(@RequestParam("taskId") String taskId, @RequestParam("userId") String userId, @RequestParam("appId") String appId, @RequestParam("roleId")String curRoleId);
 
     @PutMapping(value = "/task/assign/multi", produces = MediaType.APPLICATION_JSON_VALUE)
     List<TaskAssignDto> assignMultiTasks(List<TaskAssignDto> taskAssignDtoList);

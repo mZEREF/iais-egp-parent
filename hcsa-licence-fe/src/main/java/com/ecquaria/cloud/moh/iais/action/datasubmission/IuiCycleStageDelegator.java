@@ -69,6 +69,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"iuiCycleStageInit")) && isRfc(request)){
             arSuperDataSubmission.getIuiCycleStageDto().setOldDonorDtos(IaisCommonUtils.isNotEmpty(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) ?(List<DonorDto>) CopyUtil.copyMutableObjectList(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()) : null);
             DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission),request);
+            initOldDonorSelectSession(request,2);
         }
     }
 

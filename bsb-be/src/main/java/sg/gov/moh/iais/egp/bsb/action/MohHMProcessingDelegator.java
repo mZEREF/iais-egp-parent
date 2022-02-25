@@ -70,8 +70,8 @@ public class MohHMProcessingDelegator {
         ParamUtil.setSessionAttr(request, KEY_HM_SCREENING_DTO, hmScreeningDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, hmScreeningDto.getSubmitDetailsDto());
         //view application process need an applicationDto
-        appViewService.createAndSetAppViewDtoInSession(appId, hmScreeningDto.getSubmitDetailsDto().getProcessType(),
-                hmScreeningDto.getSubmitDetailsDto().getAppType(), request);
+        String moduleType = appViewService.judgeProcessAppModuleType(hmScreeningDto.getSubmitDetailsDto().getProcessType(), hmScreeningDto.getSubmitDetailsDto().getAppType());
+        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInSession(hmScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

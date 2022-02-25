@@ -24,7 +24,7 @@
         line-height: 0px;
     }
     .table-info-display {
-        margin: 20px 15px 25px 12px;
+        margin: 20px 0px 25px 0px;
         background: #efefef;
         padding: 8px;
         border-radius: 8px;

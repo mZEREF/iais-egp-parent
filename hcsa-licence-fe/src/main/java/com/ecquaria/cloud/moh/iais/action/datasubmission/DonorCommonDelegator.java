@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
@@ -13,12 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +32,13 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
     private final static String ADD_DONOR_MAX_SIZE               ="arAddDonorMaxSize";
-
+    private final static String OLD_DONORS_SELECTED               ="oldDonorsSelected";
     protected void setDonorUserSession(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
         ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
         ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
         ParamUtil.setSessionAttr(request, ADD_DONOR_MAX_SIZE,SystemParamUtil.getSystemParamConfig().getArAddDonorMaxSize());
+        ParamUtil.clearSession(request,OLD_DONORS_SELECTED);
     }
     protected void actionArDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
@@ -115,11 +117,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 arDonorDtos.forEach( donorDto -> {
                     if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor){
                             errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor","field"));
-                        setDonorDtoByDonorSampleDto(donorDto,donorSampleDto);
+                        setDonorDtoByDonorSampleDto(donorDto,donorSampleDto,request);
                     }
                 });
                 if(errorMap.isEmpty()){
-                    setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto);
+                    setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto,request);
                 }else {
                     clearDonorAges(arDonorDto);
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -128,8 +130,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         }
     }
 
-    private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, DonorSampleDto donorSampleDto){
+    private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, DonorSampleDto donorSampleDto,HttpServletRequest request){
         arDonorDto.setDonorIdentityKnown(donorSampleDto.getDonorIdentityKnown());
+        setRfcDonorSelectData(request,donorSampleDto);
         List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
         arDonorDto.setDonorSampleAgeDtos(ages);
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
@@ -141,6 +144,30 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         if(IaisCommonUtils.isNotEmpty(ages)){
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
+        }
+    }
+
+    private  void setRfcDonorSelectData(HttpServletRequest request,DonorSampleDto donorSampleDto){
+        if(isRfc(request)){
+            List<DonorSampleAgeDto> oldDonorSampleAgeDtos =(List<DonorSampleAgeDto>) ParamUtil.getSessionAttr(request,OLD_DONORS_SELECTED);
+            if(IaisCommonUtils.isNotEmpty(oldDonorSampleAgeDtos)){
+                List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
+                for (DonorSampleAgeDto donorSampleAgeDto : oldDonorSampleAgeDtos){
+                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorSampleAgeDto.getSampleKey())){
+                        boolean isHaveSel = false;
+                        for (DonorSampleAgeDto donorSampleAgeDtoF : ages) {
+                            if(donorSampleAgeDtoF.getId().equalsIgnoreCase(donorSampleAgeDto.getId())){
+                                isHaveSel = true;break;
+                            }
+                        }
+                        if(!isHaveSel){
+                            donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                            ages.add(donorSampleAgeDto);
+                        }
+                    }
+                }
+                Collections.sort(ages,Comparator.comparingInt(DonorSampleAgeDto::getAge));
+            }
         }
     }
 
@@ -287,4 +314,31 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         return AppConsts.YES;
     }
 
+    //1 -> ar , 2 -> iui
+    protected void initOldDonorSelectSession(HttpServletRequest request,int stage){
+        if(isRfc(request)){
+            List<DonorDto> arDonorDtos = null;
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            if(stage == 1 && arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getArCycleStageDto()!= null){
+                arDonorDtos = arSuperDataSubmissionDto.getArCycleStageDto().getOldDonorDtos();
+            }else if(stage == 2 && arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getIuiCycleStageDto()!= null){
+                arDonorDtos = arSuperDataSubmissionDto.getIuiCycleStageDto().getOldDonorDtos();
+            }
+            if(IaisCommonUtils.isNotEmpty(arDonorDtos)){
+                List<DonorSampleAgeDto> donorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
+                for (DonorDto donorDto : arDonorDtos){
+                    if(IaisCommonUtils.isNotEmpty(donorDto.getDonorSampleAgeDtos())){
+                        for (DonorSampleAgeDto donorSampleAgeDto : donorDto.getDonorSampleAgeDtos()) {
+                            if(donorSampleAgeDto.getId().equalsIgnoreCase(donorDto.getAge())){
+                                donorSampleAgeDtos.add(donorSampleAgeDto);
+                                break;
+                            }
+                        }
+                    }
+                }
+                ParamUtil.setSessionAttr(request,OLD_DONORS_SELECTED,(Serializable) donorSampleAgeDtos);
+            }
+        }
+
+    }
 }

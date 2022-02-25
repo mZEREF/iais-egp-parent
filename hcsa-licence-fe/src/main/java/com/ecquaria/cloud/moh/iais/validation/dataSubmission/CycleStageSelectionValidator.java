@@ -34,25 +34,22 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
         }
         if ("save".equals(profile)) {
             CycleStageSelectionDto selectionDto = (CycleStageSelectionDto) obj;
-            if (StringUtil.isNotEmpty(selectionDto.getStage()) && !selectionDto.isUndergoingCycle()) {
-                //3.3.3.1(4)
-                CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, null, null, null);
-                if (DsHelper.isNormalCycle(cycleDto.getCycleType())) {
-                    ArDataSubmissionService service = SpringHelper.getBean(ArDataSubmissionService.class);
-                    Date lastStartDate = service.getLastCompletedCycleStartDate(selectionDto.getPatientCode(),
-                            selectionDto.getHciCode());
-                    String period = MasterCodeUtil.getCodeDesc("DS_CP_001");
-                    if (lastStartDate != null && StringUtil.isDigit(period)) {
-                        try {
-                            int p = Integer.parseInt(period);
-                            int target = Formatter.compareDateByDay(new Date(), lastStartDate);
-                            log.info(StringUtil.changeForLog("Overlap Period: " + p + " - Acutual Period: " + target));
-                            if (target <= p) {
-                                errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
-                            }
-                        } catch (Exception e) {
-                            log.info(StringUtil.changeForLog(e.getMessage()), e);
+            //3.3.3.1(4)
+            if (DsHelper.isStartStage(selectionDto.getStage()) && !selectionDto.isUndergoingCycle()) {
+                ArDataSubmissionService service = SpringHelper.getBean(ArDataSubmissionService.class);
+                Date lastStartDate = service.getLastCompletedCycleStartDate(selectionDto.getPatientCode(),
+                        selectionDto.getHciCode());
+                String period = MasterCodeUtil.getCodeDesc("DS_CP_001");
+                if (lastStartDate != null && StringUtil.isDigit(period)) {
+                    try {
+                        int p = Integer.parseInt(period);
+                        int target = Formatter.compareDateByDay(new Date(), lastStartDate);
+                        log.info(StringUtil.changeForLog("Overlap Period: " + p + " - Acutual Period: " + target));
+                        if (target <= p) {
+                            errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
                         }
+                    } catch (Exception e) {
+                        log.info(StringUtil.changeForLog(e.getMessage()), e);
                     }
                 }
             }

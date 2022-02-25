@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -93,8 +94,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private DsLicenceService dsLicenceService;
-
-    private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
@@ -285,19 +284,18 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         boolean islinkableCycle = false;
         boolean isNonCycle = false;
         if (selectionDto != null) {
-            islinkableCycle = StringUtil.isIn(selectionDto.getCycle(), new String[]{
-                    DataSubmissionConsts.DS_CYCLE_AR,
-                    DataSubmissionConsts.DS_CYCLE_IUI,
-                    DataSubmissionConsts.DS_CYCLE_EFO});
+            islinkableCycle = DsHelper.isNormalCycle(selectionDto.getCycle());
             isNonCycle = DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle());
             if (islinkableCycle && selectionDto.getLastCycleDto() != null
-                    && !statuses.contains(selectionDto.getLastCycleDto().getStatus())
+                    && !DsHelper.isCycleFinalStatus(selectionDto.getLastCycleDto().getStatus())
+                    && !DsHelper.isStartStage(selectionDto.getStage())
                     && selectionDto.getLastDataSubmission() != null) {
                 submissionNo = selectionDto.getLastDataSubmission().getSubmissionNo();
             } else if (isNonCycle && selectionDto.getLastCycleDto() != null
                     && DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getLatestCycleDto().getCycleType())
                     && selectionDto.getLatestDataSubmission() != null) {
-                submissionNo = selectionDto.getLatestDataSubmission().getSubmissionNo();
+                // 79177
+                // submissionNo = selectionDto.getLatestDataSubmission().getSubmissionNo();
             }
         }
         synchronized (this) {
@@ -331,7 +329,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 arSubFreezingStageDto.setCryopreservedNum(null);
                 log.info("Freezing invalid cryopreservedNum");
             }
-        }else {
+        } else {
             arSubFreezingStageDto.setCryopreservedNum(null);
         }
         if (!StringUtil.isEmpty(cryopreservationDate)) {
@@ -342,7 +340,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 arSubFreezingStageDto.setCryopreservedDate(null);
                 log.info("Freezing invalid cryopreservationDate");
             }
-        }else {
+        } else {
             arSubFreezingStageDto.setCryopreservedDate(null);
         }
         return arSubFreezingStageDto;
@@ -387,7 +385,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         cycleDto.setPatientCode(patientCode);
         cycleDto.setHciCode(hciCode);
         cycleDto.setCycleType(cycleType);
-        cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? statuses : Arrays.asList(status));
+        cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? DsHelper.getDsCycleFinalStatus() : Arrays.asList(status));
         return arFeClient.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(cycleDto).getEntity();
     }
 
@@ -410,10 +408,25 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public DonorSampleDto getDonorSampleDto(boolean directedDonation,String idType, String idNumber,String donorSampleCodeType,String donorSampleCode) {
+    public DonorSampleDto getDonorSampleDto(boolean directedDonation, String idType, String idNumber, String donorSampleCodeType,
+            String donorSampleCode) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
-                (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
-                idType, idNumber,donorSampleCodeType, donorSampleCode).getEntity();
+                (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(
+                        donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
+                idType, idNumber, donorSampleCodeType, donorSampleCode).getEntity();
+    }
+
+    @Override
+    public DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto) {
+        String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(
+                donorSampleDto.getIdType(),
+                new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC, DataSubmissionConsts.AR_ID_TYPE_BLUE_IC, DataSubmissionConsts.AR_ID_TYPE_FIN_NO, DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
+        return getDonorSampleDto(donorSampleDto.isDirectedDonation(),
+                donorSampleDto.getIdType()
+                , donorSampleDto.getIdNumber()
+                , donorSampleCodeType
+                , DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(
+                        donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber());
     }
 
     @Override
@@ -423,7 +436,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
                 iuiCycleStageDto.setOwnPremises(true);
-              iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
+                iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
             }
             //set patient age show
             PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
@@ -466,7 +479,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
         if (arSuperDataSubmission != null) {
             ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
-            if(arSubFreezingStageDto == null) {
+            if (arSubFreezingStageDto == null) {
                 arSubFreezingStageDto = new ArSubFreezingStageDto();
                 arSubFreezingStageDto.setCryopreservedType(DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE);
                 arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
@@ -496,7 +509,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public List<DonorDto> getAllDonorDtoByCycleId(String cycleId) {
-        if (StringUtil.isEmpty(cycleId)){
+        if (StringUtil.isEmpty(cycleId)) {
             log.info(StringUtil.changeForLog("------ No cycle Id -----"));
             return IaisCommonUtils.genNewArrayList(0);
         }
@@ -649,7 +662,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (embryoTransferStageDto == null) {
             return false;
         }
-        return greaterFourDay(embryoTransferStageDto.getFirstEmbryoAge()) || greaterFourDay(embryoTransferStageDto.getSecondEmbryoAge())
+        return greaterFourDay(embryoTransferStageDto.getFirstEmbryoAge()) || greaterFourDay(
+                embryoTransferStageDto.getSecondEmbryoAge())
                 || greaterFourDay(embryoTransferStageDto.getThirdEmbryoAge());
     }
 
@@ -665,10 +679,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         List<CycleDto> overDayCycleDtos = arFeClient.getOverDayNotCompletedCycleDto(firstDays).getEntity();
         List<String> overDayLicenseeId = getLicenseeList(overDayCycleDtos);
 
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
         String msgSubject = msgTemplateDto.getTemplateName();
 
-        MsgTemplateDto perMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
+        MsgTemplateDto perMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
         String perMsgSubject = perMsgTemplateDto.getTemplateName();
 
 
@@ -727,7 +743,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @SneakyThrows
     private void sendFirstNotification(String licenseeId) {
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
         EmailParam msgParam = new EmailParam();
@@ -741,7 +758,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         notificationHelper.sendNotification(msgParam);
 
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL).getEntity();
+        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL).getEntity();
         Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(), subjectMap);
         EmailParam eamilParam = new EmailParam();
@@ -758,7 +776,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @SneakyThrows
     private void sendPerNotification(String licenseeId) {
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
         EmailParam msgParam = new EmailParam();
@@ -774,8 +793,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto) {
-        return StringUtil.allStringIsNull(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()) ?
-                0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(),patientDto.getIdNumber(),patientDto.getNationality()).getEntity();
+        return StringUtil.allStringIsNull(patientDto.getIdType(), patientDto.getIdNumber(), patientDto.getNationality()) ?
+                0 : arFeClient.getArCycleStageCountByIdTypeAndIdNoAndNationality(patientDto.getIdType(), patientDto.getIdNumber(),
+                patientDto.getNationality()).getEntity();
     }
 
     @Override
@@ -784,7 +804,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter){
+    public ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter) {
         return arFeClient.getArCurrentInventoryDtoBySubmissionNo(submissionNo, hasAfter).getEntity();
     }
+
 }

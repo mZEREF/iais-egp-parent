@@ -60,6 +60,8 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         pageSize= Integer.valueOf(defaultValue);
         ldtParameter.setPageSize(pageSize);
         ldtParameter.setPageNo(1);
+        ldtParameter.setSortField("ID");
+        ldtParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"dsLaboratoryDevelopTestEnquiryFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "ldtParam",null);
 

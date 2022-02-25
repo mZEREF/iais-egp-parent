@@ -10,7 +10,7 @@ import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.IncidentDraftClient;
+import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
@@ -28,12 +28,12 @@ import java.util.Map;
 @Slf4j
 @Delegator("incidentCheckProcessDelegator")
 public class IncidentCheckProcessDelegator {
-    private final IncidentDraftClient draftClient;
+    private final DraftClient draftClient;
     private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_PROCESS_TYPE = "processType";
     private static final String KEY_DRAFT = "draft";
 
-    public IncidentCheckProcessDelegator(IncidentDraftClient draftClient) {
+    public IncidentCheckProcessDelegator(DraftClient draftClient) {
         this.draftClient = draftClient;
     }
 

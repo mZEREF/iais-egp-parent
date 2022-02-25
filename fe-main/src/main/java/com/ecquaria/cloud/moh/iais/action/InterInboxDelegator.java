@@ -28,11 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -1533,7 +1529,9 @@ public class InterInboxDelegator {
         if(interInboxUserDto != null) {
             Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
             Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
-            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getLicenseeId());
+            InterMessageSearchDto interMessageSearchDto = HalpSearchResultHelper.initInterMessageSearchDto(request);
+            interMessageSearchDto.setLicenseeId(interInboxUserDto.getLicenseeId());
+            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interMessageSearchDto);
             ParamUtil.setRequestAttr(request, "unreadAndresponseNum", unreadAndresponseNum);
             ParamUtil.setRequestAttr(request, "licActiveNum", licActiveNum);
             ParamUtil.setRequestAttr(request, "appDraftNum", appDraftNum);

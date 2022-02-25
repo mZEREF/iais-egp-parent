@@ -13,36 +13,33 @@ import sg.gov.moh.iais.egp.bsb.dto.processderegistration.AOProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.DOProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.processderegistration.HMProcessDto;
 
-/**
- * @author : LiRan
- * @date : 2022/1/21
- */
+
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface ProcessDeregistrationClient {
-    @GetMapping(path = "/deregistration/getDOProcessData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel-be/do-process/init-data/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DOProcessDto> getDOProcessDataByAppId(@PathVariable("applicationId") String applicationId);
 
-    @GetMapping(path = "/deregistration/getAOProcessData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel-be/ao-process/init-data/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AOProcessDto> getAOProcessDataByAppId(@PathVariable("applicationId") String applicationId);
 
-    @GetMapping(path = "/deregistration/getHMProcessData/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deregister-cancel-be/hm-process/init-data/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<HMProcessDto> getHMProcessDataByAppId(@PathVariable("applicationId") String applicationId);
 
-    @PostMapping(path = "/deregistration/validate/doProcessDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/do-process/form-validation/decision", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateDOProcessDto(@RequestBody DOProcessDto doProcessDto);
 
-    @PostMapping(path = "/deregistration/validate/aoProcessDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/ao-process/form-validation/decision", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateAOProcessDto(@RequestBody AOProcessDto aoProcessDto);
 
-    @PostMapping(path = "/deregistration/validate/hmProcessDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/hm-process/form-validation/decision", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateHMProcessDto(@RequestBody HMProcessDto hmProcessDto);
 
-    @PostMapping(path = "/deregistration/saveDOProcessDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/do-process",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveDOProcessDto(@RequestBody DOProcessDto doProcessDto);
 
-    @PostMapping(path = "/deregistration/saveAOProcessDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/ao-process",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAOProcessDto(@RequestBody AOProcessDto aoProcessDto);
 
-    @PostMapping(path = "/deregistration/saveHMProcessDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/deregister-cancel-be/hm-process",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveHMProcessDto(@RequestBody HMProcessDto hmProcessDto);
 }

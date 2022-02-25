@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.egp.bsb.client.TransferClient;
+import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.dto.submission.AckTransferReceiptDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +29,13 @@ import java.util.Map;
 @RequestMapping("/sub-info")
 public class FacilitySubAjaxController {
     @Autowired
-    private  final TransferClient transferClient;
+    private final DataSubmissionClient dataSubmissionClient;
     private static final String ACK_TRANSFER_RECEIPT = "receiptSavedMap";
 
-    public FacilitySubAjaxController(TransferClient transferClient) {
-        this.transferClient = transferClient;
+    public FacilitySubAjaxController(DataSubmissionClient dataSubmissionClient) {
+        this.dataSubmissionClient = dataSubmissionClient;
     }
+
 
     /**
      * this ajax method is used to get biological info by schedule from FacListDto
@@ -49,7 +50,7 @@ public class FacilitySubAjaxController {
         String facId  = MaskUtil.unMaskValue("id",maskFacId);
         if(StringUtils.hasLength(facId) && !maskFacId.equals(facId)){
             HashMap<String, AckTransferReceiptDto.AckTransferReceiptSaved> receiptSavedMap
-                    = new HashMap<>(transferClient.getReceiptDataSubNoMap(facId).getEntity().getReceiptSavedMap());
+                    = new HashMap<>(dataSubmissionClient.getReceiptDataSubNoMap(facId).getEntity().getReceiptSavedMap());
             ParamUtil.setSessionAttr(request,ACK_TRANSFER_RECEIPT, receiptSavedMap);
             List<String> strings = new ArrayList<>(receiptSavedMap.keySet());
             if(!CollectionUtils.isEmpty(strings)) {

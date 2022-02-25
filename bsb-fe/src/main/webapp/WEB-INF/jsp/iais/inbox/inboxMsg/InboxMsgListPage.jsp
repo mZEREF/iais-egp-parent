@@ -95,7 +95,7 @@
                                             </thead>
                                             <tbody>
                                             <c:choose>
-                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.BsbInbox>"--%>
+                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.entity.BsbInboxDto>"--%>
                                                 <c:when test="${empty dataList}">
                                                     <tr>
                                                         <td colspan="6">

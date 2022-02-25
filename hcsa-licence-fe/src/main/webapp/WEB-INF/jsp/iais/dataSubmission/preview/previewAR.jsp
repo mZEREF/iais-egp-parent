@@ -14,9 +14,6 @@
         <%-- AR Patient--%>
         <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
-        <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-            <%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
-        </c:if>
     </c:when>
     <c:when test="${cycleStage == 'DONOR'}">
         <%-- Donor Sample--%>
@@ -104,6 +101,5 @@
     </c:when>
 
 </c:choose>
-<c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
+<%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
-</c:if>

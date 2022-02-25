@@ -15,37 +15,37 @@ import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
 public interface FacilityRegisterClient {
-    @PostMapping(path = "/register/facility/validate/facSelection", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/selection", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilitySelection(@RequestBody FacilitySelectionDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facProfile", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityProfile(@RequestBody FacilityProfileDto.FacilityProfileValidateDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facOperator", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/operator", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOperator(@RequestBody FacilityOperatorDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facAuthoriser", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/authoriser", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityAuthoriser(@RequestBody FacilityAuthoriserDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facAdmin", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/admin", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityAdmin(@RequestBody FacilityAdministratorDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facOfficer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/officer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOfficer(@RequestBody FacilityOfficerDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facCommittee", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/committee", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityCommittee(@RequestBody FacilityCommitteeDto dto);
 
-    @PostMapping(path = "/register/facility/validate/facBat", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);
 
-    @PostMapping(path = "/register/facility/validate/otherAppInfo", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/other-app-info", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOtherAppInfo(@RequestBody OtherApplicationInfoDto dto);
 
-    @PostMapping(path = "/register/facility/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/primary-docs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
-    @PostMapping(path = "/register/facility/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/form-validation/preview-submit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityPreviewSubmit(@RequestBody PreviewSubmitDto dto);
 
     @PostMapping(path = "/register/facility/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -54,21 +54,21 @@ public interface FacilityRegisterClient {
     @PostMapping(path = "/register/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
 
-    @GetMapping(path = "/register/facility/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/register/facility/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApplicationId(@PathVariable("appId") String appId);
 
     /*******************RFC********************/
-    @GetMapping(path = "/register/facility/rfc/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/register/facility/rfc/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
 
-    @PostMapping(path = "/register/facility/rfc/amendment/saveFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/rfc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAmendmentFacility(@RequestBody FacilityRegisterDto dto);
 
     /*******************RENEWAL********************/
-    @GetMapping(path = "/register/facility/renewal/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/register/facility/renewal/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getRenewalFacRegAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
 
-    @PostMapping(path = "/register/facility/renewal/validate/review", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register/facility/renewal/form-validation/review", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateRenewalFacilityReview(@RequestBody FacilityRegistrationReviewDto dto);
 
     @PostMapping(path = "/register/facility/renewal", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
+import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,6 +57,9 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     @Autowired
     private AssistedReproductionService assistedReproductionService;
+
+    @Autowired
+    private AssistedReproductionClient assistedReproductionClient;
     
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS);
@@ -62,6 +68,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         pageSize= Integer.valueOf(defaultValue);
         donorSampleParameter.setPageSize(pageSize);
         donorSampleParameter.setPageNo(1);
+        donorSampleParameter.setSortField("ID");
+        donorSampleParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
 
@@ -210,6 +218,28 @@ public class OnlineEnquiryDonorSampleDelegator {
         ArSuperDataSubmissionDto donorInfo = assistedReproductionService.getArSuperDataSubmissionDto(submissionNo);
         if(StringUtil.isNotEmpty(sampleHciCode)){
             donorInfo.getDonorSampleDto().setSampleFromHciCode(sampleHciCode);
+        }else {
+            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+            Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
+            if(IaisCommonUtils.isNotEmpty(premisesDtos)){
+                for (PremisesDto premisesDto : premisesDtos) {
+                    if(premisesDto!=null){
+                        premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                    }
+                }
+            }
+
+            Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
+            if (!premisesMap.isEmpty()) {
+                for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
+                    map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+                }
+            }
+            if(DataSubmissionConsts.AR_SOURCE_OTHER.equals(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
+                donorInfo.getDonorSampleDto().setSampleFromHciCode("Others - "+donorInfo.getDonorSampleDto().getSampleFromOthers());
+            }else if(StringUtil.isNotEmpty(donorInfo.getDonorSampleDto().getSampleFromHciCode())&&map.containsKey(donorInfo.getDonorSampleDto().getSampleFromHciCode())){
+                donorInfo.getDonorSampleDto().setSampleFromHciCode(map.get(donorInfo.getDonorSampleDto().getSampleFromHciCode()));
+            }
         }
         ParamUtil.setRequestAttr(request,"donorInfoDataSubmissionDto",donorInfo);
     }

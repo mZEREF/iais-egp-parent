@@ -1,6 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
+
+import sg.gov.moh.iais.egp.bsb.constant.AppConstants;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -19,4 +23,7 @@ public class DateUtil {
         return time;
     }
 
+    public static String convertToString(LocalDate localDate){
+        return AppConstants.DEFAULT_DATE_FORMATTER.format(localDate);
+    }
 }

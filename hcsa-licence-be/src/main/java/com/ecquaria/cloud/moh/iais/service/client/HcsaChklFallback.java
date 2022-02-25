@@ -22,13 +22,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 public class HcsaChklFallback implements HcsaChklClient{
 
+    private <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     @Override
     public FeignResponseEntity<String> inActiveConfig(String confId) {
@@ -215,11 +227,8 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> listServiceName() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+    public FeignResponseEntity<List<String>> listServiceName(String type) {
+        return getFeignResponseEntity(type);
     }
 
     @Override

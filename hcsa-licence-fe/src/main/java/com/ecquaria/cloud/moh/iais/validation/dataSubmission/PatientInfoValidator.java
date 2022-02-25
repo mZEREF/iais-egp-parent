@@ -151,7 +151,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                     && !Objects.equals(previousDS.getSubmissionNo(), dataSubmission.getSubmissionNo())) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
             }*/
-            PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
+            PatientDto patientDto = patientService.getActiveArPatientByConds(patient.getIdType(), patient.getIdNumber(),
                     patient.getNationality(), orgId);
             if (patientDto != null && !Objects.equals(patientDto.getPatientCode(), previous.getPatientCode())) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
@@ -174,7 +174,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                 }
             }
         } else {
-            PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
+            PatientDto patientDto = patientService.getActiveArPatientByConds(patient.getIdType(), patient.getIdNumber(),
                     patient.getNationality(), orgId);
             if (patientDto != null) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));

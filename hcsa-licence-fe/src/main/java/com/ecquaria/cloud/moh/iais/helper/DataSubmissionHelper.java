@@ -75,6 +75,7 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
         session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
+        session.removeAttribute(DataSubmissionConstant.LDT_IS_GUIDE);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
@@ -258,16 +259,12 @@ public final class DataSubmissionHelper {
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(lastCycle)) {
-            result.add(DataSubmissionConsts.AR_CYCLE_AR);
-            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+            addStartStages(result);
         } else if (StringUtil.isEmpty(lastStage)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || DsHelper.isCycleFinalStatus(lastStatus)) {
             if (!undergoingCycle) {
-                result.add(DataSubmissionConsts.AR_CYCLE_AR);
-                result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-                result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+                addStartStages(result);
             }
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
@@ -298,6 +295,9 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(lastStage)) {
+                if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
+                    addStartStages(result);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
@@ -321,6 +321,9 @@ public final class DataSubmissionHelper {
             if (DataSubmissionConsts.AR_CYCLE_IUI.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(lastStage)) {
+                if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
+                    addStartStages(result);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
@@ -338,6 +341,12 @@ public final class DataSubmissionHelper {
             }
         }
         return result;
+    }
+
+    private static void addStartStages(List<String> result) {
+        result.add(DataSubmissionConsts.AR_CYCLE_AR);
+        result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+        result.add(DataSubmissionConsts.AR_CYCLE_EFO);
     }
 
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode, String licenseeId) {
@@ -785,11 +794,13 @@ public final class DataSubmissionHelper {
                 File file = next.getValue();
                 long length = file.length();
                 if (length == 0) {
-                    errorMap.put(showErrorField, "MCUPERR004");
+                    log.info("The file length is 0!!!");
+                    errorMap.put(showErrorField, "GENERAL_ACK022");
                 }
                 String filename = file.getName();
                 if (!FileUtils.isCsv(filename) && !FileUtils.isExcel(filename)) {
-
+                    log.info(StringUtil.changeForLog("Invalid file - " + filename));
+                    errorMap.put(showErrorField, "GENERAL_ACK022");
                 }
             }
         }

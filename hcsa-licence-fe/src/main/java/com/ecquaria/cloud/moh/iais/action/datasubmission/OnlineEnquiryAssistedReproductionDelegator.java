@@ -131,15 +131,24 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         pageSize= Integer.valueOf(defaultValue);
         submissionParameter.setPageSize(pageSize);
         submissionParameter.setPageNo(1);
+        submissionParameter.setSortField("SUBMIT_DT");
+        submissionParameter.setSortType(SearchParam.DESCENDING);
         patientParameter.setPageNo(1);
         patientParameter.setPageSize(pageSize);
+        patientParameter.setSortField("ID_NUMBER");
+        patientParameter.setSortType(SearchParam.DESCENDING);
         patientAdvParameter.setPageNo(1);
         patientAdvParameter.setPageSize(pageSize);
+        patientAdvParameter.setSortField("CREATED_DT");
+        patientAdvParameter.setSortType(SearchParam.DESCENDING);
         transactionParameter.setPageNo(1);
         transactionParameter.setPageSize(pageSize);
+        transactionParameter.setSortField("SUBMIT_DT");
+        transactionParameter.setSortType(SearchParam.DESCENDING);
         cycleStageParameter.setPageNo(1);
         cycleStageParameter.setPageSize(pageSize);
         cycleStageParameter.setSortField("CREATED_DT");
+        cycleStageParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Assisted Reproduction Enquiry");
         ParamUtil.setSessionAttr(bpc.request, "patientParam",null);
         ParamUtil.setSessionAttr(bpc.request, "submissionParam",null);
@@ -847,80 +856,81 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String sortType = ParamUtil.getString(request,"crud_action_additional");
 
         if(!"backBase".equals(action)){
+            AssistedReproductionEnquiryFilterDto arFilterDtoOld= (AssistedReproductionEnquiryFilterDto) ParamUtil.getSessionAttr(request,"assistedReproductionEnquiryFilterDto");
+            String searchBy=arFilterDtoOld.getSearchBy();
             AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
-
-            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                if(patientSortFieldNames.contains(sortFieldName)){
-                    patientParameter.setSortType(sortType);
-                    patientParameter.setSortField(sortFieldName);
-                }
-            }
-
-            setQueryFilter(arFilterDto,patientParameter,0);
-            SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
-            if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
-            }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
-            }
-            patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
-            if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
-                String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
-                patientParam.addParam("patient_id_types", patientIdTypeListStr);
-                for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
-                    patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
-                }
-            }
-            if(searchParamForPat!=null){
-                patientParam.setPageNo(searchParamForPat.getPageNo());
-                patientParam.setPageSize(searchParamForPat.getPageSize());
-            }
-            CrudHelper.doPaging(patientParam,bpc.request);
-
-            QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
-
-            SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
-            ParamUtil.setRequestAttr(request,"patientResult",patientResult);
-            ParamUtil.setSessionAttr(request,"patientParam",patientParam);
-            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                if(submissionSortFieldNames.contains(sortFieldName)){
-                    submissionParameter.setSortType(sortType);
-                    submissionParameter.setSortField(sortFieldName);
-                }
-            }
-            setQueryFilter(arFilterDto,submissionParameter,1);
-            SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
-            if(submissionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(submissionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
-            }
-            submissionParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
-            if(searchParamForSub!=null){
-                submissionParam.setPageNo(searchParamForSub.getPageNo());
-                submissionParam.setPageSize(searchParamForSub.getPageSize());
-            }
-            String  pageNo = ParamUtil.getString(request,"pageJumpNoTextchangePage");
-            String[]  pageSize = ParamUtil.getStrings(request,"pageJumpNoPageSize");
-            if(!StringUtil.isEmpty(pageNo)){
-                submissionParam.setPageNo(Integer.parseInt(pageNo));
-            }
-            if(pageSize!=null&&pageSize.length>1&&!StringUtil.isEmpty(pageSize[1])){
-                submissionParam.setPageSize(Integer.parseInt(pageSize[1]));
-            }
-            QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
-            SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
-            if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
-                for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
-                ) {
-                    switch (subResultsDto.getSubmissionType()){
-                        case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
-                        case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stage");break;
-                        case "AR_TP003":subResultsDto.setSubmissionType("Donor Sample");break;
-                        default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+            if("1".equals(arFilterDto.getSearchBy())){
+                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                    if(patientSortFieldNames.contains(sortFieldName)){
+                        patientParameter.setSortType(sortType);
+                        patientParameter.setSortField(sortFieldName);
                     }
                 }
+
+                setQueryFilter(arFilterDto,patientParameter,0);
+                SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+                if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+                }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+                }
+                patientParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
+                if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
+                    String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
+                    patientParam.addParam("patient_id_types", patientIdTypeListStr);
+                    for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
+                        patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
+                    }
+                }
+                if(searchParamForPat!=null){
+                    patientParam.setPageNo(searchParamForPat.getPageNo());
+                    patientParam.setPageSize(searchParamForPat.getPageSize());
+                }
+                if(searchBy.equals(arFilterDto.getSearchBy())){
+                    CrudHelper.doPaging(patientParam,bpc.request);
+                }
+
+                QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
+
+                SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
+                ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+                ParamUtil.setSessionAttr(request,"patientParam",patientParam);
+            }else if("0".equals(arFilterDto.getSearchBy())){
+                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                    if(submissionSortFieldNames.contains(sortFieldName)){
+                        submissionParameter.setSortType(sortType);
+                        submissionParameter.setSortField(sortFieldName);
+                    }
+                }
+                setQueryFilter(arFilterDto,submissionParameter,1);
+                SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
+                if(submissionParam.getSortMap().containsKey("CYCLE_STAGE_DESC")){
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(submissionParam,"CYCLE_STAGE","CYCLE_STAGE_DESC",MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+                }
+                submissionParam.addFilter("dc_licenseeId",loginContext.getLicenseeId(),true);
+                if(searchParamForSub!=null){
+                    submissionParam.setPageNo(searchParamForSub.getPageNo());
+                    submissionParam.setPageSize(searchParamForSub.getPageSize());
+                }
+                if(searchBy.equals(arFilterDto.getSearchBy())){
+                    CrudHelper.doPaging(submissionParam,bpc.request);
+                }
+                QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
+                SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
+                if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
+                    for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
+                    ) {
+                        switch (subResultsDto.getSubmissionType()){
+                            case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
+                            case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stage");break;
+                            case "AR_TP003":subResultsDto.setSubmissionType("Donor Sample");break;
+                            default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+                        }
+                    }
+                }
+                ParamUtil.setSessionAttr(request,"submissionParam",submissionParam);
+                ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
             }
-            ParamUtil.setSessionAttr(request,"submissionParam",submissionParam);
-            ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
         }else {
             if(searchParamForPat != null){
                 SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(searchParamForPat);
@@ -1309,10 +1319,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request=bpc.request;
         String cycleId = ParamUtil.getString(request,"crud_action_value");
         String submissionNo = ParamUtil.getString(request,"crud_action_additional");
+        String oldId = ParamUtil.getString(request,"crud_type");
 
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
-            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmitDt));
+            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmissionNo));
             ParamUtil.setSessionAttr(request,"cycleStageList", (Serializable) cycleStageList);
         }
         List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
@@ -1347,8 +1358,23 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             mohDsActionDelegator.initDataForView(arSuper, bpc.request);
             arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
+            if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
+                ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
+                ) {
+                    mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
+                    arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
+                    if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                        arSuperOld=arSdOld;
+                        break;
+                    }
+                }
+                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
+            }
             ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
+
+        ParamUtil.setRequestAttr(request,"perStageInfo","no view");
 
     }
 

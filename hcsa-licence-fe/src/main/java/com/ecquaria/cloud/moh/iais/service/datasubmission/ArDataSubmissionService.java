@@ -125,4 +125,6 @@ public interface ArDataSubmissionService {
     ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode);
 
     ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
+
+    DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto);
 }

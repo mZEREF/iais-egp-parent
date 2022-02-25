@@ -74,8 +74,8 @@ public class HMProcessDeregistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_HM_PROCESS_DTO, hmProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, hmProcessDto.getSubmissionDetailsDto());
         //view application process need set appViewDto
-        appViewService.createAndSetAppViewDtoInSession(appId, hmProcessDto.getSubmissionDetailsDto().getProcessType(),
-                hmProcessDto.getSubmissionDetailsDto().getApplicationType(), request);
+        String moduleType = appViewService.judgeProcessAppModuleType(hmProcessDto.getSubmissionDetailsDto().getProcessType(), hmProcessDto.getSubmissionDetailsDto().getApplicationType());
+        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(hmProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc

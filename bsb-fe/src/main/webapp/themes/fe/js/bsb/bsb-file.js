@@ -111,6 +111,11 @@ function downloadFile(cond, id) {
     window.open(url);
 }
 
+function downloadSavedFile(id) {
+    var url = "/bsb-fe/ajax/doc/download/commonDoc/repo/" + id;
+    window.open(url);
+}
+
 function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';

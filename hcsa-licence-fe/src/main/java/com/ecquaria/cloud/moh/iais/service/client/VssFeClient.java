@@ -34,13 +34,12 @@ public interface VssFeClient {
 
     @GetMapping(value = "/data-submission/vss-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<VssSuperDataSubmissionDto> getVssSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
-                                                                                          @RequestParam("submissionType") String submissionType, @RequestParam("svcName") String svcName, @RequestParam("hciCode") String hciCode);
+                                                                                          @RequestParam("submissionType") String submissionType);
 
 
     @DeleteMapping(value = "/data-submission/draft-vss-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void deleteVssSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-                                                    @RequestParam(name = "submissionType") String submissionType,
-                                                    @RequestParam(name = "hciCode") String hciCode);
+    FeignResponseEntity<Void> deleteVssSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
+                                                    @RequestParam(name = "submissionType") String submissionType);
 
     @DeleteMapping(value = "/data-submission/draft/{draftId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteVssSuperDataSubmissionDraftById(@PathVariable("draftId") String draftId);

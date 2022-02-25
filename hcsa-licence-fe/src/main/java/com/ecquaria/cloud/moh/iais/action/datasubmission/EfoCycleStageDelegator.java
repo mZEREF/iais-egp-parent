@@ -97,6 +97,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             }
+            valRFC(bpc.request,efoCycleStageDto);
         }
     }
 
@@ -130,5 +131,15 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
 
+    }
+
+    protected void valRFC(HttpServletRequest request, EfoCycleStageDto efoCycleStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEfoCycleStageDto()!= null && efoCycleStageDto.equals(arOldSuperDataSubmissionDto.getEfoCycleStageDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
     }
 }

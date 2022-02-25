@@ -119,33 +119,7 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                                                <c:choose>
-                                                                    <c:when test="${item.type eq 'DATTYPE001'}">
-                                                                        <a id="viewSubmission" href="/bsb-fe/eservice/INTERNET/ViewConsumeNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE002'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewDisposalNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE003'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewExportNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE005'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewTransferNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE006'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewReceiptNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE007'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewRedTeamingReport?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${item.type eq 'DATTYPE008'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewBATInventory?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <%--DATTYPE004,DATTYPE009,DATTYPE010 future to do--%>
-                                                                        <c:out value="${item.submissionNo}"/>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                <p style="text-align: center"><a id="viewSubmission" href="/bsb-fe/eservice/INTERNET/ViewDataSubmission?submissionId=<iais:mask name='id' value='${item.id}'/>"><c:out value="${item.submissionNo}"/></a></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Type</p>

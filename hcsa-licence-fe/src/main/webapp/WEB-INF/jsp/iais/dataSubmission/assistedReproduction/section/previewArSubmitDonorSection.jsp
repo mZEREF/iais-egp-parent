@@ -98,29 +98,28 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row >
+                    <iais:field width="5" value="Donor\'s Age when Sample was Collected" info = "${donorSampleDto.ageErrorMsg}"/>
+                    <iais:field width="4" value="Donor\'s Age" />
+                    <iais:field width="3" value="Available"/>
+                </iais:row>
                 <c:choose>
                     <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
                         <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
                             <iais:row id = "donorAge0">
-                                <c:choose>
-                                    <c:when test="${idxStatus.first==true}">
-                                        <c:choose>
-                                            <c:when test="${donorSampleDto.ageErrorMsg!=null}">
-                                                <iais:field width="5" value="Donor\'s Age when Sample was Collected"
-                                                            info = "${donorSampleDto.ageErrorMsg}"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <iais:field width="5" value="Donor\'s Age when Sample was Collected"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <label class="col-xs-5 col-md-4 control-label"></label>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <iais:value width="7" cssClass="col-md-7"  display="true">
+                                <label class="col-xs-5 col-md-4 control-label"></label>
+                                <iais:value width="4" cssClass="col-md-4"  display="true">
                                     <c:out value="${donorSampleAgeDto.age}"/>
+                                </iais:value>
+                                <iais:value width="3" cssClass="col-md-3"  display="true">
+                                    <input type="checkbox" name ="ageCheckName" value = "${donorSampleAgeDto.id}" disabled ="true"
+                                    <c:choose>
+                                    <c:when test="${donorSampleAgeDto.available}">
+                                           checked
+                                    </c:when>
+                                    </c:choose>
+                                    >
+                                    </input>
                                 </iais:value>
                             </iais:row>
                         </c:forEach>
@@ -129,24 +128,13 @@
 
                <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
                 <iais:row>
-                    <c:choose>
-                        <c:when test="${index.first==true && donorSampleDto.donorSampleAgeDtos == null}">
-                            <c:choose>
-                                <c:when test="${donorSampleDto.ageErrorMsg!=null}">
-                                    <iais:field width="5" value="Donor\'s Age when Sample was Collected"
-                                                info = "${donorSampleDto.ageErrorMsg}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <iais:field width="5" value="Donor\'s Age when Sample was Collected"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:when>
-                        <c:otherwise>
-                            <label class="col-xs-5 col-md-4 control-label"></label>
-                        </c:otherwise>
-                    </c:choose>
-                    <iais:value width="7" cssClass="col-md-7"  display="true">
+                    <label class="col-xs-5 col-md-4 control-label"></label>
+                    <iais:value width="4" cssClass="col-md-4"  display="true">
                         <c:out value="${age}"/>
+                    </iais:value>
+                    <iais:value width="3" cssClass="col-md-3"  display="true">
+                        <input type="checkbox" name ="ageCheckName" value = "" disabled ="true" checked ="">
+                        </input>
                     </iais:value>
                 </iais:row>
                </c:forEach>

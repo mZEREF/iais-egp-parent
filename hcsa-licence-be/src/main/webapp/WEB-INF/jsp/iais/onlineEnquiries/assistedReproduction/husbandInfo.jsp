@@ -42,7 +42,7 @@
 
                         <td style="vertical-align:middle;">
 
-                            <p style="width: 165px;"><c:out value="${patientInfoDto.husband.name}"/>
+                            <p ><c:out value="${patientInfoDto.husband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
@@ -54,7 +54,7 @@
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.husband.birthDate}"/>
                             <c:if test="${patientInfoDto.husband.getAgeYear()<14 or patientInfoDto.husband.getAgeYear() >74}">
-                                <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
+                                <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">
@@ -128,7 +128,7 @@
 
                         <td style="vertical-align:middle;">
 
-                            <p style="width: 165px;"><c:out value="${patientInfoDto.previousHusband.name}"/>
+                            <p ><c:out value="${patientInfoDto.previousHusband.name}"/>
                             </p>
                         </td>
                         <td style="vertical-align:middle;">
@@ -140,7 +140,7 @@
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.previousHusband.birthDate}"/>
                             <c:if test="${patientInfoDto.previousHusband.getAgeYear()<14 or patientInfoDto.previousHusband.getAgeYear() >74}">
-                                <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
+                                <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
                         <td style="vertical-align:middle;">

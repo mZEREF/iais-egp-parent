@@ -10,7 +10,13 @@
         continueURL = process.runtime.continueURL();
     }
 %>
-<webui:setLayout name="iais-blank"/>
+
+<c:if test="${ DashboardTitle != 'Withdrawal Form'}">
+    <webui:setLayout name="iais-internet"/>
+</c:if>
+<c:if test="${ DashboardTitle == 'Withdrawal Form'}">
+    <webui:setLayout name="iais-blank"/>
+</c:if>
 <%@ include file="previewHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
@@ -18,7 +24,7 @@
         <div class="container center-content">
             <div class="col-xs-12">
                 <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
-                    <c:if test="${ DashboardTitle != 'Withdrawal From'}">
+                    <c:if test="${ DashboardTitle != 'Withdrawal Form'}">
                         <div class="col-xs-12 col-md-10">
                                 <%--<strong style="font-size: 2rem;">Preview & Submit</strong>--%>
                         </div>
@@ -39,7 +45,7 @@
                         </c:when>
                     </c:choose>
                 </div>
-                <c:if test="${DashboardTitle != 'Withdrawal From'}">
+                <c:if test="${DashboardTitle != 'Withdrawal Form'}">
                     <%@ include file="previewFooter.jsp" %>
                 </c:if>
 

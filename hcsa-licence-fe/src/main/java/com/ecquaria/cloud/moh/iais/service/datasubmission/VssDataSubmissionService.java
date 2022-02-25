@@ -28,10 +28,9 @@ public interface VssDataSubmissionService {
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
 
-    VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName,
-                                                                     String hciCode);
+    VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
-    void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+    void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
     VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoByDraftNo(String draftNo);
 }

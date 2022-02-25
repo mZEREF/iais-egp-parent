@@ -43,31 +43,11 @@ $(document).ready(function () {
     }
 
     $('#searchByPatient').change(function () {
-        if($(this).is(':checked')){
-            $('#patientInformationFilter').attr("style","display: block");
-            $('#patientResultDisplay').attr("style","display: block");
-            $('#submissionFilter').attr("style","display: none");
-            $('#submissionResultDisplay').attr("style","display: none");
-        }else {
-            $('#patientInformationFilter').attr("style","display: none");
-            $('#patientResultDisplay').attr("style","display: none");
-            $('#submissionFilter').attr("style","display: block");
-            $('#submissionResultDisplay').attr("style","display: block");
-        }
+        search();
     });
 
     $('#searchBySubmission').change(function () {
-        if($(this).is(':checked')){
-            $('#patientInformationFilter').attr("style","display: none");
-            $('#patientResultDisplay').attr("style","display: none");
-            $('#submissionFilter').attr("style","display: block");
-            $('#submissionResultDisplay').attr("style","display: block");
-        }else {
-            $('#patientInformationFilter').attr("style","display: block");
-            $('#patientResultDisplay').attr("style","display: block");
-            $('#submissionFilter').attr("style","display: none");
-            $('#submissionResultDisplay').attr("style","display: none");
-        }
+        search();
     });
 
     $('#submissionType').change(function () {
@@ -85,6 +65,7 @@ $(document).ready(function () {
 
 
 var getPatientByPatientCode = function (patientCode, divid) {
+    showWaiting();
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
     } else {
@@ -95,6 +76,7 @@ var getPatientByPatientCode = function (patientCode, divid) {
             $('#advfilterson' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 function isInArray(arr,value){
     for(var i = 0; i < arr.length; i++){
@@ -103,7 +85,7 @@ function isInArray(arr,value){
         }
     }
     return false;
-};
+}
 var groupAjax = function (patientCode, divid) {
     dividajaxlist.push(divid);
     $.post(
@@ -150,6 +132,7 @@ var groupAjax = function (patientCode, divid) {
             }
         }
     )
+
 };
 
 function doClear() {

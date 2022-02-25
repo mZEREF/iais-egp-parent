@@ -35,12 +35,8 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewPatientDetail.jsp" %>
                     <%@include file="section/previewHusbandDetail.jsp" %>
-                    <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-                        <%@include file="common/previewDsAmendment.jsp" %>
-                    </c:if>
-                    <c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
-                        <%@include file="common/arDeclaration.jsp" %>
-                    </c:if>
+                    <%@include file="common/previewDsAmendment.jsp" %>
+                    <%@include file="common/arDeclaration.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>

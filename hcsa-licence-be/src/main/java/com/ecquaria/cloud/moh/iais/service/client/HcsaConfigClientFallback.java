@@ -54,11 +54,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.RoutingStageSearchDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 
@@ -66,7 +71,16 @@ import org.springframework.http.HttpHeaders;
  * @author Wenkang
  * @date 2019/12/4 15:28
  */
+@Slf4j
 public class HcsaConfigClientFallback implements HcsaConfigClient{
+
+    private <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     @Override
     public FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(List<String> docId) {
@@ -178,6 +192,11 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getActiveServices(String type) {
+        return getFeignResponseEntity(type);
     }
 
     @Override

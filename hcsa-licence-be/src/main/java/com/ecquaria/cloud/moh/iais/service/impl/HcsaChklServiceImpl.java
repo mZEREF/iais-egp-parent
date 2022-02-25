@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  */
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -99,7 +100,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public List<String> listServiceName() {
-        return chklClient.listServiceName().getEntity();
+        return chklClient.listServiceName(AppServicesConsts.SVC_TYPE_ALL).getEntity();
     }
 
     @Override

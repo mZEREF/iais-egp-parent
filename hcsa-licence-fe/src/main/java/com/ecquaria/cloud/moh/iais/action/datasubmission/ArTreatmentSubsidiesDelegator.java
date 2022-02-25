@@ -83,6 +83,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(arTreatmentSubsidiesStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             valRFC(request, arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto());
         }
 
@@ -104,7 +105,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && arTreatmentSubsidiesStageDto.equals(arOldSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto())) {
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto() != null && arTreatmentSubsidiesStageDto.equals(arOldSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }

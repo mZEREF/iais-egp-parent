@@ -101,13 +101,15 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         }
         arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
             setEnhancedCounsellingTipShow(request,arCycleStageDto,false);
             if(isRfc(request)){
                 arCycleStageDto.setOldDonorDtos(IaisCommonUtils.isNotEmpty(arDonorDtos) ? (List<DonorDto>) CopyUtil.copyMutableObjectList(arDonorDtos) : null);
             }
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
+            initOldDonorSelectSession(request,1);
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
     public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto,boolean needTip){

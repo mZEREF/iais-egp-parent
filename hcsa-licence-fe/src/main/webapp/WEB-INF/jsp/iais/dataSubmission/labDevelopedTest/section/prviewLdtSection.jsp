@@ -73,7 +73,14 @@
                         </iais:row>
 
                         <iais:row>
-                            <iais:field width="6" cssClass="col-md-6" value="Status of Test"/>
+                            <label class="col-xs-6 col-md-4 control-label col-md-6">Status of Test&nbsp;
+                                <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
+                                   data-html="true" href="javascript:void(0);"
+                                   title='Active - Clinical laboratory continues to offer this LDT in their laboratory.
+                                                  Inactive - Clinical laboratory has ceased to make available this LDT in their laboratory.'
+                                   style="z-index: 10"
+                                   data-original-title="">i</a>
+                            </label>
                             <iais:value width="6" cssClass="col-md-6" display="true">
                                 <c:if test="${dsLaboratoryDevelopTestDto.testStatus == '1'}">Active</c:if>
                                 <c:if test="${dsLaboratoryDevelopTestDto.testStatus == '0'}">Inactive</c:if>

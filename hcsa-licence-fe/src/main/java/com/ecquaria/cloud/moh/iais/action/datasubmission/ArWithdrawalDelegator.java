@@ -75,7 +75,7 @@ public class ArWithdrawalDelegator {
         ) {
             addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
         }
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal From");
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Withdrawal Form");
         ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addWithdrawnDtoList);
         ParamUtil.setSessionAttr(bpc.request,"submissionWithdrawalNos",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawnRemarks",null);
@@ -96,7 +96,6 @@ public class ArWithdrawalDelegator {
         dataSubmissionDto.setDeclaration(null);
         dataSubmissionDto.setSubmissionType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         dataSubmissionDto.setCycleStage("");
-        dataSubmissionDto.setLockStatus(0);
         newDto.setDataSubmissionDto(dataSubmissionDto);
 
         ParamUtil.setSessionAttr(bpc.request, "arWdDto", newDto);
@@ -184,7 +183,7 @@ public class ArWithdrawalDelegator {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setSessionAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKWD);

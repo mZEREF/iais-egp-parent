@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -277,7 +278,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<String> getSvcNamesByType() {
-        return hcsaChklClient.listServiceName().getEntity();
+        return hcsaChklClient.listServiceName(AppServicesConsts.SVC_TYPE_NORMAL).getEntity();
     }
 
     @Override

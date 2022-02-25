@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -44,14 +43,12 @@ public class BsbReportInventoryDelegator {
     private static final String KEY_FACILITY_INFO = "facilityInfo";
     private static final String KEY_OTHERS = "others";
     private final BsbSubmissionCommon subCommon;
-    private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final DataSubmissionClient submissionClient;
 
-    public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, TransferClient transferClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DataSubmissionClient submissionClient) {
+    public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DataSubmissionClient submissionClient) {
         this.subCommon = subCommon;
-        this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.submissionClient = submissionClient;
@@ -147,7 +144,7 @@ public class BsbReportInventoryDelegator {
             }
         }
         saveDocDto.setSavedDocInfo(new ArrayList<>(inventoryDto.getSavedDocMap().values()));
-        transferClient.saveNewReportAndInventory(saveDocDto);
+        submissionClient.saveNewReportAndInventory(saveDocDto);
 
         try {
             // sync files to BE file-repo (save new added files, delete useless files)

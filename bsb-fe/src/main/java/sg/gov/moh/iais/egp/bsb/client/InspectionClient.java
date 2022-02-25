@@ -9,20 +9,18 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportSaveDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsCommentReportDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
-    @GetMapping(path = "/assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/self-assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<PreAssessmentDto> getAssessmentState(@PathVariable("appId") String appId);
 
-    @GetMapping(path = "/checklist/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/self-assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
 
-    @PostMapping(value = "/assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inspection/self-assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void submitSelfAssessment(@RequestBody SelfAssessmtChklDto selfAssessmtChklDto);
 
     @GetMapping(value = "/checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,4 +38,18 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveCommentReportForm(CommentInsReportSaveDto saveDto);
+
+    //TODO update
+    @GetMapping(path = "/inspection/followUpItems/{appId}")
+    ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String appId);
+
+    //TODO update
+    @PostMapping(value = "/inspection/followUpItems", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveFollowUpItemsData(@RequestBody RectifyInsReportSaveDto saveDto);
+
+    @GetMapping(path = "/inspection/non-compliance/items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<RectifyFindingFormDto> getNonComplianceFindingFormDtoByAppId(@PathVariable("appId") String appId);
+
+    @PostMapping(value = "/inspection/non-compliance/report", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveInsNonComplianceReport(@RequestBody RectifyInsReportSaveDto saveDto);
 }

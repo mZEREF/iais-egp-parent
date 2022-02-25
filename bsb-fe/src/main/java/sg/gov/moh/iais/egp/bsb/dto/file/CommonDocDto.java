@@ -182,6 +182,7 @@ public class CommonDocDto extends ValidatableNodeValue {
 
 
 
+
     public Map<String, DocRecordInfo> getSavedDocMap() {
         return savedDocMap;
     }
@@ -193,6 +194,7 @@ public class CommonDocDto extends ValidatableNodeValue {
     public Map<String, NewDocInfo> getNewDocMap() {
         return newDocMap;
     }
+
 
     public Set<String> getToBeDeletedRepoIds() {
         return toBeDeletedRepoIds;

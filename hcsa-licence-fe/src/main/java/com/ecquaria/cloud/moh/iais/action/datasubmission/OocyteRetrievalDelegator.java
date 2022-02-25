@@ -80,6 +80,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
             errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             valRFC(request, oocyteRetrievalStageDto);
         }
 
@@ -113,7 +114,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
     protected void valRFC(HttpServletRequest request, OocyteRetrievalStageDto oocyteRetrievalStageDto) {
         if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto() != null && oocyteRetrievalStageDto.equals(arOldSuperDataSubmissionDto.getOocyteRetrievalStageDto())) {
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getOocyteRetrievalStageDto() != null && oocyteRetrievalStageDto.equals(arOldSuperDataSubmissionDto.getOocyteRetrievalStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }

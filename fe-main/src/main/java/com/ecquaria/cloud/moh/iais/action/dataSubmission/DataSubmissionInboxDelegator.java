@@ -5,6 +5,7 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeInboxHelper;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
@@ -75,6 +77,7 @@ public class DataSubmissionInboxDelegator {
 		setLog("doStart");
 		HttpServletRequest request = bpc.request;
 		initData(request);
+		AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
 		setLog("doStart",false);
 	}
 

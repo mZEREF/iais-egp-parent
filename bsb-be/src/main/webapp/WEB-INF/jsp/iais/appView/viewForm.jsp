@@ -23,25 +23,49 @@
                                     <div class="preview-gp">
                                         <div class="row">
                                             <div class="col-xs-12">
+                                                <%--@elvariable id="appViewDto" type="sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto"--%>
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE001'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/facility/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/approval/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY001' and appViewDto.processType eq 'PROTYPE005'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/afc/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE001'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationFacilityView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY004' and (appViewDto.processType eq 'PROTYPE002' or appViewDto.processType eq 'PROTYPE003' or appViewDto.processType eq 'PROTYPE004')}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewCancellationApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/cancellationApprovalView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.appType eq 'BSBAPTY005' and appViewDto.processType eq 'PROTYPE005'}">
+                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationAFCView.jsp" %>
+                                                    </c:if>
+
+                                                    <%-- Data Submission --%>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE001'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewConsumePage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE002'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewDisposalPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE003'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewExportPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE005'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewTransferPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE006'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewReceiptPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE007'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewRedTeamingReportPage.jsp" %>
+                                                    </c:if>
+                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE008'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewBatInventory.jsp" %>
                                                     </c:if>
                                                 </div>
                                             </div>

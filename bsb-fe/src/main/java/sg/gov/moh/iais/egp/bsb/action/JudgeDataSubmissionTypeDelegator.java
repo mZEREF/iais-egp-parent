@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
-import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
+import sg.gov.moh.iais.egp.bsb.client.DraftClient;
 import sg.gov.moh.iais.egp.bsb.dto.entity.DraftDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -29,10 +29,10 @@ public class JudgeDataSubmissionTypeDelegator {
     public static final String KEY_BACK = "back";
     public static final String KEY_DRAFT = "draft";
 
-    private final DataSubmissionClient dataSubmissionClient;
+    private final DraftClient draftClient;
 
-    public JudgeDataSubmissionTypeDelegator(DataSubmissionClient dataSubmissionClient) {
-        this.dataSubmissionClient = dataSubmissionClient;
+    public JudgeDataSubmissionTypeDelegator(DraftClient draftClient) {
+        this.draftClient = draftClient;
     }
 
     /**
@@ -57,7 +57,7 @@ public class JudgeDataSubmissionTypeDelegator {
         if (maskedAppId == null || applicationId == null || maskedAppId.equals(applicationId)) {
             throw new IaisRuntimeException("Invalid Application ID");
         }
-        DraftDto draftDto = dataSubmissionClient.getDraftDto(applicationId).getEntity();
+        DraftDto draftDto = draftClient.retrieveDraftByApplicationId(applicationId).getEntity();
         Assert.notNull(draftDto,"Queried draft by applicationId is null");
         ObjectMapper mapper = new ObjectMapper();
         Map<String,Object> draftMap;

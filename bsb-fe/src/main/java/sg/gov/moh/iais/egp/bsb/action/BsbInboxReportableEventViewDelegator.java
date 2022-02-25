@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.IncidentFollowupClient;
 import sg.gov.moh.iais.egp.bsb.client.IncidentNotificationClient;
-import sg.gov.moh.iais.egp.bsb.client.InvestReportClient;
+import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1AViewDto;
@@ -25,10 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author YiMing
- * @version 2022/1/26 10:13
- **/
+
 @Delegator("bsbInboxReportableEventViewDelegator")
 public class BsbInboxReportableEventViewDelegator {
     private static final String MASK_KEY_ID = "id";
@@ -43,13 +40,13 @@ public class BsbInboxReportableEventViewDelegator {
     private static final String MESSAGE_MASKED_REFERENCE_NO_IS_NULL = "masked reference no is null";
 
     private final IncidentNotificationClient notificationClient;
-    private final InvestReportClient investReportClient;
+    private final IncidentInvestigationReportClient incidentInvestigationReportClient;
     private final IncidentFollowupClient followupClient;
 
     @Autowired
-    public BsbInboxReportableEventViewDelegator(IncidentNotificationClient notificationClient, InvestReportClient investReportClient, IncidentFollowupClient followupClient) {
+    public BsbInboxReportableEventViewDelegator(IncidentNotificationClient notificationClient, IncidentInvestigationReportClient incidentInvestigationReportClient, IncidentFollowupClient followupClient) {
         this.notificationClient = notificationClient;
-        this.investReportClient = investReportClient;
+        this.incidentInvestigationReportClient = incidentInvestigationReportClient;
         this.followupClient = followupClient;
     }
 
@@ -74,7 +71,7 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            InvestViewDto investViewDto =  investReportClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
+            InvestViewDto investViewDto = incidentInvestigationReportClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,investViewDto);
             ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
             viewBasicDoc(investViewDto.getDocRecordInfos(),request);

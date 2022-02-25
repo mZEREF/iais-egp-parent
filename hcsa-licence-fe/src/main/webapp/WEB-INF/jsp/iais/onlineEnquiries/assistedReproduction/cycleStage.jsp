@@ -14,10 +14,10 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false" style="width: 30%;"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="cycle_no"
                                                  value="Cycle No."/>
-                            <iais:sortableHeader needSort="false" style="width: 15%;"
+                            <iais:sortableHeader needSort="false" style="width: 20%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
@@ -48,7 +48,7 @@
                                         <tr id="advfilter${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                             <td style="vertical-align:middle;">
 
-                                                <p style="width: 165px;"><c:out value="${cycleStage.cycleNo}"/>
+                                                <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
                                                     <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                     </a>
                                                 </p>
@@ -87,10 +87,10 @@
                         <thead>
                         <tr >
 
-                            <iais:sortableHeader needSort="false" style="width: 30%;"
+                            <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="cycle_no"
                                                  value="Cycle No."/>
-                            <iais:sortableHeader needSort="false" style="width: 15%;"
+                            <iais:sortableHeader needSort="false" style="width: 20%;"
                                                  field="CREATED_DT"
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
@@ -121,7 +121,7 @@
                                     <tr id="advfilterNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                         <td style="vertical-align:middle;">
 
-                                            <p style="width: 165px;"><c:out value="${cycleStage.cycleNo}"/>
+                                            <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
                                                 <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdownNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByNonCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                 </a>
                                             </p>

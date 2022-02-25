@@ -137,40 +137,40 @@
                     <table aria-describedby="" class="table">
                         <thead>
                         <tr >
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="BUSINESS_NAME"
                                                  value="AR Centre"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="SUBMISSION_NO"
                                                  value="Submission ID"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="SUBMIT_DT"
                                                  value="Date of Submission"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="CYCLE_STAGE_DESC"
                                                  value="Stage"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="cycle_no"
                                                  value="Cycle"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FROZEN_OOCY_NUM"
                                                  value="Frozen Oocytes"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="THAWED_OOCY_NUM"
                                                  value="Thawed Oocytes"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FRESH_OOCY_NUM"
                                                  value="Fresh Oocytes"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FROZEN_EMBR_NUM"
                                                  value="Frozen Embryos"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="THAWED_EMBR_NUM"
                                                  value="Thawed Embryos"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FRESH_EMBR_NUM"
                                                  value="Fresh Embryos"/>
-                            <iais:sortableHeader needSort="true"
+                            <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FROZEN_SPERM_NUM"
                                                  value="Frozen Sperms"/>
                         </tr>

@@ -111,7 +111,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getRegulationClauseListIsActive();
 
     @GetMapping(path = "/iais-hcsa-service/svc-name-results")
-    FeignResponseEntity<List<String>> listServiceName();
+    FeignResponseEntity<List<String>> listServiceName(@RequestParam(value = "type", required = false) String type);
 
     @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
     FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);

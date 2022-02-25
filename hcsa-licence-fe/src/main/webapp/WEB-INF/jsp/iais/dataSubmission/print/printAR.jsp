@@ -94,7 +94,6 @@
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
 </c:choose>
-<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_002'}">
-    <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
-</c:if>
 <%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
+<%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
+

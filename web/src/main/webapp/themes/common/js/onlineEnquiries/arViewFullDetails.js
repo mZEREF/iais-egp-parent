@@ -74,6 +74,7 @@ function sortRecords(sortFieldName, sortType) {
 }
 
 var getStageByCycleId = function (cycleId, divid) {
+    showWaiting();
     if (!isInArray(dividajaxlist,divid)) {
         stageAjax(cycleId, divid);
     } else {
@@ -84,9 +85,11 @@ var getStageByCycleId = function (cycleId, divid) {
             $('#advfilterson' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 
 var getStageByNonCycleId = function (cycleId, divid) {
+    showWaiting();
     if (!isInArray(dividajaxNonlist,divid)) {
         stageAjaxNon(cycleId, divid);
     } else {
@@ -97,6 +100,7 @@ var getStageByNonCycleId = function (cycleId, divid) {
             $('#advfiltersonNon' + divid).hide();
         }
     }
+    dismissWaiting();
 };
 
 function isInArray(arr,value){
@@ -135,7 +139,7 @@ var stageAjax = function (cycleIder, divid) {
                     html += '<td><p class="visible-xs visible-sm table-row-title">Submission ID</p><p>' + res[i].submissionNo + '<p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
-                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
+                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Action</p><p>' +
                         '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].submissionNo + "'" + ')" class="btn btn-default btn-sm">'+
                         'View Full Details</button></p></td>'+
                         '</tr>';
@@ -145,6 +149,7 @@ var stageAjax = function (cycleIder, divid) {
             }
         }
     )
+
 };
 
 var stageAjaxNon = function (cycleIder, divid) {
@@ -175,7 +180,7 @@ var stageAjaxNon = function (cycleIder, divid) {
                     html += '<td><p class="visible-xs visible-sm table-row-title">Submission ID</p><p>' + res[i].submissionNo + '<p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
-                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
+                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Action</p><p>' +
                         '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].submissionNo + "'" + ')" class="btn btn-default btn-sm">'+
                         'View Full Details</button></p></td>'+
                         '</tr>';

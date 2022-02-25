@@ -2,7 +2,7 @@
 <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ${guardianAppliedPartDto !=null && guardianAppliedPartDto.headStatus == true ? 'completed' : 'incompleted' }">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#pccoDetails">
                 Particulars of Treatment for Sexual Sterilization Performed
@@ -39,7 +39,8 @@
                     <iais:row>
                         <iais:field width="5" value="Relationship to Person Who Was Sterilized"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:code code="${guardianAppliedPartDto.guardianRelationship}"/>
+                           <%-- <iais:code code="${guardianAppliedPartDto.guardianRelationship}"/>--%>
+                            <c:out value="${guardianAppliedPartDto.appliedPartRelationship}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -70,7 +71,8 @@
                     <iais:row>
                         <iais:field width="5" value="Relationship to Person Who Was Sterilized"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:code code="${guardianAppliedPartDto.appliedPartRelationship}"/>
+                           <%-- <iais:code code="${guardianAppliedPartDto.appliedPartRelationship}"/>--%>
+                            <c:out value="${guardianAppliedPartDto.appliedPartRelationship}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>

@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign} ">
+    <div class="panel-heading  ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#efoDetails">
                 Egg Freezing Only Cycle
@@ -14,6 +14,12 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
+                <iais:row>
+                    <iais:field width="6" cssClass="col-md-6"  value="" />
+                    <iais:value width="6" cssClass="col-md-6" display="true">
+                        <c:out value="Current Version"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
                     <iais:value width="6" display="true">

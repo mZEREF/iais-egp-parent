@@ -116,7 +116,7 @@ public class DisposalNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DisposalNotNeed {
+    public static class DisposalBatDto {
         private String scheduleType;
         private String bat;
         private String disposedQty;
@@ -129,10 +129,10 @@ public class DisposalNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class DisposalNotNeedR {
+    public static class DisposalDto {
         private String dataSubmissionType;
         private String draftAppNo;
-        private List<DisposalNotNeed> needList;
+        private List<DisposalBatDto> needList;
         private String facId;
         private String remarks;
         private String ensure;
@@ -304,29 +304,29 @@ public class DisposalNotificationDto implements Serializable {
      *
      * @return DisposalNotNeedR
      */
-    public DisposalNotNeedR getDisposalNotNeedR() {
+    public DisposalDto getDisposalNotNeedR() {
         //get doc need validation
-        List<DisposalNotNeed> disposalNotNeeds = disposalNotList.stream().map(t -> {
-            DisposalNotNeed disposalNotNeed = new DisposalNotNeed();
-            disposalNotNeed.setScheduleType(t.getScheduleType());
-            disposalNotNeed.setBat(t.getBat());
-            disposalNotNeed.setMeaUnit(t.getMeaUnit());
-            disposalNotNeed.setDisposedQty(t.getDisposedQty());
-            disposalNotNeed.setDestructDetails(t.getDestructDetails());
-            disposalNotNeed.setDestructMethod(t.getDestructMethod());
-            disposalNotNeed.setIndex(t.getIndex());
-            return disposalNotNeed;
+        List<DisposalBatDto> disposalBatDtos = disposalNotList.stream().map(t -> {
+            DisposalBatDto disposalBatDto = new DisposalBatDto();
+            disposalBatDto.setScheduleType(t.getScheduleType());
+            disposalBatDto.setBat(t.getBat());
+            disposalBatDto.setMeaUnit(t.getMeaUnit());
+            disposalBatDto.setDisposedQty(t.getDisposedQty());
+            disposalBatDto.setDestructDetails(t.getDestructDetails());
+            disposalBatDto.setDestructMethod(t.getDestructMethod());
+            disposalBatDto.setIndex(t.getIndex());
+            return disposalBatDto;
         }).collect(Collectors.toList());
-        DisposalNotNeedR disposalNotNeedR = new DisposalNotNeedR();
-        disposalNotNeedR.setNeedList(disposalNotNeeds);
-        disposalNotNeedR.setEnsure(this.ensure);
-        disposalNotNeedR.setRemarks(this.remarks);
-        disposalNotNeedR.setFacId(this.facId);
-        disposalNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
-        disposalNotNeedR.setDocMetas(this.docMetaInfos);
-        disposalNotNeedR.setDraftAppNo(this.draftAppNo);
-        disposalNotNeedR.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
-        return disposalNotNeedR;
+        DisposalDto disposalDto = new DisposalDto();
+        disposalDto.setNeedList(disposalBatDtos);
+        disposalDto.setEnsure(this.ensure);
+        disposalDto.setRemarks(this.remarks);
+        disposalDto.setFacId(this.facId);
+        disposalDto.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        disposalDto.setDocMetas(this.docMetaInfos);
+        disposalDto.setDraftAppNo(this.draftAppNo);
+        disposalDto.setDataSubmissionType(KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
+        return disposalDto;
     }
 
     /**
@@ -372,7 +372,7 @@ public class DisposalNotificationDto implements Serializable {
 
     //------------------------------------------Validation---------------------------------------------
     public boolean doValidation() {
-        DisposalNotNeedR needR = getDisposalNotNeedR();
+        DisposalDto needR = getDisposalNotNeedR();
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateDisposalNot", new Object[]{needR});
         return validationResultDto.isPass();
     }

@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ public class DataSubmissionInfo {
     private String facilityAddress;
     private String facilityIsProtected;
     private List<DataSubmissionBatInfo> submissionBats;
-    private List<DataSubmissionDocInfo> docs;
+    private List<DocRecordInfo> docs;
     private String submissionNo;
     private String ddComplete;
     private String type;

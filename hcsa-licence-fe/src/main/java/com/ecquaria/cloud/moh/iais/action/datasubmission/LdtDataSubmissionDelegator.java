@@ -111,6 +111,9 @@ public class LdtDataSubmissionDelegator {
         if (dataSubmissionDraft != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
+
+        String isGuide = ParamUtil.getString(bpc.request,DataSubmissionConstant.LDT_IS_GUIDE);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE, isGuide);
     }
 
     /**
@@ -284,6 +287,10 @@ public class LdtDataSubmissionDelegator {
         if ("Y".equals(cannotCLT) || (ldtSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(ldtSuperDataSubmissionDto.getAppType()))) {
             target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
+            String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
+            if ("true".equals(isGuide)){
+                target = InboxConst.URL_MAIN_WEB_MODULE + "MohAccessmentGuide";
+            }
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
@@ -454,6 +461,7 @@ public class LdtDataSubmissionDelegator {
         emailParam.setTemplateContent(msgContentMap);
         emailParam.setQueryCode(LDTId);
         emailParam.setReqRefNum(LDTId);
+        emailParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
         emailParam.setRefId(licenceId);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setSubject(subject);

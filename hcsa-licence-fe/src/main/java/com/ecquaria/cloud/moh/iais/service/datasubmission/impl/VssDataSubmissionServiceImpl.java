@@ -134,22 +134,21 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
     }
 
     @Override
-    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : "
-                + svcName + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
+    public VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        return vssFeClient.getVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType, svcName, hciCode).getEntity();
+        return vssFeClient.getVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType).getEntity();
     }
 
     @Override
-    public void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
+    public void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return;
         }
-        vssFeClient.deleteVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+        vssFeClient.deleteVssSuperDataSubmissionDtoDraftByConds(orgId, submissionType);
     }
 
     @Override

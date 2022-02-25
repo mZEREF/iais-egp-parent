@@ -92,8 +92,7 @@
                                             <td><iais:code code="${items.appStatus}"/></td>
                                             <td><fmt:formatDate value='${items.applicationDt}'
                                                                 pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.approvalDate}'
-                                                                pattern='dd/MM/yyyy'/></td>
+                                            <td><iais-bsb:format-LocalDate localDate='${items.approvalDate}'/></td>
                                             <td><iais:code
                                                     code="${items.facilityClassification}"/></td>
                                             <td><iais:code code="${items.facilityType}"/></td>

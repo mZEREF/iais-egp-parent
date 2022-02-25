@@ -10,12 +10,9 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 
 import java.util.List;
 
-/**
- * @author : LiRan
- * @date : 2022/1/7
- */
+
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
 public interface RoutingHistoryClient {
-    @GetMapping(path = "/bsbRoutingHistory/getByAppNo/{applicationNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/routing-history-info/process-history/{applicationNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<List<ProcessHistoryDto>> getRoutingHistoryListByAppNo(@PathVariable("applicationNo") String applicationNo);
 }

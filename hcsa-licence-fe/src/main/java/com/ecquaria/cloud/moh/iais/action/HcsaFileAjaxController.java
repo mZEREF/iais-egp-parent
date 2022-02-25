@@ -119,7 +119,7 @@ public class HcsaFileAjaxController {
             return "";
         }
         // Save File to other nodes
-        //saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
@@ -170,6 +170,7 @@ public class HcsaFileAjaxController {
         if (StringUtil.isEmpty(fileTypesString)) {
             fileTypesString = systemParamConfig.getUploadFileType();
         }
+        log.info(StringUtil.changeForLog("File Type: " + fileTypesString));
         List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile,fileTypes,(maxSize * 1024 *1024l));
         Boolean fileSize = booleanMap.get("fileSize");

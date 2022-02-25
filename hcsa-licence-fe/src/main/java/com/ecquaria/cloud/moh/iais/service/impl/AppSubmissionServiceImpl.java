@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -3777,4 +3778,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             saveAppGrpMisc(appGroupMiscDto);
         }
     }
+
+    @Override
+    public List<AppPremiseMiscDto> getActiveWithdrawAppPremiseMiscsByApp(String appId) {
+        log.info(StringUtil.changeForLog("The appId: " + appId));
+        if (StringUtil.isEmpty(appId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> excludeStatus = IaisCommonUtils.genNewArrayList();
+        excludeStatus.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+        excludeStatus.add(ApplicationConsts.APPLICATION_STATUS_DELETED);
+        return applicationFeClient.getAppPremiseMiscsByConds(ApplicationConsts.WITHDROW_TYPE_APPLICATION, appId,
+                excludeStatus).getEntity();
+    }
+
 }

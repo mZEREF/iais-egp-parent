@@ -98,45 +98,45 @@ public class DataSubmissionDelegator {
             try {
                 switch (dataSubmissionType) {
                     case KEY_DATA_SUBMISSION_TYPE_CONSUME:
-                        ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = mapper.readValue(draft.getDraftData(), ConsumeNotificationDto.ConsumeNotNeedR.class);
-                        JMapper<ConsumeNotificationDto, ConsumeNotificationDto.ConsumeNotNeedR> consumeDtoJMapper = new JMapper<>(ConsumeNotificationDto.class, ConsumeNotificationDto.ConsumeNotNeedR.class);
-                        ConsumeNotificationDto consumeNotificationDto = consumeDtoJMapper.getDestinationWithoutControl(consumeNotNeedR);
+                        ConsumeNotificationDto.ConsumeDto consumeDto = mapper.readValue(draft.getDraftData(), ConsumeNotificationDto.ConsumeDto.class);
+                        JMapper<ConsumeNotificationDto, ConsumeNotificationDto.ConsumeDto> consumeDtoJMapper = new JMapper<>(ConsumeNotificationDto.class, ConsumeNotificationDto.ConsumeDto.class);
+                        ConsumeNotificationDto consumeNotificationDto = consumeDtoJMapper.getDestinationWithoutControl(consumeDto);
                         //put saved doc to savedDocMap
-                        if (!CollectionUtils.isEmpty(consumeNotNeedR.getDocInfos())) {
-                            consumeNotificationDto.draftDocToMap(consumeNotNeedR.getDocInfos());
+                        if (!CollectionUtils.isEmpty(consumeDto.getDocInfos())) {
+                            consumeNotificationDto.draftDocToMap(consumeDto.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_CONSUME_NOTIFICATION_DTO, consumeNotificationDto);
                         ParamUtil.setSessionAttr(request, KEY_FAC_ID, consumeNotificationDto.getFacId());
                         break;
                     case KEY_DATA_SUBMISSION_TYPE_DISPOSAL:
-                        DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR = mapper.readValue(draft.getDraftData(), DisposalNotificationDto.DisposalNotNeedR.class);
-                        JMapper<DisposalNotificationDto, DisposalNotificationDto.DisposalNotNeedR> disposalDtoJMapper = new JMapper<>(DisposalNotificationDto.class, DisposalNotificationDto.DisposalNotNeedR.class);
-                        DisposalNotificationDto disposalNotificationDto = disposalDtoJMapper.getDestinationWithoutControl(disposalNotNeedR);
+                        DisposalNotificationDto.DisposalDto disposalDto = mapper.readValue(draft.getDraftData(), DisposalNotificationDto.DisposalDto.class);
+                        JMapper<DisposalNotificationDto, DisposalNotificationDto.DisposalDto> disposalDtoJMapper = new JMapper<>(DisposalNotificationDto.class, DisposalNotificationDto.DisposalDto.class);
+                        DisposalNotificationDto disposalNotificationDto = disposalDtoJMapper.getDestinationWithoutControl(disposalDto);
                         //put saved doc to savedDocMap
-                        if (!CollectionUtils.isEmpty(disposalNotNeedR.getDocInfos())) {
-                            disposalNotificationDto.draftDocToMap(disposalNotNeedR.getDocInfos());
+                        if (!CollectionUtils.isEmpty(disposalDto.getDocInfos())) {
+                            disposalNotificationDto.draftDocToMap(disposalDto.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_DISPOSAL_NOTIFICATION_DTO, disposalNotificationDto);
                         ParamUtil.setSessionAttr(request, KEY_FAC_ID, disposalNotificationDto.getFacId());
                         break;
                     case KEY_DATA_SUBMISSION_TYPE_EXPORT:
-                        ExportNotificationDto.ExportNotNeedR exportNotNeedR = mapper.readValue(draft.getDraftData(), ExportNotificationDto.ExportNotNeedR.class);
-                        JMapper<ExportNotificationDto, ExportNotificationDto.ExportNotNeedR> exportDtoJMapper = new JMapper<>(ExportNotificationDto.class, ExportNotificationDto.ExportNotNeedR.class);
-                        ExportNotificationDto exportNotificationDto = exportDtoJMapper.getDestinationWithoutControl(exportNotNeedR);
+                        ExportNotificationDto.ExportDto exportDto = mapper.readValue(draft.getDraftData(), ExportNotificationDto.ExportDto.class);
+                        JMapper<ExportNotificationDto, ExportNotificationDto.ExportDto> exportDtoJMapper = new JMapper<>(ExportNotificationDto.class, ExportNotificationDto.ExportDto.class);
+                        ExportNotificationDto exportNotificationDto = exportDtoJMapper.getDestinationWithoutControl(exportDto);
                         //put saved doc to savedDocMap
-                        if (!CollectionUtils.isEmpty(exportNotNeedR.getDocInfos())) {
-                            exportNotificationDto.draftDocToMap(exportNotNeedR.getDocInfos());
+                        if (!CollectionUtils.isEmpty(exportDto.getDocInfos())) {
+                            exportNotificationDto.draftDocToMap(exportDto.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_EXPORT_NOTIFICATION_DTO, exportNotificationDto);
                         ParamUtil.setSessionAttr(request, KEY_FAC_ID, exportNotificationDto.getFacId());
                         break;
                     case KEY_DATA_SUBMISSION_TYPE_RECEIPT:
-                        ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR = mapper.readValue(draft.getDraftData(), ReceiptNotificationDto.ReceiptNotNeedR.class);
-                        JMapper<ReceiptNotificationDto, ReceiptNotificationDto.ReceiptNotNeedR> receiptDtoJMapper = new JMapper<>(ReceiptNotificationDto.class, ReceiptNotificationDto.ReceiptNotNeedR.class);
-                        ReceiptNotificationDto receiptNotificationDto = receiptDtoJMapper.getDestinationWithoutControl(receiptNotNeedR);
+                        ReceiptNotificationDto.ReceiptDto receiptDto = mapper.readValue(draft.getDraftData(), ReceiptNotificationDto.ReceiptDto.class);
+                        JMapper<ReceiptNotificationDto, ReceiptNotificationDto.ReceiptDto> receiptDtoJMapper = new JMapper<>(ReceiptNotificationDto.class, ReceiptNotificationDto.ReceiptDto.class);
+                        ReceiptNotificationDto receiptNotificationDto = receiptDtoJMapper.getDestinationWithoutControl(receiptDto);
                         //put saved doc to savedDocMap
-                        if (!CollectionUtils.isEmpty(receiptNotNeedR.getDocInfos())) {
-                            receiptNotificationDto.draftDocToMap(receiptNotNeedR.getDocInfos());
+                        if (!CollectionUtils.isEmpty(receiptDto.getDocInfos())) {
+                            receiptNotificationDto.draftDocToMap(receiptDto.getDocInfos());
                         }
                         ParamUtil.setSessionAttr(request, KEY_RECEIPT_NOTIFICATION_DTO, receiptNotificationDto);
                         ParamUtil.setSessionAttr(request, KEY_FAC_ID, receiptNotificationDto.getFacId());
@@ -249,9 +249,9 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = dto.getConsumeNotNeedR();
+        ConsumeNotificationDto.ConsumeDto consumeDto = dto.getConsumeNotNeedR();
         //save draft
-        String draftAppNo = dataSubmissionClient.saveDraftConsume(consumeNotNeedR);
+        String draftAppNo = dataSubmissionClient.saveDraftConsume(consumeDto);
         dto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -279,8 +279,8 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = dto.getConsumeNotNeedR();
-        dataSubmissionClient.saveConsumeNot(consumeNotNeedR);
+        ConsumeNotificationDto.ConsumeDto consumeDto = dto.getConsumeNotNeedR();
+        dataSubmissionClient.saveConsumeNot(consumeDto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
@@ -362,9 +362,9 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR = dto.getDisposalNotNeedR();
+        DisposalNotificationDto.DisposalDto disposalDto = dto.getDisposalNotNeedR();
         //save draft
-        String draftAppNo = dataSubmissionClient.saveDraftDisposal(disposalNotNeedR);
+        String draftAppNo = dataSubmissionClient.saveDraftDisposal(disposalDto);
         dto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -392,8 +392,8 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR = dto.getDisposalNotNeedR();
-        dataSubmissionClient.saveDisposalNot(disposalNotNeedR);
+        DisposalNotificationDto.DisposalDto disposalDto = dto.getDisposalNotNeedR();
+        dataSubmissionClient.saveDisposalNot(disposalDto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
@@ -474,9 +474,9 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ExportNotificationDto.ExportNotNeedR exportNotNeedR = dto.getExportNotNeedR();
+        ExportNotificationDto.ExportDto exportDto = dto.getExportNotNeedR();
         //save draft
-        String draftAppNo = dataSubmissionClient.saveDraftExport(exportNotNeedR);
+        String draftAppNo = dataSubmissionClient.saveDraftExport(exportDto);
         dto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -504,8 +504,8 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ExportNotificationDto.ExportNotNeedR exportNotNeedR = dto.getExportNotNeedR();
-        dataSubmissionClient.saveExportNot(exportNotNeedR);
+        ExportNotificationDto.ExportDto exportDto = dto.getExportNotNeedR();
+        dataSubmissionClient.saveExportNot(exportDto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
@@ -586,9 +586,9 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR = dto.getReceiptNotNeedR();
+        ReceiptNotificationDto.ReceiptDto receiptDto = dto.getReceiptNotNeedR();
         //save draft
-        String draftAppNo = dataSubmissionClient.saveDraftReceipt(receiptNotNeedR);
+        String draftAppNo = dataSubmissionClient.saveDraftReceipt(receiptDto);
         dto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -616,8 +616,8 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR = dto.getReceiptNotNeedR();
-        dataSubmissionClient.saveReceiptNot(receiptNotNeedR);
+        ReceiptNotificationDto.ReceiptDto receiptDto = dto.getReceiptNotNeedR();
+        dataSubmissionClient.saveReceiptNot(receiptDto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
@@ -634,6 +634,7 @@ public class DataSubmissionDelegator {
     private void selectOption(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, KEY_FAC_LISTS, null);
         FacListDto facListDto = dataSubmissionClient.queryAllApprovalFacList().getEntity();
+        ParamUtil.setSessionAttr(request, KEY_FAC_LIST_DTO, facListDto);
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);

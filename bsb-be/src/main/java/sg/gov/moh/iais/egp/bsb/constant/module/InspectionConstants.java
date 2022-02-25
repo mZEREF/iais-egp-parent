@@ -60,4 +60,7 @@ public class InspectionConstants {
     public static final String VALUE_OUTCOME_OUTCOME_FAIL = "Fail";
 
     public static final String KEY_ROUTE = "route";
+
+    // DO review inspection follow-up items
+    public static final String KEY_DO_REVIEW_FOLLOW_UP_ITEMS_DTO = "doReviewFollowUpItemsDto";
 }

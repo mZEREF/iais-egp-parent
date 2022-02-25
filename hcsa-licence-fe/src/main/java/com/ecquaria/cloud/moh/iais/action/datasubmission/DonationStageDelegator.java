@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
@@ -8,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -97,9 +99,14 @@ public class DonationStageDelegator extends CommonDelegator{
             try {
                 String donResForTreatNumString=ParamUtil.getString(request, "donResForTreatNum");
                 donationStageDto.setDonResForTreatNumStr(donResForTreatNumString);
-                donResForTreatNum =  ParamUtil.getInt(request, "donResForTreatNum");
-                donationStageDto.setDonResForTreatNum(donResForTreatNum);
-                totalNum+=donResForTreatNum;
+                if(StringUtil.isEmpty(donResForTreatNumString)){
+                    donationStageDto.setDonResForTreatNum(null);
+                }else {
+                    donResForTreatNum =  ParamUtil.getInt(request, "donResForTreatNum");
+                    donationStageDto.setDonResForTreatNum(donResForTreatNum);
+                    totalNum+=donResForTreatNum;
+                }
+
             }catch (Exception e){
                 log.error("no int");
             }
@@ -107,9 +114,14 @@ public class DonationStageDelegator extends CommonDelegator{
             try {
                 String donResForCurCenNotTreatNumString=ParamUtil.getString(request, "donResForCurCenNotTreatNum");
                 donationStageDto.setDonResForCurCenNotTreatNumStr(donResForCurCenNotTreatNumString);
-                donResForCurCenNotTreatNum =  ParamUtil.getInt(request, "donResForCurCenNotTreatNum");
-                donationStageDto.setDonResForCurCenNotTreatNum(donResForCurCenNotTreatNum);
-                totalNum+=donResForCurCenNotTreatNum;
+                if(StringUtil.isEmpty(donResForCurCenNotTreatNumString)){
+                    donationStageDto.setDonResForCurCenNotTreatNum(null);
+                }else {
+                    donResForCurCenNotTreatNum =  ParamUtil.getInt(request, "donResForCurCenNotTreatNum");
+                    donationStageDto.setDonResForCurCenNotTreatNum(donResForCurCenNotTreatNum);
+                    totalNum+=donResForCurCenNotTreatNum;
+                }
+
             }catch (Exception e){
                 log.error("no int");
             }
@@ -141,9 +153,13 @@ public class DonationStageDelegator extends CommonDelegator{
             try {
                 String trainingNumString=ParamUtil.getString(request, "trainingNum");
                 donationStageDto.setTrainingNumStr(trainingNumString);
-                trainingNum = ParamUtil.getInt(request, "trainingNum");
-                donationStageDto.setTrainingNum(trainingNum);
-                totalNum+=trainingNum;
+                if(StringUtil.isEmpty(trainingNumString)){
+                    donationStageDto.setTrainingNum(null);
+                }else {
+                    trainingNum = ParamUtil.getInt(request, "trainingNum");
+                    donationStageDto.setTrainingNum(trainingNum);
+                    totalNum+=trainingNum;
+                }
             }catch (Exception e){
                 log.error("no int");
             }
@@ -151,9 +167,13 @@ public class DonationStageDelegator extends CommonDelegator{
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
                 donationStageDto.setTreatNumStr(treatNumString);
-                treatNum =  ParamUtil.getInt(request, "treatNum");
-                donationStageDto.setTreatNum(treatNum);
-                totalNum+=treatNum;
+                if(StringUtil.isEmpty(treatNumString)){
+                    donationStageDto.setTreatNum(null);
+                }else {
+                    treatNum =  ParamUtil.getInt(request, "treatNum");
+                    donationStageDto.setTreatNum(treatNum);
+                    totalNum+=treatNum;
+                }
             }catch (Exception e){
                 log.error("no int");
             }
@@ -178,6 +198,7 @@ public class DonationStageDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             }
+            valRFC(bpc.request,donationStageDto);
         }
     }
     @Override
@@ -217,4 +238,13 @@ public class DonationStageDelegator extends CommonDelegator{
 
     }
 
+    protected void valRFC(HttpServletRequest request, DonationStageDto cycleStageDto){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getDonationStageDto()!= null && cycleStageDto.equals(arOldSuperDataSubmissionDto.getDonationStageDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
+    }
 }
