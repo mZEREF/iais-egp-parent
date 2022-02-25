@@ -249,12 +249,21 @@
 
     $('#ds-deleteDraft').click(function (){
         //get first
-        if($("[name='submissionNo']:checked").val().indexOf('DS') >= 0){
-            $("#deleteDraftModal").modal('show');
-        }else {
-            $("#actionNoDraftDataDelete").modal('show');
+       if($("[name='submissionNo']:checked").val() != null){
+           let canDraft = true;
+           $.each($("[name='submissionNo']:checked"),function(){
+             if(canDraft && $(this).val().indexOf('DS') <0){
+                 canDraft = false;
+             }
+           })
+           if(canDraft){
+               $("#deleteDraftModal").modal('show');
+           }else {
+               $("#actionNoDraftDataDelete").modal('show');
+           }
+       } else {
+           $("#actionNoDraftDataDelete").modal('show');
         }
-
     });
     $('#ds-amend').click(function (){
         doSubmitForDataSubmission('rfc');
