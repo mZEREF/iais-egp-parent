@@ -49,7 +49,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageSize(defaultPageSize);
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
-                    setMsgParamByField(searchParam,"hcsaServicesShow",HcsaServiceCacheHelper.controlServices(0,null,userRoleAccessMatrixDtos).getServiceCodes());
+                    setMsgParamByField(searchParam,"hcsaServicesShow",HcsaServiceCacheHelper.controlServices(0,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
                 break;
@@ -60,7 +60,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(defaultPageSize);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
-                    setAppParamByField(searchParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,null,userRoleAccessMatrixDtos).getServiceCodes());
+                    setAppParamByField(searchParam,"appServicesShow",HcsaServiceCacheHelper.controlServices(3,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, searchParam);
                 }
                 break;
@@ -71,7 +71,7 @@ public class HalpSearchResultHelper {
                     searchParam.setSort("START_DATE", SearchParam.DESCENDING);
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(defaultPageSize);
-                    setLicParamByField(searchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,null,userRoleAccessMatrixDtos).getServiceCodes());
+                    setLicParamByField(searchParam,"serviceTypesShow",HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos));
                     ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, searchParam);
                 }
                 break;
