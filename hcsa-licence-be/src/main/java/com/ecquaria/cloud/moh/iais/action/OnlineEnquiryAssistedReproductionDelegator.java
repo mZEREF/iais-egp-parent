@@ -1380,10 +1380,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request=bpc.request;
         String cycleId = ParamUtil.getString(request,"crud_action_value");
         String submissionNo = ParamUtil.getString(request,"crud_action_additional");
+        String oldId = ParamUtil.getString(request,"crud_type");
 
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
-            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmitDt));
+            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmissionNo));
             ParamUtil.setSessionAttr(request,"cycleStageList", (Serializable) cycleStageList);
         }
         List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
@@ -1400,21 +1401,21 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     }
                 }
             }
-            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
-                List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
-                int count =0;
-                if(oldPgtList!=null){
-                    for (PgtStageDto pgt:oldPgtList
-                    ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-                            count++;
-                        }
-                    }
-                }
-                ParamUtil.setRequestAttr(bpc.request, "count",count);
-            }
             initDataForView(arSuper, bpc.request);
             arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
+            if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
+                ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
+                     ) {
+                    initDataForView(arSdOld, bpc.request);
+                    arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
+                    if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                        arSuperOld=arSdOld;
+                        break;
+                    }
+                }
+                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
+            }
             ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
 
@@ -1467,6 +1468,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         if (arSuper != null) {
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
+                List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
+                int count =0;
+                if(oldPgtList!=null){
+                    for (PgtStageDto pgt:oldPgtList
+                    ) {
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
+                            count++;
+                        }
+                    }
+                }
+                ParamUtil.setRequestAttr(request, "count",count);
+            }
             List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
             Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
             if(IaisCommonUtils.isNotEmpty(premisesDtos)){

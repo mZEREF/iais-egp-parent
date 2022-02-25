@@ -1319,10 +1319,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         HttpServletRequest request=bpc.request;
         String cycleId = ParamUtil.getString(request,"crud_action_value");
         String submissionNo = ParamUtil.getString(request,"crud_action_additional");
+        String oldId = ParamUtil.getString(request,"crud_type");
 
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
-            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmitDt));
+            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmissionNo));
             ParamUtil.setSessionAttr(request,"cycleStageList", (Serializable) cycleStageList);
         }
         List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
@@ -1357,6 +1358,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             mohDsActionDelegator.initDataForView(arSuper, bpc.request);
             arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
+            if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
+                ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
+                ) {
+                    mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
+                    arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
+                    if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                        arSuperOld=arSdOld;
+                        break;
+                    }
+                }
+                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
+            }
             ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
 
