@@ -129,7 +129,7 @@ var stageAjax = function (cycleIder, divid) {
                 html += '<th width="25%">Submission ID</th>' +
                     '<th width="25%">Date</th>' +
                     '<th width="25%">Stage</th>' +
-                    '<th width="25%">View Full Details</th>' +
+                    '<th width="25%">Action</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
@@ -170,7 +170,7 @@ var stageAjaxNon = function (cycleIder, divid) {
                 html += '<th width="25%">Submission ID</th>' +
                     '<th width="25%">Date</th>' +
                     '<th width="25%">Stage</th>' +
-                    '<th width="25%">View Full Details</th>' +
+                    '<th width="25%">Action</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
