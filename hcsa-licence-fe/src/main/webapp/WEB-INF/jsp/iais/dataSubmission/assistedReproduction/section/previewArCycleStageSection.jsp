@@ -168,5 +168,6 @@
         </div>
     </div>
 </div>
+<c:set var="donorFrom" value="ar"/>
 <%@include file="previewDonorSection.jsp"%>
 
