@@ -224,7 +224,7 @@ public class OnlineArAjaxController {
 
         log.debug("indicates that a record has been selected ");
 
-        QueryHelp.setMainSql("onlineEnquiry", "searchPatientByAssistedReproduction",searchParam);
+        QueryHelp.setMainSql("onlineEnquiry", "advancedSearchPatientByAssistedReproduction",searchParam);
 
         SearchResult<AssistedReproductionEnquiryResultsDto> results = assistedReproductionService.searchPatientByParam(searchParam);
 
