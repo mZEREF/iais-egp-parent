@@ -80,7 +80,17 @@ var getPatientByPatientCode = function (patientCode, divid) {
     for (var j = 0;j<len;j++){
         var hide = $(advfilterList[j]);
         if(hide.id !=='advfilter'+divid){
-            hide.removeClass('collapsed')
+            hide.addClass('collapsed')
+            hide.prop('aria-expanded', false);
+        }
+    }
+    var dropdownList=$("[id^='dropdown']");
+    var lendropdown = dropdownList.length;
+    for (var k = 0;k<lendropdown;k++){
+        var dropdown = $(dropdownList[k]);
+        if(dropdown.id !=='dropdown'+divid){
+            dropdown.removeClass('in')
+            dropdown.prop('aria-expanded', false);
         }
     }
     if (!isInArray(dividajaxlist,divid)) {
