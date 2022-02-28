@@ -105,7 +105,7 @@
 
                 <iais:row>
                     <iais:field width="4" value="In-Vitro Maturation" />
-                    <iais:value width="4" cssClass="col-md-3" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arCycleStageDto.inVitroMaturation ? 'Yes' : 'No'}"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
