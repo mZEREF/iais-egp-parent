@@ -66,6 +66,23 @@ $(document).ready(function () {
 
 var getPatientByPatientCode = function (patientCode, divid) {
     showWaiting();
+    var advfiltersonList=$("[id^='advfilterson']");
+    var lenSon = advfiltersonList.length;
+    for (var i = 0;i<lenSon;i++){
+        var hideSon = $(advfiltersonList[i]);
+        if(hideSon.id !=='advfilterson'+divid){
+            hideSon.hide();
+        }
+
+    }
+    var advfilterList=$("[id^='advfilter']");
+    var len = advfilterList.length;
+    for (var j = 0;j<len;j++){
+        var hide = $(advfilterList[j]);
+        if(hide.id !=='advfilter'+divid){
+            hide.removeClass('collapsed')
+        }
+    }
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
     } else {
