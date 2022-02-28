@@ -1394,20 +1394,28 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "count",count);
             }
-            mohDsActionDelegator.initDataForView(arSuper, bpc.request);
-            arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
-            if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
-                ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
-                for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
-                ) {
-                    mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
-                    arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
-                    if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
-                        arSuperOld=arSdOld;
-                        break;
+            try {
+                mohDsActionDelegator.initDataForView(arSuper, bpc.request);
+                arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+            try {
+                if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
+                    ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                    for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
+                    ) {
+                        mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
+                        arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
+                        if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                            arSuperOld=arSdOld;
+                            break;
+                        }
                     }
+                    ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
                 }
-                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
             ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
