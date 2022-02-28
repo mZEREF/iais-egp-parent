@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -92,7 +93,7 @@ public class SoloEditValidator implements CustomizeValidator {
             map.put(showEorArea, MANDATORY_MSG);
             return true;
         }else if(StringUtil.isNotEmpty(code) && maxLength >0 && code.length() > maxLength){
-            map.put(showEorArea, MessageUtil.replaceMessage("GENERAL_ERR0041",String.valueOf(maxLength),"maxlength"));
+            map.put(showEorArea, MessageUtil.getMessageDesc("GENERAL_ERR0041", Arrays.asList("maxlength","field"),Arrays.asList(String.valueOf(maxLength),"This field")));
             return true;
         }
         return false;
