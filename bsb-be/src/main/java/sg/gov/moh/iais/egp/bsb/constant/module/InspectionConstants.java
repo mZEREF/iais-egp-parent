@@ -23,6 +23,7 @@ public class InspectionConstants {
     public static final String KEY_INS_OUTCOME = "insOutcome";
     public static final String KEY_INS_CHK_LST = "bsbInspectionChecklist";
     public static final String KEY_INS_CHKL_ANSWER_MAP = "bsbInspectionChecklistAnswerMap";
+    public static final String KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP = "insRecordInfoSubTypeMap";
 
     public static final String KEY_CHKL_ITEM_SELECTION = "itemSelection";
     public static final String KEY_INSPECTION_CONFIG = "bsbInspectionConfig";
@@ -35,6 +36,7 @@ public class InspectionConstants {
     public static final String TAB_INS_DETAIL = "tabInsDetails";
     public static final String TAB_DOC = "tabDocuments";
     public static final String TAB_INS_FINDING = "tabInsFinding";
+    public static final String TAB_RECTIFICATION = "tabRectification";
     public static final String TAB_PROCESSING = "tabProcessing";
     public static final String TAB_INS_REPORT = "tabInsReport";
 
