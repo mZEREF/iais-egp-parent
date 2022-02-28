@@ -591,7 +591,10 @@
         <![CDATA[
             select distinct * from (
             SELECT  ldt.ID,null SUBMISSION_ID,
-                   CONCAT(case Prem.BLK_NO
+                   CONCAT(case Prem.HCI_NAME
+                  when null then null
+                  else ', '+Prem.HCI_NAME end ,
+                  case Prem.BLK_NO
                   when null then null
                   else ''+Prem.BLK_NO end ,
                case Prem.STREET_NAME
@@ -617,9 +620,6 @@
                ,case Prem.POSTAL_CODE
                   when null then null
                   else ', '+Prem.POSTAL_CODE end
-                  ,case Prem.HCI_NAME
-                  when null then null
-                  else ', '+Prem.HCI_NAME end
               )  LDT_NAME, ldt.LDT_TEST_NAME, ldt.INTENDED_PURPOSE, ldt.LDT_DATE, ldt.RESPONSE_PERSON, ldt.DESIGNATION,
               case ldt.TEST_STATUS
               when 1 then 'Active'
