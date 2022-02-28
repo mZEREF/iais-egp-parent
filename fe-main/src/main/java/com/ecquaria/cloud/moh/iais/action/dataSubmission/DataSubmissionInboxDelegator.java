@@ -389,8 +389,8 @@ public class DataSubmissionInboxDelegator {
 									//Withdraw.Patient Information or Donor Sample
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR050");break;
 								case 3:
-									//Withdraw.RFC
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+									//Withdraw.completed
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR061");break;
 								case 4:
 									//Withdraw.locked
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR052");break;
@@ -490,6 +490,9 @@ public class DataSubmissionInboxDelegator {
 		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+				if(arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+					return 3;
+				}
 				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
 				List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
 				Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
@@ -507,9 +510,9 @@ public class DataSubmissionInboxDelegator {
 				}
 				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
 					 ) {
-//					if(arWd.getDataSubmissionDto().getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
-//						return 3;
-//					}
+					if(arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+						return 3;
+					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
 						addWithdrawnDtoList.remove(arWd);
 					}
