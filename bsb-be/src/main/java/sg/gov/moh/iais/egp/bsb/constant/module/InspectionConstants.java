@@ -19,6 +19,7 @@ public class InspectionConstants {
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
     public static final String KEY_INS_FINDING = "insFindingList";
+    public static final String KEY_INS_NON_COMPLIANCE = "insRectificationList";
     public static final String KEY_INS_OUTCOME = "insOutcome";
     public static final String KEY_INS_CHK_LST = "bsbInspectionChecklist";
     public static final String KEY_INS_CHKL_ANSWER_MAP = "bsbInspectionChecklistAnswerMap";

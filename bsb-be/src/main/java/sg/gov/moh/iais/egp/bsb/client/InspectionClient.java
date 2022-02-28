@@ -20,6 +20,9 @@ public interface InspectionClient {
     @GetMapping(value = "/inspection/actual/submit-findings/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitFindingDataDto getInitInsFindingData(@RequestParam("appId") String appId);
 
+    @GetMapping(value = "/inspection/actual/non-compliance/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    InsNCRectificationDataDto getInitInsNCRectificationData(@RequestParam("appId") String appId);
+
     @GetMapping(value = "/inspection/actual/submit-report/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitReportDataDto getInitInsSubmitReportData(@RequestParam("appId") String appId);
 
@@ -66,6 +69,9 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/ao-review-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionAOReviewDecision(@RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/validate/officer-review-non-compliance", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualOfficerReviewNCDecision(@RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/actual/process/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
     void submitInspectionReportToAO(@RequestParam("appId") String appId,
                                     @RequestParam("taskId") String taskId,
@@ -93,4 +99,24 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/post/validate/do-review-follow-up-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePostInspectionDOReviewFollowUpItems(@RequestBody DOReviewFollowUpItemsDto doReviewFollowUpItemsDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/review/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionNCToAO(@RequestParam("appId") String appId,
+                                @RequestParam("taskId") String taskId,
+                                @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/review/finalization", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void finalizeReviewInspectionNC(@RequestParam("appId") String appId,
+                                    @RequestParam("taskId") String taskId,
+                                    @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/ao/review/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionNCAORequestForInformation(@RequestParam("appId") String appId,
+                                                   @RequestParam("taskId") String taskId,
+                                                   @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/non-compliance/do/review/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void reviewInspectionNCDORequestForInformation(@RequestParam("appId") String appId,
+                                                   @RequestParam("taskId") String taskId,
+                                                   @RequestBody InsProcessDto processDto);
 }
