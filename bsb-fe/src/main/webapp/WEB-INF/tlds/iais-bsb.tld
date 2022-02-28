@@ -83,4 +83,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <description>Judge inbox app action availability</description>
+        <name>app-action</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.AppActionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>info</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo</type>
+        </attribute>
+    </tag>
 </taglib>

@@ -27,6 +27,7 @@ public class MasterCodeConstants {
     public static final String APP_TYPE_SUSPEND = "BSBAPTY007";
     public static final String APP_TYPE_REINST = "BSBAPTY008";
     public static final String APP_TYPE_WITHDRAW = "BSBAPTY009";
+    public static final String APP_TYPE_SUBMISSION = "BSBAPTY010";
 
     public static final String APP_STATUS_PEND_DO                       = "BSBAPST001";
     public static final String APP_STATUS_PEND_AO                       = "BSBAPST002";

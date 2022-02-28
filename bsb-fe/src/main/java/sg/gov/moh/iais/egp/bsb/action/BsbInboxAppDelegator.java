@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
-
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -23,18 +22,16 @@ import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+
 
 @Slf4j
 @Delegator("bsbInboxAppDelegator")
 public class BsbInboxAppDelegator {
-    private static final String KEY_INBOX_APP_SEARCH_DTO = "inboxAppSearchDto";
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
-    private static final String KEY_INBOX_APP_DATA_LIST = "dataList";
     private static final String KEY_INBOX_MSG_UNREAD_AMT = "unreadMsgAmt";
-
-    private static final String KEY_ACTION_TYPE = "action_type";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
@@ -64,12 +61,12 @@ public class BsbInboxAppDelegator {
         ResponseDto<InboxAppSearchResultDto> resultDto = inboxClient.getInboxApplication(searchDto);
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APP_DATA_LIST, resultDto.getEntity().getApplications());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApplications());
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, resultDto.getEntity().getUnreadMsgAmt());
         } else {
             log.warn("Search Inbox Application Fail");
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APP_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, 0);
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
@@ -93,7 +90,7 @@ public class BsbInboxAppDelegator {
         HttpServletRequest request = bpc.request;
         InboxAppSearchDto searchDto = getSearchDto(request);
         String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_INBOX_APP_SEARCH_DTO, searchDto);
     }
