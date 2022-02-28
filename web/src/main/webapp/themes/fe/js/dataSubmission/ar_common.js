@@ -134,10 +134,12 @@ function getDataForPrinting() {
 }
 
 function showPopCommon(controlId,showPopId,val){
-    if($(controlId).length == 0){
+     let haveControlJq = controlId.indexOf("#") >= 0;
+     let haveShowPopIdJq = showPopId.indexOf("#") >= 0;
+    if(!haveControlJq && $(controlId).length == 0 ){
         controlId = '#'+controlId;
     }
-    if($(showPopId).length == 0){
+    if(!haveShowPopIdJq && $(showPopId).length == 0){
         showPopId = '#' + showPopId;
     }
     if($(controlId).val() == val){
