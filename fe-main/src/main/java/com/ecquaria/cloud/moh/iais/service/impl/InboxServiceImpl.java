@@ -143,7 +143,11 @@ public class InboxServiceImpl implements InboxService {
             if (StringUtils.isEmpty(inboxQueryDto.getServiceCodes())){
                 inboxQueryDto.setServiceCodes("N/A");
             }else{
+                String serviceCodes = inboxQueryDto.getServiceCodes();
                 inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
+                if(StringUtil.isEmpty(inboxQueryDto.getServiceCodes())){
+                    inboxQueryDto.setServiceCodes(serviceCodes);
+                }
             }
         }
         return inboxQueryDtoSearchResult;
