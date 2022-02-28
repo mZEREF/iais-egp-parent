@@ -15,24 +15,20 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <%@include file="dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%--    <div class="main-content">--%>
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
-                <%--                <div class="center-content">--%>
                 <div class="internet-content">
                     <div class="bg-title">
-                        <h2>You have successfully submited self-audit report.</h2>
+                        <p>You have successfully submited self-audit report.</p>
                     </div>
                 </div>
-                <div align="left">
-                            <span>
-                                <a href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
-                            </span>
+                <div style="text-align: left">
+                    <span>
+                        <a href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                    </span>
                 </div>
-                <%--                </div>--%>
             </div>
         </div>
     </div>
-    <%--    </div>--%>
 </form>

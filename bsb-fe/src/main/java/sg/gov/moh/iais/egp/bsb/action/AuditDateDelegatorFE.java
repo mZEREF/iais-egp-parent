@@ -17,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -62,8 +63,8 @@ public class AuditDateDelegatorFE {
 
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
-            List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            for (FacilityAudit audit : audits) {
+            List<FacilityAuditDto> audits = searchResult.getEntity().getTasks();
+            for (FacilityAuditDto audit : audits) {
                Facility facility = auditClient.getFacilityByApproval(audit.getApproval().getId(),audit.getApproval().getProcessType()).getEntity();
                audit.setFacility(facility);
             }

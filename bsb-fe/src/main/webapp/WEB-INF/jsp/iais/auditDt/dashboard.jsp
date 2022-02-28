@@ -2,6 +2,11 @@
 <%
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
+<style type="text/css">
+    .nav {
+        background: transparent;
+    }
+</style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
