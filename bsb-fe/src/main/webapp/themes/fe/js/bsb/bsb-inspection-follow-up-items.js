@@ -1,7 +1,8 @@
-function followUpItem(itemVal){
+function followUpItem(itemVal, action_value){
     showWaiting();
     $("[name='itemValue']").val(itemVal);
     $("[name='action_type']").val("followUpItems");
+    $("[name='action_value']").val(action_value);
     $("#mainForm").submit();
 }
 

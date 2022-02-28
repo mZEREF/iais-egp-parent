@@ -15,6 +15,7 @@ public class InspectionConstants {
     public static final String KEY_RECTIFY_FINDING_FORM = "ncsPreData";
     public static final String KEY_RECTIFY_SAVED_DTO = "ncsSavedDto";
     public static final String KEY_RECTIFY_SAVED_DOC_DTO = "ncsSavedDocDto";
+    public static final String KEY_RECTIFY_ITEM_SAVE_DTO = "rectifyItemSaveDto";
     public static final String KEY_ITEM_VALUE     = "itemValue";
     public static final String KEY_MASKED_ITEM_VALUE = "itemVal";
     public static final String KEY_ITEM_RECTIFY_MAP = "rectifyMap";

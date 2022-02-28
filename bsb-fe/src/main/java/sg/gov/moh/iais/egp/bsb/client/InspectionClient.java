@@ -39,11 +39,9 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveCommentReportForm(CommentInsReportSaveDto saveDto);
 
-    //TODO update
     @GetMapping(path = "/inspection/followUpItems/{appId}")
     ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String appId);
 
-    //TODO update
     @PostMapping(value = "/inspection/followUpItems", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveFollowUpItemsData(@RequestBody RectifyInsReportSaveDto saveDto);
 
