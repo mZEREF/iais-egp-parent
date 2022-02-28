@@ -15,10 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
 
-/**
- * @author : LiRan
- * @date : 2021/12/27
- */
+
 @Delegator
 @Slf4j
 public class MohBeAppViewDelegator {
@@ -69,7 +66,10 @@ public class MohBeAppViewDelegator {
                 case KEY_DATA_SUBMISSION_TYPE_RECEIPT:
                 case KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT:
                 case KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY:
-                    appViewService.retrieveDataSubmissionInfo(request,applicationId);
+                    appViewService.retrieveDataSubmissionInfo(request, applicationId);
+                    break;
+                case MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS:
+                    appViewService.retrieveInspectionFollowUpItems(request, applicationId);
                     break;
                 default:
                     log.info("don't have such moduleType {}", StringUtils.normalizeSpace(moduleType));

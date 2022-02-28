@@ -70,7 +70,7 @@ public class MohAOScreeningDelegator {
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, aoScreeningDto.getSubmitDetailsDto());
         //view application process need an applicationDto
         String moduleType = appViewService.judgeProcessAppModuleType(aoScreeningDto.getSubmitDetailsDto().getProcessType(), aoScreeningDto.getSubmitDetailsDto().getAppType());
-        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(aoScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

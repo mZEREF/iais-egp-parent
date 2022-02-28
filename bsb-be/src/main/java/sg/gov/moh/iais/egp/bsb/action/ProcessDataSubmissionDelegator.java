@@ -35,12 +35,10 @@ public class ProcessDataSubmissionDelegator {
     private static final String ACTION_TYPE = "action_type";
 
     private final DataSubmissionClient dataSubmissionClient;
-    private final AppViewService appViewService;
     private final ProcessHistoryService processHistoryService;
 
-    public ProcessDataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, AppViewService appViewService, ProcessHistoryService processHistoryService) {
+    public ProcessDataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, ProcessHistoryService processHistoryService) {
         this.dataSubmissionClient = dataSubmissionClient;
-        this.appViewService = appViewService;
         this.processHistoryService = processHistoryService;
     }
 
@@ -72,7 +70,7 @@ public class ProcessDataSubmissionDelegator {
                     //show routingHistory list
                     processHistoryService.getAndSetHistoryInSession(dto.getSubmissionDetailsDto().getApplicationNo(), request);
                     //
-                    appViewService.createAndSetAppViewDtoInSession(appId, dto.getNotificationType(), request);
+                    AppViewService.createAndSetAppViewDtoInSession(appId, dto.getNotificationType(), request);
                     //
                     ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, dto.getDocDisplayDtoList());
                 } else {

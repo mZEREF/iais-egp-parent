@@ -67,6 +67,11 @@
                                                     <c:if test="${appViewDto.moduleType eq 'DATTYPE008'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewBatInventory.jsp" %>
                                                     </c:if>
+
+                                                    <%-- inspection --%>
+                                                    <c:if test="${appViewDto.moduleType eq 'viewInspectionFollowUpItems'}">
+                                                        <%@include file="/WEB-INF/jsp/iais/appView/inspection/doReviewInspectionFollowUpItemsView.jsp" %>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>

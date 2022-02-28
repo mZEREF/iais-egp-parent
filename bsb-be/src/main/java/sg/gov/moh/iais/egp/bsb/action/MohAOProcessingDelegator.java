@@ -70,7 +70,7 @@ public class MohAOProcessingDelegator {
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, aoProcessingDto.getSubmitDetailsDto());
         //view application process need an applicationDto
         String moduleType = appViewService.judgeProcessAppModuleType(aoProcessingDto.getSubmitDetailsDto().getProcessType(), aoProcessingDto.getSubmitDetailsDto().getAppType());
-        appViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(aoProcessingDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

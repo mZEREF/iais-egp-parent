@@ -1,9 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.constant.module;
 
-/**
- * @author : LiRan
- * @date : 2022/1/21
- */
+
 public class AppViewConstants {
     private AppViewConstants() {}
 
@@ -41,6 +38,7 @@ public class AppViewConstants {
     public static final String MODULE_VIEW_DEREGISTRATION_FACILITY          = "viewDeRegistrationFacility";
     public static final String MODULE_VIEW_CANCELLATION_APPROVAL_APP        = "viewCancellationApprovalApp";
     public static final String MODULE_VIEW_DEREGISTRATION_FAC_CER_REG       = "viewDeRegistrationFacCerReg";
+    public static final String MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS       = "viewInspectionFollowUpItems";
 
     public static final String KEY_VIEW_DATA_SUBMISSION = "dataSubInfo";
 }

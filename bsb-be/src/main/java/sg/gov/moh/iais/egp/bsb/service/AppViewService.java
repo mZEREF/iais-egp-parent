@@ -33,10 +33,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMARY_DOC_DTO;
 
-/**
- * @author : LiRan
- * @date : 2022/1/21
- */
+
 @Service
 @Slf4j
 public class AppViewService {
@@ -85,7 +82,7 @@ public class AppViewService {
         return module;
     }
 
-    public void createAndSetAppViewDtoInSession(String appId, String moduleType, HttpServletRequest request){
+    public static void createAndSetAppViewDtoInSession(String appId, String moduleType, HttpServletRequest request){
         AppViewDto appViewDto = new AppViewDto();
         appViewDto.setApplicationId(appId);
         appViewDto.setModuleType(moduleType);
@@ -241,6 +238,13 @@ public class AppViewService {
         }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
+    }
+
+    /**
+     * retrieve inspection follow-up items
+     */
+    public void retrieveInspectionFollowUpItems(HttpServletRequest request, String applicationId){
+        //TODO logic code
     }
 
     /* Will be removed in future, will get this from config mechanism */
