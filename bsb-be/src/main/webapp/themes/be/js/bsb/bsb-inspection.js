@@ -186,3 +186,29 @@ function deleteSection(sectionIdPrefix, separator, idx) {
     var section = document.getElementById(sectionIdPrefix + separator + idx);
     section.parentNode.removeChild(section);
 }
+
+//checkBox - inspection NCs may delete in future
+function doInspectorProRecCheckAll(){
+    if ($('#allNcItemCheck').is(':checked')) {
+        $("input[name = 'ncItemCheck']").attr("checked","true");
+    } else {
+        $("input[name = 'ncItemCheck']").removeAttr("checked");
+    }
+}
+
+function doInspectorProRecCheck(){
+    var flag = true;
+    var allNcItemCheck = document.getElementById("allNcItemCheck");
+    var ncItemCheckList = document.getElementsByName("ncItemCheck");
+    for (var x = 0; x < ncItemCheckList.length; x++) {
+        if(ncItemCheckList[x].checked==false){
+            flag = false;
+            break;
+        }
+    }
+    if(flag){
+        allNcItemCheck.checked = true;
+    }else{
+        allNcItemCheck.checked = false;
+    }
+}

@@ -13,12 +13,12 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBsbInspectionNCsDOReview___1 extends BaseProcessClass {
+public class INTRANET___MohBsbInspectionNCsAOReview___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbInspectionOfficerReviewNCs";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "startDO", this);
+		EngineHelper.delegate(DELEGATOR, "startAO", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
@@ -43,13 +43,12 @@ public class INTRANET___MohBsbInspectionNCsDOReview___1 extends BaseProcessClass
 
 	public void requestForInformation_OnStepProcess_0() throws Exception {
 	// 		RequestForInformation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "routeToAO", this);
+		EngineHelper.delegate(DELEGATOR, "requestForInformationToDO", this);
 	}
 
-	public void routeToAO_OnStepProcess_0() throws Exception {
-		// 		RouteToAO->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
+	public void finalize_OnStepProcess_0() throws Exception {
+	// 		Finalize->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "finalizeProcess", this);
 	}
-
 
 }

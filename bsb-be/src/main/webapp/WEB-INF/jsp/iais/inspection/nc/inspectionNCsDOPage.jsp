@@ -50,8 +50,8 @@
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                         </li>
-                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_FINDING}">class="active"</c:if> id="insFinding" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_INS_FINDING}" id="doInsFinding" aria-controls="tabInsFinding" role="tab" data-toggle="tab">Inspection Finding(s)</a>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_RECTIFICATION}">class="active"</c:if> id="rectification" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_RECTIFICATION}" id="doRectification" aria-controls="tabRectification" role="tab" data-toggle="tab">Rectification</a>
                                         </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">class="active"</c:if> id="process" role="presentation">
                                             <a href="#${InspectionConstants.TAB_PROCESSING}" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -66,7 +66,7 @@
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </div>
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_INS_FINDING}" aria-controls="tabInsFinding" role="tab" data-toggle="tab">Inspection Finding(s)</a>
+                                                <a href="#${InspectionConstants.TAB_RECTIFICATION}" aria-controls="tabRectification" role="tab" data-toggle="tab">Rectification</a>
                                             </div>
                                             <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_PROCESSING}" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -80,8 +80,8 @@
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                         </div>
-                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_FINDING}">active</c:if>" id="${InspectionConstants.TAB_INS_FINDING}" role="tabpanel">
-                                            <%@include file="test.jsp"%>
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_RECTIFICATION}">active</c:if>" id="${InspectionConstants.TAB_RECTIFICATION}" role="tabpanel">
+                                            <%@include file="rectification.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">active</c:if>" id="${InspectionConstants.TAB_PROCESSING}" role="tabpanel">
                                             <br/><br/>
@@ -110,18 +110,26 @@
                                                             </div>
 
                                                             <div class="form-group">
-                                                                <label class="col-xs-12 col-md-4 control-label" for="decision">Processing Decision</label>
+                                                                <label class="col-xs-12 col-md-4 control-label"> Duty Officer’s Recommendation</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="decision" id="decision">
-                                                                        <option value="Request for Information">Request for Information</option>
-                                                                        <option value="Recommend acceptance of NC rectifications">Recommend acceptance of NC rectifications</option>
-                                                                        <option value="Recommend rejection of NC rectifications">Recommend rejection of NC rectifications </option>
+                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <select name="processingDecision" id="processingDecision">
+                                                                        <option value="MOHPRO002">Request for Information</option>
+                                                                        <option value="MOHPRO025">Recommend acceptance of NC rectifications</option>
+                                                                        <option value="MOHPRO026">Recommend rejection of NC rectifications </option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
 
-                                                            <span data-err-ind="error_message" class="error-msg"></span>
+                                                            <span data-err-ind="decision" class="error-msg" ></span>
 
                                                         </div>
                                                         <div style="text-align: right">
