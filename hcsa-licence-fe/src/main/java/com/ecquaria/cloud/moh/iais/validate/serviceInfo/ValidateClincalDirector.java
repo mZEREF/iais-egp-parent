@@ -54,8 +54,8 @@ public class ValidateClincalDirector implements ValidateFlow {
                 if(StringUtil.isEmpty(name)){
                     map.put("name"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "name", "field"));
                 }else {
-                    if(name.length()>66){
-                        String general_err0041=NewApplicationHelper.repLength("name","66");
+                    if(name.length()>110){
+                        String general_err0041=NewApplicationHelper.repLength("name","110");
                         map.put("name"+i, general_err0041);
                     }
                 }

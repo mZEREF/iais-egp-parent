@@ -717,8 +717,8 @@ public class NewApplicationHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 66) {
-                        String general_err0041 = repLength("Name", "66");
+                    if (name.length() > 110) {
+                        String general_err0041 = repLength("Name", "110");
                         errMap.put("name" + i, general_err0041);
                     }
                 }
@@ -887,8 +887,8 @@ public class NewApplicationHelper {
                     String errName = MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field");
                     if (StringUtil.isEmpty(name)) {
                         oneErrorMap.put("name" + poIndex, errName);
-                    } else if (name.length() > 66) {
-                        String general_err0041 = repLength("Name", "66");
+                    } else if (name.length() > 110) {
+                        String general_err0041 = repLength("Name", "110");
                         oneErrorMap.put("name" + poIndex, general_err0041);
                     }
                     if (StringUtil.isEmpty(salutation)) {
@@ -1032,8 +1032,8 @@ public class NewApplicationHelper {
                     }
                     if (StringUtil.isEmpty(name)) {
                         oneErrorMap.put("deputyName" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
-                    } else if (name.length() > 66) {
-                        String general_err0041 = repLength("Name", "66");
+                    } else if (name.length() > 110) {
+                        String general_err0041 = repLength("Name", "110");
                         oneErrorMap.put("deputyName" + dpoIndex, general_err0041);
                     }
                     if (StringUtil.isEmpty(officeTelNo)) {
@@ -1538,8 +1538,8 @@ public class NewApplicationHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 66) {
-                        String general_err0041 = repLength("Name", "66");
+                    if (name.length() > 110) {
+                        String general_err0041 = repLength("Name", "110");
                         errMap.put("name" + i, general_err0041);
                     }
                 }
@@ -1620,8 +1620,8 @@ public class NewApplicationHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 66) {
-                        String general_err0041 = repLength("Name", "66");
+                    if (name.length() > 110) {
+                        String general_err0041 = repLength("Name", "110");
                         errMap.put("name" + i, general_err0041);
                     }
                 }

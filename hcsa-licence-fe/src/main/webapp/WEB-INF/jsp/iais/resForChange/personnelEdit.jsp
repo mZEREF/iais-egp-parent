@@ -235,7 +235,7 @@
                                             <span class="error-msg" name="iaisErrorMsg" id="error_salutation"></span>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input maxLength="66" type="text"
+                                            <iais:input maxLength="110" type="text"
                                                         name="psnName"
                                                         value="${personnelEditDto.psnName}"></iais:input>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_psnName"></span>
@@ -325,7 +325,7 @@
                                                          firstOption="Please Select"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input maxLength="66" type="text"
+                                            <iais:input maxLength="110" type="text"
                                                         name="psnName1"
                                                         value="${newPerson.psnName}"></iais:input>
                                         </iais:value>
@@ -400,7 +400,7 @@
                                                          firstOption="Please Select"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                            <iais:input cssClass="needDisableI" maxLength="110" type="text"
                                                         name="psnName2"
                                                         value="${newPerson.psnName}"></iais:input>
                                         </iais:value>
