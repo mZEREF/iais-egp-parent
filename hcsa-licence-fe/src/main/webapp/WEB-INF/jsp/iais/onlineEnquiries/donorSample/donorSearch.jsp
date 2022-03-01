@@ -39,7 +39,6 @@
     }
 
 </style>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -282,3 +281,4 @@
 </form>
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>

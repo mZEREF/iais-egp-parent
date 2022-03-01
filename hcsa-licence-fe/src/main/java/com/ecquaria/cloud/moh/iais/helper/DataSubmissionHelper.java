@@ -818,12 +818,12 @@ public final class DataSubmissionHelper {
                 long length = file.length();
                 if (length == 0) {
                     log.info("The file length is 0!!!");
-                    errorMap.put(showErrorField, "GENERAL_ACK022");
+                    errorMap.put(showErrorField, "MCUPERR004");
                 }
                 String filename = file.getName();
                 if (!FileUtils.isCsv(filename) && !FileUtils.isExcel(filename)) {
                     log.info(StringUtil.changeForLog("Invalid file - " + filename));
-                    errorMap.put(showErrorField, "GENERAL_ACK022");
+                    errorMap.put(showErrorField, MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX, CSV","fileType"));
                 }
             }
         }

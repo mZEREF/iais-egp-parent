@@ -64,6 +64,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
         int totalNum =0;
+        boolean isInt=true;
+
         Integer transEmbrFreshOccNum =  null;
         try {
             String transEmbrFreshOccNumString=ParamUtil.getString(request, "transEmbrFreshOccNum");
@@ -72,6 +74,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             totalNum+=transEmbrFreshOccNum;
         }catch (Exception e){
             log.error("no int");
+                        isInt=false;
+            transEmbrFreshOccNum=-1;
         }
         Integer poorDevFreshOccNum = null;
         try {
@@ -81,6 +85,8 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             totalNum+=poorDevFreshOccNum;
         }catch (Exception e){
             log.error("no int");
+                        isInt=false;
+            poorDevFreshOccNum = -1;
         }
         Integer transEmbrThawOccNum = null;
         try {
@@ -90,6 +96,9 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             totalNum+=transEmbrThawOccNum;
         }catch (Exception e){
             log.error("no int");
+                        isInt=false;
+            transEmbrThawOccNum = -1;
+
         }
         Integer poorDevThawOccNum = null;
         try {
@@ -99,12 +108,19 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             totalNum+=poorDevThawOccNum;
         }catch (Exception e){
             log.error("no int");
+                        isInt=false;
+            poorDevThawOccNum = -1;
+
         }
         embryoCreatedStageDto.setTransEmbrFreshOccNum(transEmbrFreshOccNum);
         embryoCreatedStageDto.setTransEmbrThawOccNum(transEmbrThawOccNum);
         embryoCreatedStageDto.setPoorDevFreshOccNum(poorDevFreshOccNum);
         embryoCreatedStageDto.setPoorDevThawOccNum(poorDevThawOccNum);
-
+        if(isInt){
+            embryoCreatedStageDto.setTotalNum(totalNum);
+        }else {
+            embryoCreatedStageDto.setTotalNum(null);
+        }
         embryoCreatedStageDto.setTotalNum(totalNum);
 
 
@@ -113,6 +129,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
 
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

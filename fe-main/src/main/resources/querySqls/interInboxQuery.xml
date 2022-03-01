@@ -298,7 +298,7 @@
            UNION
            SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId, 'DS001' group_status, 0  LOCK_STATUS
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
-           ) t1 where t1.SVC_NAME IS NOT NULL AND t1.SVC_NAME != '') t1
+           ) t1 where t1.SVC_NAME IS NULL OR t1.SVC_NAME != '') t1
            <#if fromCenter?? && !fromCenter>
           left join (
           select p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME,licence.LICENSEE_ID licenseeId,licence.SVC_NAME SVC_NAME  FROM

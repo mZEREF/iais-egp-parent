@@ -16,10 +16,12 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,7 +47,7 @@ public class BsbRectifiesNCsDelegator {
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_APP_ID);
-        request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DTO);
+        request.getSession().removeAttribute(KEY_RECTIFY_SAVED_REMARK_MAP);
         request.getSession().removeAttribute(KEY_RECTIFY_FINDING_FORM);
         request.getSession().removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
         AuditTrailHelper.auditFunction("Applicant rectifies NCs", "Applicant rectifies NCs");
@@ -58,15 +60,11 @@ public class BsbRectifiesNCsDelegator {
         RectifyFindingFormDto rectifyFindingFormDto = inspectionClient.getNonComplianceFindingFormDtoByAppId("B861509B-946F-EC11-BE74-000C298D317C").getEntity();
         //save basic info such as appId and config id
         if(rectifyFindingFormDto != null){
-            RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
             RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-            savedDto.setAppId(rectifyFindingFormDto.getAppId());
-            savedDto.setConfigId(rectifyFindingFormDto.getConfigId());
             if(!rectifyFindingFormDto.getDocDtoList().isEmpty()){
                 reportDto.setSavedDocMap(rectifyFindingFormDto.getDocDtoList().stream().collect(Collectors.toMap(DocRecordInfo::getRepoId, Function.identity())));
                 ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_DOC_DTO,reportDto);
             }
-            ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_DTO,savedDto);
 
             //load origin icon status
             inspectionService.loadOriginIconStatus(rectifyFindingFormDto.getItemDtoList(),reportDto,request);
@@ -103,7 +101,18 @@ public class BsbRectifiesNCsDelegator {
         HttpServletRequest request = bpc.request;
         //do doc sync
         RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
+        RectifyInsReportSaveDto savedDto = new RectifyInsReportSaveDto();
+
+        //set application id and config id
+        RectifyFindingFormDto rectifyFindingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
+        savedDto.setConfigId(rectifyFindingFormDto.getConfigId());
+        savedDto.setAppId(rectifyFindingFormDto.getAppId());
+
+        //get all map value as list
+        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>  saveDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
+        savedDto.setItemSaveDtoList(new ArrayList<>(saveDtoMap.values()));
+
+        //set doc
         List<NewFileSyncDto> newFilesToSync = inspectionService.saveNewUploadedDoc(docDto);
         if(!docDto.getSavedDocMap().isEmpty()){
             savedDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
@@ -125,17 +134,13 @@ public class BsbRectifiesNCsDelegator {
         HttpServletRequest request = bpc.request;
         String itemValue = (String) ParamUtil.getSessionAttr(request,KEY_ITEM_VALUE);
         RectifyFindingFormDto findingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
-        RectifyInsReportSaveDto saveDto = inspectionService.getRectifyNCsSavedDto(request);
+        Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> saveMapDto = inspectionService.getRectifyNCsSavedRemarkMap(request);
         RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        List<RectifyInsReportSaveDto.RectifyItemSaveDto> itemSaveDtoList = saveDto.getItemSaveDtoList();
         //Prepare the data pre-displayed on the Rectify page
         //remarks
-        if(!itemSaveDtoList.isEmpty()){
-            for (RectifyInsReportSaveDto.RectifyItemSaveDto itemSaveDto : itemSaveDtoList) {
-                if(itemSaveDto.getItemValue().equals(itemValue)){
-                    ParamUtil.setRequestAttr(request, KEY_REMARKS,itemSaveDto.getRemarks());
-                }
-            }
+        if(!saveMapDto.isEmpty()){
+            RectifyInsReportSaveDto.RectifyItemSaveDto saveDto = saveMapDto.get(itemValue);
+            ParamUtil.setRequestAttr(request,KEY_RECTIFY_ITEM_SAVE_DTO,saveDto);
         }
         //new saved document
         if(!reportDto.getNewDocMap().isEmpty()){
@@ -159,16 +164,15 @@ public class BsbRectifiesNCsDelegator {
         String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
         if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
             RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-            RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
             String itemValue = (String) ParamUtil.getSessionAttr(request,KEY_ITEM_VALUE);
             Assert.hasLength(itemValue,"item value -sectionId +'--v--'+configId is null");
             docDto.reqObjMapping(request, DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE,itemValue);
-            savedDto.reqObjMapping(request,itemValue);
+            Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
+            inspectionService.putItemRemarkValue(request,itemValue,savedDtoMap);
             log.info(LogUtil.escapeCrlf(docDto.toString()));
-            log.info(LogUtil.escapeCrlf(savedDto.toString()));
+            log.info(LogUtil.escapeCrlf(savedDtoMap.toString()));
             Map<String,String> itemRectifyMap = inspectionService.getItemRectifyMap(request);
             inspectionService.turnCurrentIconStatus(request,docDto,itemValue,itemRectifyMap);
-            ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_DTO,savedDto);
             ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_DOC_DTO,docDto);
         }
         actionJumpHandler(request);
@@ -187,4 +191,6 @@ public class BsbRectifiesNCsDelegator {
             ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_PREPARE);
         }
     }
+
+
 }

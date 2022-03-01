@@ -13,7 +13,6 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <style>
@@ -99,4 +98,5 @@
         </div>
     </div>
 </form>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>
 

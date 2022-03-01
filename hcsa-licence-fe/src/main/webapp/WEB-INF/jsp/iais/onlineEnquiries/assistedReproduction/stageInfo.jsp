@@ -13,7 +13,6 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submissionNo" value="${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}" />
 <webui:setLayout name="iais-internet"/>
@@ -272,3 +271,4 @@
     </div>
 </form>
 
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>

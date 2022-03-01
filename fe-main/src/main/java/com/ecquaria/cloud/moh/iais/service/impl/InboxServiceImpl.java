@@ -600,4 +600,12 @@ public class InboxServiceImpl implements InboxService {
         }
         return map;
     }
+
+    @Override
+    public Integer dssDraftNum(InterMessageSearchDto interMessageSearchDto) {
+        if(StringUtil.isEmpty(interMessageSearchDto.getLicenseeId()) || IaisCommonUtils.isEmpty(interMessageSearchDto.getServiceCodes())){
+            return 0;
+        }
+        return licenceInboxClient.dssDraftNum(interMessageSearchDto).getEntity();
+    }
 }

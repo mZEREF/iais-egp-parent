@@ -13,7 +13,7 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>
+
 <style>
     .form-horizontal p {
         line-height: 23px;
@@ -92,3 +92,4 @@
         </div>
     </form>
 </div>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>

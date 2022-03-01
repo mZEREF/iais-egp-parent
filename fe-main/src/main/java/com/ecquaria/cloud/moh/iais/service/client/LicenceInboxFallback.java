@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -380,6 +381,11 @@ public class LicenceInboxFallback implements LicenceInboxClient {
 
     @Override
     public FeignResponseEntity<Void> updateDataSubmissionByIdChangeStatus(String id,Integer lockStatus) {
+        return getEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> dssDraftNum(InterMessageSearchDto interMessageSearchDto) {
         return getEntity();
     }
 }
