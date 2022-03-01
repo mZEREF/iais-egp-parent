@@ -2627,7 +2627,7 @@ public class ClinicalLaboratoryDelegator {
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
         String errOtherDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field");
 
-        String errLengthName = NewApplicationHelper.repLength("Name","66");
+        String errLengthName = NewApplicationHelper.repLength("Name","110");
         String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn. No.","20");
         String errLengthWrkExpYear = NewApplicationHelper.repLength("Relevant working experience (Years)","2");
         String errLengthQualification = NewApplicationHelper.repLength("Qualification","100");
@@ -2657,7 +2657,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
@@ -2681,7 +2681,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -2708,7 +2708,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -2739,7 +2739,7 @@ public class ClinicalLaboratoryDelegator {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(profRegNo)) {
@@ -2755,7 +2755,7 @@ public class ClinicalLaboratoryDelegator {
 
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(designation)) {
@@ -2789,7 +2789,7 @@ public class ClinicalLaboratoryDelegator {
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
@@ -2811,7 +2811,7 @@ public class ClinicalLaboratoryDelegator {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                 }
