@@ -113,6 +113,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
 
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
