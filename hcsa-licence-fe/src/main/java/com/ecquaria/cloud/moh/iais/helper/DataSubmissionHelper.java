@@ -79,6 +79,8 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
+        // clear session title
+        session.removeAttribute("title");
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
