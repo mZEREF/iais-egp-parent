@@ -91,7 +91,8 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
+                currentArDataSubmission.getAppType(), currentArDataSubmission.getSubmissionType()));
     }
 
     /**
