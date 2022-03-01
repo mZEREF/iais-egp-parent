@@ -6,8 +6,18 @@
 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
 
 <c:choose>
-    <c:when test="${currCode == 'TOPT001'}">
+    <c:when test="${submissionType == 'TOP_TP002'}">
         <%@include file="../terminationOfPregnancy/section/patientDetails.jsp" %>
+    </c:when>
+    <c:when test="${submissionType == 'TOP_TP001'}">
+        <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
+    </c:when>
+    <%--<c:when test="${currCode == 'TOPT001'}">
+        <%@include file="../terminationOfPregnancy/section/patientDetail.jsp" %>
     </c:when>
     <c:when test="${currCode == 'TOPT010'}">
         <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
@@ -15,10 +25,11 @@
         <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
-    </c:when>
+    </c:when>--%>
 </c:choose>
 <script>
     $(function () {
         clearFields('.cleanpage');
+        console.log("2")
     });
 </script>

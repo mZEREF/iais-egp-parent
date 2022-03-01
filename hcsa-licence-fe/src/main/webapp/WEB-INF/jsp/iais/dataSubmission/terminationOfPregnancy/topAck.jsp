@@ -21,7 +21,7 @@
 
 <%-- current page: ack --%>
 
-<%@ include file="common/topHeader.jsp" %>
+<%@ include file="common/topPiHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="../common/formHidden.jsp" %>

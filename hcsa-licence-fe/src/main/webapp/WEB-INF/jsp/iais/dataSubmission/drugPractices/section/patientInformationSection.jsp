@@ -46,9 +46,8 @@
                 <iais:row>
                     <iais:field width="5" value="Postal Code" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <%--<input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
-                               name="postalCode" value="${patientDto.postalCode}"/>--%>
-                        <iais:input maxLength="6" type="text" name="postalCode" id="postalCode" value="${patientDto.postalCode}"/>
+                        <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
+                               name="postalCode" value="${patientDto.postalCode}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_postalCode"></span>
                     </iais:value>
                 </iais:row>
@@ -60,13 +59,13 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Block No." />
+                    <iais:field width="5" value="Blk No." />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="10" type="text" name="blkNo" value="${patientDto.blkNo}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Floor No. / Unit No." width="5"/>
+                    <iais:field value="Floor No./Unit No." width="5"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:input maxLength="3" type="text" name="floorNo" id="floorNo" value="${patientDto.floorNo}"/>
                     </iais:value>
@@ -135,21 +134,21 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Mobile No." width="5"/>
+                    <iais:field value="Mobile No" width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
-                        <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
-                               name="mobileNo" value="${patientDto.mobileNo}"/>--%>
+                        <%--<iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>--%>
+                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="mobileNo" value="${patientDto.mobileNo}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                     </iais:value>
 
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Home Telephone No." width="5"/>
+                    <iais:field value="Home Telephone No" width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
-                        <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
-                               name="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
+                        <%--<iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
+                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="homeTelNo" value="${patientDto.homeTelNo}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_homeTelNo"></span>
                     </iais:value>
                 </iais:row>

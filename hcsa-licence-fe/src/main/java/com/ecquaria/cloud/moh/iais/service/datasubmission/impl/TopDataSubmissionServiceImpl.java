@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
@@ -127,13 +128,12 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     }
 
     @Override
-    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : "
-                + svcName + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
+    public TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        return topFeClient.getTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType, svcName, hciCode).getEntity();
+        return topFeClient.getTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType).getEntity();
     }
 
     @Override
@@ -152,5 +152,19 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
             return null;
         }
         return topFeClient.getTopSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
+    }
+
+    @Override
+    public String getDraftNo() {
+        String draftNo = systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
+        log.info(StringUtil.changeForLog("The Draft No: " + draftNo));
+        return draftNo;
+    }
+
+    @Override
+    public String getSubmissionNo() {
+        String submissionNo = systemAdminClient.submissionID(DataSubmissionConsts.DS_TOP).getEntity();
+        log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
+        return submissionNo;
     }
 }

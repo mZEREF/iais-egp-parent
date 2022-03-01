@@ -534,8 +534,10 @@ public final class DataSubmissionHelper {
         cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.LDT_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
-            cycleType = DataSubmissionConsts.DS_CYCLE_TOP;
+        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_TOP;
+        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+            cycleType = DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP;
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
@@ -553,8 +555,10 @@ public final class DataSubmissionHelper {
         }
         dataSubmission.setSubmissionType(topSuperDataSubmissionDto.getSubmissionType());
         String cycleStage = null;
-        if (DataSubmissionConsts.TOP_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
-            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOP;
+        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOPPATIENT;
+        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TERMINATION;
         }
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
@@ -818,12 +822,12 @@ public final class DataSubmissionHelper {
                 long length = file.length();
                 if (length == 0) {
                     log.info("The file length is 0!!!");
-                    errorMap.put(showErrorField, "MCUPERR004");
+                    errorMap.put(showErrorField, "GENERAL_ACK022");
                 }
                 String filename = file.getName();
                 if (!FileUtils.isCsv(filename) && !FileUtils.isExcel(filename)) {
                     log.info(StringUtil.changeForLog("Invalid file - " + filename));
-                    errorMap.put(showErrorField, MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX, CSV","fileType"));
+                    errorMap.put(showErrorField, "GENERAL_ACK022");
                 }
             }
         }
