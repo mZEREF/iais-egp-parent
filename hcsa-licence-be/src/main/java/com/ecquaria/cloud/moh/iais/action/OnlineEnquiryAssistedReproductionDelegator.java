@@ -1295,7 +1295,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                          ) {
                         switch (ar.getCycleType()){
                             case DataSubmissionConsts.DS_CYCLE_NON:
-                                ar.setCycleNo("Non-cycle");
                                 ar.setCycleType("-");
                                 arEnquiryNonCycle.add(ar);
                                 break;
