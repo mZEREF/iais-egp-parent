@@ -823,7 +823,7 @@ public final class DataSubmissionHelper {
                 String filename = file.getName();
                 if (!FileUtils.isCsv(filename) && !FileUtils.isExcel(filename)) {
                     log.info(StringUtil.changeForLog("Invalid file - " + filename));
-                    errorMap.put(showErrorField, "MCUPERR004");
+                    errorMap.put(showErrorField, MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX, CSV","fileType"));
                 }
             }
         }
