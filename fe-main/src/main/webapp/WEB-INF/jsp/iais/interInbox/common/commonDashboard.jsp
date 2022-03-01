@@ -27,6 +27,14 @@
                         </a></div>
                     </div>
                  </c:if>
+                    <c:if test="${dssTab == 1}">
+                        <div class="dashboard-tile-item">
+                            <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>
+                                <p class="dashboard-txt">Data Submission Draft</p>
+                                <h1 class="dashboard-count">&nbsp;${dssDraftNum}</h1>
+                            </a></div>
+                        </div>
+                    </c:if>
                   <c:if test="${licTab == 1}">
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile"><a data-tab="#tabLic" href="#"   ${tabCode == 'lic' ? null : 'onclick=\''.concat(tabCode).concat('ToLicPage()\'')}>

@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -179,4 +180,7 @@ public interface LicenceInboxClient {
 
     @GetMapping(value = "/data-submission/change-data-submission-id-status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateDataSubmissionByIdChangeStatus(@RequestParam("id") String id, @RequestParam("lockStatus") Integer lockStatus);
+
+    @PostMapping(path = "/data-submission/dss-draft-num", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> dssDraftNum(InterMessageSearchDto interMessageSearchDto);
 }
