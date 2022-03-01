@@ -228,7 +228,7 @@ public class AckTransferReceiptDto implements Serializable {
 
 
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferReceipt", new Object[]{this.ackTransferReceiptMeta});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateTransferReceipt", new Object[]{this.ackTransferReceiptMeta});
         return validationResultDto.isPass();
     }
 

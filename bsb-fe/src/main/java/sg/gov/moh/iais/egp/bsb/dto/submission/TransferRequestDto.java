@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.action.BsbSubmissionCommon;
-import sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -95,7 +94,7 @@ public class TransferRequestDto implements Serializable {
     }
 
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateRequestTransfer", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateRequestTransfer", new Object[]{this});
         return validationResultDto.isPass();
     }
 

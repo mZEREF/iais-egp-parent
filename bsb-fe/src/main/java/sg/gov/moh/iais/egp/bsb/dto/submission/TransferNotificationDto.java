@@ -413,7 +413,7 @@ public class TransferNotificationDto implements Serializable {
 
     public boolean doValidation() {
         TransferDto transferDto = getTransferNotNeedR();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{transferDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateTransferNot", new Object[]{transferDto});
         return validationResultDto.isPass();
     }
 

@@ -114,7 +114,7 @@ public class ReportInventoryDto implements Serializable{
         Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
         DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap,this.reportType);
 
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateReportAndInventory", new Object[]{docsMetaDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateReportAndInventory", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
     }
 
