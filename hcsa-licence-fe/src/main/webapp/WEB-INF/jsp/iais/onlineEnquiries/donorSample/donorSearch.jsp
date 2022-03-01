@@ -58,7 +58,7 @@
                         </iais:row>
 
                         <hr>
-                        <c:if test="${arCentreSelectOption.size() != 1}">
+                        <c:if test="${arCentreSelectOption.size() > 1}">
                             <iais:row>
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
