@@ -14,7 +14,7 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
     String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
+
 <link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -360,3 +360,4 @@
     </div> <!-- cd-panel__container -->
 </div>
 
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
