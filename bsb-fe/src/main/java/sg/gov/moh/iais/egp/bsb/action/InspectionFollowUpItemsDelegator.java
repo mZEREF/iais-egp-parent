@@ -53,7 +53,7 @@ public class InspectionFollowUpItemsDelegator {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_RECTIFY_SAVED_DTO);
+        session.removeAttribute(KEY_RECTIFY_SAVED_REMARK_MAP);
         session.removeAttribute(KEY_RECTIFY_FINDING_FORM);
         session.removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Applicant send follow-up items");
@@ -66,15 +66,12 @@ public class InspectionFollowUpItemsDelegator {
         RectifyFindingFormDto rectifyFindingFormDto = inspectionClient.getFollowUpItemsFindingFormDtoByAppId("2BAF80B5-5F61-EC11-BE74-000C298D317C").getEntity();
         //save basic info such as appId and config id
         if(rectifyFindingFormDto != null){
-            RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
             RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-            savedDto.setAppId(rectifyFindingFormDto.getAppId());
-            savedDto.setConfigId(rectifyFindingFormDto.getConfigId());
+
             if(!rectifyFindingFormDto.getDocDtoList().isEmpty()){
                 reportDto.setSavedDocMap(rectifyFindingFormDto.getDocDtoList().stream().collect(Collectors.toMap(DocRecordInfo::getRepoId, Function.identity())));
                 ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, reportDto);
             }
-            ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DTO, savedDto);
 
             //load origin icon status
             inspectionService.loadOriginIconStatus(rectifyFindingFormDto.getItemDtoList(), reportDto, request);
@@ -110,16 +107,13 @@ public class InspectionFollowUpItemsDelegator {
         HttpServletRequest request = bpc.request;
         String itemValue = (String) ParamUtil.getSessionAttr(request, KEY_ITEM_VALUE);
         RectifyFindingFormDto findingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
-        RectifyInsReportSaveDto saveDto = inspectionService.getRectifyNCsSavedDto(request);
+        Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> saveMapDto = inspectionService.getRectifyNCsSavedRemarkMap(request);
         RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        List<RectifyInsReportSaveDto.RectifyItemSaveDto> itemSaveDtoList = saveDto.getItemSaveDtoList();
         //Prepare the data pre-displayed on the Rectify page
-        if(!itemSaveDtoList.isEmpty()){
-            for (RectifyInsReportSaveDto.RectifyItemSaveDto itemSaveDto : itemSaveDtoList) {
-                if(itemSaveDto.getItemValue().equals(itemValue)){
-                    ParamUtil.setRequestAttr(request, KEY_RECTIFY_ITEM_SAVE_DTO, itemSaveDto);
-                }
-            }
+        if(!saveMapDto.isEmpty()){
+            //show info save before
+            RectifyInsReportSaveDto.RectifyItemSaveDto saveDto = saveMapDto.get(itemValue);
+            ParamUtil.setRequestAttr(request,KEY_RECTIFY_ITEM_SAVE_DTO,saveDto);
         }
         //new saved document
         if(!reportDto.getNewDocMap().isEmpty()){
@@ -133,6 +127,7 @@ public class InspectionFollowUpItemsDelegator {
             List<DocRecordInfo> savedDocInfos = savedDocSubTypeMap.get(itemValue);
             ParamUtil.setRequestAttr(request, KEY_SAVED_DOCUMENT, savedDocInfos);
         }
+        //show info search from database
         RectifyFindingFormDto.RectifyFindingItemDto itemDto = findingFormDto.getRectifyFindingItemDtoByItemValue(itemValue);
         ParamUtil.setRequestAttr(request,"rectifyItemDto", itemDto);
     }
@@ -143,16 +138,16 @@ public class InspectionFollowUpItemsDelegator {
         String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
         if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
             RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-            RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
+            Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
             String itemValue = (String) ParamUtil.getSessionAttr(request, KEY_ITEM_VALUE);
             Assert.hasLength(itemValue,"item value -sectionId +'--v--'+configId is null");
             docDto.reqObjMapping(request, DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE, itemValue);
-            savedDto.reqObjMapping(request, itemValue);
             log.info(LogUtil.escapeCrlf(docDto.toString()));
-            log.info(LogUtil.escapeCrlf(savedDto.toString()));
+            log.info(LogUtil.escapeCrlf(savedDtoMap.toString()));
+            inspectionService.putItemRemarkValue(request,itemValue,savedDtoMap);
+            //icon status
             Map<String, String> itemRectifyMap = inspectionService.getItemRectifyMap(request);
             inspectionService.turnCurrentIconStatus(request, docDto, itemValue, itemRectifyMap);
-            ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DTO, savedDto);
             ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, docDto);
         }
         actionJumpHandler(request);
@@ -162,7 +157,18 @@ public class InspectionFollowUpItemsDelegator {
         HttpServletRequest request = bpc.request;
         //do doc sync
         RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        RectifyInsReportSaveDto savedDto = inspectionService.getRectifyNCsSavedDto(request);
+        RectifyInsReportSaveDto savedDto = new RectifyInsReportSaveDto();
+
+        RectifyFindingFormDto rectifyFindingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
+        //set application id and config id
+        savedDto.setConfigId(rectifyFindingFormDto.getConfigId());
+        savedDto.setAppId(rectifyFindingFormDto.getAppId());
+
+        //set remarks or other info
+        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>  saveDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
+        savedDto.setItemSaveDtoList(new ArrayList<>(saveDtoMap.values()));
+
+        //set doc
         List<NewFileSyncDto> newFilesToSync = inspectionService.saveNewUploadedDoc(docDto);
         if(!docDto.getSavedDocMap().isEmpty()){
             savedDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));

@@ -75,7 +75,7 @@
                             <h3>Remarks</h3>
                             <div class="form-group">
                                 <div class="col-md-12 col-sm-12">
-                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${remarks}"/></textarea>
+                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${rectifyItemSaveDto.remarks}"/></textarea>
                                     <span data-err-ind="remarks" class="error-msg"></span>
                                 </div>
                             </div>
