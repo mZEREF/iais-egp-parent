@@ -153,6 +153,6 @@ var fullStagesView = function (submissionIdNo) {
 
     showWaiting();
     $("[name='crud_action_value']").val(submissionIdNo);
-    $("[name='base_action_type']").val('viewStage');
+    $("[name='adv_action_type']").val('viewStage');
     $('#mainForm').submit();
 }
