@@ -449,6 +449,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(dpSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(dpSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_DRP);
         String cycleType = cycleDto.getCycleType();
@@ -492,6 +493,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(vssSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(vssSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_VSS);
         String cycleType = cycleDto.getCycleType();
@@ -528,6 +530,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(topSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
         String cycleType = cycleDto.getCycleType();
