@@ -27,6 +27,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                      value="${patientDto.nationality}" cssClass="nationalitySel"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
