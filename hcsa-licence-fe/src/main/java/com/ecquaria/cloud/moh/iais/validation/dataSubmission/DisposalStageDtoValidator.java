@@ -58,6 +58,8 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                         break;
                     default:
                 }
+            }else {
+                errorMap.put("disposedType", errMsgErr006);
             }
         }
 
@@ -216,7 +218,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
 
             }
         }else {
-            if(disposalStageDto.getDisposedType().equals(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM)){
+            if(disposalStageDto.getDisposedType()!=null&&disposalStageDto.getDisposedType().equals(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM)){
                 errorMap.put("otherDiscardedNum", errMsgErr006);
             }
             if(StringUtil.isNotEmpty(disposalStageDto.getOtherDiscardedNumString())){
