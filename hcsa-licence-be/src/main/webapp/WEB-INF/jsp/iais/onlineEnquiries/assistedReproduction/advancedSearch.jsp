@@ -14,7 +14,7 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
     String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arAdvancedSearch.js"></script>
+
 <link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
 
 <webui:setLayout name="iais-intranet"/>
@@ -1352,7 +1352,6 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <div class="cd-panel cd-panel--from-right js-cd-panel-main">
     <div class="cd-panel__header">
         <h3>Quick View Panel</h3>
@@ -1364,3 +1363,5 @@
         </div> <!-- cd-panel__content -->
     </div> <!-- cd-panel__container -->
 </div>
+<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arAdvancedSearch.js"></script>
