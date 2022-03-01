@@ -17,7 +17,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6"  value="" />
+                    <iais:field width="6" value="" />
                     <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
