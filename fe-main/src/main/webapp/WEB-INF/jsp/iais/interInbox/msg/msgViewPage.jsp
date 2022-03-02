@@ -18,5 +18,8 @@
     function cotToMsg() {
         submit('toMsg');
     }
+    function goToSubmission(){
+        window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohDataSubmissionsInbox")}";
+    }
 
 </script>
