@@ -145,7 +145,7 @@
         <![CDATA[
              SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID
+                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID AND dds.STATUS in ('DS001', 'DS011')
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
                 where 1=1
@@ -269,7 +269,7 @@
         <![CDATA[
            SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID
+                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID AND dds.STATUS in ('DS001', 'DS011')
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
