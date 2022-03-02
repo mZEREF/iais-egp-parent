@@ -111,10 +111,10 @@
                 </div>
                 <iais:row>
                     <iais:field width="4" value="1st Date of Transfer" cssClass="col-md-4"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <fmt:formatDate value="${embryoTransferStageDto.firstTransferDate}" pattern="dd/MM/yyyy"/>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <fmt:formatDate value="${embryoTransferStageDtoVersion.firstTransferDate}" pattern="dd/MM/yyyy"/>
                     </iais:value>
                 </iais:row>

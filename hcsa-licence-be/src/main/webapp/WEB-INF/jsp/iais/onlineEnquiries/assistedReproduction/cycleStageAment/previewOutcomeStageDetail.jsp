@@ -32,11 +32,11 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="Is Clinical Pregnancy Detected?"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${outcomeStageDto.pregnancyDetected == true }">Yes</c:if>
                         <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${outcomeStageDtoVersion.pregnancyDetected == true }">Yes</c:if>
                         <c:if test="${outcomeStageDtoVersion.pregnancyDetected == false }">No</c:if>
                     </iais:value>

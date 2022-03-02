@@ -47,30 +47,30 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="How many vials of sperm were extracted?"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.extractedSpermVialsNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.extractedSpermVialsNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="How many vials of sperm were used in this cycle?"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.usedSpermVialsNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.usedSpermVialsNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="AR Techniques Used"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:forEach items="${fertilisationDto.atuList}" var="atu" varStatus="staus">
                             <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${atu}"/>
                         </c:forEach>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:forEach items="${fertilisationDtoVersion.atuList}" var="atu" varStatus="staus">
                             <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${atu}"/>
                         </c:forEach>
@@ -78,73 +78,73 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Fresh Oocytes Inseminated"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.freshOocytesInseminatedNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.freshOocytesInseminatedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Fresh Oocytes Microinjected"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.freshOocytesMicroInjectedNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.freshOocytesMicroInjectedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Fresh Oocytes Used for GIFT"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.freshOocytesGiftNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.freshOocytesGiftNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Fresh Oocytes Used for ZIFT"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.freshOocytesZiftNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.freshOocytesZiftNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Thawed Oocytes Inseminated"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.thawedOocytesInseminatedNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.thawedOocytesInseminatedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Thawed Oocytes Microinjected"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.thawedOocytesMicroinjectedNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.thawedOocytesMicroinjectedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Thawed Oocytes Used for GIFT"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.thawedOocytesGiftNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.thawedOocytesGiftNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="No. of Thawed Oocytes Used for ZIFT"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDto.thawedOocytesZiftNum}" />
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${fertilisationDtoVersion.thawedOocytesZiftNum}" />
                     </iais:value>
                 </iais:row>

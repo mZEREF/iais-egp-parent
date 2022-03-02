@@ -30,10 +30,10 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="What was disposed?" mandatory="false"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.disposalStageDto.disposedType}"/>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <iais:code code="${arSuperDataSubmissionDtoVersion.disposalStageDto.disposedType}"/>
                     </iais:value>
                 </iais:row>
@@ -41,46 +41,46 @@
 
                     <iais:row>
                         <iais:field width="4" value="Immature" mandatory="false"/>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.disposalStageDto.immature}"/>
                         </iais:value>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.immature}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="4" value="Abnormally Fertilised" mandatory="false"/>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised}"/>
                         </iais:value>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.abnormallyFertilised}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="4" value="Unfertilised" mandatory="false"/>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.disposalStageDto.unfertilised}"/>
                         </iais:value>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.unfertilised}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="4" value="Atretic" mandatory="false"/>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.disposalStageDto.atretic}"/>
                         </iais:value>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.atretic}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="4" value="Damaged" mandatory="false"/>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.disposalStageDto.damaged}"/>
                         </iais:value>
-                        <iais:value width="4" display="true">
+                        <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.damaged}"/>
                         </iais:value>
                     </iais:row>
@@ -108,28 +108,28 @@
                 </div>
                 <iais:row>
                     <iais:field width="4" value="Discarded for Other Reasons" mandatory="false"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum}"/>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.otherDiscardedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="Other Reasons for Discarding" mandatory="false"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedReason}"/>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.otherDiscardedReason}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="Total No. Disposed Of" mandatory="false"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDto.disposalStageDto.totalNum}"/>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arSuperDataSubmissionDtoVersion.disposalStageDto.totalNum}"/>
                     </iais:value>
                 </iais:row>
