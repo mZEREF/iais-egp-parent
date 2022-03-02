@@ -5,10 +5,12 @@
     }
 </style>
 </c:if>
+<div class="navigation-gp">
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
             <%@ include file="menuPage.jsp" %>
+        </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-gp">
