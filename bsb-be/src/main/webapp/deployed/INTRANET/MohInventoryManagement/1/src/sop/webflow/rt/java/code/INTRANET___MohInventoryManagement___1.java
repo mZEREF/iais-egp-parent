@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohInventoryManagement___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="inventoryDelegator";
+	private static final String DELEGATOR ="inventoryEnquiryDelegator";
 	
 	public void preBasicData_OnStepProcess_0() throws Exception {
 		// 		PreBasicData->OnStepProcess

@@ -7,11 +7,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-/**
- * AUTHOR: YiMing
- * DATE:2021/7/26 15:59
- * DESCRIPTION: TODO
- **/
 
 @Getter
 @Setter

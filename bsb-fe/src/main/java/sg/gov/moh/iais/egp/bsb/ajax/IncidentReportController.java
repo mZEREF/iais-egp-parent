@@ -13,8 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.egp.bsb.client.IncidentNotificationClient;
-import sg.gov.moh.iais.egp.bsb.dto.report.BiologicalInfo;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -30,15 +30,15 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/incident")
 public class IncidentReportController {
-    private final IncidentNotificationClient incidentNotClient;
+    private final ReportableEventClient reportableEventClient;
     private static final String PARAM_RESULT = "result";
     private static final String PARAM_ID = "id";
     private static final String PARAM_RESULT_SUCCESS = "success";
     private static final String PARAM_RESULT_EMPTY = "empty";
     private static final String PARAM_FACILITY_ACTIVITY_BAT_MAP = "activityBatMap";
 
-    public IncidentReportController(IncidentNotificationClient incidentNotClient) {
-        this.incidentNotClient = incidentNotClient;
+    public IncidentReportController(ReportableEventClient reportableEventClient) {
+        this.reportableEventClient = reportableEventClient;
     }
 
     /**
@@ -51,7 +51,7 @@ public class IncidentReportController {
     Map<String, Object> queryFacilityAcivity(HttpServletRequest request) {
         Map<String, Object> jsonMap = new HashMap<>();
         //get all activity type by facName
-        Map<String,List<BiologicalInfo>> map = getFacilityActivityBatMap(request);
+        Map<String,List<BatBasicInfo>> map = getFacilityActivityBatMap(request);
         //will use method return activity type and list<biological> map
         //get key for activity type,need masterCode of activity type
         if(CollectionUtils.isEmpty(map)){
@@ -71,7 +71,7 @@ public class IncidentReportController {
             }else{
                 Set<String> bioNameSet = map.values().stream()
                         .flatMap(Collection::stream)
-                        .map(BiologicalInfo::getBioName)
+                        .map(BatBasicInfo::getName)
                         .collect(Collectors.toSet());
                 jsonMap.put("bioResult",bioNameSet);
                 jsonMap.put(PARAM_RESULT, PARAM_RESULT_SUCCESS);
@@ -83,32 +83,32 @@ public class IncidentReportController {
 
     @PostMapping(value = "bio.do")
     public @ResponseBody
-    Map<String, Object> queryBioNamae(HttpServletRequest request) {
+    Map<String, Object> queryBioName(HttpServletRequest request) {
         Map<String, Object> jsonMap = new HashMap<>();
         String activityType = ParamUtil.getString(request,"activityType");
-        Map<String,List<BiologicalInfo>> map = getFacilityActivityBatMap(request);
+        Map<String,List<BatBasicInfo>> map = getFacilityActivityBatMap(request);
         if(CollectionUtils.isEmpty(map)){
             log.info("activity type empty");
             jsonMap.put(PARAM_RESULT,PARAM_RESULT_EMPTY);
         }else{
-            List<BiologicalInfo> biologicalInfos  = map.get(activityType);
-            Set<String> bioNames = biologicalInfos.stream().map(BiologicalInfo::getBioName).collect(Collectors.toSet());
+            List<BatBasicInfo> batBasicInfos  = map.get(activityType);
+            Set<String> bioNames = batBasicInfos.stream().map(BatBasicInfo::getName).collect(Collectors.toSet());
             jsonMap.put(PARAM_RESULT,PARAM_RESULT_SUCCESS);
             jsonMap.put("bioResult",bioNames);
         }
         return jsonMap;
     }
 
-    public Map<String, List<BiologicalInfo>> getFacilityActivityBatMap(HttpServletRequest request){
-        HashMap<String, List<BiologicalInfo>> map = (HashMap<String, List<BiologicalInfo>>) ParamUtil.getSessionAttr(request,PARAM_FACILITY_ACTIVITY_BAT_MAP);
+    public Map<String, List<BatBasicInfo>> getFacilityActivityBatMap(HttpServletRequest request){
+        HashMap<String, List<BatBasicInfo>> map = (HashMap<String, List<BatBasicInfo>>) ParamUtil.getSessionAttr(request,PARAM_FACILITY_ACTIVITY_BAT_MAP);
         return map!= null?map:getDefaultFacilityActivityBatMap(request);
     }
 
-    private Map<String, List<BiologicalInfo>> getDefaultFacilityActivityBatMap(HttpServletRequest request){
+    private Map<String, List<BatBasicInfo>> getDefaultFacilityActivityBatMap(HttpServletRequest request){
         String facName = ParamUtil.getString(request,"facName");
         assert StringUtils.hasLength(facName);
         String facId= MaskUtil.unMaskValue(PARAM_ID,facName);
-        return incidentNotClient.queryFacilityActivityFacIdMap(facId);
+        return reportableEventClient.queryFacilityActivityFacIdMap(facId);
     }
 
 }

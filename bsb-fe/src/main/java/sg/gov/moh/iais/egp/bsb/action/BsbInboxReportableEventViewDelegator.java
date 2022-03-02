@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.IncidentFollowupClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentNotificationClient;
 import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1AViewDto;
@@ -39,13 +39,13 @@ public class BsbInboxReportableEventViewDelegator {
     public static final String KEY_EDIT_APP_ID = "editId";
     private static final String MESSAGE_MASKED_REFERENCE_NO_IS_NULL = "masked reference no is null";
 
-    private final IncidentNotificationClient notificationClient;
+    private final ReportableEventClient reportableEventClient;
     private final IncidentInvestigationReportClient incidentInvestigationReportClient;
     private final IncidentFollowupClient followupClient;
 
     @Autowired
-    public BsbInboxReportableEventViewDelegator(IncidentNotificationClient notificationClient, IncidentInvestigationReportClient incidentInvestigationReportClient, IncidentFollowupClient followupClient) {
-        this.notificationClient = notificationClient;
+    public BsbInboxReportableEventViewDelegator(ReportableEventClient reportableEventClient, IncidentInvestigationReportClient incidentInvestigationReportClient, IncidentFollowupClient followupClient) {
+        this.reportableEventClient = reportableEventClient;
         this.incidentInvestigationReportClient = incidentInvestigationReportClient;
         this.followupClient = followupClient;
     }
@@ -57,7 +57,7 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedIncidentId,"masked incident id is null");
         String incidentId = MaskUtil.unMaskValue(MASK_KEY_ID,maskedIncidentId);
         if(StringUtils.hasLength(incidentId) && !maskedIncidentId.equals(incidentId)){
-            IncidentViewDto incidentViewDto =  notificationClient.findIncidentViewDtoByIncidentId(incidentId).getEntity();
+            IncidentViewDto incidentViewDto =  reportableEventClient.findIncidentViewDtoByIncidentId(incidentId).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,incidentViewDto);
             ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getIncidentNotDocSettings());
             viewBasicDoc(incidentViewDto.getDocRecordInfos(),request);

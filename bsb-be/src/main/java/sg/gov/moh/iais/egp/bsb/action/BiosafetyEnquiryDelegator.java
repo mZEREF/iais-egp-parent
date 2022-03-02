@@ -381,13 +381,13 @@ public class BiosafetyEnquiryDelegator {
         addFilter(request, enquiryDto, count);
         ParamUtil.setSessionAttr(request,PARAM_COUNT,count);
         if (CHOOSE_MARK_APPLICATION.equals(count) && Boolean.TRUE.equals(validationParam(request, "app", enquiryDto))) {
-            ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
+            ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApplication(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
             ParamUtil.setSessionAttr(request,PARAM_BIO_SAFETY_ENQUIRY,new ArrayList<>(applicationResultDto.getBsbApp()));
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
         } else if (CHOOSE_MARK_FACILITY.equals(count) && Boolean.TRUE.equals(validationParam(request, "fac", enquiryDto))) {
-            FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
+            FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFacility(enquiryDto).getEntity();
             List<FacilityActivity> activities = facilityResultDto.getBsbFac();
             for (FacilityActivity activity : activities) {
                 Map<String,String> infos = joinBioNameAndRiskLevelFromAgents(activity.getBiologicalAgents());
@@ -406,7 +406,7 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_SEARCH, enquiryDto);
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, approvalResultDto.getPageInfo());
         } else if (CHOOSE_MARK_APPROVED_CERTIFIER_FACILITY.equals(count) && Boolean.TRUE.equals(validationParam(request, "org", enquiryDto))) {
-            ApprovedFacilityCerResultDto facilityCerResultDto = biosafetyEnquiryClient.getAFC(enquiryDto).getEntity();
+            ApprovedFacilityCerResultDto facilityCerResultDto = biosafetyEnquiryClient.getApprovedFacilityCertifier(enquiryDto).getEntity();
             List<FacilityCertifierReg> certifierRegs = facilityCerResultDto.getBsbAFC();
             for (FacilityCertifierReg certifierReg : certifierRegs) {
                 certifierReg.setAdminName(joinFacilityCertifierAdmin(certifierReg.getCertifierAdmins()));

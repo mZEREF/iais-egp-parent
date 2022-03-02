@@ -1,10 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
-/**
- * AUTHOR: YiMing
- * DATE:2021/9/14 18:01
- * DESCRIPTION: TODO
- **/
 public class EmailConstants {
     private EmailConstants() {}
 

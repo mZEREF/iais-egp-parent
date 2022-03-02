@@ -19,14 +19,9 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * AUTHOR: YiMing
- * DATE:2021/7/15 18:24
- **/
-// TODO Yiming -> Change name, clarify the usage of this class
-@Delegator(value = "inventoryDelegator")
+@Delegator(value = "inventoryEnquiryDelegator")
 @Slf4j
-public class InventoryDelegator {
+public class InventoryEnquiryDelegator {
     private static final String KEY_ENQUIRY_SEARCH_DTO = "inventoryDto";
     private static final String PARAM_INVENTORY_RESULT = "inventoryResult";
     private static final String PARAM_INVENTORY_RESULT_MAP = "inventoryMap";
