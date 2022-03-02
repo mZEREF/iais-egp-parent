@@ -16,38 +16,38 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6"  value="" />
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:field width="5"  value="" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="false"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)" mandatory="false"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="false"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)" mandatory="false"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Total No. Created" mandatory="false"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="Total No. Created" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}"/>
                     </iais:value>
                 </iais:row>
