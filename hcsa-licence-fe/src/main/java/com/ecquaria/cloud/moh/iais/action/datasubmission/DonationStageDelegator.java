@@ -110,7 +110,7 @@ public class DonationStageDelegator extends CommonDelegator{
             }catch (Exception e){
                 log.error("no int");
                         isInt=false;
-                donationStageDto.setDonResForTreatNum(-1);
+                donationStageDto.setDonResForTreatNum(null);
             }
             Integer donResForCurCenNotTreatNum =  null;
             try {
@@ -127,7 +127,7 @@ public class DonationStageDelegator extends CommonDelegator{
             }catch (Exception e){
                 log.error("no int");
                         isInt=false;
-                donationStageDto.setDonResForCurCenNotTreatNum(-1);
+                donationStageDto.setDonResForCurCenNotTreatNum(null);
             }
             donationStageDto.setDonatedForResearchHescr(0);
             donationStageDto.setDonatedForResearchRrar(0);
@@ -167,7 +167,7 @@ public class DonationStageDelegator extends CommonDelegator{
             }catch (Exception e){
                 log.error("no int");
                         isInt=false;
-                donationStageDto.setTrainingNum(-1);
+                donationStageDto.setTrainingNum(null);
             }
             Integer treatNum = null;
             try {
@@ -183,7 +183,7 @@ public class DonationStageDelegator extends CommonDelegator{
             }catch (Exception e){
                 log.error("no int");
                         isInt=false;
-                donationStageDto.setTreatNum(-1);
+                donationStageDto.setTreatNum(null);
             }
         }
         String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");

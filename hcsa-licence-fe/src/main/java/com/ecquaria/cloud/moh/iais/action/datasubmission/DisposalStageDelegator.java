@@ -91,7 +91,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }catch (Exception e){
                         log.error("no int");
                         isInt=false;
-                        disposalStageDto.setImmature(-1);
+                        disposalStageDto.setImmature(null);
                     }
                     Integer abnormallyFertilised = null;
                     try {
@@ -108,7 +108,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                     }catch (Exception e){
                         log.error("no int");
                         isInt=false;
-                        disposalStageDto.setAbnormallyFertilised(-1);
+                        disposalStageDto.setAbnormallyFertilised(null);
                     }
                     Integer unfertilised = null;
                     try {
@@ -124,7 +124,7 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         isInt=false;
-                        disposalStageDto.setUnfertilised(-1);
+                        disposalStageDto.setUnfertilised(null);
                         log.error("no int");
                     }
                     Integer atretic = null;
@@ -141,7 +141,7 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         isInt=false;
-                        disposalStageDto.setAtretic(-1);
+                        disposalStageDto.setAtretic(null);
                         log.error("no int");
                     }
                     Integer damaged = null;
@@ -158,7 +158,7 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         isInt=false;
-                        disposalStageDto.setDamaged(-1);
+                        disposalStageDto.setDamaged(null);
                         log.error("no int");
                     }
                     Integer lysedOrDegenerated = null;
@@ -175,7 +175,7 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         isInt=false;
-                        disposalStageDto.setLysedOrDegenerated(-1);
+                        disposalStageDto.setLysedOrDegenerated(null);
                         log.error("no int");
                     }
                     break;
@@ -196,7 +196,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
-                        disposalStageDto.setUnhealthyNum(-1);
+                        disposalStageDto.setUnhealthyNum(null);
                         isInt=false;
                         log.error("no int");
                     }
@@ -221,7 +221,7 @@ public class DisposalStageDelegator extends CommonDelegator{
             }
 
         }catch (Exception e){
-            disposalStageDto.setOtherDiscardedNum(-1);
+            disposalStageDto.setOtherDiscardedNum(null);
             isInt=false;
             log.error("no int");
         }

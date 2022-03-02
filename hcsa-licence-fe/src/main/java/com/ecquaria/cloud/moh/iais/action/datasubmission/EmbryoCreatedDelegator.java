@@ -75,7 +75,6 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }catch (Exception e){
             log.error("no int");
                         isInt=false;
-            transEmbrFreshOccNum=-1;
         }
         Integer poorDevFreshOccNum = null;
         try {
@@ -86,7 +85,6 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }catch (Exception e){
             log.error("no int");
                         isInt=false;
-            poorDevFreshOccNum = -1;
         }
         Integer transEmbrThawOccNum = null;
         try {
@@ -97,7 +95,6 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }catch (Exception e){
             log.error("no int");
                         isInt=false;
-            transEmbrThawOccNum = -1;
 
         }
         Integer poorDevThawOccNum = null;
@@ -109,7 +106,6 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }catch (Exception e){
             log.error("no int");
                         isInt=false;
-            poorDevThawOccNum = -1;
 
         }
         embryoCreatedStageDto.setTransEmbrFreshOccNum(transEmbrFreshOccNum);
