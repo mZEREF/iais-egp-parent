@@ -63,8 +63,8 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="pgtMDisplay" <c:if test="${  (arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 )
-                 && (arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom !=1 || arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare !=1 || arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMEbt !=1 )
+                <div id="pgtMDisplay" <c:if test="${  (arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 )
+                 or (arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMEbt !=1 )
                  }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="4" value="PGT-M" style="font-size: 2.0rem;" />
