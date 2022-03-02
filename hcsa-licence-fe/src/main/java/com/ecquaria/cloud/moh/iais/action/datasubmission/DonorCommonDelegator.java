@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.validation.dataSubmission.DonorValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,6 +97,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
         if(valiateArDonor >-1){
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
+            Map<String, String> errorMapVal = DonorValidator.valCommonField(IaisCommonUtils.genNewHashMap(2),arDonorDto,true);
+            if(IaisCommonUtils.isNotEmpty(errorMapVal)){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMapVal));
+                return;
+            }
             DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.isDirectedDonation(),arDonorDto.getIdType(),arDonorDto.getIdNumber(),arDonorDto.getIdType(),
                     arDonorDto.getDonorSampleCode());
             if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
