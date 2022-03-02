@@ -1,5 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
-<%@ page import="java.lang.String" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
 <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 
@@ -100,22 +99,20 @@
         <h3>Gazette Order <span class="mandatory otherQualificationSpan">*</span></h3>
         <div class="file-upload-gp">
             <c:forEach var="info" items="${facProfile.savedDocMap.values()}">
-                <c:set var="repoId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                <c:set var="repoId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                 <div id="${repoId}FileDiv">
-                    <span id="${repoId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                    <a href="/bsb-fe/ajax/doc/download/facReg/profile/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button><button
-                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${repoId}', 'gazetteOrder')">Reload</button><button
-                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('profileSaved', '${repoId}')">Download</button>
+                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${repoId}', 'gazetteOrder')">Reload</button>
                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
                 </div>
             </c:forEach>
             <c:forEach var="info" items="${facProfile.newDocMap.values()}">
-                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
+                <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                 <div id="${tmpId}FileDiv">
-                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                    <a href="/bsb-fe/ajax/doc/download/facReg/profile/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
-                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', 'gazetteOrder')">Reload</button><button
-                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('profileNew', '${tmpId}')">Download</button>
+                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', 'gazetteOrder')">Reload</button>
                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                 </div>
             </c:forEach>

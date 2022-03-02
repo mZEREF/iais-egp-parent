@@ -1,12 +1,10 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
-<%@ page import="java.lang.String" %>
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 
 <%
@@ -16,9 +14,6 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
-
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <%@include file="dashboard.jsp"%>
 
@@ -51,7 +46,7 @@
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
-                                                <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
+                                                <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
                                                 <c:if test="${not empty savedFileList}">
                                                     <div class="form-group">
@@ -60,9 +55,9 @@
                                                     </div>
                                                     <div>
                                                         <c:forEach var="file" items="${savedFileList}">
-                                                            <c:set var="repoId" value="${MaskUtil.maskValue('file', file.repoId)}"/>
+                                                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                                                             <div class="form-group">
-                                                                <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFileFromRepo('${repoId}', '${file.filename}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                                <div class="col-10"><p><a href="/bsb-fe/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                         </c:forEach>
