@@ -1,19 +1,20 @@
+<c:if test="${msgContentFrom != 1}">
 <style type="text/css">
     .nav {
         background: transparent;
     }
 </style>
+</c:if>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
             <%@ include file="menuPage.jsp" %>
-        </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-gp">
                     <c:if test="${msgTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#"  ${tabCode == 'msg' ? null : 'onclick=\''.concat(tabCode).concat('ToMsgPage()\'')}>
+                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#"  ${tabCode == 'msg' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToMsg()\'':'onclick=\''.concat(tabCode).concat('ToMsgPage()\''))}>
                             <p class="dashboard-txt">New Messages</p>
                             <h1 class="dashboard-count">${unreadAndresponseNum}</h1>
                         </a></div>
@@ -21,7 +22,7 @@
                     </c:if>
                  <c:if test="${appTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'app' ? null : 'onclick=\''.concat(tabCode).concat('ToAppPage()\'')}>
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'app' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToApp()\'':'onclick=\''.concat(tabCode).concat('ToAppPage()\''))}>
                             <p class="dashboard-txt">Application Drafts</p>
                             <h1 class="dashboard-count">&nbsp;${appDraftNum}</h1>
                         </a></div>
@@ -37,7 +38,7 @@
                     </c:if>
                   <c:if test="${licTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#"   ${tabCode == 'lic' ? null : 'onclick=\''.concat(tabCode).concat('ToLicPage()\'')}>
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#"   ${tabCode == 'lic' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToLic()\'' :'onclick=\''.concat(tabCode).concat('ToLicPage()\''))}>
                             <p class="dashboard-txt">Active Licences</p>
                             <h1 class="dashboard-count">${licActiveNum}</h1>
                         </a></div>
@@ -81,4 +82,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>
