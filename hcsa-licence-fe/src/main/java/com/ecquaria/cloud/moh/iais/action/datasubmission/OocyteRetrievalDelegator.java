@@ -62,7 +62,8 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         int totalNum = oocyteRetrievalStageDto.getTotalNum();
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         arChangeInventoryDto.setFreshOocyteNum(totalNum);
     }
 

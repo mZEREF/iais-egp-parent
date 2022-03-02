@@ -66,7 +66,8 @@ public class FertilisationDelegator extends CommonDelegator{
         int ThawedOocytesMicroinjectedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesMicroinjectedNum(),0);
         int ThawedOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesGiftNum(),0);
         int ThawedOocytesZiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesZiftNum(),0);
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         int changeFreshOocytes = FreshOocytesInseminatedNum + FreshOocytesMicroInjectedNum + FreshOocytesGiftNum + FreshOocytesZiftNu;
         int changeThawedOocytes = ThawedOocytesInseminatedNum + ThawedOocytesMicroinjectedNum + ThawedOocytesGiftNum + ThawedOocytesZiftNum;
         arChangeInventoryDto.setFreshOocyteNum(-1 * changeFreshOocytes);

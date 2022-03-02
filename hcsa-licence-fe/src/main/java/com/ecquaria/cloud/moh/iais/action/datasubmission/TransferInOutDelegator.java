@@ -90,7 +90,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         List<String> transferredList = transferInOutStageDto.getTransferredList();
         int num = "in".equals(transferInOutStageDto.getTransferType()) ? 1 : -1;
         for (String transferred : transferredList) {
