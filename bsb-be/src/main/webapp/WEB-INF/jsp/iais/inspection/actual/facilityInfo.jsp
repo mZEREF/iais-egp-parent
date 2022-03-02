@@ -9,6 +9,9 @@
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                     <tr>
+                        <th scope="col" style="display: none"></th>
+                    </tr>
+                    <tr>
                         <td class="col-xs-6" style="text-align: right">Facility Name</td>
                         <td class="col-xs-6" style="padding-left : 20px">${insInfo.facName}</td>
                     </tr>
