@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -29,7 +30,7 @@ public interface TopFeClient {
 
     @GetMapping(value = "/data-submission/top-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
-                                                                                            @RequestParam("submissionType") String submissionType, @RequestParam("svcName") String svcName, @RequestParam("hciCode") String hciCode);
+                                                                                            @RequestParam("submissionType") String submissionType);
 
 
     @DeleteMapping(value = "/data-submission/draft-top-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -42,4 +43,9 @@ public interface TopFeClient {
 
     @GetMapping(value = "/top-common/top-data-submission/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDto(@PathVariable("submissionNo") String submissionNo);
+
+    @GetMapping(value = "/top-common/patient/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInformationDto> getTopPatientSelect(@RequestParam(name = "idType") String idType,
+                                                                   @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
+                                                                   @RequestParam(name = "orgId") String orgId);
 }

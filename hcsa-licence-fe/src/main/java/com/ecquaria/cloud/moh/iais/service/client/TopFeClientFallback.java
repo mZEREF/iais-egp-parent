@@ -1,12 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-
-import java.util.Arrays;
 
 /**
  * @Description TopFeClientFallback
@@ -38,8 +36,8 @@ public class TopFeClientFallback implements TopFeClient{
     }
 
     @Override
-    public FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDtoDraftByConds(String orgId, String Type, String svcName, String hciCode) {
-        return getFeignResponseEntity(orgId, Type, svcName, hciCode);
+    public FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDtoDraftByConds(String orgId, String Type) {
+        return getFeignResponseEntity(orgId, Type);
     }
 
     @Override
@@ -55,5 +53,10 @@ public class TopFeClientFallback implements TopFeClient{
     @Override
     public FeignResponseEntity<TopSuperDataSubmissionDto> getTopSuperDataSubmissionDto(String submissionNo) {
         return getFeignResponseEntity(submissionNo);
+    }
+
+    @Override
+    public FeignResponseEntity<PatientInformationDto> getTopPatientSelect(String idType, String idNumber, String nationality, String orgId) {
+        return getFeignResponseEntity();
     }
 }
