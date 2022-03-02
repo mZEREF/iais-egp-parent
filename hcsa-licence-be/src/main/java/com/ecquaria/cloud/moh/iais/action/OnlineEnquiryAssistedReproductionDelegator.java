@@ -1403,8 +1403,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
             if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
                 ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
-                     ) {
+                ) {
+                    versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"V "+arSdOld.getDataSubmissionDto().getVersion()));
                     initDataForView(arSdOld, bpc.request);
                     arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
@@ -1412,6 +1414,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         break;
                     }
                 }
+                ParamUtil.setRequestAttr(bpc.request,"versionOptions",versionOptions);
                 ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
             }
             ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);

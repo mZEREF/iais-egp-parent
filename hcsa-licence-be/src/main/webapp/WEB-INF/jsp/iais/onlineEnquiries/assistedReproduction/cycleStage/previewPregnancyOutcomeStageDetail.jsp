@@ -164,7 +164,7 @@
     <div class="panel-collapse collapse in" id="babyDetals">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
+
 
                 <div id="careBabyNumSection"
                      <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
@@ -177,7 +177,7 @@
                     </iais:row>
                 </div>
 
-                <div id="careBabyNumSection"
+                <div id="careBabyNumSection2"
                      <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="No. of Baby Admitted to L2 Care"

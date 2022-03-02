@@ -24,11 +24,7 @@
                         <c:out value="Current Version"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <select id="oldDsSelect" name="oldDsSelect">
-                            <c:forEach items="${arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}" var="oldDs" varStatus="index">
-                                <option   <c:if test="${oldDs.dataSubmissionDto.id == arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}">checked</c:if> value ="${oldDs.dataSubmissionDto.id}">V ${oldDs.dataSubmissionDto.version}</option>
-                            </c:forEach>
-                        </select>
+                        <iais:select  id="oldDsSelect" name="oldDsSelect" options="versionOptions" value="${arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
