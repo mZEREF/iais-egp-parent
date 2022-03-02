@@ -41,23 +41,19 @@ public class MohHMProcessingDelegator {
 
     private final ProcessHistoryService processHistoryService;
     private final MohProcessService mohProcessService;
-    private final AppViewService appViewService;
 
     @Autowired
     public MohHMProcessingDelegator(ProcessClient processClient, InternalDocClient internalDocClient,
-                                    ProcessHistoryService processHistoryService, MohProcessService mohProcessService,
-                                    AppViewService appViewService) {
+                                    ProcessHistoryService processHistoryService, MohProcessService mohProcessService) {
         this.processClient = processClient;
         this.internalDocClient = internalDocClient;
         this.processHistoryService = processHistoryService;
         this.mohProcessService = mohProcessService;
-        this.appViewService = appViewService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_HM_SCREENING_DTO);
-        request.getSession().removeAttribute(AppViewConstants.KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute(KEY_ROUTING_HISTORY_LIST);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_HM_PROCESSING);
@@ -69,9 +65,10 @@ public class MohHMProcessingDelegator {
         HMScreeningDto hmScreeningDto = mohProcessService.getHMScreeningDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_HM_SCREENING_DTO, hmScreeningDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, hmScreeningDto.getSubmitDetailsDto());
-        //view application process need an applicationDto
-        String moduleType = appViewService.judgeProcessAppModuleType(hmScreeningDto.getSubmitDetailsDto().getProcessType(), hmScreeningDto.getSubmitDetailsDto().getAppType());
-        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        // view application need appId and moduleType
+        String moduleType = AppViewService.judgeProcessAppModuleType(hmScreeningDto.getSubmitDetailsDto().getProcessType(), hmScreeningDto.getSubmitDetailsDto().getAppType());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInSession(hmScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

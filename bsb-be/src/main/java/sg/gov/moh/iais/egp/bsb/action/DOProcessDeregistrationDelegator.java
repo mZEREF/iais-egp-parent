@@ -43,18 +43,16 @@ public class DOProcessDeregistrationDelegator {
     private final InternalDocClient internalDocClient;
     private final ApplicationDocClient applicationDocClient;
 
-    private final AppViewService appViewService;
     private final ProcessHistoryService processHistoryService;
     private final ProcessDeregistrationService processDeregistrationService;
 
     @Autowired
     public DOProcessDeregistrationDelegator(ProcessDeregistrationClient processDeregistrationClient, InternalDocClient internalDocClient,
-                                            ApplicationDocClient applicationDocClient, AppViewService appViewService, ProcessHistoryService processHistoryService,
+                                            ApplicationDocClient applicationDocClient, ProcessHistoryService processHistoryService,
                                             ProcessDeregistrationService processDeregistrationService) {
         this.processDeregistrationClient = processDeregistrationClient;
         this.internalDocClient = internalDocClient;
         this.applicationDocClient = applicationDocClient;
-        this.appViewService = appViewService;
         this.processHistoryService = processHistoryService;
         this.processDeregistrationService = processDeregistrationService;
     }
@@ -62,7 +60,6 @@ public class DOProcessDeregistrationDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_DO_PROCESS_DTO);
-        request.getSession().removeAttribute(AppViewConstants.KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute("applicationDocRepoIdNameMap");
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DO_PROCESS);
@@ -74,9 +71,10 @@ public class DOProcessDeregistrationDelegator {
         DOProcessDto doProcessDto = processDeregistrationService.getDOProcessDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_DO_PROCESS_DTO, doProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, doProcessDto.getSubmissionDetailsDto());
-        //view application process need set appViewDto
-        String moduleType = appViewService.judgeProcessAppModuleType(doProcessDto.getSubmissionDetailsDto().getProcessType(), doProcessDto.getSubmissionDetailsDto().getApplicationType());
-        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        // view application need appId and moduleType
+        String moduleType = AppViewService.judgeProcessAppModuleType(doProcessDto.getSubmissionDetailsDto().getProcessType(), doProcessDto.getSubmissionDetailsDto().getApplicationType());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(doProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc

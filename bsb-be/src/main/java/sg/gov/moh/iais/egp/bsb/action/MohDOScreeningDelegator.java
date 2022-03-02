@@ -41,23 +41,19 @@ public class MohDOScreeningDelegator {
 
     private final ProcessHistoryService processHistoryService;
     private final MohProcessService mohProcessService;
-    private final AppViewService appViewService;
 
     @Autowired
     public MohDOScreeningDelegator(ProcessClient processClient, InternalDocClient internalDocClient,
-                                   ProcessHistoryService processHistoryService, MohProcessService mohProcessService,
-                                   AppViewService appViewService) {
+                                   ProcessHistoryService processHistoryService, MohProcessService mohProcessService) {
         this.processClient = processClient;
         this.internalDocClient = internalDocClient;
         this.processHistoryService = processHistoryService;
         this.mohProcessService = mohProcessService;
-        this.appViewService = appViewService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_DO_SCREENING_DTO);
-        request.getSession().removeAttribute(AppViewConstants.KEY_APP_VIEW_DTO);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_DO_SCREENING);
     }
@@ -68,9 +64,10 @@ public class MohDOScreeningDelegator {
         DOScreeningDto doScreeningDto = mohProcessService.getDOScreeningDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_DO_SCREENING_DTO, doScreeningDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, doScreeningDto.getSubmitDetailsDto());
-        //view application process need need set appViewDto
-        String moduleType = appViewService.judgeProcessAppModuleType(doScreeningDto.getSubmitDetailsDto().getProcessType(), doScreeningDto.getSubmitDetailsDto().getAppType());
-        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        // view application need appId and moduleType
+        String moduleType = AppViewService.judgeProcessAppModuleType(doScreeningDto.getSubmitDetailsDto().getProcessType(), doScreeningDto.getSubmitDetailsDto().getAppType());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(doScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

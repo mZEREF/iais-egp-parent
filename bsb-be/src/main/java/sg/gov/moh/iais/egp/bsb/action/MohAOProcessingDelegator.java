@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.AOProcessingDto;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_APP_VIEW_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.*;
@@ -41,23 +41,19 @@ public class MohAOProcessingDelegator {
 
     private final ProcessHistoryService processHistoryService;
     private final MohProcessService mohProcessService;
-    private final AppViewService appViewService;
 
     @Autowired
     public MohAOProcessingDelegator(ProcessClient processClient, InternalDocClient internalDocClient,
-                                    ProcessHistoryService processHistoryService, MohProcessService mohProcessService,
-                                    AppViewService appViewService) {
+                                    ProcessHistoryService processHistoryService, MohProcessService mohProcessService) {
         this.processClient = processClient;
         this.internalDocClient = internalDocClient;
         this.processHistoryService = processHistoryService;
         this.mohProcessService = mohProcessService;
-        this.appViewService = appViewService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_AO_PROCESSING_DTO);
-        request.getSession().removeAttribute(KEY_APP_VIEW_DTO);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME_AO_PROCESSING);
     }
@@ -68,9 +64,10 @@ public class MohAOProcessingDelegator {
         AOProcessingDto aoProcessingDto = mohProcessService.getAOProcessingDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_AO_PROCESSING_DTO, aoProcessingDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, aoProcessingDto.getSubmitDetailsDto());
-        //view application process need an applicationDto
-        String moduleType = appViewService.judgeProcessAppModuleType(aoProcessingDto.getSubmitDetailsDto().getProcessType(), aoProcessingDto.getSubmitDetailsDto().getAppType());
-        AppViewService.createAndSetAppViewDtoInSession(appId, moduleType, request);
+        // view application need appId and moduleType
+        String moduleType = AppViewService.judgeProcessAppModuleType(aoProcessingDto.getSubmitDetailsDto().getProcessType(), aoProcessingDto.getSubmitDetailsDto().getAppType());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(aoProcessingDto.getSubmitDetailsDto().getApplicationNo(), request);
         //show internal doc

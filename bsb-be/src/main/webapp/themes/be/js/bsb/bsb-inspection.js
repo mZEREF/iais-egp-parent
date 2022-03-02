@@ -55,17 +55,6 @@ $(function () {
     });
 })
 
-
-function viewApplication() {
-    /* incomplete
-     * This method is not implemented in other modules.
-     * This function should be a common one.
-     */
-    window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
-}
-
-
-
 // inspection findings' sections
 
 function readSectionRepeatMetaData() {

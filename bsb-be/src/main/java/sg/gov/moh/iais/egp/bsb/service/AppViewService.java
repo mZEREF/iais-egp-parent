@@ -9,7 +9,6 @@ import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ResponseConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
@@ -18,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFC
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
@@ -47,7 +47,7 @@ public class AppViewService {
     /**
      * only use for process new, rfc, renewal, deregistration, cancellation module
      */
-    public String judgeProcessAppModuleType(String processType, String appType){
+    public static String judgeProcessAppModuleType(String processType, String appType){
         String module = "";
         if (org.springframework.util.StringUtils.hasLength(processType) && org.springframework.util.StringUtils.hasLength(appType)){
             switch (processType) {
@@ -80,13 +80,6 @@ public class AppViewService {
             }
         }
         return module;
-    }
-
-    public static void createAndSetAppViewDtoInSession(String appId, String moduleType, HttpServletRequest request){
-        AppViewDto appViewDto = new AppViewDto();
-        appViewDto.setApplicationId(appId);
-        appViewDto.setModuleType(moduleType);
-        ParamUtil.setSessionAttr(request, KEY_APP_VIEW_DTO, appViewDto);
     }
 
     /**
@@ -244,7 +237,13 @@ public class AppViewService {
      * retrieve inspection follow-up items
      */
     public void retrieveInspectionFollowUpItems(HttpServletRequest request, String applicationId){
-        //TODO logic code
+        ResponseDto<RectifyFindingFormDto> resultDto = appViewClient.getFollowUpItemsFindingFormDtoByAppId(applicationId);
+        if (resultDto.ok()){
+            RectifyFindingFormDto rectifyFindingFormDto = resultDto.getEntity();
+            ParamUtil.setRequestAttr(request, KEY_INSPECTION_FOLLOW_UP_ITEMS_DTO, rectifyFindingFormDto);
+        }else {
+            throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
+        }
     }
 
     /* Will be removed in future, will get this from config mechanism */

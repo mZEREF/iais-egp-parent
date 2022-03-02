@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationAppro
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 
 
@@ -35,6 +36,9 @@ public interface AppViewClient {
     @GetMapping(path = "/app-view/deregister-cancel/facility-certifier/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DeRegistrationAFCDto> getDeRegistrationAFCDtoByAppId(@PathVariable("appId") String applicationId);
 
-    @GetMapping(value = "/applicationView/dataSubmissionInfo/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable(name = "applicationId") String appId);
+    @GetMapping(path = "/app-view/data-submission-info/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable("appId") String applicationId);
+
+    @GetMapping(path = "/app-view/inspection/follow-up-items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String applicationId);
 }

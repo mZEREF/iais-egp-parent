@@ -23,53 +23,52 @@
                                     <div class="preview-gp">
                                         <div class="row">
                                             <div class="col-xs-12">
-                                                <%--@elvariable id="appViewDto" type="sg.gov.moh.iais.egp.bsb.dto.appview.AppViewDto"--%>
                                                 <div class="panel-group" role="tablist" aria-multiselectable="true">
                                                     <br/>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacility'}">
+                                                    <c:if test="${appViewModuleType eq 'viewNewFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/facility/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewNewApprovalApp'}">
+                                                    <c:if test="${appViewModuleType eq 'viewNewApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/approval/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewNewFacCerReg'}">
+                                                    <c:if test="${appViewModuleType eq 'viewNewFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/afc/view.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacility'}">
+                                                    <c:if test="${appViewModuleType eq 'viewDeRegistrationFacility'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationFacilityView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewCancellationApprovalApp'}">
+                                                    <c:if test="${appViewModuleType eq 'viewCancellationApprovalApp'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/cancellationApprovalView.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewDeRegistrationFacCerReg'}">
+                                                    <c:if test="${appViewModuleType eq 'viewDeRegistrationFacCerReg'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/deregistration/deregistrationAFCView.jsp" %>
                                                     </c:if>
 
                                                     <%-- Data Submission --%>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE001'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE001'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewConsumePage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE002'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE002'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewDisposalPage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE003'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE003'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewExportPage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE005'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE005'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewTransferPage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE006'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE006'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewReceiptPage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE007'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE007'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewRedTeamingReportPage.jsp" %>
                                                     </c:if>
-                                                    <c:if test="${appViewDto.moduleType eq 'DATTYPE008'}">
+                                                    <c:if test="${appViewModuleType eq 'DATTYPE008'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/datasubmission/viewBatInventory.jsp" %>
                                                     </c:if>
 
                                                     <%-- inspection --%>
-                                                    <c:if test="${appViewDto.moduleType eq 'viewInspectionFollowUpItems'}">
+                                                    <c:if test="${appViewModuleType eq 'viewInspectionFollowUpItems'}">
                                                         <%@include file="/WEB-INF/jsp/iais/appView/inspection/doReviewInspectionFollowUpItemsView.jsp" %>
                                                     </c:if>
                                                 </div>

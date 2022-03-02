@@ -13,7 +13,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.MohReviewDataSubmissionDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
-import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -44,7 +43,6 @@ public class ProcessDataSubmissionDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(AppViewConstants.KEY_APP_VIEW_DTO);
         request.getSession().removeAttribute(DATA_SUBMISSION_PROCESS_DTO);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
         AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
@@ -69,8 +67,9 @@ public class ProcessDataSubmissionDelegator {
                     ParamUtil.setSessionAttr(request, DATA_SUBMISSION_PROCESS_DTO, dto);
                     //show routingHistory list
                     processHistoryService.getAndSetHistoryInSession(dto.getSubmissionDetailsDto().getApplicationNo(), request);
-                    //
-                    AppViewService.createAndSetAppViewDtoInSession(appId, dto.getNotificationType(), request);
+                    // view application need appId and moduleType
+                    ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+                    ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, dto.getNotificationType());
                     //
                     ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, dto.getDocDisplayDtoList());
                 } else {
