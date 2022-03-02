@@ -202,18 +202,24 @@ public class TransferInOutDelegator extends CommonDelegator {
                 String[] values = parseSelectKey(selectKey);
                 transferInOutStageDto.setTransInFromLicenseeId(values[0]);
                 transferInOutStageDto.setTransInFromHciCode(values[1]);
-                transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
-                transferInOutStageDto.setTransOutToHciCode(hciCode);
+            } else if ("Others".equals(selectKey)) {
+                transferInOutStageDto.setTransInFromHciCode(selectKey);
+                transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
             }
+            transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
+            transferInOutStageDto.setTransOutToHciCode(hciCode);
         } else if ("out".equals(transferInOutStageDto.getTransferType())) {
             String selectKey = ParamUtil.getString(request, "transOutToHciCode");
             if (StringUtil.isNotEmpty(selectKey) && !"Others".equals(selectKey)) {
                 String[] values = parseSelectKey(selectKey);
                 transferInOutStageDto.setTransOutToLicenseeId(values[0]);
                 transferInOutStageDto.setTransOutToHciCode(values[1]);
-                transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
-                transferInOutStageDto.setTransInFromHciCode(hciCode);
+            } else if ("Others".equals(selectKey)) {
+                transferInOutStageDto.setTransOutToHciCode(selectKey);
+                transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
             }
+            transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
+            transferInOutStageDto.setTransInFromHciCode(hciCode);
         }
     }
 

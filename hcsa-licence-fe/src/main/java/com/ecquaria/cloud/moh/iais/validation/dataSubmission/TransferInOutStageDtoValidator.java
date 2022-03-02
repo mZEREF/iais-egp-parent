@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
@@ -37,22 +36,22 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(transferType) && transferType.equals("in")){
             String transInFromHciCode = transferInOutStageDto.getTransInFromHciCode();
-            if(StringUtil.isEmpty(transInFromHciCode)){
+            if (StringUtil.isEmpty(transInFromHciCode)) {
                 errorMap.put("transInFromHciCode", "GENERAL_ERR0006");
             }
-            if(!StringUtil.isEmpty(transInFromHciCode) && transInFromHciCode.equals(DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS)){
-                if(StringUtil.isEmpty(transferInOutStageDto.getTransInFromOthers())){
+            if (!StringUtil.isEmpty(transInFromHciCode) && transInFromHciCode.equals("Others")) {
+                if (StringUtil.isEmpty(transferInOutStageDto.getTransInFromOthers())) {
                     errorMap.put("transInFromOthers", "GENERAL_ERR0006");
                 }
             }
         }
         if(!StringUtil.isEmpty(transferType) && transferType.equals("out")){
             String transOutToHciCode = transferInOutStageDto.getTransOutToHciCode();
-            if(StringUtil.isEmpty(transOutToHciCode)){
+            if (StringUtil.isEmpty(transOutToHciCode)) {
                 errorMap.put("transOutToHciCode", "GENERAL_ERR0006");
             }
-            if(!StringUtil.isEmpty(transOutToHciCode) && transOutToHciCode.equals(DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS)){
-                if(StringUtil.isEmpty(transferInOutStageDto.getTransOutToOthers())){
+            if (!StringUtil.isEmpty(transOutToHciCode) && transOutToHciCode.equals("Others")) {
+                if (StringUtil.isEmpty(transferInOutStageDto.getTransOutToOthers())) {
                     errorMap.put("transOutToOthers", "GENERAL_ERR0006");
                 }
             }

@@ -91,7 +91,9 @@
                     <iais:row>
                         <iais:field width="5" value="Transferred In From" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                            <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                            <c:set value="${transferInOutStageDto.transInFromHciCode eq 'Others'
+                                            ?transferInOutStageDto.transInFromHciCode:
+                                            transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
                                    var="selecctInValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
                                 <c:if test="${premisesSelect.value eq selecctInValue}">
@@ -111,7 +113,9 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" />
                         <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                            <c:set value="${transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
+                            <c:set value="${transferInOutStageDto.transOutToHciCode eq 'Others'
+                                            ?transferInOutStageDto.transOutToHciCode
+                                            :transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
                                    var="selecctOutValue"/>
                             <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
                                 <c:if test="${premisesSelect.value eq selecctOutValue}">

@@ -133,11 +133,13 @@
                         <iais:row>
                                 <iais:field width="5" value="Transferred In From" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                                <c:set value="${transferInOutStageDto.transInFromHciCode eq 'Others'
+                                ?transferInOutStageDto.transInFromHciCode
+                                :transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
                                        var="selecctInValue"/>
                                 <iais:select name="transInFromHciCode" firstOption="Please Select"
                                              options="transferOutInPremisesSelect" value="${selecctInValue}"
-                                             onchange="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')"/>
+                                             onchange="toggleOnSelect(this, 'Others', 'othersInFrom')"/>
                             </iais:value>
                         </iais:row>
 
@@ -152,11 +154,13 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <c:set value="${transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
+                            <c:set value="${transferInOutStageDto.transOutToHciCode eq 'Others'
+                            ?transferInOutStageDto.transOutToHciCode
+                            :transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
                                    var="selecctOutValue"/>
                             <iais:select name="transOutToHciCode" firstOption="Please Select"
                                          options="transferOutInPremisesSelect" value="${selecctOutValue}"
-                                         onchange="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')"/>
+                                         onchange="toggleOnSelect(this, 'Others', 'othersOutFrom')"/>
                         </iais:value>
                     </iais:row>
                         <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
