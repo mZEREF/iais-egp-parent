@@ -3,7 +3,7 @@
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#efoDetails">
+            <a  data-toggle="collapse" href="#efoDetails">
                 Egg Freezing Only Cycle
             </a>
         </h4>

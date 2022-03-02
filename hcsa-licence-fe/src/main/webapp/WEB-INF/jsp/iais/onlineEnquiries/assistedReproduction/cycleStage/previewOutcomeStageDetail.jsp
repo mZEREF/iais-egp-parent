@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a  data-toggle="collapse" href="#">
                 Outcome of IUI Cycle
             </a>
         </h4>
