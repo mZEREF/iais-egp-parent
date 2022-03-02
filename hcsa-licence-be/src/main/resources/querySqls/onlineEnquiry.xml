@@ -392,16 +392,16 @@
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
             dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
-                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002')  cycle_no ,
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS not in ('DS002','DS012'))  cycle_no ,
                 daic.FROZEN_OOCY_NUM, daic.THAWED_OOCY_NUM, daic.FRESH_OOCY_NUM, daic.FROZEN_EMBR_NUM, daic.THAWED_EMBR_NUM, daic.FRESH_EMBR_NUM, daic.FROZEN_SPERM_NUM
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
-                where dds.STATUS != 'DS002'
+                where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
@@ -418,15 +418,15 @@
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
             dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
-                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS != 'DS002')  cycle_no ,
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS not in ('DS002','DS012'))  cycle_no ,
                 daic.FROZEN_OOCY_NUM, daic.THAWED_OOCY_NUM, daic.FRESH_OOCY_NUM, daic.FROZEN_EMBR_NUM, daic.THAWED_EMBR_NUM, daic.FRESH_EMBR_NUM, daic.FROZEN_SPERM_NUM
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
-                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS != 'DS002'
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID and dds3.STATUS not in ('DS002','DS012')
                 left join ds_ar_inventory_change daic on daic.SUBMISSION_ID = dds.ID
 
-                where dds.STATUS != 'DS002'
+                where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
