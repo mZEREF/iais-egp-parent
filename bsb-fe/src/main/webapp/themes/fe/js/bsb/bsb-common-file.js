@@ -10,7 +10,7 @@ $(function () {
 
         var fileAmt = this.files.length;
         for (var i = 0; i < fileAmt; ++i) {
-            newUploadSingleFile(uploadFileName, this.files[i], fileUploadMeta.fileInputDivId);
+            newUploadSingleFile(uploadFileName, this.files[i], fileUploadMeta.fileInputDivId, i);
         }
         // clear selected files
         this.value = "";
@@ -68,8 +68,9 @@ function readFileUploadMetaData() {
     };
 }
 
-function newUploadSingleFile(name, file, fileInputDivId) {
-    var id = name + +new Date();
+function newUploadSingleFile(name, file, fileInputDivId, idSuffix) {
+    // The suffix is necessary when user select multi files at a time
+    var id = idSuffix ? name + +new Date() + idSuffix : name + +new Date();
     createSingleFileInput(id, name, file, fileInputDivId);
 
     // insert span and buttons
