@@ -13,32 +13,32 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <div style="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002' ? '' : 'display: none'}">
-                    <iais:row style="border-bottom: 1px solid #BABABA; ">
-                        <iais:value width="7" cssClass="col-md-7">
+                    <iais:row style="border-bottom: 1px solid #BABABA;" >
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <strong class="app-font-size-22 premHeader">Particulars of Consent</strong>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Name Of Person"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Name Of Person"/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <c:out value="${guardianAppliedPartDto.guardianName}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="ID No."/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="ID No."/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <c:out value="${guardianAppliedPartDto.guardianIdNo}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date of Birth" />
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Date of Birth" />
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <fmt:formatDate value='${guardianAppliedPartDto.guardianBirthday}' pattern='dd/MM/yyyy' />
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Relationship to Person Who Was Sterilized"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Relationship to Person Who Was Sterilized"/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                            <%-- <iais:code code="${guardianAppliedPartDto.guardianRelationship}"/>--%>
                             <c:out value="${guardianAppliedPartDto.appliedPartRelationship}"/>
                         </iais:value>
@@ -46,38 +46,38 @@
                 </div>
                 <div style="${treatmentDto.sterilizationReason =='VSSRFS002' ? '' : 'display: none'}">
                     <iais:row style="border-bottom: 1px solid #BABABA; ">
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <strong class="app-font-size-22 premHeader">Particulars of Court Order</strong>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Name Of Person"/>
+                        <iais:field width="6" value="Name Of Person"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <c:out value="${guardianAppliedPartDto.appliedPartName}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="ID No." />
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="ID No." />
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <c:out value="${guardianAppliedPartDto.appliedPartIdNo}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date of Birth"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Date of Birth"/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <fmt:formatDate value='${guardianAppliedPartDto.appliedPartBirthday}' pattern='dd/MM/yyyy' />
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Relationship to Person Who Was Sterilized"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Relationship to Person Who Was Sterilized"/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                            <%-- <iais:code code="${guardianAppliedPartDto.appliedPartRelationship}"/>--%>
                             <c:out value="${guardianAppliedPartDto.appliedPartRelationship}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date Court Order Issued"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" value="Date Court Order Issued"/>
+                        <iais:value width="6" display="true" cssClass="col-md-6">
                             <fmt:formatDate value='${guardianAppliedPartDto.courtOrderIssueDate}' pattern='dd/MM/yyyy' />
                         </iais:value>
                     </iais:row>
