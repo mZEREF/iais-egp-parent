@@ -17,10 +17,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author YiMing
- * @version 2021/12/14 20:45
- **/
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -48,7 +44,7 @@ public class IncidentInvestDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("investRepFeignClient", "validateIncidentInvestDto", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validateIncidentInvestDto", new Object[]{this});
         return validationResultDto.isPass();
     }
 

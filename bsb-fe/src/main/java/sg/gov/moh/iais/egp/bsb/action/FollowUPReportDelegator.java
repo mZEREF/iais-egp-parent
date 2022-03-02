@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentFollowupClient;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
@@ -58,12 +58,12 @@ public class FollowUPReportDelegator{
     private static final String KEY_SAVED_FILE_MAP = "savedFiles";
     private static final String PARAM_DOC_SETTINGS = "docSettings";
     private static final String MESSAGE_FAIL_TO_SYNC_FILES_TO_BE = "Fail to sync files to BE";
-    private final IncidentFollowupClient followupClient;
+    private final ReportableEventClient reportableEventClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
 
-    public FollowUPReportDelegator(IncidentFollowupClient followupClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
-        this.followupClient = followupClient;
+    public FollowUPReportDelegator(ReportableEventClient reportableEventClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+        this.reportableEventClient = reportableEventClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
     }
@@ -131,7 +131,7 @@ public class FollowUPReportDelegator{
             //If there is no draft entry key and the value of appId is displayed, the user is entered from the Edit page
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
             if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
-                FollowupReport1ADto report1ADto  = followupClient.retrieveFollowup1AByApplicationId(appId).getEntity();
+                FollowupReport1ADto report1ADto  = reportableEventClient.retrieveFollowup1AByApplicationId(appId).getEntity();
                 retrieveByFollowupReport1ADto(request,report1ADto);
             }
         }
@@ -143,7 +143,7 @@ public class FollowUPReportDelegator{
         if(StringUtils.hasLength(maskedAppId)){
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID,maskedAppId);
             if(StringUtils.hasLength(appId) && !maskedAppId.equals(appId)){
-                FollowupReport1BDto report1BDto  = followupClient.retrieveFollowup1BByApplicationId(appId).getEntity();
+                FollowupReport1BDto report1BDto  = reportableEventClient.retrieveFollowup1BByApplicationId(appId).getEntity();
                 retrieveByFollowupReport1BDto(request,report1BDto);
             }
         }
@@ -157,10 +157,10 @@ public class FollowUPReportDelegator{
         Assert.hasLength(choose,"the key yo choose module is null");
         switch (choose){
             case KEY_MODULE_CHOOSE_REFERENCE_NO_1A:
-                referNoList = followupClient.queryAll1ARefNo();
+                referNoList = reportableEventClient.queryAll1ARefNo();
                 break;
             case KEY_MODULE_CHOOSE_REFERENCE_NO_1B:
-                referNoList = followupClient.queryAll1BRefNo();
+                referNoList = reportableEventClient.queryAll1BRefNo();
                 break;
             default:
                 break;
@@ -172,7 +172,7 @@ public class FollowUPReportDelegator{
         HttpServletRequest request = bpc.request;
         String maskedReferNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
         String referNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskedReferNo);
-        FollowupPreviewADto followupPreviewADto = followupClient.queryFollowupInfoAByRefNo(referNo).getEntity();
+        FollowupPreviewADto followupPreviewADto = reportableEventClient.queryFollowupInfoAByRefNo(referNo).getEntity();
         String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1A_PREVIEW,followupPreviewADto);
         if(!StringUtils.hasLength(key)){
@@ -187,7 +187,7 @@ public class FollowUPReportDelegator{
         HttpServletRequest request = bpc.request;
         String maskedReferNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
         String referNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskedReferNo);
-        FollowupPreviewBDto followupPreviewBDto = followupClient.queryFollowupInfoBByRefNo(referNo).getEntity();
+        FollowupPreviewBDto followupPreviewBDto = reportableEventClient.queryFollowupInfoBByRefNo(referNo).getEntity();
         String key = (String) ParamUtil.getSessionAttr(request,KEY_PROCESS_KEY);
         ParamUtil.setSessionAttr(request,KEY_FOLLOW_UP_1B_PREVIEW,followupPreviewBDto);
         if(!StringUtils.hasLength(key)){
@@ -220,7 +220,7 @@ public class FollowUPReportDelegator{
         String actionType = ParamUtil.getString(request,ModuleCommonConstants.KEY_ACTION_TYPE);
         if(ModuleCommonConstants.KEY_NAV_NEXT.equals(actionType)){
             //do validation
-            ValidationResultDto resultDto =  followupClient.validateFollowup1A(followup1AMetaDto);
+            ValidationResultDto resultDto =  reportableEventClient.validateFollowup1A(followup1AMetaDto);
             doValidation(resultDto,request);
         }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
             ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_INDEED_ACTION_TYPE,ModuleCommonConstants.KEY_NAV_BACK);
@@ -265,7 +265,7 @@ public class FollowUPReportDelegator{
         //save doc
         List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(followupDoc);
         FollowupReport1ADto report1ADto = FollowupReport1ADto.from(followupInfoADto,followupDoc);
-        followupClient.saveNewFollowupReport1A(report1ADto);
+        reportableEventClient.saveNewFollowupReport1A(report1ADto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(followupDoc);
@@ -300,7 +300,7 @@ public class FollowUPReportDelegator{
         String actionType = ParamUtil.getString(request,ModuleCommonConstants.KEY_ACTION_TYPE);
         if(ModuleCommonConstants.KEY_NAV_NEXT.equals(actionType)){
             //do validation
-            ValidationResultDto resultDto =  followupClient.validateFollowup1B(followup1BMetaDto);
+            ValidationResultDto resultDto =  reportableEventClient.validateFollowup1B(followup1BMetaDto);
             doValidation(resultDto,request);
         }else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
             ParamUtil.setRequestAttr(request,ModuleCommonConstants.KEY_ACTION_TYPE,"doBack");
@@ -346,7 +346,7 @@ public class FollowUPReportDelegator{
         //save doc
         List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(followupDoc);
         FollowupReport1BDto report1BDto = FollowupReport1BDto.from(followupInfoBDto,followupDoc);
-        followupClient.saveNewFollowupReport1B(report1BDto);
+        reportableEventClient.saveNewFollowupReport1B(report1BDto);
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = deleteUnwantedDoc(followupDoc);
@@ -482,7 +482,7 @@ public class FollowUPReportDelegator{
 
         //save draft
         FollowupReport1ADto report1ADto = FollowupReport1ADto.from(followupInfoADto,dto);
-        String draftAppNo = followupClient.saveDraftFollowup1A(report1ADto);
+        String draftAppNo = reportableEventClient.saveDraftFollowup1A(report1ADto);
         followupInfoADto.setDraftAppNo(draftAppNo);
         try {
             // delete docs
@@ -502,7 +502,7 @@ public class FollowUPReportDelegator{
 
         //save draft
         FollowupReport1BDto report1BDto = FollowupReport1BDto.from(followupInfoBDto,dto);
-        String draftAppNo = followupClient.saveDraftFollowup1B(report1BDto);
+        String draftAppNo = reportableEventClient.saveDraftFollowup1B(report1BDto);
         followupInfoBDto.setDraftAppNo(draftAppNo);
         try {
             // delete docs

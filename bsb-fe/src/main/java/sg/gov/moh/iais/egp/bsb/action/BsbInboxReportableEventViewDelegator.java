@@ -6,8 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.IncidentFollowupClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
 import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -40,14 +38,10 @@ public class BsbInboxReportableEventViewDelegator {
     private static final String MESSAGE_MASKED_REFERENCE_NO_IS_NULL = "masked reference no is null";
 
     private final ReportableEventClient reportableEventClient;
-    private final IncidentInvestigationReportClient incidentInvestigationReportClient;
-    private final IncidentFollowupClient followupClient;
 
     @Autowired
-    public BsbInboxReportableEventViewDelegator(ReportableEventClient reportableEventClient, IncidentInvestigationReportClient incidentInvestigationReportClient, IncidentFollowupClient followupClient) {
+    public BsbInboxReportableEventViewDelegator(ReportableEventClient reportableEventClient) {
         this.reportableEventClient = reportableEventClient;
-        this.incidentInvestigationReportClient = incidentInvestigationReportClient;
-        this.followupClient = followupClient;
     }
 
     public void preNotificationData(BaseProcessClass bpc) {
@@ -71,7 +65,7 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            InvestViewDto investViewDto = incidentInvestigationReportClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
+            InvestViewDto investViewDto = reportableEventClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,investViewDto);
             ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
             viewBasicDoc(investViewDto.getDocRecordInfos(),request);
@@ -85,7 +79,7 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            Followup1AViewDto followup1AViewDto =  followupClient.findFollowup1AViewDtoByReferenceNo(referenceNo).getEntity();
+            Followup1AViewDto followup1AViewDto =  reportableEventClient.findFollowup1AViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,followup1AViewDto);
             ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
             ParamUtil.setRequestAttr(request,KEY_MASKED_EDIT_ID,MaskUtil.maskValue(KEY_EDIT_APP_ID,followup1AViewDto.getApplicationId()));
@@ -100,7 +94,7 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            Followup1BViewDto followup1BViewDto =  followupClient.findFollowup1BViewDtoByReferenceNo(referenceNo).getEntity();
+            Followup1BViewDto followup1BViewDto =  reportableEventClient.findFollowup1BViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,followup1BViewDto);
             ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
             ParamUtil.setRequestAttr(request,KEY_MASKED_EDIT_ID,MaskUtil.maskValue(KEY_EDIT_APP_ID,followup1BViewDto.getApplicationId()));

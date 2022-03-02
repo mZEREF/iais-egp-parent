@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -56,20 +56,20 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
  **/
 
 @Slf4j
-@Delegator("investReportDelegator")
-public class InvestReportDelegator {
+@Delegator("investigationReportDelegator")
+public class InvestigationReportDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
-    private final IncidentInvestigationReportClient incidentInvestigationReportClient;
+    private final ReportableEventClient reportableEventClient;
     private static final String PARAM_REFERENCE_NO = "refNo";
     private static final String PARAM_INCIDENT_DTO = "incidentDto";
     private static final String KEY_EDIT_REF_ID = "editId";
     private static final String KEY_DRAFT = "draft";
 
-    public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, IncidentInvestigationReportClient incidentInvestigationReportClient) {
+    public InvestigationReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, ReportableEventClient reportableEventClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
-        this.incidentInvestigationReportClient = incidentInvestigationReportClient;
+        this.reportableEventClient = reportableEventClient;
     }
 
     public void start(BaseProcessClass bpc){
@@ -159,7 +159,7 @@ public class InvestReportDelegator {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         if(StringUtils.hasLength(maskReferenceNo)){
-            IncidentDto incidentDto = incidentInvestigationReportClient.queryIncidentByRefNo(referenceNo);
+            IncidentDto incidentDto = reportableEventClient.queryIncidentByRefNo(referenceNo);
             ParamUtil.setSessionAttr(request,PARAM_INCIDENT_DTO,incidentDto);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
@@ -341,7 +341,7 @@ public class InvestReportDelegator {
                 InvestReportDto investReportDto = InvestReportDto.from(investRepoRoot);
                 AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                 investReportDto.setAuditTrailDto(auditTrailDto);
-                ResponseDto<String> responseDto = incidentInvestigationReportClient.saveNewIncidentInvest(investReportDto);
+                ResponseDto<String> responseDto = reportableEventClient.saveNewIncidentInvest(investReportDto);
                 if(log.isInfoEnabled()){
                     log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
                 }
@@ -503,7 +503,7 @@ public class InvestReportDelegator {
     }
 
     public List<SelectOption> tempReferenceNoOps(){
-        List<String> referNoList = incidentInvestigationReportClient.queryAllRefNo();
+        List<String> referNoList = reportableEventClient.queryAllRefNo();
         if(CollectionUtils.isEmpty(referNoList)){
             return originalOps();
         }
@@ -579,7 +579,7 @@ public class InvestReportDelegator {
 
         // save data
         InvestReportDto finalAllDataDto = InvestReportDto.from(investRepoRoot);
-        String draftAppNo = incidentInvestigationReportClient.saveDraftInvestigationReport(finalAllDataDto);
+        String draftAppNo = reportableEventClient.saveDraftInvestigationReport(finalAllDataDto);
         // set draft app No. into the NodeGroup
         ReferNoSelectionDto referNoSelectionDto = (ReferNoSelectionDto) ((SimpleNode) investRepoRoot.at(NODE_NAME_REFERENCE_NO_SELECTION)).getValue();
         referNoSelectionDto.setDraftAppNo(draftAppNo);

@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___InvestigationReport___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="investReportDelegator";
+	private static final String DELEGATOR ="investigationReportDelegator";
 
 
 	public void start_OnStepProcess_0() throws Exception {

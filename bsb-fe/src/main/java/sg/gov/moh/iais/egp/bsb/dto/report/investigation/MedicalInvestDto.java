@@ -37,7 +37,7 @@ public class MedicalInvestDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("investRepFeignClient", "validateMedicalInvestDto", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validateMedicalInvestDto", new Object[]{this});
         return validationResultDto.isPass();
     }
 
