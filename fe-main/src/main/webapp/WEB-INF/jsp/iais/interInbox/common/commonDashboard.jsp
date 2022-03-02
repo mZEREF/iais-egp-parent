@@ -12,7 +12,6 @@
         height: 150px;
     }
 </style>
-<div class="navigation-gp">
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
@@ -91,5 +90,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>
