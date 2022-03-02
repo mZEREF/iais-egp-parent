@@ -13,9 +13,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -146,7 +145,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
     }
 
     protected void valRFC(HttpServletRequest request, IuiCycleStageDto iuiCycleStageDto){
-        if( ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && isRfc(request)){
+        if( IaisCommonUtils.isEmpty((Map<String, String>) ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP)) && ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
             if(IaisCommonUtils.isNotEmpty(iuiCycleStageDto.getSemenSources())){
                 Collections.sort(iuiCycleStageDto.getSemenSources());
