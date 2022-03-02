@@ -27,6 +27,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewDrugSubmissionSection.jsp" %>
                     <%@include file="section/previewDrugMedicationSection.jsp" %>
+                    <%@include file="common/dpDeclaration.jsp" %>
                 </div>
                 <%@include file="common/dpFooter.jsp" %>
             </div>
