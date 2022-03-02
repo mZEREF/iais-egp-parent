@@ -1,10 +1,12 @@
-<c:if test="${msgContentFrom != 1}">
 <style type="text/css">
     .nav {
         background: transparent;
     }
+    .dashboard-gp .dashboard-tile-item {
+        width: calc((100% - 120px) / 5);
+        float: left;
+    }
 </style>
-</c:if>
 <div class="navigation-gp">
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
