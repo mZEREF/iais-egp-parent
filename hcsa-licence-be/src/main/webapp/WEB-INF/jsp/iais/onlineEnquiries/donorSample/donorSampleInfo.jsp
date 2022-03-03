@@ -52,21 +52,40 @@
 <%--                                        </div>--%>
 <%--                                    </div>--%>
                                     <hr>
-                                    <div class="row">
-                                        <iais:field width="6" value="Sample Type"/>
-                                        <div class="col-md-6">
-                                            <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <iais:field width="6" value="Is Donor's Identity Known?"/>
+                                    <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
+                                        <div class="row">
+                                            <iais:field width="6" value="Sample Type"/>
 
-                                        <div class="col-md-6">
-                                            <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown}"/>
+                                            <div class="col-md-6">
+                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
+                                        <hr>
+                                        <div class="row">
+                                            <iais:field width="6" value="Is Donor's Identity Known?"/>
+
+                                            <div class="col-md-6">
+                                                <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown}"/>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <iais:field width="6" value="Donor Sample Code"/>
+
+                                            <div class="col-md-6">
+                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <iais:field width="6" value="Name of Bank / AR Centre where Sample is from"/>
+
+                                            <div class="col-md-6">
+                                                <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </c:if>
                                     <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
                                         <div class="row">
                                             <iais:field width="6" value="ID Type"/>
@@ -93,22 +112,7 @@
                                         </div>
                                         <hr>
                                     </c:if>
-                                    <div class="row">
-                                        <iais:field width="6" value="Donor Sample Code"/>
 
-                                        <div class="col-md-6">
-                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <iais:field width="6" value="Name of Bank / AR Centre where Sample is from"/>
-
-                                        <div class="col-md-6">
-                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
-                                        </div>
-                                    </div>
-                                    <hr>
                                     <br>
 
                                     <div class="row">
