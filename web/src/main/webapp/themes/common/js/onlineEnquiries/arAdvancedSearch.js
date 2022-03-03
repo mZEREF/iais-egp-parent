@@ -99,6 +99,32 @@ var fullDetailsView = function (patientCode) {
 };
 var getPatientByPatientCode = function (patientCode, divid) {
     showWaiting();
+    var advfiltersonList=$("[id^='advfilterson']");
+    var lenSon = advfiltersonList.length;
+    for (var i = 0;i<lenSon;i++){
+        var hideSon = $(advfiltersonList[i]);
+        if(hideSon.prop('id') !=='advfilterson'+divid){
+            hideSon.hide();
+        }
+    }
+    var advfilterList=$("a[data-target^='#dropdown']");
+    var len = advfilterList.length;
+    for (var j = 0;j<len;j++){
+        var hide = $(advfilterList[j]);
+        if(hide.prop('data-target') !=='#dropdown'+divid){
+            hide.addClass('collapsed')
+            hide.prop('aria-expanded', false);
+        }
+    }
+    var dropdownList=$("[id^='dropdown']");
+    var lendropdown = dropdownList.length;
+    for (var k = 0;k<lendropdown;k++){
+        var dropdown = $(dropdownList[k]);
+        if(dropdown.prop('id') !=='dropdown'+divid){
+            dropdown.removeClass('in')
+            dropdown.prop('aria-expanded', false);
+        }
+    }
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
     } else {
