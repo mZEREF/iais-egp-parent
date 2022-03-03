@@ -13,31 +13,31 @@
                 <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
                 <iais:row>
                     <iais:field width="5" value="Patient's ID Type" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${drugSubmission.idType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's ID No." />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.idNumber}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's Name" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.name}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Doctor's Professional Registration No" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.doctorReignNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Doctor's Name" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.doctorName}"/>
                     </iais:value>
                 </iais:row>
