@@ -4,7 +4,7 @@ package sg.gov.moh.iais.egp.bsb.constant.module;
 public class AppViewConstants {
     private AppViewConstants() {}
 
-    // mask param used by task list
+    // mask param used by appView
     public static final String MASK_PARAM_APP_ID                            = "appId";
     public static final String MASK_PARAM_APP_VIEW_MODULE_TYPE              = "appViewModuleType";
 

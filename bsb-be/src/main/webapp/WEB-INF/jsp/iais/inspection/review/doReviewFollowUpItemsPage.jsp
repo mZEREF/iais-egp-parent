@@ -72,7 +72,7 @@
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <h4>Processing Status Update</h4>
+                                                    <h4>Review Follow Up item</h4>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
@@ -86,25 +86,40 @@
                                                                     <div class="clear"></div>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
+                                                                    <label class="col-xs-12 col-md-4 control-label">MOH Remarks</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <div class="input-group">
-                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${processDto.remark}"/></textarea>
-                                                                            <span data-err-ind="remarks" class="error-msg"></span>
-                                                                        </div>
+                                                                        <p><c:out value=""/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">User Remarks</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <p><c:out value=""/></p>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+
                                                                 <div class="form-group">
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO001'}">selected="selected"</c:if>>Mark as ready</option>
-                                                                                <%--<option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>--%>
+                                                                                <option value="MOHPRO023" <c:if test="${insDecision.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route back to applicant</option>
+                                                                                <option value="MOHPRO010" <c:if test="${insDecision.decision eq 'MOHPRO010'}">selected="selected"</c:if>>Accept response to follow-up items</option>
                                                                             </select>
-                                                                            <span data-err-ind="processingDecision" class="error-msg" ></span>
+                                                                            <span data-err-ind="decision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${insDecision.remark}"/></textarea>
+                                                                            <span data-err-ind="remarks" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>

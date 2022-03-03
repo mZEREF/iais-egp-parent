@@ -98,7 +98,17 @@ public interface InspectionClient {
                                        @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/post/validate/do-review-follow-up-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validatePostInspectionDOReviewFollowUpItems(@RequestBody DOReviewFollowUpItemsDto doReviewFollowUpItemsDto);
+    ValidationResultDto validatePostInspectionDOReviewFollowUpItems(@RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/do-review-follow-up-items/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void doReviewInspectionFollowUpItemsRouteBackToApplicant(@RequestParam("appId") String appId,
+                                                             @RequestParam("taskId") String taskId,
+                                                             @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/do-review-follow-up-items/accept-response", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void doReviewInspectionFollowUpItemsAcceptResponse(@RequestParam("appId") String appId,
+                                                       @RequestParam("taskId") String taskId,
+                                                       @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/non-compliance/review/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionNCToAO(@RequestParam("appId") String appId,
@@ -119,4 +129,5 @@ public interface InspectionClient {
     void reviewInspectionNCDORequestForInformation(@RequestParam("appId") String appId,
                                                    @RequestParam("taskId") String taskId,
                                                    @RequestBody InsProcessDto processDto);
+
 }
