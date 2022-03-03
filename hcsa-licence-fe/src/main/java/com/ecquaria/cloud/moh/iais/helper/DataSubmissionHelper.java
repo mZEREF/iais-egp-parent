@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -221,38 +222,26 @@ public final class DataSubmissionHelper {
         }
         return vssSuperDataSubmissionDto;
     }
-    public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
-        if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
-            return null;
-        }
-        String lastCycle = selectionDto.getLastCycle();
-        String lastStage = selectionDto.getLastStage();
-        String lastStatus = selectionDto.getLastStatus();
-        String latestCycle = selectionDto.getLatestCycle();
-        String latestStage = selectionDto.getLatestStage();
-        String additionalStage = selectionDto.getAdditionalStage();
-        return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage,
-                selectionDto.isUndergoingCycle(), lastStatus);
-    }
 
     /**
      * Cycle Stages
      *
      * Spec: 3.3.3 Stage Selection Business Rules
      *
-     * @param latestCycle
-     * @param latestStage
-     * @param lastCycle
-     * @param lastStage
-     * @param additionalStage
-     * @param lastStatus
+     * @param selectionDto
      * @return
      */
-    private static List<String> getNextStageForAR(String latestCycle, String latestStage, String lastCycle, String lastStage,
-            String additionalStage, boolean undergoingCycle, String lastStatus) {
-        log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
-        log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + " : " + lastStage
-                + " : " + additionalStage + " : " + undergoingCycle + " : " + lastStatus + " -----"));
+    public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
+        if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
+            return null;
+        }
+        log.info(StringUtil.changeForLog("----- The Cycle Stage Selection: " + JsonUtil.parseToJson(selectionDto) + " ----- "));
+        String lastCycle = selectionDto.getLastCycle();
+        String lastStage = selectionDto.getLastStage();
+        String lastStatus = selectionDto.getLastStatus();
+        String additionalStage = selectionDto.getAdditionalStage();
+        boolean undergoingCycle = selectionDto.isUndergoingCycle();
+
         // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
         // available stages for selection will be based on the stage prior to it
         // disposal, donation
@@ -273,16 +262,24 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
-                result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                if (selectionDto.isFreshNatural() || selectionDto.isFreshStimulated()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
+                }
+                if (selectionDto.isFrozenOocyte() || selectionDto.isFrozenEmbryo()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                }
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                if (selectionDto.isFrozenOocyte()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                }
             } else if (DataSubmissionConsts.AR_STAGE_THAWING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
-                result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
-                result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+                if (selectionDto.isFrozenEmbryo()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
+                    result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             } else if (DataSubmissionConsts.AR_STAGE_FERTILISATION.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
@@ -342,6 +339,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             }
         }
+        log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
         return result;
     }
 
