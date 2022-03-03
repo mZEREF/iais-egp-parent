@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -13,9 +14,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <%@include file="dashboard.jsp"%>
 
@@ -224,8 +223,9 @@
                                                                             </div>
                                                                             <div>
                                                                                 <c:forEach var="file" items="${docFiles}">
+                                                                                    <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                                                                                     <div class="form-group">
-                                                                                        <div class="col-10"><p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                                                        <div class="col-10"><p><a href="/bsb-fe/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                                                                                         <div class="clear"></div>
                                                                                     </div>
                                                                                 </c:forEach>

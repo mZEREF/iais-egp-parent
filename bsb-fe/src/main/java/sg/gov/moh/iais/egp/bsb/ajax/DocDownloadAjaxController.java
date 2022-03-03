@@ -140,12 +140,12 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegProfileGetSavedFile);
     }
 
-    @GetMapping("/facCertReg/new/{id}")
+    @GetMapping("/facCertifierReg/new/{id}")
     public void downloadCertNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegCertGetNewFile);
     }
 
-    @GetMapping("/facCertReg/repo/{id}")
+    @GetMapping("/facCertifierReg/repo/{id}")
     public void downloadCertSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCertGetSavedFile);
     }
@@ -383,7 +383,7 @@ public class DocDownloadAjaxController {
      */
     private MultipartFile facRegCertGetSavedFile(HttpServletRequest request, String id) {
         SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
