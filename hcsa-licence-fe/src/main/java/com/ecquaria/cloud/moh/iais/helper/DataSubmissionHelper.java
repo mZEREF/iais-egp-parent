@@ -753,30 +753,22 @@ public final class DataSubmissionHelper {
         StringBuilder title = new StringBuilder();
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(appType)) {
             title.append("You are amending for <strong>");
-            switch (dsType) {
-                case DataSubmissionConsts.DS_AR:
-                    if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-                        title.append(DataSubmissionConstant.DS_TITLE_PATIENT);
-                    } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
-                        title.append(DataSubmissionConstant.DS_TITLE_DONOR_SAMPLE);
-                    } else {
-                        title.append(DataSubmissionConstant.DS_TITLE_CYCEL_STAGE);
-                    }
-                    break;
-                case DataSubmissionConsts.DS_DRP:
-                    title.append(DataSubmissionConstant.DS_TITLE_DRP);
-                    break;
-            }
         } else {
             title.append("You are submitting for <strong>");
-            switch (dsType) {
-                case DataSubmissionConsts.DS_AR:
-                    title.append(DataSubmissionConstant.DS_TITLE_ART);
-                    break;
-                case DataSubmissionConsts.DS_DRP:
-                    title.append(DataSubmissionConstant.DS_TITLE_DRP);
-                    break;
-            }
+        }
+        switch (dsType) {
+            case DataSubmissionConsts.DS_AR:
+                if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+                    title.append(DataSubmissionConstant.DS_TITLE_PATIENT);
+                } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
+                    title.append(DataSubmissionConstant.DS_TITLE_DONOR_SAMPLE);
+                } else {
+                    title.append(DataSubmissionConstant.DS_TITLE_CYCEL_STAGE);
+                }
+                break;
+            case DataSubmissionConsts.DS_DRP:
+                title.append(DataSubmissionConstant.DS_TITLE_DRP);
+                break;
         }
         title.append("</strong>");
         return title.toString();
