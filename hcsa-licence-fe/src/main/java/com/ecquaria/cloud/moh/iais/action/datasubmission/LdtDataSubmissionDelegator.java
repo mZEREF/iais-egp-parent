@@ -252,6 +252,12 @@ public class LdtDataSubmissionDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
             if (isRfc(request)) {
+                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+                if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
+                    errorMap.put("amendReason", "GENERAL_ERR0006");
+                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                    errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
                 if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
                     ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
@@ -404,6 +410,18 @@ public class LdtDataSubmissionDelegator {
         dsLaboratoryDevelopTestDto.setResponsePerson(responsePerson);
         dsLaboratoryDevelopTestDto.setTestStatus(testStatus);
         dsLaboratoryDevelopTestDto.setLdtDate(ldtDate);
+
+        if (isRfc(request)) {
+            LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
+            DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
+            if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
+            } else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+
         return dsLaboratoryDevelopTestDto;
     }
 
