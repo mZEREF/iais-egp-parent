@@ -66,6 +66,12 @@ $(document).ready(function () {
 
 var getPatientByPatientCode = function (patientCode, divid) {
     showWaiting();
+    $(this).siblings().removeClass('collapsed');
+    $(this).siblings().prop('aria-expanded',false);
+    var displayDiv = $('#advfilterson' + divid);
+    displayDiv.siblings().hide();
+    var dropdownDiv = $('#dropdown' + divid);
+    dropdownDiv.siblings().prop('aria-expanded',false);
 
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
