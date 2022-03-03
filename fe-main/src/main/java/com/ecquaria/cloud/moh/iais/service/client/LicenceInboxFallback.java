@@ -388,4 +388,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     public FeignResponseEntity<Integer> dssDraftNum(InterMessageSearchDto interMessageSearchDto) {
         return getEntity();
     }
+
+    @Override
+    public FeignResponseEntity<Boolean> hasDonorSampleUseCycleBySubmissionId(String submissionId) {
+        return getEntity();
+    }
 }

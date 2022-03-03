@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
@@ -529,12 +528,8 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					List<DonorSampleAgeDto> donorSampleAgeDtos=arSuperDataSubmissionDto.getDonorSampleDto().getDonorSampleAgeDtos();
-					for (DonorSampleAgeDto age:donorSampleAgeDtos
-						 ) {
-						if(!age.getStatus().equals(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE)){
-							return 2;
-						}
+					if(licenceInboxClient.hasDonorSampleUseCycleBySubmissionId(arSuperDataSubmissionDto.getDataSubmissionDto().getId()).getEntity()){
+						return 2;
 					}
 				}
 			}
