@@ -25,7 +25,7 @@
                 <div <c:if test="${empty postTerminationDto.ifCounsellingNotGiven}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="If post-counselling was not given"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${postTerminationDto.ifCounsellingNotGiven}"/>
                         </iais:value>
                     </iais:row>
@@ -33,7 +33,7 @@
                 <div <c:if test="${empty postTerminationDto.counsellorIdType}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Termination Counsellor ID Type"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${postTerminationDto.counsellorIdType}"/>
                         </iais:value>
                     </iais:row>
@@ -41,7 +41,7 @@
                 <div <c:if test="${empty postTerminationDto.counsellorIdNo}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Termination Counsellor ID No."/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellorIdNo}"/>
                         </iais:value>
                     </iais:row>
@@ -49,7 +49,7 @@
                 <div <c:if test="${empty postTerminationDto.counsellorName}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Doctor Professional Regn No."/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellorName}"/>
                         </iais:value>
                     </iais:row>
@@ -57,7 +57,7 @@
                 <div <c:if test="${empty postTerminationDto.counsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Post-Counselling Date"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellingDate}"/>
                         </iais:value>
                     </iais:row>
@@ -65,7 +65,7 @@
                 <div <c:if test="${empty postTerminationDto.counsellingPlace}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Place of Post-Counselling"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${postTerminationDto.counsellingPlace}"/>
                         </iais:value>
                     </iais:row>

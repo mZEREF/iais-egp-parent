@@ -144,10 +144,8 @@ public class TopDataSubmissionDelegator {
                 String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                         .map(LoginContext::getOrgId).orElse("");
                 String hciCode = null;
-                String svcName = null;
                 if(premisesDto != null){
                     hciCode = premisesDto.getHciCode();
-                    svcName = premisesDto.getSvcName();
                 }
                 String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
                 log.info(StringUtil.changeForLog("Action Type: " + actionValue));
