@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -31,7 +32,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
-        FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto();
+        FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
         List<String> atuList = fertilisationDto.getAtuList();
         List<String> sosList = fertilisationDto.getSosList();
         int patientFrozen = 100;
@@ -117,18 +118,20 @@ public class FertilisationDtoValidator implements CustomizeValidator {
             errorMap.put("freshOocytesZiftNum", errMsg);
         }
         if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) &&StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
-            Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
-            Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
-            if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
-                if(extractedSpermVialsNum != null) {
-                    int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
-                    if(usedSpermVialsNum > FrozenSumNum) {
-                        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                        repMap.put("field1","How many vials of sperm were used in this cycle?");
-                        repMap.put("field2","'How many vials of sperm were extracted?'");
-                        repMap.put("field3","frozen sperm tagged to patient");
-                        String errMsg = MessageUtil.getMessageDesc("DS_ERR011",repMap);
-                        errorMap.put("usedSpermVialsNum", errMsg);
+            if(StringUtil.isNumber(fertilisationDto.getExtractedSpermVialsNum())&&StringUtil.isNumber(fertilisationDto.getUsedSpermVialsNum())){
+                Integer extractedSpermVialsNum = Integer.parseInt(fertilisationDto.getExtractedSpermVialsNum());
+                Integer usedSpermVialsNum =Integer.parseInt(fertilisationDto.getUsedSpermVialsNum());
+                if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
+                    if(extractedSpermVialsNum != null) {
+                        int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
+                        if(usedSpermVialsNum > FrozenSumNum) {
+                            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                            repMap.put("field1","How many vials of sperm were used in this cycle?");
+                            repMap.put("field2","'How many vials of sperm were extracted?'");
+                            repMap.put("field3","frozen sperm tagged to patient");
+                            String errMsg = MessageUtil.getMessageDesc("DS_ERR011",repMap);
+                            errorMap.put("usedSpermVialsNum", errMsg);
+                        }
                     }
                 }
             }
