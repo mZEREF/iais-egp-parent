@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hcsa-licence-fe</artifactId>
+    <artifactId>hcsa-licence-web-fe</artifactId>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
