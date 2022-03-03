@@ -52,16 +52,11 @@
              <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'Yes'}">style="display:none;"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Baby ${displayNum} Defect Type" cssClass="col-md-6"/>
-                <iais:value width="7" cssClass="col-md-7" style="padding:0px;">
+                <iais:value width="7" cssClass="col-md-7">
                     <c:forEach var="pregnancyOutcomeBabyDefectDto"
                                items="${pregnancyOutcomeBabyDto.pregnancyOutcomeBabyDefectDtos}"
                                varStatus="defectStatus">
-                        <div class="form-check active">
-                            <span class="form-check-label"><span
-                                    class="check-square"></span>
-                                <iais:code code="${pregnancyOutcomeBabyDefectDto.defectType}"/>
-                            </span>
-                        </div>
+                        <p><iais:code code="${pregnancyOutcomeBabyDefectDto.defectType}"/></p>
                     </c:forEach>
                 </iais:value>
             </iais:row>
