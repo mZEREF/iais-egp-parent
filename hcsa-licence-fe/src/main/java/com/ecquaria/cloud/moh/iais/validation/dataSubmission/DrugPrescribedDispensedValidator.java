@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedication
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -89,10 +90,12 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             errorMap.put("dispensingDate", errMsg);
         }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
-            int sp=startDate.compareTo(prescriptionDate);
-            String errMsg="Must be later than Date of Prescription";
-            if(sp<=0){
-                errorMap.put("startDate", errMsg);
+            try {
+                if(Formatter.compareDateByDay(prescriptionDate,startDate)<=0){
+                    errorMap.put("startDate", "Must be later than Date of Prescription");
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
         }
         int i = 0;
