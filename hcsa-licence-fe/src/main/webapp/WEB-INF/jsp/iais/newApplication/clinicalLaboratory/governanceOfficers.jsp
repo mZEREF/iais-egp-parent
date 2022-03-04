@@ -220,8 +220,9 @@
                                                                 <div class=" form-group form-horizontal formgap">
                                                                     <div class="col-sm-5 control-label formtext ">
                                                                         <label id="control--runtime--2--label"
-                                                                               class="control-label control-set-font control-font-label">Add/Assign
-                                                                            a Clinical Governance Officer</label>
+                                                                               class="control-label control-set-font control-font-label">
+                                                                            Add/Assign a Clinical Governance Officer
+                                                                        </label>
                                                                         <span class="mandatory">*</span>
                                                                         <span class="upload_controls"></span>
                                                                     </div>
@@ -317,15 +318,36 @@
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-4 col-xs-12">
                                                                                 <div class="">
-                                                                                    <iais:input maxLength="9"
+                                                                                    <iais:input maxLength="20"
                                                                                                 type="text" name="idNo"
-                                                                                                value="${currentCgo.idNo}"></iais:input>
+                                                                                                value="${currentCgo.idNo}"/>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMSg"
                                                                                           id="error_idNo${status.index}"></span>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMSg"
                                                                                           id="error_idNo"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr height="1">
+                                                                <td class="first last" style="width: 100%;">
+                                                                    <div class="control control-caption-horizontal">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                                <label class="control-label control-set-font control-font-label">Nationality</label>
+                                                                                <span class="mandatory">*</span>
+                                                                                <span class="upload_controls"></span>
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7" id="nationality${suffix}">
+                                                                                <div class="">
+                                                                                    <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
+                                                                                                 cssClass="nationality" value="${currentCgo.nationality}" needErrorSpan="false"/>
+                                                                                    <span class="error-msg" name="iaisErrorMsg"
+                                                                                          id="error_nationality${status.index}"></span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -785,9 +807,10 @@
                 $parentEle.find('> .profile-info-gp').addClass('hidden');
                 if (1 == init) {
                     var arr = $(this).val().split(',');
-                    var idType = arr[0];
-                    var idNo = arr[1];
-                    loadSelectPsn($CurrentPsnEle, idType, idNo, 'CGO');
+                    var nationality = arr[0];
+                    var idType = arr[1];
+                    var idNo = arr[2];
+                    loadSelectPsn($CurrentPsnEle, nationality, idType, idNo, 'CGO');
                 }
             }
         });

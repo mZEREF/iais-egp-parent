@@ -164,9 +164,17 @@
                                                          codeCategory="CATE_ID_ID_TYPE" disabled="true"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisableI" maxLength="66" needDisabled="true"
+                                            <iais:input cssClass="needDisableI" maxLength="20" needDisabled="true"
                                                         type="text"
                                                         name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select name="nationalityShow" firstOption="Please Select"
+                                                         codeCategory="CATE_ID_NATIONALITY" cssClass="nationalitySel"
+                                                         value="${personnelEditDto.nationality}" disabled="true"/>
                                         </iais:value>
                                     </iais:row>
                                     <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
@@ -255,6 +263,14 @@
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:select cssClass="nationalitySel" name="nationality"
+                                                         codeCategory="CATE_ID_NATIONALITY" value="${personnelEditDto.nationality}"
+                                                         firstOption="Please Select" disabled="true"/>
+                                        </iais:value>
+                                    </iais:row>
                                     <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
@@ -339,8 +355,16 @@
                                                          codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input maxLength="9" type="text"
+                                            <iais:input maxLength="20" type="text"
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:select cssClass="nationalitySel" name="nationality1"
+                                                         codeCategory="CATE_ID_NATIONALITY" value="${newPerson.nationality}"
+                                                         firstOption="Please Select"/>
                                         </iais:value>
                                     </iais:row>
                                     <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') || psnTypes.contains('CD')}">
@@ -414,8 +438,16 @@
                                                          codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisableI" maxLength="9" type="text"
+                                            <iais:input cssClass="needDisableI" maxLength="20" type="text"
                                                         name="idNo2" value="${newPerson.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select name="nationality2" firstOption="Please Select"
+                                                         codeCategory="CATE_ID_NATIONALITY" cssClass="nationalitySel"
+                                                         value="${newPerson.nationality}" disabled="true"/>
                                         </iais:value>
                                     </iais:row>
                                     <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
@@ -631,9 +663,10 @@
             $('#newPerson').hide();
             var person = $('#newPersonExist');
             var arr = personSelect.split(",");
-            var idType = arr[0];
-            var idNo = arr[1];
-            loadSelectPerson(person, idType, idNo);
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
+            loadSelectPerson(person, nationality, idType, idNo);
         }
 
     });
@@ -667,9 +700,10 @@
             $('#newPerson').hide();
             var person = $('#newPersonExist');
             var arr = personSelect.split(",");
-            var idType = arr[0];
-            var idNo = arr[1];
-            loadSelectPerson(person, idType, idNo);
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
+            loadSelectPerson(person, nationality, idType, idNo);
         }
     }
 
@@ -686,15 +720,11 @@
         $CurrentPsnEle.find('input[name="psnName2"]').val(data.name);
 
         <!-- idType-->
-        var idType = data.idType;
-        if (idType == null || idType == 'undefined' || idType == '') {
-            idType = '';
-        }
-        $CurrentPsnEle.find('select[name="idType2"]').val(idType);
-        var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
-        $CurrentPsnEle.find('select[name="idType2"]').next().find('.current').html(idTypeVal);
+        fillValue($CurrentPsnEle.find('select[name="idType2"]'), data.idType);
         <!-- idNo-->
         $CurrentPsnEle.find('input[name="idNo2"]').val(data.idNo);
+        <!-- Nationality -->
+        fillValue($CurrentPsnEle.find('select[name="nationality2"]'), data.nationality);
         $CurrentPsnEle.find('input[name="mobileNo2"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddr2"]').val(data.emailAddr);
         var officeTelNo = data.officeTelNo;
@@ -735,9 +765,10 @@
         }
     }
     <!--cgo,medAlert -->
-    var loadSelectPerson = function ($CurrentPsnEle, idType, idNo, psnType) {
+    var loadSelectPerson = function ($CurrentPsnEle, nationality, idType, idNo, psnType) {
         var spcEle = $CurrentPsnEle.find('.specialty');
         var jsonData = {
+            'nationality': nationality,
             'idType': idType,
             'idNo': idNo,
             'psnType': psnType

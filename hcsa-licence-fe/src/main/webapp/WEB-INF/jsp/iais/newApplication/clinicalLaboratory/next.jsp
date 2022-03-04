@@ -191,19 +191,14 @@
         $CurrentPsnEle.find('input[name="name"]').val(data.name);
 
         <!-- idType-->
-        var idType  = data.idType;
-        if(idType == null || idType =='undefined' || idType == ''){
-            idType = '';
-        }
-        $CurrentPsnEle.find('select[name="idType"]').val(idType);
-        var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
-        $CurrentPsnEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+        fillValue($CurrentPsnEle.find('select[name="idType"]'), data.idType);
         <!-- idNo-->
         $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
+        <!-- Nationality -->
+        fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
 
         $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
-
 
         <!--     ====================    -->
         <!--       diff page column      -->
@@ -305,10 +300,11 @@
         }
     };
     <!--cgo,medAlert -->
-    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType, callback) {
+    var loadSelectPsn = function ($CurrentPsnEle, nationality, idType, idNo, psnType, callback) {
         showWaiting();
         var spcEle = $CurrentPsnEle.find('.specialty');
         var jsonData = {
+            'nationality':nationality,
             'idType':idType,
             'idNo':idNo,
             'psnType':psnType
@@ -348,6 +344,9 @@
         }
         if(psnEditDto.idType){
             $cgoPsnEle.find('div.idTypeSel').removeClass('disabled');
+        }
+        if(psnEditDto.nationality) {
+            $cgoPsnEle.find('div.nationality').removeClass('disabled');
         }
         if(psnEditDto.designation){
             $cgoPsnEle.find('div.designationSel').removeClass('disabled');

@@ -75,7 +75,23 @@
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <input type="text" name="idNo${keyAppointmentHolderSuffix}" class="idNo" maxlength="9" autocomplete="off">
+                                    <input type="text" name="idNo${keyAppointmentHolderSuffix}" class="idNo" maxlength="20" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Nationality</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7">
+                                    <div class="">
+                                        ${nationality}
+                                    </div>
                                 </div>
                             </div>
                         </div>

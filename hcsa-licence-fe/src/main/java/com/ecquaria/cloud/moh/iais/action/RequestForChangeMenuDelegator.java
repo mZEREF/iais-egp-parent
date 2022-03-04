@@ -812,6 +812,7 @@ public class RequestForChangeMenuDelegator {
         String psnName1 = ParamUtil.getString(bpc.request, "psnName1");
         String idType1 = ParamUtil.getString(bpc.request, "idType1");
         String idNo1 = StringUtil.toUpperCase(ParamUtil.getString(bpc.request, "idNo1"));
+        String nationality1 = ParamUtil.getString(bpc.request, "nationality1");
         String email1 = ParamUtil.getString(bpc.request, "emailAddr1");
         String mobile1 = ParamUtil.getString(bpc.request, "mobileNo1");
         String designation1 = ParamUtil.getString(bpc.request, "designation1");
@@ -851,6 +852,7 @@ public class RequestForChangeMenuDelegator {
         if ("replace".equals(editSelect) && "new".equals(replaceName)) {
             newPerson.setIdNo(idNo1);
             newPerson.setIdType(idType1);
+            newPerson.setNationality(nationality1);
             newPerson.setPsnName(psnName1);
             newPerson.setSalutation(salutation1);
             newPerson.setDesignation(designation1);
@@ -880,25 +882,9 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(psnName1)) {
                 errMap.put("psnName1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
-            if (StringUtil.isEmpty(idType1)) {
-                errMap.put("idType1", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID Type", "field"));
-            }
-            if (StringUtil.isEmpty(idNo1)) {
-                errMap.put("idNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
-            } else {
-                if (OrganizationConstants.ID_TYPE_FIN.equals(idType1)) {
-                    boolean b = SgNoValidator.validateFin(idNo1);
-                    if (!b) {
-                        errMap.put("idNo1", "RFC_ERR0012");
-                    }
-                }
-                if (OrganizationConstants.ID_TYPE_NRIC.equals(idType1)) {
-                    boolean b1 = SgNoValidator.validateNric(idNo1);
-                    if (!b1) {
-                        errMap.put("idNo1", "RFC_ERR0012");
-                    }
-                }
-            }
+            // check person key
+            NewApplicationHelper.validateId(nationality1, idType1, idNo1, "nationality1", "idType1", "idNo1", errMap);
+
             if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
             }else if((psnTypes.contains("CGO")||psnTypes.contains("CD")) &&"DES999".equals(designation1)){
@@ -967,14 +953,16 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("replaceName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             } else {
                 String[] split = replaceName.split(",");
-                String idType = split[0];
-                String idNo = split[1];
-                String psnKey = idType + "," + idNo;
+                String nationality = split[0];
+                String idType = split[1];
+                String idNo = split[2];
+                String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
                 Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
                 AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
 
                 newPerson.setIdNo(psn.getIdNo());
                 newPerson.setIdType(psn.getIdType());
+                newPerson.setNationality(psn.getNationality());
                 newPerson.setPsnName(psn.getName());
                 newPerson.setSalutation(psn.getSalutation());
                 newPerson.setDesignation(psn.getDesignation());
@@ -1011,6 +999,9 @@ public class RequestForChangeMenuDelegator {
                 if (StringUtil.isEmpty(newPerson.getIdNo())) {
                     errMap.put("idNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
                 }
+                // check person key
+                NewApplicationHelper.validateId(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo(), "nationality2",
+                        "idType2", "idNo2", errMap);
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
                 }else if(psnTypes.contains("CGO") &&  "DES999".equals(newPerson.getDesignation())){
@@ -1059,6 +1050,7 @@ public class RequestForChangeMenuDelegator {
         PersonnelListDto oldDto = new PersonnelListDto();
         oldDto.setIdNo(personnelListDto.getIdNo());
         oldDto.setIdType(personnelListDto.getIdType());
+        oldDto.setNationality(personnelListDto.getNationality());
         oldDto.setPsnName(personnelListDto.getPsnName());
         oldDto.setSalutation(personnelListDto.getSalutation());
         oldDto.setDesignation(personnelListDto.getDesignation());

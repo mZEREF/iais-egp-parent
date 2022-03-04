@@ -372,7 +372,7 @@ public class NewApplicationDelegator {
             String assignSelect = subLicenseeDto.getAssignSelect();
             if ((StringUtil.isEmpty(assignSelect) || IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSelect))
                     && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
-                String assigned = NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
+                String assigned = NewApplicationHelper.getAssignSelect(licenseeMap.keySet(), subLicenseeDto.getNationality(),
                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
                 if (StringUtil.isEmpty(assignSelect) || !"-1".equals(assigned) && !IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
                         assigned)) {
@@ -474,7 +474,7 @@ public class NewApplicationDelegator {
                     dto.setLicenseeType(old.getLicenseeType());
                 }
                 if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(dto.getLicenseeType())) {
-                    dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getIdType(), dto.getIdNumber()));
+                    dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNumber()));
                 } else {
                     dto.setAssignSelect(NewApplicationConstant.NEW_PSN);
                 }
@@ -533,6 +533,7 @@ public class NewApplicationDelegator {
         String buildingName = ParamUtil.getString(request, "buildingName");
         String telephoneNo = ParamUtil.getString(request, "telephoneNo");
         String emailAddr = ParamUtil.getString(request, "emailAddr");
+        String nationality = ParamUtil.getString(request, "nationality");
 
         SubLicenseeDto dto = new SubLicenseeDto();
         dto.setIdType(idType);
@@ -547,6 +548,7 @@ public class NewApplicationDelegator {
         dto.setBuildingName(buildingName);
         dto.setTelephoneNo(telephoneNo);
         dto.setEmailAddr(emailAddr);
+        dto.setNationality(nationality);
         return dto;
     }
 
