@@ -35,11 +35,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
  **/
 @Slf4j
 @Delegator("rectifiesNCsDelegator")
-public class BsbRectifiesNCsDelegator {
+public class BsbRectifiesNonComplianceDelegator {
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
 
-    public BsbRectifiesNCsDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
+    public BsbRectifiesNonComplianceDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
     }

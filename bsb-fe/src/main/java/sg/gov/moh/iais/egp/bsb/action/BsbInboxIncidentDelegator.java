@@ -12,10 +12,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author YiMing
- * @version 2022/1/25 14:59
- **/
 @Delegator("bsbInboxIncidentDelegator")
 @Slf4j
 public class BsbInboxIncidentDelegator {

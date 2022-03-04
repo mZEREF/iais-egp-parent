@@ -80,7 +80,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
         Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
         PrimaryDocDto.DocsMetaDto docsMetaDto = new PrimaryDocDto.DocsMetaDto(metaDtoMap);
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("incidentFeignClient", "validatePrimaryDoc", new Object[]{docsMetaDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validatePrimaryDoc", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
     }
 

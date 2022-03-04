@@ -42,7 +42,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 
 @Slf4j
 @Delegator("followUPReportDelegator")
-public class FollowUPReportDelegator{
+public class ReportableEventFollowUPReportDelegator {
     private static final String KEY_FOLLOW_UP_1A = "followup1A";
     private static final String KEY_FOLLOW_UP_1B = "followup1B";
     private static final String KEY_FOLLOW_UP_DOCUMENT = "followupDoc";
@@ -62,7 +62,7 @@ public class FollowUPReportDelegator{
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
 
-    public FollowUPReportDelegator(ReportableEventClient reportableEventClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public ReportableEventFollowUPReportDelegator(ReportableEventClient reportableEventClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
         this.reportableEventClient = reportableEventClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;

@@ -24,6 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -44,6 +46,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 
 
 @RestController
@@ -185,12 +188,12 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
     }
 
-    @GetMapping("/followup/new/{id}")
+    @GetMapping("/reportableEvent/followup/new/{id}")
     public void downloadNotSavedFollowupFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::followupGetNewFile);
     }
 
-    @GetMapping("/followup/repo/{id}")
+    @GetMapping("/reportableEvent/followup/repo/{id}")
     public void downloadSavedFollowupFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::followupGetSavedFile);
     }
@@ -213,6 +216,41 @@ public class DocDownloadAjaxController {
     @GetMapping("/commentInsReport/comment/{id}")
     public void downloadNewCommentReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getCommentInspectionReport);
+    }
+
+    @GetMapping("/insNonCompliance/new/{id}")
+    public void downloadNewNonComplianceReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getNonComplianceInspectionNewReport);
+    }
+
+    @GetMapping("/insNonCompliance/repo/{id}")
+    public void downloadSavedNonComplianceReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getNonComplianceInspectionSavedReport);
+    }
+
+    @GetMapping("/incidentNotification/new/{id}")
+    public void downloadNewIncidentNotificationReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getIncidentNotificationNewFile);
+    }
+
+    @GetMapping("/incidentNotification/repo/{id}")
+    public void downloadSavedIncidentNotificationReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getIncidentNotificationSavedFile);
+    }
+
+    @GetMapping("/investigationReport/new/{id}")
+    public void downloadNewInvestigationReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInvestigationReportNewFile);
+    }
+
+    @GetMapping("/investigationReport/repo/{id}")
+    public void downloadSavedInvestigationReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInvestigationReportSavedFile);
+    }
+
+    @GetMapping("/reportableEvent/view/{id}")
+    public void downloadViewReportableEventReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getViewReportableEventSavedFile);
     }
 
 
@@ -483,5 +521,69 @@ public class DocDownloadAjaxController {
     private MultipartFile getCommentInspectionReport(HttpServletRequest request, String id) {
         CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, InspectionConstants.KEY_COMMENT_REPORT_DATA);
         return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getNonComplianceInspectionNewReport(HttpServletRequest request, String id) {
+        RectifyInsReportDto dto = (RectifyInsReportDto) ParamUtil.getSessionAttr(request, InspectionConstants.KEY_RECTIFY_SAVED_DOC_DTO);
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getNonComplianceInspectionSavedReport(HttpServletRequest request, String id) {
+        RectifyInsReportDto dto = (RectifyInsReportDto) ParamUtil.getSessionAttr(request, InspectionConstants.KEY_RECTIFY_SAVED_DOC_DTO);
+        DocRecordInfo info = dto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getIncidentNotificationNewFile(HttpServletRequest request, String id) {
+        NodeGroup incidentNotificationRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
+        SimpleNode documentNode = (SimpleNode) incidentNotificationRoot.at(NODE_NAME_DOCUMENTS);
+        sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto dto = (sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto) documentNode.getValue();
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getIncidentNotificationSavedFile(HttpServletRequest request, String id) {
+        NodeGroup incidentNotificationRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
+        SimpleNode documentNode = (SimpleNode) incidentNotificationRoot.at(NODE_NAME_DOCUMENTS);
+        sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto dto = (sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto) documentNode.getValue();
+        DocRecordInfo info = dto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getInvestigationReportNewFile(HttpServletRequest request, String id) {
+        NodeGroup root = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT);
+        SimpleNode documentNode = (SimpleNode) root.at(NODE_NAME_DOCUMENTS);
+        sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto dto = (sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto) documentNode.getValue();
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getInvestigationReportSavedFile(HttpServletRequest request, String id) {
+        NodeGroup root = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT);
+        SimpleNode documentNode = (SimpleNode) root.at(NODE_NAME_DOCUMENTS);
+        sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto dto = (sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto) documentNode.getValue();
+        DocRecordInfo info = dto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile getViewReportableEventSavedFile(HttpServletRequest request, String id){
+        Map<String,DocRecordInfo> repoIdDocMap = (Map<String, DocRecordInfo>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_FILE_MAP);
+        DocRecordInfo info = repoIdDocMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+
     }
 }

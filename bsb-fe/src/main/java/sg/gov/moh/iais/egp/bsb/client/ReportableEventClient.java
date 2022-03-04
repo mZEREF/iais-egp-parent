@@ -38,7 +38,7 @@ public interface ReportableEventClient {
     @PostMapping(path = "/reportable-event/incident-notification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewIncidentNotification(@RequestBody IncidentNotificationDto dto);
 
-    @GetMapping(path = "/reportable-event/incident-notification/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/reportable-event/incident-notification/reference-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<IncidentNotificationDto> retrieveIncidentNotByReferenceId(@PathVariable("id") String refId);
 
     @GetMapping(path = "/reportable-event/incident-notification/view/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,10 +47,10 @@ public interface ReportableEventClient {
     @PostMapping(path = "/reportable-event/incident-notification/form-validation/incident-info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateIncidentInfo(@RequestBody IncidentInfoDto dto);
 
-    @PostMapping(path = "/reportable-event/incident-notification/form-validation/person-reporting-info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/reportable-event/incident-notification/form-validation/involved-person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePersonInvolvedInfo(@RequestBody PersonInvolvedInfoDto dto);
 
-    @PostMapping(path = "/reportable-event/incident-notification/form-validation/involved-person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/reportable-event/incident-notification/form-validation/person-reporting-info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePersonReporting(@RequestBody PersonReportingDto dto);
 
     @PostMapping(path = "/reportable-event/incident-notification/form-validation/docs", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,7 +68,7 @@ public interface ReportableEventClient {
     @PostMapping(path = "/reportable-event/investigation-report/draft", consumes = MediaType.APPLICATION_JSON_VALUE)
     String saveDraftInvestigationReport(@RequestBody InvestReportDto dto);
 
-    @GetMapping(path = "/reportable-event/incident-notification/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/reportable-event/incident-notification/reference-no/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     IncidentDto queryIncidentByRefNo(@PathVariable("refNo") String refNo);
 
     @GetMapping(path = "/reportable-event/investigation-report/reference-no", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -107,7 +107,7 @@ public interface ReportableEventClient {
     @GetMapping(path = "/reportable-event/follow-up/reportA/init-data/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FollowupPreviewADto> queryFollowupInfoAByRefNo(@PathVariable("refNo") String refNo);
 
-    @GetMapping(path = "/reportable-event/reportB/init-data/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/reportable-event/follow-up/reportB/init-data/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FollowupPreviewBDto> queryFollowupInfoBByRefNo(@PathVariable("refNo") String refNo);
 
     @GetMapping(path = "/reportable-event/follow-up/reportB/{refNo}", produces = MediaType.APPLICATION_JSON_VALUE)

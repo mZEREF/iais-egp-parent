@@ -113,7 +113,7 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Incident Reference No</p>
-                                                                <p><a id="viewIncident" href="/bsb-fe/eservice/INTERNET/ViewIncidentNotificaiton?incidentId=<iais:mask name='id' value='${item.incidentId}'/>"/><c:out value="${item.referenceNo}"/></a></p>
+                                                                <p><a id="viewIncident" href="/bsb-fe/eservice/INTERNET/ViewIncidentNotificaiton?incidentId=<iais:mask name='id' value='${item.incidentId}'/>"><c:out value="${item.referenceNo}"/></a></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Type of Incident(s)</p>
