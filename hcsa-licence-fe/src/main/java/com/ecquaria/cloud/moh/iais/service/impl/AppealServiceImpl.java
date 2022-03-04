@@ -992,7 +992,12 @@ public class AppealServiceImpl implements AppealService {
         }*/
         String remarks = appealPageDto.getRemarks();
         if (StringUtil.isEmpty(remarks)) {
-            map.put("remarks", MessageUtil.replaceMessage("GENERAL_ERR0006","Any supporting remarks","field"));
+            map.put("remarks", MessageUtil.replaceMessage("GENERAL_ERR0006", "Any supporting remarks", "field"));
+        } else if (remarks.length() > 300) {
+            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+            repMap.put("maxlength", "300");
+            repMap.put("field", "Any supporting remarks");
+            map.put("remarks", MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
         }
         String appealReason = appealPageDto.getAppealReason();
 
@@ -1034,8 +1039,13 @@ public class AppealServiceImpl implements AppealService {
                             map.put("designation" + i, designationMsg);
                         }else if("DES999".equals(designation)){
                             String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
-                            if(StringUtil.isEmpty(otherDesignation)){
+                            if (StringUtil.isEmpty(otherDesignation)) {
                                 map.put("otherDesignation" + i, designationMsg);
+                            } else if (otherDesignation.length() > 100) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "100");
+                                repMap.put("field", "Other Designation");
+                                map.put("otherDesignation" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                             }
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
@@ -1044,9 +1054,9 @@ public class AppealServiceImpl implements AppealService {
                             map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
                         }else if(otherQualification.length()>100){
                             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                            repMap.put("number","100");
-                            repMap.put("fieldNo","Other Qualification");
-                            map.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                            repMap.put("maxlength","100");
+                            repMap.put("field","Other Qualification");
+                            map.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0041",repMap));
 
                         }
                         if (StringUtil.isEmpty(professionRegoNo)) {
@@ -1114,7 +1124,12 @@ public class AppealServiceImpl implements AppealService {
 
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
-                            map.put("name" + i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
+                            map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
+                        } else if (name.length() > 110) {
+                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                            repMap.put("maxlength", "110");
+                            repMap.put("field", "Name");
+                            map.put("name" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                         }
 
                         String mobileNo = appSvcCgoList.get(i).getMobileNo();
@@ -1131,6 +1146,11 @@ public class AppealServiceImpl implements AppealService {
                         } else if (!StringUtil.isEmpty(emailAddr)) {
                             if (!ValidationUtils.isEmail(emailAddr)) {
                                 map.put("emailAddr" + i, "GENERAL_ERR0014");
+                            } else if (emailAddr.length() > 320) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "320");
+                                repMap.put("field", "Email Address");
+                                map.put("emailAddr" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                             }
                         }
                         String s = stringBuilder.toString();
