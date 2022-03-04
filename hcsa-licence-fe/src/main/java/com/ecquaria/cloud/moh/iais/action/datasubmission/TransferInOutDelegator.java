@@ -188,13 +188,21 @@ public class TransferInOutDelegator extends CommonDelegator {
         String embryoNum = ParamUtil.getString(request, "embryoNum");
         String spermVialsNum = ParamUtil.getString(request, "spermVialsNum");
         ControllerHelper.get(request, transferInOutStageDto);
-        transferInOutStageDto.setOocyteNum(oocyteNum);
-        transferInOutStageDto.setEmbryoNum(embryoNum);
-        transferInOutStageDto.setSpermVialsNum(spermVialsNum);
         String fromDonor = ParamUtil.getString(request, "fromDonor");
         transferInOutStageDto.setFromDonor("true".equalsIgnoreCase(fromDonor));
         if (!IaisCommonUtils.isEmpty(transferredList)) {
             transferInOutStageDto.setTransferredList(Arrays.asList(transferredList));
+            for (String transferred : transferInOutStageDto.getTransferredList()) {
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
+                    transferInOutStageDto.setOocyteNum(oocyteNum);
+                }
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
+                    transferInOutStageDto.setEmbryoNum(embryoNum);
+                }
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
+                    transferInOutStageDto.setSpermVialsNum(spermVialsNum);
+                }
+            }
         } else {
             transferInOutStageDto.setTransferredList(null);
         }
