@@ -85,7 +85,7 @@
                                 </div>
                                 <hr>
                             </c:if>
-                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
+                            <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ||donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001'}">
                                 <div class="row">
                                     <iais:field width="6" value="ID Type"/>
 
