@@ -11,10 +11,16 @@ import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.FacilityCertifierRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
 
@@ -29,10 +35,12 @@ public class RfcViewCertRegAppDelegator {
     private static final String KEY_PROCESS_TYPE = "processType";
 
     private final FacCertifierRegisterClient certifierRegisterClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public RfcViewCertRegAppDelegator(FacCertifierRegisterClient certifierRegisterClient) {
+    public RfcViewCertRegAppDelegator(FacCertifierRegisterClient certifierRegisterClient, DocSettingService docSettingService) {
         this.certifierRegisterClient = certifierRegisterClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc) { // NOSONAR
@@ -80,6 +88,11 @@ public class RfcViewCertRegAppDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+
+            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
+            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
+            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");
         }

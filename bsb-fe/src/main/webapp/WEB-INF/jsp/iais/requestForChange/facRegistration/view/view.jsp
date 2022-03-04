@@ -1,11 +1,11 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -15,8 +15,6 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-rfc-facility-register.js"></script>
-
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <%@include file="../../common/dashboard.jsp"%>
 
@@ -431,10 +429,24 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohRfcFacilityRegistration?editId=${maskedEditId}&processType=<iais:mask name='processType' value='${processType}'/>"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
+                                                                    <c:forEach var="doc" items="${docSettings}">
+                                                                        <c:set var="docFiles" value="${savedFiles.get(doc.type)}"/>
+                                                                        <c:if test="${not empty docFiles}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <c:forEach var="file" items="${docFiles}">
+                                                                                    <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                                                                                    <div class="form-group">
+                                                                                        <div class="col-10"><p><a href="/bsb-fe/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                                                                        <div class="clear"></div>
+                                                                                    </div>
+                                                                                </c:forEach>
+                                                                            </div>
+                                                                        </c:if>
+                                                                    </c:forEach>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -449,7 +461,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
             </div>
         </div>

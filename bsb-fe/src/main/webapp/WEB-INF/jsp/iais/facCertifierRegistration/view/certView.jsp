@@ -215,7 +215,7 @@
                                                                 <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <c:forEach var="doc" items="${docSettings}">
-                                                                        <c:set var="docFiles" value="${primaryDoc.get(doc.type)}"/>
+                                                                        <c:set var="docFiles" value="${savedFiles.get(doc.type)}"/>
                                                                         <c:if test="${not empty docFiles}">
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
@@ -246,7 +246,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
             </div>
         </div>

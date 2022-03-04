@@ -13,12 +13,16 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalAppService;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 
@@ -33,10 +37,12 @@ public class ViewApprovalPossessDelegator {
     private static final String FUNCTION_NAME = "View Application";
 
     private final ApprovalAppClient approvalAppClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public ViewApprovalPossessDelegator(ApprovalAppClient approvalAppClient) {
+    public ViewApprovalPossessDelegator(ApprovalAppClient approvalAppClient, DocSettingService docSettingService) {
         this.approvalAppClient = approvalAppClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc) { // NOSONAR
@@ -76,6 +82,11 @@ public class ViewApprovalPossessDelegator {
             NodeGroup batNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
             List<ApprovalProfileDto> approvalProfileList = ApprovalAppService.getApprovalProfileList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "approvalProfileList", approvalProfileList);
+
+            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getApprovalAppDocSettings());
+            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");
         }

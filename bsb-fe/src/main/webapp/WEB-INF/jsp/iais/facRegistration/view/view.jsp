@@ -46,7 +46,6 @@
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">
-                                                <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
                                                 <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
                                                 <c:if test="${not empty savedFileList}">
                                                     <div class="form-group">
@@ -72,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Previous</a>
                 </div>
             </div>
         </div>

@@ -47,22 +47,6 @@ $(function () {
         $("#activityType").val($("#activityId").find("option:checked").text());
     })
 
-    // doc upload
-    $("a[data-upload-file]").click(function () {
-        // create input file
-        var name = $(this).attr("data-upload-file");
-        var id = name + +new Date();
-        var newFileInput = document.createElement("input");
-        newFileInput.setAttribute("type", "file");
-        newFileInput.setAttribute("id", id);
-        newFileInput.setAttribute("name", name);
-        newFileInput.addEventListener("change", addReloadFile);
-        $("#fileUploadInputDiv").append(newFileInput);
-
-        // click to select file
-        newFileInput.click();
-    });
-
     $(".removeBtn").click(removeBtnEventHandler);
 
     $("#addNewBatSection").click(function () {
