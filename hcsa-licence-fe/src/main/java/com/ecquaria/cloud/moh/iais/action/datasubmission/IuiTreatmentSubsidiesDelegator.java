@@ -42,12 +42,6 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
-        if(iuiTreatmentSubsidiesDto == null) {
-            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
-        }
-        iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
-        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(request,PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
@@ -65,6 +59,15 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
 
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
+        if(iuiTreatmentSubsidiesDto == null) {
+            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
+        }
+        if(StringUtil.isEmpty(iuiTreatmentSubsidiesDto.getArtCoFunding())){
+            iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
+        }
+
+        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
