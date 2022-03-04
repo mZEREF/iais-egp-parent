@@ -24,6 +24,12 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
+                    <iais:field width="6" value="Nationality" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <iais:code code="${drugSubmission.nationality}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Patient's Name" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.name}"/>
