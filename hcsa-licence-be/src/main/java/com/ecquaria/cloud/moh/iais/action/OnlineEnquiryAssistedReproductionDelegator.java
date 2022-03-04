@@ -31,6 +31,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -1407,9 +1409,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
                 ) {
                     versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"V "+arSdOld.getDataSubmissionDto().getVersion()));
-                    initDataForView(arSdOld, bpc.request);
-                    arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                        initDataForView(arSdOld, bpc.request);
+                        arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                         arSuperOld=arSdOld;
                         break;
                     }
@@ -1469,6 +1471,29 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         if (arSuper != null) {
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY)){
+                List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();
+                List<String> otherDefectTypes = IaisCommonUtils.genNewArrayList();
+                List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = arSuper.getPregnancyOutcomeStageDto().getPregnancyOutcomeBabyDtos();
+                if (IaisCommonUtils.isNotEmpty(pregnancyOutcomeBabyDtos)) {
+                    for (int i = 0; i < pregnancyOutcomeBabyDtos.size(); i++) {
+                        PregnancyOutcomeBabyDto pregnancyOutcomeBabyDto = pregnancyOutcomeBabyDtos.get(i);
+                        List<String> defectTypes = IaisCommonUtils.genNewArrayList();
+                        otherDefectTypes.add("");
+                        for (PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto : pregnancyOutcomeBabyDto.getPregnancyOutcomeBabyDefectDtos()) {
+                            defectTypes.add(pregnancyOutcomeBabyDefectDto.getDefectType());
+                            if ("POSBDT008".equals(pregnancyOutcomeBabyDefectDto.getDefectType())) {
+                                otherDefectTypes.set(i, pregnancyOutcomeBabyDefectDto.getOtherDefectType());
+                            }
+                        }
+                        defectTypesArray.add(defectTypes);
+                    }
+                }
+                ParamUtil.setRequestAttr(request, "defectTypesArray", defectTypesArray);
+                ParamUtil.setRequestAttr(request, "otherDefectTypes", otherDefectTypes);
+
+            }
+
             if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
                 List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
                 int count =0;

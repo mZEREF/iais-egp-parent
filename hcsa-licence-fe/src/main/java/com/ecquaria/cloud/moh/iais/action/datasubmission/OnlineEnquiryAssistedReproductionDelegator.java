@@ -20,9 +20,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -58,6 +63,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -1378,23 +1384,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     }
                 }
             }
-            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
-                List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
-                int count =0;
-                if(oldPgtList!=null){
-                    for (PgtStageDto pgt:oldPgtList
-                    ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-
-                            count++;
-                        }
-
-                    }
-                }
-                ParamUtil.setRequestAttr(bpc.request, "count",count);
-            }
             try {
                 mohDsActionDelegator.initDataForView(arSuper, bpc.request);
+                initDataForView(arSuper, bpc.request);
                 arSuper.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuper.getDonorSampleDto()));
             }catch (Exception e){
                 log.error(e.getMessage(),e);
@@ -1407,9 +1399,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     ) {
                         versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"V "+arSdOld.getDataSubmissionDto().getVersion()));
 
-                        mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
-                        arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
                         if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                            mohDsActionDelegator.initDataForView(arSdOld, bpc.request);
+                            initDataForView(arSuper, bpc.request);
+                            arSdOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSdOld.getDonorSampleDto()));
                             arSuperOld=arSdOld;
                             break;
                         }
@@ -1424,6 +1417,102 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         ParamUtil.setRequestAttr(request,"perStageInfo","no view");
+
+    }
+
+    public void initDataForView(ArSuperDataSubmissionDto arSuper, HttpServletRequest request) {
+        String cycelType = Optional.ofNullable(arSuper)
+                .map(ArSuperDataSubmissionDto::getCycleDto)
+                .map(CycleDto::getCycleType)
+                .orElse(null);
+
+
+        if (arSuper != null) {
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY)){
+                List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();
+                List<String> otherDefectTypes = IaisCommonUtils.genNewArrayList();
+                List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = arSuper.getPregnancyOutcomeStageDto().getPregnancyOutcomeBabyDtos();
+                if (IaisCommonUtils.isNotEmpty(pregnancyOutcomeBabyDtos)) {
+                    for (int i = 0; i < pregnancyOutcomeBabyDtos.size(); i++) {
+                        PregnancyOutcomeBabyDto pregnancyOutcomeBabyDto = pregnancyOutcomeBabyDtos.get(i);
+                        List<String> defectTypes = IaisCommonUtils.genNewArrayList();
+                        otherDefectTypes.add("");
+                        for (PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto : pregnancyOutcomeBabyDto.getPregnancyOutcomeBabyDefectDtos()) {
+                            defectTypes.add(pregnancyOutcomeBabyDefectDto.getDefectType());
+                            if ("POSBDT008".equals(pregnancyOutcomeBabyDefectDto.getDefectType())) {
+                                otherDefectTypes.set(i, pregnancyOutcomeBabyDefectDto.getOtherDefectType());
+                            }
+                        }
+                        defectTypesArray.add(defectTypes);
+                    }
+                }
+                ParamUtil.setRequestAttr(request, "defectTypesArray", defectTypesArray);
+                ParamUtil.setRequestAttr(request, "otherDefectTypes", otherDefectTypes);
+
+            }
+
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
+                List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
+                int count =0;
+                if(oldPgtList!=null){
+                    for (PgtStageDto pgt:oldPgtList
+                    ) {
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
+                            count++;
+                        }
+                    }
+                }
+                ParamUtil.setRequestAttr(request, "count",count);
+            }
+            List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
+            Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
+            if(IaisCommonUtils.isNotEmpty(premisesDtos)){
+                for (PremisesDto premisesDto : premisesDtos) {
+                    if(premisesDto!=null){
+                        premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                    }
+                }
+            }
+
+            Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
+            if (!premisesMap.isEmpty()) {
+                for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
+                    map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+                }
+            }
+            if (arSuper.getArCycleStageDto() != null) {
+
+                if(arSuper.getPatientInfoDto() != null && arSuper.getPatientInfoDto().getPatient() !=null){
+                    PatientDto patientDto = arSuper.getPatientInfoDto().getPatient();
+                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                    if(IaisCommonUtils.isNotEmpty(integers)){
+                        int year = integers.get(0);
+                        int month = integers.get(integers.size()-1);
+                        arSuper.getArCycleStageDto().setCycleAgeYear(year);
+                        arSuper.getArCycleStageDto().setCycleAgeMonth(month);
+                        arSuper.getArCycleStageDto().setCycleAge(IaisCommonUtils.getYearsAndMonths(year,month));
+                    }
+
+                }
+                if(IaisCommonUtils.isNotEmpty(arSuper.getArCycleStageDto().getDonorDtos())){
+                    for (DonorDto donor:arSuper.getArCycleStageDto().getDonorDtos()
+                    ) {
+                        if(!DataSubmissionConsts.AR_SOURCE_OTHER.equals(donor.getSource())&&map.containsKey(donor.getSource())){
+                            donor.setSource(map.get(donor.getSource()));
+                        }
+                    }
+                }
+            } else if (arSuper.getIuiCycleStageDto() != null) {
+                if(IaisCommonUtils.isNotEmpty(arSuper.getIuiCycleStageDto().getDonorDtos())){
+                    for (DonorDto donor:arSuper.getIuiCycleStageDto().getDonorDtos()
+                    ) {
+                        if(!DataSubmissionConsts.AR_SOURCE_OTHER.equals(donor.getSource())&&map.containsKey(donor.getSource())){
+                            donor.setSource(map.get(donor.getSource()));
+                        }
+                    }
+                }
+            }
+        }
 
     }
 

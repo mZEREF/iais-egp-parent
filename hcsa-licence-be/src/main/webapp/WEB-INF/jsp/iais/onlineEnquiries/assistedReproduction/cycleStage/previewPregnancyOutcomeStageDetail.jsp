@@ -163,7 +163,7 @@
     <div class="panel-collapse collapse in" id="babyDetals">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-
+                <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
 
                 <div id="careBabyNumSection"
                      <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
