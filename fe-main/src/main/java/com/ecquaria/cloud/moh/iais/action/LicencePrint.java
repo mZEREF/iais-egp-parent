@@ -56,11 +56,12 @@ public class LicencePrint {
                 map.put("licenceNo",StringUtil.viewNonNullHtml(licenceViewDto.getLicenceNo()));
                 map.put("licenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getLicenseeName()));
                 map.put("serviceName",StringUtil.viewNonNullHtml(licenceViewDto.getServiceName()));
-                if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
-                    map.put("hivTesting","<br/>");
-                }else{
-                    map.put("hivTesting",licenceViewDto.getHivTesting());
-                }
+                map.put("hivTesting","<br/>");
+//                if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
+//                    map.put("hivTesting","<br/>");
+//                }else{
+//                    map.put("hivTesting",licenceViewDto.getHivTesting());
+//                }
                 if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
                     map.put("baseServiceName",StringUtil.viewNonNullHtml(licenceViewDto.getBaseServiceName()));
                 }
