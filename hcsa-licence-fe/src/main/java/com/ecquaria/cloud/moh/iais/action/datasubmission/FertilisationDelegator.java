@@ -123,25 +123,49 @@ public class FertilisationDelegator extends CommonDelegator{
         ControllerHelper.get(request,fertilisationDto);
         if( !IaisCommonUtils.isEmpty(sourceOfSemens)){
             fertilisationDto.setSosList(Arrays.asList(sourceOfSemens));
+            fertilisationDto.setFromDonorTissue(false);
+            fertilisationDto.setFromHusband(false);
+            fertilisationDto.setFromHusbandTissue(false);
+            fertilisationDto.setFromDonor(false);
+            for (String sourceOfSeme:sourceOfSemens) {
+                if(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_HUSBAND)){
+                    fertilisationDto.setFromHusband(true);
+                }
+                if(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_H_SEMEN_TESTICULAR)){
+                    fertilisationDto.setFromHusbandTissue(true);
+                }
+                if(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR)){
+                    fertilisationDto.setFromDonor(true);
+                }
+                if(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_D_SEMEN_TESTICULAR)){
+                    fertilisationDto.setFromDonorTissue(true);
+                }
+            }
         }else{
             fertilisationDto.setSosList(null);
         }
         if( !IaisCommonUtils.isEmpty(arTechniquesUseds)){
             fertilisationDto.setAtuList(Arrays.asList(arTechniquesUseds));
+            fertilisationDto.setIvfUsed(false);
+            fertilisationDto.setIcsiUsed(false);
+            fertilisationDto.setGiftUsed(false);
+            fertilisationDto.setZiftUsed(false);
+            for (String arTechniquesUsed:arTechniquesUseds) {
+                if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF)){
+                    fertilisationDto.setIvfUsed(true);
+                }
+                if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
+                    fertilisationDto.setIcsiUsed(true);
+                }
+                if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT)){
+                    fertilisationDto.setGiftUsed(true);
+                }
+                if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT)){
+                    fertilisationDto.setZiftUsed(true);
+                }
+            }
         }else{
             fertilisationDto.setAtuList(null);
-        }
-        for (String sourceOfSeme:sourceOfSemens) {
-            fertilisationDto.setFromHusband(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_HUSBAND));
-            fertilisationDto.setFromDonorTissue(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_H_SEMEN_TESTICULAR));
-            fertilisationDto.setFromDonor(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR));
-            fertilisationDto.setFromDonorTissue(sourceOfSeme.equals(DataSubmissionConsts.AR_SOURCE_OF_D_SEMEN_TESTICULAR));
-        }
-        for (String arTechniquesUsed:arTechniquesUseds) {
-            fertilisationDto.setIvfUsed(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF));
-            fertilisationDto.setIcsiUsed(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI));
-            fertilisationDto.setGiftUsed(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT));
-            fertilisationDto.setZiftUsed(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT));
         }
     }
 
