@@ -29,14 +29,14 @@
                                 <div class="tab-content row">
                                     <hr>
                                     <div class="row">
-                                        <iais:field width="6" value="AR Centre"/>
+                                        <iais:field width="6" cssClass="col-md-6" value="AR Centre"/>
                                         <div class="col-md-6">
                                                 ${donorInfoDataSubmissionDto.premisesDto.getPremiseLabel()}
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
-                                        <iais:field width="6" value="Is Sample from a Directed Donation?"/>
+                                        <iais:field width="6" cssClass="col-md-6" value="Is Sample from a Directed Donation?"/>
 
                                         <div class="col-md-6">
                                             <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ? 'Yes' : 'No'}"/>
@@ -54,7 +54,7 @@
                                     <hr>
                                     <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
                                         <div class="row">
-                                            <iais:field width="6" value="Sample Type"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="Sample Type"/>
 
                                             <div class="col-md-6">
                                                 <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.sampleType}"/>
@@ -62,7 +62,7 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <iais:field width="6" value="Is Donor's Identity Known?"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="Is Donor's Identity Known?"/>
 
                                             <div class="col-md-6">
                                                 <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown}"/>
@@ -70,7 +70,7 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <iais:field width="6" value="Donor Sample Code"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
 
                                             <div class="col-md-6">
                                                 <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
@@ -78,7 +78,7 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <iais:field width="6" value="Name of Bank / AR Centre where Sample is from"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>
 
                                             <div class="col-md-6">
                                                 <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
@@ -88,7 +88,7 @@
                                     </c:if>
                                     <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ||donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001'}">
                                         <div class="row">
-                                            <iais:field width="6" value="ID Type"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="ID Type"/>
 
                                             <div class="col-md-6">
                                                 <iais:code code="${donorInfoDataSubmissionDto.donorSampleDto.idType}"/>
@@ -96,7 +96,7 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <iais:field width="6" value="ID No."/>
+                                            <iais:field width="6" cssClass="col-md-6" value="ID No."/>
 
                                             <div class="col-md-6">
                                                 <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}" />
@@ -104,7 +104,7 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <iais:field width="6" value="Name"/>
+                                            <iais:field width="6" cssClass="col-md-6" value="Name"/>
 
                                             <div class="col-md-6">
                                                 <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorName}" />
@@ -124,9 +124,9 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader field="Age" needSort="false"
+                                                <iais:sortableHeader field="Age" needSort="false" style="width: 50%;"
                                                                      value="Age when Samples Collected"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="false" style="width: 50%;"
                                                                      field="Availability"
                                                                      value="Availability"/>
                                             </tr>
@@ -180,7 +180,7 @@
                                                                     </c:if>
                                                                 </p>
                                                             </td>
-                                                            <td style="vertical-align:middle;">
+                                                            <td style="vertical-align:middle;" class="col-md-12">
                                                                 <iais:code code="${donorSampleAge.status}"/>
                                                             </td>
                                                         </tr>
