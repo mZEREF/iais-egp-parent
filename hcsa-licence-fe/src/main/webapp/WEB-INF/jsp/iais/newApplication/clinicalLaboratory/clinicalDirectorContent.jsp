@@ -392,9 +392,10 @@
         } else {
             $content.removeClass('hidden');
             var arr = assignSelVal.split(',');
-            var idType = arr[0];
-            var idNo = arr[1];
-            loadSelectPsn($content, idType, idNo, 'CD', fillClinicalDirector);
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
+            loadSelectPsn($content, nationality, idType, idNo, 'CD', fillClinicalDirector);
         }
     }
 

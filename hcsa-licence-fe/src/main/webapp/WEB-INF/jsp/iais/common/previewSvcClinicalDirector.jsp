@@ -82,6 +82,18 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Nationality
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span><iais:code code="${cdDto.nationality}" />
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                                 </td>
                                 <td>

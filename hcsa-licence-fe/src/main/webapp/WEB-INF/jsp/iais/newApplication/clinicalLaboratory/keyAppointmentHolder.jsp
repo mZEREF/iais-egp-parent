@@ -144,7 +144,25 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idNo" maxLength="9" type="text" name="idNo${index}" value="${AppSvcKeyAppointmentHolderDto.idNo}"></iais:input>
+                                    <iais:input cssClass="idNo" maxLength="20" type="text" name="idNo${index}"
+                                                value="${AppSvcKeyAppointmentHolderDto.idNo}"></iais:input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Nationality</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7">
+                                    <div class="">
+                                        <iais:select firstOption="Please Select" name="nationality${index}" codeCategory="CATE_ID_NATIONALITY"
+                                                     cssClass="nationality" value="${AppSvcKeyAppointmentHolderDto.nationality}" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -214,9 +232,10 @@
             }else{
                 $keyAppointmentHolder.removeClass('hidden');
                 var arr = $(this).val().split(',');
-                var idType = arr[0];
-                var idNo = arr[1];
-                loadSelectKah($keyAppointmentHolder, idType, idNo);
+                var nationality = arr[0];
+                var idType = arr[1];
+                var idNo = arr[2];
+                loadSelectKah($keyAppointmentHolder, nationality, idType, idNo);
             }
         });
     };
@@ -337,9 +356,10 @@
         </c:if>
     }
 
-    var loadSelectKah = function ($CurrentPsnEle, idType, idNo) {
+    var loadSelectKah = function ($CurrentPsnEle, nationality, idType, idNo) {
         showWaiting();
         var jsonData = {
+            'nationality':nationality,
             'idType':idType,
             'idNo':idNo,
             'psnType':'MAP'
@@ -378,15 +398,11 @@
         <!--name-->
         $CurrentPsnEle.find('.name').val(data.name);
         <!-- idType-->
-        var idType = data.idType;
-        if (idType == null || idType == 'undefined' || idType == '') {
-            idType = '';
-        }
-        $CurrentPsnEle.find('.idType').val(idType);
-        var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
-        $CurrentPsnEle.find('.idType').next().find('.current').html(idTypeVal);
+        fillValue($CurrentPsnEle.find('select[name^="idType"]'), data.idType);
         <!-- idNo-->
         $CurrentPsnEle.find('.idNo').val(data.idNo);
+        <!-- Nationality -->
+        fillValue($CurrentPsnEle.find('select[name^="nationality"]'), data.nationality);
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){

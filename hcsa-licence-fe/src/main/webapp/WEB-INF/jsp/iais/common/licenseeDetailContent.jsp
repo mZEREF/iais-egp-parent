@@ -13,7 +13,15 @@
                    cssClass="idTypeSel"/>
     </iais:value>
     <iais:value width="4" cssClass="col-md-4">
-      <iais:input maxLength="9" type="text" name="idNumber" value="${dto.idNumber}" />
+      <iais:input maxLength="20" type="text" name="idNumber" value="${dto.idNumber}" />
+    </iais:value>
+  </iais:row>
+
+  <iais:row cssClass="ind-no ${dto.licenseeType == individualType ? '' : 'hidden'}">
+    <iais:field width="5" mandatory="true" value="Nationality"/>
+    <iais:value width="7" cssClass="col-md-7">
+      <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
+                   cssClass="nationality" value="${dto.nationality}" />
     </iais:value>
   </iais:row>
 

@@ -74,12 +74,27 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <input id="idType-idNo" name="idNo" type="text" class="idNoVal form-control control-input control-set-font control-font-normal" autocomplete="off" value="">
+                                    <input id="idType-idNo" name="idNo" type="text" maxlength="20" class="idNoVal form-control control-input control-set-font control-font-normal" autocomplete="off" value="">
                                     <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
+                                    Nationality
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-8">
+                                    (5)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
@@ -227,8 +242,22 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
-                                    <input name="deputyIdNo" type="text" class="dpoIdNoVal form-control control-input control-set-font control-font-normal" autocomplete="off" value="" size="30">
+                                    <input name="deputyIdNo" type="text" maxlength="20" class="dpoIdNoVal form-control control-input control-set-font control-font-normal" autocomplete="off" value="" >
                                     <span class="error-msg" name="iaisErrorMsg" id="error_deputyIdNo"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-4">
+                                    <label class="control-label control-set-font control-font-label">Nationality</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-8">
+                                    (5)
+                                    <span class="error-msg" id="error_deputyNationality" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>

@@ -194,22 +194,22 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
-                            ${appSvcClinicalDirectorDto.idNo}
-                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                                <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.idNo}"/>
-                                <jsp:param name="methodName" value="showThisTableNewService"/>
-                            </jsp:include>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
+                                            ${appSvcClinicalDirectorDto.idNo}
+                                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                                <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.idNo}"/>
+                                                <jsp:param name="methodName" value="showThisTableNewService"/>
+                                            </jsp:include>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6 img-show">
-                        <span class="oldVal " style="display: none" attr="${oldClinicalDirecotrDto.idNo}">
-                              ${oldClinicalDirecotrDto.idNo}
-                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                              <jsp:param name="idNo" value="${oldClinicalDirecotrDto.idNo}"/>
-                              <jsp:param name="methodName" value="showThisTableOldService"/>
-                          </jsp:include>
-                        </span>
+                                        <span class="oldVal " style="display: none" attr="${oldClinicalDirecotrDto.idNo}">
+                                              ${oldClinicalDirecotrDto.idNo}
+                                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                              <jsp:param name="idNo" value="${oldClinicalDirecotrDto.idNo}"/>
+                                              <jsp:param name="methodName" value="showThisTableOldService"/>
+                                          </jsp:include>
+                                        </span>
                                     </div>
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
                                         <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.idNo}"/>
@@ -223,18 +223,37 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Nationality
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="col-xs-6">
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.nationality}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.nationality}"/>
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.nationality}">
+                                            <iais:code code="${oldClinicalDirecotrDto.nationality}"/>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
-                            <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.designation}">
-                            <iais:code code="${oldClinicalDirecotrDto.designation}"></iais:code>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.designation}">
+                                            <iais:code code="${oldClinicalDirecotrDto.designation}"></iais:code>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -244,16 +263,16 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal" attr="${appSvcClinicalDirectorDto.speciality}">
-                          <iais:code code="${appSvcClinicalDirectorDto.speciality}"></iais:code>
-                        </span>
+                                        <span class="newVal" attr="${appSvcClinicalDirectorDto.speciality}">
+                                          <iais:code code="${appSvcClinicalDirectorDto.speciality}"></iais:code>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal"  style="display: none"
-                              attr="${oldClinicalDirecotrDto.speciality}">
-                          <iais:code
-                                  code="${oldClinicalDirecotrDto.speciality}"></iais:code>
-                        </span>
+                                        <span class="oldVal"  style="display: none"
+                                              attr="${oldClinicalDirecotrDto.speciality}">
+                                          <iais:code
+                                                  code="${oldClinicalDirecotrDto.speciality}"></iais:code>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -263,14 +282,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.specialtyGetDate}">
-                            <fmt:formatDate value="${appSvcClinicalDirectorDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.specialtyGetDate}">
+                                            <fmt:formatDate value="${appSvcClinicalDirectorDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.specialtyGetDate}">
-                          <fmt:formatDate value="${oldClinicalDirecotrDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.specialtyGetDate}">
+                                          <fmt:formatDate value="${oldClinicalDirecotrDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -280,9 +299,9 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfCurrRegi}">
-                                ${appSvcClinicalDirectorDto.typeOfCurrRegi}
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfCurrRegi}">
+                                                ${appSvcClinicalDirectorDto.typeOfCurrRegi}
+                                        </span>
                                         <br>
                                         <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.typeOfCurrRegi}">
                                                 ${oldClinicalDirecotrDto.typeOfCurrRegi}
@@ -296,14 +315,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.currRegiDate}">
-                          <fmt:formatDate value="${appSvcClinicalDirectorDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.currRegiDate}">
+                                          <fmt:formatDate value="${appSvcClinicalDirectorDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.currRegiDate}">
-                          <fmt:formatDate value="${oldClinicalDirecotrDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.currRegiDate}">
+                                          <fmt:formatDate value="${oldClinicalDirecotrDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -313,14 +332,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.praCerEndDate}">
-                          <fmt:formatDate value="${appSvcClinicalDirectorDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.praCerEndDate}">
+                                          <fmt:formatDate value="${appSvcClinicalDirectorDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.praCerEndDate}">
-                           <fmt:formatDate value="${oldClinicalDirecotrDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.praCerEndDate}">
+                                           <fmt:formatDate value="${oldClinicalDirecotrDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -330,12 +349,12 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                          <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfRegister}">
-                                  ${appSvcClinicalDirectorDto.typeOfRegister}
-                          </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfRegister}">
+                                            ${appSvcClinicalDirectorDto.typeOfRegister}
+                                        </span>
                                         <br>
                                         <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.typeOfRegister}">
-                                                ${oldClinicalDirecotrDto.typeOfRegister}
+                                            ${oldClinicalDirecotrDto.typeOfRegister}
                                         </span>
                                     </div>
 
@@ -347,9 +366,9 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.relevantExperience}">
-                                ${appSvcClinicalDirectorDto.relevantExperience}
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.relevantExperience}">
+                                                ${appSvcClinicalDirectorDto.relevantExperience}
+                                        </span>
                                         <br>
                                         <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.relevantExperience}">
                                                 ${oldClinicalDirecotrDto.relevantExperience}
@@ -363,16 +382,16 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal" attr="${appSvcClinicalDirectorDto.holdCerByEMS}">
-                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='1'}">Yes</c:if>
-                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='0'}">No</c:if>
-                        </span>
+                                        <span class="newVal" attr="${appSvcClinicalDirectorDto.holdCerByEMS}">
+                                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='1'}">Yes</c:if>
+                                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='0'}">No</c:if>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.holdCerByEMS}">
-                          <c:if test="${oldClinicalDirecotrDto.holdCerByEMS=='1'}">Yes</c:if>
-                          <c:if test="${oldClinicalDirecotrDto.holdCerByEMS=='0'}">No</c:if>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.holdCerByEMS}">
+                                          <c:if test="${oldClinicalDirecotrDto.holdCerByEMS=='1'}">Yes</c:if>
+                                          <c:if test="${oldClinicalDirecotrDto.holdCerByEMS=='0'}">No</c:if>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -383,14 +402,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.aclsExpiryDate}">
-                            <fmt:formatDate value="${appSvcClinicalDirectorDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.aclsExpiryDate}">
+                                            <fmt:formatDate value="${appSvcClinicalDirectorDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.aclsExpiryDate}">
-                           <fmt:formatDate value="${oldClinicalDirecotrDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.aclsExpiryDate}">
+                                           <fmt:formatDate value="${oldClinicalDirecotrDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -402,14 +421,14 @@
                                     </td>
                                     <td>
                                         <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDate}">
-                            <fmt:formatDate value="${appSvcClinicalDirectorDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
-                        </span>
+                                            <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDate}">
+                                                <fmt:formatDate value="${appSvcClinicalDirectorDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
                                         </div>
                                         <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.bclsExpiryDate}">
-                            <fmt:formatDate value="${oldClinicalDirecotrDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
-                        </span>
+                                            <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.bclsExpiryDate}">
+                                                <fmt:formatDate value="${oldClinicalDirecotrDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
                                         </div>
                                     </td>
                                 </tr>
@@ -420,14 +439,14 @@
                                 </td>
                                 <td>
                                     <div  class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.mobileNo}">
-                                ${appSvcClinicalDirectorDto.mobileNo}
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.mobileNo}">
+                                                ${appSvcClinicalDirectorDto.mobileNo}
+                                        </span>
                                     </div>
                                     <div  class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.mobileNo}">
-                                ${oldClinicalDirecotrDto.mobileNo}
-                        </span>
+                                        <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.mobileNo}">
+                                                ${oldClinicalDirecotrDto.mobileNo}
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -438,9 +457,9 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.emailAddr}">
-                                ${appSvcClinicalDirectorDto.emailAddr}
-                        </span>
+                                        <span class="newVal " attr="${appSvcClinicalDirectorDto.emailAddr}">
+                                                ${appSvcClinicalDirectorDto.emailAddr}
+                                        </span>
                                         <br>
                                         <span class="oldVal "  style="display: none" attr="${oldClinicalDirecotrDto.emailAddr}">
                                                 ${oldClinicalDirecotrDto.emailAddr}

@@ -3,12 +3,15 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -31,18 +34,50 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateClincalDirector implements ValidateFlow {
+
     @Override
-    public void doValidateClincalDirector(Map<String, String> map, List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,String serviceCode) {
-        if(appSvcClinicalDirectorDtos==null){
+    public void doValidateClincalDirector(Map<String, String> map, List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, String serviceCode) {
+        if (appSvcClinicalDirectorDtos == null) {
             return;
         }
-        List<String> stringList=new ArrayList<>(17);
+        List<String> stringList = new ArrayList<>();
+        List<String> assignList = new ArrayList<>();
         for(int i=0;i<appSvcClinicalDirectorDtos.size();i++){
             String assignSelect = appSvcClinicalDirectorDtos.get(i).getAssignSelect();
             if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
                 map.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Assign a " + HcsaConsts.CLINICAL_DIRECTOR + " Person", "field"));
             } else {
-                StringBuilder stringBuilder=new StringBuilder();
+                String nationality = appSvcClinicalDirectorDtos.get(i).getNationality();
+                String idType = appSvcClinicalDirectorDtos.get(i).getIdType();
+                String idNo = appSvcClinicalDirectorDtos.get(i).getIdNo();
+                // check person key
+                String keyIdType = "idType" + i;
+                String keyIdNo = "idNo" + i;
+                String keyNationality = "nationality" + i;
+                boolean isValid = NewApplicationHelper.validateId(nationality, idType, idNo, keyNationality, keyIdType, keyIdNo, map);
+                // check duplicated
+                if (isValid) {
+                    String personKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
+                    boolean licPerson = appSvcClinicalDirectorDtos.get(i).isLicPerson();
+                    String idTypeNoKey = "idTypeNo" + i;
+                    isValid = NewApplicationHelper.doPsnCommValidate(map, personKey, idNo, licPerson, licPersonMap, idTypeNoKey);
+                    if (isValid) {
+                        if (stringList.contains(personKey)) {
+                            map.put(keyIdNo, "NEW_ERR0012");
+                            isValid = false;
+                        } else {
+                            stringList.add(personKey);
+                        }
+                    }
+                }
+                if (isValid) {
+                    if (assignList.contains(assignSelect)) {
+                        map.put("assignSelect" + i, "NEW_ERR0012");
+                    } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
+                        assignList.add(assignSelect);
+                    }
+                }
 
                 String salutation = appSvcClinicalDirectorDtos.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)||"-1".equals(salutation)){
@@ -57,39 +92,6 @@ public class ValidateClincalDirector implements ValidateFlow {
                     if(name.length()>110){
                         String general_err0041=NewApplicationHelper.repLength("name","110");
                         map.put("name"+i, general_err0041);
-                    }
-                }
-                String idType = appSvcClinicalDirectorDtos.get(i).getIdType();
-                if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
-                    map.put("idType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "idType", "field"));
-                }else {
-
-                }
-                String idNo = appSvcClinicalDirectorDtos.get(i).getIdNo();
-                if(StringUtil.isEmpty(idNo)){
-                    map.put("idNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "idNo", "field"));
-                }else {
-                    if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
-                        boolean b = SgNoValidator.validateFin(idNo);
-                        if(!b){
-                            map.put("idNo"+i,"RFC_ERR0012");
-                        }else {
-                            stringBuilder.append(idType).append(idNo);
-                            if(stringList.contains(stringBuilder.toString())){
-                                map.put("idNo"+i,"NEW_ERR0012");
-                            }
-                        }
-                    }
-                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
-                        boolean b = SgNoValidator.validateNric(idNo);
-                        if(!b){
-                            map.put("idNo"+i,"RFC_ERR0012");
-                        }else {
-                            stringBuilder.append(idType).append(idNo);
-                            if(stringList.contains(stringBuilder.toString())){
-                                map.put("idNo"+i,"NEW_ERR0012");
-                            }
-                        }
                     }
                 }
                 String designation = appSvcClinicalDirectorDtos.get(i).getDesignation();
@@ -169,13 +171,7 @@ public class ValidateClincalDirector implements ValidateFlow {
                         map.put("emailAddr" + i, general_err0041);
                     }
                 }
-                switchService(serviceCode,appSvcClinicalDirectorDtos.get(i),map,i);
-                if(stringList.contains(stringBuilder.toString())&&!StringUtil.isEmpty(stringBuilder.toString())) {
-
-
-                }else {
-                    stringList.add(stringBuilder.toString());
-                }
+                switchService(serviceCode, appSvcClinicalDirectorDtos.get(i), map, i);
             }
         }
         log.info(StringUtil.changeForLog("=====>ValidateClincalDirector-->"+ JsonUtil.parseToJson(map)));
