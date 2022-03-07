@@ -17,7 +17,7 @@
     </iais:value>
   </iais:row>
 
-  <iais:row cssClass="ind-no ${dto.licenseeType == individualType ? '' : 'hidden'}">
+  <iais:row cssClass="ind-no nationalityDiv ${dto.licenseeType == individualType ? '' : 'hidden'}">
     <iais:field width="5" mandatory="true" value="Nationality"/>
     <iais:value width="7" cssClass="col-md-7">
       <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
@@ -105,6 +105,11 @@
           retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
       });
       //$('.retrieveAddr').trigger('click');
+
+    toggleIdType('#idType', '.nationalityDiv');
+    $('#idType').on('change', function () {
+      toggleIdType(this, '.nationalityDiv');
+    });
   });
 
   function checkAddressManatory() {
@@ -154,5 +159,22 @@
   function handleVal(selector, val, readonly) {
     $(selector).val(val);
     $(selector).prop('readonly', readonly);
+  }
+
+  function toggleIdType(sel, elem) {
+    if (isEmpty(sel) || isEmpty(elem)) {
+      return;
+    }
+    var $sel = $(sel);
+    var $elem = $(elem);
+    if ($sel.length == 0 || $elem.length == 0) {
+      return;
+    }
+    if ($sel.val() == 'IDTYPE003') {
+      $elem.show();
+    } else {
+      $elem.hide();
+      clearFields($elem);
+    }
   }
 </script>

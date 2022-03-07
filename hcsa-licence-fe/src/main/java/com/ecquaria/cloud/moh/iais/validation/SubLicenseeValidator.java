@@ -65,7 +65,7 @@ public class SubLicenseeValidator implements CustomizeValidator {
             }
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
-            if (StringUtil.isEmpty(nationality)) {
+            if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType) && StringUtil.isEmpty(nationality)) {
                 errorMap.put("nationality", MANDATORY_MSG);
             }
             String mobileNo = subLicenseeDto.getTelephoneNo();

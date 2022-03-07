@@ -74,6 +74,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idNo}</p>
                                         </td>
                                     </tr>
+                                    <c:if test="${po.idType == 'IDTYPE003'}">
                                     <tr>
                                         <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology">
@@ -86,6 +87,7 @@
                                             </p>
                                         </td>
                                     </tr>
+                                    </c:if>
                                     <tr>
                                         <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
@@ -162,6 +164,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idNo}</p>
                                         </td>
                                     </tr>
+                                    <c:if test="${po.idType == 'IDTYPE003'}">
                                     <tr>
                                         <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology">
@@ -174,6 +177,7 @@
                                             </p>
                                         </td>
                                     </tr>
+                                    </c:if>
                                     <tr>
                                         <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>

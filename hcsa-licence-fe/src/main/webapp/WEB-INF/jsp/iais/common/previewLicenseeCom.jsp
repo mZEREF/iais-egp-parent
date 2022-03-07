@@ -33,7 +33,8 @@
         </iais:value>
     </iais:row>
 
-    <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
+    <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType
+            && subLicenseeDto.idType == 'IDTYPE003'? '' : 'hidden'}">
         <iais:field width="5" value="Nationality"/>
         <iais:value width="7" display="true">
             <iais:code code="${subLicenseeDto.nationality}" />

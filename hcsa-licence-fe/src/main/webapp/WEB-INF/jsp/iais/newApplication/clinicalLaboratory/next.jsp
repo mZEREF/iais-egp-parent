@@ -196,6 +196,7 @@
         $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
+        toggleIdType($CurrentPsnEle.find('select[name="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
 
         $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
@@ -295,8 +296,8 @@
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         }
         //reload data by prs again
-        if('CGO' == psnType){
-            $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur','psnSelect');
+        if('CGO' == psnType) {
+          $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur', 'psnSelect');
         }
     };
     <!--cgo,medAlert -->

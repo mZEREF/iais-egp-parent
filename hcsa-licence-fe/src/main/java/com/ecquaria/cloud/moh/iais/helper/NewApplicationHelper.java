@@ -1815,7 +1815,7 @@ public class NewApplicationHelper {
                     continue;
                 }
                 String svcCode = hcsaServiceDto.getSvcCode();
-                String personMapKey = psnDto.getIdType() + "," + psnDto.getIdNo();
+                String personMapKey = getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo());
                 AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
                 Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
                 specialtyAttr.put("name", "specialty");
@@ -2189,8 +2189,7 @@ public class NewApplicationHelper {
                 NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k, v) -> {
             AppSvcPersonDto personDto = v.getPersonDto();
-            SelectOption sp = new SelectOption(k,
-                    personDto.getName() + ", " + personDto.getIdNo() + " (" + MasterCodeUtil.getCodeDesc(personDto.getIdType()) + ")");
+            SelectOption sp = new SelectOption(k, getPersonView(personDto.getIdType(), personDto.getIdNo(), personDto.getName()));
             personList.add(sp);
         });
         //sort
@@ -2480,12 +2479,16 @@ public class NewApplicationHelper {
         return appSvcPrincipalOfficersDto;
     }
 
-    public static String getPersonKey(String nationality, String idType, String idNo) {
-        String personKey = "";
-        if (!StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(idType)) {
-            personKey = nationality + "," + idType + "," + idNo;
+    public static String getPersonKey(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto) {
+        if (appSvcPrincipalOfficersDto == null) {
+            return null;
         }
-        return personKey;
+        return getPersonKey(appSvcPrincipalOfficersDto.getNationality(), appSvcPrincipalOfficersDto.getIdType(),
+                appSvcPrincipalOfficersDto.getIdNo());
+    }
+
+    public static String getPersonKey(String nationality, String idType, String idNo) {
+        return MiscUtil.getPersonKey(nationality, idType, idNo);
     }
 
     public static String getPersonView(String idType, String idNo, String name) {

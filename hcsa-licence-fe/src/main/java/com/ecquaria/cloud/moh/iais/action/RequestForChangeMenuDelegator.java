@@ -1085,7 +1085,8 @@ public class RequestForChangeMenuDelegator {
                     idNos.add(idNo);
                     String name = dto.getName();
                     String idType = dto.getIdType();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")");
+                    SelectOption s = new SelectOption(NewApplicationHelper.getPersonKey(dto.getNationality(), idType, idNo),
+                            NewApplicationHelper.getPersonView(idType, idNo, name));
                     selectOptions.add(s);
                 }
             }
@@ -1100,15 +1101,15 @@ public class RequestForChangeMenuDelegator {
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             //exchange order
             Map<String, AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request, licPersonList);
-            ParamUtil.setSessionAttr(bpc.request, "LicPersonSelectMap", (Serializable) licPersonMap);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP, (Serializable) licPersonMap);
             Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "PersonSelectMap");
             if (personMap != null) {
                 licPersonMap.forEach((k, v) -> {
                     personMap.put(k, v);
                 });
-                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) personMap);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             } else {
-                ParamUtil.setSessionAttr(bpc.request, "PersonSelectMap", (Serializable) licPersonMap);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) licPersonMap);
             }
         } else {
             log.info(StringUtil.changeForLog("user info is empty....."));

@@ -221,6 +221,7 @@
                                     </jsp:include>
                                 </td>
                             </tr>
+                            <c:if test="${appSvcClinicalDirectorDto.idType == 'IDTYPE003' || oldClinicalDirecotrDto.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -240,6 +241,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>

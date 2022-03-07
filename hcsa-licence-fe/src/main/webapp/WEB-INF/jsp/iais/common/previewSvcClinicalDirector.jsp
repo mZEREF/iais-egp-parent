@@ -80,6 +80,7 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.idNo }"/></p>
                                 </td>
                             </tr>
+                            <c:if test="${cdDto.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -92,6 +93,7 @@
                                     </p>
                                 </td>
                             </tr>
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>

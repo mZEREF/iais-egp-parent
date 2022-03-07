@@ -105,6 +105,7 @@
                                     </jsp:include>
                                 </td>
                             </tr>
+                            <c:if test="${keyAppointmentHolder.idType == 'IDTYPE003' || oldKah.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -124,6 +125,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            </c:if>
                         </table>
                     </c:forEach>
                 </div>

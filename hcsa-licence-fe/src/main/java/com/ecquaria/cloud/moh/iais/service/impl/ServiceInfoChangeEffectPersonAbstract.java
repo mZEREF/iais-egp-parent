@@ -410,13 +410,13 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             }
             kahList.forEach(kah -> {
                 AppSvcPrincipalOfficersDto matched = oldKahList.stream()
-                        .filter(dto -> Objects.equals(dto.getIdNo(), kah.getIdNo()))
+                        .filter(dto -> Objects.equals(NewApplicationHelper.getPersonKey(dto), NewApplicationHelper.getPersonKey(kah)))
                         .findAny()
                         .orElse(null);
                 if (matched != null && !(Objects.equals(matched.getIdType(), kah.getIdType())
                         && Objects.equals(matched.getName(), kah.getName())
                         && Objects.equals(matched.getSalutation(), kah.getSalutation()))) {
-                    ids.add(kah.getIdNo());
+                    ids.add(NewApplicationHelper.getPersonKey(kah));
                 }
             });
         }
@@ -431,8 +431,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 return ids;
             }
             for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
+                String personKey = NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto);
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcPrincipalOfficersDtoList) {
-                    if (appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())) {
+                    if (Objects.equals(personKey, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto1))) {
                         boolean b = appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName())
                                 && appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
                                 && appSvcPrincipalOfficersDto.getDesignation().equals(appSvcPrincipalOfficersDto1.getDesignation())
@@ -440,7 +441,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                                 && appSvcPrincipalOfficersDto.getMobileNo().equals(appSvcPrincipalOfficersDto1.getMobileNo())
                                 && appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr());
                         if (!b) {
-                            ids.add(appSvcPrincipalOfficersDto.getIdNo());
+                            ids.add(personKey);
                         }
                     }
                 }
@@ -457,14 +458,15 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 return ids;
             }
             for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
+                String personKey = NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto);
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcMedAlertPersonList1) {
-                    if (appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())) {
+                    if (Objects.equals(personKey, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto1))) {
                         boolean b = appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
                                 && appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName())
                                 && appSvcPrincipalOfficersDto.getMobileNo().equals(appSvcPrincipalOfficersDto1.getMobileNo())
                                 && appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr());
                         if (!b) {
-                            ids.add(appSvcPrincipalOfficersDto.getIdNo());
+                            ids.add(personKey);
                         }
                     }
                 }
@@ -482,14 +484,15 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 return ids;
             }
             for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                String personKey = NewApplicationHelper.getPersonKey(appSvcCgoDto);
                 for (AppSvcPrincipalOfficersDto appSvcCgoDto1 : oldAppSvcCgoDtoList) {
-                    if (appSvcCgoDto.getIdNo().equals(appSvcCgoDto1.getIdNo())) {
+                    if (Objects.equals(personKey, NewApplicationHelper.getPersonKey(appSvcCgoDto1))) {
                         boolean b = appSvcCgoDto.getName().equals(appSvcCgoDto1.getName())
                                 && appSvcCgoDto.getDesignation().equals(appSvcCgoDto1.getDesignation())
                                 && appSvcCgoDto.getEmailAddr().equals(appSvcCgoDto1.getEmailAddr())
                                 && appSvcCgoDto.getMobileNo().equals(appSvcCgoDto1.getMobileNo());
                         if (!b) {
-                            ids.add(appSvcCgoDto.getIdNo());
+                            ids.add(personKey);
                         }
                     }
                 }
@@ -506,8 +509,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 return ids;
             }
             for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtos) {
+                String personKey = NewApplicationHelper.getPersonKey(v);
                 for (AppSvcPrincipalOfficersDto v1 : oldAppSvcClinicalDirectorDtos) {
-                    if (v.getIdNo().equals(v1.getIdNo())) {
+                    if (Objects.equals(personKey, NewApplicationHelper.getPersonKey(v1))) {
                         boolean b = Objects.equals(v.getSalutation(), v1.getSalutation())
                                 && Objects.equals(v.getName(), v1.getName())
                                 && Objects.equals(v.getIdType(), v1.getIdType())
@@ -526,7 +530,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                                 && Objects.equals(v.getMobileNo(), v1.getMobileNo())
                                 && Objects.equals(v.getEmailAddr(), v1.getEmailAddr());
                         if (!b) {
-                            ids.add(v.getIdNo());
+                            ids.add(personKey);
                         }
                     }
                 }

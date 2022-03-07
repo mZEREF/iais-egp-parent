@@ -333,7 +333,7 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                            <tr height="1">
+                                                            <tr height="1" class="nationalityDiv">
                                                                 <td class="first last" style="width: 100%;">
                                                                     <div class="control control-caption-horizontal">
                                                                         <div class="form-group form-horizontal formgap">
@@ -691,6 +691,8 @@
             //$('.addListBtn').addClass('hidden');
         }
 
+        initNationality('div.cgo-content', 'select[name="idType"]', '.nationalityDiv');
+
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
         //new and not rfi
@@ -875,6 +877,7 @@
                     if(psnLength <= '${HcsaSvcPersonnel.mandatoryCount}'){
                         $('.assignContent:last .removeBtn').remove();
                     }
+                    initNationality('div.cgo-content:last', 'select[name="idType"]', '.nationalityDiv');
                 } else {
                     $('.errorMsg').html(data.errInfo);
                     dismissWaiting();
@@ -886,9 +889,6 @@
             }
         });
     });
-
-
-
 
 
     var doEdit = function () {
