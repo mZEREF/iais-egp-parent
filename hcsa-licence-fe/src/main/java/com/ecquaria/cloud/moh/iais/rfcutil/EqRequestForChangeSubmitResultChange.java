@@ -418,8 +418,8 @@ public class EqRequestForChangeSubmitResultChange {
 
     private static boolean eqKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList)  {
         if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcKeyAppointmentHolderDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyMedaler(oldAppSvcKeyAppointmentHolderDtoList);
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcKah(appSvcKeyAppointmentHolderDtoList);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcKah(oldAppSvcKeyAppointmentHolderDtoList);
             if (!n.equals(o)) {
                 return true;
             }
@@ -809,16 +809,16 @@ public class EqRequestForChangeSubmitResultChange {
 
         for (AppSvcPrincipalOfficersDto item : newAppSvcPrincipalOfficersDto) {
             if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                newPoIdNos.add(item.getIdNo());
+                newPoIdNos.add(NewApplicationHelper.getPersonKey(item));
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                newDpoIdNos.add(item.getIdNo());
+                newDpoIdNos.add(NewApplicationHelper.getPersonKey(item));
             }
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcPrincipalOfficersDto) {
             if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                oldPoIdNos.add(item.getIdNo());
+                oldPoIdNos.add(NewApplicationHelper.getPersonKey(item));
             } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                olddDpoIdNos.add(item.getIdNo());
+                olddDpoIdNos.add(NewApplicationHelper.getPersonKey(item));
             }
         }
         if (!newPoIdNos.equals(oldPoIdNos)) {
@@ -836,10 +836,10 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> newIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -851,10 +851,10 @@ public class EqRequestForChangeSubmitResultChange {
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcCdDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcCdDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -866,10 +866,10 @@ public class EqRequestForChangeSubmitResultChange {
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : newAppSvcMapDto) {
-            newIdNos.add(item.getIdNo());
+            newIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldAppSvcMapDto) {
-            oldIdNos.add(item.getIdNo());
+            oldIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
@@ -914,10 +914,10 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> newKahIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldKahIdNos = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto item : kahList) {
-            newKahIdNos.add(item.getIdNo());
+            newKahIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         for (AppSvcPrincipalOfficersDto item : oldKahList) {
-            oldKahIdNos.add(item.getIdNo());
+            oldKahIdNos.add(NewApplicationHelper.getPersonKey(item));
         }
         if (!newKahIdNos.equals(oldKahIdNos)) {
             isAuto = false;

@@ -169,7 +169,7 @@
                                                         name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
+                                    <iais:row cssClass="nationalityDiv">
                                         <iais:field value="Nationality " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                             <iais:select name="nationalityShow" firstOption="Please Select"
@@ -263,7 +263,7 @@
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
+                                    <iais:row cssClass="nationalityDiv">
                                         <iais:field value="Nationality " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="nationalitySel" name="nationality"
@@ -359,7 +359,7 @@
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
+                                    <iais:row cssClass="nationalityDiv">
                                         <iais:field value="Nationality " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="nationalitySel" name="nationality1"
@@ -442,7 +442,7 @@
                                                         name="idNo2" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
+                                    <iais:row cssClass="nationalityDiv">
                                         <iais:field value="Nationality " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                             <iais:select name="nationality2" firstOption="Please Select"
@@ -581,6 +581,7 @@
             $('#edit').show();
         });
         $('#checkitem1').click(function () {
+            toggleIdType($('#update').find('select[name="idType"]'), $('#show').find('.nationalityDiv'));
             $("#update").show();
             $('#replace').hide();
             $('#newPerson').hide();
@@ -669,6 +670,8 @@
             loadSelectPerson(person, nationality, idType, idNo);
         }
 
+        initNationality('#newPerson', 'select[name="idType1"]', '.nationalityDiv');
+        toggleIdType($('#show').find('select[name="idTypeShow"]'), $('#show').find('.nationalityDiv'));
     });
 
     $('.designationSel').change(function (){
@@ -683,6 +686,7 @@
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
         }
     });
+
     function addNew() {
         const personSelect = $('#replaceOptionsId').val();
         if (personSelect == 'new') {
@@ -725,6 +729,8 @@
         $CurrentPsnEle.find('input[name="idNo2"]').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name="nationality2"]'), data.nationality);
+        toggleIdType($CurrentPsnEle.find('select[name="idType2"]'), $CurrentPsnEle.find('.nationalityDiv'));
+
         $CurrentPsnEle.find('input[name="mobileNo2"]').val(data.mobileNo);
         $CurrentPsnEle.find('input[name="emailAddr2"]').val(data.emailAddr);
         var officeTelNo = data.officeTelNo;
@@ -789,5 +795,32 @@
         });
     }
 
+    function initNationality(parent, idTypeTag, nationalityDiv) {
+        $(parent).find(idTypeTag).on('change', function () {
+            var $content = $(this).closest(parent.replace(':last', ''));
+            toggleIdType(this, $content.find(nationalityDiv));
+        });
+        $(parent).each(function (index, ele) {
+            toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
+        });
+    }
+
+    function toggleIdType(sel, elem) {
+        if (isEmpty(sel) || isEmpty(elem)) {
+            return;
+        }
+        var $sel = $(sel);
+        var $elem = $(elem);
+        if ($sel.length == 0 || $elem.length == 0) {
+            return;
+        }
+        console.log($sel.val());
+        if ($sel.val() == 'IDTYPE003') {
+            $elem.removeClass('hidden');
+        } else {
+            $elem.addClass('hidden');
+            clearFields($elem);
+        }
+    }
 
 </script>

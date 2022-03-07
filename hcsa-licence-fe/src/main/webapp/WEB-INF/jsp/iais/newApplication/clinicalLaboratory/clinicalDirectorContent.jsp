@@ -122,6 +122,9 @@
         designationBindEvent();
         doEdite();
         assignSelectBindEvent();
+
+        initNationality('div.clinicalDirectorContent', '.idType', '.nationalityDiv');
+
         //rfc,renew,rfi
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
@@ -169,6 +172,7 @@
             checkNoRegWithProfBoard($currContent.find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
+            toggleIdType($(this).find('.idType'), $(this).find('.nationalityDiv'));
         });
 
         if("${errormapIs}"=='error'){
@@ -248,7 +252,6 @@
                             orientation:'bottom'
                         });
 
-
                         var cdLength = $('.clinicalDirectorContent').length;
                         $('input[name="cdLength"]').val(cdLength);
                         //hidden add more
@@ -261,8 +264,11 @@
                         }
                         $('.clinicalDirectorContent').each(function (k,v) {
                             $(this).find('.assign-psn-item').html(k+1);
+
                         });
                         $('#isEditHiddenVal').val('1');
+
+                        initNationality('div.clinicalDirectorContent:last', '.idType', '.nationalityDiv');
                     }
                     dismissWaiting();
                 },

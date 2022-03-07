@@ -169,7 +169,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row nationalityDiv">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
@@ -505,7 +505,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row nationalityDiv">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
@@ -703,6 +703,9 @@
         designationChange();
 
         deputyDesignationChange();
+
+        initNationality('div.po-content', 'select[name="idType"]', '.nationalityDiv');
+        initNationality('div.dpo-content', 'select[name="deputyIdType"]', '.nationalityDiv');
 
         $('select.poSelect').trigger('change');
         $('select.deputySelect').trigger('change');
@@ -1007,6 +1010,8 @@
                         $('.po-content').each(function (k,v) {
                             $(this).find('.assign-psn-item').html(k);
                         });
+
+                        initNationality('div.po-content:last', 'select[name="idType"]', '.nationalityDiv');
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -1063,6 +1068,8 @@
                         $('.dpo-content').each(function (k,v) {
                             $(this).find('.assign-psn-item').html(k);
                         });
+
+                        initNationality('div.dpo-content:last', 'select[name="deputyIdType"]', '.nationalityDiv');
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -1233,6 +1240,7 @@
         fillValue($poContentEle.find('select[name="idType"]'), data.idType);
         <!-- Nationality  -->
         fillValue($poContentEle.find('select[name="nationality"]'), data.nationality);
+        toggleIdType($poContentEle.find('select[name="idType"]'), $poContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
@@ -1283,6 +1291,7 @@
         fillValue($dpoContentEle.find('select[name="deputyIdType"]'), data.idType);
         <!-- Nationality  -->
         fillValue($dpoContentEle.find('select[name="deputyNationality"]'), data.nationality);
+        toggleIdType($dpoContentEle.find('select[name="deputyIdType"]'), $dpoContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){

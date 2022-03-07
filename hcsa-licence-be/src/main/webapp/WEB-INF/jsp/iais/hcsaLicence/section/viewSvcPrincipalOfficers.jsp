@@ -107,7 +107,7 @@
                                     </jsp:include>
                                 </td>
                             </tr>
-
+                            <c:if test="${po.idType == 'IDTYPE003' || oldPo.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -127,7 +127,7 @@
                                     </div>
                                 </td>
                             </tr>
-
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">

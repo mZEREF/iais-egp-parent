@@ -163,7 +163,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row nationalityDiv">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-6 control-label formtext col-md-5">
@@ -318,6 +318,8 @@
             }
         });
 
+        initNationality('div.medAlertContent', '.idType', '.nationalityDiv');
+
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
             // $('#addMapBtn').addClass('hidden');
@@ -453,6 +455,8 @@
                         }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
+
+                        initNationality('div.medAlertContent:last', '.idType', '.nationalityDiv');
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }

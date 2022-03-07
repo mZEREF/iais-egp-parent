@@ -139,6 +139,7 @@
                             <jsp:param name="idNo" value="${oldDto.idNumber}"/>
                             <jsp:param name="cssClass" value="old-img-show"/>
                         </jsp:include>
+                        <c:if test="${curDto.idType == 'IDTYPE003' || oldDto.idType == 'IDTYPE003'}">
                         <div class="row">
                             <div class="col-md-6">Nationality</div>
                             <div class="col-md-6">
@@ -154,6 +155,7 @@
                                 </div>
                             </div>
                         </div>
+                        </c:if>
                     </c:if>
                 </c:if>
                 <%-- SOLO --%>

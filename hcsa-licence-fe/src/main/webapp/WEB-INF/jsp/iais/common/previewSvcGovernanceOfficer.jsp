@@ -47,7 +47,7 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.idType}"></iais:code></p>
                                 </td>
                             </tr>
-
+                            <c:if test="${cgo.idType == 'IDTYPE003'}">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -60,7 +60,7 @@
                                     </p>
                                 </td>
                             </tr>
-
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>

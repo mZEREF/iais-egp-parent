@@ -151,7 +151,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row nationalityDiv">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-6 control-label formtext col-md-5">
@@ -206,6 +206,9 @@
                 $(ele).find('select.assignSel').trigger('change');
             }
         });
+
+        initNationality('div.keyAppointmentHolderContent', 'select[name^="idType"]', '.nationalityDiv');
+
         if("${errormapIs}"=='error'){
             $('.svcPsnEdit').trigger('click');
         }
@@ -259,6 +262,8 @@
                         removeKeyAppointmentHolder();
                         refreshKeyAppointmentHolder();
                         assignSel();
+
+                        initNationality('div.keyAppointmentHolderContent:last', 'select[name^="idType"]', '.nationalityDiv');
                     }
                     dismissWaiting();
                 },
@@ -403,6 +408,7 @@
         $CurrentPsnEle.find('.idNo').val(data.idNo);
         <!-- Nationality -->
         fillValue($CurrentPsnEle.find('select[name^="nationality"]'), data.nationality);
+        toggleIdType($CurrentPsnEle.find('select[name^="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
