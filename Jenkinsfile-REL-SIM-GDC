@@ -919,7 +919,7 @@ def runAutomatedTests(){
                         def browserType = 'Chrome (headless)'
                         sh """
                             mkdir -p ~/.katalon/license/ && \
-                                ln -s "$KATALON_OFFLINE_LICENSE" ~/.katalon/license/offline.lic || \
+                                ln -s -f "$KATALON_OFFLINE_LICENSE" ~/.katalon/license/offline.lic || \
                                 exit \$?
 
                             xvfb-run -s '-screen 0 1920x1080x24' \
