@@ -5,8 +5,10 @@
     <c:if test="${privilege.id == 'HALP_MOH_DS_LDT'}">
         <c:set var="dataSubLDTPrivilege" value="1"/>
     </c:if>
+    <c:set var="adminPersonnelPrivilege" value="1"/>
 </c:forEach>
-
+<c:set var="selfAssessmentControl" value="${(hcsaPrivilege == 1 || dataSubLDTPrivilege == 1 || adminPersonnelPrivilege ==1) ? 1 : 0}"/>
+<c:if test="${selfAssessmentControl == 1}">
 <div class="self-assessment-item completed">
     <div class="amendLicence">
         <div class="form-check-gp">
@@ -126,7 +128,7 @@
             <%--
                 8
             --%>
-            <c:if test="${hcsaPrivilege == 1}">
+            <c:if test="${adminPersonnelPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;"
                        id="updateAdminPersonnel" type="radio"
@@ -263,3 +265,7 @@
         </div>
     </div>
 </div>
+</c:if>
+<c:if test="${selfAssessmentControl == 0}">
+    <h2><iais:message key="GENERAL_ERR0044" escape="true"/></h2>
+</c:if>
