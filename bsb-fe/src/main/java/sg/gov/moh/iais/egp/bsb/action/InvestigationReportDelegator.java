@@ -24,7 +24,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -33,8 +32,8 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,15 +60,17 @@ public class InvestigationReportDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final ReportableEventClient reportableEventClient;
+    private final DocSettingService docSettingService;
     private static final String PARAM_REFERENCE_NO = "refNo";
     private static final String PARAM_INCIDENT_DTO = "incidentDto";
     private static final String KEY_EDIT_REF_ID = "editId";
     private static final String KEY_DRAFT = "draft";
 
-    public InvestigationReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, ReportableEventClient reportableEventClient) {
+    public InvestigationReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, ReportableEventClient reportableEventClient, DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.reportableEventClient = reportableEventClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc){
@@ -277,7 +278,7 @@ public class InvestigationReportDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
         Nodes.needValidation(investRepoRoot, NODE_NAME_DOCUMENTS);
-        ParamUtil.setRequestAttr(request, "docSettings", getInvestReportDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getOthersDocSettings());
 
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
@@ -314,7 +315,7 @@ public class InvestigationReportDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_MEDICAL_INVESTIGATION, ((SimpleNode)investRepoRoot.at(NODE_NAME_MEDICAL_INVESTIGATION)).getValue());
 
         Nodes.needValidation(investRepoRoot, NODE_NAME_PREVIEW_SUBMIT);
-        ParamUtil.setRequestAttr(request, "docSettings", getInvestReportDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getOthersDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)investRepoRoot.at(NODE_NAME_DOCUMENTS)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -371,13 +372,6 @@ public class InvestigationReportDelegator {
     public void preAcknowledge(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,KEY_INCIDENT_TITLE,KEY_TITLE_INVESTIGATION_REPORT);
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getInvestReportDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(1);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
     }
 
     /**

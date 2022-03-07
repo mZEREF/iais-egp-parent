@@ -25,7 +25,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -33,11 +32,10 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
-import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,12 +68,14 @@ public class IncidentNotificationDelegator {
     private final FileRepoClient fileRepoClient;
     private final ReportableEventClient reportableEventClient;
     private final BsbFileClient bsbFileClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public IncidentNotificationDelegator(FileRepoClient fileRepoClient, ReportableEventClient reportableEventClient, BsbFileClient bsbFileClient) {
+    public IncidentNotificationDelegator(FileRepoClient fileRepoClient, ReportableEventClient reportableEventClient, BsbFileClient bsbFileClient, DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
         this.reportableEventClient = reportableEventClient;
         this.bsbFileClient = bsbFileClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc){
@@ -271,7 +271,7 @@ public class IncidentNotificationDelegator {
         }
         Nodes.needValidation(incidentNotRoot, NODE_NAME_DOCUMENTS);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getIncidentNotDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getIncidentNotDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -307,7 +307,7 @@ public class IncidentNotificationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_PERSON_INVOLVED_INFO, ((SimpleNode)incidentNotRoot.at(NODE_NAME_PERSON_INVOLVED_INFO)).getValue());
 
 
-        ParamUtil.setRequestAttr(request, "docSettings", getIncidentNotDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getIncidentNotDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)incidentNotRoot.at(NODE_NAME_DOCUMENTS)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -484,15 +484,6 @@ public class IncidentNotificationDelegator {
                 .addNode(documentNode)
                 .addNode(previewSubmitNode)
                 .build();
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getIncidentNotDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_REPORT, "Incident Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_ACTION_REPORT, "Incident Action Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
     }
 
     public static List<SelectOption> tempOccurrenceHHOps(){

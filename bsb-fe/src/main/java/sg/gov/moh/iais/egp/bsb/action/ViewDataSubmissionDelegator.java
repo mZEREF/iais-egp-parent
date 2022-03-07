@@ -11,12 +11,11 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.submission.DataSubmissionInfo;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +30,11 @@ public class ViewDataSubmissionDelegator {
     private static final String KEY_SAVED_FILES = "savedFiles";
 
     private final DataSubmissionClient dataSubmissionClient;
+    private final DocSettingService docSettingService;
     @Autowired
-    public ViewDataSubmissionDelegator(DataSubmissionClient dataSubmissionClient) {
+    public ViewDataSubmissionDelegator(DataSubmissionClient dataSubmissionClient, DocSettingService docSettingService) {
         this.dataSubmissionClient = dataSubmissionClient;
+        this.docSettingService = docSettingService;
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -48,7 +49,7 @@ public class ViewDataSubmissionDelegator {
         if (resultDto.ok()){
             DataSubmissionInfo dataSubmissionInfo = resultDto.getEntity();
             ParamUtil.setRequestAttr(request, KEY_VIEW_DATA_SUBMISSION, dataSubmissionInfo);
-            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getDataSubmissionDocSettings());
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, docSettingService.getDataSubmissionDocSettings());
             CommonDocDto commonDocDto = new CommonDocDto();
             commonDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(dataSubmissionInfo.getDocs(), DocRecordInfo::getRepoId));
             Map<String, List<DocRecordInfo>> saveFiles = commonDocDto.getExistDocTypeMap();
@@ -57,15 +58,5 @@ public class ViewDataSubmissionDelegator {
         }else {
             throw new IaisRuntimeException("Fail to retrieve submission data");
         }
-    }
-
-
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getDataSubmissionDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting("ityBat", "ItyBat", false));
-        docSettings.add(new DocSetting("ityToxin", "ItyToxin", false));
-        docSettings.add(new DocSetting("others", "Others", false));
-        return docSettings;
     }
 }

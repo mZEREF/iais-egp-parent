@@ -16,15 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.*;
 import sg.gov.moh.iais.egp.bsb.dto.followup.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,11 +60,13 @@ public class ReportableEventFollowUPReportDelegator {
     private final ReportableEventClient reportableEventClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
+    private final DocSettingService docSettingService;
 
-    public ReportableEventFollowUPReportDelegator(ReportableEventClient reportableEventClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public ReportableEventFollowUPReportDelegator(ReportableEventClient reportableEventClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DocSettingService docSettingService) {
         this.reportableEventClient = reportableEventClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.docSettingService = docSettingService;
     }
 
     public void startFollowup1A(BaseProcessClass bpc){
@@ -203,7 +204,7 @@ public class ReportableEventFollowUPReportDelegator {
         CommonDocDto commonDocDto = getFollowupDoc(request);
         ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
         ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getExistDocTypeMap());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
+        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,docSettingService.getOthersDocSettings());
     }
 
     public void handleFollowUPReport1A(BaseProcessClass bpc){
@@ -282,8 +283,7 @@ public class ReportableEventFollowUPReportDelegator {
         CommonDocDto commonDocDto = getFollowupDoc(request);
         ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
         ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getExistDocTypeMap());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
+        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,docSettingService.getOthersDocSettings());
     }
 
     public void handleFollowUPReport1B(BaseProcessClass bpc){
@@ -446,15 +446,6 @@ public class ReportableEventFollowUPReportDelegator {
         return new FollowupInfoBDto();
     }
 
-
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getFollowupDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(1);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
-    }
-
-
     /**
      * doValidation
      * Used to implement basic validation logic
@@ -589,6 +580,6 @@ public class ReportableEventFollowUPReportDelegator {
         CommonDocDto commonDocDto = getFollowupDoc(request);
         ParamUtil.setRequestAttr(request,KEY_NEW_FILE_MAP,commonDocDto.getNewDocTypeMap());
         ParamUtil.setRequestAttr(request,KEY_SAVED_FILE_MAP,commonDocDto.getExistDocTypeMap());
-        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,getFollowupDocSettings());
+        ParamUtil.setRequestAttr(request,PARAM_DOC_SETTINGS,docSettingService.getOthersDocSettings());
     }
 }
