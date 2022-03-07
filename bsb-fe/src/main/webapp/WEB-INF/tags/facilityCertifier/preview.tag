@@ -1,4 +1,4 @@
-<%@tag description="Preview page of facility registration" pageEncoding="UTF-8" %>
+<%@tag description="Preview page of facility certifier registration" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -23,7 +23,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16"><a href="#" data-step-key="orgInfo_orgProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgProfile")}</div>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>

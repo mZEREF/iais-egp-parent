@@ -18,6 +18,8 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-rfc-approval-app.js"></script>
 
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
+
 <%@include file="../common/dashboard.jsp"%>
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">

@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
+<%@ taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =

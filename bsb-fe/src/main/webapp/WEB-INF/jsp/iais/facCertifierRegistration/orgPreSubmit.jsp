@@ -1,11 +1,10 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facilityCertifier" %>
+<%@ taglib prefix="fac" tagdir="/WEB-INF/tags/facilityCertifier" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
