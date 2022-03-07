@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hcsa-licence-be</artifactId>
+    <artifactId>hcsa-licence-web-be</artifactId>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -106,23 +106,6 @@
                         <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${org.codehaus.mojo.version}</version>
-                <configuration>
-                    <timestampFormat>yyyyMMddHHmm</timestampFormat>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>create-timestamp</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <inherited>false</inherited>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
