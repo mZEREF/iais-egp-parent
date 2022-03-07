@@ -10,7 +10,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%@include file="../rectifiesNCs/dashboard.jsp"%>
+<%@include file="dashboard.jsp"%>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">

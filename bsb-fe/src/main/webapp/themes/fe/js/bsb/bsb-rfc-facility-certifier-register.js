@@ -36,23 +36,6 @@ $(function () {
         $("#mainForm").submit();
     });
 
-    // doc upload
-    $("a[data-upload-file]").click(function () {
-        // create input file
-        var name = $(this).attr("data-upload-file");
-        var id = name + +new Date();
-        var newFileInput = document.createElement("input");
-        newFileInput.setAttribute("type", "file");
-        newFileInput.setAttribute("id", id);
-        newFileInput.setAttribute("name", name);
-        newFileInput.addEventListener("change", addReloadFile);
-        $("#fileUploadInputDiv").append(newFileInput);
-
-        // click to select file
-        newFileInput.click();
-    });
-
-
     // // facility classification radio button changes
     var overseasVal = $("#overseasCon");
     $("#typeLocal").change(function () {

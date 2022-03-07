@@ -106,7 +106,8 @@ public class PatientUploadDelegate {
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PrepareSwitch -----"));
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConstant.DS_TITLE_NEW));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR, DataSubmissionConstant.DS_TITLE_NEW,
+                DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO));
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {

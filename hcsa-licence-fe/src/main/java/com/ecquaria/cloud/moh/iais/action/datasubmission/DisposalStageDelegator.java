@@ -69,7 +69,7 @@ public class DisposalStageDelegator extends CommonDelegator{
         String disposedType=ParamUtil.getString(request,"disposedType");
         disposalStageDto.setDisposedType(disposedType);
         int totalNum =0;
-
+        boolean isInt=true;
         if(disposedType!=null){
             switch (disposedType){
                 case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
@@ -90,6 +90,8 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         log.error("no int");
+                        isInt=false;
+                        disposalStageDto.setImmature(null);
                     }
                     Integer abnormallyFertilised = null;
                     try {
@@ -105,6 +107,8 @@ public class DisposalStageDelegator extends CommonDelegator{
 
                     }catch (Exception e){
                         log.error("no int");
+                        isInt=false;
+                        disposalStageDto.setAbnormallyFertilised(null);
                     }
                     Integer unfertilised = null;
                     try {
@@ -119,6 +123,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
+                        isInt=false;
+                        disposalStageDto.setUnfertilised(null);
                         log.error("no int");
                     }
                     Integer atretic = null;
@@ -134,6 +140,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
+                        isInt=false;
+                        disposalStageDto.setAtretic(null);
                         log.error("no int");
                     }
                     Integer damaged = null;
@@ -149,6 +157,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
+                        isInt=false;
+                        disposalStageDto.setDamaged(null);
                         log.error("no int");
                     }
                     Integer lysedOrDegenerated = null;
@@ -164,6 +174,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
+                        isInt=false;
+                        disposalStageDto.setLysedOrDegenerated(null);
                         log.error("no int");
                     }
                     break;
@@ -184,6 +196,8 @@ public class DisposalStageDelegator extends CommonDelegator{
                         }
 
                     }catch (Exception e){
+                        disposalStageDto.setUnhealthyNum(null);
+                        isInt=false;
                         log.error("no int");
                     }
                     break;
@@ -207,17 +221,23 @@ public class DisposalStageDelegator extends CommonDelegator{
             }
 
         }catch (Exception e){
+            disposalStageDto.setOtherDiscardedNum(null);
+            isInt=false;
             log.error("no int");
         }
         String otherDiscardedReason=ParamUtil.getString(request,"otherDiscardedReason");
         disposalStageDto.setOtherDiscardedReason(otherDiscardedReason);
-        disposalStageDto.setTotalNum(totalNum);
+        if(isInt){
+            disposalStageDto.setTotalNum(totalNum);
+        }else {
+            disposalStageDto.setTotalNum(null);
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(disposalStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
-
+            verifyRfcCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

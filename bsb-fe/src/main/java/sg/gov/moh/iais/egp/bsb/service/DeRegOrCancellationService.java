@@ -14,7 +14,6 @@ import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -34,15 +33,18 @@ public class DeRegOrCancellationService {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final DeRegOrCancellationClient deRegOrCancellationClient;
+    private final DocSettingService docSettingService;
 
-    public DeRegOrCancellationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DeRegOrCancellationClient deRegOrCancellationClient) {
+    public DeRegOrCancellationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
+                                      DeRegOrCancellationClient deRegOrCancellationClient, DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.deRegOrCancellationClient = deRegOrCancellationClient;
+        this.docSettingService = docSettingService;
     }
 
     public void setDocSettingAndData(HttpServletRequest request, CommonDocDto commonDocDto) {
-        ParamUtil.setRequestAttr(request, "docSettings", getDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getAttachmentsDocSettings());
         Map<String, List<DocRecordInfo>> savedFiles = commonDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = commonDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
@@ -112,13 +114,6 @@ public class DeRegOrCancellationService {
         deleteAndSyncDocs(commonDocDto, newFileSyncDtoList);
 
         ParamUtil.setRequestAttr(request, KEY_IND_AFTER_SAVE_AS_DRAFT, Boolean.TRUE);
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(1);
-        docSettings.add(new DocSetting("attachments", "Attachments", true));
-        return docSettings;
     }
 
     public CommonDocDto getCommonDocDoc(HttpServletRequest request){

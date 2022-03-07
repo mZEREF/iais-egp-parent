@@ -17,18 +17,14 @@ import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 /**
  * @author Zhu Tangtang
@@ -45,9 +41,11 @@ public class SelfAuditDelegator {
     private static final String ACTION_TYPE = "action_type";
 
     private final AuditClientBE auditClientBE;
+    private final ProcessHistoryService processHistoryService;
 
-    public SelfAuditDelegator(AuditClientBE auditClientBE) {
+    public SelfAuditDelegator(AuditClientBE auditClientBE, ProcessHistoryService processHistoryService) {
         this.auditClientBE = auditClientBE;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -86,13 +84,15 @@ public class SelfAuditDelegator {
             if (responseDto.ok()) {
                 dto = responseDto.getEntity();
                 dto.setTaskId(taskId);
+                //show routingHistory list
+                processHistoryService.getAndSetHistoryInSession(dto.getApplicationNo(), request);
                 ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
+                ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, dto.getDisplayDtos());
             } else {
                 log.warn("get audit API doesn't return ok, the response is {}", responseDto);
                 ParamUtil.setRequestAttr(request, KEY_OFFICER_PROCESS_DATA, new OfficerProcessAuditDto());
             }
         }
-        setSelfAuditDoc(request,dto);
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
@@ -199,16 +199,6 @@ public class SelfAuditDelegator {
         return new OfficerProcessAuditDto();
     }
 
-    public static void setSelfAuditDoc(HttpServletRequest request, OfficerProcessAuditDto auditDto) {
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(auditDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-        Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-        Set<String> docTypes = saveFiles.keySet();
-        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
-    }
-
     private void doValidateData(OfficerProcessAuditDto dto, HttpServletRequest request){
         //validation
         String actionType = null;
@@ -217,11 +207,11 @@ public class SelfAuditDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
         }else {
-            if (dto.getAoDecision().equals("MOHPRO003")){
+            if (dto.getDoDecision().equals("MOHPRO003")){
                 actionType = ACTION_TYPE_REJECT;
-            } else if (dto.getAoDecision().equals("MOHPRO002")){
+            } else if (dto.getDoDecision().equals("MOHPRO002")){
                 actionType = ACTION_TYPE_RFI;
-            } else if (dto.getAoDecision().equals("MOHPRO010")){
+            } else if (dto.getDoDecision().equals("MOHPRO010")){
                 actionType = ACTION_TYPE_VERIFIED;
             }
         }

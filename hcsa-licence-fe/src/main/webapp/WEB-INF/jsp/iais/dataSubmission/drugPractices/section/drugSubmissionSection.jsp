@@ -44,7 +44,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="3" value="Doctor's Professional Registration No" mandatory="true"/>
+                    <iais:field width="3" value="Doctor's Professional Registration No." mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
                         <iais:input maxLength="20" type="text" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>

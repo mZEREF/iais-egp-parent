@@ -252,6 +252,12 @@ public class LdtDataSubmissionDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
             if (isRfc(request)) {
+                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+                if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
+                    errorMap.put("amendReason", "GENERAL_ERR0006");
+                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                    errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
                 if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
                     ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
@@ -289,7 +295,7 @@ public class LdtDataSubmissionDelegator {
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, cannotCLT);
             String isGuide = (String) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
             if ("true".equals(isGuide)){
-                target = InboxConst.URL_MAIN_WEB_MODULE + "MohAccessmentGuide";
+                target = InboxConst.URL_MAIN_WEB_MODULE + "MohAccessmentGuide/subDateMoh";
             }
         }
         StringBuilder url = new StringBuilder();
@@ -404,6 +410,18 @@ public class LdtDataSubmissionDelegator {
         dsLaboratoryDevelopTestDto.setResponsePerson(responsePerson);
         dsLaboratoryDevelopTestDto.setTestStatus(testStatus);
         dsLaboratoryDevelopTestDto.setLdtDate(ldtDate);
+
+        if (isRfc(request)) {
+            LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
+            DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
+            if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
+            } else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+
         return dsLaboratoryDevelopTestDto;
     }
 

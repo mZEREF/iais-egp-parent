@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -166,7 +167,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     }
 
     protected void valRFC(HttpServletRequest request, ArCycleStageDto arCycleStageDto){
-        if(isRfc(request)){
+        if(IaisCommonUtils.isEmpty((Map<String, String>) ParamUtil.getRequestAttr(request,IaisEGPConstant.ERRORMAP)) && isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
             if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getArCycleStageDto()!= null && arCycleStageDto .equals(arOldSuperDataSubmissionDto.getArCycleStageDto())){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);

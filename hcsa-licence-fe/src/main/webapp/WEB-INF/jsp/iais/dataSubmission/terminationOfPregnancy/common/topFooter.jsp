@@ -1,4 +1,5 @@
 <div class="application-tab-footer">
+<div class="application-tab-footer">
     <div class="col-xs-12 col-sm-4 col-md-2 text-left">
         <a style="padding-left: 5px;" class="back" id="backBtn">
             <em class="fa fa-angle-left">&nbsp;</em> Back

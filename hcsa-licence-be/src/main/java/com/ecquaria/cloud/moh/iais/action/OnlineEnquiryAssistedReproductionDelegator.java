@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycle
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
@@ -32,6 +31,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -86,12 +87,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .clz(AssistedReproductionEnquiryResultsDto.class)
             .searchAttr("patientParam")
             .resultAttr("patientResult")
-            .sortField("ID_NUMBER").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter patientAdvParameter = new FilterParameter.Builder()
-            .clz(AssistedReproductionAdvEnquiryResultsDto.class)
-            .searchAttr("patientAdvParam")
-            .resultAttr("patientAdvResult")
-            .sortField("CREATED_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+            .clz(AssistedReproductionEnquiryResultsDto.class)
+            .searchAttr("patientParam")
+            .resultAttr("patientResult")
+            .sortField("ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter submissionParameter = new FilterParameter.Builder()
             .clz(AssistedReproductionEnquirySubResultsDto.class)
             .searchAttr("submissionParam")
@@ -141,11 +142,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         submissionParameter.setSortType(SearchParam.DESCENDING);
         patientParameter.setPageNo(1);
         patientParameter.setPageSize(pageSize);
-        patientParameter.setSortField("ID_NUMBER");
+        patientParameter.setSortField("ID");
         patientParameter.setSortType(SearchParam.DESCENDING);
         patientAdvParameter.setPageNo(1);
         patientAdvParameter.setPageSize(pageSize);
-        patientAdvParameter.setSortField("CREATED_DT");
+        patientAdvParameter.setSortField("ID");
         patientAdvParameter.setSortType(SearchParam.DESCENDING);
         transactionParameter.setPageNo(1);
         transactionParameter.setPageSize(pageSize);
@@ -1013,7 +1014,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientAdvParam");
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
 
         if(!"backAdv".equals(action)||searchParam==null){
             AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
@@ -1074,13 +1075,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             CrudHelper.doPaging(patientParam,bpc.request);
 
             QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
-            SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(patientParam);
-            ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
-            ParamUtil.setSessionAttr(request,"patientAdvParam",patientParam);
+            SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
+            ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+            ParamUtil.setSessionAttr(request,"patientParam",patientParam);
         }else {
-            SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(searchParam);
-            ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
-            ParamUtil.setSessionAttr(request,"patientAdvParam",searchParam);
+            SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(searchParam);
+            ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+            ParamUtil.setSessionAttr(request,"patientParam",searchParam);
         }
 
 
@@ -1216,7 +1217,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("submission_to_date", submissionDateTo);
                 }
                 if(arDto.getIncludeTransfers()!=null) {
-                    filter.put("transfers", arDto.getIncludeTransfers());
+                    filter.put("transfers", 1);
                 }
                 if(arDto.getCycleNumber()!=null) {
                     filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
@@ -1296,7 +1297,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                          ) {
                         switch (ar.getCycleType()){
                             case DataSubmissionConsts.DS_CYCLE_NON:
-                                ar.setCycleNo("Non-cycle");
                                 ar.setCycleType("-");
                                 arEnquiryNonCycle.add(ar);
                                 break;
@@ -1405,15 +1405,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
             if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
                 ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
-                     ) {
-                    initDataForView(arSdOld, bpc.request);
-                    arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
+                ) {
+                    versionOptions.add(new SelectOption(arSdOld.getDataSubmissionDto().getId(),"V "+arSdOld.getDataSubmissionDto().getVersion()));
                     if(StringUtil.isNotEmpty(oldId)&&(oldId.equals(arSdOld.getDataSubmissionDto().getId()))){
+                        initDataForView(arSdOld, bpc.request);
+                        arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                         arSuperOld=arSdOld;
                         break;
                     }
                 }
+                ParamUtil.setRequestAttr(bpc.request,"versionOptions",versionOptions);
                 ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
             }
             ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
@@ -1468,6 +1471,29 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         if (arSuper != null) {
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY)){
+                List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();
+                List<String> otherDefectTypes = IaisCommonUtils.genNewArrayList();
+                List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = arSuper.getPregnancyOutcomeStageDto().getPregnancyOutcomeBabyDtos();
+                if (IaisCommonUtils.isNotEmpty(pregnancyOutcomeBabyDtos)) {
+                    for (int i = 0; i < pregnancyOutcomeBabyDtos.size(); i++) {
+                        PregnancyOutcomeBabyDto pregnancyOutcomeBabyDto = pregnancyOutcomeBabyDtos.get(i);
+                        List<String> defectTypes = IaisCommonUtils.genNewArrayList();
+                        otherDefectTypes.add("");
+                        for (PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto : pregnancyOutcomeBabyDto.getPregnancyOutcomeBabyDefectDtos()) {
+                            defectTypes.add(pregnancyOutcomeBabyDefectDto.getDefectType());
+                            if ("POSBDT008".equals(pregnancyOutcomeBabyDefectDto.getDefectType())) {
+                                otherDefectTypes.set(i, pregnancyOutcomeBabyDefectDto.getOtherDefectType());
+                            }
+                        }
+                        defectTypesArray.add(defectTypes);
+                    }
+                }
+                ParamUtil.setRequestAttr(request, "defectTypesArray", defectTypesArray);
+                ParamUtil.setRequestAttr(request, "otherDefectTypes", otherDefectTypes);
+
+            }
+
             if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
                 List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
                 int count =0;

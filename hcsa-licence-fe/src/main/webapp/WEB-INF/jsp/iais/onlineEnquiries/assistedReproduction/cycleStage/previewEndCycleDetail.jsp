@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a  data-toggle="collapse" href="#">
                 End Cycle
             </a>
         </h4>
@@ -16,15 +16,15 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6"  value="" />
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:field width="5"  value="" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
                 </iais:row>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
-                    <iais:field width="6" value="Is Current Cycle Abandoned?"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="Is Current Cycle Abandoned?"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${endCycleStageDto.cycleAbandoned == true }">Yes</c:if>
                         <c:if test="${endCycleStageDto.cycleAbandoned == false }">No, Cycle has ended</c:if>
                     </iais:value>

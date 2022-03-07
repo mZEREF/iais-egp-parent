@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -55,10 +55,19 @@ public class OutcomeDelegator extends CommonDelegator{
             outcomeStageDto.setPregnancyDetected(Boolean.valueOf(pregnancyDetected));
             arSuperDataSubmissionDto.setOutcomeStageDto(outcomeStageDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(outcomeStageDto, "save");
+
             Map<String, String> errorMap = validationResult.retrieveAll();
             if(StringUtil.isEmpty(pregnancyDetected)){
                 errorMap.put("pregnancyDetected" ,"GENERAL_ERR0006");
             }
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+
+            if ("confirm".equals(crud_action_type)) {
+            errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(bpc.request, errorMap);
+            valRFC(bpc.request, outcomeStageDto);
+            }
+
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

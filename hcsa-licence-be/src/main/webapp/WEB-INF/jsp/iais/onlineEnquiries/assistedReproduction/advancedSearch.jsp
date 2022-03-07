@@ -12,8 +12,11 @@
 %>
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arAdvancedSearch.js"></script>
+
+<link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
+
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -1245,15 +1248,13 @@
                         <div class="col-xs-12 row">
                             <div class="components">
 
-                                <iais:pagination param="patientAdvParam" result="patientAdvResult"/>
+                                <iais:pagination param="patientParam" result="patientResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
-                                        <table aria-describedby="" class="table">
+                                        <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader needSort="true"
-                                                                     field="BUSINESS_NAME"
-                                                                     value="AR Centre"/>
+
                                                 <iais:sortableHeader needSort="true"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
@@ -1269,9 +1270,7 @@
                                                 <iais:sortableHeader needSort="true"
                                                                      field="NATIONALITY_DESC"
                                                                      value="Patient Nationality"/>
-                                                <iais:sortableHeader needSort="true"
-                                                                     field="CREATED_DT"
-                                                                     value="Cycle Start Date"/>
+
                                                 <iais:sortableHeader needSort="false"
                                                                      field=""
                                                                      value="Action"/>
@@ -1279,7 +1278,7 @@
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty patientAdvResult.rows}">
+                                                <c:when test="${empty patientResult.rows}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -1288,16 +1287,24 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
+                                                    <style>
+                                                        .form-horizontal p {
+                                                            line-height: 23px;
+                                                        }
+                                                    </style>
                                                     <c:forEach var="patient"
-                                                               items="${patientAdvResult.rows}"
+                                                               items="${patientResult.rows}"
                                                                varStatus="status">
-                                                        <tr>
+                                                        <tr id="advfilter${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}">
 
                                                             <td style="vertical-align:middle;">
-                                                                <c:out value="${patient.arCentre}"/>
-                                                            </td>
-                                                            <td style="vertical-align:middle;">
-                                                                <c:out value="${patient.patientName}"/>
+
+                                                                <p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
+                                                                    <c:if test="${not empty patient.cdPatientCode}">
+                                                                        <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                        </a>
+                                                                    </c:if>
+                                                                </p>
                                                             </td>
                                                             <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientIdType}"/>
@@ -1313,12 +1320,12 @@
                                                             <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientNationality}"/>
                                                             </td>
-                                                            <td style="vertical-align:middle;">
-                                                                <fmt:formatDate
-                                                                        value="${patient.cycleStartDate}"
-                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
-                                                            </td>
-                                                            <td style="vertical-align:middle;">
+
+                                                            <td >
+                                                                <button type="button" onclick="quickView('${patient.patientCode}')"   data-panel="main" class=" btn btn-sm cd-btn js-cd-panel-trigger">
+                                                                    Quick View
+                                                                </button>
+                                                                <br>
                                                                 <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
@@ -1335,7 +1342,7 @@
 
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-Adv-SearchResults-DownloadS">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
                                 </iais:action>
                             </div>
                         </div>
@@ -1345,4 +1352,16 @@
         </div>
     </form>
 </div>
+<div class="cd-panel cd-panel--from-right js-cd-panel-main">
+    <div class="cd-panel__header">
+        <h3>Quick View Panel</h3>
+        <a  class="cd-panel__close js-cd-close">Close</a>
+    </div>
+    <div class="cd-panel__container">
+        <div class="cd-panel__content quickBodyDiv">
+
+        </div> <!-- cd-panel__content -->
+    </div> <!-- cd-panel__container -->
+</div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arAdvancedSearch.js"></script>

@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a  data-toggle="collapse" href="#">
                 Outcome of IUI Cycle
             </a>
         </h4>
@@ -17,14 +17,14 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6"  value="" />
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:field width="5" value="" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Is Clinical Pregnancy Detected?"/>
-                    <iais:value width="6" display="true">
+                    <iais:field width="5" value="Is Clinical Pregnancy Detected?"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${outcomeStageDto.pregnancyDetected == true }">Yes</c:if>
                         <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
                     </iais:value>

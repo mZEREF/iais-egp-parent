@@ -29,18 +29,6 @@ function validate(){
         $('#doProcess').click();
         $('#process').addClass("active");
     }
-    // else if("Y" == '${doDocument}'){
-    //     console.log("dod");
-    //     $('#info').removeClass("active");
-    //     $('#document').addClass("active");
-    //     $('#doDocument').click();
-    // }
-    // if("Y"=='${uploadFileValidate}'){
-    //     $('#uploadButton').click();
-    // }
-}
-function doOpenApp() {
-    window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
 }
 function downloadSupportDocument(appId, repoId, docName) {
     var url = "/bsb-be/ajax/doc/download/applicationDoc/" + repoId;

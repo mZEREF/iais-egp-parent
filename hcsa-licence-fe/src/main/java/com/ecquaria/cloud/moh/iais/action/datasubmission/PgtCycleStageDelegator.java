@@ -227,6 +227,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(pgtStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

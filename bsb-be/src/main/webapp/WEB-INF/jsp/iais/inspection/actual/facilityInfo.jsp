@@ -9,6 +9,9 @@
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                     <tr>
+                        <th scope="col" style="display: none"></th>
+                    </tr>
+                    <tr>
                         <td class="col-xs-6" style="text-align: right">Facility Name</td>
                         <td class="col-xs-6" style="padding-left : 20px">${insInfo.facName}</td>
                     </tr>
@@ -39,9 +42,10 @@
     </div>
 </div>
 
-
+<c:set var="maskedAppId" value="${MaskUtil.maskValue('appId', appId)}"/>
+<c:set var="maskedAppViewModuleType" value="${MaskUtil.maskValue('appViewModuleType', appViewModuleType)}"/>
 <div style="text-align: center">
-    <a href="javascript:void(0);" onclick="viewApplication()">
+    <a href="javascript:void(0);" onclick="viewApplication('${maskedAppId}', '${maskedAppViewModuleType}')">
         <button type="button" class="btn btn-primary">
             View Application
         </button>

@@ -50,7 +50,8 @@ public class ThawingDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         if (thawingStageDto.getHasOocyte()) {
             arChangeInventoryDto.setFrozenOocyteNum(-1 * Integer.parseInt(thawingStageDto.getThawedOocytesNum()));
             arChangeInventoryDto.setThawedOocyteNum(Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedMatureNum()));

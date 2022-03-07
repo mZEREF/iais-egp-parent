@@ -61,7 +61,7 @@
             <div class="application-tab-footer" style="margin-left:0px;margin-right:0px">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 ">
-                        <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                        <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <div class="button-group">

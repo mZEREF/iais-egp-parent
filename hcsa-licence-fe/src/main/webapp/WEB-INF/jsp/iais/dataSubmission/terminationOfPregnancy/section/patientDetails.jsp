@@ -1,22 +1,19 @@
-<c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
-<c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
+<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
 <div class="form-horizontal patientPatails">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <%--<strong class="app-font-size-22 premHeader">title</strong>--%>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
-            <c:if test="${canEdit}">
                 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                 <p class="print" style="font-size: 16px;">
                     <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
                 </p>
-            </c:if>
         </iais:value>
     </iais:row>
     <div class="cleanpage">
     <iais:row>
-        <iais:field width="5" value="Name Of Patient" mandatory="true"/>
+        <iais:field width="5" value="Name of Patient" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="patientName" value="${patientInformationDto.patientName}"/>
         </iais:value>
@@ -42,6 +39,7 @@
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                          value="${patientInformationDto.nationality}" cssClass="nationality"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -96,6 +94,7 @@
         <iais:value width="7" cssClass="col-md-7">
             <iais:input id="childrenNum" maxLength="2" type="text" name="livingChildrenNo"
                         value="${patientInformationDto.livingChildrenNo}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_livingChildrenNo"></span>
         </iais:value>
     </iais:row>
 
@@ -132,7 +131,7 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" value="Gender of Living Children (by Order)"/>
+        <iais:field width="5" value="Gender of Living Children (By Order)"/>
         <iais:value width="7" cssClass="col-md-7">
             <div id="genders">
                 <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
@@ -154,6 +153,13 @@
     </iais:row>
     </div>
 </div>
+<c:if test="${hasDraft}">
+    <iais:confirm
+            msg="DS_MSG010"
+            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
+            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
+</c:if>
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {

@@ -39,7 +39,6 @@
     }
 
 </style>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -58,7 +57,7 @@
                         </iais:row>
 
                         <hr>
-                        <c:if test="${arCentreSelectOption.size() != 1}">
+                        <c:if test="${arCentreSelectOption.size() > 1}">
                             <iais:row>
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
@@ -282,3 +281,4 @@
 </form>
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>

@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title" >
-            <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
+            <a href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission
             </a>
         </h4>
     </div>
-    <div id="viewArCycleStage" class="panel-collapse collapse">
+    <div id="viewArCycleStage" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
@@ -24,11 +24,7 @@
                         <c:out value="Current Version"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <select id="oldDsSelect" name="oldDsSelect">
-                            <c:forEach items="${arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}" var="oldDs" varStatus="index">
-                                <option  <c:if test="${oldDs.dataSubmissionDto.id ==arSuperDataSubmissionDtoVersion.dataSubmissionDto.id }">checked</c:if> value ="${oldDs.dataSubmissionDto.id}">V ${oldDs.dataSubmissionDto.version}</option>
-                            </c:forEach>
-                        </select>
+                        <iais:select  id="oldDsSelect" name="oldDsSelect" options="versionOptions" value="${arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}"/>
                     </iais:value>
                 </iais:row>
 
@@ -105,7 +101,7 @@
 
                 <iais:row>
                     <iais:field width="4" value="In-Vitro Maturation" />
-                    <iais:value width="4" cssClass="col-md-3" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arCycleStageDto.inVitroMaturation ? 'Yes' : 'No'}"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
@@ -246,6 +242,7 @@
         </div>
     </div>
 </div>
+<c:set var="donorFrom" value="ar"/>
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>
 

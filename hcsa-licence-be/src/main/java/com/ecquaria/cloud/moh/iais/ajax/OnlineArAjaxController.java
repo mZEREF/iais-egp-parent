@@ -69,9 +69,10 @@ public class OnlineArAjaxController {
         int currentFrozenEmbryos=0;
         int currentFreshEmbryos=0;
         int currentFrozenSperms=0;
-        List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
-
+        ArEnquiryCoFundingHistoryDto arCoFundingDto =new ArEnquiryCoFundingHistoryDto();
         try {
+            arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientCode);
+            List<ArCurrentInventoryDto> arCurrentInventoryDtos=assistedReproductionService.arCurrentInventoryDtosByPatientCode(patientInfoDto.getPatient().getPatientCode());
             for (ArCurrentInventoryDto aci:arCurrentInventoryDtos
             ) {
                 currentFrozenOocytes+=aci.getFrozenOocyteNum();
@@ -83,7 +84,6 @@ public class OnlineArAjaxController {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientCode);
 
         sql=sql.replaceAll("IUICyclesNumber", String.valueOf(arCoFundingDto.getIuiCoFundedTotal()));
         sql=sql.replaceAll("ARTFreshCyclesNumber",String.valueOf(arCoFundingDto.getArtFreshCoFundedTotal()));
@@ -224,7 +224,7 @@ public class OnlineArAjaxController {
 
         log.debug("indicates that a record has been selected ");
 
-        QueryHelp.setMainSql("onlineEnquiry", "searchPatientByAssistedReproduction",searchParam);
+        QueryHelp.setMainSql("onlineEnquiry", "advancedSearchPatientByAssistedReproduction",searchParam);
 
         SearchResult<AssistedReproductionEnquiryResultsDto> results = assistedReproductionService.searchPatientByParam(searchParam);
 

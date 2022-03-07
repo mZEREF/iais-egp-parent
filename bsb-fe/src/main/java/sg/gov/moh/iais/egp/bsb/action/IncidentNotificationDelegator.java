@@ -20,24 +20,22 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentNotificationClient;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Draft;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,14 +66,16 @@ public class IncidentNotificationDelegator {
     private static final String EDIT_REFERENCE_ID = "editRefId";
     private static final String KEY_EDIT_REF_ID = "editId";
     private final FileRepoClient fileRepoClient;
-    private final IncidentNotificationClient incidentClient;
+    private final ReportableEventClient reportableEventClient;
     private final BsbFileClient bsbFileClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public IncidentNotificationDelegator(FileRepoClient fileRepoClient, IncidentNotificationClient incidentClient, BsbFileClient bsbFileClient) {
+    public IncidentNotificationDelegator(FileRepoClient fileRepoClient, ReportableEventClient reportableEventClient, BsbFileClient bsbFileClient, DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
-        this.incidentClient = incidentClient;
+        this.reportableEventClient = reportableEventClient;
         this.bsbFileClient = bsbFileClient;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc){
@@ -99,7 +99,7 @@ public class IncidentNotificationDelegator {
             boolean failRetrieveEditData = true;
             String refId = MaskUtil.unMaskValue(KEY_EDIT_REF_ID, maskedRefId);
             if (refId != null && !maskedRefId.equals(refId)) {
-                ResponseDto<IncidentNotificationDto> resultDto = incidentClient.retrieveIncidentNotByReferenceId(refId);
+                ResponseDto<IncidentNotificationDto> resultDto = reportableEventClient.retrieveIncidentNotByReferenceId(refId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
                     NodeGroup incidentNotRoot = resultDto.getEntity().toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
@@ -271,7 +271,7 @@ public class IncidentNotificationDelegator {
         }
         Nodes.needValidation(incidentNotRoot, NODE_NAME_DOCUMENTS);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getIncidentNotDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getIncidentNotDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -307,7 +307,7 @@ public class IncidentNotificationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_PERSON_INVOLVED_INFO, ((SimpleNode)incidentNotRoot.at(NODE_NAME_PERSON_INVOLVED_INFO)).getValue());
 
 
-        ParamUtil.setRequestAttr(request, "docSettings", getIncidentNotDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getIncidentNotDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)incidentNotRoot.at(NODE_NAME_DOCUMENTS)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -334,7 +334,7 @@ public class IncidentNotificationDelegator {
                 IncidentNotificationDto incidentNotificationDto = IncidentNotificationDto.from(incidentNotRoot);
                 AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                 incidentNotificationDto.setAuditTrailDto(auditTrailDto);
-                ResponseDto<String> responseDto = incidentClient.saveNewIncidentNotification(incidentNotificationDto);
+                ResponseDto<String> responseDto = reportableEventClient.saveNewIncidentNotification(incidentNotificationDto);
                 if(log.isInfoEnabled()){
                     log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
                 }
@@ -486,15 +486,6 @@ public class IncidentNotificationDelegator {
                 .build();
     }
 
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getIncidentNotDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_REPORT, "Incident Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_ACTION_REPORT, "Incident Action Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
-    }
-
     public static List<SelectOption> tempOccurrenceHHOps(){
         List<SelectOption> occurrenceHHOps = new ArrayList<>(24);
         for (int i = 1; i <= 24; i++) {
@@ -526,14 +517,14 @@ public class IncidentNotificationDelegator {
     }
 
     public List<SelectOption> tempFacNameOps(){
-        List<FacilityInfo> facilityInfos = incidentClient.queryDistinctFacilityName();
+        List<FacilityBasicInfo> facilityInfos = reportableEventClient.queryDistinctFacilityName();
         if(CollectionUtils.isEmpty(facilityInfos)){
            return originalOps();
         }
         List<SelectOption> facNameOps = new ArrayList<>(facilityInfos.size());
         facNameOps.add(new SelectOption("",PARAM_PLEASE_SELECT));
-        for (FacilityInfo info : facilityInfos) {
-            facNameOps.add(new SelectOption(MaskUtil.maskValue("id",info.getFacId()),info.getFacName()));
+        for (FacilityBasicInfo info : facilityInfos) {
+            facNameOps.add(new SelectOption(MaskUtil.maskValue("id",info.getId()),info.getName()));
         }
         return facNameOps;
     }
@@ -603,7 +594,7 @@ public class IncidentNotificationDelegator {
 
         // save data
         IncidentNotificationDto finalAllDataDto = IncidentNotificationDto.from(incidentNotRoot);
-        String draftAppNo = incidentClient.saveDraftIncidentNotification(finalAllDataDto);
+        String draftAppNo = reportableEventClient.saveDraftIncidentNotification(finalAllDataDto);
         // set draft app No. into the NodeGroup
         IncidentInfoDto incidentInfoDto = (IncidentInfoDto) ((SimpleNode) incidentNotRoot.at(NODE_NAME_INCIDENT_INFO)).getValue();
         incidentInfoDto.setDraftAppNo(draftAppNo);

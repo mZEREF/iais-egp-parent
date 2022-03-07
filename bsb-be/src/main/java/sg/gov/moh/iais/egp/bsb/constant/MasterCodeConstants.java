@@ -27,6 +27,7 @@ public class MasterCodeConstants {
     public static final String APP_TYPE_SUSPEND = "BSBAPTY007";
     public static final String APP_TYPE_REINST = "BSBAPTY008";
     public static final String APP_TYPE_WITHDRAW = "BSBAPTY009";
+    public static final String APP_TYPE_SUBMISSION = "BSBAPTY010";
 
     public static final String APP_STATUS_PEND_DO                       = "BSBAPST001";
     public static final String APP_STATUS_PEND_AO                       = "BSBAPST002";
@@ -223,6 +224,10 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW = "MOHPRO022";
     public static final String MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT = "MOHPRO023";
     public static final String MOH_PROCESSING_DECISION_MARK_AS_FINAL = "MOHPRO024";
+    public static final String MOH_PROCESSING_DECISION_RECOMMEND_ACCEPTANCE_OF_NC_RECTIFICATIONS = "MOHPRO025";
+    public static final String MOH_PROCESSING_DECISION_RECOMMEND_REJECTION_OF_NC_RECTIFICATIONS = "MOHPRO026";
+    public static final String MOH_PROCESSING_DECISION_ACCEPT_RECTIFICATIONS  = "MOHPRO027";
+    public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";

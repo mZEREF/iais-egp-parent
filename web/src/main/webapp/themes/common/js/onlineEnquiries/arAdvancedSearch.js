@@ -1,5 +1,50 @@
 var dividajaxlist = [];
 
+$(document).ready(function () {
+
+    var panelTriggers = document.getElementsByClassName('js-cd-panel-trigger');
+    if( panelTriggers.length > 0 ) {
+        for(var i = 0; i < panelTriggers.length; i++) {
+            (function(i){
+                var panelClass = 'js-cd-panel-'+panelTriggers[i].getAttribute('data-panel'),
+                    panel = document.getElementsByClassName(panelClass)[0];
+                // open panel when clicking on trigger btn
+                panelTriggers[i].addEventListener('click', function(event){
+                    event.preventDefault();
+                    addClass(panel, 'cd-panel--is-visible');
+                });
+                //close panel when clicking on 'x' or outside the panel
+                panel.addEventListener('click', function(event){
+                    if( hasClass(event.target, 'js-cd-close') || hasClass(event.target, panelClass)) {
+                        event.preventDefault();
+                        removeClass(panel, 'cd-panel--is-visible');
+                    }
+                });
+            })(i);
+        }
+    }
+
+    //class manipulations - needed if classList is not supported
+    //https://jaketrent.com/post/addremove-classes-raw-javascript/
+    function hasClass(el, className) {
+        if (el.classList) return el.classList.contains(className);
+        else return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+    }
+    function addClass(el, className) {
+        if (el.classList) el.classList.add(className);
+        else if (!hasClass(el, className)) el.className += " " + className;
+    }
+    function removeClass(el, className) {
+        if (el.classList) el.classList.remove(className);
+        else if (hasClass(el, className)) {
+            var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+            el.className=el.className.replace(reg, ' ');
+        }
+    }
+
+})
+
+
 function doArBack() {
     showWaiting();
     $("[name='adv_action_type']").val('back');
@@ -54,6 +99,32 @@ var fullDetailsView = function (patientCode) {
 };
 var getPatientByPatientCode = function (patientCode, divid) {
     showWaiting();
+    var advfiltersonList=$("[id^='advfilterson']");
+    var lenSon = advfiltersonList.length;
+    for (var i = 0;i<lenSon;i++){
+        var hideSon = $(advfiltersonList[i]);
+        if(hideSon.prop('id') !=='advfilterson'+divid){
+            hideSon.hide();
+        }
+    }
+    var advfilterList=$("a[data-target^='#dropdown']");
+    var len = advfilterList.length;
+    for (var j = 0;j<len;j++){
+        var hide = $(advfilterList[j]);
+        if(hide.prop('data-target') !=='#dropdown'+divid){
+            hide.addClass('collapsed')
+            hide.prop('aria-expanded', false);
+        }
+    }
+    var dropdownList=$("[id^='dropdown']");
+    var lendropdown = dropdownList.length;
+    for (var k = 0;k<lendropdown;k++){
+        var dropdown = $(dropdownList[k]);
+        if(dropdown.prop('id') !=='dropdown'+divid){
+            dropdown.removeClass('in')
+            dropdown.prop('aria-expanded', false);
+        }
+    }
     if (!isInArray(dividajaxlist,divid)) {
         groupAjax(patientCode, divid);
     } else {
@@ -147,4 +218,12 @@ var quickView = function (patientCode) {
         'error':function () {
         }
     });
+}
+
+var fullStagesView = function (submissionIdNo) {
+
+    showWaiting();
+    $("[name='crud_action_value']").val(submissionIdNo);
+    $("[name='adv_action_type']").val('viewStage');
+    $('#mainForm').submit();
 }

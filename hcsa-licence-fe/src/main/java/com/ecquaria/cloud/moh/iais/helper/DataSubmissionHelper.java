@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -79,6 +80,8 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
         session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
+        // clear session title
+        session.removeAttribute("title");
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
@@ -219,38 +222,26 @@ public final class DataSubmissionHelper {
         }
         return vssSuperDataSubmissionDto;
     }
-    public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
-        if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
-            return null;
-        }
-        String lastCycle = selectionDto.getLastCycle();
-        String lastStage = selectionDto.getLastStage();
-        String lastStatus = selectionDto.getLastStatus();
-        String latestCycle = selectionDto.getLatestCycle();
-        String latestStage = selectionDto.getLatestStage();
-        String additionalStage = selectionDto.getAdditionalStage();
-        return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage,
-                selectionDto.isUndergoingCycle(), lastStatus);
-    }
 
     /**
      * Cycle Stages
      *
      * Spec: 3.3.3 Stage Selection Business Rules
      *
-     * @param latestCycle
-     * @param latestStage
-     * @param lastCycle
-     * @param lastStage
-     * @param additionalStage
-     * @param lastStatus
+     * @param selectionDto
      * @return
      */
-    private static List<String> getNextStageForAR(String latestCycle, String latestStage, String lastCycle, String lastStage,
-            String additionalStage, boolean undergoingCycle, String lastStatus) {
-        log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
-        log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + " : " + lastStage
-                + " : " + additionalStage + " : " + undergoingCycle + " : " + lastStatus + " -----"));
+    public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
+        if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
+            return null;
+        }
+        log.info(StringUtil.changeForLog("----- The Cycle Stage Selection: " + JsonUtil.parseToJson(selectionDto) + " ----- "));
+        String lastCycle = selectionDto.getLastCycle();
+        String lastStage = selectionDto.getLastStage();
+        String lastStatus = selectionDto.getLastStatus();
+        String additionalStage = selectionDto.getAdditionalStage();
+        boolean undergoingCycle = selectionDto.isUndergoingCycle();
+
         // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
         // available stages for selection will be based on the stage prior to it
         // disposal, donation
@@ -271,16 +262,24 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
-                result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                if (selectionDto.isFreshNatural() || selectionDto.isFreshStimulated()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
+                }
+                if (selectionDto.isFrozenOocyte() || selectionDto.isFrozenEmbryo()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                }
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                if (selectionDto.isFrozenOocyte()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_THAWING);
+                }
             } else if (DataSubmissionConsts.AR_STAGE_THAWING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
-                result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
-                result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+                if (selectionDto.isFrozenEmbryo()) {
+                    result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
+                    result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
+                }
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             } else if (DataSubmissionConsts.AR_STAGE_FERTILISATION.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
@@ -340,6 +339,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             }
         }
+        log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
         return result;
     }
 
@@ -447,6 +447,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(dpSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(dpSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_DRP);
         String cycleType = cycleDto.getCycleType();
@@ -490,6 +491,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(vssSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(vssSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_VSS);
         String cycleType = cycleDto.getCycleType();
@@ -526,11 +528,14 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
+        cycleDto.setSvcName(topSuperDataSubmissionDto.getSvcName());
         cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.LDT_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
-            cycleType = DataSubmissionConsts.DS_CYCLE_TOP;
+        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_TOP;
+        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+            cycleType = DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP;
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
@@ -548,8 +553,10 @@ public final class DataSubmissionHelper {
         }
         dataSubmission.setSubmissionType(topSuperDataSubmissionDto.getSubmissionType());
         String cycleStage = null;
-        if (DataSubmissionConsts.TOP_TYPE_SBT.equals(topSuperDataSubmissionDto.getSubmissionType())) {
-            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOP;
+        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOPPATIENT;
+        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TERMINATION;
         }
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
@@ -742,15 +749,25 @@ public final class DataSubmissionHelper {
         return title;
     }
 
-    public static String getSmallTitle(String type) {
+    public static String getSmallTitle(String dsType, String appType, String submissionType) {
         StringBuilder title = new StringBuilder();
-        title.append("You are submitting for <strong>");
-        switch (type) {
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(appType)) {
+            title.append("You are amending for <strong>");
+        } else {
+            title.append("You are submitting for <strong>");
+        }
+        switch (dsType) {
             case DataSubmissionConsts.DS_AR:
-                title.append(DataSubmissionConstant.DS_SMALL_TITLE_ART);
+                if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+                    title.append(DataSubmissionConstant.DS_TITLE_PATIENT);
+                } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
+                    title.append(DataSubmissionConstant.DS_TITLE_DONOR_SAMPLE);
+                } else {
+                    title.append(DataSubmissionConstant.DS_TITLE_CYCEL_STAGE);
+                }
                 break;
             case DataSubmissionConsts.DS_DRP:
-                title.append(DataSubmissionConstant.DS_SMALL_TITLE_DRP);
+                title.append(DataSubmissionConstant.DS_TITLE_DRP);
                 break;
         }
         title.append("</strong>");

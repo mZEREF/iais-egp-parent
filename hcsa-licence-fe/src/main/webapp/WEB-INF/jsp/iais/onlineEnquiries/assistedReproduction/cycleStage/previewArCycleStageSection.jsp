@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title" >
-            <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
+            <a  href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission
             </a>
         </h4>
     </div>
-    <div id="viewArCycleStage" class="panel-collapse collapse">
+    <div id="viewArCycleStage" class="panel-collapse collapse in" aria-expanded="true">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
@@ -19,7 +19,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" cssClass="col-md-5"  value="" />
+                    <iais:field width="5"  value="" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
@@ -175,5 +175,6 @@
         </div>
     </div>
 </div>
+<c:set var="donorFrom" value="ar"/>
 <%@include file="previewDonorSection.jsp"%>
 

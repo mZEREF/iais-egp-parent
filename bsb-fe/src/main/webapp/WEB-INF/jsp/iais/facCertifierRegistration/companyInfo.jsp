@@ -12,7 +12,7 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
 <%@include file="dashboard.jsp"%>
 
@@ -25,7 +25,7 @@
             <%@ include file="../mainAppCommon/facCertifierRegistration/companyInfo.jsp" %>
             <div class="row">
                 <div class="col-xs-12 col-md-3">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em>Previous</a>
                 </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="text-right text-center-mobile">

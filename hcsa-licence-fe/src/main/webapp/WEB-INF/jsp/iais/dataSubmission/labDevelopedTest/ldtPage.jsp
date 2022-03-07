@@ -117,6 +117,31 @@
                                             <span class="error-msg" name="errorMsg" id="error_remarks"></span>
                                         </iais:value>
                                     </iais:row>
+                                    <c:if test="${LdtSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+                                        <c:set var="dataSubmission"
+                                               value="${LdtSuperDataSubmissionDto.dataSubmissionDto}"/>
+                                        <iais:row>
+                                            <iais:field width="11" value="Reason for Amendment" id="amendReasonLabel"
+                                                        mandatory="true"/>
+                                            <iais:value width="11">
+                                                <iais:select name="amendReason" firstOption="Please Select"
+                                                             codeCategory="DATA_SUBMISSION_CYCLE_STAGE_AMENDMENT"
+                                                             value="${dataSubmission.amendReason}"
+                                                             cssClass="amendReasonSel"
+                                                             onchange="toggleOnSelect(this, 'PCS_002', 'amendReasonOtherDiv')"/>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row id="amendReasonOtherDiv"
+                                                  style="${dataSubmission.amendReason ne 'PCS_002' ? 'display:none'  : null }">
+                                            <iais:field width="11" value="Reason for Amendment (Others)"
+                                                        mandatory="true"/>
+                                            <iais:value width="11">
+                                                <iais:input maxLength="50" type="text" name="amendReasonOther"
+                                                            id="amendReasonOther"
+                                                            value="${dataSubmission.amendReasonOther}"/>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>

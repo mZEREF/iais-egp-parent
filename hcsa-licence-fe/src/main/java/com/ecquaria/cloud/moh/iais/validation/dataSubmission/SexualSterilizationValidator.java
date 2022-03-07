@@ -24,7 +24,7 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION);
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto():vssTreatmentDto.getGuardianAppliedPartDto();
-        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
+        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto()== null ? new SexualSterilizationDto():vssTreatmentDto.getSexualSterilizationDto();
 
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();

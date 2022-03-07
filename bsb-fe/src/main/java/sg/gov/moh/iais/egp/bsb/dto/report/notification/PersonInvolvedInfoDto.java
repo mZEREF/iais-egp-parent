@@ -57,7 +57,8 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("incidentFeignClient", "validatePersonInvolvedInfo", new Object[]{this});
+        log.info("-----personInvolvedInfoDto validation"+this);
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validatePersonInvolvedInfo", new Object[]{this});
         return validationResultDto.isPass();
     }
 

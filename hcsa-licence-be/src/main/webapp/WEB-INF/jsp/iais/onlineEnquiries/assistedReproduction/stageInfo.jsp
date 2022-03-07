@@ -53,7 +53,6 @@
         margin-top: 20px;
     }
 </style>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submissionNo" value="${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}" />
 <webui:setLayout name="iais-intranet"/>
@@ -282,17 +281,5 @@
     </form>
 </div>
 
-<script>
 
-    $('#oldDsSelect').change(function () {
-
-        var reason= $('#oldDsSelect option:selected').val();
-
-        showWaiting();
-        $("[name='crud_action_additional']").val('${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}');
-        $("[name='crud_type']").val(reason);
-        $("[name='crud_action_type']").val('step');
-        $('#mainForm').submit();
-
-    });
-</script>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>

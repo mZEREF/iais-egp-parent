@@ -38,8 +38,10 @@
         </div>
     </div>
 </div>
+<c:set var="maskedAppId" value="${MaskUtil.maskValue('appId', appId)}"/>
+<c:set var="maskedAppViewModuleType" value="${MaskUtil.maskValue('appViewModuleType', appViewModuleType)}"/>
 <div style="text-align: center">
-    <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
+    <a href="javascript:void(0);" onclick="viewApplication('${maskedAppId}', '${maskedAppViewModuleType}')">
         <button type="button" class="btn btn-primary">
             View Application
         </button>

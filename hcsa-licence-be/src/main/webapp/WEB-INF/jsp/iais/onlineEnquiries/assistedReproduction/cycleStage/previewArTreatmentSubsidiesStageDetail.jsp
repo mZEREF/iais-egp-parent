@@ -17,21 +17,21 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6"  value="" />
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:field width="5"  value="" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Please indicate ART Co-funding" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:field width="5" value="Please indicate ART Co-funding" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <iais:code code="${arTreatmentSubsidiesStageDto.coFunding}"/>
                     </iais:value>
                 </iais:row>
                 <c:if test="${isDisplayAppeal}">
                     <iais:row>
-                        <iais:field width="6" value="Is there an Appeal?" cssClass="col-md-6"/>
-                        <iais:value width="6" cssClass="col-md-6" display="true">
+                        <iais:field width="5" value="Is there an Appeal?" />
+                        <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arTreatmentSubsidiesStageDto.isThereAppeal?'Yes':'No'}"/>
                         </iais:value>
                     </iais:row>

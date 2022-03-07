@@ -6,7 +6,6 @@
 <div id="u8522_text" class="text ">
     <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
 												documents are those defined for this digital service only.</span></p>
-    <p>The maximum file size for each upload is 5MB. Acceptable file formats are PDF, DOCX, XLSX, CSV, JPEG, PNG</p>
 </div>
 <div class="row">
     <div class="col-xs-12">
@@ -48,8 +47,6 @@
             </strong></div>
             <div class="text ">
                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
-                <p>The maximum file size for each upload is 5MB</p>
-                <p>Acceptable file formats are PDF, DOCX, XLSX, CSV, JPEG, PNG</p>
             </div>
             <table aria-describedby="" class="table">
                 <thead>
@@ -68,13 +65,8 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <c:if test="${back eq 'revocationFacility'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
-                <c:if test="${back eq 'revocationTaskList'}">
-                    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
-                </c:if>
-                    <a class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>
+                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                    <a style="float: right" class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>
                     <span data-err-ind="upload" class="error-msg"></span>
             </iais:action>
         </div>

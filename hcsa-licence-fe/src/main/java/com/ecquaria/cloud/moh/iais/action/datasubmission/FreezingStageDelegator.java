@@ -43,7 +43,8 @@ public class FreezingStageDelegator extends CommonDelegator {
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmission.setArChangeInventoryDto(arChangeInventoryDto);
         if (arChangeInventoryDto != null && arSubFreezingStageDto != null) {
             String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
             int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());

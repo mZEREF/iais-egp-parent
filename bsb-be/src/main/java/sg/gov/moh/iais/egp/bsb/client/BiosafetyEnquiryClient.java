@@ -26,23 +26,20 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/fac_info/orgName")
     FeignResponseEntity<List<String>> queryDistinctOrgName();
 
-    @GetMapping(path = "/app_info/{applicationNo}")
-    ResponseDto<ApplicationResultDto> queryApplicationByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
-
     @GetMapping(path = "/bat-info/basic", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<BatBasicInfo>> queryBiologicalBySchedule(@RequestParam(name = "schedule") String schedule);
 
-    @GetMapping(value = "/app_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApplicationResultDto> getApp(@RequestBody  EnquiryDto dto);
+    @GetMapping(value = "/online-enquiry/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApplicationResultDto> getApplication(@RequestBody  EnquiryDto dto);
 
-    @GetMapping(value = "/fac_info/query/fac", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilityResultDto> getFac(@RequestBody  EnquiryDto dto);
+    @GetMapping(value = "/online-enquiry/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityResultDto> getFacility(@RequestBody  EnquiryDto dto);
 
-    @GetMapping(value = "/approval_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/online-enquiry/approval", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalResultDto> getApproval(@RequestBody EnquiryDto dto);
 
-    @GetMapping(value = "/afc_info/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovedFacilityCerResultDto> getAFC(@RequestBody  EnquiryDto dto);
+    @GetMapping(value = "/online-enquiry/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovedFacilityCerResultDto> getApprovedFacilityCertifier(@RequestBody  EnquiryDto dto);
 
     @GetMapping(path = "/bat-info/{id}")
     BiologicalDto getBiologicalById(@PathVariable(name = "id") String biologicalId);

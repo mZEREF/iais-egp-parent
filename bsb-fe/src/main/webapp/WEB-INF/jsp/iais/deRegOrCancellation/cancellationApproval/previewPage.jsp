@@ -1,6 +1,5 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
@@ -93,20 +92,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 ">
-                                    <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                </div>
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="button-group">
-                                        <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
-                                        <a class="btn btn-primary next" id="submit" >Submit</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
+                        <%@ include file="../previewInnerFooter.jsp" %>
+                        <%@ include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
                     </form>
                 </div>
             </div>

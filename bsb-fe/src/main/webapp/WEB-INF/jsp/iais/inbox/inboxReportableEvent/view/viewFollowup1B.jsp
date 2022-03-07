@@ -5,7 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 
 <%
@@ -119,7 +119,7 @@
                                                                         </div>
 
                                                                         <c:forEach var="doc" items="${docSettings}">
-                                                                            <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
+                                                                            <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
                                                                             <c:set var="savedFileList" value="${docMap.get(doc.type)}" />
                                                                             <c:if test="${not empty savedFileList}">
                                                                                 <div class="form-group">
@@ -128,9 +128,9 @@
                                                                                 </div>
                                                                                 <div>
                                                                                     <c:forEach var="file" items="${savedFileList}">
-                                                                                        <c:set var="tmpId" value="${MaskUtil.maskValue('file', file.repoId)}"/>
+                                                                                        <c:set var="tmpId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                                                                                         <div class="form-group">
-                                                                                            <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('view', '${tmpId}')">${file.filename}</a>(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                                                            <a href="/bsb-fe/ajax/doc/download/reportableEvent/view/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${file.filename}</span></a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)
                                                                                             <div class="clear"></div>
                                                                                         </div>
                                                                                     </c:forEach>
@@ -152,7 +152,7 @@
                     </div>
                     <div class="col-xs-12">
                         <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em>
-                            Back</a>
+                            Previous</a>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,8 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.lang.String"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -15,7 +16,7 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection-ncs.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection-rectify-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -27,6 +28,8 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input id="multiUploadTrigger" type="file" multiple="multiple" style="display: none"/>
+    <input id="echoReloadTrigger" type="file" style="display: none"/>
     <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
     <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
     <div id="fileUploadInputDiv" style="display: none"></div>
@@ -51,22 +54,26 @@
                                 <div class="document-upload-list">
                                     <h3>Attachment</h3>
                                     <div class="file-upload-gp">
-                                        <c:forEach var="info" items="${newSavedDoc}">
-                                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
-                                            <div id="${tmpId}FileDiv">
-                                                <span id="${tmpId}Span"><a href="/bsb-fe/ajax/doc/download/commentInsReport/comment/${tmpId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span><button
-                                                    type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button>
-                                                <span data-err-ind="${info.tmpId}" class="error-msg"></span>
-                                            </div>
-                                        </c:forEach>
-                                        <c:forEach var="info" items="${oldSavedDoc}">
-                                            <c:set var="repoId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                                            <div id="${repoId}FileDiv">
-                                                <span id="${repoId}Span"><a href="/bsb-fe/ajax/doc/download/commentInsReport/comment/${repoId}">${info.filename}</a>(${String.format("%.1f", info.size/1024.0)}KB)</span><button
-                                                    type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button>
-                                                <span data-err-ind="${info.repoId}" class="error-msg"></span>
-                                            </div>
-                                        </c:forEach>
+                                        <c:if test="${newSavedDoc ne null}">
+                                            <c:forEach var="info" items="${newSavedDoc}">
+                                                <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
+                                                <div id="${tmpId}FileDiv">
+                                                    <a href="/bsb-fe/ajax/doc/download/insNonCompliance/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button>
+                                                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                                </div>
+                                            </c:forEach>
+                                        </c:if>
+                                        <c:if test="${oldSavedDoc ne null}">
+                                            <c:forEach var="info" items="${oldSavedDoc}">
+                                                <c:set var="repoId"><iais:mask name="file" value="${info.repoId}"/></c:set>
+                                                <div id="${repoId}FileDiv">
+                                                    <a href="/bsb-fe/ajax/doc/download/insNonCompliance/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
+                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${repoId}')">Delete</button>
+                                                    <span data-err-ind="${info.repoId}" class="error-msg"></span>
+                                                </div>
+                                            </c:forEach>
+                                        </c:if>
                                         <a class="btn file-upload btn-secondary" data-upload-file="attachment" href="javascript:void(0);">Upload</a>
                                         <span data-err-ind="attachment" class="error-msg"></span>
                                     </div>
@@ -75,7 +82,7 @@
                             <h3>Remarks</h3>
                             <div class="form-group">
                                 <div class="col-md-12 col-sm-12">
-                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${remarks}"/></textarea>
+                                    <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${rectifyItemSaveDto.remarks}"/></textarea>
                                     <span data-err-ind="remarks" class="error-msg"></span>
                                 </div>
                             </div>

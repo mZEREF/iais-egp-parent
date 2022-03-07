@@ -18,6 +18,7 @@ public class ReportableEventConstants {
     public static final String NODE_NAME_PERSON_INVOLVED_INFO  = "involvedPerson";
     public static final String NODE_NAME_DOCUMENTS             = "documents";
     public static final String NODE_NAME_PREVIEW_SUBMIT        = "previewSubmit";
+    public static final String PARAM_REPO_ID_FILE_MAP          = "repoIdDocMap";
 
     public static final String NODE_NAME_INCIDENT_INVESTIGATION = "incidentInvest";
     public static final String NODE_NAME_MEDICAL_INVESTIGATION = "medicalInvest";

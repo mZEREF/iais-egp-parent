@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -163,13 +164,15 @@ public class SelfAuditDelegator {
         }
     }
 
-    public static void setAuditDoc(HttpServletRequest request, FacilitySubmitSelfAuditDto revokeDto) {
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(revokeDto.getDocRecordInfos(), PrimaryDocDto.DocRecordInfo::getRepoId));
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-        Set<String> docTypes = saveFiles.keySet();
-        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
+    public static void setAuditDoc(HttpServletRequest request, FacilitySubmitSelfAuditDto auditDto) {
+        if (!CollectionUtils.isEmpty(auditDto.getDocRecordInfos())) {
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(auditDto.getDocRecordInfos(), PrimaryDocDto.DocRecordInfo::getRepoId));
+            Map<String, List<PrimaryDocDto.DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            Set<String> docTypes = saveFiles.keySet();
+            ParamUtil.setRequestAttr(request, "docTypes", docTypes);
+            ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
+            ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
+        }
     }
 }

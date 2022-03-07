@@ -25,28 +25,28 @@
           </span>
         </h3>
         <iais:row>
-          <iais:field width="6" cssClass="col-md-6"  value="" />
-          <iais:value width="6" cssClass="col-md-6" display="true">
+          <iais:field width="5"  value="" />
+          <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="Current Version"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field width="6" value="What was cryopreserved?" cssClass="col-md-6"/>
-          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+          <iais:field width="5" value="What was cryopreserved?" />
+          <iais:value width="7" cssClass="col-md-7 " display="true">
             <iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/>
           </iais:value>
         </iais:row>
 
         <iais:row>
-          <iais:field width="6" value="No. Cryopreserved" cssClass="col-md-6"/>
-          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+          <iais:field width="5" value="No. Cryopreserved" />
+          <iais:value width="7" cssClass="col-md-7 " display="true">
             <c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
           </iais:value>
         </iais:row>
 
         <iais:row>
-          <iais:field width="6" value="Cryopreservation Date" cssClass="col-md-6"/>
-          <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">
+          <iais:field width="5" value="Cryopreservation Date" />
+          <iais:value width="7" cssClass="col-md-7 " display="true">
             <fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}'
                             pattern='dd/MM/yyyy'/>
           </iais:value>

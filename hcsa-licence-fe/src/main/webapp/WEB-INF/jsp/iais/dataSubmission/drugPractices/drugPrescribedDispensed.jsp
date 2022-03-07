@@ -22,7 +22,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3 style="font-size: 36px">New Drug Practices Submission</h3>
+                <h3 style="font-size: 36px">Submit Drug Practices Submission</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/drugSubmissionSection.jsp" %>
                     <%@include file="section/drugMedicationSection.jsp" %>

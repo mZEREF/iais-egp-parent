@@ -75,20 +75,72 @@ function sortRecords(sortFieldName, sortType) {
 
 var getStageByCycleId = function (cycleId, divid) {
     showWaiting();
+    var advfiltersonList=$("[id^='advfiltersonCycle']");
+    var lenSon = advfiltersonList.length;
+    for (var i = 0;i<lenSon;i++){
+        var hideSon = $(advfiltersonList[i]);
+        if(hideSon.prop('id') !=='advfiltersonCycle'+divid){
+            hideSon.hide();
+        }
+    }
+    var advfilterList=$("a[data-target^='#dropdownCycle']");
+    var len = advfilterList.length;
+    for (var j = 0;j<len;j++){
+        var hide = $(advfilterList[j]);
+        if(hide.prop('data-target') !=='#dropdownCycle'+divid){
+            hide.addClass('collapsed')
+            hide.prop('aria-expanded', false);
+        }
+    }
+    var dropdownList=$("[id^='dropdownCycle']");
+    var lendropdown = dropdownList.length;
+    for (var k = 0;k<lendropdown;k++){
+        var dropdown = $(dropdownList[k]);
+        if(dropdown.prop('id') !=='dropdownCycle'+divid){
+            dropdown.removeClass('in')
+            dropdown.prop('aria-expanded', false);
+        }
+    }
     if (!isInArray(dividajaxlist,divid)) {
         stageAjax(cycleId, divid);
     } else {
-        var display = $('#advfilterson' + divid).css('display');
+        var display = $('#advfiltersonCycle' + divid).css('display');
         if (display == 'none') {
-            $('#advfilterson' + divid).show();
+            $('#advfiltersonCycle' + divid).show();
         } else {
-            $('#advfilterson' + divid).hide();
+            $('#advfiltersonCycle' + divid).hide();
         }
     }
     dismissWaiting();
 };
 
 var getStageByNonCycleId = function (cycleId, divid) {
+    var advfiltersonList=$("[id^='advfiltersonNon']");
+    var lenSon = advfiltersonList.length;
+    for (var i = 0;i<lenSon;i++){
+        var hideSon = $(advfiltersonList[i]);
+        if(hideSon.prop('id') !=='advfiltersonNon'+divid){
+            hideSon.hide();
+        }
+    }
+    var advfilterList=$("a[data-target^='#dropdownNon']");
+    var len = advfilterList.length;
+    for (var j = 0;j<len;j++){
+        var hide = $(advfilterList[j]);
+        if(hide.prop('data-target') !=='#dropdownNon'+divid){
+            hide.addClass('collapsed')
+            hide.prop('aria-expanded', false);
+        }
+    }
+    var dropdownList=$("[id^='dropdownNon']");
+    var lendropdown = dropdownList.length;
+    for (var k = 0;k<lendropdown;k++){
+        var dropdown = $(dropdownList[k]);
+        if(dropdown.prop('id') !=='dropdownNon'+divid){
+            dropdown.removeClass('in')
+            dropdown.prop('aria-expanded', false);
+        }
+    }
     showWaiting();
     if (!isInArray(dividajaxNonlist,divid)) {
         stageAjaxNon(cycleId, divid);
@@ -120,16 +172,16 @@ var stageAjax = function (cycleIder, divid) {
             let result = data.result;
             if('Success' == result) {
                 let res = data.ajaxResult;
-                let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfiltersonCycle' + divid + '">' +
                     '<td colspan="7" class="hiddenRow">' +
-                    '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                    '<div class="accordian-body p-3 collapse in" id="dropdownCycle' + divid + '" >' +
                     '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                     '<thead>' +
                     '<tr>';
                 html += '<th width="25%">Submission ID</th>' +
                     '<th width="25%">Date</th>' +
                     '<th width="25%">Stage</th>' +
-                    '<th width="25%">View Full Details</th>' +
+                    '<th width="25%">Action</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
@@ -145,7 +197,7 @@ var stageAjax = function (cycleIder, divid) {
                         '</tr>';
                 }
                 html += '</tbody></table></div></td></tr>';
-                $('#advfilter' + divid).after(html);
+                $('#advfilterCycle' + divid).after(html);
             }
         }
     )
@@ -170,7 +222,7 @@ var stageAjaxNon = function (cycleIder, divid) {
                 html += '<th width="25%">Submission ID</th>' +
                     '<th width="25%">Date</th>' +
                     '<th width="25%">Stage</th>' +
-                    '<th width="25%">View Full Details</th>' +
+                    '<th width="25%">Action</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';

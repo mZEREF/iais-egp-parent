@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a  data-toggle="collapse" href="#">
                 End Cycle
             </a>
         </h4>
@@ -21,22 +21,18 @@
                         <c:out value="Current Version"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <select id="oldDsSelect" name="oldDsSelect">
-                            <c:forEach items="${arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}" var="oldDs" varStatus="index">
-                                <option   <c:if test="${oldDs.dataSubmissionDto.id == arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}">checked</c:if> value ="${oldDs.dataSubmissionDto.id}">V ${oldDs.dataSubmissionDto.version}</option>
-                            </c:forEach>
-                        </select>
+                        <iais:select  id="oldDsSelect" name="oldDsSelect" options="versionOptions" value="${arSuperDataSubmissionDtoVersion.dataSubmissionDto.id}"/>
                     </iais:value>
                 </iais:row>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <c:set var="endCycleStageDtoVersion" value="${arSuperDataSubmissionDtoVersion.endCycleStageDto}" />
                 <iais:row>
                     <iais:field width="4" value="Is Current Cycle Abandoned?"/>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${endCycleStageDto.cycleAbandoned == true }">Yes</c:if>
                         <c:if test="${endCycleStageDto.cycleAbandoned == false }">No, Cycle has ended</c:if>
                     </iais:value>
-                    <iais:value width="4" display="true">
+                    <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${endCycleStageDtoVersion.cycleAbandoned == true }">Yes</c:if>
                         <c:if test="${endCycleStageDtoVersion.cycleAbandoned == false }">No, Cycle has ended</c:if>
                     </iais:value>

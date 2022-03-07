@@ -26,6 +26,9 @@ public class RectifyInsReportSaveDto implements Serializable{
     public static class RectifyItemSaveDto implements Serializable {
         private String itemValue;
         private String remarks;
+        //follow-up items special field
+        private String requestExtensionOfDueDate;
+        private String reasonForExtension;
     }
 
     public RectifyInsReportSaveDto() {
@@ -73,11 +76,8 @@ public class RectifyInsReportSaveDto implements Serializable{
         this.toBeDeletedDocIds = toBeDeletedDocIds;
     }
 
-    public void reqObjMapping(HttpServletRequest request, String itemValue){
-        //add remark into dto
-        RectifyItemSaveDto dto = new RectifyItemSaveDto();
-        dto.setItemValue(itemValue);
-        dto.setRemarks(ParamUtil.getString(request,"remarks"));
-        this.itemSaveDtoList.add(dto);
-    }
+
+    private static final String KEY_REMARKS = "remarks";
+    private static final String KEY_REQUEST_EXTENSION_OF_DUE_DATE = "requestExtensionOfDueDate";
+    private static final String KEY_REASON_FOR_EXTENSION = "reasonForExtension";
 }

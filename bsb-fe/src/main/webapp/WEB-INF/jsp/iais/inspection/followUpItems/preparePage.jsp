@@ -16,13 +16,12 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="../rectifiesNCs/dashboard.jsp"%>
+<%@include file="dashboard.jsp"%>
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
-    <input type="hidden" name="action_additional" value="">
     <input type="hidden" name="itemValue" value="">
     <input type="hidden" name="isAllRectify" value="${isAllRectify}">
 
@@ -31,14 +30,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-horizontal">
-                        <h3 style="margin-bottom: 50px">Submit Follow-Up Items</h3>
                         <div class="row" style="font-weight: 700;text-align: center">
-                            <div class="col-md-1">S/N</div>
-                            <div class="col-md-4">Follow-Up Item</div>
-                            <div class="col-md-1">Due Date</div>
-                            <div class="col-md-1">Remarks</div>
-                            <div class="col-md-1">Actions</div>
-                            <div class="col-md-4">Rectification uploaded?</div>
+                            <div class="col-md-1" style="text-align: center;">S/N</div>
+                            <div class="col-md-4" style="text-align: center;">Follow-Up Item</div>
+                            <div class="col-md-1" style="text-align: center;">Due Date</div>
+                            <div class="col-md-1" style="text-align: center;">Remarks</div>
+                            <div class="col-md-2" style="text-align: center;">Actions</div>
+                            <div class="col-md-3" style="text-align: center;">Rectification uploaded?</div>
                         </div>
                         <c:choose>
                             <c:when test="${empty ncsPreData.itemDtoList}">
@@ -51,8 +49,11 @@
                                         <div class="col-md-4"><c:out value="${item.itemText}"/></div>
                                         <div class="col-md-1"><c:out value="${item.deadline}"/></div>
                                         <div class="col-md-1"><c:out value="${item.remarks}"/></div>
-                                        <div class="col-md-1"><button type="button" class="btn btn-default btn-sm" onclick="followUpItem('<iais:mask name="itemVal" value="${item.itemValue}"/>')">Upload</button></div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default btn-sm" onclick="followUpItem('<iais:mask name="itemVal" value="${item.itemValue}"/>', 'upload')">Upload</button>
+                                            <button type="button" class="btn btn-default btn-sm" onclick="followUpItem('<iais:mask name="itemVal" value="${item.itemValue}"/>', 'extension')">Extension</button>
+                                        </div>
+                                        <div class="col-md-3">
                                             <c:if test="${rectifyMap.get(item.itemValue) eq null or rectifyMap.get(item.itemValue) eq 'N'}">
                                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
                                             </c:if>
@@ -67,7 +68,7 @@
                     </div>
                     <div class="row" style="border-top: 1px solid #D1D1D1;margin-top: 100px;padding: 20px 0">
                         <div class="col-xs-12 col-sm-6 ">
-                            <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                            <a class="back" id="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group" style="float: right">
@@ -81,7 +82,7 @@
                             <div class="modal-content">
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-md-12"><span style="font-size: 2rem">Make sure you have rectified all NCs</span></div>
+                                        <div class="col-md-12"><span style="font-size: 2rem">Make sure you complete all Follow-up items</span></div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

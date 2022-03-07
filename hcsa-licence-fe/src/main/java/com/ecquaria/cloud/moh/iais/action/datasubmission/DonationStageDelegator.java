@@ -91,7 +91,7 @@ public class DonationStageDelegator extends CommonDelegator{
         donationStageDto.setDonatedForResearch(0);
         donationStageDto.setDonatedForTraining(0);
         donationStageDto.setDonatedForTreatment(0);
-
+        boolean isInt=true;
         String donatedForResearch=ParamUtil.getString(request,"donatedForResearch");
         if("on".equals(donatedForResearch)){
             donationStageDto.setDonatedForResearch(1);
@@ -109,6 +109,8 @@ public class DonationStageDelegator extends CommonDelegator{
 
             }catch (Exception e){
                 log.error("no int");
+                        isInt=false;
+                donationStageDto.setDonResForTreatNum(null);
             }
             Integer donResForCurCenNotTreatNum =  null;
             try {
@@ -124,6 +126,8 @@ public class DonationStageDelegator extends CommonDelegator{
 
             }catch (Exception e){
                 log.error("no int");
+                        isInt=false;
+                donationStageDto.setDonResForCurCenNotTreatNum(null);
             }
             donationStageDto.setDonatedForResearchHescr(0);
             donationStageDto.setDonatedForResearchRrar(0);
@@ -162,6 +166,8 @@ public class DonationStageDelegator extends CommonDelegator{
                 }
             }catch (Exception e){
                 log.error("no int");
+                        isInt=false;
+                donationStageDto.setTrainingNum(null);
             }
             Integer treatNum = null;
             try {
@@ -176,14 +182,19 @@ public class DonationStageDelegator extends CommonDelegator{
                 }
             }catch (Exception e){
                 log.error("no int");
+                        isInt=false;
+                donationStageDto.setTreatNum(null);
             }
         }
         String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
         if("on".equals(donatedForTreatment)){
             donationStageDto.setDonatedForTreatment(1);
         }
-
-        donationStageDto.setTotalNum(totalNum);
+        if(isInt){
+            donationStageDto.setTotalNum(totalNum);
+        }else {
+            donationStageDto.setTotalNum(null);
+        }
 
         String donatedRecipientNum=ParamUtil.getString(request,"donatedRecipientNum");
         donationStageDto.setDonatedRecipientNum(donatedRecipientNum);
@@ -193,6 +204,7 @@ public class DonationStageDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(donationStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

@@ -93,6 +93,11 @@ public class VssDataSubmissionDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
 
+       /* VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(vssSuperDataSubmissionDto.getAppType())) {
+            String crud_action_type = "rfc";
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, crud_action_type);
+        }*/
     }
 
     private String getActionType(HttpServletRequest request) {
@@ -121,7 +126,7 @@ public class VssDataSubmissionDelegator {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
 
-        String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+       /* String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         //draft
         VssSuperDataSubmissionDto dataSubmissionDraft = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
         if (dataSubmissionDraft != null) {
@@ -136,7 +141,7 @@ public class VssDataSubmissionDelegator {
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
         } else if (crud_action_type.equals("delete")) {
             vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
-        }
+        }*/
 
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();

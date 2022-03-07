@@ -91,7 +91,8 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
+                currentArDataSubmission.getAppType(), currentArDataSubmission.getSubmissionType()));
     }
 
     /**
@@ -394,7 +395,8 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }*/
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        if (isRfc(bpc.request)){
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (isRfc(bpc.request) && ACTION_TYPE_SUBMISSION.equals(actionType)) {
             ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);
             ArCurrentInventoryDto arCurrentInventoryDto = ArCurrentInventoryDto.addChange(DataSubmissionHelper.getCurrentArCurrentInventoryDto(bpc.request), arChangeInventoryDto);
             if (arCurrentInventoryDto.getFrozenOocyteNum() < 0
@@ -404,7 +406,7 @@ public abstract class CommonDelegator {
                     || arCurrentInventoryDto.getFreshEmbryoNum() < 0
                     || arCurrentInventoryDto.getThawedEmbryoNum() < 0
                     || arCurrentInventoryDto.getFrozenSpermNum() < 0) {
-                errorMap.put("inventoryLessZero","Patient's inventory cannot be less than zero");
+                errorMap.put("inventoryLessZero", "Patient's inventory cannot be less than zero");
             }
         }
         if (!errorMap.isEmpty()) {

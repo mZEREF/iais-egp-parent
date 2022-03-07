@@ -1,6 +1,5 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
@@ -15,6 +14,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-cancel-de-reg-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-de-registration-afc.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <%@include file="../dashboard.jsp"%>
@@ -28,6 +28,8 @@
                             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                             <input type="hidden" name="action_type" value="">
                             <input type="hidden" name="action_value" value="">
+                            <input id="multiUploadTrigger" type="file" multiple="multiple" style="display: none"/>
+                            <input id="echoReloadTrigger" type="file" style="display: none"/>
                             <div class="col-lg-12 col-xs-12 cesform-box">
                                 <div class="row">
                                     <div class="col-lg-12 col-xs-12">
@@ -80,34 +82,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 ">
-                                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
-                                </div>
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="button-group">
-                                        <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
-                                        <a class="btn btn-primary next" id="next" >Next</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="submitDeclareModal" role="dialog" aria-labelledby="myModalLabel">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-md-12"><span style="font-size: 2rem">Please check the declaration box</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <%@include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp"%>
+                        <%@ include file="../prepareInnerFooter.jsp" %>
+                        <%@ include file="../submitDeclareModal.jsp" %>
+                        <%@ include file="/WEB-INF/jsp/iais/include/jumpAfterDraft.jsp" %>
                     </form>
                 </div>
             </div>

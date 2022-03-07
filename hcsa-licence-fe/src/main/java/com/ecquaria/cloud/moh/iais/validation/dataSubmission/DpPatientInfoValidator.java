@@ -55,6 +55,9 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                 }
             }
         }
+        if("ETHG005".equals(patientDto.getEthnicGroup()) && StringUtil.isEmpty(patientDto.getEthnicGroupOther())){
+            errorMap.put("ethnicGroupOther", "GENERAL_ERR0006");
+        }
         if(!StringUtil.isEmpty(patientDto.getAddrType())){
             if(patientDto.getAddrType().equals(DataSubmissionConsts.DP_PATIENTINFO_ADDRESS_TYPE_APT_BLK)){
                 if(StringUtil.isEmpty(patientDto.getBlkNo())){
@@ -77,6 +80,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
                 log.error(e.getMessage(),e);
             }
         }
+
         String postalCode = patientDto.getPostalCode();
         String mobileNo = patientDto.getMobileNo();
         String homeTelNo  =patientDto.getHomeTelNo();

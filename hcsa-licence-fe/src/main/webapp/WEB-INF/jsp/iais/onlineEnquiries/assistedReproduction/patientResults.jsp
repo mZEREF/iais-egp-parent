@@ -27,7 +27,6 @@
         margin-top: 5px;
     }
 </style>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -72,7 +71,7 @@
                         </iais:row>
 
                         <hr>
-                        <c:if test="${arCentreSelectOption.size() != 1}">
+                        <c:if test="${arCentreSelectOption.size() > 1}">
                             <iais:row>
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
@@ -218,7 +217,7 @@
 
                                                                 <p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                                                                     <c:if test="${not empty patient.cdPatientCode}">
-                                                                        <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                        <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                                                                         </a>
                                                                     </c:if>
                                                                 </p>
@@ -349,3 +348,4 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>

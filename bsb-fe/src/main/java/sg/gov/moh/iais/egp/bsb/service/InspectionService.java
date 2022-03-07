@@ -80,9 +80,14 @@ public class InspectionService {
         return reportDto == null?new RectifyInsReportDto():reportDto;
     }
 
-    public RectifyInsReportSaveDto getRectifyNCsSavedDto(HttpServletRequest request){
-        RectifyInsReportSaveDto dto = (RectifyInsReportSaveDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_SAVED_DTO);
-        return dto == null?new RectifyInsReportSaveDto():dto;
+//    public RectifyInsReportSaveDto getRectifyNCsSavedDto(HttpServletRequest request){
+//        RectifyInsReportSaveDto dto = (RectifyInsReportSaveDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_SAVED_DTO);
+//        return dto == null?new RectifyInsReportSaveDto():dto;
+//    }
+
+    public Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto> getRectifyNCsSavedRemarkMap(HttpServletRequest request){
+        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto> map = (Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>) ParamUtil.getSessionAttr(request,KEY_RECTIFY_SAVED_REMARK_MAP);
+        return map == null?new HashMap<>():map;
     }
 
     /** Save new uploaded documents into FE file repo.
@@ -131,5 +136,16 @@ public class InspectionService {
             syncDto.setToDeleteIds(toBeDeletedRepoIds);
             bsbFileClient.saveFiles(syncDto);
         }
+    }
+
+    public void putItemRemarkValue(HttpServletRequest request,String itemValue,Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap ){
+        Assert.hasLength(itemValue,"key itemValue is null");
+        RectifyInsReportSaveDto.RectifyItemSaveDto dto = new RectifyInsReportSaveDto.RectifyItemSaveDto();
+        dto.setItemValue(itemValue);
+        dto.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
+        dto.setRequestExtensionOfDueDate(ParamUtil.getString(request, KEY_REQUEST_EXTENSION_OF_DUE_DATE));
+        dto.setReasonForExtension(ParamUtil.getString(request, KEY_REASON_FOR_EXTENSION));
+        savedDtoMap.put(itemValue,dto);
+        ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_REMARK_MAP,new HashMap<>(savedDtoMap));
     }
 }

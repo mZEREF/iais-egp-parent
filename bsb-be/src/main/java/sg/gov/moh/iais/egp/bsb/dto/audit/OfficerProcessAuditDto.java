@@ -3,11 +3,10 @@ package sg.gov.moh.iais.egp.bsb.dto.audit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public class OfficerProcessAuditDto implements Serializable {
     private String taskId;
     //application
     private String appStatus;
+    private String applicationNo;
     //audit app history
     private String actionBy;
     private String processDecision;
@@ -52,7 +52,7 @@ public class OfficerProcessAuditDto implements Serializable {
     private String module;
 
     private List<ProcessHistoryDto> historyDtos;
-    private Collection<DocRecordInfo> docRecordInfos;
+    private List<DocDisplayDto> displayDtos;
 
     @Data
     public static class ProcessHistoryDto implements Serializable{

@@ -5,7 +5,6 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -17,6 +16,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -29,6 +29,8 @@
     <input type="hidden" name="action_additional" value="">
     <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
     <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <input id="multiUploadTrigger" type="file" multiple="multiple" style="display: none"/>
+    <input id="echoReloadTrigger" type="file" style="display: none"/>
     <div id="fileUploadInputDiv" style="display: none"></div>
     <div class="main-content">
         <div class="container">

@@ -14,7 +14,7 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
     String webrootBe=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
+
 <link href="<%=webrootBe%>css/rightpanelstyle.css" rel="stylesheet"  >
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -208,7 +208,7 @@
 
                                                                     <p style="white-space: nowrap;"><c:out value="${patient.patientName}"/>
                                                                         <c:if test="${not empty patient.cdPatientCode}">
-                                                                            <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                            <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                                                                             </a>
                                                                         </c:if>
                                                                     </p>
@@ -360,3 +360,4 @@
     </div> <!-- cd-panel__container -->
 </div>
 
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>

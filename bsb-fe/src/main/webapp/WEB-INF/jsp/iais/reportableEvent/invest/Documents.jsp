@@ -5,8 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.String" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -17,6 +16,8 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-incident.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
+
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -27,6 +28,8 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input id="multiUploadTrigger" type="file" multiple="multiple" style="display: none"/>
+    <input id="echoReloadTrigger" type="file" style="display: none"/>
     <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
     <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
     <div id="fileUploadInputDiv" style="display: none"></div>
@@ -46,30 +49,27 @@
                                                     <div class="document-content" style="margin-top: 20px">
                                                         <div class="document-upload-gp">
                                                             <c:forEach var="doc" items="${docSettings}">
-                                                                <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
-                                                                <div class="document-upload-list">
+                                                                <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>                                                                <div class="document-upload-list">
                                                                     <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
                                                                     <div class="file-upload-gp">
                                                                         <c:if test="${savedFiles.get(doc.type) ne null}">
                                                                             <c:forEach var="info" items="${savedFiles.get(doc.type)}">
-                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                                                                                <c:set var="tmpId"><iais:mask name="file" value="${info.repoId}"/></c:set>
                                                                                 <div id="${tmpId}FileDiv">
-                                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                                                                                    <a href="/bsb-fe/ajax/doc/download/investigationReport/repo/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
-                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button><button
-                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('saved', '${tmpId}')">Download</button>
+                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
                                                                                 </div>
                                                                             </c:forEach>
                                                                         </c:if>
                                                                         <c:if test="${newFiles.get(doc.type) ne null}">
                                                                             <c:forEach var="info" items="${newFiles.get(doc.type)}">
-                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
+                                                                                <c:set var="tmpId"><iais:mask name="file" value="${info.tmpId}"/></c:set>
                                                                                 <div id="${tmpId}FileDiv">
-                                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                                                                                    <a href="/bsb-fe/ajax/doc/download/investigationReport/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${info.filename}</span></a>(<fmt:formatNumber value="${info.size/1024.0}" type="number" pattern="0.0"/>KB)<button
                                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
-                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button><button
-                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('new', '${tmpId}')">Download</button>
+                                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button>
                                                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                                                                                 </div>
                                                                             </c:forEach>

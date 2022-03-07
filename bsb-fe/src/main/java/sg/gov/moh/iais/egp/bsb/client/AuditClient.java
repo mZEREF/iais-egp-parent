@@ -20,7 +20,7 @@ public interface AuditClient {
     @GetMapping(value = "/audit", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
 
-    @GetMapping(value = "/audit/getFacilityByApproval")
+    @GetMapping(value = "/facility-info/approvalId")
     FeignResponseEntity<Facility> getFacilityByApproval(@RequestParam("approvalId") String approvalId,@RequestParam("processType") String processType);
 
     @PostMapping(value = "/audit/self-audit/date",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -14,7 +14,7 @@
                 <iais:row>
                     <iais:field width="5" value="ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                        <iais:select name="idType" onchange ="toggleSelect(this, 'AR_IT_004', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                      value="${patientDto.idType}" cssClass="idTypeSel"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
@@ -23,10 +23,16 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Nationality" mandatory="false"/>
+                    <%--<iais:field width="5" value="Nationality" mandatory="false"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">Nationality
+                        <span id="nationalityStar" class="mandatory">
+                                <c:if test="${patientDto.idType =='AR_IT_004'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                      value="${patientDto.nationality}" cssClass="nationalitySel"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -45,26 +51,37 @@
                 <iais:row>
                     <iais:field width="5" value="Postal Code" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
-                               name="postalCode" value="${patientDto.postalCode}"/>
+                        <%--<input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
+                               name="postalCode" value="${patientDto.postalCode}"/>--%>
+                        <iais:input maxLength="6" type="text" name="postalCode" id="postalCode" value="${patientDto.postalCode}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_postalCode"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Address Type" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select"
+                        <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" onchange="test(this, 'ADDTY001', 'floorNoStar','blkNoStar')"  firstOption="Please Select"
                                      value="${patientDto.addrType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Blk No." />
+                    <%--<iais:field width="5" value="Block No." />--%>
+                    <label class="col-xs-5 col-md-4 control-label">Block No.
+                        <span id="blkNoStar" class="mandatory">
+                                <c:if test="${patientDto.addrType =='ADDTY001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="10" type="text" name="blkNo" value="${patientDto.blkNo}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Floor No./Unit No." width="5"/>
+                   <%-- <iais:field value="Floor No. / Unit No." width="5"/>--%>
+                    <label class="col-xs-5 col-md-4 control-label">Floor No. / Unit No.
+                        <span id="floorNoStar" class="mandatory">
+                                <c:if test="${patientDto.addrType =='ADDTY001'}">*</c:if>
+                        </span>
+                    </label>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:input maxLength="3" type="text" name="floorNo" id="floorNo" value="${patientDto.floorNo}"/>
                     </iais:value>
@@ -126,27 +143,28 @@
                     </iais:value>
                 </iais:row>
                 <iais:row id="ethnicOthers" style="${patientDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
-                    <iais:field value="Ethnic Group (Others)" width="5"/>
+                    <iais:field value="Ethnic Group (Others)" width="5"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="20" type="text" name="ethnicGroupOther" id="ethnicGroupOther" value="${patientDto.ethnicGroupOther}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_ethnicGroupOther"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Mobile No" width="5"/>
+                    <iais:field value="Mobile No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <%--<iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>--%>
-                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
-                               name="mobileNo" value="${patientDto.mobileNo}"/>
+                        <iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
+                        <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="mobileNo" value="${patientDto.mobileNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                     </iais:value>
 
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Home Telephone No" width="5"/>
+                    <iais:field value="Home Telephone No." width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <%--<iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
-                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
-                               name="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <%--<input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
                         <span class="error-msg" name="iaisErrorMsg" id="error_homeTelNo"></span>
                     </iais:value>
                 </iais:row>
@@ -163,5 +181,38 @@
 <script>
     $(document).ready(function () {
         toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
+
+        toggleSelect("#idType",'AR_IT_004', 'nationalityStar');
+        toggleSelect("#addrType",'ADDTY001', 'blkNoStar');
+        toggleSelect("#addrType",'ADDTY001', 'floorNoStar');
     });
+    function  test(sel,val,id1,id2){
+        toggleSelect(sel,val,id1);
+        toggleSelect(sel,val,id2);
+    }
+    function toggleSelect(sel, val, elem) {
+        if (isEmpty(sel)) {
+            return;
+        }
+        var $selector = $(sel);
+        if ($selector.length == 0) {
+            $selector = $('#' + sel);
+        } else if ($selector.length == 0) {
+            $selector = $('.' + sel);
+        }
+        var $target = $(elem);
+        if ($target.length == 0) {
+            $target = $('#' + elem);
+        } else if ($target.length == 0) {
+            $target = $('.' + sel);
+        }
+        if ($selector.length == 0 || $target.length == 0) {
+            return;
+        }
+        if ($selector.val() == val) {
+            $target.text("*")
+        } else {
+            $target.text("")
+        }
+    }
 </script>

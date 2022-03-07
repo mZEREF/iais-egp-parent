@@ -19,7 +19,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
@@ -29,7 +28,6 @@ import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityActivityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -48,11 +46,13 @@ public class ApprovalAppService {
     private final ApprovalAppClient approvalAppClient;
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
+    private final DocSettingService docSettingService;
 
-    public ApprovalAppService(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public ApprovalAppService(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DocSettingService docSettingService) {
         this.approvalAppClient = approvalAppClient;
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.docSettingService = docSettingService;
     }
 
     /**
@@ -212,17 +212,6 @@ public class ApprovalAppService {
             log.error("Fail to judge if the node selected", e);
         }
         return selected;
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getApprovalAppDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
     }
 
     public static List<ApprovalProfileDto> getApprovalProfileList(NodeGroup approvalProfileNodeGroup) {
@@ -416,7 +405,7 @@ public class ApprovalAppService {
         }
         Nodes.needValidation(approvalAppRoot, NODE_NAME_PRIMARY_DOC);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getApprovalAppDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -451,7 +440,7 @@ public class ApprovalAppService {
         List<ApprovalProfileDto> batList = ApprovalAppService.getApprovalProfileList(approvalProfileGroup);
         ParamUtil.setRequestAttr(request, "approvalProfileList", batList);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getApprovalAppDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();

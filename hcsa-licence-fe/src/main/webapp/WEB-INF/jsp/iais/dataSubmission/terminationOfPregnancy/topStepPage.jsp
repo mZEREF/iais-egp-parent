@@ -31,9 +31,6 @@
                                 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
                                 <%--------------------${currCode}----------------%>
                                 <c:choose>
-                                    <c:when test="${currCode == 'TOPT001'}">
-                                        <%@ include file="section/patientDetails.jsp" %>
-                                    </c:when>
                                     <c:when test="${currCode == 'TOPT002'}">
                                         <%@ include file="section/familyPlanning.jsp" %>
                                     </c:when>
@@ -57,7 +54,6 @@
                                             </div>
                                         </div>
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                            <%@ include file="section/previewPatientDetails.jsp" %>
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
                                             <%@ include file="section/previewPresentTermination.jsp" %>

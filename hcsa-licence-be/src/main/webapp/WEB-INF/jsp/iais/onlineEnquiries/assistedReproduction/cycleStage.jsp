@@ -45,11 +45,11 @@
                                     <c:forEach var="cycleStage"
                                                items="${cycleResult.rows}"
                                                varStatus="status">
-                                        <tr id="advfilter${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
+                                        <tr id="advfilterCycle${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}">
                                             <td style="vertical-align:middle;">
 
                                                 <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
-                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
+                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdownCycle${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                     </a>
                                                 </p>
                                             </td>
@@ -122,7 +122,7 @@
                                         <td style="vertical-align:middle;">
 
                                             <p style="white-space: nowrap;"><c:out value="${cycleStage.cycleNo}"/>
-                                                <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdownNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByNonCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
+                                                <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right;color: #2199E8" data-toggle="collapse" data-target="#dropdownNon${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}" onclick="getStageByNonCycleId('${cycleStage.cycleId}','${(status.index + 1) + (cycleStageParam.pageNo - 1) * cycleStageParam.pageSize}')">
                                                 </a>
                                             </p>
                                         </td>

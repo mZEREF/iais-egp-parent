@@ -6,21 +6,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.IncidentFollowupClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentNotificationClient;
-import sg.gov.moh.iais.egp.bsb.client.IncidentInvestigationReportClient;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.client.ReportableEventClient;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1AViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.followup.view.Followup1BViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.view.InvestViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.view.IncidentViewDto;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +35,13 @@ public class BsbInboxReportableEventViewDelegator {
     public static final String KEY_EDIT_APP_ID = "editId";
     private static final String MESSAGE_MASKED_REFERENCE_NO_IS_NULL = "masked reference no is null";
 
-    private final IncidentNotificationClient notificationClient;
-    private final IncidentInvestigationReportClient incidentInvestigationReportClient;
-    private final IncidentFollowupClient followupClient;
+    private final ReportableEventClient reportableEventClient;
+    private final DocSettingService docSettingService;
 
     @Autowired
-    public BsbInboxReportableEventViewDelegator(IncidentNotificationClient notificationClient, IncidentInvestigationReportClient incidentInvestigationReportClient, IncidentFollowupClient followupClient) {
-        this.notificationClient = notificationClient;
-        this.incidentInvestigationReportClient = incidentInvestigationReportClient;
-        this.followupClient = followupClient;
+    public BsbInboxReportableEventViewDelegator(ReportableEventClient reportableEventClient, DocSettingService docSettingService) {
+        this.reportableEventClient = reportableEventClient;
+        this.docSettingService = docSettingService;
     }
 
     public void preNotificationData(BaseProcessClass bpc) {
@@ -57,9 +51,9 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedIncidentId,"masked incident id is null");
         String incidentId = MaskUtil.unMaskValue(MASK_KEY_ID,maskedIncidentId);
         if(StringUtils.hasLength(incidentId) && !maskedIncidentId.equals(incidentId)){
-            IncidentViewDto incidentViewDto =  notificationClient.findIncidentViewDtoByIncidentId(incidentId).getEntity();
+            IncidentViewDto incidentViewDto =  reportableEventClient.findIncidentViewDtoByIncidentId(incidentId).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,incidentViewDto);
-            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getIncidentNotDocSettings());
+            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,docSettingService.getIncidentNotDocSettings());
             viewBasicDoc(incidentViewDto.getDocRecordInfos(),request);
         }
     }
@@ -71,9 +65,9 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            InvestViewDto investViewDto = incidentInvestigationReportClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
+            InvestViewDto investViewDto = reportableEventClient.findInvestViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,investViewDto);
-            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
+            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,docSettingService.getOthersDocSettings());
             viewBasicDoc(investViewDto.getDocRecordInfos(),request);
         }
     }
@@ -85,9 +79,9 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            Followup1AViewDto followup1AViewDto =  followupClient.findFollowup1AViewDtoByReferenceNo(referenceNo).getEntity();
+            Followup1AViewDto followup1AViewDto =  reportableEventClient.findFollowup1AViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,followup1AViewDto);
-            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
+            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,docSettingService.getOthersDocSettings());
             ParamUtil.setRequestAttr(request,KEY_MASKED_EDIT_ID,MaskUtil.maskValue(KEY_EDIT_APP_ID,followup1AViewDto.getApplicationId()));
             viewBasicDoc(followup1AViewDto.getDocRecordInfos(),request);
         }
@@ -100,26 +94,12 @@ public class BsbInboxReportableEventViewDelegator {
         Assert.hasLength(maskedReferenceNo,MESSAGE_MASKED_REFERENCE_NO_IS_NULL);
         String referenceNo = MaskUtil.unMaskValue(MASK_KEY_REFER_NO,maskedReferenceNo);
         if(StringUtils.hasLength(referenceNo) && !maskedReferenceNo.equals(referenceNo)){
-            Followup1BViewDto followup1BViewDto =  followupClient.findFollowup1BViewDtoByReferenceNo(referenceNo).getEntity();
+            Followup1BViewDto followup1BViewDto =  reportableEventClient.findFollowup1BViewDtoByReferenceNo(referenceNo).getEntity();
             ParamUtil.setRequestAttr(request,KEY_VIEW,followup1BViewDto);
-            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,getOthersDocSettings());
+            ParamUtil.setRequestAttr(request,KEY_DOC_SETTINGS,docSettingService.getOthersDocSettings());
             ParamUtil.setRequestAttr(request,KEY_MASKED_EDIT_ID,MaskUtil.maskValue(KEY_EDIT_APP_ID,followup1BViewDto.getApplicationId()));
             viewBasicDoc(followup1BViewDto.getDocRecordInfos(),request);
         }
-    }
-
-    private List<DocSetting> getIncidentNotDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_REPORT, "Incident Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_ACTION_REPORT, "Incident Action Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
-    }
-
-    private List<DocSetting> getOthersDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(1);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        return docSettings;
     }
 
     private void viewBasicDoc(List<DocRecordInfo> docRecordInfos, HttpServletRequest request){

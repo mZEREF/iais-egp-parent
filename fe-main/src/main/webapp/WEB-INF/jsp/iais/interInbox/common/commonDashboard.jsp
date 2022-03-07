@@ -2,6 +2,15 @@
     .nav {
         background: transparent;
     }
+    .dashboard-gp .dashboard-tile-item {
+        width: calc((100% - 120px) / 5);
+    }
+    .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
+        width: calc(100%);
+    }
+    .dashboard-gp .dashboard-tile-item .dashboard-tile {
+        height: 150px;
+    }
 </style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
@@ -13,25 +22,33 @@
                 <div class="dashboard-gp">
                     <c:if test="${msgTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#"  ${tabCode == 'msg' ? null : 'onclick=\''.concat(tabCode).concat('ToMsgPage()\'')}>
-                            <p class="dashboard-txt">New Messages</p>
+                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#"  ${tabCode == 'msg' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToMsg()\'':'onclick=\''.concat(tabCode).concat('ToMsgPage()\''))}>
                             <h1 class="dashboard-count">${unreadAndresponseNum}</h1>
+                            <p class="dashboard-txt">New Messages</p>
                         </a></div>
                     </div>
                     </c:if>
                  <c:if test="${appTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'app' ? null : 'onclick=\''.concat(tabCode).concat('ToAppPage()\'')}>
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'app' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToApp()\'':'onclick=\''.concat(tabCode).concat('ToAppPage()\''))}>
+                            <h1 class="dashboard-count">${appDraftNum}</h1>
                             <p class="dashboard-txt">Application Drafts</p>
-                            <h1 class="dashboard-count">&nbsp;${appDraftNum}</h1>
                         </a></div>
                     </div>
                  </c:if>
+                    <c:if test="${dssTab == 1}">
+                        <div class="dashboard-tile-item">
+                            <div class="dashboard-tile"><a data-tab="#tabApp" href="#"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>
+                                <h1 class="dashboard-count">${dssDraftNum}</h1>
+                                <p class="dashboard-txt">Data Submission Draft</p>
+                            </a></div>
+                        </div>
+                    </c:if>
                   <c:if test="${licTab == 1}">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#"   ${tabCode == 'lic' ? null : 'onclick=\''.concat(tabCode).concat('ToLicPage()\'')}>
-                            <p class="dashboard-txt">Active Licences</p>
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#"   ${tabCode == 'lic' ? null : (msgContentFrom == 1 ? 'onclick=\'cotToLic()\'' :'onclick=\''.concat(tabCode).concat('ToLicPage()\''))}>
                             <h1 class="dashboard-count">${licActiveNum}</h1>
+                            <p class="dashboard-txt">Active Licences</p>
                         </a></div>
                     </div>
                   </c:if>

@@ -184,4 +184,12 @@ public class HalpSearchResultHelper {
             searchParam.removeFilter(key);
         }
     }
+
+    public static InterMessageSearchDto initInterDssSearchDto(HttpServletRequest request,String licenseeId){
+        InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
+        interMessageSearchDto.setLicenseeId(licenseeId);
+        interMessageSearchDto.setServiceCodes(getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
+
+        return interMessageSearchDto;
+    }
 }

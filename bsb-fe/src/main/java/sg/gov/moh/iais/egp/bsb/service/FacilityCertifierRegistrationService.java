@@ -20,16 +20,13 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
-import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,11 +49,13 @@ public class FacilityCertifierRegistrationService {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
     private final FacCertifierRegisterClient facCertifierRegisterClient;
+    private final DocSettingService docSettingService;
 
-    public FacilityCertifierRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, FacCertifierRegisterClient facCertifierRegisterClient) {
+    public FacilityCertifierRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, FacCertifierRegisterClient facCertifierRegisterClient, DocSettingService docSettingService) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facCertifierRegisterClient = facCertifierRegisterClient;
+        this.docSettingService = docSettingService;
     }
 
     public void preCompInfo(BaseProcessClass bpc){
@@ -193,7 +192,7 @@ public class FacilityCertifierRegistrationService {
         }
         Nodes.needValidation(facRegRoot,NODE_NAME_FAC_PRIMARY_DOCUMENT);
 
-        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -236,7 +235,7 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
-        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -316,29 +315,6 @@ public class FacilityCertifierRegistrationService {
             ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
         }
-    }
-
-    /**
-     * common actions when we do 'saveDraft'
-     * decide the routing logic
-     * will set a dest node in the request attribute;
-     * will set a floag if we need to show the error messages.
-     * @param facRegRoot root data structure of this flow
-     */
-    public void saveDraftHandler(HttpServletRequest request, NodeGroup facRegRoot, String currentPath, Node currentNode) {
-        boolean currentLetGo = true;  // if false, we have to stay current node// if click next, we need to validate current node anyway
-        currentLetGo = currentNode.doValidation();
-        if (currentLetGo) {
-            Nodes.passValidation(facRegRoot, currentPath);
-        }
-        if (currentLetGo) {
-            FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
-            ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
-            log.info("save as draft response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
-        }else{
-            ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-        }
-        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
     }
 
     public String computeDestNodePath(NodeGroup facRegRoot, String actionValue) {
@@ -485,18 +461,6 @@ public class FacilityCertifierRegistrationService {
 
     private static List<SelectOption> tmpPositionOps() {
         return Arrays.asList(new SelectOption(null, TEXT_VALUE_PLEASE_SELECT),new SelectOption("Biosafety Certifier", "Biosafety Certifier"), new SelectOption("Engineering Certifier", "Engineering Certifier"),new SelectOption("Assistant Biosafety Certifier","Assistant Biosafety Certifier"),new SelectOption("Assistant Engineering Certifier","Assistant Engineering Certifier"));
-    }
-
-
-    /* Will be removed in future, will get this from config mechanism */
-    public List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_TESTIMONIALS, "Testimonials", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_CURRICULUM_VITAE, "Curriculum Vitae", true));
-        return docSettings;
     }
 
     /**

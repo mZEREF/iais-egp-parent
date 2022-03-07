@@ -201,6 +201,9 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/searchInventory" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(620,560)(1040,610)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perStageInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(200,310)(570,790)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -216,6 +219,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;viewFull&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/baseSearch" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/perAdvancedSearch" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/perStageInfo" value="&quot;viewStage&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/searchCycle" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="850" y="770">
    <Description/>

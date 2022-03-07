@@ -55,10 +55,8 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
 //                errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
 //                errorMap.put("femaleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
 //            }
-            if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getFemaleLiveBirthNum())) {
+            if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getFemaleLiveBirthNum()) && StringUtil.isEmpty(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
                 errorMap.put("femaleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            if (StringUtil.isEmpty(pregnancyOutcomeStageDto.getMaleLiveBirthNum())) {
                 errorMap.put("maleLiveBirthNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }

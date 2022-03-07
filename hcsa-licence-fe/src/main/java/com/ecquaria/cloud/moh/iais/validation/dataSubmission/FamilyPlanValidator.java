@@ -17,7 +17,14 @@ public class FamilyPlanValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        if(terminationOfPregnancyDto==null){
+            terminationOfPregnancyDto = new TerminationOfPregnancyDto();
+        }
         FamilyPlanDto familyPlanDto=terminationOfPregnancyDto.getFamilyPlanDto();
+        if(familyPlanDto==null){
+            familyPlanDto = new FamilyPlanDto();
+        }
+
         if("TOPSCTP009".equals(familyPlanDto.getSubRopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherSubTopReason())){
             errorMap.put("otherSubTopReason", "GENERAL_ERR0006");
         }

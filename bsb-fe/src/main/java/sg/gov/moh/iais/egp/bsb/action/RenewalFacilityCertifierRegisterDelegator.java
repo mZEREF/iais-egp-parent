@@ -6,9 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
@@ -19,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDto;
+import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityCertifierRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -38,14 +38,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 public class RenewalFacilityCertifierRegisterDelegator {
     private static final String MODULE_NAME = "Renewal Facility Certifier Registration";
 
-    private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final FacilityCertifierRegistrationService facilityCertifierRegistrationService;
+    private final DocSettingService docSettingService;
 
-    public RenewalFacilityCertifierRegisterDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, FacilityCertifierRegistrationService facilityCertifierRegistrationService) {
-        this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
+    @Autowired
+    public RenewalFacilityCertifierRegisterDelegator(FacilityCertifierRegistrationService facilityCertifierRegistrationService, DocSettingService docSettingService) {
         this.facilityCertifierRegistrationService = facilityCertifierRegistrationService;
+        this.docSettingService = docSettingService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -114,7 +113,7 @@ public class RenewalFacilityCertifierRegisterDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
-        ParamUtil.setRequestAttr(request, "docSettings", facilityCertifierRegistrationService.getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();

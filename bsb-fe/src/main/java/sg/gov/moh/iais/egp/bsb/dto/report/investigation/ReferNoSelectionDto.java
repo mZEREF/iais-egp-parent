@@ -28,7 +28,7 @@ public class ReferNoSelectionDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("investRepFeignClient", "validateReferNoSelectionDto", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validateReferNoSelectionDto", new Object[]{this});
         return validationResultDto.isPass();
     }
 

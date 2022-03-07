@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -42,12 +42,6 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
-        if(iuiTreatmentSubsidiesDto == null) {
-            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
-        }
-        iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
-        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(request,PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
@@ -65,6 +59,15 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
 
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
+        if(iuiTreatmentSubsidiesDto == null) {
+            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
+        }
+        if(StringUtil.isEmpty(iuiTreatmentSubsidiesDto.getArtCoFunding())){
+            iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
+        }
+
+        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
@@ -83,6 +86,14 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
+
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+
+            if ("confirm".equals(crud_action_type)) {
+                errorMap = validationResult.retrieveAll();
+                verifyRfcCommon(bpc.request, errorMap);
+                valRFC(bpc.request, iuiTreatmentSubsidiesDto);
+            }
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

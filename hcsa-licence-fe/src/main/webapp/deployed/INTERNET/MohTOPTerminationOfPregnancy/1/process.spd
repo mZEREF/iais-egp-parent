@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohTOPTerminationOfPregnancy" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="10" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_1" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSubmission" x="60" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSubmission_OnStepProcess_1" name="prepareSubmission_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="310" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_1" name="prepareSwitch_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoReturn" x="480" y="50">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doReturn_OnStepProcess_1" name="doReturn_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareStepData" x="560" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareStepData_OnStepProcess_1" name="prepareStepData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoSubmission" x="580" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSubmission_OnStepProcess_1" name="doSubmission_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoRfc" x="590" y="360">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doRfc_OnStepProcess_1" name="doRfc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoWithdraw" x="530" y="460">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doWithdraw_OnStepProcess_1" name="doWithdraw_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Patient" processname="MohTOPPatientInformation" project="" version="-1" x="480" y="520">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoStep" x="1010" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doStep_OnStepProcess_1" name="doStep_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoControl" x="1000" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doControl_OnStepProcess_1" name="doControl_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoDraft" x="1010" y="480">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDraft_OnStepProcess_1" name="doDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PatientValidator" x="230" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="patientValidator_OnStepProcess_0" name="patientValidator_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PatientPage" stageIndicator="" x="160" y="250">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StepPage" stageIndicator="" x="790" y="140">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="790" y="250">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSubmission" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(30,270)(80,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PatientPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareSubmission" style="rectanular">
+   <position>{(80,270)(180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="rectanular">
+   <position>{(330,270)(450,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoReturn" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(450,270)(500,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStepData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(450,270)(580,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSubmission" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(450,270)(600,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoRfc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(450,270)(610,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoWithdraw" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(450,270)(550,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Patient" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(450,270)(500,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoSubmission" style="rectanular">
+   <position>{(600,270)(810,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AckPage" style="rectanular">
+   <position>{(810,270)(1020,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/StepPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareStepData" style="rectanular">
+   <position>{(580,160)(810,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/StepPage" style="rectanular">
+   <position>{(810,160)(1030,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoRfc" style="oblique">
+   <position>{(610,380)(1020,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoWithdraw" style="oblique">
+   <position>{(550,480)(1020,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoStep" style="rectanular">
+   <position>{(1030,160)(1020,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoControl" style="rectanular">
+   <position>{(1020,270)(1030,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1030,390)(1030,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoDraft" style="oblique">
+   <position>{(1030,500)(1180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(1180,270)(759,22)(351,21)(330,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1030,390)(1180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSubmission" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(450,270)(312,463)(116,462)(80,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PatientValidator" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PatientPage" style="rectanular">
+   <position>{(180,270)(250,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PatientValidator" style="rectanular">
+   <position>{(250,270)(330,270)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PrepareStepData" executor="" icon="" leftOperand="crud_action_type_top" name="Switch1" x="430" y="250">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/DoReturn" value="&quot;return&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareStepData" value="&quot;page&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/DoSubmission" value="&quot;submission&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/DoRfc" value="&quot;rfc&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/DoWithdraw" value="&quot;withdraw&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Patient" value="&quot;patient&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareSubmission" value="&quot;back&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="crud_action_value" name="Switch2" x="1010" y="370">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/DoDraft" value="&quot;draft&quot;" />
+   <SwitchCase component="/Merges/Merge/Merge1" value="" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1160" y="250">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

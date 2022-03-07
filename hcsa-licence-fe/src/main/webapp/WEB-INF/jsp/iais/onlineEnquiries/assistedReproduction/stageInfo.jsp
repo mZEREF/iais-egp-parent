@@ -13,7 +13,6 @@
 <%
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submissionNo" value="${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}" />
 <webui:setLayout name="iais-internet"/>
@@ -96,168 +95,162 @@
                             <div class="tab-content row">
                                 <c:if test="${empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
                                     <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
-                                        <c:choose>
-
-                                            <c:when test="${cycleStage == 'AR_CL001'}">
-                                                <%-- AR_CYCLE_AR--%>
-                                                <%@include file="cycleStage/previewArCycleStageSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_CL002'}">
-                                                <%-- AR_CYCLE_IUI--%>
-                                                <%@include file="cycleStage/previewIuiCycleSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_CL003'}">
-                                                <%-- AR_CYCLE_EFO--%>
-                                                <%@include file="cycleStage/previewEfoDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG001'}">
-                                                <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
-                                                <%@include file="cycleStage/previewOocyteRetrieval.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG002'}">
-                                                <%-- AR_STAGE_FERTILISATION--%>
-                                                <%@include file="cycleStage/previewFertilisationDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG003'}">
-                                                <%-- AR_STAGE_EMBRYO_CREATED --%>
-                                                <%@include file="cycleStage/previewEmbryoCreatedDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG004'}">
-                                                <%-- AR_STAGE_THAWING--%>
-                                                <%@include file="cycleStage/previewThawingDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG005'}">
-                                                <%-- AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING--%>
-                                                <%@include file="cycleStage/previewPgtDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG006'}">
-                                                <%-- AR_STAGE_EMBRYO_TRANSFER--%>
-                                                <%@include file="cycleStage/previewEmbryoTranseferDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG007'}">
-                                                <%-- AR_STAGE_AR_TREATMENT_SUBSIDIES --%>
-                                                <%@include file="cycleStage/previewArTreatmentSubsidiesStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG008'}">
-                                                <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
-                                                <%@include file="cycleStage/previewIuiTreatmentSubsidiesDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG009'}">
-                                                <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                                <%@include file="cycleStage/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG010'}">
-                                                <%-- AR_STAGE_OUTCOME--%>
-                                                <%@include file="cycleStage/previewOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG011'}">
-                                                <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-                                                <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG012'}">
-                                                <%-- AR_STAGE_FREEZING--%>
-                                                <%@include file="cycleStage/previewFreezingSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG013'}">
-                                                <%-- AR_STAGE_DONATION--%>
-                                                <%@include file="cycleStage/previewDonationDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG014'}">
-                                                <%-- AR_STAGE_DISPOSAL--%>
-                                                <%@include file="cycleStage/previewDisposalDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG015'}">
-                                                <%-- AR_STAGE_END_CYCLE--%>
-                                                <%@include file="cycleStage/previewEndCycleDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG016'}">
-                                                <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
-                                                <%@include file="cycleStage/previewTransferInOutStageDetail.jsp" %>
-                                            </c:when>
-                                        </c:choose>
+                                        <c:if test="${cycleStage == 'AR_CL001'}">
+                                            <%-- AR_CYCLE_AR--%>
+                                            <%@include file="cycleStage/previewArCycleStageSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_CL002'}">
+                                            <%-- AR_CYCLE_IUI--%>
+                                            <%@include file="cycleStage/previewIuiCycleSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_CL003'}">
+                                            <%-- AR_CYCLE_EFO--%>
+                                            <%@include file="cycleStage/previewEfoDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG001'}">
+                                            <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
+                                            <%@include file="cycleStage/previewOocyteRetrieval.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG002'}">
+                                            <%-- AR_STAGE_FERTILISATION--%>
+                                            <%@include file="cycleStage/previewFertilisationDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG003'}">
+                                            <%-- AR_STAGE_EMBRYO_CREATED --%>
+                                            <%@include file="cycleStage/previewEmbryoCreatedDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG004'}">
+                                            <%-- AR_STAGE_THAWING--%>
+                                            <%@include file="cycleStage/previewThawingDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG005'}">
+                                            <%-- AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING--%>
+                                            <%@include file="cycleStage/previewPgtDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG006'}">
+                                            <%-- AR_STAGE_EMBRYO_TRANSFER--%>
+                                            <%@include file="cycleStage/previewEmbryoTranseferDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG007'}">
+                                            <%-- AR_STAGE_AR_TREATMENT_SUBSIDIES --%>
+                                            <%@include file="cycleStage/previewArTreatmentSubsidiesStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG008'}">
+                                            <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
+                                            <%@include file="cycleStage/previewIuiTreatmentSubsidiesDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG009'}">
+                                            <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
+                                            <%@include file="cycleStage/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG010'}">
+                                            <%-- AR_STAGE_OUTCOME--%>
+                                            <%@include file="cycleStage/previewOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG011'}">
+                                            <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
+                                            <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG012'}">
+                                            <%-- AR_STAGE_FREEZING--%>
+                                            <%@include file="cycleStage/previewFreezingSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG013'}">
+                                            <%-- AR_STAGE_DONATION--%>
+                                            <%@include file="cycleStage/previewDonationDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG014'}">
+                                            <%-- AR_STAGE_DISPOSAL--%>
+                                            <%@include file="cycleStage/previewDisposalDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG015'}">
+                                            <%-- AR_STAGE_END_CYCLE--%>
+                                            <%@include file="cycleStage/previewEndCycleDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG016'}">
+                                            <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
+                                            <%@include file="cycleStage/previewTransferInOutStageDetail.jsp" %>
+                                        </c:if>
                                     </div>
                                 </c:if>
                                 <c:if test="${not empty arSuperDataSubmissionDto.oldArSuperDataSubmissionDto}">
                                     <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
-                                        <c:choose>
-
-                                            <c:when test="${cycleStage == 'AR_CL001'}">
-                                                <%-- AR_CYCLE_AR--%>
-                                                <%@include file="cycleStageAment/previewArCycleStageSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_CL002'}">
-                                                <%-- AR_CYCLE_IUI--%>
-                                                <%@include file="cycleStageAment/previewIuiCycleSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_CL003'}">
-                                                <%-- AR_CYCLE_EFO--%>
-                                                <%@include file="cycleStageAment/previewEfoDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG001'}">
-                                                <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
-                                                <%@include file="cycleStageAment/previewOocyteRetrieval.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG002'}">
-                                                <%-- AR_STAGE_FERTILISATION--%>
-                                                <%@include file="cycleStageAment/previewFertilisationDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG003'}">
-                                                <%-- AR_STAGE_EMBRYO_CREATED --%>
-                                                <%@include file="cycleStageAment/previewEmbryoCreatedDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG004'}">
-                                                <%-- AR_STAGE_THAWING--%>
-                                                <%@include file="cycleStageAment/previewThawingDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG005'}">
-                                                <%-- AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING--%>
-                                                <%@include file="cycleStageAment/previewPgtDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG006'}">
-                                                <%-- AR_STAGE_EMBRYO_TRANSFER--%>
-                                                <%@include file="cycleStageAment/previewEmbryoTranseferDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG007'}">
-                                                <%-- AR_STAGE_AR_TREATMENT_SUBSIDIES --%>
-                                                <%@include file="cycleStageAment/previewArTreatmentSubsidiesStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG008'}">
-                                                <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
-                                                <%@include file="cycleStageAment/previewIuiTreatmentSubsidiesDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG009'}">
-                                                <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                                <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG010'}">
-                                                <%-- AR_STAGE_OUTCOME--%>
-                                                <%@include file="cycleStageAment/previewOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG011'}">
-                                                <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-                                                <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG012'}">
-                                                <%-- AR_STAGE_FREEZING--%>
-                                                <%@include file="cycleStageAment/previewFreezingSection.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG013'}">
-                                                <%-- AR_STAGE_DONATION--%>
-                                                <%@include file="cycleStageAment/previewDonationDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG014'}">
-                                                <%-- AR_STAGE_DISPOSAL--%>
-                                                <%@include file="cycleStageAment/previewDisposalDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG015'}">
-                                                <%-- AR_STAGE_END_CYCLE--%>
-                                                <%@include file="cycleStageAment/previewEndCycleDetail.jsp" %>
-                                            </c:when>
-                                            <c:when test="${cycleStage == 'AR_STG016'}">
-                                                <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
-                                                <%@include file="cycleStageAment/previewTransferInOutStageDetail.jsp" %>
-                                            </c:when>
-                                        </c:choose>
+                                        <c:if test="${cycleStage == 'AR_CL001'}">
+                                            <%-- AR_CYCLE_AR--%>
+                                            <%@include file="cycleStageAment/previewArCycleStageSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_CL002'}">
+                                            <%-- AR_CYCLE_IUI--%>
+                                            <%@include file="cycleStageAment/previewIuiCycleSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_CL003'}">
+                                            <%-- AR_CYCLE_EFO--%>
+                                            <%@include file="cycleStageAment/previewEfoDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG001'}">
+                                            <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>
+                                            <%@include file="cycleStageAment/previewOocyteRetrieval.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG002'}">
+                                            <%-- AR_STAGE_FERTILISATION--%>
+                                            <%@include file="cycleStageAment/previewFertilisationDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG003'}">
+                                            <%-- AR_STAGE_EMBRYO_CREATED --%>
+                                            <%@include file="cycleStageAment/previewEmbryoCreatedDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG004'}">
+                                            <%-- AR_STAGE_THAWING--%>
+                                            <%@include file="cycleStageAment/previewThawingDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG005'}">
+                                            <%-- AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING--%>
+                                            <%@include file="cycleStageAment/previewPgtDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG006'}">
+                                            <%-- AR_STAGE_EMBRYO_TRANSFER--%>
+                                            <%@include file="cycleStageAment/previewEmbryoTranseferDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG007'}">
+                                            <%-- AR_STAGE_AR_TREATMENT_SUBSIDIES --%>
+                                            <%@include file="cycleStageAment/previewArTreatmentSubsidiesStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG008'}">
+                                            <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
+                                            <%@include file="cycleStageAment/previewIuiTreatmentSubsidiesDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG009'}">
+                                            <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
+                                            <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG010'}">
+                                            <%-- AR_STAGE_OUTCOME--%>
+                                            <%@include file="cycleStageAment/previewOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG011'}">
+                                            <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
+                                            <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG012'}">
+                                            <%-- AR_STAGE_FREEZING--%>
+                                            <%@include file="cycleStageAment/previewFreezingSection.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG013'}">
+                                            <%-- AR_STAGE_DONATION--%>
+                                            <%@include file="cycleStageAment/previewDonationDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG014'}">
+                                            <%-- AR_STAGE_DISPOSAL--%>
+                                            <%@include file="cycleStageAment/previewDisposalDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG015'}">
+                                            <%-- AR_STAGE_END_CYCLE--%>
+                                            <%@include file="cycleStageAment/previewEndCycleDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_STG016'}">
+                                            <%-- AR_STAGE_TRANSFER_IN_AND_OUT--%>
+                                            <%@include file="cycleStageAment/previewTransferInOutStageDetail.jsp" %>
+                                        </c:if>
                                     </div>
                                 </c:if>
                             </div>
@@ -272,3 +265,4 @@
     </div>
 </form>
 
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>

@@ -19,15 +19,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -90,7 +87,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(request);
+        ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         List<String> transferredList = transferInOutStageDto.getTransferredList();
         int num = "in".equals(transferInOutStageDto.getTransferType()) ? 1 : -1;
         for (String transferred : transferredList) {
@@ -138,15 +136,23 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
 
         arSuperDataSubmissionDto.setTransferInOutStageDto(transferInOutStageDto);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        validatePageData(request, transferInOutStageDto, "save", ACTION_TYPE_CONFIRM);
 
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+
         if ("confirm".equals(crud_action_type)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(transferInOutStageDto, "save");
+            errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
             valRFC(request, transferInOutStageDto);
         }
 
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
     }
 
     @Override
@@ -182,13 +188,21 @@ public class TransferInOutDelegator extends CommonDelegator {
         String embryoNum = ParamUtil.getString(request, "embryoNum");
         String spermVialsNum = ParamUtil.getString(request, "spermVialsNum");
         ControllerHelper.get(request, transferInOutStageDto);
-        transferInOutStageDto.setOocyteNum(oocyteNum);
-        transferInOutStageDto.setEmbryoNum(embryoNum);
-        transferInOutStageDto.setSpermVialsNum(spermVialsNum);
         String fromDonor = ParamUtil.getString(request, "fromDonor");
         transferInOutStageDto.setFromDonor("true".equalsIgnoreCase(fromDonor));
         if (!IaisCommonUtils.isEmpty(transferredList)) {
             transferInOutStageDto.setTransferredList(Arrays.asList(transferredList));
+            for (String transferred : transferInOutStageDto.getTransferredList()) {
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
+                    transferInOutStageDto.setOocyteNum(oocyteNum);
+                }
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
+                    transferInOutStageDto.setEmbryoNum(embryoNum);
+                }
+                if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
+                    transferInOutStageDto.setSpermVialsNum(spermVialsNum);
+                }
+            }
         } else {
             transferInOutStageDto.setTransferredList(null);
         }
@@ -201,18 +215,24 @@ public class TransferInOutDelegator extends CommonDelegator {
                 String[] values = parseSelectKey(selectKey);
                 transferInOutStageDto.setTransInFromLicenseeId(values[0]);
                 transferInOutStageDto.setTransInFromHciCode(values[1]);
-                transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
-                transferInOutStageDto.setTransOutToHciCode(hciCode);
+            } else if ("Others".equals(selectKey)) {
+                transferInOutStageDto.setTransInFromHciCode(selectKey);
+                transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
             }
+            transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
+            transferInOutStageDto.setTransOutToHciCode(hciCode);
         } else if ("out".equals(transferInOutStageDto.getTransferType())) {
             String selectKey = ParamUtil.getString(request, "transOutToHciCode");
             if (StringUtil.isNotEmpty(selectKey) && !"Others".equals(selectKey)) {
                 String[] values = parseSelectKey(selectKey);
                 transferInOutStageDto.setTransOutToLicenseeId(values[0]);
                 transferInOutStageDto.setTransOutToHciCode(values[1]);
-                transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
-                transferInOutStageDto.setTransInFromHciCode(hciCode);
+            } else if ("Others".equals(selectKey)) {
+                transferInOutStageDto.setTransOutToHciCode(selectKey);
+                transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
             }
+            transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
+            transferInOutStageDto.setTransInFromHciCode(hciCode);
         }
     }
 
