@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -509,7 +510,7 @@ public class DataSubmissionInboxDelegator {
 				}
 				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
 					 ) {
-					if(arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+					if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())){
 						return 3;
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
