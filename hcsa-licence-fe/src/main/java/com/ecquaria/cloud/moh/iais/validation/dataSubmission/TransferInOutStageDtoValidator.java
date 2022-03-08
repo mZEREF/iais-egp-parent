@@ -1,13 +1,17 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -46,7 +50,39 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
                 }
             }
         }
-        if(!StringUtil.isEmpty(transferType) && transferType.equals("out")){
+        if(!StringUtil.isEmpty(transferType) && transferType.equals("out")) {
+            ArCurrentInventoryDto arCurrentInventoryDto = DataSubmissionHelper.getCurrentArCurrentInventoryDto(request);
+            if (arCurrentInventoryDto == null) {
+                arCurrentInventoryDto = new ArCurrentInventoryDto();
+                arSuperDataSubmissionDto.setArCurrentInventoryDto(arCurrentInventoryDto);
+            }
+            int oocyteInt = toInt(oocyteNum);
+            int embryoInt = toInt(embryoNum);
+            int spermVialsInt = toInt(spermVialsNum);
+            if (oocyteInt > arCurrentInventoryDto.getFrozenOocyteNum()) {
+                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                repMap.put("item", "No. of Oocyte(s) Transferred");
+                repMap.put("inventory", "frozen oocytes");
+                String errMsgThawed = MessageUtil.getMessageDesc("DS_ERR060", repMap);
+                errorMap.put("oocyteNum", errMsgThawed);
+            }
+
+            if (embryoInt > arCurrentInventoryDto.getFrozenEmbryoNum()) {
+                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                repMap.put("item", "No. of Embryo(s) Transferred");
+                repMap.put("inventory", "frozen embryos");
+                String errMsgThawed = MessageUtil.getMessageDesc("DS_ERR060", repMap);
+                errorMap.put("embryoNum", errMsgThawed);
+            }
+
+            if (spermVialsInt > arCurrentInventoryDto.getFrozenSpermNum()) {
+                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                repMap.put("item", "No. of Sperm Transferred");
+                repMap.put("inventory", "frozen sperm");
+                String errMsgThawed = MessageUtil.getMessageDesc("DS_ERR060", repMap);
+                errorMap.put("spermVialsNum", errMsgThawed);
+            }
+
             String transOutToHciCode = transferInOutStageDto.getTransOutToHciCode();
             if (StringUtil.isEmpty(transOutToHciCode)) {
                 errorMap.put("transOutToHciCode", "GENERAL_ERR0006");
@@ -82,12 +118,16 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
         if(!StringUtil.isEmpty(oocyteNum)&&!StringUtil.isNumber(oocyteNum)){
             errorMap.put("oocyteNum", "GENERAL_ERR0002");
         }
-        if(!StringUtil.isEmpty(embryoNum)&&!StringUtil.isNumber(embryoNum)){
+        if (!StringUtil.isEmpty(embryoNum) && !StringUtil.isNumber(embryoNum)) {
             errorMap.put("embryoNum", "GENERAL_ERR0002");
         }
-        if(!StringUtil.isEmpty(spermVialsNum)&&!StringUtil.isNumber(spermVialsNum)){
+        if (!StringUtil.isEmpty(spermVialsNum) && !StringUtil.isNumber(spermVialsNum)) {
             errorMap.put("spermVialsNum", "GENERAL_ERR0002");
         }
         return errorMap;
+    }
+
+    private int toInt(String str) {
+        return StringUtil.isNotEmpty(str) && CommonValidator.isPositiveInteger(str) ? Integer.parseInt(str) : 0;
     }
 }
