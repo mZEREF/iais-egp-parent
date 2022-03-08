@@ -1,6 +1,7 @@
 $(function () {
     validate();
     $("#submitButton").click(function () {
+        showWaiting();
         $('#mainForm').submit();
     })
 
