@@ -63,7 +63,7 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="<iais:code code="${appSvcMedAlertPerson.idType}"/>"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
+                                        <span class="newVal " attr="${appSvcMedAlertPerson.idType}"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
                                     </div>
                                     <div class="col-xs-6">
                                         <span class="oldVal " attr="${oldMap.idType}" style="display: none">

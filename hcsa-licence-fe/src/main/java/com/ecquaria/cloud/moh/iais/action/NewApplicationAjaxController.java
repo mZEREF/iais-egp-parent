@@ -690,6 +690,7 @@ public class NewApplicationAjaxController {
             return null;
         }
         String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
+        log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
         Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
         if (psn == null) {
@@ -747,6 +748,7 @@ public class NewApplicationAjaxController {
             return null;
         }
         String psnKey = NewApplicationHelper.getPersonKey(nationality, idType, idNo);
+        log.info(StringUtil.changeForLog("The Person Key: " + psnKey));
         Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
         AppSvcPrincipalOfficersDto person = null;
