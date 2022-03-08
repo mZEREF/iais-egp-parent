@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
@@ -10,12 +12,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixD
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -134,6 +139,28 @@ public final class HcsaServiceCacheHelper {
 		   interMessageSearchDto.setServiceCodes(controlServices(searchDataTab,userRoleAccessMatrixDtos));
 	   }
        return interMessageSearchDto;
+	}
+
+	public static List<String> getAccessSvcNames(HttpServletRequest request) {
+		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes()
+				.get(RoleConsts.USER_ROLE_ORG_USER);
+		List<String> list = controlServices(2, userRoleAccessMatrixDtos);
+		if (list == null) {
+			list = IaisCommonUtils.genNewArrayList();
+		}
+		return list;
+	}
+
+	public static List<String> getAccessSvcCodes(HttpServletRequest request) {
+		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = loginContext.getRoleMatrixes()
+				.get(RoleConsts.USER_ROLE_ORG_USER);
+		List<String> list = controlServices(3, userRoleAccessMatrixDtos);
+		if (list == null) {
+			list = IaisCommonUtils.genNewArrayList();
+		}
+		return list;
 	}
 
 	// 0 -> msg, serviceCodes= serviceCodes+@ ; 1-> app, serviceCodes= serviceCodes+@ ; 2 -> lic serviceCodes = serviceNames; 3->serviceCodes = serviceCodes
