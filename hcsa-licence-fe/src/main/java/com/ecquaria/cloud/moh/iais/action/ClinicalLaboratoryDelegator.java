@@ -1697,11 +1697,11 @@ public class ClinicalLaboratoryDelegator {
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
+        Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
-            Map<String, AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
-            Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             //CommonsMultipartFile file = null;
             AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
@@ -1730,9 +1730,7 @@ public class ClinicalLaboratoryDelegator {
 
             List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG);
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             //premIndexNo+configId+seqnum
-            Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos,oldDocs);
             int [] psnTypeNumArr = new int[]{maxPsnTypeNum};
             for(int i =0;i<hcsaSvcDocConfigDtos.size();i++){
@@ -1751,31 +1749,32 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
 
-            String crud_action_values = mulReq.getParameter("nextStep");
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            if ("next".equals(crud_action_values)) {
-                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
-                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
-            }else{
-                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap,true);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
-                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
-                errorMap = IaisCommonUtils.genNewHashMap();
-            }
+        }
+        String crud_action_values = mulReq.getParameter("nextStep");
+        if ("next".equals(crud_action_values)) {
+            newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
+            NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
+                    appSvcRelatedInfoDto, errorMap);
+            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
+        } else if (isGetDataFromPage) {
+            newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
+            NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
+                    appSvcRelatedInfoDto, errorMap);
+            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
+            errorMap = IaisCommonUtils.genNewHashMap();
+        }
 
-            appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
+        appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
 
-            if (!errorMap.isEmpty()) {
-                bpc.request.setAttribute("errormapIs", "error");
-                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
-                mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
-                return;
-            }
+        if (!errorMap.isEmpty()) {
+            bpc.request.setAttribute("errormapIs", "error");
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
+            mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
+            return;
         }
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
@@ -4833,7 +4832,10 @@ public class ClinicalLaboratoryDelegator {
         return appSvcDocDto;
     }
 
-    private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String,File> saveFileMap){
+    private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String, File> saveFileMap) {
+        if (IaisCommonUtils.isEmpty(saveFileMap)) {
+            return;
+        }
         Map<String,File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
         for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
             if(appSvcDocDto.isPassValidate()){
