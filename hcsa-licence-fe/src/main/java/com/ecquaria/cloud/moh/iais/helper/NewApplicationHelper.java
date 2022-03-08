@@ -266,6 +266,8 @@ public class NewApplicationHelper {
         if (appSubmissionDto == null || oldAppSubmissionDto == null) {
             return;
         }
+        log.info(StringUtil.changeForLog("The original Licence: " + appSubmissionDto.getLicenceNo()
+                + " - appGrpNo: " + appSubmissionDto.getAppGrpNo()));
         reSetAdditionalFields(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
     }
 
@@ -303,7 +305,12 @@ public class NewApplicationHelper {
                     getPremisesKey(appGrpPremisesDto));
             if (clearHciCode) {
                 appGrpPremisesDto.setHciCode(null);
+            } else if (StringUtil.isEmpty(appGrpPremisesDto.getHciCode())) {
+                appGrpPremisesDto.setHciCode(oldAppGrpPremisesDto.getHciCode());
             }
+        } else if (StringUtil.isEmpty(appGrpPremisesDto.getHciCode()) && Objects.equals(oldAppGrpPremisesDto.getPremisesSelect(),
+                getPremisesKey(appGrpPremisesDto))) {
+            appGrpPremisesDto.setHciCode(oldAppGrpPremisesDto.getHciCode());
         }
         boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDto,
                 oldAppGrpPremisesDto);
@@ -311,7 +318,7 @@ public class NewApplicationHelper {
             appGrpPremisesDto.setHciNameChanged(1);
         }
         log.info(StringUtil.changeForLog("##### reSetAdditionalFields : " + premisesIndexNo + " - ClearHciCode: "
-                + clearHciCode + " - HciNameChange: " + eqHciNameChange));
+                + clearHciCode + " - HciNameChange: " + eqHciNameChange + " - HCI Code: " + appGrpPremisesDto.getHciCode()));
     }
 
     public static void addToNonAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> notAutoSaveList) {
@@ -1241,6 +1248,8 @@ public class NewApplicationHelper {
     }
 
     public static void reSetPremeses(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        log.info(StringUtil.changeForLog("The original Licence: " + appSubmissionDto.getLicenceNo()
+                + " - appGrpNo: " + appSubmissionDto.getAppGrpNo()));
         List<AppGrpPremisesDto> copyMutableObjects = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos);
         reSetAdditionalFields(copyMutableObjects, appSubmissionDto.getAppGrpPremisesDtoList());
         appSubmissionDto.setAppGrpPremisesDtoList(copyMutableObjects);
