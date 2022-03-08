@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -53,6 +54,9 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
             if (!StringUtil.isEmpty(transOutToHciCode) && transOutToHciCode.equals("Others")) {
                 if (StringUtil.isEmpty(transferInOutStageDto.getTransOutToOthers())) {
                     errorMap.put("transOutToOthers", "GENERAL_ERR0006");
+                } else if (transferInOutStageDto.getTransOutToOthers().length() > 20) {
+                    String general_err0041 = NewApplicationHelper.repLength("Transfer Out To (Others)", "20");
+                    errorMap.put("transOutToOthers", general_err0041);
                 }
             }
         }
