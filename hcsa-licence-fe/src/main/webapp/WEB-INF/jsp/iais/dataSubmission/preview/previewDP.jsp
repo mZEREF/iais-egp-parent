@@ -8,7 +8,7 @@
 <c:choose>
     <c:when test="${submissionType == 'DP_TP001'}">
         <%-- Patient Information --%>
-        <%@include file="../drugPractices/section/previewPatientInformationDetail.jsp" %>
+        <%@include file="../drugPractices/previewPatientInformation.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'DP_TP002'}">
         <%-- Drug Prescribed --%>
