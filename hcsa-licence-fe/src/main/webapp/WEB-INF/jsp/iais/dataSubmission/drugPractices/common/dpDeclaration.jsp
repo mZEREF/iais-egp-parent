@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <div class="col-xs-12"><iais:message key="DS_DEC002" /></div>
+                    <div class="col-xs-12"><iais:message key="DS_DEC002" escape="false"/></div>
                 </iais:row>
             </div>
         </div>
