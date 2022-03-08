@@ -490,7 +490,7 @@ public class DataSubmissionInboxDelegator {
 		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
-				if(arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+				if(DsHelper.isCycleFinalStatus(arSuperDataSubmissionDto.getCycleDto().getStatus())){
 					return 3;
 				}
 				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
