@@ -35,7 +35,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <approvalApp:preview approvalProfileList="${approvalProfileList}">
+                                    <approvalApp:preview approvalProfileList="${approvalProfileList}" approvalProfileListEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohRfcApprovalApplication?editId=${maskedEditId}&processType=<iais:mask name='processType' value='${processType}'/>&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">

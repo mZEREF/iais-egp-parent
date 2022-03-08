@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+
 <%@attribute name="facProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto" %>
 <%@attribute name="facOperator" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto" %>
 <%@attribute name="facAuth" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto" %>
@@ -12,6 +13,14 @@
 <%@attribute name="batList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>" %>
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
+<%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="operatorEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="authorisedEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="adminEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="officerEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="committeeEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="batListEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="docEditJudge" type="java.lang.Boolean" %>
 
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
@@ -27,7 +36,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facProfile")}</div>
+                            <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facProfile")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -51,6 +60,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${operatorEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facOperator")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Operator</strong></div>
@@ -99,6 +109,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${authorisedEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAuth")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
@@ -165,6 +176,7 @@
                                     </div>
                                 </c:forEach>
                             </div>
+                            <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facAdmin")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Administrator</strong></div>
@@ -253,6 +265,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${officerEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facOfficer")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Officer</strong></div>
@@ -296,6 +309,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${committeeEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "facInfo_facCommittee")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Biosafety Committee</strong></div>
@@ -373,7 +387,7 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div>
+                            <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div></c:if>
                             <c:forEach var="bat" items="${batList}">
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
@@ -411,7 +425,7 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div>
+                            <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <jsp:invoke fragment="docFrag"/>
                             </div>

@@ -7,6 +7,8 @@
 <%@attribute name="approvalProfileList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalProfileDto>" %>
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
+<%@attribute name="approvalProfileListEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="docEditJudge" type="java.lang.Boolean" %>
 
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
@@ -22,7 +24,7 @@
                     </div>
                     <div id="previewBatInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "approvalProfile")}</div>
+                            <c:if test="${approvalProfileListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "approvalProfile")}</div></c:if>
                             <c:forEach var="approvalProfile" items="${approvalProfileList}">
                                 <div class="panel-main-content form-horizontal min-row">
                                     <div class="form-group">
@@ -170,7 +172,7 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div>
+                            <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
