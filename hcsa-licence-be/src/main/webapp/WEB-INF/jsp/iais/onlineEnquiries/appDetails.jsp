@@ -321,6 +321,12 @@
                                                                             <td align="right">ID Type</td>
                                                                             <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.idType}"/><c:if test="${empty personnel.idType}">-</c:if></td>
                                                                         </tr>
+                                                                        <c:if test="${personnel.idType == 'IDTYPE003'}">
+                                                                            <tr>
+                                                                                <td align="right">Nationality</td>
+                                                                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.nationality}"/><c:if test="${empty personnel.nationality}">-</c:if></td>
+                                                                            </tr>
+                                                                        </c:if>
                                                                         <tr>
                                                                             <td align="right">ID No</td>
                                                                             <td class="col-xs-6" style="padding-left: 15px;">${personnel.idNo}<c:if test="${empty personnel.idNo}">-</c:if></td>
