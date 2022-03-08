@@ -53,7 +53,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Blk No" />
+                    <iais:field width="6" value="Block No." />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.blkNo}"/>
                     </iais:value>
@@ -96,13 +96,13 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Mobile No" />
+                    <iais:field width="6" value="Mobile No." />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.mobileNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Home Telephone No" />
+                    <iais:field width="6" value="Home Telephone No." />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.homeTelNo}"/>
                     </iais:value>
