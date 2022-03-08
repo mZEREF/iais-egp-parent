@@ -581,7 +581,7 @@
             $('#edit').show();
         });
         $('#checkitem1').click(function () {
-            toggleIdType($('#update').find('select[name="idType"]'), $('#show').find('.nationalityDiv'));
+            toggleIdType($('#update').find('select[name="idType"]'), $('#update').find('.nationalityDiv'));
             $("#update").show();
             $('#replace').hide();
             $('#newPerson').hide();
