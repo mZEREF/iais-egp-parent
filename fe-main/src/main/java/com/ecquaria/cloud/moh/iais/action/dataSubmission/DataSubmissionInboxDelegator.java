@@ -529,7 +529,7 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					if(licenceInboxClient.hasDonorSampleUseCycleBySubmissionId(arSuperDataSubmissionDto.getDataSubmissionDto().getId()).getEntity()){
+					if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
 						return 2;
 					}
 				}

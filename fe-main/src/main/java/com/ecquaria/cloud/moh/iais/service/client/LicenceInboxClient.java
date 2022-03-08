@@ -184,6 +184,6 @@ public interface LicenceInboxClient {
     @PostMapping(path = "/data-submission/dss-draft-num", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> dssDraftNum(InterMessageSearchDto interMessageSearchDto);
 
-    @GetMapping(value = "/dp-common/dp-use-cycle/{submissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> hasDonorSampleUseCycleBySubmissionId(@PathVariable("submissionId") String submissionId);
+    @GetMapping(value = "/dp-common/dp-use-cycle/{donorSampleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> hasDonorSampleUseCycleByDonorSampleId(@PathVariable("donorSampleId") String donorSampleId);
 }
