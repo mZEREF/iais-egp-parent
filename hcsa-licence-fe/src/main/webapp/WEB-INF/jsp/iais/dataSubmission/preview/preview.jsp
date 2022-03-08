@@ -43,6 +43,12 @@
                         <c:when test="${dsType == 'LDT'}">
                             <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/labDevelopedTest/section/prviewLdtSection.jsp" />
                         </c:when>
+                        <c:when test="${dsType == 'DRP'}">
+                            <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/preview/previewDP.jsp" />
+                        </c:when>
+                        <c:when test="${dsType == 'VSS'}">
+                            <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/preview/previewVSS.jsp" />
+                        </c:when>
                     </c:choose>
                 </div>
                 <c:if test="${DashboardTitle != 'Withdrawal Form'}">

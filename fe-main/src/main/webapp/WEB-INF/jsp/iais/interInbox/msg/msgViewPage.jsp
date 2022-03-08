@@ -19,6 +19,7 @@
         submit('toMsg');
     }
     function goToSubmission(){
+        showWaiting();
         window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohDataSubmissionsInbox")}";
     }
 

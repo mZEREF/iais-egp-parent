@@ -169,7 +169,9 @@ public class TransferInOutDelegator extends CommonDelegator {
 
     public void initSelectOpts(HttpServletRequest request) {
         PremisesDto currentPremisesDto = DataSubmissionHelper.getCurrentArDataSubmission(request).getPremisesDto();
-        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremises();
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
+                .map(LoginContext::getOrgId).orElse("");
+        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremiseList(orgId);
         premisesDtos = premisesDtos.stream().filter(premisesDto ->
                 !premisesDto.getHciCode().equals(currentPremisesDto.getHciCode()) || !premisesDto.getOrganizationId().equals(currentPremisesDto.getOrganizationId())
         ).collect(Collectors.toList());

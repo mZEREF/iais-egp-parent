@@ -58,12 +58,14 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     }
 
     @Override
-    public List<PremisesDto> getArCenterPremises() {
+    public List<PremisesDto> getArCenterPremiseList(String orgId) {
         if (tempCenterEnable) {
             return getCenterPremisesByCentreType(DataSubmissionConsts.DS_AR);
         } else {
+            List<String> svcNames = new ArrayList<>();
             //TODO
-            return IaisCommonUtils.genNewArrayList();
+            //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
+            return licenceClient.getLatestPremisesByConds(getLicenseeId(orgId), svcNames, false).getEntity();
         }
     }
 

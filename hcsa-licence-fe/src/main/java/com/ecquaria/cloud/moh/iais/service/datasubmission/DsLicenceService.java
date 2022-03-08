@@ -16,7 +16,7 @@ public interface DsLicenceService {
 
     Map<String, PremisesDto> getDpCenterPremises(String licenseeId);
 
-    List<PremisesDto> getArCenterPremises();
+    List<PremisesDto> getArCenterPremiseList(String orgId);
 
     PremisesDto getArPremisesDto(String orgId, String hciCode);
 }

@@ -166,7 +166,7 @@
                         <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
                             <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="100" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
+                                <iais:input maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
                             </iais:value>
                         </iais:row>
                 </div>

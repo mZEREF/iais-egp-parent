@@ -1,13 +1,18 @@
-<%@tag description="Preview page of facility registration" pageEncoding="UTF-8" %>
+<%@tag description="Preview page of facility certifier registration" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+
 <%@attribute name="orgProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.OrganisationProfileDto" %>
 <%@attribute name="orgCerTeam" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto" %>
 <%@attribute name="orgAdmin" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.AdministratorDto" %>
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
+<%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="certeamEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="adminEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="docEditJudge" type="java.lang.Boolean" %>
 
 <jsp:invoke fragment="editFrag" var="editFragString"/>
 
@@ -23,7 +28,7 @@
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16"><a href="#" data-step-key="orgInfo_orgProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                            <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgProfile")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Profile</strong></div>
@@ -47,6 +52,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <c:if test="${certeamEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgCerTeam")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Certifier Team Member</strong></div>
@@ -98,6 +104,7 @@
                                     </div>
                                 </c:forEach>
                             </div>
+                            <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgAdmin")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
                                     <div class="col-10"><strong>Facility Administrator</strong></div>
@@ -197,7 +204,7 @@
                     </div>
                     <div id="previewDocs" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div>
+                            <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDoc")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <jsp:invoke fragment="docFrag"/>
                             </div>

@@ -99,6 +99,12 @@
     })
 
      function goToSubmission(){
-         window.location = "${pageContext.request.contextPath.concat("/eservice/INTERNET/MohDataSubmissionsInbox")}";
+         goToProcessForInbox("${pageContext.request.contextPath.concat("/eservice/INTERNET/MohDataSubmissionsInbox")}");
      }
+
+     function goToProcessForInbox(processName){
+         showWaiting();
+         window.location = processName;
+     }
+
 </script>

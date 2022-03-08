@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -489,7 +490,7 @@ public class DataSubmissionInboxDelegator {
 		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
 				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
-				if(arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arSuperDataSubmissionDto.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+				if(DsHelper.isCycleFinalStatus(arSuperDataSubmissionDto.getCycleDto().getStatus())){
 					return 3;
 				}
 				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
@@ -509,7 +510,7 @@ public class DataSubmissionInboxDelegator {
 				}
 				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
 					 ) {
-					if(arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)|| arWd.getCycleDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL)){
+					if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())){
 						return 3;
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
@@ -528,7 +529,7 @@ public class DataSubmissionInboxDelegator {
 					}
 				}
 				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					if(licenceInboxClient.hasDonorSampleUseCycleBySubmissionId(arSuperDataSubmissionDto.getDataSubmissionDto().getId()).getEntity()){
+					if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
 						return 2;
 					}
 				}

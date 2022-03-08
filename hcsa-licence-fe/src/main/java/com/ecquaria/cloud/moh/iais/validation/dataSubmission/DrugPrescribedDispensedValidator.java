@@ -51,9 +51,14 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
             errorMap.putAll(result.retrieveAll());
         }
         String name=drugSubmission.getName();
-        if (errorMap.isEmpty() && StringUtil.isEmpty(name)) {
+        String doctorName=drugSubmission.getDoctorName();
+        if (errorMap.isEmpty() && StringUtil.isEmpty(name) && StringUtil.isEmpty(doctorName)) {
             errorMap.put("showValidatePT", AppConsts.YES);
             ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
+        }
+        if (errorMap.isEmpty() && StringUtil.isEmpty(doctorName)) {
+            errorMap.put("showValidatePT", AppConsts.NO);
+            ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.NO);
         }
         //validate the Submission
         result = WebValidationHelper.validateProperty(drugSubmission, profile);

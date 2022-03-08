@@ -1,11 +1,10 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fac" tagdir="/WEB-INF/tags/facilityCertifier" %>
+<%@ taglib prefix="fac" tagdir="/WEB-INF/tags/facilityCertifier" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -35,7 +34,8 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview orgProfile="${orgProfile}" orgCerTeam="${orgCerTeam}" orgAdmin="${orgAdmin}">
+                                    <fac:preview orgProfile="${orgProfile}" orgCerTeam="${orgCerTeam}" orgAdmin="${orgAdmin}"
+                                                 profileEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>

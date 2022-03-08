@@ -1,13 +1,13 @@
 <div class="col-md-12">
 
-    <div class="table-gp">
+    <div class="table-gp col-md-10" style="left: 8%;">
         <table aria-describedby="" class="table">
             <thead>
             <tr >
                 <th scope="col">AR Centre</th>
-                <th scope="col">Frozen Oocytes</th>
-                <th scope="col">Thawed Oocytes</th>
-                <th scope="col">Fresh Oocytes</th>
+                <th scope="col">Frozen Oocyte</th>
+                <th scope="col">Thawed Oocyte</th>
+                <th scope="col">Fresh Oocyte</th>
                 <th scope="col">Frozen Embryos</th>
                 <th scope="col">Thawed Embryos</th>
                 <th scope="col">Fresh Embryos</th>
@@ -157,13 +157,13 @@
                                                              value="Cycle"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FROZEN_OOCY_NUM"
-                                                             value="Frozen Oocytes"/>
+                                                             value="Frozen Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="THAWED_OOCY_NUM"
-                                                             value="Thawed Oocytes"/>
+                                                             value="Thawed Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FRESH_OOCY_NUM"
-                                                             value="Fresh Oocytes"/>
+                                                             value="Fresh Oocyte"/>
                                         <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="FROZEN_EMBR_NUM"
                                                              value="Frozen Embryos"/>

@@ -173,6 +173,7 @@ public class DpDataSubmissionDelegator {
             dpSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             dpSuperDataSubmissionDto.setOrgId(orgId);
             dpSuperDataSubmissionDto.setSubmissionType(submissionType);
+            dpSuperDataSubmissionDto.setPremises(premises);
             dpSuperDataSubmissionDto.setPremisesDto(premisesDto);
             dpSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(dpSuperDataSubmissionDto,

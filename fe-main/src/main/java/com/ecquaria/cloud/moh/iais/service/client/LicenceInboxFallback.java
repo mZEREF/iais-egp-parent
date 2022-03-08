@@ -390,7 +390,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Boolean> hasDonorSampleUseCycleBySubmissionId(String submissionId) {
+    public FeignResponseEntity<Boolean> hasDonorSampleUseCycleByDonorSampleId(String donorSampleId) {
         return getEntity();
     }
 }

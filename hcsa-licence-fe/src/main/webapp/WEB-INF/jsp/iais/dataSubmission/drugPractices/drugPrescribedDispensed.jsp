@@ -22,7 +22,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3 style="font-size: 36px">Submit Drug Practices Submission</h3>
+                <h3>Submit Drug Prescribed or Dispensed</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/drugSubmissionSection.jsp" %>
                     <%@include file="section/drugMedicationSection.jsp" %>
@@ -36,5 +36,7 @@
               cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
               cancelFunc="submit('patient', 'patient');" needFungDuoJi="false"/>
 <iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+<iais:confirm msg="DS_MSG011" callBack="$('#validateVD').modal('hide');" popupOrder="validateVD" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
 <input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>

@@ -121,7 +121,10 @@ public class MohDsActionDelegator {
             ldtSuperDataSubmissionDto.setAppType(ldtSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "title", "Laboratory Develop Test");
-        } else {
+        } else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
+            VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
+            DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+        }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
