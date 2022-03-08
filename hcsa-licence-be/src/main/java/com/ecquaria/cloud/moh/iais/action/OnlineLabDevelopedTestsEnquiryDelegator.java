@@ -111,10 +111,10 @@ public class OnlineLabDevelopedTestsEnquiryDelegator {
         }
         if(dsFilterDto.getTestStatus()!=null){
             if("0".equals(dsFilterDto.getTestStatus())){
-                filter.put("testStatus", 0);
+                filter.put("testStatus", "Inactive");
             }
             if("1".equals(dsFilterDto.getTestStatus())){
-                filter.put("testStatus", 1);
+                filter.put("testStatus", "Active");
             }
         }
         if(dsFilterDto.getResponsePerson()!=null){
