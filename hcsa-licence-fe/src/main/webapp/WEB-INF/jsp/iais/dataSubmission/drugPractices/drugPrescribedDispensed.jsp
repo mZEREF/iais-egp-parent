@@ -37,4 +37,6 @@
               cancelFunc="submit('patient', 'patient');" needFungDuoJi="false"/>
 <iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
+<iais:confirm msg="DS_MSG011" callBack="$('#validateVD').modal('hide');" popupOrder="validateVD" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
 <input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>
