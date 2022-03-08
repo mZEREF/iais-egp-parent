@@ -36,7 +36,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Doctor's Professional Registration No" />
+                    <iais:field width="5" value="Doctor's Professional Registration No." />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${drugSubmission.doctorReignNo}"/>
                     </iais:value>
