@@ -1,4 +1,4 @@
-<div class=" col-md-12">
+<div class=" col-md-10" style="left: 8%;">
 
     <hr>
     <div class="row">
