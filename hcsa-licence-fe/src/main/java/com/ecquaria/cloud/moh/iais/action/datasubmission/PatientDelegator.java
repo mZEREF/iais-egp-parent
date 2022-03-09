@@ -93,7 +93,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         DsRfcHelper.prepare(patient);
         patientInfo.setPatient(patient);
-        String patientCode = patient.getPatientCode();
+        String patientCode = null;
         // check previous
         if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(currentArDataSubmission.getAppType())) {
             patient.setPreviousIdentification(true);
@@ -116,7 +116,6 @@ public class PatientDelegator extends CommonDelegator {
             } else {
                 patientInfo.setRetrievePrevious(false);
                 patientInfo.setPrevious(null);
-                patientCode = null;
             }
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));
