@@ -1758,10 +1758,11 @@ public class ClinicalLaboratoryDelegator {
             saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
         } else if (isGetDataFromPage) {
             newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
-            NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
+            /*NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
                     appSvcRelatedInfoDto, errorMap);
-            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
             errorMap = IaisCommonUtils.genNewHashMap();
+             */
+            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
         }
 
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
