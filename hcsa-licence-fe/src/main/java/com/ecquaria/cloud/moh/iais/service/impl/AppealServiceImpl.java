@@ -852,6 +852,7 @@ public class AppealServiceImpl implements AppealService {
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
+        String[] nationality = ParamUtil.getStrings(request, "nationality");
         String[] designation = ParamUtil.getStrings(request, "designation");
         String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
@@ -868,6 +869,9 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setName(name[i]);
             appSvcCgoDto.setIdType(idType[i]);
             appSvcCgoDto.setIdNo(idNo[i]);
+            if("IDTYPE003".equals(appSvcCgoDto.getIdType())){
+                appSvcCgoDto.setNationality(nationality[i]);
+            }
             appSvcCgoDto.setDesignation(designation[i]);
             appSvcCgoDto.setProfessionType(professionType[i]);
             appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
@@ -1858,7 +1862,7 @@ public class AppealServiceImpl implements AppealService {
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
-                if (size < maximumCount) {
+                if (size > maximumCount) {
                     return false;
                 }
             }

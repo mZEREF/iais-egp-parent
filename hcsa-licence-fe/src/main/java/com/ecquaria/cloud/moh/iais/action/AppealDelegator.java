@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
@@ -349,6 +350,7 @@ public class AppealDelegator {
         sql = sql.replace("(4)", designationSelectStr);
         sql = sql.replace("(5)", proRegnTypeSelectStr);
         sql = sql.replace("(6)", specialtySelectStr);
+        sql = sql.replace("(7)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
 
 
         log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
@@ -450,5 +452,20 @@ public class AppealDelegator {
         int configFileSize = systemParamConfig.getUploadFileLimit();
 
         ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
+    }
+
+
+    private String generateDropDownHtml(String cateId, String name) {
+        return generateDropDownHtml(cateId, name, name);
+    }
+
+    private String generateDropDownHtml(String cateId, String name, String className) {
+        List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCate(cateId);
+        Map<String, String> attrs = IaisCommonUtils.genNewHashMap();
+        attrs.put("class", className);
+        attrs.put("name", name);
+        attrs.put("style", "display: none;");
+        return NewApplicationHelper.generateDropDownHtml(attrs, list, NewApplicationDelegator.FIRESTOPTION, null,
+                !MasterCodeUtil.CATE_ID_NATIONALITY.equals(cateId));
     }
 }
