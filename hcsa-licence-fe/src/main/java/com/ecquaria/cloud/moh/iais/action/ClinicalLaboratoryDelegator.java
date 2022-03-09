@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import antlr.ASdebug.IASDebugStream;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -1654,7 +1655,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
-        List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1699,9 +1699,11 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<AppSvcDocDto> newAppSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
         Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
+            newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
             //CommonsMultipartFile file = null;
             AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
@@ -4833,7 +4835,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String, File> saveFileMap) {
-        if (IaisCommonUtils.isEmpty(saveFileMap)) {
+        if (IaisCommonUtils.isEmpty(saveFileMap) || appSvcDocDtos == null) {
             return;
         }
         Map<String,File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
