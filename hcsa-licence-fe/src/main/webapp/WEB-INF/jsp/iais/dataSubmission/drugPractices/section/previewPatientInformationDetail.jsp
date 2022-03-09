@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#dpPatientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#dpPatientDetails">
                 Patient Details
             </a>
         </h4>
