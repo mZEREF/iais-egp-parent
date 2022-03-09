@@ -230,6 +230,8 @@ public class ArCycleStagesManualDelegator {
                     selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode);
             currentArDataSubmission = DataSubmissionHelper.reNew(currentArDataSubmission);
+            currentArDataSubmission.setDraftNo(null);
+            currentArDataSubmission.setDraftId(null);
             currentArDataSubmission.getDataSubmissionDto().setCycleStage(stage);
             handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
         }
