@@ -113,6 +113,10 @@ public class PatientDelegator extends CommonDelegator {
                 }
                 patientInfo.setPrevious(previous);
                 patientCode = previous.getPatientCode();
+            } else {
+                patientInfo.setRetrievePrevious(false);
+                patientInfo.setPrevious(null);
+                patientCode = null;
             }
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));

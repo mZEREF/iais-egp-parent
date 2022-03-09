@@ -274,6 +274,8 @@ public class PatientUploadDelegate {
                     previous = db;
                 }
                 dto.setPrevious(previous);
+            } else {
+                dto.setPrevious(null);
             }
             HusbandDto husbandDto = new HusbandDto();
             husbandDto.setName(patientInfoExcelDto.getNameHbd());
@@ -402,8 +404,8 @@ public class PatientUploadDelegate {
                     newDto.setDataSubmissionDto(dataSubmissionDto);
                     PatientDto patient = dto.getPatient();
                     String patientCode = patient.getPatientCode();
-                    if (dto.getPrevious() != null && !StringUtil.isEmpty(dto.getPatient().getPatientCode())) {
-                        patientCode = dto.getPatient().getPatientCode();
+                    if (patient.isPreviousIdentification() && dto.getPrevious() != null) {
+                        patientCode = dto.getPrevious().getPatientCode();
                     }
                     patient.setPatientCode(patientService.getPatientCode(patientCode));
                     patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
