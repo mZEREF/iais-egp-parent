@@ -150,6 +150,7 @@ public class TemplatesDelegator {
             String deliveryModeTxt = MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode());
             msgTemplateDto.setMessageType(messageType);
             msgTemplateDto.setDeliveryMode(deliveryMode);
+
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
 
             String recipientString = String.join("#", msgTemplateDto.getRecipient());
@@ -245,9 +246,11 @@ public class TemplatesDelegator {
             }
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
             return;
         }else {
+
             templatesService.updateMsgTemplate(msgTemplateDto);
             eicGatewayClient.syncTemplateFe(msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
@@ -340,6 +343,7 @@ public class TemplatesDelegator {
         MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
         msgTemplateDto.setMessageType(MasterCodeUtil.getCodeDesc(msgTemplateDto.getMessageType()));
         msgTemplateDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode()));
+
         ParamUtil.setRequestAttr(bpc.request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
 
     }

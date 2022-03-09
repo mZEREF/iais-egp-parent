@@ -204,6 +204,29 @@
                                 </div>
                               </td>
                             </tr>
+                            <c:if test="${currentCgo.idType=='IDTYPE003'}">
+                              <tr height="1" class="nationalityDiv">
+                                <td class="first last" style="width: 100%;">
+                                  <div class="control control-caption-horizontal">
+                                    <div class="form-group form-horizontal formgap">
+                                      <div class="col-sm-4 control-label formtext">
+                                        <label class="control-label control-set-font control-font-label">Nationality</label>
+                                        <span class="mandatory">*</span>
+                                        <span class="upload_controls"></span>
+                                      </div>
+                                      <div class="col-sm-5 col-md-7" id="nationality${suffix}">
+                                        <div class="">
+                                          <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
+                                                       cssClass="nationality" value="${currentCgo.nationality}" needErrorSpan="false"/>
+                                          <span class="error-msg" name="iaisErrorMsg"
+                                                id="error_nationality${status.index}"></span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </c:if>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
