@@ -18,5 +18,7 @@ public interface DsLicenceService {
 
     List<PremisesDto> getArCenterPremiseList(String orgId);
 
+    List<PremisesDto> getLdtCenterPremiseList(String orgId);
+
     PremisesDto getArPremisesDto(String orgId, String hciCode);
 }
