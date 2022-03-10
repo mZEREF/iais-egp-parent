@@ -74,8 +74,12 @@ public class AuditTrailServiceImpl implements AuditTrailService {
                 if(map.isEmpty()){
                     map.put(detail,detail);
                 }
-            }else {
-                map.put(detail,detail);
+            } else {
+                Iterator<Map.Entry<String, JsonNode>> it = jn.fields();
+                while (it.hasNext()) {
+                    Map.Entry<String, JsonNode> ent = it.next();
+                    map.put(ent.getKey(), ent.getValue());
+                }
             }
         } catch (JsonProcessingException e) {
             map.put(detail,detail);
