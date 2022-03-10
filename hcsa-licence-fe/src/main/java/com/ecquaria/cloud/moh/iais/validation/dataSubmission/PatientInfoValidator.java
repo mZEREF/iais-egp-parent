@@ -157,7 +157,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
             }
             if (map.isEmpty()) {
-                ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(request);
+                /*ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(request);
                 PatientInfoDto oldPatientInfo;
                 if (oldArDataSubmission == null || oldArDataSubmission.getPatientInfoDto() == null) {
                     oldPatientInfo = patientService.getPatientInfoDto(previous.getPatientCode());
@@ -171,7 +171,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                         map.put(DataSubmissionConstant.RFC_NO_CHANGE_ERROR, "DS_ERR021");
                         ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                     }
-                }
+                }*/
             }
         } else {
             PatientDto patientDto = patientService.getActiveArPatientByConds(patient.getIdType(), patient.getIdNumber(),

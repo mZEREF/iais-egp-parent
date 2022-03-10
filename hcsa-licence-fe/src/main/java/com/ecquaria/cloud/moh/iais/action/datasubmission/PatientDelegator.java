@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -68,9 +69,21 @@ public class PatientDelegator extends CommonDelegator {
         if (ACTION_TYPE_DRAFT.equals(actionType)) {
             // validatePageForDraft(patientInfo.getPatient(), bpc.request);
         } else {
-            String profile = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType()) ? "rfc" : "save";
-            validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
+            boolean isRFC = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType());
+            String profile = isRFC ? "rfc" : "save";
+            boolean isValid = validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
             // check whether user change any data
+            if (isValid && isRFC && needValidate(bpc.request, ACTION_TYPE_CONFIRM)) {
+                ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(bpc.request);
+                PatientInfoDto oldPatientInfo = null;
+                if (oldArDataSubmission != null) {
+                    oldPatientInfo = oldArDataSubmission.getPatientInfoDto();
+                }
+                if (!DsRfcHelper.isChangePatientInfoDto(patientInfo, oldPatientInfo)) {
+                    ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+                }
+            }
         }
     }
 
