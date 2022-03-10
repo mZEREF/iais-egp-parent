@@ -255,7 +255,7 @@
                                 </c:if>
                             </div>
                             <div class="tab-content row">
-                                <a href="#" onclick="javascript:doBack('${arViewFull}');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                <a href="#" onclick="javascript:doBack('${arViewFull}','${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
                             </div>
                         </div>
                     </div>

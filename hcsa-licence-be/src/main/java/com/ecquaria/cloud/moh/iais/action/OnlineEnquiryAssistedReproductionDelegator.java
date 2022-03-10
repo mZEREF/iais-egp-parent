@@ -996,7 +996,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     public void perAdvancedSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request,"arViewFull",null);
         List<SelectOption> aRorIUICycleOptions= IaisCommonUtils.genNewArrayList();
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
@@ -1564,7 +1564,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void perNext(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         String actionType = ParamUtil.getString(request,"crud_action_type");
-        if("backBase".equals(actionType)){
+        if("backBase".equals(actionType)||"backAdv".equals(actionType)){
             ParamUtil.setSessionAttr(request,"arViewFull",null);
         }
 
