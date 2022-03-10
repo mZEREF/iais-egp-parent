@@ -76,14 +76,14 @@ public class CommonDocDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public List<DocMeta> convertToDocMetaList(String module) {
+    public List<DocMeta> convertToDocMetaList() {
         List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
         this.savedDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), module);
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), module);
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         return metaDtoList;

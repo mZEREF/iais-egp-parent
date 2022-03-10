@@ -23,6 +23,14 @@ public class ValidationResultDto implements Serializable {
     private Map<String, String> errorMap;
 
 
+    public static ValidationResultDto of(boolean pass, Map<String, String> errorMap) {
+        ValidationResultDto resultDto = new ValidationResultDto();
+        resultDto.setPass(pass);
+        resultDto.setErrorMap(errorMap);
+        return resultDto;
+    }
+
+
     @SneakyThrows
     public String toErrorMsg() {
         ObjectMapper mapper = new ObjectMapper();
