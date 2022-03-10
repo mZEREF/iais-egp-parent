@@ -1,4 +1,4 @@
-<div class="panel panel-default" style="${!empty donorDtos ?  '' : 'display: none;'}">
+<div class="panel panel-default" style="${!empty donorDtosVersion ?  '' : 'display: none;'}">
     <div class="panel-heading ">
         <h4  class="panel-title" >
             <a  href="#donorDtoDetails" data-toggle="collapse"  >
@@ -9,7 +9,13 @@
 
     <div id="donorDtoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <c:forEach items="${donorDtos}" var="donorDto">
+            <iais:row>
+                <iais:field width="5"  value="" />
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <c:out value="Version "/>${arSuperDataSubmissionDtoVersion.dataSubmissionDto.version}
+                </iais:value>
+            </iais:row>
+            <c:forEach items="${donorDtosVersion}" var="donorDto">
                 <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
                 <div class="panel-main-content form-horizontal">
                     <c:if test="${donorFrom == 'ar'}">

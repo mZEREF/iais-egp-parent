@@ -222,6 +222,7 @@
     <div class="panel-collapse collapse in" id="babyDetals">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <%@include file="../cycleStage/previewPregnancyOutcomeStageBabySection.jsp" %>
                 <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
 
                 <div id="careBabyNumSection"

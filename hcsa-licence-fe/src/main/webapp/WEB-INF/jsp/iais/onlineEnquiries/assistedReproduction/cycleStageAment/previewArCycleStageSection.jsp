@@ -244,5 +244,6 @@
 </div>
 <c:set var="donorFrom" value="ar"/>
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
+<%@include file="../cycleStage/previewDonorSection.jsp"%>
+<c:set var="donorDtosVersion" value="${arCycleStageDtoVersion.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>
-
