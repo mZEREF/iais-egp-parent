@@ -8,7 +8,7 @@
             </a>
         </h4>
     </div>
-    <div id="pssDetails" class="panel-collapse collapse in">
+    <div id="pssDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <iais:row>
