@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -13,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -71,19 +69,8 @@ public class PatientDelegator extends CommonDelegator {
         } else {
             boolean isRFC = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType());
             String profile = isRFC ? "rfc" : "save";
-            boolean isValid = validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
+            validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
             // check whether user change any data
-            if (isValid && isRFC && needValidate(bpc.request, ACTION_TYPE_CONFIRM)) {
-                ArSuperDataSubmissionDto oldArDataSubmission = DataSubmissionHelper.getOldArDataSubmission(bpc.request);
-                PatientInfoDto oldPatientInfo = null;
-                if (oldArDataSubmission != null) {
-                    oldPatientInfo = oldArDataSubmission.getPatientInfoDto();
-                }
-                if (!DsRfcHelper.isChangePatientInfoDto(patientInfo, oldPatientInfo)) {
-                    ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
-                }
-            }
         }
     }
 
