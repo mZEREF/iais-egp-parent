@@ -174,9 +174,9 @@
                     </div>
 
                     <iais:row>
-                        <iais:field width="5" value="What Condition was PGT-M Performed to Detect?" mandatory="true"/>
+                        <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect For?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="20"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
+                            <input type="text" maxlength="100"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtMCondition"></span>
                         </iais:value>
                     </iais:row>
@@ -187,9 +187,9 @@
                         <iais:field width="5" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="What Condition and Structural Rearrangement was PGT-SR Performed?" mandatory="true"/>
+                        <iais:field width="5" value="What Condition and Structural Rearrangement was PGT-SR Performed For?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <input type="text" maxlength="20"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
+                            <input type="text" maxlength="100"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
                         </iais:value>
                     </iais:row>

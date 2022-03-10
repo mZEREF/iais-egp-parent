@@ -65,9 +65,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
 
             if(StringUtil.isEmpty(pgtStageDto.getPgtMCondition())){
                 errorMap.put("PgtMCondition", errMsgErr006);
-            }else  if(pgtStageDto.getPgtMCondition().length()>20){
+            }else  if(pgtStageDto.getPgtMCondition().length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","20");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Field");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("PgtMCondition", errMsg);
@@ -76,9 +76,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         if(pgtStageDto.getIsPgtSr()==1){
             if(StringUtil.isEmpty(pgtStageDto.getPgtSrCondition())){
                 errorMap.put("PgtSrCondition", errMsgErr006);
-            }else  if(pgtStageDto.getPgtSrCondition().length()>20){
+            }else  if(pgtStageDto.getPgtSrCondition().length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","20");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Field");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("PgtSrCondition", errMsg);

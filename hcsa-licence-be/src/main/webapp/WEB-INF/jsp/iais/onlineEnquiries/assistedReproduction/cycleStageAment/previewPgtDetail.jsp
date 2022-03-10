@@ -96,7 +96,7 @@
                         </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field width="4" value="What Condition was PGT-M Performed to Detect?"/>
+                        <iais:field width="4" value="What Condition and Gene was PGT-M Performed to Detect For?"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}"/>
                         </iais:value>
@@ -110,7 +110,7 @@
                         <iais:field width="4" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
-                        <iais:field width="4" value="What Condition and Structural Rearrangement was PGT-SR Performed?"/>
+                        <iais:field width="4" value="What Condition and Structural Rearrangement was PGT-SR Performed For?"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}"/>
                         </iais:value>
