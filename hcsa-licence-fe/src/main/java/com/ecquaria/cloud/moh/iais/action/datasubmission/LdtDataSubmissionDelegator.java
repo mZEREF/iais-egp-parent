@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -259,8 +260,12 @@ public class LdtDataSubmissionDelegator {
                 DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
                 if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
                     errorMap.put("amendReason", "GENERAL_ERR0006");
-                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
-                    errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+                    if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                        errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                    } else {
+                        errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
+                    }
                 }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
                 if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
