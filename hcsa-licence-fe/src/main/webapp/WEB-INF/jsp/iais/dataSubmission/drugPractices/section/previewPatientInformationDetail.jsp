@@ -6,7 +6,7 @@
             </a>
         </h4>
     </div>
-    <div id="dpPatientDetails" class="panel-collapse collapse in">
+    <div id="dpPatientDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <c:set var="patientDto" value="${dpSuperDataSubmissionDto.patientDto}"/>
