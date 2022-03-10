@@ -298,9 +298,9 @@
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
-                <#if husbandName??> AND  :husbandName = dh.NAME</#if>
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
-                <#if husbandIdNumber??> AND  charindex(:husbandIdNumber, dh.ID_NUMBER) >0</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
