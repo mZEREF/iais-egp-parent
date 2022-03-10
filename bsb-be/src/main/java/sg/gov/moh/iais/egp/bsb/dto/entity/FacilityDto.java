@@ -31,6 +31,8 @@ public class FacilityDto extends BaseEntityDto {
 
     private List<FacilityBiosafetyCommitteeDto> bioCommittees;
 
+    private ApplicationDto application;
+
     private String facilityName;
 
     private String facilityClassification;

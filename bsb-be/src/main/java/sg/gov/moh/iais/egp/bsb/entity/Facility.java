@@ -26,6 +26,8 @@ public class Facility implements Serializable {
 
     private List<FacilityBiosafetyCommittee> bioCommittees;
 
+    private Application application;
+
     private String facilityName;
 
     private String facilityClassification;
