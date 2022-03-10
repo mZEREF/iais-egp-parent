@@ -52,7 +52,8 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:datePicker id="ldtDateFrom" name="ldtDateFrom" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateFrom}"/>
                                 </iais:value>
-                                <iais:value width="4" cssClass="col-md-4">
+                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                <iais:value width="3" cssClass="col-md-3">
                                     <iais:datePicker id="ldtDateTo" name="ldtDateTo" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateTo}"/>
                                 </iais:value>
                             </iais:row>
@@ -64,31 +65,34 @@
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Status of Test" />
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="radio"
-                                               name="testStatus"
-                                               value="1"
-                                               id="statusActive"
-                                               <c:if test="${ dsLaboratoryDevelopTestEnquiryFilterDto.testStatus =='1' }">checked</c:if>
-                                               aria-invalid="false">
-                                        <label class="form-check-label"
-                                               for="statusActive"><span
-                                                class="check-circle"></span>Active</label>
-                                    </div>
-                                </iais:value>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                               name="testStatus" value="0" id="statusInactive"
-                                               <c:if test="${dsLaboratoryDevelopTestEnquiryFilterDto.testStatus == '0'}">checked</c:if>
-                                               aria-invalid="false">
-                                        <label class="form-check-label"
-                                               for="statusInactive"><span
-                                                class="check-circle"></span>Inactive</label>
-                                    </div>
-                                </iais:value>
+                                <div class="col-md-4 row ">
+                                    <iais:value width="6" cssClass="col-md-6">
+                                        <div class="form-check row ">
+                                            <input class="form-check-input"
+                                                   type="radio"
+                                                   name="testStatus"
+                                                   value="1"
+                                                   id="statusActive"
+                                                   <c:if test="${ dsLaboratoryDevelopTestEnquiryFilterDto.testStatus =='1' }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="statusActive"><span
+                                                    class="check-circle"></span>Active</label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="6" cssClass="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                   name="testStatus" value="0" id="statusInactive"
+                                                   <c:if test="${dsLaboratoryDevelopTestEnquiryFilterDto.testStatus == '0'}">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="statusInactive"><span
+                                                    class="check-circle"></span>Inactive</label>
+                                        </div>
+                                    </iais:value>
+                                </div>
+
                             </iais:row>
 
 
