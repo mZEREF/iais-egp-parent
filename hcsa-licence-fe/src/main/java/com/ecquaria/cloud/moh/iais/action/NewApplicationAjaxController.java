@@ -321,7 +321,9 @@ public class NewApplicationAjaxController {
             return;
         }
         byte[] fileData = serviceConfigService.downloadFile(fileRepoId);
-        if (fileData != null) {
+        if (fileData == null || fileData.length == 0) {
+            IaisEGPHelper.redirectUrl(response, "https://" + request.getServerName() + "/main-web/404-error.jsp");
+        } else {
             response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
             response.addHeader("Content-Length", "" + fileData.length);
             response.setContentType("application/x-octet-stream");
