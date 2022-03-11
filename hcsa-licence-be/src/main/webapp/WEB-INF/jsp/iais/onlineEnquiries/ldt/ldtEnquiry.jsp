@@ -203,6 +203,10 @@
                                 </div>
 
                             </div>
+                            <iais:action style="text-align:right;">
+                                <a class="btn btn-secondary"
+                                   href="${pageContext.request.contextPath}/hcsa/enquiry/ar/LDT-SearchResults-DownloadS">Download</a>
+                            </iais:action>
 
                         </div>
                     </div>
