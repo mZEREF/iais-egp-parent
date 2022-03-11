@@ -3,17 +3,22 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -84,6 +89,61 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             valRFC(request,drugPrescribedDispensed);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
+    }
+
+    @Override
+    public void pageConfirmAction(BaseProcessClass bpc) {
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if(ACTION_TYPE_SUBMISSION.equals(actionType)){
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            HttpServletRequest request = bpc.request;
+            DpSuperDataSubmissionDto currentDpDataSubmission= DataSubmissionHelper.getCurrentDpDataSubmission(request);
+            DrugPrescribedDispensedDto drugPrescribedDispensed=currentDpDataSubmission.getDrugPrescribedDispensedDto();
+            if(drugPrescribedDispensed == null) {
+                drugPrescribedDispensed = new DrugPrescribedDispensedDto();
+            }
+            DrugSubmissionDto drugSubmission = drugPrescribedDispensed.getDrugSubmission();
+            if (drugSubmission == null) {
+                drugSubmission = new DrugSubmissionDto();
+            }
+            if(!StringUtil.isEmpty(drugSubmission.getPrescriptionDate())){
+                try {
+                    if(CommonValidator.isDate(drugSubmission.getPrescriptionDate()) && Formatter.compareDateByDay(drugSubmission.getPrescriptionDate()) <-2){
+                        errorMap.put("declaration", "GENERAL_ERR0006");
+                        errorMap.put("remarks", "GENERAL_ERR0006");
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+            if(!StringUtil.isEmpty(drugSubmission.getDispensingDate())){
+                try {
+                    if(CommonValidator.isDate(drugSubmission.getDispensingDate()) && Formatter.compareDateByDay(drugSubmission.getDispensingDate()) <-2){
+                        errorMap.put("declaration", "GENERAL_ERR0006");
+                        errorMap.put("remarks", "GENERAL_ERR0006");
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
+            if(arSuperDataSubmissionDto == null) {
+                arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+            }
+            DataSubmissionDto dataSubmissionDto= arSuperDataSubmissionDto.getDataSubmissionDto();
+            if(dataSubmissionDto == null) {
+                dataSubmissionDto = new DataSubmissionDto();
+            }
+            String declaration=ParamUtil.getRequestString(request, "declaration");
+            String remarks=ParamUtil.getRequestString(request, "remarks");
+            if (!errorMap.isEmpty() && StringUtil.isEmpty(declaration) || StringUtil.isEmpty(remarks)){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
+            dataSubmissionDto.setDeclaration(declaration);
+            arSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
+        }
+
     }
     private List<DrugMedicationDto> genDrugMedication(HttpServletRequest request) {
         List<DrugMedicationDto> drugMedicationDtos=IaisCommonUtils.genNewArrayList();

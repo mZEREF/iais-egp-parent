@@ -96,7 +96,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {
-                if(Formatter.compareDateByDay(prescriptionDate,startDate)<=0){
+                if(Formatter.compareDateByDay(prescriptionDate,startDate)>=0){
                     errorMap.put("startDate", "Must be later than Date of Prescription");
                 }
             }catch (Exception e){

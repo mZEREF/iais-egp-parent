@@ -10,6 +10,7 @@
 
 <%@ include file="common/dpHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container center-content">
@@ -27,7 +28,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewDrugSubmissionSection.jsp" %>
                     <%@include file="section/previewDrugMedicationSection.jsp" %>
-                    <%@include file="common/dpDeclaration.jsp" %>
+                    <%@include file="common/drugDeclarations.jsp" %>
                 </div>
                 <%@include file="common/dpFooter.jsp" %>
             </div>

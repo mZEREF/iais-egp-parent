@@ -1,6 +1,6 @@
 <%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_drugSubmission.js"></script>--%>
 <div id="flagDocMessage" hidden><iais:message key="GENERAL_ERR0042"/> </div>
-<div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0048"/> </div>
+<div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
 <div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -26,7 +26,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Nationality" mandatory="false"/>
+                    <iais:field width="5" value="Nationality" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" style="width: 232px;">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                      value="${drugSubmission.nationality}" cssClass="nationalitySel"/>
@@ -127,13 +127,13 @@
                 <div class="row">
                     <div class="col-md-12">
             <span style="font-size: 2rem;" id="prsErrorMsg">
-              <iais:message key="GENERAL_ERR0048" escape="false" />
+              <iais:message key="GENERAL_ERR0057" escape="false" />
             </span>
                     </div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">OK</button>
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
             </div>
         </div>
     </div>
