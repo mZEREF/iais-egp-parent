@@ -14,13 +14,13 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +34,7 @@ import java.util.Map;
 @Slf4j
 public class PgtCycleStageDelegator extends CommonDelegator{
 
-    @Autowired
-    private ArFeClient arFeClient;
+
     @Autowired
     private DpFeClient dpFeClient;
 
@@ -53,27 +52,29 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
             arSuperDataSubmissionDto.getPgtStageDto().setIsThereAppeal(0);
         }
+        initPgtCount(arSuperDataSubmissionDto,bpc.request);
+
+
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+    }
+
+    public void initPgtCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto,HttpServletRequest request) {
         String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
 
         List<PgtStageDto> oldPgtList=dpFeClient.listPgtStageByPatientCode(patientCode).getEntity();
-        int count =0;
         int countNo =0;
         if(oldPgtList!=null){
             for (PgtStageDto pgt:oldPgtList
-                 ) {
+            ) {
                 if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-                    if(pgt.getIsThereAppeal()==0){
-                        countNo++;
+                    if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(new Date())){
+                        countNo+=pgt.getIsPgtCoFunding();
                     }
-                    count++;
                 }
 
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "count",count);
-        ParamUtil.setSessionAttr(bpc.request, "countNo",countNo);
-
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(request, "count",countNo);
     }
 
     @Override

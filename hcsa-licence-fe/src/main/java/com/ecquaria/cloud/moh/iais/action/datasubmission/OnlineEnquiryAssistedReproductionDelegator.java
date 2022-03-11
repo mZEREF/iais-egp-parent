@@ -1457,8 +1457,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-                            count++;
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                            count+=pgt.getIsPgtCoFunding();
                         }
                     }
                 }
