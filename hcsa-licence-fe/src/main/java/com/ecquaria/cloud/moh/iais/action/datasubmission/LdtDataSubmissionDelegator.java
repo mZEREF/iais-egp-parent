@@ -260,7 +260,7 @@ public class LdtDataSubmissionDelegator {
                 DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
                 if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
                     errorMap.put("amendReason", "GENERAL_ERR0006");
-                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+                } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
                     if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
                         errorMap.put("amendReasonOther", "GENERAL_ERR0006");
                     } else {
@@ -423,7 +423,7 @@ public class LdtDataSubmissionDelegator {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
             DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
             dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
-            if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+            if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
                 dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
             } else {
                 dataSubmissionDto.setAmendReasonOther(null);

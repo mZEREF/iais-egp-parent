@@ -249,6 +249,7 @@ public final class DataSubmissionHelper {
             lastStage = additionalStage;
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
+        result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
         if (StringUtil.isEmpty(lastCycle)) {
             addStartStages(result);
         } else if (StringUtil.isEmpty(lastStage)

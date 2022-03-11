@@ -125,14 +125,14 @@
                                                         mandatory="true"/>
                                             <iais:value width="11">
                                                 <iais:select name="amendReason" firstOption="Please Select"
-                                                             codeCategory="DATA_SUBMISSION_CYCLE_STAGE_AMENDMENT"
+                                                             codeCategory="LDT_AMENDMENT_REASON"
                                                              value="${dataSubmission.amendReason}"
                                                              cssClass="amendReasonSel"
-                                                             onchange="toggleOnSelect(this, 'PCS_002', 'amendReasonOtherDiv')"/>
+                                                             onchange="toggleOnSelect(this, 'LDTRE_002', 'amendReasonOtherDiv')"/>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row id="amendReasonOtherDiv"
-                                                  style="${dataSubmission.amendReason ne 'PCS_002' ? 'display:none'  : null }">
+                                                  style="${dataSubmission.amendReason ne 'LDTRE_002' ? 'display:none'  : null }">
                                             <iais:field width="11" value="Reason for Amendment (Others)"
                                                         mandatory="true"/>
                                             <iais:value width="11">
