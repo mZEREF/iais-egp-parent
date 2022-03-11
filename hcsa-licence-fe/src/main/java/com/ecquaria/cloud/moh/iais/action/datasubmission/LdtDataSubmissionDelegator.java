@@ -257,21 +257,20 @@ public class LdtDataSubmissionDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
             if (isRfc(request)) {
+                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+                if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
+                    errorMap.put("amendReason", "GENERAL_ERR0006");
+                } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
+                    if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                        errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                    } else {
+                        errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
+                    }
+                }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
-                if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
+                if (errorMap.isEmpty() && oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
                     ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                     crud_action_type = ACTION_TYPE_PAGE;
-                } else {
-                    DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
-                    if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
-                        errorMap.put("amendReason", "GENERAL_ERR0006");
-                    } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
-                        if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
-                            errorMap.put("amendReasonOther", "GENERAL_ERR0006");
-                        } else {
-                            errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
-                        }
-                    }
                 }
             }
         }
