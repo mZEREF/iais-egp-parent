@@ -24,7 +24,12 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -91,21 +96,19 @@ public class TransferInOutDelegator extends CommonDelegator {
         arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         List<String> transferredList = transferInOutStageDto.getTransferredList();
         int num = "in".equals(transferInOutStageDto.getTransferType()) ? 1 : -1;
-        for (String transferred : transferredList) {
-            if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
-                if (transferInOutStageDto.getOocyteNum() != null) {
-                    arChangeInventoryDto.setFrozenOocyteNum(num * Integer.parseInt(transferInOutStageDto.getOocyteNum()));
-                }
+        if (transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
+            if (transferInOutStageDto.getOocyteNum() != null) {
+                arChangeInventoryDto.setFrozenOocyteNum(num * Integer.parseInt(transferInOutStageDto.getOocyteNum()));
             }
-            if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
-                if (transferInOutStageDto.getEmbryoNum() != null) {
-                    arChangeInventoryDto.setFrozenEmbryoNum(num * Integer.parseInt(transferInOutStageDto.getEmbryoNum()));
-                }
+        }
+        if (transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
+            if (transferInOutStageDto.getEmbryoNum() != null) {
+                arChangeInventoryDto.setFrozenEmbryoNum(num * Integer.parseInt(transferInOutStageDto.getEmbryoNum()));
             }
-            if (transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
-                if (transferInOutStageDto.getSpermVialsNum() != null) {
-                    arChangeInventoryDto.setFrozenSpermNum(num * Integer.parseInt(transferInOutStageDto.getSpermVialsNum()));
-                }
+        }
+        if (transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
+            if (transferInOutStageDto.getSpermVialsNum() != null) {
+                arChangeInventoryDto.setFrozenSpermNum(num * Integer.parseInt(transferInOutStageDto.getSpermVialsNum()));
             }
         }
         ParamUtil.setRequestAttr(request, WHAT_WAS_TRANSFERREDS, MasterCodeUtil.retrieveByCategory(MasterCodeUtil.WHAT_WAS_TRANSFERRED));
@@ -153,6 +156,22 @@ public class TransferInOutDelegator extends CommonDelegator {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        List<String> transferredList = transferInOutStageDto.getTransferredList();
+        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
+            transferInOutStageDto.setOocyteNum("-1");
+        }
+        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
+            transferInOutStageDto.setEmbryoNum("-1");
+        }
+        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
+            transferInOutStageDto.setSpermVialsNum("-1");
+        }
     }
 
     @Override
