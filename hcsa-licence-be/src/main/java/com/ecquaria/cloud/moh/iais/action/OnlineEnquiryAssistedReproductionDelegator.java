@@ -563,12 +563,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getDonorIdNumber()!=null){
                 filter.put("donorIdNumber",arDto.getDonorIdNumber());
             }
-            if(arDto.getRemovedFromStorage()!=null){//not found
-                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
-            }
-            if(arDto.getEmbryosStoredBeyond()!=null){//not found
-                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
-            }
+            //todo not found
+//            if(arDto.getRemovedFromStorage()!=null){
+//                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
+//            }
+            //todo not found
+//            if(arDto.getEmbryosStoredBeyond()!=null){
+//                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
+//            }
             if(arDto.getSourceSemen()!=null){
                 if("Donor".equals(arDto.getSourceSemen())){
                     filter.put("FROM_DONOR",1);

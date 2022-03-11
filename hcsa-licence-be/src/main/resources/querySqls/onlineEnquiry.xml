@@ -281,6 +281,7 @@
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
                 left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
                 left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
                 left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
                 left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
@@ -331,8 +332,8 @@
                 <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
                 <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
                 <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
-                <#if embTransNums??> AND dfs.TRANSFER_NUM in( :embTransNums)</#if>
-                <#if ageEmbryosNums??> AND (dfs.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dfs.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dfs.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
                 <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
@@ -348,7 +349,7 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND  (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
                 <#if transferredInFrom??> AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
