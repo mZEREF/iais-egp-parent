@@ -2,10 +2,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
+      <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.pageMandatoryCount}" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="${PO.maximumCount}" placeholder="maximum count">
+      <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="${PO.pageMaximumCount}" placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -14,10 +14,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label">Nominee&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.pageMandatoryCount}" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
+      <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.pageMaximumCount}"  placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -56,10 +56,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.pageMandatoryCount}" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.maximumCount}"  placeholder="maximum count">
+      <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.pageMaximumCount}"  placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -70,10 +70,10 @@
   <div class="col-xs-12 col-md-9">
     <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+      <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.pageMandatoryCount}" placeholder="mandatory count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
+      <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.pageMaximumCount}" placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -126,10 +126,10 @@
     <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
       <input disabled value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
-      <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
+      <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.pageMandatoryCount}" placeholder="minimum count">
     </div>
     <div class="col-xs-12 col-md-2">
-      <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
+      <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.pageMaximumCount}"  placeholder="maximum count">
     </div>
   </div>
 </div>
@@ -139,11 +139,11 @@
     <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
       <iais:input type="hidden" name="secldrId" value="${SECLDR.id}" needDisabled="true"/>
-      <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
+      <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.pageMandatoryCount}"
                   placeholder="minimum count" needDisabled="true"/>
     </div>
     <div class="col-xs-12 col-md-2">
-      <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.maximumCount}"
+      <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.pageMaximumCount}"
                   placeholder="maximum count" needDisabled="true"/>
     </div>
   </div>
@@ -153,11 +153,11 @@
     <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
     <div class="col-xs-12 col-md-2">
       <iais:input type="hidden" name="kahId" value="${KAH.id}" needDisabled="true"/>
-      <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
+      <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.pageMandatoryCount}"
                   placeholder="minimum count" needDisabled="true"/>
     </div>
     <div class="col-xs-12 col-md-2">
-      <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.maximumCount}"
+      <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.pageMaximumCount}"
                   placeholder="maximum count" needDisabled="true"/>
     </div>
   </div>
