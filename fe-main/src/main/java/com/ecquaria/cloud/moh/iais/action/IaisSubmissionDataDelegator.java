@@ -126,6 +126,11 @@ public class IaisSubmissionDataDelegator {
                 ldtNo = "LDT0000000000001";
             }
             laboratoryDevelopTestDto.setLdtNo(ldtNo);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext != null) {
+                laboratoryDevelopTestDto.setSubmitBy(loginContext.getUserId());
+                laboratoryDevelopTestDto.setSubmitDt(new Date());
+            }
             LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
             try {
                 eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
