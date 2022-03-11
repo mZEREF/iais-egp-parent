@@ -11,7 +11,6 @@
     List<IuiTreatmentSubsidiesDto> oldIuiTreatmentSubsidiesDtos = arFeClient.getIuiTreatmentSubsidiesDtosByPhc(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
     int iuiCount=oldIuiTreatmentSubsidiesDtos.size();
     ParamUtil.setRequestAttr(request, "iuiCount", iuiCount);
-    iuiCount = ParamUtil.getInt(request,"iuiCount");
     boolean isDisplayAppeal = (iuiCount>=3);
     ParamUtil.setRequestAttr(request, "isDisplayAppeal",isDisplayAppeal);
 %>
@@ -53,3 +52,4 @@
         </div>
     </div>
 </div>
+<%----%>
