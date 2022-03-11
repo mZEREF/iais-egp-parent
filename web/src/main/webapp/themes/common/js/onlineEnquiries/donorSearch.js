@@ -1,11 +1,10 @@
 function doClear() {
     $('input[type="text"]').val("");
     $('input[type="checkbox"]').prop("checked", false);
-    $("option:first").prop("selected", 'selected');
+    $("select option").prop("selected", false);
     $(".clearSel").children(".current").text("Please Select");
-    $('.date_picker').val("");
-    $(".multi-select-button").html("-- Select --");
-    $('#cycleStageDisplay').attr("style","display: none");
+    $('#othersSampleHciCode').attr("style","display: none");
+
 }
 
 
