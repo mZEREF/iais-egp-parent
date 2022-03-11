@@ -473,8 +473,6 @@ public class ConfigServiceImpl implements ConfigService {
 
     }
 
-
-
     private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) throws Exception {
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
         Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtoMap();
@@ -635,8 +633,6 @@ public class ConfigServiceImpl implements ConfigService {
 
         for (int i = 0; i < hcsaSvcPersonnelDtos.size(); i++) {
             String psnType = hcsaSvcPersonnelDtos.get(i).getPsnType();
-            int mandatoryCount = hcsaSvcPersonnelDtos.get(i).getMandatoryCount();
-            int maximumCount = hcsaSvcPersonnelDtos.get(i).getMaximumCount();
             String pageMandatoryCount = hcsaSvcPersonnelDtos.get(i).getPageMandatoryCount();
             String pageMaximumCount = hcsaSvcPersonnelDtos.get(i).getPageMaximumCount();
             boolean pageManFlag=false;
@@ -671,9 +667,11 @@ public class ConfigServiceImpl implements ConfigService {
                     errorMap.put("maximumCount"+i,generalErr0002);
                 }
             }
-            if(pageManFlag&&pageMaxFlag){
-                if(mandatoryCount>maximumCount){
-                    errorMap.put("maximumCount"+i,"SC_ERR006");
+            if (pageManFlag && pageMaxFlag) {
+                Integer mandatoryCount = hcsaSvcPersonnelDtos.get(i).getMandatoryCount();
+                Integer maximumCount = hcsaSvcPersonnelDtos.get(i).getMaximumCount();
+                if (mandatoryCount != null && maximumCount != null && mandatoryCount > maximumCount) {
+                    errorMap.put("maximumCount" + i, "SC_ERR006");
                 }
             }
         }
@@ -1101,15 +1099,21 @@ public class ConfigServiceImpl implements ConfigService {
         personnelDto.setPageMandatoryCount(man);
         personnelDto.setPageMaximumCount(mix);
         try {
-            if(!StringUtil.isEmpty(man)){
+            if (StringUtil.isDigit(man)) {
                 personnelDto.setMandatoryCount(Integer.parseInt(man));
+            } else {
+                personnelDto.setMandatoryCount(null);
             }
-        }catch (NumberFormatException e){}
+        } catch (NumberFormatException e) {
+        }
         try {
-            if(!StringUtil.isEmpty(mix)){
+            if (StringUtil.isDigit(mix)) {
                 personnelDto.setMaximumCount(Integer.parseInt(mix));
+            } else {
+                personnelDto.setMaximumCount(null);
             }
-        }catch (NumberFormatException e){}
+        } catch (NumberFormatException e) {
+        }
         personnelDto.setPsnType(psnType);
         personnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return personnelDto;
@@ -1444,11 +1448,10 @@ public class ConfigServiceImpl implements ConfigService {
             stringList.add(stepCode);
         }
         request.setAttribute("PremisesType", premisesType);
+        // service personnel
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaConfigClient.getSvcPersonnelByServiceId(id).getEntity();
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
             String psnType = hcsaSvcPersonnelDto.getPsnType();
-            hcsaSvcPersonnelDto.setPageMandatoryCount(hcsaSvcPersonnelDto.getMandatoryCount()+"");
-            hcsaSvcPersonnelDto.setPageMaximumCount(hcsaSvcPersonnelDto.getMaximumCount()+"");
             request.setAttribute(psnType, hcsaSvcPersonnelDto);
         }
 
@@ -1456,6 +1459,7 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtos = getHcsaConfigPageDtos(hcsaServiceDto);
         request.setAttribute("routingStagess", hcsaConfigPageDtos);
     }
+
     private void sendStartOrEndDateChangeEmail(HttpServletRequest request) throws IOException, TemplateException {
         OrgUserDto orgUserDto=(OrgUserDto)request.getSession().getAttribute("orgUserDto");
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();

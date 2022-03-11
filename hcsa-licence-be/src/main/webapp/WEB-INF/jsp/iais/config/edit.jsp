@@ -882,7 +882,8 @@
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
-<iais:confirm msg="Are you sure you want to cancel ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
+<iais:confirm msg="Are you sure you want to cancel ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary"
+              cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel" needFungDuoJi="false"/>
 <script type="text/javascript">
     $(document).ready(function () {
         a();
