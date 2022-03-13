@@ -393,11 +393,11 @@ public class ReceiptNotificationDto implements Serializable {
     public void getDocMetaInfoToValidate() {
         this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             addDocMetaInfos(docMeta);
         });
         this.savedDocInfos.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
             addDocMetaInfos(docMeta);
         });
     }
@@ -621,9 +621,7 @@ public class ReceiptNotificationDto implements Serializable {
             return;
         }
         this.oldKeyNewInfos.clear();
-        for (Map.Entry<Integer, List<PrimaryDocDto.NewDocInfo>> entry : this.newKeyNewInfos.entrySet()) {
-            this.oldKeyNewInfos.put(entry.getKey(), entry.getValue());
-        }
+        this.oldKeyNewInfos.putAll(this.newKeyNewInfos);
         String deleteIdx = ParamUtil.getString(request, "deleteIdx");
         if (StringUtils.hasLength(deleteIdx)) {
             List<Integer> deleteIds = Arrays.stream(deleteIdx.split(","))

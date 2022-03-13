@@ -112,7 +112,7 @@ public class PrimaryDocDto implements Serializable {
         List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
 
         this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         return metaDtoList;

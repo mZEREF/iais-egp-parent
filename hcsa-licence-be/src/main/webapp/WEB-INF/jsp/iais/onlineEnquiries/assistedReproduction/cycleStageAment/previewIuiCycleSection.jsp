@@ -114,4 +114,6 @@
   </div>
 </div>
 <c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
+<%@include file="../cycleStage/previewDonorSection.jsp"%>
+<c:set var="donorDtosVersion" value="${iuiCycleStageDtoVersion.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>

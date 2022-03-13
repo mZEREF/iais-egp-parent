@@ -10,13 +10,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -29,11 +29,13 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -72,6 +74,9 @@ public class LdtDataSubmissionDelegator {
 
     @Autowired
     LicenceViewService licenceViewService;
+
+    @Autowired
+    DsLicenceService dsLicenceService;
 
     public static final String CRUD_ACTION_TYPE_LDT = "crud_action_type_ldt";
     public static final String CURRENT_PAGE = "ldt_current_page";
@@ -255,11 +260,15 @@ public class LdtDataSubmissionDelegator {
                 DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
                 if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
                     errorMap.put("amendReason", "GENERAL_ERR0006");
-                } else if ("PCS_002".equals(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
-                    errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
+                    if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                        errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+                    } else {
+                        errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
+                    }
                 }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
-                if (oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
+                if (errorMap.isEmpty() && oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
                     ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                     crud_action_type = ACTION_TYPE_PAGE;
                 }
@@ -346,18 +355,17 @@ public class LdtDataSubmissionDelegator {
         if (loginContext == null) {
             return;
         }
-        String licenseeId = loginContext.getLicenseeId();
-        List<AppGrpPremisesDto> entity = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
+        List<PremisesDto> entity = dsLicenceService.getLdtCenterPremiseList(loginContext.getOrgId());
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(entity)) {
-            ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
+            ArrayList<PremisesDto> collect = entity.stream().collect(
                     Collectors.collectingAndThen(
-                            Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getHciCode))), ArrayList::new));
-            for (AppGrpPremisesDto appGrpPremisesDto : collect
+                            Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PremisesDto::getHciCode))), ArrayList::new));
+            for (PremisesDto appGrpPremisesDto : collect
             ) {
                 String hciName = appGrpPremisesDto.getAddress();
-                if (!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
-                    hciName = appGrpPremisesDto.getHciName() + "," + hciName;
+                if (!StringUtil.isEmpty(appGrpPremisesDto.getBusinessName())) {
+                    hciName = appGrpPremisesDto.getBusinessName() + "," + hciName;
                 }
                 String hciCode = appGrpPremisesDto.getHciCode();
                 if (!StringUtil.isEmpty(hciName)) {
@@ -415,7 +423,7 @@ public class LdtDataSubmissionDelegator {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
             DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
             dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
-            if ("PCS_002".equals(dataSubmissionDto.getAmendReason())) {
+            if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
                 dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
             } else {
                 dataSubmissionDto.setAmendReasonOther(null);

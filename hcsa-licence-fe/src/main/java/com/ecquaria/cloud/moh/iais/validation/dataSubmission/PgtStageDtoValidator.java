@@ -31,7 +31,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-        int countNo = (int) ParamUtil.getSessionAttr(request,"countNo");
+        int countNo = (int) ParamUtil.getSessionAttr(request,"count");
 
         if(countNo>=6&&pgtStageDto.getIsThereAppeal()==0){
             errorMap.put("isThereAppeal", "Disallow submission if patient's total PGT-M/SR co-funded cycles entered in the system is ≥6 and option selected for 'Is there an Appeal?' is 'No'");
@@ -65,9 +65,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
 
             if(StringUtil.isEmpty(pgtStageDto.getPgtMCondition())){
                 errorMap.put("PgtMCondition", errMsgErr006);
-            }else  if(pgtStageDto.getPgtMCondition().length()>20){
+            }else  if(pgtStageDto.getPgtMCondition().length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","20");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Field");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("PgtMCondition", errMsg);
@@ -76,9 +76,9 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         if(pgtStageDto.getIsPgtSr()==1){
             if(StringUtil.isEmpty(pgtStageDto.getPgtSrCondition())){
                 errorMap.put("PgtSrCondition", errMsgErr006);
-            }else  if(pgtStageDto.getPgtSrCondition().length()>20){
+            }else  if(pgtStageDto.getPgtSrCondition().length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","20");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Field");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("PgtSrCondition", errMsg);

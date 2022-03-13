@@ -4,7 +4,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >
             <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
-                Assisted Reproduction Submission
+                Assisted Reproduction Cycle
             </a>
         </h4>
     </div>

@@ -31,11 +31,11 @@ public class Followup1BMetaDto {
         }
         List<DocMeta> metaDtoList = new ArrayList<>(newDocInfoMap.size()+savedDocInfoMap.size());
         savedDocInfoMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         newDocInfoMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "followup");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         Map<String, List<DocMeta>> metaDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);

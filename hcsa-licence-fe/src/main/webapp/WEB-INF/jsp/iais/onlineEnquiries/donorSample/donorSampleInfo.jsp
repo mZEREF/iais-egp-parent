@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row">
+                                <div class="row" style="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}" >
                                     <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
 
                                     <div class="col-md-6">
@@ -76,14 +76,7 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row">
-                                    <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>
 
-                                    <div class="col-md-6">
-                                        <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
-                                    </div>
-                                </div>
-                                <hr>
                             </c:if>
                             <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ||donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001'}">
                                 <div class="row">
@@ -107,6 +100,16 @@
 
                                     <div class="col-md-6">
                                         <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorName}" />
+                                    </div>
+                                </div>
+                                <hr>
+                            </c:if>
+                            <c:if test="${!donorInfoDataSubmissionDto.donorSampleDto.directedDonation }">
+                                <div class="row">
+                                    <iais:field width="6" cssClass="col-md-6" value="Name of Bank / AR Centre where Sample is from"/>
+
+                                    <div class="col-md-6">
+                                        <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.sampleFromHciCode}" />
                                     </div>
                                 </div>
                                 <hr>

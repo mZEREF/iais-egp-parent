@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <h4 class="panel-title"  >
             <a href="#arStageDetails" data-toggle="collapse">
-                Assisted Reproduction Submission
+                Assisted Reproduction Cycle
             </a>
         </h4>
     </div>

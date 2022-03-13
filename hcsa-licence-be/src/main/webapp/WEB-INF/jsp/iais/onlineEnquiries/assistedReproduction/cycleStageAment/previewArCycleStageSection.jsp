@@ -4,7 +4,7 @@
     <div class="panel-heading ">
         <h4 class="panel-title" >
             <a href="#viewArCycleStage" data-toggle="collapse" >
-                Assisted Reproduction Submission
+                Assisted Reproduction Cycle
             </a>
         </h4>
     </div>
@@ -244,5 +244,6 @@
 </div>
 <c:set var="donorFrom" value="ar"/>
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
+<%@include file="../cycleStage/previewDonorSection.jsp"%>
+<c:set var="donorDtosVersion" value="${arCycleStageDtoVersion.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>
-

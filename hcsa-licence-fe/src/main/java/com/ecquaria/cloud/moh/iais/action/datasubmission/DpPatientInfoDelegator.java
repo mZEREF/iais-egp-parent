@@ -81,7 +81,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         if (DpCommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))) {
             valRFC(request, patientDto);
         }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+        DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
     }
 
     protected void valRFC(HttpServletRequest request, PatientDto patientDto) {

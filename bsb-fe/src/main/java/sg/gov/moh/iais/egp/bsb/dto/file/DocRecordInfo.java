@@ -21,15 +21,10 @@ public class DocRecordInfo implements Serializable {
     private String submitBy;
 
 
-    /** Convert this new doc to meta info object
-     * @see DocMeta#DocMeta(String, String, long)  */
-    public DocMeta toDocMeta() {
-        return new DocMeta(docType, filename, size);
-    }
 
     /** Convert this new doc to meta info object with a specific module name
-     * @see DocMeta#DocMeta(String, String, String, long, String)  */
-    public DocMeta toDocMeta(String module) {
-        return new DocMeta(repoId, docType, filename, size, module);
+     * @see DocMeta#DocMeta(String, String, String, long)  */
+    public DocMeta toDocMeta() {
+        return new DocMeta(repoId, docType, filename, size);
     }
 }

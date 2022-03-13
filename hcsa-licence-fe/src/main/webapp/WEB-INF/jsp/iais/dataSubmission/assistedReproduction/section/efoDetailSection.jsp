@@ -19,27 +19,27 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
                     <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Date Started" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:field width="5" value="Date Started" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
                         <iais:datePicker id="efoDateStarted" name="efoDateStarted" dateVal="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:field width="5" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="6"  display="true">
                         <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Is it Medically Indicated?" mandatory="true"/>
+                    <iais:field width="5" value="Is it Medically Indicated?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -67,16 +67,16 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Reason" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:field width="5" value="Reason" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
                 </iais:row>
                 <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" value="" mandatory="false"/>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:field width="5" value="" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7">
                             <input type="text" maxlength="100"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
                         </iais:value>

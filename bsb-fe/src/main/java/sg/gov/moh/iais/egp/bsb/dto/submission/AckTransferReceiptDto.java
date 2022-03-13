@@ -286,7 +286,7 @@ public class AckTransferReceiptDto implements Serializable {
         meta.setActualReceiptTime(actualReceiptTime);
         List<DocMeta> metaDtoList = new ArrayList<>(this.newDocInfoMap.size());
         this.newDocInfoMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
         meta.setMetas(metaDtoList);

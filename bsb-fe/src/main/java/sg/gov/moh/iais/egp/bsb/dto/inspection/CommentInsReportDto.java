@@ -52,7 +52,7 @@ public class CommentInsReportDto implements Serializable {
 
 
     public List<DocMeta> getNewFileMeta() {
-        return newDocMap.values().stream().map(i -> i.toDocMeta("commentReport")).collect(Collectors.toCollection(() -> new ArrayList<>(newDocMap.size())));
+        return newDocMap.values().stream().map(NewDocInfo::toDocMeta).collect(Collectors.toCollection(() -> new ArrayList<>(newDocMap.size())));
     }
 
     public CommentInsReportValidateDto toValidateDto() {

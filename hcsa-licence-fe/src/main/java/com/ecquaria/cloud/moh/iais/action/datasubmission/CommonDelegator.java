@@ -517,7 +517,7 @@ public abstract class CommonDelegator {
                 validationDtos, validationPropertyList) : true;
     }
 
-    private boolean needValidate(HttpServletRequest request, String... actionType) {
+    protected boolean needValidate(HttpServletRequest request, String... actionType) {
         return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE), actionType);
     }
 

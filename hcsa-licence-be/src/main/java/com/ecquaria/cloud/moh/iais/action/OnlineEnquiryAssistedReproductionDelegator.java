@@ -563,12 +563,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getDonorIdNumber()!=null){
                 filter.put("donorIdNumber",arDto.getDonorIdNumber());
             }
-            if(arDto.getRemovedFromStorage()!=null){//not found
-                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
-            }
-            if(arDto.getEmbryosStoredBeyond()!=null){//not found
-                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
-            }
+            //todo not found
+//            if(arDto.getRemovedFromStorage()!=null){
+//                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
+//            }
+            //todo not found
+//            if(arDto.getEmbryosStoredBeyond()!=null){
+//                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
+//            }
             if(arDto.getSourceSemen()!=null){
                 if("Donor".equals(arDto.getSourceSemen())){
                     filter.put("FROM_DONOR",1);
@@ -996,7 +998,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     public void perAdvancedSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request,"arViewFull",null);
         List<SelectOption> aRorIUICycleOptions= IaisCommonUtils.genNewArrayList();
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
@@ -1500,8 +1502,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-                            count++;
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                            count+=pgt.getIsPgtCoFunding();
                         }
                     }
                 }
@@ -1564,7 +1566,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void perNext(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         String actionType = ParamUtil.getString(request,"crud_action_type");
-        if("backBase".equals(actionType)){
+        if("backBase".equals(actionType)||"backAdv".equals(actionType)){
             ParamUtil.setSessionAttr(request,"arViewFull",null);
         }
 

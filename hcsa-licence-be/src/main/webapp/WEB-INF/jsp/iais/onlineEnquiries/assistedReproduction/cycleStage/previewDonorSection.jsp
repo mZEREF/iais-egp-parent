@@ -9,6 +9,12 @@
 
     <div id="donorDtoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
+            <iais:row>
+                <iais:field width="5"  value="" />
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <c:out value="Current Version"/>
+                </iais:value>
+            </iais:row>
             <c:forEach items="${donorDtos}" var="donorDto">
                 <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
                 <div class="panel-main-content form-horizontal">

@@ -8,18 +8,19 @@
 <c:choose>
     <c:when test="${submissionType == 'DP_TP001'}">
         <%-- Patient Information --%>
-        <%@include file="../drugPractices/previewPatientInformation.jsp" %>
+        <%@include file="../drugPractices/section/previewPatientInformationDetail.jsp" %>
+        <%@include file="../drugPractices/common/dpDeclaration.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'DP_TP002'}">
         <%-- Drug Prescribed --%>
         <%@include file="../drugPractices/section/previewDrugSubmissionSection.jsp" %>
         <%@include file="../drugPractices/section/previewDrugMedicationSection.jsp" %>
+        <%@include file="../drugPractices/common/drugDeclarations.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'DP_TP003'}">
         <%-- Sovenor Inventory --%>
     </c:when>
 </c:choose>
-
 <style>
     .panel-group .panel.panel-default > .panel-heading h4 a {
         text-decoration: none;

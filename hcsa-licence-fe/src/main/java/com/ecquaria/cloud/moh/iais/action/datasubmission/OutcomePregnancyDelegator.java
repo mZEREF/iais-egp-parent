@@ -51,6 +51,16 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
             pregnancyOutcomeStageDto.setWasSelFoeReduCarryOut(1);
             arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+        } else if (isRfc(bpc.request)) {
+            pregnancyOutcomeStageDto
+                    .getPregnancyOutcomeBabyDtos()
+                    .forEach(pregnancyOutcomeBabyDto ->
+                            {
+                                pregnancyOutcomeBabyDto.setId(null);
+                                pregnancyOutcomeBabyDto.getPregnancyOutcomeBabyDefectDtos()
+                                        .forEach(pregnancyOutcomeBabyDefectDto -> pregnancyOutcomeBabyDefectDto.setId(null));
+                            }
+                    );
         }
         int totalLiveBirthNum = getInt(pregnancyOutcomeStageDto.getMaleLiveBirthNum()) + getInt(pregnancyOutcomeStageDto.getFemaleLiveBirthNum());
         ParamUtil.setRequestAttr(bpc.request, "totalLiveBirthNum", totalLiveBirthNum);

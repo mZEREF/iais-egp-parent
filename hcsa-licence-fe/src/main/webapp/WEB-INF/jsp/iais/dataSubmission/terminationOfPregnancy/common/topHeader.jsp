@@ -4,7 +4,7 @@
 <%
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
-<%--<c:set var="title" value="New Assisted Reproduction Submission" />--%>
+
 <c:set var="smallTitle" value="You are submitting for <strong>Termination Of Pregnancy</strong>" />
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/top_common.js"></script>

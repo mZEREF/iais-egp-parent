@@ -17,51 +17,51 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" value="What was disposed?" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:field width="5" value="What was disposed?" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="disposedType"  name="disposedType" firstOption="Please Select" options="disposalTypeSelectOption" value="${arSuperDataSubmissionDto.disposalStageDto.disposedType}"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_disposedType"></span>
                     </iais:value>
                 </iais:row>
                 <div id="oocyteDisplay" <c:if test="${arSuperDataSubmissionDto.disposalStageDto.disposedTypeDisplay!=1}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Immature" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Immature" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="immature" name="immature"  value="${arSuperDataSubmissionDto.disposalStageDto.immatureString==null?arSuperDataSubmissionDto.disposalStageDto.immature:arSuperDataSubmissionDto.disposalStageDto.immatureString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_immature"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Abnormally Fertilised" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Abnormally Fertilised" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="abnormallyFertilised" name="abnormallyFertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilisedString==null?arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised:arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilisedString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_abnormallyFertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Unfertilised" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Unfertilised" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="unfertilised" name="unfertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.unfertilisedString==null?arSuperDataSubmissionDto.disposalStageDto.unfertilised:arSuperDataSubmissionDto.disposalStageDto.unfertilisedString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unfertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Atretic" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Atretic" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="atretic" name="atretic"  value="${arSuperDataSubmissionDto.disposalStageDto.atreticString==null?arSuperDataSubmissionDto.disposalStageDto.atretic:arSuperDataSubmissionDto.disposalStageDto.atreticString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_atretic"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Damaged" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Damaged" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="damaged" name="damaged"  value="${arSuperDataSubmissionDto.disposalStageDto.damagedString==null?arSuperDataSubmissionDto.disposalStageDto.damaged:arSuperDataSubmissionDto.disposalStageDto.damagedString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_damaged"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Lysed / Degenerated" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="Lysed / Degenerated" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="lysedOrDegenerated" name="lysedOrDegenerated"  value="${arSuperDataSubmissionDto.disposalStageDto.lysedOrDegeneratedString==null?arSuperDataSubmissionDto.disposalStageDto.lysedOrDegenerated:arSuperDataSubmissionDto.disposalStageDto.lysedOrDegeneratedString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_lysedOrDegenerated"></span>
                         </iais:value>
@@ -71,8 +71,8 @@
 
                 <div id="embryoDisplay" <c:if test="${arSuperDataSubmissionDto.disposalStageDto.disposedTypeDisplay!=2}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormal Discarded" />
-                        <iais:value width="6" cssClass="col-md-6" >
+                        <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormal Discarded" />
+                        <iais:value width="7" cssClass="col-md-7" >
                             <iais:input maxLength="2" type="text" id="unhealthyNum" name="unhealthyNum"  value="${arSuperDataSubmissionDto.disposalStageDto.unhealthyNumString==null?arSuperDataSubmissionDto.disposalStageDto.unhealthyNum:arSuperDataSubmissionDto.disposalStageDto.unhealthyNumString}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unhealthyNum"></span>
                         </iais:value>
@@ -82,13 +82,13 @@
                 <iais:row>
                     <c:choose >
                         <c:when test="${arSuperDataSubmissionDto.disposalStageDto.disposedTypeDisplay==3}">
-                            <iais:field width="6" id="otherDiscardedNumField" value="Discarded for Other Reasons" mandatory="true"/>
+                            <iais:field width="5" id="otherDiscardedNumField" value="Discarded for Other Reasons" mandatory="true"/>
                         </c:when>
                         <c:otherwise>
-                            <iais:field width="6" id="otherDiscardedNumField" value="Discarded for Other Reasons" />
+                            <iais:field width="5" id="otherDiscardedNumField" value="Discarded for Other Reasons" />
                         </c:otherwise>
                     </c:choose>
-                    <iais:value width="6" cssClass="col-md-6" >
+                    <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="2" type="text" id="otherDiscardedNum" name="otherDiscardedNum"  onchange="" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNumString==null?arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum:arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNumString}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_otherDiscardedNum"></span>
                     </iais:value>
@@ -96,19 +96,19 @@
 
                 <iais:row>
                     <c:if test="${empty arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum || arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum<=0}">
-                        <iais:field width="6" id="otherDiscardedReasonField" value="Other Reasons for Discarding" />
+                        <iais:field width="5" id="otherDiscardedReasonField" value="Other Reasons for Discarding" />
                     </c:if>
                     <c:if test="${ arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum>0}">
-                        <iais:field width="6" id="otherDiscardedReasonField" value="Other Reasons for Discarding" mandatory="true"  />
+                        <iais:field width="5" id="otherDiscardedReasonField" value="Other Reasons for Discarding" mandatory="true"  />
                     </c:if>
 
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="7" cssClass="col-md-7">
                         <input type="text" maxlength="20"   name="otherDiscardedReason" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedReason}" >
                         <span class="error-msg" name="iaisErrorMsg" id="error_otherDiscardedReason"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Total No. Disposed Of" mandatory="false"/>
+                    <iais:field width="5" value="Total No. Disposed Of" mandatory="false"/>
                     <iais:value width="6" display="true">
                         <div id="totalNum" name="totalNum">${arSuperDataSubmissionDto.disposalStageDto.totalNum}</div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_totalNum"></span>

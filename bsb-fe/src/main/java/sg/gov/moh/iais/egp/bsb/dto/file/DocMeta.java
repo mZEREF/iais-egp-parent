@@ -14,7 +14,6 @@ public class DocMeta implements Serializable {
     private String docType;
     private String filename;
     private long size;
-    private String module;
 
     public DocMeta(String docType, String filename, long size) {
         this.docType = docType;
@@ -22,11 +21,10 @@ public class DocMeta implements Serializable {
         this.size = size;
     }
 
-    public DocMeta(String id, String docType, String filename, long size, String module) {
+    public DocMeta(String id, String docType, String filename, long size) {
         this.id = id;
         this.docType = docType;
         this.filename = filename;
         this.size = size;
-        this.module = module;
     }
 }

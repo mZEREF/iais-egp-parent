@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4  class="panel-title" >
-            <a href="#donorDtoDetails" data-toggle="collapse"  >
+            <a class="collapsed" href="#medication" data-toggle="collapse"  >
                 Medication Details
             </a>
         </h4>
     </div>
-    <div id="donorDtoDetails" class="panel-collapse collapse in">
+    <div id="medication" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:forEach items="${drugPrescribedDispensedDto.drugMedicationDtos}" var="drugMedicationDto" varStatus="idxStatus">

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -378,4 +379,38 @@ public class OnlineArAjaxController {
     }
 
 
+    @GetMapping(value = "LDT-SearchResults-DownloadS")
+    public @ResponseBody
+    void fileLdtHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "ldtParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("onlineEnquiry", "searchLaboratoryDevelopTest",searchParam);
+
+        SearchResult<DsLaboratoryDevelopTestEnquiryResultsDto> results = assistedReproductionService.searchDsLdtByParam(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<DsLaboratoryDevelopTestEnquiryResultsDto> queryList = results.getRows();
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, DsLaboratoryDevelopTestEnquiryResultsDto.class, "LaboratoryDevelopTest_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 }

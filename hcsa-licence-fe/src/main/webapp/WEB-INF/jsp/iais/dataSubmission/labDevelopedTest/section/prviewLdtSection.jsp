@@ -1,23 +1,29 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.service.CessationFeService" %>
 <%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.dto.LoginContext" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%
     LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(request);
     DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
     String hciName = dsLaboratoryDevelopTestDto.getHciCode();
-    CessationFeService cessationFeService = SpringContextHelper.getContext().getBean(CessationFeService.class);
-    PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(dsLaboratoryDevelopTestDto.getHciCode());
+    DsLicenceService dsLicenceService = SpringContextHelper.getContext().getBean(DsLicenceService.class);
+    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+    List<PremisesDto> entity = dsLicenceService.getLdtCenterPremiseList(loginContext.getOrgId());
+    PremisesDto premisesDto = entity.stream().filter(premisesDto1 -> dsLaboratoryDevelopTestDto.getHciCode().equals(premisesDto1.getHciCode())).findFirst().get();
     if (premisesDto != null) {
         hciName = premisesDto.getAddress();
-        if (!StringUtil.isEmpty(premisesDto.getHciName())) {
-            hciName = premisesDto.getHciName() + "," + hciName;
+        if (!StringUtil.isEmpty(premisesDto.getBusinessName())) {
+            hciName = premisesDto.getBusinessName() + "," + hciName;
         }
     }
 %>

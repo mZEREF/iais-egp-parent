@@ -44,10 +44,7 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(request,PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
-        List<IuiTreatmentSubsidiesDto> oldIuiTreatmentSubsidiesDtos = arFeClient.getIuiTreatmentSubsidiesDtosByPhc(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
-        int iuiCount=oldIuiTreatmentSubsidiesDtos.size();
-        ParamUtil.setRequestAttr(bpc.request, "iuiCount", iuiCount);
+
 
     }
 
@@ -66,7 +63,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         if(StringUtil.isEmpty(iuiTreatmentSubsidiesDto.getArtCoFunding())){
             iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
         }
-
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        List<IuiTreatmentSubsidiesDto> oldIuiTreatmentSubsidiesDtos = arFeClient.getIuiTreatmentSubsidiesDtosByPhc(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
+        int iuiCount=oldIuiTreatmentSubsidiesDtos.size();
+        ParamUtil.setRequestAttr(bpc.request, "iuiCount", iuiCount);
         arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }

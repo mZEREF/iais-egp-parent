@@ -505,7 +505,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum2"  id="embryosTransferredNum2"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum2 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum2 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNum2"><span

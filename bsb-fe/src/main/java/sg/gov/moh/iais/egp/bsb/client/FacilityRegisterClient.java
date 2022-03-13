@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 
@@ -35,6 +36,9 @@ public interface FacilityRegisterClient {
 
     @PostMapping(path = "/register/facility/form-validation/committee", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityCommittee(@RequestBody FacilityCommitteeDto dto);
+
+    @PostMapping(path = "/register/facility/validation/data-file", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateUploadedDataFileMeta(@RequestBody DocMeta meta);
 
     @PostMapping(path = "/register/facility/form-validation/bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);

@@ -9,7 +9,7 @@
             </a>
         </h4>
     </div>
-    <div id="pccoDetails" class="panel-collapse collapse in">
+    <div id="pccoDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <div style="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002' ? '' : 'display: none'}">

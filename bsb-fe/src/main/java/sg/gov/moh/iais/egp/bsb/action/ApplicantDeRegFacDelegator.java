@@ -91,7 +91,7 @@ public class ApplicantDeRegFacDelegator {
 
         CommonDocDto commonDocDto = deRegOrCancellationService.getCommonDocDoc(request);
         commonDocDto.reqObjMapping(request);
-        List<DocMeta> docMetaList = commonDocDto.convertToDocMetaList("deRegistration");
+        List<DocMeta> docMetaList = commonDocDto.convertToDocMetaList();
         deRegistrationFacilityDto.setDocMetas(docMetaList);
         ParamUtil.setSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO, commonDocDto);
         ParamUtil.setSessionAttr(request, KEY_DE_REGISTRATION_FACILITY_DTO, deRegistrationFacilityDto);

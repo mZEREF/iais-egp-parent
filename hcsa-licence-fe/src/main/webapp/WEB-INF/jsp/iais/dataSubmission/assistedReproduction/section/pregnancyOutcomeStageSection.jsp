@@ -46,14 +46,14 @@
                 </div>
                 <div id="liveBirthNumSection">
                     <iais:row>
-                        <iais:field width="6" value="No. Live Birth (Male)" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. Live Birth (Male)" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="1" type="text" name="maleLiveBirthNum" id="maleLiveBirthNum"
                                         value="${pregnancyOutcomeStageDto.maleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="No. Live Birth (Female)" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. Live Birth (Female)" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="1" type="text" name="femaleLiveBirthNum" id="femaleLiveBirthNum"
                                         value="${pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
@@ -62,28 +62,28 @@
                     <iais:row>
                         <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <span id="totalLiveBirthNum">${totalLiveBirthNum}</span>
+                            <p id="totalLiveBirthNum">${totalLiveBirthNum}</p>
                             <span id="error_totalLiveBirthNum" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                 </div>
                 <div id="stillBirthNumSection">
                     <iais:row>
-                        <iais:field width="6" value="No. of Still Birth" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. of Still Birth" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="1" type="text" name="stillBirthNum" id="stillBirthNum"
                                         value="${pregnancyOutcomeStageDto.stillBirthNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="No. of Spontaneous Abortion" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. of Spontaneous Abortion" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="1" type="text" name="spontAbortNum" id="spontAbortNum"
                                         value="${pregnancyOutcomeStageDto.spontAbortNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="No. of Intra-uterine Death" cssClass="col-md-6"/>
+                        <iais:field width="6" value="No. of Intra-uterine Death" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="1" type="text" name="intraUterDeathNum" id="intraUterDeathNum"
                                         value="${pregnancyOutcomeStageDto.intraUterDeathNum}"/>

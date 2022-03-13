@@ -121,6 +121,10 @@ public class WebValidationHelper {
         try {
             result = validatePropertyWithoutCustom(obj, propertyName);
             if (result != null) {
+                HttpServletRequest request = MiscUtil.getCurrentRequest();
+                if (request != null && result.isHasErrors() && obj != null) {
+                    request.setAttribute(obj.getClass().getSimpleName() + "_base_error_msgs", result.retrieveAll());
+                }
                 result.addMessages(customizeValidate(obj, obj.getClass(), propertyName, result.isHasErrors()));
             }
 

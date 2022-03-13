@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.helper.MasterCodeHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -43,7 +44,7 @@ import java.util.Optional;
 @Slf4j
 public final class MasterCodeUtil {
     //Cache names
-    private static final String CACHE_NAME_FILTER                  = "iaisMcFilterMap";
+
     private static final String SEQUENCE                           = "sequence";
     private static final String WEBCOMMON                          = "webcommon";
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
@@ -241,6 +242,8 @@ public final class MasterCodeUtil {
     //Termination Of Pregnancy
     public static final String TOP_TYPE_TERMINATION_PREGNANCY            ="7589A046-2D14-49C0-8AC7-FA141E53058C";
     public static final String TOP_TYPE_OF_DRUG                          ="94B44592-5DD6-4998-8498-2EA284148113";
+
+    public static final String LDT_AMENDMENT_REASON                      = "B6F2B5FA-689E-4505-97EC-8C1479D19351";
 
     public static final String CATE_ID_GIRO_BANK_CODE     = "A4CB167F-5273-EC11-8B81-000C293F0C99";
 
@@ -475,7 +478,7 @@ public final class MasterCodeUtil {
 
     private static List<MasterCodeView> retrieveFilterSource(String filter) {
         List<MasterCodeView> list = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                .get(CACHE_NAME_FILTER, filter);
+                .get(MasterCodeHelper.CACHE_NAME_FILTER, filter);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
@@ -493,7 +496,7 @@ public final class MasterCodeUtil {
                                     m.getCode(), m.getCodeValue(),
                                     RedisCacheHelper.NOT_EXPIRE);
                 });
-                SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
+                SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(MasterCodeHelper.CACHE_NAME_FILTER,
                         filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return IaisCommonUtils.genNewArrayList();
@@ -512,30 +515,8 @@ public final class MasterCodeUtil {
     }
 
     private static void addMcToCache(MasterCodeView mc) {
-        Date now = new Date();
-        RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-        rch.set(RedisNameSpaceConstant.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
-        if (!(AppConsts.COMMON_STATUS_ACTIVE.equals(mc.getStatus())
-                && now.after(mc.getEffectFrom())
-                && (mc.getEffectTo() == null || now.before(mc.getEffectTo())))) {
-            return;
-        }
-        String cate = String.valueOf(mc.getCategory());
-        List<MasterCodeView> list = rch.get(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cate);
-        if (list == null) {
-            list = IaisCommonUtils.genNewArrayList();
-        }
-        list.add(mc);
-        rch.set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cate, list);
-        if (StringUtil.isEmpty(mc.getFilterValue())) {
-            return;
-        }
-        list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue());
-        if (list == null) {
-            list = IaisCommonUtils.genNewArrayList();
-        }
-        list.add(mc);
-        rch.set(CACHE_NAME_FILTER, mc.getFilterValue(), list);
+        MasterCodeHelper rch = SpringContextHelper.getContext().getBean(MasterCodeHelper.class);
+        rch.addMcToCache(mc);
     }
 
     public static String getDecByCateIdAndCodeValue(String cateId,String codeValue){

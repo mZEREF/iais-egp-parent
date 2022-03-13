@@ -107,7 +107,7 @@ public class ReportInventoryDto implements Serializable{
     public boolean doValidation() {
         List<DocMeta> metaDtoList = new ArrayList<>(this.newDocMap.size());
         this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "reportInventory");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
             metaDtoList.add(docMeta);
         });
 

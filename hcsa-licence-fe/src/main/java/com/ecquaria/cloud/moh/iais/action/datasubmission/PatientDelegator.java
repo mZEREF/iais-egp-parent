@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -68,7 +67,8 @@ public class PatientDelegator extends CommonDelegator {
         if (ACTION_TYPE_DRAFT.equals(actionType)) {
             // validatePageForDraft(patientInfo.getPatient(), bpc.request);
         } else {
-            String profile = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType()) ? "rfc" : "save";
+            boolean isRFC = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType());
+            String profile = isRFC ? "rfc" : "save";
             validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
             // check whether user change any data
         }
@@ -93,7 +93,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         DsRfcHelper.prepare(patient);
         patientInfo.setPatient(patient);
-        String patientCode = patient.getPatientCode();
+        String patientCode = null;
         // check previous
         if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(currentArDataSubmission.getAppType())) {
             patient.setPreviousIdentification(true);
@@ -113,6 +113,9 @@ public class PatientDelegator extends CommonDelegator {
                 }
                 patientInfo.setPrevious(previous);
                 patientCode = previous.getPatientCode();
+            } else {
+                patientInfo.setRetrievePrevious(false);
+                patientInfo.setPrevious(null);
             }
         }
         patient.setPatientCode(patientService.getPatientCode(patientCode));

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAge
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -23,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
@@ -67,6 +69,8 @@ public class MohDsActionDelegator {
     private IuiCycleStageDelegator iuiCycleStageDelegator;
     @Autowired
     private TransferInOutDelegator transferInOutDelegator;
+    @Autowired
+    private DpFeClient dpFeClient;
 
     /**
      * Step: Start
@@ -175,6 +179,23 @@ public class MohDsActionDelegator {
             }else if (arSuper.getTransferInOutStageDto() != null){
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuper, request);
                 transferInOutDelegator.initSelectOpts(request);
+            }else if(arSuper.getPgtStageDto() != null){
+                String patientCode=arSuper.getPatientInfoDto().getPatient().getPatientCode();
+
+                List<PgtStageDto> oldPgtList=dpFeClient.listPgtStageByPatientCode(patientCode).getEntity();
+                int countNo =0;
+                if(oldPgtList!=null){
+                    for (PgtStageDto pgt:oldPgtList
+                    ) {
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
+                            if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                                countNo+=pgt.getIsPgtCoFunding();
+                            }
+                        }
+
+                    }
+                }
+                ParamUtil.setSessionAttr(request, "count",countNo);
             }
         }
     }
