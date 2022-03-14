@@ -31,6 +31,8 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.name")
         private String memberName;
 
+        private String salutation;
+
         @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.idType")
         private String idType;
 
@@ -92,8 +94,9 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCertifierTeam", new Object[]{this});
-        return validationResultDto.isPass();
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCertifierTeam", new Object[]{this});
+//        return validationResultDto.isPass();
+        return true;
     }
 
     public List<CertifierTeamMember> getCertifierTeamMemberList() {
@@ -142,29 +145,29 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
 
 
     public void reqObjMapping(HttpServletRequest request) {
-        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        clearCertifierTeamMemberList();
-        String[] idxArr = idxes.trim().split(" +");
-        for (String idx : idxArr) {
-            CertifierTeamMember cerTeamMember = new CertifierTeamMember();
-            cerTeamMember.setMemberName(ParamUtil.getString(request, KEY_TEAM_MEMBER_NAME+ SEPARATOR + idx));
-            cerTeamMember.setIdType(ParamUtil.getString(request, KEY_ID_TYPE+ SEPARATOR + idx));
-            cerTeamMember.setIdNo(ParamUtil.getString(request, KEY_ID_NO+ SEPARATOR + idx));
-            cerTeamMember.setBirthDate(ParamUtil.getString(request, KEY_BIRTH_OF_DATE+ SEPARATOR + idx));
-            cerTeamMember.setSex(ParamUtil.getString(request, KEY_SEX+ SEPARATOR + idx));
-            cerTeamMember.setNationality(ParamUtil.getString(request, KEY_NATIONALITY+ SEPARATOR + idx));
-            cerTeamMember.setTelNo(ParamUtil.getString(request, KEY_TEL_NO+ SEPARATOR + idx));
-            cerTeamMember.setJobDesignation(ParamUtil.getString(request, KEY_JOB_DESIGNATION+ SEPARATOR + idx));
-            cerTeamMember.setLeadCertifier(ParamUtil.getString(request, KEY_LEADER_CERTIFIER+ SEPARATOR + idx));
-            cerTeamMember.setExpertiseArea(ParamUtil.getString(request, KEY_AREA_OF_EXPERTISE+ SEPARATOR + idx));
-            cerTeamMember.setCertBSL3Exp(ParamUtil.getString(request, KEY_CERTIFIER_BSL_3_EXPERIENCE+ SEPARATOR + idx));
-            cerTeamMember.setCommBSL34Exp(ParamUtil.getString(request, KEY_COMMON_BSL_3_4_EXPERIENCE+ SEPARATOR + idx));
-            cerTeamMember.setOtherBSL34Exp(ParamUtil.getString(request, KEY_OTHER_BSL_3_4_EXPERIENCE+ SEPARATOR + idx));
-            cerTeamMember.setEduBackground(ParamUtil.getString(request, KEY_EDUCATION_BACKGROUND+ SEPARATOR + idx));
-            cerTeamMember.setProActivities(ParamUtil.getString(request, KEY_PRO_ACTIVITIES+ SEPARATOR + idx));
-            cerTeamMember.setProRegAndCert(ParamUtil.getString(request, KEY_PRO_REG_AND_CERTIFIER+ SEPARATOR + idx));
-            cerTeamMember.setFacRelatedPub(ParamUtil.getString(request, KEY_FAC_RELATED_PUB+ SEPARATOR + idx));
-            addCertifierTeamMember(cerTeamMember);
-        }
+//        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+//        clearCertifierTeamMemberList();
+//        String[] idxArr = idxes.trim().split(" +");
+//        for (String idx : idxArr) {
+//            CertifierTeamMember cerTeamMember = new CertifierTeamMember();
+//            cerTeamMember.setMemberName(ParamUtil.getString(request, KEY_TEAM_MEMBER_NAME+ SEPARATOR + idx));
+//            cerTeamMember.setIdType(ParamUtil.getString(request, KEY_ID_TYPE+ SEPARATOR + idx));
+//            cerTeamMember.setIdNo(ParamUtil.getString(request, KEY_ID_NO+ SEPARATOR + idx));
+//            cerTeamMember.setBirthDate(ParamUtil.getString(request, KEY_BIRTH_OF_DATE+ SEPARATOR + idx));
+//            cerTeamMember.setSex(ParamUtil.getString(request, KEY_SEX+ SEPARATOR + idx));
+//            cerTeamMember.setNationality(ParamUtil.getString(request, KEY_NATIONALITY+ SEPARATOR + idx));
+//            cerTeamMember.setTelNo(ParamUtil.getString(request, KEY_TEL_NO+ SEPARATOR + idx));
+//            cerTeamMember.setJobDesignation(ParamUtil.getString(request, KEY_JOB_DESIGNATION+ SEPARATOR + idx));
+//            cerTeamMember.setLeadCertifier(ParamUtil.getString(request, KEY_LEADER_CERTIFIER+ SEPARATOR + idx));
+//            cerTeamMember.setExpertiseArea(ParamUtil.getString(request, KEY_AREA_OF_EXPERTISE+ SEPARATOR + idx));
+//            cerTeamMember.setCertBSL3Exp(ParamUtil.getString(request, KEY_CERTIFIER_BSL_3_EXPERIENCE+ SEPARATOR + idx));
+//            cerTeamMember.setCommBSL34Exp(ParamUtil.getString(request, KEY_COMMON_BSL_3_4_EXPERIENCE+ SEPARATOR + idx));
+//            cerTeamMember.setOtherBSL34Exp(ParamUtil.getString(request, KEY_OTHER_BSL_3_4_EXPERIENCE+ SEPARATOR + idx));
+//            cerTeamMember.setEduBackground(ParamUtil.getString(request, KEY_EDUCATION_BACKGROUND+ SEPARATOR + idx));
+//            cerTeamMember.setProActivities(ParamUtil.getString(request, KEY_PRO_ACTIVITIES+ SEPARATOR + idx));
+//            cerTeamMember.setProRegAndCert(ParamUtil.getString(request, KEY_PRO_REG_AND_CERTIFIER+ SEPARATOR + idx));
+//            cerTeamMember.setFacRelatedPub(ParamUtil.getString(request, KEY_FAC_RELATED_PUB+ SEPARATOR + idx));
+//            addCertifierTeamMember(cerTeamMember);
+//        }
     }
 }

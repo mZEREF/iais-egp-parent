@@ -1,23 +1,50 @@
-<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Operator</h3>
+<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Operator Profile</h3>
 <%--@elvariable id="facOperator" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto"--%>
-
 <div class="form-group ">
     <div class="col-sm-5 control-label">
-        <label for="facOperator">Facility Operator</label>
-        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>The Facility Operator is the person who has overall control and oversight of the management of the facility such as the Chief Executive Officer of the company or a person of equivalent level.</p>">i</a>
+        <label for="operatorDesc">Designation of Facility Operator</label>
         <span class="mandatory otherQualificationSpan">*</span>
     </div>
     <div class="col-sm-6 col-md-7">
-        <input type="text" autocomplete="off" name="facOperator" id="facOperator" value='<c:out value="${facOperator.facOperator}"/>'/>
-        <span data-err-ind="facOperator" class="error-msg"></span>
+        <input maxLength="60" type="text" autocomplete="off" name="operatorDesc" id="operatorDesc" value='<c:out value="${facOperator.operatorDesc}"/>'/>
+        <span data-err-ind="operatorDesc" class="error-msg"></span>
     </div>
 </div>
+
+<div class="form-group">
+    <div class="col-sm-12 control-label">
+        Note: The Facility Operator is the person who has overall control and oversight of the management of the facility such as the Chief Executive Officer of the company or a person of equivalent level.
+    </div>
+</div>
+
 <div class="form-group ">
     <div class="col-sm-5 control-label">
         <label><strong>Facility Operator Designee:</strong></label>
         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>The Facility Operator Designee is the person who is appointed by the Facility Operator to oversee the day to day management and operations at the facility.</p>">i</a>
     </div>
 </div>
+
+<div class="form-group ">
+    <div class="col-sm-5 control-label">
+        <label for="salutation">Salutation</label>
+        <span class="mandatory otherQualificationSpan">*</span>
+    </div>
+    <div class="col-sm-6 col-md-7">
+        <select name="salutation" id="salutation">
+            <option value="">Please Select</option>
+            <option value="SALU001">Dr</option>
+            <option value="SALU002">Mdm</option>
+            <option value="SALU003">Mr</option>
+            <option value="SALU004">Mrs</option>
+            <option value="SALU005">Ms</option>
+            <option value="SALU006">VEN</option>
+            <option value="SALU007">Professor</option>
+            <option value="SALU008">Assistant Professor</option>
+        </select>
+        <span data-err-ind="salutation" class="error-msg"></span>
+    </div>
+</div>
+
 <div class="form-group ">
     <div class="col-sm-5 control-label">
         <label for="operatorName">Name</label>
@@ -30,14 +57,13 @@
 </div>
 <div class="form-group ">
     <div class="col-sm-5 control-label">
-        <label for="idNumber">NRIC/FIN</label>
+        <label for="idNumber">ID No</label>
         <span class="mandatory otherQualificationSpan">*</span>
     </div>
     <div class="col-sm-3">
         <select name="idType" id="idType">
             <option value="IDTYPE001" <c:if test="${facOperator.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
             <option value="IDTYPE002" <c:if test="${facOperator.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
-            <option value="IDTYPE003" <c:if test="${facOperator.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
         </select>
         <span data-err-ind="idType" class="error-msg"></span>
     </div>

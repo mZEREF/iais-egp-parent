@@ -62,8 +62,9 @@ public class AdministratorDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
-        return validationResultDto.isPass();
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
+//        return validationResultDto.isPass();
+        return true;
     }
 
     @Override

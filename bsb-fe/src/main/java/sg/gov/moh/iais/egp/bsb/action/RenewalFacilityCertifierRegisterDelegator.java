@@ -110,9 +110,9 @@ public class RenewalFacilityCertifierRegisterDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_REVIEW, reviewDto);
 
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
-        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR)).getValue());
         ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
@@ -199,7 +199,7 @@ public class RenewalFacilityCertifierRegisterDelegator {
     public void doAdministrator(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facCertifierRegRoot = facilityCertifierRegistrationService.getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facCertifierRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR;
+        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facCertifierRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR;
         SimpleNode administratorNode = (SimpleNode) facCertifierRegRoot.at(currentNodePath);
         AdministratorDto administratorDto = (AdministratorDto) administratorNode.getValue();
         administratorDto.reqObjMapping(request);
@@ -224,7 +224,7 @@ public class RenewalFacilityCertifierRegisterDelegator {
     public void doCertifyingTeam(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = facilityCertifierRegistrationService.getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM;
+        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM;
         SimpleNode certifyingTeamNode = (SimpleNode) facRegRoot.at(currentNodePath);
         CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) certifyingTeamNode.getValue();
         certifyingTeamDto.reqObjMapping(request);
@@ -243,16 +243,16 @@ public class RenewalFacilityCertifierRegisterDelegator {
     }
 
     public void preOrganisationInfo(BaseProcessClass bpc) {
-        facilityCertifierRegistrationService.preOrganisationInfo(bpc);
+        facilityCertifierRegistrationService.preCompanyProfile(bpc);
 
     }
 
     public void doOrganisationProfile(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = facilityCertifierRegistrationService.getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE;
+        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE;
         SimpleNode orgProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        OrganisationProfileDto orgProfile = (OrganisationProfileDto) orgProfileNode.getValue();
+        CompanyProfileDto orgProfile = (CompanyProfileDto) orgProfileNode.getValue();
         orgProfile.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){

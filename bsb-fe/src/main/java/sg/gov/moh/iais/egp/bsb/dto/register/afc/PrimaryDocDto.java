@@ -65,21 +65,22 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
-        this.savedDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
-            metaDtoList.add(docMeta);
-        });
-        this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
-            metaDtoList.add(docMeta);
-        });
-
-        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
-        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
-
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
-        return validationResultDto.isPass();
+//        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+//        this.savedDocMap.values().forEach(i -> {
+//            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
+//            metaDtoList.add(docMeta);
+//        });
+//        this.newDocMap.values().forEach(i -> {
+//            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
+//            metaDtoList.add(docMeta);
+//        });
+//
+//        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
+//        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
+//
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
+//        return validationResultDto.isPass();
+        return true;
     }
 
     @Override

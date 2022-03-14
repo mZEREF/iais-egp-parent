@@ -38,7 +38,7 @@
                                     <%@include file="../mainAppCommon/facCertifierRegistration/subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <%@include file="../mainAppCommon/facCertifierRegistration/organisationProfile.jsp"%>
+                                        <%@include file="../mainAppCommon/facCertifierRegistration/companyProfile.jsp"%>
                                     </div>
                                 </div>
 

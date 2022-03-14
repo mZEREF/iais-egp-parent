@@ -102,6 +102,19 @@ $(function () {
         }
     })
 
+    $("input[name=isSameAddr ]").change(function (){
+        var id = $(this).attr("id");
+        if(id === 'isSameAddr'){
+            $("#isSameAddrSection").show();
+            $("#isSameAddrSectionY").show();
+            $("#isSameAddrSectionN").hide();
+        } else if(id === 'notSameAddr'){
+            $("#isSameAddrSection").show();
+            $("#isSameAddrSectionY").hide();
+            $("#isSameAddrSectionN").show();
+        }
+    })
+
     $("input[data-custom-ind=committeePersonnelIsEmployee]").change(function () {
         var id = $(this).attr("id");
         var idx;

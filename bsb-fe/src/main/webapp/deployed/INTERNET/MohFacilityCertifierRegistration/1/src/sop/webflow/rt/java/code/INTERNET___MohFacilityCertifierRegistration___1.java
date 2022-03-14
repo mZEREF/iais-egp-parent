@@ -35,9 +35,9 @@ public class INTERNET___MohFacilityCertifierRegistration___1 extends BaseProcess
 		EngineHelper.delegate(DELEGATOR, "doCompInfo", this);
 	}
 	
-	public void preOrganisationInfo_OnStepProcess_0() throws Exception {
-	// 		PreOrganisationInfo->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preOrganisationInfo", this);
+	public void preCompanyProfile_OnStepProcess_0() throws Exception {
+	// 		preCompanyProfile->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preCompanyProfile", this);
 	}
 
 	public void preAdministrator_OnStepProcess_0() throws Exception {
@@ -70,9 +70,9 @@ public class INTERNET___MohFacilityCertifierRegistration___1 extends BaseProcess
 		EngineHelper.delegate(DELEGATOR, "doCertifyingTeam", this);
 	}
 
-	public void doOriganisationProfile_OnStepProcess_0() throws Exception {
-	// 		doOriganisationProfile->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doOrganisationProfile", this);
+	public void doCompanyProfile_OnStepProcess_0() throws Exception {
+	// 		doCompanyProfile->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCompanyProfile", this);
 	}
 
 	public void doDocument_OnStepProcess_0() throws Exception {

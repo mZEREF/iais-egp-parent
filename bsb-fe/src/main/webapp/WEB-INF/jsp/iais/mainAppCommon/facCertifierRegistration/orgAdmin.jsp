@@ -1,13 +1,28 @@
-<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
+<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Administrator</h3>
 
 <section id="mainAdmin">
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="salutationM">Salutation</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6 col-md-7">
+            <select name="salutationM" id="salutationM">
+                <option value="Dr">Dr</option>
+                <option value="Mdm">Mdm</option>
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+            </select>
+            <span data-err-ind="salutationM" class="error-msg"></span>
+        </div>
+    </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="adminNameM">Name</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <input type="text" autocomplete="off" name="adminNameM" id="adminNameM" maxlength="132" value='<c:out value="${orgAdmin.mainAdmin.adminName}"/>'/>
+            <label id="adminNameM">John</label>
             <span data-err-ind="adminNameM" class="error-msg"></span>
         </div>
     </div>
@@ -30,19 +45,11 @@
             <label for="idNoM">NRIC/FIN</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
-        <div class="col-sm-3">
-            <select name="idTypeM" id="idTypeM">
-                <option value="IDTYPE001" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
-                <option value="IDTYPE002" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
-                <option value="IDTYPE003" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
-            </select>
-            <span data-err-ind="idTypeM" class="error-msg"></span>
-        </div>
-        <div class="col-sm-3 col-md-4">
-            <input type="text" autocomplete="off" name="idNoM" id="idNoM" maxlength="10" value='<c:out value="${orgAdmin.mainAdmin.idNo}"/>'/>
-            <span data-err-ind="idNoM" class="error-msg"></span>
+        <div class="col-sm-6 col-md-7">
+            <label id="idNoM">S981372K</label>
         </div>
     </div>
+
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="designationM">Designation</label>
@@ -53,9 +60,10 @@
             <span data-err-ind="designationM" class="error-msg"></span>
         </div>
     </div>
+
     <div class="form-group ">
         <div class="col-sm-5 control-label">
-            <label for="contactNoM">Contact No.</label>
+            <label for="contactNoM">Contact No</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
@@ -85,8 +93,23 @@
     </div>
 </section>
 
-<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternative Adminstrator</h3>
+<h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Alternative Administrator</h3>
 <section id="alternativeAdmin">
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="salutationA">Salutation</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6 col-md-7">
+            <select name="salutationA" id="salutationA">
+                <option value="Dr">Dr</option>
+                <option value="Mdm">Mdm</option>
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+            </select>
+            <span data-err-ind="salutationA" class="error-msg"></span>
+        </div>
+    </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
             <label for="adminNameA">Name</label>

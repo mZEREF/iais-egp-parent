@@ -86,12 +86,12 @@ public class RfcFacCertifierRegistrationDelegator {
         facilityCertifierRegistrationService.doCompInfo(bpc);
     }
 
-    public void preOrganisationInfo(BaseProcessClass bpc){
-        facilityCertifierRegistrationService.preOrganisationInfo(bpc);
+    public void preCompanyProfile(BaseProcessClass bpc){
+        facilityCertifierRegistrationService.preCompanyProfile(bpc);
     }
 
-    public void doOrganisationProfile(BaseProcessClass bpc){
-        facilityCertifierRegistrationService.doOrganisationProfile(bpc);
+    public void doCompanyProfile(BaseProcessClass bpc){
+        facilityCertifierRegistrationService.doCompanyProfile(bpc);
     }
 
     public void preAdministrator(BaseProcessClass bpc){
