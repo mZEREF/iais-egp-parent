@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentSendGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -48,5 +49,8 @@ public interface  AppPaymentStatusClient {
 
     @PostMapping(value = "/iais-payment/create-giro-data-xml-related-data" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentXmlDto> createNewGiroPaymentXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
+
+    @PostMapping(value = "/iais-payment/create-giro-send-sftp-group" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GiroPaymentSendGroupDto> createGiroPaymentSendGroupDto(@RequestBody GiroPaymentSendGroupDto giroPaymentSendGroupDto);
 
 }
