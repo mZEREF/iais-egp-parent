@@ -500,21 +500,22 @@ public class NewApplicationHelper {
         targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
-    public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+    public static int getMaxFileIndex(Integer maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+        int seqNum = maxSeqNum != null ? maxSeqNum + 1 : 0;
         Integer maxFileIndex = 0;
         if (checkGlobal && request != null) {
             maxFileIndex = (Integer) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
-        if (maxFileIndex != null && maxFileIndex > maxSeqNum) {
-            maxSeqNum = maxFileIndex;
+        if (maxFileIndex != null && (maxFileIndex > seqNum)) {
+            seqNum = maxFileIndex;
         }
         if (checkGlobal && request != null) {
-            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, maxSeqNum);
+            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, seqNum);
         }
-        return maxSeqNum;
+        return seqNum;
     }
 
-    public static int getMaxFileIndex(int maxSeqNum) {
+    public static int getMaxFileIndex(Integer maxSeqNum) {
         return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
     }
 
