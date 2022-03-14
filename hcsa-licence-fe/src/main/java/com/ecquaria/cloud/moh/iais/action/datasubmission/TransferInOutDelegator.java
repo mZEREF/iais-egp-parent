@@ -159,22 +159,6 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @Override
-    public void submission(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        List<String> transferredList = transferInOutStageDto.getTransferredList();
-        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)) {
-            transferInOutStageDto.setOocyteNum("-1");
-        }
-        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)) {
-            transferInOutStageDto.setEmbryoNum("-1");
-        }
-        if (!transferredList.contains(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)) {
-            transferInOutStageDto.setSpermVialsNum("-1");
-        }
-    }
-
-    @Override
     public void doSubmission(BaseProcessClass bpc) {
         super.doSubmission(bpc);
         HttpServletRequest request = bpc.request;

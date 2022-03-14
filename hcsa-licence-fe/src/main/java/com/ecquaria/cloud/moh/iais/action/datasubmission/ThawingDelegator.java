@@ -63,22 +63,6 @@ public class ThawingDelegator extends CommonDelegator {
     }
 
     @Override
-    public void submission(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
-        if (!thawingStageDto.getHasOocyte()) {
-            thawingStageDto.setThawedOocytesNum("-1");
-            thawingStageDto.setThawedOocytesSurvivedImmatureNum("-1");
-            thawingStageDto.setThawedOocytesSurvivedMatureNum("-1");
-            thawingStageDto.setThawedOocytesSurvivedOtherNum("-1");
-        }
-        if (!thawingStageDto.getHasEmbryo()) {
-            thawingStageDto.setThawedEmbryosNum("-1");
-            thawingStageDto.setThawedEmbryosSurvivedNum("-1");
-        }
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
