@@ -1648,7 +1648,6 @@ public class NewApplicationDelegator {
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
-        preDataDeclaration(bpc.request,appSubmissionDto);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         if("exitSaveDraft".equals(crud_action_additional)){
             jumpYeMian(bpc.request, bpc.response);
@@ -1658,29 +1657,7 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("saveDraftSuccess", "success");
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
-    private void preDataDeclaration(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
-        if(appSubmissionDto==null){
-            return;
-        }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, request);
-            if((declarationFiles==null || declarationFiles .isEmpty()) && isEmptyData(appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
 
-            }else {
-                appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-            }
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-
-        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, request);
-            appSubmissionService.getAppDeclarationMessageDto(request,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-            appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-        }
-    }
     /*NewApplicationDelegator
     * */
     private boolean isEmptyData( AppDeclarationMessageDto appDeclarationMessageDto ,String apptye){
@@ -2663,11 +2640,12 @@ public class NewApplicationDelegator {
                 groupNo = appGroupNo;
             }
             // reSet amount
-            /*double otherAmount = 0.0D;
-            FeeDto feeDto = appSubmissionService.getGroupAmendAmount(getAmendmentFeeDto(changeSelectDto, isCharity));
-            if (feeDto != null && feeDto.getTotal() != null) {
-                otherAmount = feeDto.getTotal();
-            }*/
+//            double otherAmount = 0.0D;
+//            FeeDto premiseFee = appSubmissionService.getGroupAmendAmount(getAmendmentFeeDto(changeSelectDto, isCharity));
+//            if (premiseFee != null && premiseFee.getTotal() != null) {
+//                otherAmount = premiseFee.getTotal();
+//            }
+//            log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppSubmissionDto> appSubmissionDtos;
             if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
