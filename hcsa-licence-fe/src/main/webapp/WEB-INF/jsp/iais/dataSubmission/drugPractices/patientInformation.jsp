@@ -17,6 +17,7 @@
                 <h3>Submit Patient Information</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/patientInformationSection.jsp" %>
+                    <%@include file="common/dpDsAmendment.jsp" %>
                 </div>
                 <%@include file="common/dpFooter.jsp" %>
             </div>

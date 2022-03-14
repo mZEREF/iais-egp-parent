@@ -267,6 +267,7 @@ public abstract class DpCommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        getRfcCommon(bpc.request);
         pageAction(bpc);
     }
 
@@ -302,6 +303,35 @@ public abstract class DpCommonDelegator {
      */
     public void pageConfirmAction(BaseProcessClass bpc) {}
 
+
+
+
+    protected void verifyRfcCommon(HttpServletRequest request,Map<String,String> errorMap){
+        if(isRfc(request)){
+            DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
+            DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+            if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
+                errorMap.put("amendReason","GENERAL_ERR0006");
+            }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                errorMap.put("amendReasonOther","GENERAL_ERR0006");
+            }
+        }
+    }
+
+    protected void getRfcCommon(HttpServletRequest request){
+        if(isRfc(request)){
+            DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
+            DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
+            if(isOthers(dataSubmissionDto.getAmendReason())){
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+            }else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+    }
+
+
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
             String failedCrudActionType, List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {
         ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
@@ -331,6 +361,7 @@ public abstract class DpCommonDelegator {
                 }
             }
         }
+        verifyRfcCommon(request,errorMap);
         if (!errorMap.isEmpty()) {
             log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -342,7 +373,9 @@ public abstract class DpCommonDelegator {
         }
         return true;
     }
-
+    protected boolean isOthers(String others){
+        return StringUtil.isIn(others,new String[]{DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS});
+    }
     protected boolean isRfc(HttpServletRequest request){
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
         return dpSuperDataSubmissionDto != null && dpSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
