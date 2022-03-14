@@ -342,7 +342,7 @@
                 <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
                 <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
                 <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
                 <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>

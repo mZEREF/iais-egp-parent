@@ -705,11 +705,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(arDto.getPatientIUI()!=null){
-                if("1".equals(arDto.getPatientIUI())){
+                if("0".equals(arDto.getPatientIUI())){
                     filter.put("patientIuiYes",1);
 
                 }
-                if("0".equals(arDto.getPatientIUI())){
+                if("1".equals(arDto.getPatientIUI())){
                     filter.put("patientIuiNo",1);
                 }
             }

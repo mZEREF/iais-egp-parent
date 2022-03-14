@@ -191,7 +191,7 @@
         <![CDATA[
            SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc2.PATIENT_CODE CD_PATIENT_CODE,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_data_submission dds on dds.ID = dpi.SUBMISSION_ID AND dds.STATUS in ('DS001', 'DS011')
+                join ds_data_submission dds on (dds.ID = dpi.SUBMISSION_ID or dds.CYCLE_ID in(select dcp.ID from ds_cycle dcp where dcp.PATIENT_CODE = dpi.PATIENT_CODE)) AND dds.STATUS in ('DS001', 'DS011')
                 JOIN ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 left join ds_cycle dc2 on dc2.PATIENT_CODE = dpi.PATIENT_CODE
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
@@ -203,6 +203,7 @@
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
                 left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
                 left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
                 left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
                 left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
                 left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
@@ -214,15 +215,15 @@
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patient_id_types??> AND  ${patient_id_types}</#if>
                 <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
-                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
-                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(datetime,:patientAgeDateTo)</#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
 
-                <#if husbandName??> AND  charindex(:husbandName, dh.NAME) >0</#if>
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
-                <#if husbandIdNumber??> AND  charindex(:husbandIdNumber, dh.ID_NUMBER) >0</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
 
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
@@ -253,8 +254,8 @@
                 <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
                 <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
                 <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
-                <#if embTransNums??> AND dfs.TRANSFER_NUM in( :embTransNums)</#if>
-                <#if ageEmbryosNums??> AND (dfs.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dfs.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dfs.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
                 <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
@@ -263,14 +264,14 @@
                 <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
                 <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
                 <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
                 <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND  (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
                 <#if transferredInFrom??> AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
