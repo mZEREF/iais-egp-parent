@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
@@ -20,8 +21,8 @@ public interface InboxClient {
     @PostMapping(path = "/iais-inter-inbox/inbox-param", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<InboxQueryDto>> searchInbox(SearchParam searchParam);
 
-    @GetMapping(path = "/iais-inter-inbox/inbox/unread-unresponse-num", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(String userId);
+    @PostMapping(path = "/iais-inter-inbox/inbox/unread-unresponse-num", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> searchUnreadAndUnresponseNum(InterMessageSearchDto interMessageSearchDto);
 
     @PutMapping(path = "/iais-inter-inbox/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> updateMsgStatusToArchive(String[] msgIds);

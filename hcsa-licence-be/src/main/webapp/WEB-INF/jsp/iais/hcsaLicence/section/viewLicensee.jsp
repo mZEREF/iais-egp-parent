@@ -92,52 +92,71 @@
                         <jsp:param name="idNo" value="${oldDto.uenNo}"/>
                         <jsp:param name="cssClass" value="old-img-show"/>
                     </jsp:include>
-                    <div class="row ${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'hidden'}">
-                        <div class="col-md-6">ID Type</div>
-                        <div class="col-md-6">
+                    <c:if test="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType}">
+                        <div class="row">
+                            <div class="col-md-6">ID Type</div>
                             <div class="col-md-6">
-                                <span class="newVal" attr="${curDto.idType}">
-                                    <iais:code code="${curDto.idType}" />
-                                </span>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="oldVal" attr="${oldDto.idType}">
-                                    <iais:code code="${oldDto.idType}" />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row img-show ${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' :'hidden'}">
-                        <div class="col-md-6">ID No.</div>
-                        <div class="col-md-6">
-                            <div class="col-md-6">
-                                <span class="newVal" attr="${curDto.idNumber}">
-                                    <c:out value="${curDto.idNumber}" />
-                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
-                                        <jsp:param name="methodName" value="showThisTableNew"/>
-                                    </jsp:include>
-                                </span>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="oldVal" attr="${oldDto.idNumber}">
-                                    <c:out value="${oldDto.idNumber}" />
-                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
-                                        <jsp:param name="methodName" value="showThisTableOld"/>
-                                    </jsp:include>
-                                </span>
+                                <div class="col-md-6">
+                                    <span class="newVal" attr="${curDto.idType}">
+                                        <iais:code code="${curDto.idType}" />
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="oldVal" attr="${oldDto.idType}">
+                                        <iais:code code="${oldDto.idType}" />
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
-                        <jsp:param name="cssClass" value="new-img-show"/>
-                    </jsp:include>
-                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
-                        <jsp:param name="cssClass" value="old-img-show"/>
-                    </jsp:include>
+                        <div class="row img-show">
+                            <div class="col-md-6">ID No.</div>
+                            <div class="col-md-6">
+                                <div class="col-md-6">
+                                    <span class="newVal" attr="${curDto.idNumber}">
+                                        <c:out value="${curDto.idNumber}" />
+                                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                            <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                                            <jsp:param name="methodName" value="showThisTableNew"/>
+                                        </jsp:include>
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="oldVal" attr="${oldDto.idNumber}">
+                                        <c:out value="${oldDto.idNumber}" />
+                                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                            <jsp:param name="idNo" value="${oldDto.idNumber}"/>
+                                            <jsp:param name="methodName" value="showThisTableOld"/>
+                                        </jsp:include>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                            <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                            <jsp:param name="cssClass" value="new-img-show"/>
+                        </jsp:include>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                            <jsp:param name="idNo" value="${oldDto.idNumber}"/>
+                            <jsp:param name="cssClass" value="old-img-show"/>
+                        </jsp:include>
+                        <c:if test="${curDto.idType == 'IDTYPE003' || oldDto.idType == 'IDTYPE003'}">
+                        <div class="row">
+                            <div class="col-md-6">Nationality</div>
+                            <div class="col-md-6">
+                                <div class="col-md-6">
+                                        <span class="newVal" attr="${curDto.nationality}">
+                                            <iais:code code="${curDto.nationality}" />
+                                        </span>
+                                </div>
+                                <div class="col-md-6">
+                                        <span class="oldVal" attr="${oldDto.nationality}">
+                                            <iais:code code="${oldDto.nationality}" />
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        </c:if>
+                    </c:if>
                 </c:if>
                 <%-- SOLO --%>
                 <c:if test="${curDto.licenseeType eq soloType || oldDto.licenseeType eq soloType}">

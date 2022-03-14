@@ -27,6 +27,7 @@
     </div>
     <div class="col-xs-12 col-md-4">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
+<c:if test="${not empty baseService}">
             <p class="assessment-title"><iais:code code="CDN002"/></p>
             <div class="form-check-gp">
                 <c:forEach var="base" items="${baseService}">
@@ -45,6 +46,8 @@
                     </div>
                 </c:forEach>
             </div>
+</c:if>
+<c:if test="${not empty specifiedService}">
             <p class="assessment-title"><iais:code code="CDN004"/></p>
             <div class="form-check-gp">
                 <c:forEach var="specified" items="${specifiedService}">
@@ -62,6 +65,7 @@
                     </div>
                 </c:forEach>
             </div>
+</c:if>
         </div>
     </div>
 </div>

@@ -25,6 +25,9 @@
                                     <br><br><br>
                                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                         <li class="active" role="presentation"><a href="#tabApplicationInfo" aria-controls="tabApplicationInfo" role="tab" data-toggle="tab">Application Info</a></li>
+                                        <li id="apptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
+                                                                                                              aria-controls="tabDocuments" role="tab"
+                                                                                                              data-toggle="tab">Documents</a></li>
                                         <li class="complete" role="presentation"><a href="#tabKeyRoles" aria-controls="tabKeyRoles" role="tab"
                                                                                     data-toggle="tab">Key Roles</a></li>
                                         <li class="complete" role="presentation"><a href="#tabServiceRelated" aria-controls="tabServiceRelated" role="tab"
@@ -33,6 +36,8 @@
                                     <div class="tab-nav-mobile visible-xs visible-sm">
                                         <div class="swiper-wrapper" role="tablist">
                                             <div class="swiper-slide"><a href="#tabApplicationInfo" aria-controls="tabApplicationInfo" role="tab" data-toggle="tab">Application Info</a></div>
+                                            <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
+                                                                         role="tab" data-toggle="tab">Documents</a></div>
                                             <div class="swiper-slide"><a href="#tabKeyRoles" aria-controls="tabKeyRoles" role="tab" data-toggle="tab">Key Roles</a></div>
                                             <div class="swiper-slide"><a href="#tabServiceRelated" aria-controls="tabServiceRelated" role="tab" data-toggle="tab">Service Related</a></div>
                                         </div>
@@ -140,7 +145,9 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                            <%@ include file="../inspectionncList/tabDocuments.jsp" %>
+                                        </div>
                                         <div class="tab-pane" id="tabKeyRoles" role="tabpanel">
                                             <div class="panel panel-default">
                                                 <!-- Default panel contents -->
@@ -321,6 +328,12 @@
                                                                             <td align="right">ID Type</td>
                                                                             <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.idType}"/><c:if test="${empty personnel.idType}">-</c:if></td>
                                                                         </tr>
+                                                                        <c:if test="${personnel.idType == 'IDTYPE003'}">
+                                                                            <tr>
+                                                                                <td align="right">Nationality</td>
+                                                                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.nationality}"/><c:if test="${empty personnel.nationality}">-</c:if></td>
+                                                                            </tr>
+                                                                        </c:if>
                                                                         <tr>
                                                                             <td align="right">ID No</td>
                                                                             <td class="col-xs-6" style="padding-left: 15px;">${personnel.idNo}<c:if test="${empty personnel.idNo}">-</c:if></td>

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +64,14 @@ public class MessageUtil {
         String msg = getMessageDesc(key);
         MapFormat temp = new MapFormat(arguments);
         return temp.format(msg);
+    }
+
+    public static String getMessageDesc(String key, List<String> keys,List<String> values) {
+        Map arguments = IaisCommonUtils.genNewHashMap();
+        for (int i = 0; i < keys.size(); i++) {
+            arguments.put(keys.get(i),values.get(i));
+        }
+        return getMessageDesc(key,arguments);
     }
 
     public static String formatMessage(String msg, String paramVal){

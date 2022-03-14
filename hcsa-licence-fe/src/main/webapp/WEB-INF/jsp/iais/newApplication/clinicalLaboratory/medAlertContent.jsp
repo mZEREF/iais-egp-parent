@@ -135,7 +135,7 @@
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
+                                    <iais:input maxLength="110" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                                     <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
@@ -156,8 +156,26 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idNoVal" maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
+                                    <iais:input cssClass="idNoVal" maxLength="20" type="text" name="idNo"
+                                                value="${medAlertPsn.idNo}" />
                                     <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row nationalityDiv">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Nationality</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7">
+                                    <div class="">
+                                        <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
+                                                     cssClass="nationality" value="${medAlertPsn.nationality}" needErrorSpan="false"/>
+                                        <span id="error_nationality${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -300,6 +318,8 @@
             }
         });
 
+        initNationality('div.medAlertContent', '.idType', '.nationalityDiv');
+
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
             // $('#addMapBtn').addClass('hidden');
@@ -383,9 +403,10 @@
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
                 if(1 == init){
                     var arr = $(this).val().split(',');
-                    var idType = arr[0];
-                    var idNo = arr[1];
-                    loadSelectPsn($medAlertContentEle, idType, idNo, 'MAP');
+                    var nationality = arr[0];
+                    var idType = arr[1];
+                    var idNo = arr[2];
+                    loadSelectPsn($medAlertContentEle, nationality, idType, idNo, 'MAP');
                 }
             }
         });
@@ -434,6 +455,8 @@
                         }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
+
+                        initNationality('div.medAlertContent:last', '.idType', '.nationalityDiv');
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }
@@ -471,10 +494,12 @@
             var $mapContentEle = $(this).closest('div.medAlertContent');
             var idNo = $(this).val();
             var idType = $mapContentEle.find('select[name="idType"]').val();
+            var nationality = $mapContentEle.find('select[name="nationality"]').val();
             if(idNo == '' || idType == ''){
                 return;
             }
             var data = {
+                'nationality':nationality,
                 'idNo':idNo,
                 'idType':idType
             };
@@ -490,10 +515,9 @@
                         if(data.resCode == '200'){
                             $mapContentEle.find('input[name="loadingType"]').val('PLT002');
                             fillDataByBlur($mapContentEle,data.resultJson);
-                            $mapContentEle.find('input[name="idNo"]').css('border-color','');
-                            $mapContentEle.find('input[name="idNo"]').css('color','');
-                            $mapContentEle.find('input[name="idNo"]').prop('disabled',false);
-                            $mapContentEle.find('select[name="idType"]').next().removeClass('disabled');
+                            unDisableContent($mapContentEle.find('input[name="idNo"]'));
+                            unDisableContent($mapContentEle.find('input[name="idType"]'));
+                            unDisableContent($mapContentEle.find('input[name="nationality"]'));
                         }else{
                             unDisabledPartPage($mapContentEle);
                             $mapContentEle.find('input[name="loadingType"]').val('');
@@ -508,10 +532,10 @@
     }
 
     var fillDataByBlur = function ($mapContentEle,data) {
-        var idNo = data.idNo;
+        /*var idNo = data.idNo;
         if(idNo != '' && idNo != null && idNo != 'undefined'){
             $mapContentEle.find('input[name="idNo"]').val(idNo);
-        }
+        }*/
         var name = data.name;
         if(name != '' && name != null && name != 'undefined'){
             $mapContentEle.find('input[name="name"]').val(name);

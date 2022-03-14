@@ -546,7 +546,7 @@
       </div>
       <div class="col-lg-12 col-xs-12">
         <iais:action style="text-align:center;">
-          <a class="btn btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
+          <a class="btn btn-secondary" data-toggle="modal" data-target= "#cancel">Cancel</a>
           <button class="btn btn-primary" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="edit(this)">Update</button>
         </iais:action>
         <div class="bg-title" style="text-align: center">
@@ -562,7 +562,8 @@
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
-<iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
+<iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary"
+              cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel" needFungDuoJi="false"/>
 <style>
   .mandatory{
     color: red;

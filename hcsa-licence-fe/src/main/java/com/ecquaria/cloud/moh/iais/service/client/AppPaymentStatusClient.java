@@ -32,7 +32,7 @@ public interface  AppPaymentStatusClient {
     FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(@RequestParam("status") String status, @RequestParam("xmlType")String xmlType);
 
     @GetMapping(value = "/iais-payment/get-giropayments-pmtstatus-appgroupno",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<GiroPaymentDto>> getGiroPaymentDtosByPmtStatusAndAppGroupNo(@RequestParam("pmtStatus") String pmtStatus, @RequestParam("appGroupNo")String appGroupNo);
+    FeignResponseEntity<List<GiroPaymentDto>> getGiroPaymentDtosByPmtStatusAndAppGroupNo(@RequestParam("pmtStatus") String pmtStatus, @RequestParam("appGroupNo")String appGroupNo,@RequestParam("sysClientId") String sysClientId);
 
     @PostMapping(value = "/iais-payment/update-giropaymentxmls" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroPaymentXmlDto>> updateGiroPaymentXmlDtos(@RequestBody List<GiroPaymentXmlDto>  giroPaymentXmlDtos);
@@ -40,7 +40,13 @@ public interface  AppPaymentStatusClient {
     @PostMapping(value = "/iais-payment/update-giropayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentDto> updateGiroPaymentDto(@RequestBody GiroPaymentDto giroPaymentDto);
 
+    @PostMapping(value = "/iais-payment/update-giropayments" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<GiroPaymentDto>> updateGiroPaymentDtos(List<GiroPaymentDto> giroPaymentDtos);
+
     @GetMapping(value = "/iais-payment/get-giropaymentxmls-tag-status-xmltype",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(@RequestParam("tag") String tag,@RequestParam("status") String status,@RequestParam("xmlType")String xmlType);
+
+    @PostMapping(value = "/iais-payment/create-giro-data-xml-related-data" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GiroPaymentXmlDto> createNewGiroPaymentXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
 
 }

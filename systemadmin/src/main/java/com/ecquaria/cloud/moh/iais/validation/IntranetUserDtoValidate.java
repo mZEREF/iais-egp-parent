@@ -67,8 +67,6 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             } catch (ParseException e) {
                 log.error(e.getMessage(),e);
             }
-            //get today string
-            String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
             //get start Date By request
             Date sDate;
             try {
@@ -98,9 +96,10 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             if (comparatorValue <= 0) {
                 errorMap.put("accountActivateDatetime", "USER_ERR022");
             }
-
-            if(  sDate.before(today)) {
-                errorMap.put("accountActivateDatetime", "USER_ERR007");
+            if(!"edit".equals(user_action)){
+                if(  sDate.before(today)) {
+                    errorMap.put("accountActivateDatetime", "USER_ERR007");
+                }
             }
             if( eDate.before(today)) {
                 errorMap.put("accountDeactivateDatetime", "USER_ERR007");
@@ -108,7 +107,6 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
 
         }else {
             if (!StringUtil.isEmpty(startDateStr) ) {
-                String[] eftStartDateStr = startDateStr.split("/");
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 Date today = null;
                 try {
@@ -116,8 +114,6 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 } catch (ParseException e) {
                     log.error(e.getMessage(),e);
                 }
-                //get today string
-                String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
                 //get start Date By request
                 Date sDate;
                 try {
@@ -126,15 +122,14 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                     log.error(e.getMessage(), e);
                     sDate = new Date();
                 }
-                if( sDate.before(today)) {
-                    errorMap.put("accountActivateDatetime", "USER_ERR007");
+                if(!"edit".equals(user_action)){
+                    if( sDate.before(today)) {
+                        errorMap.put("accountActivateDatetime", "USER_ERR007");
+                    }
                 }
             }
             if ( !StringUtil.isEmpty(endDateStr)) {
-                String[] eftEndDateStr = endDateStr.split("/");
                 Date today = new Date();
-                //get today string
-                String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
                 //get start Date By request
                 Date eDate;
                 try {

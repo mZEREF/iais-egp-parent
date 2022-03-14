@@ -138,7 +138,7 @@
                                                         </div>
 
                                                         <div class="col-sm-4 col-md-4 col-xs-12">
-                                                            <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                                                            <input autocomplete="off" name="name" maxlength="110" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                                                             <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                                         </div>
                                                     </div>
@@ -159,13 +159,32 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-4 col-md-4 col-xs-12">
-                                                            <input autocomplete="off" id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                                                            <input autocomplete="off" id="idType-idNo" name="idNo" type="text"
+                                                                   class="idNoVal form-control control-input control-set-font control-font-normal"
+                                                                   maxlength="20" value="${principalOfficer.idNo}" >
                                                             <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
                                                             <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="row nationalityDiv">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
+                                                            Nationality
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8">
+                                                            <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
+                                                                         cssClass="nationality" value="${principalOfficer.nationality}" needErrorSpan="false"/>
+                                                            <span id="error_nationality${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="row">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
@@ -456,7 +475,7 @@
                                                             <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
                                                         </div>
                                                         <div class="col-sm-4 col-xs-12">
-                                                            <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                                                            <input autocomplete="off" name="deputyName" maxlength="110" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                                                             <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                                                         </div>
                                                     </div>
@@ -478,12 +497,31 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-4 col-xs-12">
-                                                            <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                                                            <input autocomplete="off"  name="deputyIdNo" maxlength="20" type="text"
+                                                                   class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                                                             <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="row nationalityDiv">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
+                                                            Nationality
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8">
+                                                            <iais:select  firstOption="Please Select" name="deputyNationality" codeCategory="CATE_ID_NATIONALITY"
+                                                                          cssClass="deputyNationality" value="${deputy.nationality}"/>
+                                                            <span id="error_deputyNationality${status.index}" name="iaisErrorMsg"
+                                                                  class="error-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="row">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
@@ -666,6 +704,9 @@
 
         deputyDesignationChange();
 
+        initNationality('div.po-content', 'select[name="idType"]', '.nationalityDiv');
+        initNationality('div.dpo-content', 'select[name="deputyIdType"]', '.nationalityDiv');
+
         $('select.poSelect').trigger('change');
         $('select.deputySelect').trigger('change');
         $('select.deputyPoSelect').trigger('change');
@@ -763,12 +804,15 @@
     });
 
     var poLoadByAjax =  function ($poContentEle,selectVal) {
+        showWaiting();
         var data = {};
         fillPoData($poContentEle,data);
         var arr = selectVal.split(',');
-        var idType = arr[0];
-        var idNo = arr[1];
+        var nationality = arr[0];
+        var idType = arr[1];
+        var idNo = arr[2];
         var jsonData = {
+            'nationality':nationality,
             'idType':idType,
             'idNo':idNo
         };
@@ -782,20 +826,24 @@
                     return;
                 }
                 fillPoData($poContentEle,data);
+                dismissWaiting();
             },
             'error':function () {
-
+                dismissWaiting();
             }
         });
     }
 
     var dpoLoadByAjax =  function ($poContentEle,selectVal) {
+        showWaiting();
         var data = {};
         fillDpoData($poContentEle,data);
         var arr = selectVal.split(',');
-        var idType = arr[0];
-        var idNo = arr[1];
+        var nationality = arr[0];
+        var idType = arr[1];
+        var idNo = arr[2];
         var jsonData = {
+            'nationality':nationality,
             'idType':idType,
             'idNo':idNo
         };
@@ -809,10 +857,10 @@
                     return;
                 }
                 fillDpoData($poContentEle,data);
-
+                dismissWaiting();
             },
             'error':function () {
-
+                dismissWaiting();
             }
         });
     }
@@ -962,6 +1010,8 @@
                         $('.po-content').each(function (k,v) {
                             $(this).find('.assign-psn-item').html(k);
                         });
+
+                        initNationality('div.po-content:last', 'select[name="idType"]', '.nationalityDiv');
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -1018,6 +1068,8 @@
                         $('.dpo-content').each(function (k,v) {
                             $(this).find('.assign-psn-item').html(k);
                         });
+
+                        initNationality('div.dpo-content:last', 'select[name="deputyIdType"]', '.nationalityDiv');
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -1072,10 +1124,10 @@
     }
 
     var fillPoDataByBlur = function ($poContentEle,data) {
-        var idNo = data.idNo;
+        /*var idNo = data.idNo;
         if(idNo != '' && idNo != null && idNo != 'undefined'){
             $poContentEle.find('input[name="idNo"]').val(idNo);
-        }
+        }*/
         var name = data.name;
         if(name != '' && name != null && name != 'undefined'){
             $poContentEle.find('input[name="name"]').val(name);
@@ -1123,10 +1175,12 @@
     }
 
     var fillDpoDataByBlur = function ($dpoContentEle,data) {
-        var idNo = data.idNo;
+       /* var idNo = data.idNo;
         if(idNo != '' && idNo != null && idNo != 'undefined'){
             $dpoContentEle.find('input[name="deputyIdNo"]').val(idNo);
         }
+        <!-- Nationality  -->
+        fillValue($poContentEle.find('select[name="deputyNationality"]'), data.nationality);*/
         var name = data.name;
         if(name != '' && name != null && name != 'undefined'){
             $dpoContentEle.find('input[name="deputyName"]').val(name);
@@ -1158,7 +1212,6 @@
             $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
         }
 
-
         var $psnContentEle = $dpoContentEle.find('div.deputyPrincipalOfficers');
         //add disabled not add input disabled style
         personDisable($psnContentEle,'','Y');
@@ -1184,13 +1237,10 @@
         var salutationVal = $poContentEle.find('option[value="' + salutation + '"]').html();
         $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
         <!-- idType-->
-        var idType = data.idType;
-        if(idType == null || idType =='undefined' || idType == ''){
-            idType = '';
-        }
-        $poContentEle.find('select[name="idType"]').val(idType);
-        var idTypeVal = $poContentEle.find('option[value="' + idType + '"]').html();
-        $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+        fillValue($poContentEle.find('select[name="idType"]'), data.idType);
+        <!-- Nationality  -->
+        fillValue($poContentEle.find('select[name="nationality"]'), data.nationality);
+        toggleIdType($poContentEle.find('select[name="idType"]'), $poContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
@@ -1238,13 +1288,10 @@
         var salutationVal = $dpoContentEle.find('option[value="' + salutation + '"]').html();
         $dpoContentEle.find('select[name="deputySalutation"]').next().find('.current').html(salutationVal);
         <!-- idType-->
-        var idType = data.idType;
-        if(idType == null || idType =='undefined' || idType == ''){
-            idType = '';
-        }
-        $dpoContentEle.find('select[name="deputyIdType"]').val(idType);
-        var idTypeVal = $dpoContentEle.find('option[value="' + idType + '"]').html();
-        $dpoContentEle.find('select[name="deputyIdType"]').next().find('.current').html(idTypeVal);
+        fillValue($dpoContentEle.find('select[name="deputyIdType"]'), data.idType);
+        <!-- Nationality  -->
+        fillValue($dpoContentEle.find('select[name="deputyNationality"]'), data.nationality);
+        toggleIdType($dpoContentEle.find('select[name="deputyIdType"]'), $dpoContentEle.find('.nationalityDiv'));
         <!--Designation  -->
         var designation = data.designation;
         if(designation == null || designation =='undefined' || designation == ''){
@@ -1344,6 +1391,9 @@
         if(psnEditDto.idType){
             $cgoPsnEle.find('div.idType').removeClass('disabled');
         }
+        if(psnEditDto.nationality){
+            $cgoPsnEle.find('div.nationality').removeClass('disabled');
+        }
         if(psnEditDto.designation){
             $cgoPsnEle.find('div.designation').removeClass('disabled');
         }
@@ -1393,6 +1443,9 @@
         }
         if(psnEditDto.idType){
             $cgoPsnEle.find('div.deputyIdType').removeClass('disabled');
+        }
+        if(psnEditDto.nationality){
+            $cgoPsnEle.find('div.deputyNationality').removeClass('disabled');
         }
         if(psnEditDto.designation){
             $cgoPsnEle.find('div.deputyDesignation').removeClass('disabled');
@@ -1445,10 +1498,12 @@
             var $poContentEle = $(this).closest('div.po-content');
             var idNo = $(this).val();
             var idType = $poContentEle.find('select[name="idType"]').val();
+            var nationality = $poContentEle.find('select[name="nationality"]').val();
             if(idNo == '' || idType == ''){
                 return;
             }
             var data = {
+                'nationality':nationality,
                 'idNo':idNo,
                 'idType':idType
             };
@@ -1464,10 +1519,9 @@
                         if(data.resCode == '200'){
                             $poContentEle.find('input[name="loadingType"]').val('PLT002');
                             fillPoDataByBlur($poContentEle,data.resultJson);
-                            $poContentEle.find('input[name="idNo"]').css('border-color','');
-                            $poContentEle.find('input[name="idNo"]').css('color','');
-                            $poContentEle.find('input[name="idNo"]').prop('disabled',false);
-                            $poContentEle.find('select[name="idType"]').next().removeClass('disabled');
+                            unDisableContent($poContentEle.find('input[name="idNo"]'));
+                            unDisableContent($poContentEle.find('input[name="idType"]'));
+                            unDisableContent($poContentEle.find('input[name="nationality"]'));
                         }else{
                             unDisabledPartPage($poContentEle);
                             $poContentEle.find('input[name="loadingType"]').val('');
@@ -1487,10 +1541,12 @@
             var $dpoContentEle = $(this).closest('div.dpo-content');
             var idNo = $(this).val();
             var idType = $dpoContentEle.find('select[name="deputyIdType"]').val();
+            var nationality = $dpoContentEle.find('select[name="deputyNationality"]').val();
             if(idNo == '' || idType == ''){
                 return;
             }
             var data = {
+                'nationality':nationality,
                 'idNo':idNo,
                 'idType':idType
             };
@@ -1506,10 +1562,9 @@
                         if(data.resCode == '200'){
                             $dpoContentEle.find('input[name="dpoLoadingType"]').val('PLT002');
                             fillDpoDataByBlur($dpoContentEle,data.resultJson);
-                            $dpoContentEle.find('input[name="deputyIdNo"]').css('border-color','');
-                            $dpoContentEle.find('input[name="deputyIdNo"]').css('color','');
-                            $dpoContentEle.find('input[name="deputyIdNo"]').prop('disabled',false);
-                            $dpoContentEle.find('select[name="deputyIdType"]').next().removeClass('disabled');
+                            unDisableContent($dpoContentEle.find('input[name="deputyIdNo"]'));
+                            unDisableContent($dpoContentEle.find('input[name="deputyIdType"]'));
+                            unDisableContent($dpoContentEle.find('input[name="deputyNationality"]'));
                         }else{
                             unDisabledPartPage($dpoContentEle);
                             $dpoContentEle.find('input[name="dpoLoadingType"]').val('');

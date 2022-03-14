@@ -340,6 +340,7 @@ public class PageDataCopyUtil {
             svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
             svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
             svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
+            svcPrincipalOfficersDto.setNationality(StringUtil.getNonNull(svcPrincipalOfficersDto.getNationality()));
             svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
             svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
             svcPrincipalOfficersDto.setDescription(appSvcPrincipalOfficersDto.getDescription());
@@ -356,6 +357,7 @@ public class PageDataCopyUtil {
             svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
             svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
             svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
+            svcPrincipalOfficersDto.setNationality(StringUtil.getNonNull(appSvcPrincipalOfficersDto.getNationality()));
             svcPrincipalOfficersDto.setDesignation(appSvcPrincipalOfficersDto.getDesignation());
             svcPrincipalOfficersDto.setOfficeTelNo(appSvcPrincipalOfficersDto.getOfficeTelNo());
             svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
@@ -376,6 +378,7 @@ public class PageDataCopyUtil {
             cgoDto.setName(appSvcCgoDto.getName());
             cgoDto.setIdNo(appSvcCgoDto.getIdNo());
             cgoDto.setIdType(appSvcCgoDto.getIdType());
+            cgoDto.setNationality(StringUtil.getNonNull(cgoDto.getNationality()));
             cgoDto.setDesignation(appSvcCgoDto.getDesignation());
             cgoDto.setProfessionType(appSvcCgoDto.getProfessionType());
             cgoDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
@@ -402,6 +405,7 @@ public class PageDataCopyUtil {
             kahDto.setName(appSvcKahDto.getName());
             kahDto.setIdNo(appSvcKahDto.getIdNo());
             kahDto.setIdType(appSvcKahDto.getIdType());
+            kahDto.setNationality(StringUtil.getNonNull(kahDto.getNationality()));
             list.add(kahDto);
         }
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
@@ -516,6 +520,7 @@ public class PageDataCopyUtil {
             o.setName(v.getName());
             o.setIdType(v.getIdType());
             o.setIdNo(v.getIdNo());
+            o.setNationality(StringUtil.getNonNull(v.getNationality()));
             o.setDesignation(v.getDesignation());
             o.setSpeciality(v.getSpeciality());
             o.setSpecialtyGetDate(v.getSpecialtyGetDate());

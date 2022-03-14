@@ -63,7 +63,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -575,7 +574,6 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
 
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
         List<SelectOption> specialtySelectList = NewApplicationHelper.genSpecialtySelectList(currentSvcCode, true);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
@@ -1559,10 +1557,6 @@ public class ClinicalLaboratoryDelegator {
             }
             reSetChangesForApp(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            if (map.isEmpty()) {
-                //sync person dropdown and submisson dto
-                personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcPrincipalOfficersDtoList, svcCode);
-            }
         }
         if (!map.isEmpty()) {
             //set audit
@@ -1654,7 +1648,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
-        List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1697,11 +1690,13 @@ public class ClinicalLaboratoryDelegator {
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<AppSvcDocDto> newAppSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
+        Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
-            Map<String, AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
-            Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
+            newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
             //CommonsMultipartFile file = null;
             AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
@@ -1730,9 +1725,7 @@ public class ClinicalLaboratoryDelegator {
 
             List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG);
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             //premIndexNo+configId+seqnum
-            Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos,oldDocs);
             int [] psnTypeNumArr = new int[]{maxPsnTypeNum};
             for(int i =0;i<hcsaSvcDocConfigDtos.size();i++){
@@ -1751,31 +1744,33 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
 
-            String crud_action_values = mulReq.getParameter("nextStep");
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            if ("next".equals(crud_action_values)) {
-                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
-                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
-            }else{
-                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap,true);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
-                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
-                errorMap = IaisCommonUtils.genNewHashMap();
-            }
+        }
+        String crud_action_values = mulReq.getParameter("nextStep");
+        if ("next".equals(crud_action_values)) {
+            newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
+            NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
+                    appSvcRelatedInfoDto, errorMap);
+            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
+        } else if (isGetDataFromPage) {
+            newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
+            /*NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
+                    appSvcRelatedInfoDto, errorMap);
+            errorMap = IaisCommonUtils.genNewHashMap();
+             */
+            saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
+        }
 
-            appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
+        appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
 
-            if (!errorMap.isEmpty()) {
-                bpc.request.setAttribute("errormapIs", "error");
-                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
-                mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
-                return;
-            }
+        if (!errorMap.isEmpty()) {
+            bpc.request.setAttribute("errormapIs", "error");
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
+            mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DOCUMENTS);
+            return;
         }
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
@@ -2324,7 +2319,10 @@ public class ClinicalLaboratoryDelegator {
         }
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         if("next".equals(actionType)){
-            validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+                    NewApplicationDelegator.LICPERSONSELECTMAP);
+            validateClincalDirector.doValidateClincalDirector(map, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), licPersonMap,
+                    currSvcCode);
         }
         if (!map.isEmpty()) {
             bpc.request.setAttribute("errormapIs", "error");
@@ -2627,7 +2625,7 @@ public class ClinicalLaboratoryDelegator {
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
         String errOtherDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field");
 
-        String errLengthName = NewApplicationHelper.repLength("Name","66");
+        String errLengthName = NewApplicationHelper.repLength("Name","110");
         String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn. No.","20");
         String errLengthWrkExpYear = NewApplicationHelper.repLength("Relevant working experience (Years)","2");
         String errLengthQualification = NewApplicationHelper.repLength("Qualification","100");
@@ -2657,7 +2655,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
@@ -2681,7 +2679,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -2708,7 +2706,7 @@ public class ClinicalLaboratoryDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
                     errorMap.put("name" + i, errName);
-                }else if(name.length() > 66){
+                }else if(name.length() > 110){
                     errorMap.put("name" + i, errLengthName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
@@ -2739,7 +2737,7 @@ public class ClinicalLaboratoryDelegator {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(profRegNo)) {
@@ -2755,7 +2753,7 @@ public class ClinicalLaboratoryDelegator {
 
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(designation)) {
@@ -2789,7 +2787,7 @@ public class ClinicalLaboratoryDelegator {
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
@@ -2811,7 +2809,7 @@ public class ClinicalLaboratoryDelegator {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
                         errorMap.put("name" + i, errName);
-                    }else if(name.length() > 66){
+                    }else if(name.length() > 110){
                         errorMap.put("name" + i, errLengthName);
                     }
                 }
@@ -2857,6 +2855,7 @@ public class ClinicalLaboratoryDelegator {
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
+        String[] nationality = ParamUtil.getStrings(request, "nationality");
         String[] designation = ParamUtil.getStrings(request, "designation");
         String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
         String[] professionType = ParamUtil.getStrings(request, "professionType");
@@ -2899,6 +2898,7 @@ public class ClinicalLaboratoryDelegator {
                             assignSelect = removeArrIndex(assignSelect, i);
                             salutation = removeArrIndex(salutation, i);
                             idType = removeArrIndex(idType, i);
+                            nationality = removeArrIndex(nationality, i);
                             designation = removeArrIndex(designation, i);
                             professionType = removeArrIndex(professionType, i);
                             //specialty = removeArrIndex(specialty, i);
@@ -2937,6 +2937,9 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if(appPsnEditDto.isIdType()){
                     NewApplicationHelper.setPsnValue(idType,i,appSvcPrincipalOfficersDto,"idType");
+                }
+                if (appPsnEditDto.isNationality()) {
+                    NewApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
                 }
                 if(appPsnEditDto.isDesignation()){
                     NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
@@ -3002,6 +3005,7 @@ public class ClinicalLaboratoryDelegator {
                 assignSelect = removeArrIndex(assignSelect, i);
                 salutation = removeArrIndex(salutation, i);
                 idType = removeArrIndex(idType, i);
+                nationality = removeArrIndex(nationality, i);
                 designation = removeArrIndex(designation, i);
                 professionType = removeArrIndex(professionType, i);
                 //specialty = removeArrIndex(specialty, i);
@@ -3018,6 +3022,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setName(name[i]);
                 appSvcCgoDto.setIdType(idType[i]);
                 appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
+                appSvcCgoDto.setNationality(nationality[i]);
                 appSvcCgoDto.setDesignation(designation[i]);
                 if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation[i])){
                     appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
@@ -3035,7 +3040,9 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setEmailAddr(emailAddr);
                 if (needEdit && AppConsts.YES.equals(licPerson[i])) {
                     appSvcCgoDto.setLicPerson(true);
-                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcCgoDto.getIdType(),appSvcCgoDto.getIdNo()));
+                    String personKey = NewApplicationHelper.getPersonKey(appSvcCgoDto.getNationality(), appSvcCgoDto.getIdType(),
+                            appSvcCgoDto.getIdNo());
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, personKey);
                     if(appSvcPrincipalOfficersDto != null){
                         appSvcCgoDto.setCurPersonelId(appSvcPrincipalOfficersDto.getCurPersonelId());
                     }
@@ -3218,6 +3225,7 @@ public class ClinicalLaboratoryDelegator {
                 String salutation = ParamUtil.getString(request,"salutation"+i);
                 String idType = ParamUtil.getString(request,"idType"+i);
                 String idNo = ParamUtil.getString(request,"idNo"+i);
+                String nationality = ParamUtil.getString(request,"nationality"+i);
                 String designation = ParamUtil.getString(request,"designation"+i);
                 String otherDesignation = ParamUtil.getString(request, "otherDesignation"+i);
 //                String specialty = ParamUtil.getString(request,"speciality"+i);
@@ -3243,7 +3251,7 @@ public class ClinicalLaboratoryDelegator {
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
                     appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 } else {
-                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
+                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(nationality, idType, idNo,
                             "-1"));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
@@ -3270,6 +3278,9 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setIdNo(idNo);
+                }
+                if (canSetValue(appPsnEditDto.isNationality(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setNationality(nationality);
                 }
                 if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setDesignation(designation);
@@ -3473,6 +3484,7 @@ public class ClinicalLaboratoryDelegator {
             String[] name = ParamUtil.getStrings(request, "name");
             String[] idType = ParamUtil.getStrings(request, "idType");
             String[] idNo = ParamUtil.getStrings(request, "idNo");
+            String[] nationality = ParamUtil.getStrings(request, "nationality");
             String[] designation = ParamUtil.getStrings(request, "designation");
             String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
             String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
@@ -3529,6 +3541,7 @@ public class ClinicalLaboratoryDelegator {
                                 assignSelect = removeArrIndex(assignSelect, i);
                                 salutation = removeArrIndex(salutation, i);
                                 idType = removeArrIndex(idType, i);
+                                nationality = removeArrIndex(nationality, i);
                                 designation = removeArrIndex(designation, i);
 //                                existingPsn = removeArrIndex(existingPsn, i);
                                 //change arr index
@@ -3555,8 +3568,8 @@ public class ClinicalLaboratoryDelegator {
                 log.info(StringUtil.changeForLog("getPageData:"+getPageData));
                 String assignSel = assignSelect[i];
                 if(chooseExisting){
-                    if(loadingByBlur){
-                        assignSel = NewApplicationHelper.getPersonKey(idType[i],idNo[i]);
+                    if (loadingByBlur) {
+                        assignSel = NewApplicationHelper.getPersonKey(nationality[i], idType[i], idNo[i]);
                     }
                     appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                     appSvcPrincipalOfficersDto.setLoadingType(loadingType);
@@ -3573,14 +3586,18 @@ public class ClinicalLaboratoryDelegator {
                     if(appPsnEditDto.isSalutation()){
                         NewApplicationHelper.setPsnValue(salutation,i,appSvcPrincipalOfficersDto,"salutation");
                     }
+                    if (appPsnEditDto.isNationality()) {
+                        NewApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
+                    }
                     if(appPsnEditDto.isDesignation()){
                         NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
                     }
                     if(appPsnEditDto.isOtherDesignation()){
-                        NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
-                    }
-                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())){
-                        NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                        if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())){
+                            NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                        }else {
+                            otherDesignations = removeArrIndex(otherDesignations, i);
+                        }
                     }
 
                     if(appPsnEditDto.isName()){
@@ -3620,6 +3637,7 @@ public class ClinicalLaboratoryDelegator {
                     assignSelect = removeArrIndex(assignSelect, i);
                     salutation = removeArrIndex(salutation, i);
                     idType = removeArrIndex(idType, i);
+                    nationality = removeArrIndex(nationality, i);
                     designation = removeArrIndex(designation, i);
                     --i;
                     --length;
@@ -3636,6 +3654,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setName(name[i]);
                     appSvcPrincipalOfficersDto.setIdType(idType[i]);
                     appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
+                    appSvcPrincipalOfficersDto.setNationality(nationality[i]);
                     appSvcPrincipalOfficersDto.setDesignation(designation[i]);
                     appSvcPrincipalOfficersDto.setOtherDesignation(otherDesignations[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
@@ -3649,7 +3668,9 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
-                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                        String personKey = NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getNationality(),
+                                appSvcPrincipalOfficersDto.getIdType(), appSvcPrincipalOfficersDto.getIdNo());
+                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, personKey);
                         if(licPerson != null){
                             appSvcPrincipalOfficersDto.setCurPersonelId(licPerson.getCurPersonelId());
                         }
@@ -3670,6 +3691,7 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyName = ParamUtil.getStrings(request, "deputyName");
             String[] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
             String[] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
+            String[] deputyNationlity = ParamUtil.getStrings(request, "deputyNationality");
             String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
@@ -3725,6 +3747,7 @@ public class ClinicalLaboratoryDelegator {
                                 assignSelect = removeArrIndex(assignSelect, i);
                                 deputySalutation = removeArrIndex(deputySalutation, i);
                                 deputyIdType = removeArrIndex(deputyIdType, i);
+                                deputyNationlity = removeArrIndex(deputyNationlity, i);
                                 deputyDesignation = removeArrIndex(deputyDesignation, i);
 //                                existingPsn = removeArrIndex(existingPsn, i);
                                 //change arr index
@@ -3750,8 +3773,8 @@ public class ClinicalLaboratoryDelegator {
                 log.info(StringUtil.changeForLog("getPageData:"+getPageData));
                 String assignSel = assignSelect[i];
                 if(chooseExisting){
-                    if(loadingByBlur){
-                        assignSel = NewApplicationHelper.getPersonKey(deputyIdType[i],deputyIdNo[i]);
+                    if (loadingByBlur) {
+                        assignSel = NewApplicationHelper.getPersonKey(deputyNationlity[i], deputyIdType[i], deputyIdNo[i]);
                     }
                     appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                     appSvcPrincipalOfficersDto.setLoadingType(loadingType);
@@ -3773,6 +3796,9 @@ public class ClinicalLaboratoryDelegator {
                     }
                     if (appPsnEditDto.isSalutation()) {
                         NewApplicationHelper.setPsnValue(deputySalutation, i, appSvcPrincipalOfficersDto, "salutation");
+                    }
+                    if (appPsnEditDto.isNationality()) {
+                        NewApplicationHelper.setPsnValue(deputyNationlity, i, appSvcPrincipalOfficersDto, "nationality");
                     }
                     if (appPsnEditDto.isDesignation()) {
                         NewApplicationHelper.setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
@@ -3810,6 +3836,7 @@ public class ClinicalLaboratoryDelegator {
                     assignSelect = removeArrIndex(assignSelect, i);
                     deputySalutation = removeArrIndex(deputySalutation, i);
                     deputyIdType = removeArrIndex(deputyIdType, i);
+                    deputyNationlity = removeArrIndex(deputyNationlity, i);
                     deputyDesignation = removeArrIndex(deputyDesignation, i);
                     --i;
                     --length;
@@ -3826,6 +3853,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setName(deputyName[i]);
                     appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
                     appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(deputyIdNo[i]));
+                    appSvcPrincipalOfficersDto.setNationality(deputyNationlity[i]);
                     appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
                     appSvcPrincipalOfficersDto.setOtherDesignation(deputyOtherDesignations[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
@@ -3839,7 +3867,9 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
-                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                        String personKey = NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getNationality(),
+                                appSvcPrincipalOfficersDto.getIdType(), appSvcPrincipalOfficersDto.getIdNo());
+                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, personKey);
                         if(licPerson != null){
                             appSvcPrincipalOfficersDto.setCurPersonelId(licPerson.getCurPersonelId());
                         }
@@ -4238,12 +4268,13 @@ public class ClinicalLaboratoryDelegator {
                 String salutation = ParamUtil.getString(request,"salutation"+i);
                 String idType = ParamUtil.getString(request,"idType"+i);
                 String idNo = ParamUtil.getString(request,"idNo"+i);
+                String nationality = ParamUtil.getString(request, "nationality" + i);
                 appSvcKeyAppointmentHolderDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                 appSvcKeyAppointmentHolderDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_KAH);
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
                     appSvcKeyAppointmentHolderDto.setAssignSelect(assignSel);
                 } else {
-                    appSvcKeyAppointmentHolderDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
+                    appSvcKeyAppointmentHolderDto.setAssignSelect(NewApplicationHelper.getAssignSelect(nationality, idType, idNo,
                             "-1"));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
@@ -4264,6 +4295,9 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (isNewOfficer && (appPsnEditDto.isIdNo() || partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
+                }
+                if (isNewOfficer && (appPsnEditDto.isNationality() || partEdit)) {
+                    appSvcKeyAppointmentHolderDto.setNationality(nationality);
                 }
                 if (StringUtil.isEmpty(indexNo)) {
                     appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());
@@ -4294,6 +4328,7 @@ public class ClinicalLaboratoryDelegator {
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
+        String[] nationality = ParamUtil.getStrings(request, "nationality");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
@@ -4343,6 +4378,7 @@ public class ClinicalLaboratoryDelegator {
                             //dropdown cannot disabled
                             assignSelect = removeArrIndex(assignSelect, i);
                             salutation = removeArrIndex(salutation, i);
+                            nationality = removeArrIndex(nationality, i);
                             idType = removeArrIndex(idType, i);
 //                            designation = removeArrIndex(designation, i);
 //                            existingPsn = removeArrIndex(existingPsn, i);
@@ -4369,8 +4405,8 @@ public class ClinicalLaboratoryDelegator {
             log.info(StringUtil.changeForLog("getPageData:"+getPageData));
             String assignSel = assignSelect[i];
             if(chooseExisting){
-                if(loadingByBlur){
-                    assignSel = NewApplicationHelper.getPersonKey(idType[i],idNo[i]);
+                if (loadingByBlur) {
+                    assignSel = NewApplicationHelper.getPersonKey(nationality[i], idType[i], idNo[i]);
                 }
                 appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                 appSvcPrincipalOfficersDto.setLoadingType(loadingType);
@@ -4392,6 +4428,9 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (appPsnEditDto.isIdNo()) {
                     idNo = NewApplicationHelper.setPsnValue(idNo, i, appSvcPrincipalOfficersDto, "idNo");
+                }
+                if (appPsnEditDto.isNationality()) {
+                    nationality = NewApplicationHelper.setPsnValue(nationality, i, appSvcPrincipalOfficersDto, "nationality");
                 }
                 if (appPsnEditDto.isMobileNo()) {
                     mobileNo = NewApplicationHelper.setPsnValue(mobileNo, i, appSvcPrincipalOfficersDto, "mobileNo");
@@ -4420,6 +4459,7 @@ public class ClinicalLaboratoryDelegator {
                 assignSelect = removeArrIndex(assignSelect, i);
                 salutation = removeArrIndex(salutation, i);
                 idType = removeArrIndex(idType, i);
+                nationality = removeArrIndex(nationality, i);
                 --i;
                 --length;
             }else if(getPageData){
@@ -4435,6 +4475,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPrincipalOfficersDto.setName(name[i]);
                 appSvcPrincipalOfficersDto.setIdType(idType[i]);
                 appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
+                appSvcPrincipalOfficersDto.setNationality(nationality[i]);
                 appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                 String emailAddr = "";
                 if(emailAddress != null){
@@ -4445,7 +4486,9 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPrincipalOfficersDto.setEmailAddr(emailAddr);
                 if (needEdit && AppConsts.YES.equals(licPsn)) {
                     appSvcPrincipalOfficersDto.setLicPerson(true);
-                    AppSvcPrincipalOfficersDto licsPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                    String personKey = NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getNationality(),
+                            appSvcPrincipalOfficersDto.getIdType(), appSvcPrincipalOfficersDto.getIdNo());
+                    AppSvcPrincipalOfficersDto licsPerson = NewApplicationHelper.getPsnInfoFromLic(request, personKey);
                     if(licsPerson != null){
                         appSvcPrincipalOfficersDto.setCurPersonelId(licsPerson.getCurPersonelId());
                     }
@@ -4739,17 +4782,16 @@ public class ClinicalLaboratoryDelegator {
             return;
         }
         String assignSel = psn.getAssignSelect();
-        if(!psn.isLicPerson()){
-            boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
-            if(partValidate){
-                personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
-            }else if(!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)){
+        if (!psn.isLicPerson()) {
+            boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(), psn.getIdNo(), psn.getName());
+            if (partValidate) {
+                personKeySet.add(NewApplicationHelper.getPersonKey(psn.getNationality(), psn.getIdType(), psn.getIdNo()));
+            } else if (!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)) {
                 psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
             }
-        }else{
-            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+        } else {
+            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getNationality(), psn.getIdType(), psn.getIdNo()));
         }
-
     }
 
     private  void genSvcDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto, Map<String,File> saveFileMap,
@@ -4833,7 +4875,10 @@ public class ClinicalLaboratoryDelegator {
         return appSvcDocDto;
     }
 
-    private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String,File> saveFileMap){
+    private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String, File> saveFileMap) {
+        if (IaisCommonUtils.isEmpty(saveFileMap) || appSvcDocDtos == null) {
+            return;
+        }
         Map<String,File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
         for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
             if(appSvcDocDto.isPassValidate()){

@@ -52,7 +52,7 @@
                                                     <span class="upload_controls"></span>
                                                 </div>
                                                 <div class="col-sm-5 col-md-7">
-                                                    <input type="text" name="name" maxlength="66" autocomplete="off"><span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <input type="text" name="name" maxlength="110" autocomplete="off"><span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
                                                     <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                                 </div>
                                             </div>

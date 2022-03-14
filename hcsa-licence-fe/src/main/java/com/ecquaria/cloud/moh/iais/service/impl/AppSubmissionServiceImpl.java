@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -2677,7 +2678,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
-                validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
+                validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), licPersonMap, currSvcCode);
                 if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
@@ -2702,7 +2703,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
                 doAppSvcCgoDto(currentSvcAllPsnConfig, govenMap, appSvcCgoDtoList);
-                if (govenMap.isEmpty() && licPersonMap != null) {
+                if (govenMap.isEmpty()) {
                     govenMap.putAll(NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
                             dto.getServiceCode()));
                 }
@@ -3401,34 +3402,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                 }
             }
-            return;
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            String assignSelect = list.get(i).getAssignSelect();
-            if ("".equals(assignSelect) || assignSelect == null) {
-                map.put("cgoassignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoassignSelect","field"));
-            }
-            String idType = list.get(i).getIdType();
-            if (StringUtil.isEmpty(idType)) {
-                map.put("cgotype" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgotype","field"));
-            }
-            String mobileNo = list.get(i).getMobileNo();
-            if (StringUtil.isEmpty(mobileNo)) {
-                map.put("cgomobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgomobileNo","field"));
-            } else {
-                if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                    map.put("cgomobileNo" + i, "GENERAL_ERR0007");
-                }
-            }
-            String emailAddr = list.get(i).getEmailAddr();
-            if (StringUtil.isEmpty(emailAddr)) {
-                map.put("cgoemailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoemailAddr","field"));
-            } else {
-                if (!ValidationUtils.isEmail(emailAddr)) {
-                    map.put("cgoemailAddr" + i, "GENERAL_ERR0014");
-                }
-            }
         }
     }
 
@@ -3777,4 +3750,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             saveAppGrpMisc(appGroupMiscDto);
         }
     }
+
+    @Override
+    public List<AppPremiseMiscDto> getActiveWithdrawAppPremiseMiscsByApp(String appId) {
+        log.info(StringUtil.changeForLog("The appId: " + appId));
+        if (StringUtil.isEmpty(appId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> excludeStatus = IaisCommonUtils.genNewArrayList();
+        excludeStatus.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+        excludeStatus.add(ApplicationConsts.APPLICATION_STATUS_DELETED);
+        return applicationFeClient.getAppPremiseMiscsByConds(ApplicationConsts.WITHDROW_TYPE_APPLICATION, appId,
+                excludeStatus).getEntity();
+    }
+
 }

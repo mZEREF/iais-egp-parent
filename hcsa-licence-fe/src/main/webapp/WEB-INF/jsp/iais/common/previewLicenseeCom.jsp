@@ -33,6 +33,14 @@
         </iais:value>
     </iais:row>
 
+    <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType
+            && subLicenseeDto.idType == 'IDTYPE003'? '' : 'hidden'}">
+        <iais:field width="5" value="Nationality"/>
+        <iais:value width="7" display="true">
+            <iais:code code="${subLicenseeDto.nationality}" />
+        </iais:value>
+    </iais:row>
+
     <iais:row cssClass="solo-no ${subLicenseeDto.licenseeType == soloType ? '' : 'hidden'}">
         <iais:field width="5" value="NRIC/FIN"/>
         <iais:value width="7" display="true">

@@ -18,11 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +53,7 @@ public class FeAdminManageDelegate {
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
+        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",(Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions());
     }
 
     /**
@@ -182,7 +180,6 @@ public class FeAdminManageDelegate {
             String email = ParamUtil.getString(bpc.request,"email");
             String active = ParamUtil.getString(bpc.request,"active");
             String role = ParamUtil.getString(bpc.request,"role");
-
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
             if(feUserDto.isCorpPass()){
@@ -218,6 +215,7 @@ public class FeAdminManageDelegate {
                 }else{
                     feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
                 }
+                feUserDto.setSelectServices(ParamUtil.getStringsToString(bpc.request,"service"));
             }else{
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
@@ -285,6 +283,10 @@ public class FeAdminManageDelegate {
         feUserDto.setOfficeTelNo(null);
         feUserDto.setEmail(null);
         feUserDto.setFromMyInfo(0);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+            feUserDto.setSelectServices(null);
+        }
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.NO);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
@@ -177,5 +178,7 @@ public interface AppSubmissionService {
             AppSvcRelatedInfoDto currentSvcDto, Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap);
 
     void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
+
+    List<AppPremiseMiscDto> getActiveWithdrawAppPremiseMiscsByApp(String appId);
 
 }

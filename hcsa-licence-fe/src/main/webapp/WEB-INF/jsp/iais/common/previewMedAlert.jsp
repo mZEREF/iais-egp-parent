@@ -48,7 +48,20 @@
                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.idNo}"/></p>
                 </td>
               </tr>
-
+              <c:if test="${appSvcMedAlertPerson.idType == 'IDTYPE003'}">
+              <tr>
+                <td class="col-xs-6">
+                  <p class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Nationality
+                  </p>
+                </td>
+                <td>
+                  <p class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.nationality}" />
+                  </p>
+                </td>
+              </tr>
+              </c:if>
               <tr>
                 <td class="col-xs-6">
                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>

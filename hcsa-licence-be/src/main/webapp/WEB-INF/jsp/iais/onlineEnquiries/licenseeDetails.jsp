@@ -209,6 +209,12 @@
                             <td align="right">ID Type</td>
                             <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.idType}"/><c:if test="${empty subLicenseeDto.idType}">-</c:if></td>
                         </tr>
+                        <c:if test="${subLicenseeDto.idType == 'IDTYPE003'}">
+                            <tr>
+                                <td align="right">Nationality</td>
+                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.nationality}"/><c:if test="${empty subLicenseeDto.nationality}">-</c:if></td>
+                            </tr>
+                        </c:if>
                         <tr>
                             <td align="right">ID No</td>
                             <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.idNumber}<c:if test="${empty subLicenseeDto.idNumber}">-</c:if></td>

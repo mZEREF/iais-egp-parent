@@ -23,13 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -67,6 +61,7 @@ public class FeUserManagement {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         getSearchParam(bpc.request,true);
         ParamUtil.setSessionAttr(bpc.request,"uenNo",null);
+        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",(Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions());
     }
 
     public void prepare(BaseProcessClass bpc){
@@ -244,7 +239,8 @@ public class FeUserManagement {
             OrgUserRoleDto orgUserRoleDtoUser = new OrgUserRoleDto();
             orgUserRoleDtoAdmin.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-
+            userAttr.setSelectServices(ParamUtil.getStringsToString(bpc.request,"service"));
+            orgUserRoleDtoUser.setSelectServices(userAttr.getSelectServices());
             if("admin".equals(role)){
                 orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);

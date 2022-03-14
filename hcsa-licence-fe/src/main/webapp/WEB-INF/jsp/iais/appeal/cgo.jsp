@@ -38,6 +38,7 @@
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
+                  <div class="cgo-content">
                   <table aria-describedby="" class="assignContent control-grid" style="width:100%;">
                     <thead style="display: none">
                     <tr><th scope="col"></th></tr>
@@ -110,7 +111,7 @@
                                     </div>
                                     <div class="col-sm-3 col-md-4" id="name${suffix}">
                                       <div class="">
-                                        <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
+                                        <iais:input maxLength="110" type="text" name="name" value="${currentCgo.name}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                       </div>
                                     </div>
@@ -154,6 +155,27 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr height="1" class="nationalityDiv">
+                              <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="col-sm-4 control-label formtext">
+                                      <label class="control-label control-set-font control-font-label">Nationality</label>
+                                      <span class="mandatory">*</span>
+                                      <span class="upload_controls"></span>
+                                    </div>
+                                    <div class="col-sm-5 col-md-7" id="nationality${suffix}">
+                                      <div class="">
+                                        <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
+                                                     cssClass="nationality" value="${currentCgo.nationality}" needErrorSpan="false"/>
+                                        <span class="error-msg" name="iaisErrorMsg"
+                                              id="error_nationality${status.index}"></span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -341,6 +363,7 @@
                     </tr>
                     </tbody>
                   </table>
+                  </div>
                   <c:if test="${!status.last}">
                     <hr/>
                   </c:if>
@@ -411,6 +434,8 @@
         showSpecialty();
 
         doEdit();
+
+        initNationality('div.cgo-content', 'select[name="idType"]', '.nationalityDiv');
 
         $('#control--runtime--0').children().remove("hr")
         $('.assignSel ').trigger('change');
@@ -484,6 +509,8 @@
                 changePsnItem();
                 designationChange();
                 profRegNoBlur();
+                initNationality('div.cgo-content:last', 'select[name="idType"]', '.nationalityDiv');
+
             },
             'error':function (data) {
                 console.log("err");
@@ -676,4 +703,31 @@
         $loadingContent.find('.'+labelClass).html(displayVal);
     }
 
+    function initNationality(parent, idTypeTag, nationalityDiv) {
+      $(parent).find(idTypeTag).on('change', function () {
+        var $content = $(this).closest(parent.replace(':last', ''));
+        toggleIdType(this, $content.find(nationalityDiv));
+      });
+      $(parent).each(function (index, ele) {
+        toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
+      });
+    }
+
+    function toggleIdType(sel, elem) {
+      if (isEmpty(sel) || isEmpty(elem)) {
+        return;
+      }
+      var $sel = $(sel);
+      var $elem = $(elem);
+      if ($sel.length == 0 || $elem.length == 0) {
+        return;
+      }
+      console.log($sel.val());
+      if ($sel.val() == 'IDTYPE003') {
+        $elem.removeClass('hidden');
+      } else {
+        $elem.addClass('hidden');
+        clearFields($elem);
+      }
+    }
 </script>

@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
@@ -28,11 +29,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -69,6 +67,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author: Hc
@@ -198,7 +197,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = null;
+        SearchParam inboxParam;
         String page = ParamUtil.getRequestString(request,"msg_action_type");
         if("msgToArchive".equals(page)){
             inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
@@ -1529,11 +1528,13 @@ public class InterInboxDelegator {
         }
     }
 
-    private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
+    public void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         if(interInboxUserDto != null) {
-            Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
-            Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
-            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(interInboxUserDto.getLicenseeId());
+            LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+            Integer licActiveNum = inboxService.licActiveStatusNum(HcsaServiceCacheHelper.controlServices(2,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
+            Integer appDraftNum = inboxService.appDraftNum(HcsaServiceCacheHelper.controlServices(1,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
+            Integer unreadAndresponseNum = inboxService.unreadAndUnresponseNum(HcsaServiceCacheHelper.controlServices(0,interInboxUserDto.getLicenseeId(),userRoleAccessMatrixDtos));
             ParamUtil.setRequestAttr(request, "unreadAndresponseNum", unreadAndresponseNum);
             ParamUtil.setRequestAttr(request, "licActiveNum", licActiveNum);
             ParamUtil.setRequestAttr(request, "appDraftNum", appDraftNum);
@@ -1545,7 +1546,7 @@ public class InterInboxDelegator {
      * @description Data to Form select part
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
-        ParamUtil.setRequestAttr(request, "inboxServiceSelect", getInboxServiceSelectList(true,true));
+        ParamUtil.setRequestAttr(request, "inboxServiceSelect", getInboxServiceSelectList(true,true,request));
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_NOTIFICATION)));
         inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT)));
@@ -1553,14 +1554,18 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "inboxTypeSelect", inboxTypSelectList);
     }
 
-    private List<SelectOption> getInboxServiceSelectList(boolean specialIdentification,boolean serviceCode){
+    private List<SelectOption> getInboxServiceSelectList(boolean specialIdentification,boolean serviceCode,HttpServletRequest request){
         String specialIdentificationString  = specialIdentification ? "@" : "";
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
-        if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                inboxServiceSelectList.add(new SelectOption((serviceCode ? hcsaServiceDto.getSvcCode() :hcsaServiceDto.getSvcName()) +specialIdentificationString, hcsaServiceDto.getSvcName()));
-            }
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos = lc.getRoleMatrixes().get(RoleConsts.USER_ROLE_ORG_USER);
+        List<String> serviceNames = HcsaServiceCacheHelper.controlServices(2,userRoleAccessMatrixDtos);
+        if(IaisCommonUtils.isNotEmpty(serviceNames)){
+            Map<String,String> map = HcsaServiceCacheHelper.receiveAllHcsaService().stream().collect(Collectors.toMap( HcsaServiceDto::getSvcName,HcsaServiceDto::getSvcCode, (v1, v2) -> v1));
+             serviceNames.stream().forEach(svcName -> {
+                String svcCode = map.get(svcName);
+                inboxServiceSelectList.add(new SelectOption((serviceCode ?  svcCode: svcName) +specialIdentificationString,svcName));
+            });
         }
         return inboxServiceSelectList;
     }
@@ -1594,7 +1599,7 @@ public class InterInboxDelegator {
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
-        ParamUtil.setRequestAttr(request, "appServiceType", getInboxServiceSelectList(false,false));
+        ParamUtil.setRequestAttr(request, "appServiceType", getInboxServiceSelectList(false,false,request));
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
@@ -1610,7 +1615,7 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
-        ParamUtil.setRequestAttr(request, "licType", getInboxServiceSelectList(false,false));
+        ParamUtil.setRequestAttr(request, "licType", getInboxServiceSelectList(false,false,request));
 
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();
         LicenceActionsList.add(new SelectOption("Appeal", "Appeal"));
