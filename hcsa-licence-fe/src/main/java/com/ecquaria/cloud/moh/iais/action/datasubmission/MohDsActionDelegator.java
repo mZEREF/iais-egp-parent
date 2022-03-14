@@ -242,6 +242,7 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(dpSuper));
             dpSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
         return uri;
