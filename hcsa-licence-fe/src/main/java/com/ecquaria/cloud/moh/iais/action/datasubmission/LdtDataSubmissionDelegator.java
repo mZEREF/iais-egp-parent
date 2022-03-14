@@ -263,7 +263,7 @@ public class LdtDataSubmissionDelegator {
                 } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
                     if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
                         errorMap.put("amendReasonOther", "GENERAL_ERR0006");
-                    } else {
+                    } else if (dataSubmissionDto.getAmendReasonOther().length() > 50) {
                         errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
                     }
                 }
