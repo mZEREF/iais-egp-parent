@@ -164,7 +164,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Status"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" options="cycleStagesStatusOptions"
+                                        <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" options="cycleStagesStatusOptions" needSort="true"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.cycleStagesStatus}" />
                                     </iais:value>
                                 </iais:row>

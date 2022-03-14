@@ -276,6 +276,7 @@
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_efo_cycle_stage defocs on defocs.SUBMISSION_ID=dds.ID
                 left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
                 left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
@@ -309,8 +310,8 @@
 
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
-                <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
-                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(datetime,:cycleStagesDateTo)</#if>
+                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) or dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
