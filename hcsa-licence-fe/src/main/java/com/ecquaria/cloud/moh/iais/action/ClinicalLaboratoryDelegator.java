@@ -1521,8 +1521,6 @@ public class ClinicalLaboratoryDelegator {
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-        Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
-                NewApplicationDelegator.PERSONSELECTMAP);
         Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
                 NewApplicationDelegator.LICPERSONSELECTMAP);
 
@@ -1567,12 +1565,7 @@ public class ClinicalLaboratoryDelegator {
                     HcsaLicenceFeConstant.PRINCIPALOFFICERS);
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
         } else  if (isGetDataFromPagePo || isGetDataFromPageDpo) {
-            //sync person dropdown and submisson dto
-            personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcPrincipalOfficersDtoList, svcCode);
-            //remove dirty psn dropdown info
-            Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap,
-                    personMap);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
+            syncDropDownAndPsn(appSubmissionDto, appSvcPrincipalOfficersDtoList, svcCode, bpc.request);
         }
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
         //remove dirty psn doc info
@@ -1753,10 +1746,6 @@ public class ClinicalLaboratoryDelegator {
             saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
         } else if (isGetDataFromPage) {
             newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
-            /*NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, newAppSvcDocDtoList, appGrpPremisesDtos,
-                    appSvcRelatedInfoDto, errorMap);
-            errorMap = IaisCommonUtils.genNewHashMap();
-             */
             saveSvcFileAndSetFileId(newAppSvcDocDtoList, saveFileMap);
         }
 
@@ -2106,16 +2095,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
             return;
         } else if (isGetDataFromPage) {
-            //sync person dropdown and submisson dto
-            personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcMedAlertPersonList, svcCode);
-            //remove dirty psn dropdown info
-            Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap,
-                    personMap);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
-            //remove dirty psn doc info
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
-            removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_MAP, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, appSvcMedAlertPersonList, svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
@@ -4616,8 +4596,13 @@ public class ClinicalLaboratoryDelegator {
         if (personList == null || personList.isEmpty()) {
             return personMap;
         }
-        Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICPERSONSELECTMAP);
-        personMap = syncDropDownAndPsn(personMap,appSubmissionDto,personList,svcCode);
+        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.LICPERSONSELECTMAP);
+        boolean isSync = syncDropDownAndPsn(personMap, appSubmissionDto, personList, svcCode);
+        log.info(StringUtil.changeForLog("-----Sync Dropdown and Psn: " + isSync + "-----"));
+        if (!isSync) {
+            return personMap;
+        }
         Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
         ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -4628,30 +4613,32 @@ public class ClinicalLaboratoryDelegator {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CGO;
         } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(personType)) {
             dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
+        } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(personType)) {
+            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_MAP;
         }
         removeDirtyPsnDoc(dupForPerson, request);
 
         return newPersonMap;
     }
 
-    private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(Map<String,AppSvcPersonAndExtDto> personMap,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
+    private boolean syncDropDownAndPsn(Map<String, AppSvcPersonAndExtDto> personMap,
+            AppSubmissionDto appSubmissionDto, List<AppSvcPrincipalOfficersDto> personList, String svcCode) {
         List<AppSvcPrincipalOfficersDto> newPersonList = IaisCommonUtils.genNewArrayList();
-        for(AppSvcPrincipalOfficersDto person:personList){
-            String idType = person.getIdType();
-            String idNo = person.getIdNo();
-            String name = person.getName();
+        for (AppSvcPrincipalOfficersDto person : personList) {
             //Provisional judgment
             //personnel data=>sync , personnel ext data => the same svc =>sync
-            boolean needSync = !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(name);
-            if(needSync){
+            if (NewApplicationHelper.psnDoPartValidate(person.getIdType(), person.getIdNo(), person.getName())) {
                 newPersonList.add(person);
             }
+        }
+        if (newPersonList.isEmpty()) {
+            return false;
         }
         //set person into dropdown
         personMap = NewApplicationHelper.initSetPsnIntoSelMap(personMap, newPersonList, svcCode);
         //sync data
         NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
-        return personMap;
+        return true;
     }
 
     private String getStepName(BaseProcessClass bpc,String currSvcId,String stepCode){

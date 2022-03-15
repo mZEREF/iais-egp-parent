@@ -4060,7 +4060,7 @@ public class NewApplicationHelper {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
             isValid = false;
         } else {
-            if (StringUtil.isEmpty(idNo)) {
+            if (name.length() > 110) {
                 isValid = false;
             } else if (!SgNoValidator.validateMaxLength(idType, idNo)) {
                 isValid = false;
