@@ -168,8 +168,7 @@
                 <div id="careBabyNumSection"
                      <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Total No. of Baby Admitted to NICU Care"
-                                    />
+                        <iais:field width="5" value="Total No. of Baby Admitted to NICU Care"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                         </iais:value>
@@ -179,15 +178,13 @@
                 <div id="careBabyNumSection2"
                      <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="No. of Baby Admitted to L2 Care"
-                                    />
+                        <iais:field width="5" value="No. of Baby Admitted to L2 Care"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${pregnancyOutcomeStageDto.l2CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="No. of Baby Admitted to L3 Care"
-                                    />
+                        <iais:field width="5" value="No. of Baby Admitted to L3 Care"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                         </iais:value>
@@ -196,8 +193,7 @@
                 <div id="l2CareBabyDaysDiv"
                      <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"
-                                    />
+                        <iais:field width="5" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${pregnancyOutcomeStageDto.l2CareBabyDays}"/>
                         </iais:value>
@@ -206,8 +202,7 @@
                 <div id="l3CareBabyDaysDiv"
                      <c:if test="${pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"
-                                    />
+                        <iais:field width="5" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${pregnancyOutcomeStageDto.l3CareBabyDays}"/>
                         </iais:value>
