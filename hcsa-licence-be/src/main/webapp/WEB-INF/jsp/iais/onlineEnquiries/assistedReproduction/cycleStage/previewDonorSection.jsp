@@ -62,8 +62,8 @@
                         <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
                             <iais:field width="5" value="Donor Sample Code / ID" />
                             <iais:value width="7" cssClass="col-md-3" display="true">
-                                <c:if test="${donorDto.idType = 'AR_IT_005'}">Code</c:if>
-                                <c:if test="${donorDto.idType != 'AR_IT_005'}"><iais:code code="${donorDto.idType}"/></c:if>
+                                <c:if test="${donorDto.idType = 'AR_IT_005' || empty donorDto.idType}">Code</c:if>
+                                <c:if test="${donorDto.idType != 'AR_IT_005' && not empty donorDto.idType}"><iais:code code="${donorDto.idType}"/></c:if>
                             </iais:value>
                         </iais:row>
                         <iais:row>
