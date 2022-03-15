@@ -510,7 +510,7 @@ public class DataSubmissionInboxDelegator {
 				}
 				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
 					 ) {
-					if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())){
+					if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())&&arWd.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
 						return 3;
 					}
 					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
