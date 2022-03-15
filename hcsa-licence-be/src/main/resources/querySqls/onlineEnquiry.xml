@@ -476,7 +476,7 @@
                   when null then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+               case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dds2lp.BUSINESS_NAME
@@ -522,7 +522,7 @@
 
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
@@ -542,7 +542,7 @@
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+              case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dcen2.CENTER_NAME
@@ -577,7 +577,7 @@
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE and dcen2.CENTER_TYPE ='ART'
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>

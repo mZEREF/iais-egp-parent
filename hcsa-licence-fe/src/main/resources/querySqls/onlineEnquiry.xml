@@ -397,7 +397,7 @@
                   when null then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+               case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dds2lp.BUSINESS_NAME
@@ -434,7 +434,7 @@
              AS SAMPLE_FROM_HCI_CODE ,
            		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
                 FROM ds_data_submission dds
-                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen)
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
@@ -443,7 +443,7 @@
 
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
@@ -463,7 +463,7 @@
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+              case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dcen2.CENTER_NAME
@@ -498,7 +498,7 @@
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE and dcen2.CENTER_TYPE ='ART'
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
