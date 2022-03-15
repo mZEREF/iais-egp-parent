@@ -1,5 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
 <div class="panel panel-default">
     <div class="panel-heading  ">
         <h4 class="panel-title">

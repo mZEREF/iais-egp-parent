@@ -51,8 +51,8 @@
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
+                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDtoVersion = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDtoVersion");%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDtoVersion.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDtoVersion.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
