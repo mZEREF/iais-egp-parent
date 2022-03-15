@@ -14,6 +14,12 @@ $(document).ready(function () {
 
     // rfc
     showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+    if($('#isRfc').val() === 'true'){
+        disabledPartPage($('#disabledPart'))
+        // if($('#testStatus').val() === '0'){
+        //     disabledPartPage($('#testStatusRow'))
+        // }
+    }
 
     $('.back').click(function () {
         if (currPage === "confirm") {
@@ -36,6 +42,30 @@ $(document).ready(function () {
     })
 })
 
+function disabledPartPage($Ele) {
+    $Ele.find('div.nice-select').addClass('disabled');
+    $Ele.find('input[type="text"]').css('border-color','#ededed');
+    $Ele.find('input[type="text"]').css('color','#999');
+    $Ele.find('input[type="radio"]').prop('disabled',true);
+    $Ele.find('textarea').prop('disabled',true);
+    $Ele.find('textarea').css('color','#999');
+    $Ele.find('textarea').css('border-color','#ededed');
+    $Ele.find('input[type="text"]').prop('disabled',true);
+    $Ele.find('input[type="file"]').prop('disabled',true);
+    $Ele.find('input[type="checkbox"]').prop('disabled',true);
+}
+
+function unDisabledPage(){
+    $('input[type="radio"]').prop('disabled',false);
+    $('input[type="text"]').prop('disabled',false);
+    $('input[type="file"]').prop('disabled',false);
+    $('input[type="checkbox"]').prop('disabled',false);
+    $('textarea').prop('disabled',false);
+    $('div.nice-select').removeClass('disabled');
+    $('input[type="text"]').css('border-color','');
+    $('input[type="text"]').css('color','');
+}
+
 function cancelDraft() {
     $('#saveDraft').modal('hide');
 }
@@ -51,6 +81,7 @@ function jumpToInbox() {
 }
 
 function submit(action) {
+    unDisabledPage();
     $("[name='crud_action_type']").val(action);
     var mainForm = document.getElementById('mainForm');
     showWaiting();

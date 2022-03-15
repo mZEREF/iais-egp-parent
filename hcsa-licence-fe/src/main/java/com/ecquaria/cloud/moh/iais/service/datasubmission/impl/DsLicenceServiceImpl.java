@@ -188,6 +188,12 @@ public class DsLicenceServiceImpl implements DsLicenceService {
         premisesDto.setBusinessName(dsCenterDto.getCenterName());
         premisesDto.setHciCode(dsCenterDto.getHciCode());
         premisesDto.setOrganizationId(orgId);
+        premisesDto.setPostalCode(dsCenterDto.getPostalCode());
+        premisesDto.setBlkNo(dsCenterDto.getBlkNo());
+        premisesDto.setFloorNo(dsCenterDto.getFloorNo());
+        premisesDto.setUnitNo(dsCenterDto.getUnitNo());
+        premisesDto.setStreetName(dsCenterDto.getStreetName());
+        premisesDto.setBuildingName(dsCenterDto.getBuildingName());
         return premisesDto;
     }
 
