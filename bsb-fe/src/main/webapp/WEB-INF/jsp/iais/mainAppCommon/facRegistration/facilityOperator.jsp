@@ -31,15 +31,10 @@
     </div>
     <div class="col-sm-6 col-md-7">
         <select name="salutation" id="salutation">
-            <option value="">Please Select</option>
-            <option value="SALU001">Dr</option>
-            <option value="SALU002">Mdm</option>
-            <option value="SALU003">Mr</option>
-            <option value="SALU004">Mrs</option>
-            <option value="SALU005">Ms</option>
-            <option value="SALU006">VEN</option>
-            <option value="SALU007">Professor</option>
-            <option value="SALU008">Assistant Professor</option>
+            <option value="" <c:if test="${facOperator.salutation eq item.value}">selected = 'selected'</c:if>>Please Select</option>
+            <c:forEach var="item" items="${salutationOps}">
+            <option value="${item.value}" <c:if test="${facOperator.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
+            </c:forEach>
         </select>
         <span data-err-ind="salutation" class="error-msg"></span>
     </div>

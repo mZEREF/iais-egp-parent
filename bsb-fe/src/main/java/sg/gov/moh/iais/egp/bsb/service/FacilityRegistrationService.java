@@ -169,6 +169,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facOpDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
+        ParamUtil.setRequestAttr(request,KEY_OPTION_SALUTATION,tempSalutationOps());
     }
 
     public void handleFacOperator(BaseProcessClass bpc) {
@@ -241,6 +242,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facAdminDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
+        ParamUtil.setRequestAttr(request,KEY_OPTION_SALUTATION,tempSalutationOps());
     }
 
     public void handleFacAdmin(BaseProcessClass bpc) {
@@ -277,6 +279,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facOfficerDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
+        ParamUtil.setRequestAttr(request,KEY_OPTION_SALUTATION,tempSalutationOps());
     }
 
     public void handleFacOfficer(BaseProcessClass bpc) {
@@ -948,6 +951,17 @@ public class FacilityRegistrationService {
         if(!CollectionUtils.isEmpty(views)){
             for (MasterCodeView view : views) {
                 ops.add(new SelectOption(view.getCode(), view.getCodeValue()));
+            }
+        }
+        return ops;
+    }
+
+    public static List<SelectOption> tempSalutationOps(){
+        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_BSB_SALUTATION);
+        List<SelectOption> ops = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(views)){
+            for (MasterCodeView view : views) {
+                ops.add(new SelectOption(view.getCode(),view.getCodeValue()));
             }
         }
         return ops;

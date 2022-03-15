@@ -27,7 +27,7 @@
 </div>
 <div class="form-group ">
     <div class="col-sm-5 control-label">
-        <label for="idNumber">NRIC/FIN</label>
+        <label for="idNumber">ID No</label>
         <span class="mandatory otherQualificationSpan">*</span>
     </div>
     <div class="col-sm-3">

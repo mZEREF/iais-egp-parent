@@ -21,6 +21,8 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
     public static class FacilityAdministratorInfo implements Serializable {
         private String adminEntityId;
 
+        private String salutation;
+
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.name")
         private String adminName;
 
@@ -95,6 +97,7 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
 
 //    ---------------------------- request -> object ----------------------------------------------
 
+    private static final String KEY_PREFIX_SALUTATION = "salutation";
     private static final String KEY_PREFIX_ADMIN_NAME = "adminName";
     private static final String KEY_PREFIX_NATIONALITY = "nationality";
     private static final String KEY_PREFIX_ID_TYPE = "idType";
@@ -116,6 +119,7 @@ public class FacilityAdministratorDto extends ValidatableNodeValue {
 
     private FacilityAdministratorInfo getAdminInfo(HttpServletRequest request, String suffix) {
         FacilityAdministratorInfo adminInfo = new FacilityAdministratorInfo();
+        adminInfo.setSalutation(ParamUtil.getString(request,KEY_PREFIX_SALUTATION + suffix));
         adminInfo.setAdminName(ParamUtil.getString(request, KEY_PREFIX_ADMIN_NAME + suffix));
         adminInfo.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + suffix));
         adminInfo.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + suffix));

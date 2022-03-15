@@ -74,4 +74,5 @@ public class FacRegisterConstants {
     public static final String KEY_INSTRUCTION_INFO                      = "instructionInfo";
     //renewal special action value 'reviewEdit'
     public static final String KEY_ACTION_REVIEW_EDIT                    = "reviewEdit";
+    public static final String KEY_OPTION_SALUTATION                     = "salutationOps";
 }
