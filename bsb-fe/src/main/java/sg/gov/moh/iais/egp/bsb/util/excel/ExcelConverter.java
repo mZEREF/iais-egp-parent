@@ -12,9 +12,11 @@ import sg.gov.moh.iais.egp.bsb.util.excel.line.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 public class ExcelConverter {
     public static final ExcelConverter DEFAULT = new Builder().trimTrailingSeparator().skipEmptyLine().build();
@@ -164,6 +166,7 @@ public class ExcelConverter {
      */
     private String sheetToCsv(Sheet sheet) {
         DataFormatter formatter = new DataFormatter(true);
+        formatter.addFormat("m/d/yy", new SimpleDateFormat("dd/MM/yyyy"));
         StringBuilder sb = new StringBuilder();
         for (Row row : sheet) {
             StringBuilder line = new StringBuilder();

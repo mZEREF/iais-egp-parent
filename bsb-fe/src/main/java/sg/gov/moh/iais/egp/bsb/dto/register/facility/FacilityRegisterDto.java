@@ -52,11 +52,15 @@ public class FacilityRegisterDto implements Serializable{
         dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
         dto.setFacilityAdministratorDto((FacilityAdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
         dto.setFacilityOfficerDto((FacilityOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
-        dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
+        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+        dto.setFacilityCommitteeDto(committeeDto);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(profileDto.getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size());
+        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(profileDto.getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 1);
         docRecordInfos.addAll(profileDto.getSavedDocMap().values());
         docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
+        if (committeeDto.getSavedFile() != null) {
+            docRecordInfos.add(committeeDto.getSavedFile());
+        }
         dto.setDocRecordInfos(docRecordInfos);
         dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT)).getValue());
 
@@ -82,14 +86,22 @@ public class FacilityRegisterDto implements Serializable{
         // split documents for profile
         Collection<DocRecordInfo> profileDocs = new ArrayList<>();
         Collection<DocRecordInfo> primaryDocs = new ArrayList<>();
+        DocRecordInfo committeeDoc = null;
         for (DocRecordInfo info : docRecordInfos) {
-            if (DocConstants.DOC_TYPE_GAZETTE_ORDER.equals(info.getDocType())) {
-                profileDocs.add(info);
-            } else {
-                primaryDocs.add(info);
+            switch (info.getDocType()) {
+                case DocConstants.DOC_TYPE_GAZETTE_ORDER:
+                    profileDocs.add(info);
+                    break;
+                case DocConstants.DOC_TYPE_DATA_COMMITTEE:
+                    committeeDoc = info;
+                    break;
+                default:
+                    primaryDocs.add(info);
+                    break;
             }
         }
         facilityProfileDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(profileDocs, DocRecordInfo::getRepoId));
+        facilityCommitteeDto.setSavedFile(committeeDoc);
 
         SimpleNode facSelectionNode = new SimpleNode(facilitySelectionDto, NODE_NAME_FAC_SELECTION, new Node[0]);
         SimpleNode facProfileNode = new SimpleNode(facilityProfileDto, NODE_NAME_FAC_PROFILE, new Node[0]);

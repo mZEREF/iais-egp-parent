@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -17,16 +18,18 @@ import java.util.Map;
  */
 @Data
 public class ValidationResultDto implements Serializable {
-    private boolean pass;
+    protected boolean pass;
 
     @JsonProperty("error_map")
-    private Map<String, String> errorMap;
+    protected HashMap<String, String> errorMap;
 
 
     public static ValidationResultDto of(boolean pass, Map<String, String> errorMap) {
         ValidationResultDto resultDto = new ValidationResultDto();
         resultDto.setPass(pass);
-        resultDto.setErrorMap(errorMap);
+        if (errorMap != null) {
+            resultDto.setErrorMap(new HashMap<>(errorMap));
+        }
         return resultDto;
     }
 

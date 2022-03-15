@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -10,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
+import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
@@ -33,11 +37,14 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Slf4j
 @Delegator("bsbFacilityRegisterDelegator")
 public class FacilityRegistrationDelegator {
+    private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
     private final FacilityRegistrationService facilityRegistrationService;
 
     @Autowired
-    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
+    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient,
+                                         FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
+        this.fileRepoClient = fileRepoClient;
         this.facRegClient = facRegClient;
         this.facilityRegistrationService = facilityRegistrationService;
     }
@@ -66,6 +73,20 @@ public class FacilityRegistrationDelegator {
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
                     NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+
+                    // check data uploaded by file
+                    String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
+                    SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(committeeNodePath);
+                    FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
+                    /* If there is no committee data, we don't need to show error message.
+                     * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
+                     * so the error table should be displayed. This situation means user click save as draft when user
+                     * upload a file contains error fields.
+                     * If pass validation, we set the node status to avoid not necessary validation again. */
+                    if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
+                        Nodes.passValidation(facRegRoot, committeeNodePath);
+                    }
+
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                 }
             }
@@ -143,6 +164,14 @@ public class FacilityRegistrationDelegator {
         facilityRegistrationService.handleFacInfoCommittee(bpc);
     }
 
+    public void preCommitteePreview(BaseProcessClass bpc) {
+        facilityRegistrationService.preCommitteePreview(bpc);
+    }
+
+    public void handleCommitteePreview(BaseProcessClass bpc) {
+        facilityRegistrationService.handleCommitteePreview(bpc);
+    }
+
     public void preBAToxin(BaseProcessClass bpc) {
         facilityRegistrationService.preBAToxin(bpc);
     }
@@ -191,9 +220,14 @@ public class FacilityRegistrationDelegator {
                     List<NewFileSyncDto> primaryDocNewFiles = facilityRegistrationService.saveNewUploadedDoc(primaryDocDto);
                     FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
                     List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+                    FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+                    NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
+                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 1);
                     newFilesToSync.addAll(primaryDocNewFiles);
                     newFilesToSync.addAll(profileNewFiles);
+                    if (committeeNewFile != null) {
+                        newFilesToSync.add(committeeNewFile);
+                    }
 
 
                     // save data
@@ -207,7 +241,14 @@ public class FacilityRegistrationDelegator {
                         log.info("Delete already saved documents in file-repo");
                         List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
                         List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 1);
+                        if (committeeDto.getToBeDeletedRepoId() != null) {
+                            FileRepoDto committeeDeleteDto = new FileRepoDto();
+                            committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
+                            fileRepoClient.removeFileById(committeeDeleteDto);
+                            toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
+                            committeeDto.setToBeDeletedRepoId(null);
+                        }
                         toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
                         toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
                         // sync docs

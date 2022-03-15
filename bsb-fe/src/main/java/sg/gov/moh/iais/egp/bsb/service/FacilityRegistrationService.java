@@ -28,6 +28,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ import java.util.Set;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_BAT_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 
@@ -303,11 +305,21 @@ public class FacilityRegistrationService {
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
         SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
+        if (facCommitteeNode.isValidated()) {
+            ParamUtil.setRequestAttr(request, KEY_VALID_DATA_FILE, Boolean.TRUE);
         }
-        Nodes.needValidation(facRegRoot, currentNodePath);
+        /* If DTO contains data error, we don't convert error msg to JSON. Or rather, we retrieve the error map,
+         * and then render a table. */
+        if (facCommitteeDto.isDataErrorExists()) {
+            List<ValidationListResultUnit> resultUnitList = ValidationListResultUnit.fromDateErrorMap(facCommitteeDto.getValidationResultDto());
+            ParamUtil.setRequestAttr(request, KEY_DATA_ERRORS, resultUnitList);
+            ParamUtil.setRequestAttr(request, KEY_ERROR_IN_DATA_FILE, Boolean.TRUE);
+        } else {
+            Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+            if (needShowError == Boolean.TRUE) {
+                ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
+            }
+        }
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -323,7 +335,36 @@ public class FacilityRegistrationService {
         facCommitteeDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
+
+        if (KEY_ACTION_LOAD_DATA_FILE.equals(actionType)) {
+            /* Do not change validated to false when jump to this node, because user can not change data in current
+             * form except for upload a new file.
+             * When user upload a file, we immediately clear data in the DTO, and make the node need validation. */
+            Nodes.needValidation(facRegRoot, currentNodePath);
+            /* We do many things in the 'if' condition expression:
+             * 1, we call validation of the file type, size etc. metadata info.
+             * 2, if pass, we convert dat in the file to DTO list.
+             * 3, if success, we call validation of the DTOs.
+             * If any step fails, it will set the ValidationResultDto properly, so in the 'pre' step, this error msg
+             * will be supplied to applicant.
+             */
+            if (!facCommitteeDto.validateDataFile() || !facCommitteeDto.loadFileData() || !facCommitteeDto.doValidation()) {
+                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+            } else {
+                // data are valid
+                Nodes.passValidation(facRegRoot, currentNodePath);
+            }
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else if (KEY_ACTION_EXPAND_FILE.equals(actionType)) {
+            if (!facCommitteeNode.isValidated()) {
+                throw new IllegalStateException("Invalid, can not expand");
+            }
+            List<FacilityCommitteeFileDto> dataList = facCommitteeDto.getDataListForDisplay();
+            ParamUtil.setRequestAttr(request, KEY_DATA_LIST, dataList);
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, STEP_NAME_COMMITTEE_PREVIEW);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
@@ -332,6 +373,23 @@ public class FacilityRegistrationService {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
+    public void preCommitteePreview(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String srcPath = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
+        ParamUtil.setRequestAttr(request, KEY_SOURCE_NODE_PATH, srcPath);
+    }
+
+    public void handleCommitteePreview(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, facRegRoot, null, null);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
     }
 
     public void preBAToxin(BaseProcessClass bpc) {
@@ -550,6 +608,16 @@ public class FacilityRegistrationService {
         return newFilesToSync;
     }
 
+    public NewFileSyncDto saveCommitteeNewDataFile(FacilityCommitteeDto committeeDto) {
+        if (committeeDto.getNewFile() != null) {
+            MultipartFile file = committeeDto.getNewFile().getMultipartFile();
+            String repoId = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity().get(0);
+            return committeeDto.newFileSaved(repoId);
+        } else {
+            return null;
+        }
+    }
+
 
     /** Delete unwanted documents in FE file repo.
      * This method will clear deleted files in DTO too.
@@ -590,9 +658,14 @@ public class FacilityRegistrationService {
         List<NewFileSyncDto> primaryDocNewFiles = saveNewUploadedDoc(primaryDocDto);
         FacilityProfileDto profileDto = (FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
         List<NewFileSyncDto> profileNewFiles = saveProfileNewUploadedDoc(profileDto);
-        List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size());
+        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+        NewFileSyncDto committeeNewFile = saveCommitteeNewDataFile(committeeDto);
+        List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 1);
         newFilesToSync.addAll(primaryDocNewFiles);
         newFilesToSync.addAll(profileNewFiles);
+        if (committeeNewFile != null) {
+            newFilesToSync.add(committeeNewFile);
+        }
 
         // save data
         FacilityRegisterDto finalAllDataDto = null;
@@ -615,7 +688,14 @@ public class FacilityRegistrationService {
             log.info("Delete already saved documents in file-repo");
             List<String> primaryToBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
             List<String> profileToBeDeletedRepoIds = deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size());
+            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 1);
+            if (committeeDto.getToBeDeletedRepoId() != null) {
+                FileRepoDto committeeDeleteDto = new FileRepoDto();
+                committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
+                fileRepoClient.removeFileById(committeeDeleteDto);
+                toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
+                committeeDto.setToBeDeletedRepoId(null);
+            }
             toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
             toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
             // sync docs
@@ -666,7 +746,7 @@ public class FacilityRegistrationService {
      * common actions when we do 'jump'
      * decide the routing logic
      * will set a dest node in the request attribute;
-     * will set a floag if we need to show the error messages.
+     * will set a flag if we need to show the error messages.
      * @param facRegRoot root data structure of this flow
      */
     public void jumpHandler(HttpServletRequest request, NodeGroup facRegRoot, String currentPath, Node currentNode) {

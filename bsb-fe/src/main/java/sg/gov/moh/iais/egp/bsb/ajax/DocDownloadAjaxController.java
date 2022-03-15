@@ -23,8 +23,10 @@ import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.CommonDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
@@ -42,11 +44,17 @@ import java.util.function.UnaryOperator;
 
 import static sg.gov.moh.iais.egp.bsb.action.WithdrawnAppDelegator.WITHDRAWN_APP_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSUME_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
-import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_ROOT_NODE_GROUP_INCIDENT_NOT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.KEY_ROOT_NODE_GROUP_INVEST_REPORT;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.NODE_NAME_DOCUMENTS;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.PARAM_REPO_ID_FILE_MAP;
 
 
 @RestController
@@ -54,6 +62,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 @Slf4j
 public class DocDownloadAjaxController {
     private static final String ERROR_MESSAGE_RECORD_INFO_NULL = "Can not get the record for the repo id";
+    private static final String ERROR_MESSAGE_INVALID_ID = "ID is invalid";
     private final FileRepoClient fileRepoClient;
 
     @Autowired
@@ -142,6 +151,17 @@ public class DocDownloadAjaxController {
     public void downloadProfileSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegProfileGetSavedFile);
     }
+
+    @GetMapping("/facReg/committee/new/{id}")
+    public void downloadFacCommitteeNewFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegCommitteeNewFile);
+    }
+
+    @GetMapping("/facReg/committee/repo/{id}")
+    public void downloadFacCommitteeSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCommitteeSavedFile);
+    }
+
 
     @GetMapping("/facCertifierReg/new/{id}")
     public void downloadCertNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
@@ -322,6 +342,29 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    /** Facility registration get new uploaded data file for committee */
+    private MultipartFile facRegCommitteeNewFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+        NewDocInfo newDocInfo = committeeDto.getNewFile();
+        if (!newDocInfo.getTmpId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        return newDocInfo.getMultipartFile();
+    }
+
+    /** Facility registration get saved data file for committee */
+    private MultipartFile facRegCommitteeSavedFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+        DocRecordInfo docRecordInfo = committeeDto.getSavedFile();
+        if (!docRecordInfo.getRepoId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
     }
 
     /**

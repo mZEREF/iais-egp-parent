@@ -136,4 +136,12 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 	public void print_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "print", this);
 	}
+
+	public void preFacCommitteePreview_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preCommitteePreview", this);
+	}
+
+	public void handleFacCommitteePreview_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleCommitteePreview", this);
+	}
 }
