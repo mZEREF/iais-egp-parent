@@ -318,8 +318,10 @@
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
                 <#if cart_foc??> AND  :cart_foc = dacs.TREATMENT_FROZEN_OOCYTE </#if>
                 <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
-                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY  and case dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
-                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and case dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY  and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumFrom0??> AND  :freshCycleNumFrom0 <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY   </#if>
+                <#if freshCycleNumTo0??> AND  :freshCycleNumTo0 >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
