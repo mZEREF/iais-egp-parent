@@ -61,7 +61,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.addOrDelete")
     private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
 
-    private String isProtectedPlace;
+    private String protectedPlace;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -116,12 +116,12 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
         this.inputMethod = inputMethod;
     }
 
-    public String getIsProtectedPlace() {
-        return isProtectedPlace;
+    public String getProtectedPlace() {
+        return protectedPlace;
     }
 
-    public void setIsProtectedPlace(String isProtectedPlace) {
-        this.isProtectedPlace = isProtectedPlace;
+    public void setProtectedPlace(String protectedPlace) {
+        this.protectedPlace = protectedPlace;
     }
 
 

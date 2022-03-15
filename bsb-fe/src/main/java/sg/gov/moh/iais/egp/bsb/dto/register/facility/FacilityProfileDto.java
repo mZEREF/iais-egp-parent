@@ -39,7 +39,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     public static class FacilityProfileValidateDto {
         private String facName;
         private String facType;
-        private String isSameAdrr;
+        private String sameAddress;
         private String block;
         private String addressType;
         private String streetName;
@@ -47,7 +47,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         private String unitNo;
         private String postalCode;
         private String buildingName;
-        private String isFacilityProtected;
+        private String facilityProtected;
         private List<DocMeta> metaList;
     }
 
@@ -59,7 +59,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
     private String facType;
 
-    private String isSameAdrr;
+    private String sameAddress;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.blkNo")
     private String block;
@@ -81,7 +81,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     private String buildingName;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.isProtected")
-    private String isFacilityProtected;
+    private String facilityProtected;
 
 
     /* docs already saved in DB, key is repoId */
@@ -120,12 +120,13 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     public FacilityProfileValidateDto toValidateDto() {
         FacilityProfileValidateDto validateDto = new FacilityProfileValidateDto();
         validateDto.setFacName(this.facName);
+        validateDto.setSameAddress(this.sameAddress);
         validateDto.setBlock(this.block);
         validateDto.setStreetName(this.streetName);
         validateDto.setFloor(this.floor);
         validateDto.setUnitNo(this.unitNo);
         validateDto.setPostalCode(this.postalCode);
-        validateDto.setIsFacilityProtected(this.isFacilityProtected);
+        validateDto.setFacilityProtected(this.facilityProtected);
         validateDto.setMetaList(getAllFilesMeta());
         return validateDto;
     }
@@ -235,12 +236,12 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.postalCode = postalCode;
     }
 
-    public String getIsFacilityProtected() {
-        return isFacilityProtected;
+    public String getFacilityProtected() {
+        return facilityProtected;
     }
 
-    public void setIsFacilityProtected(String isFacilityProtected) {
-        this.isFacilityProtected = isFacilityProtected;
+    public void setFacilityProtected(String facilityProtected) {
+        this.facilityProtected = facilityProtected;
     }
 
     public Map<String, DocRecordInfo> getSavedDocMap() {
@@ -267,12 +268,12 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.facType = facType;
     }
 
-    public String getIsSameAdrr() {
-        return isSameAdrr;
+    public String getSameAddress() {
+        return sameAddress;
     }
 
-    public void setIsSameAdrr(String isSameAdrr) {
-        this.isSameAdrr = isSameAdrr;
+    public void setSameAddress(String sameAddress) {
+        this.sameAddress = sameAddress;
     }
 
     public String getAddressType() {
@@ -294,7 +295,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_FAC_NAME = "facName";
     private static final String KEY_FACILITY_TYPE = "facType";
-    private static final String KEY_IS_SAME_ADDRESS_AS_COMPANY = "isSameAddr";
+    private static final String KEY_IS_SAME_ADDRESS_AS_COMPANY = "isSameAddress";
     private static final String KEY_BLOCK = "block";
     private static final String KEY_ADDRESS_TYPE = "addressType";
     private static final String KEY_STREET_NAME = "streetName";
@@ -314,7 +315,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
         this.setFacName(ParamUtil.getString(mulReq, KEY_FAC_NAME));
         this.setFacType(ParamUtil.getString(mulReq,KEY_FACILITY_TYPE));
-        this.setIsSameAdrr(ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY));
+        this.setSameAddress(ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY));
         this.setBlock(ParamUtil.getString(mulReq, KEY_BLOCK));
         this.setAddressType(ParamUtil.getString(mulReq,KEY_ADDRESS_TYPE));
         this.setStreetName(ParamUtil.getString(mulReq, KEY_STREET_NAME));
@@ -322,7 +323,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.setUnitNo(ParamUtil.getString(mulReq, KEY_UNIT_NO));
         this.setPostalCode(ParamUtil.getString(mulReq, KEY_POSTAL_CODE));
         this.setBuildingName(ParamUtil.getString(mulReq,KEY_BUILDING_NAME));
-        this.setIsFacilityProtected(ParamUtil.getString(mulReq, KEY_IS_PROTECTED_PLACE));
+        this.setFacilityProtected(ParamUtil.getString(mulReq, KEY_IS_PROTECTED_PLACE));
 
 
         String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
@@ -345,7 +346,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         }
 
         // read new uploaded files
-        if (MasterCodeConstants.YES.equals(this.isFacilityProtected)) {
+        if (MasterCodeConstants.YES.equals(this.facilityProtected)) {
             List<MultipartFile> files = mulReq.getFiles(KEY_GAZETTE);
             if (files.isEmpty()) {
                 log.info("No new file uploaded");

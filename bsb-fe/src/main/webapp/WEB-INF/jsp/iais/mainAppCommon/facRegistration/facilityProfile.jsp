@@ -39,19 +39,19 @@
     </div>
     <div class="col-sm-6 col-md-7">
         <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-            <label for="isSameAddr">Yes</label>
-            <input type="radio" name="isSameAddr" id="isSameAddr" value="Y" <c:if test="${facProfile.isSameAddr eq 'Y'}">checked="checked"</c:if> />
+            <label for="isSameAddress">Yes</label>
+            <input type="radio" name="isSameAddress" id="isSameAddress" value="Y" <c:if test="${facProfile.sameAddress eq 'Y'}">checked="checked"</c:if> />
         </div>
         <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-            <label for="notSameAddr">No</label>
-            <input type="radio" name="isSameAddr" id="notSameAddr" value="N" <c:if test="${facProfile.isSameAddr eq 'N'}">checked="checked"</c:if> />
+            <label for="notSameAddress">No</label>
+            <input type="radio" name="isSameAddress" id="notSameAddress" value="N" <c:if test="${facProfile.sameAddress eq 'N'}">checked="checked"</c:if> />
         </div>
         <span data-err-ind="isSameAddr" class="error-msg"></span>
     </div>
 </div>
 
-<div id="isSameAddrSection" <c:if test="${facProfile.isSameAddr eq null}">style="display: none"</c:if>>
-    <div id="isSameAddrSectionY" <c:if test="${facProfile.isSameAddr ne 'Y'}">style="display: none"</c:if>>
+<div id="isSameAddrSection" <c:if test="${facProfile.sameAddress eq null}">style="display: none"</c:if>>
+    <div id="isSameAddrSectionY" <c:if test="${facProfile.sameAddress ne 'Y'}">style="display: none"</c:if>>
         <div class="form-group">
             <div class="col-sm-5 control-label">
                 <label for="postalCodeY">Postal Code</label>
@@ -111,13 +111,13 @@
             </div>
         </div>
     </div>
-    <div id="isSameAddrSectionN" <c:if test="${facProfile.isSameAddr ne 'N'}">style="display: none"</c:if>>
+    <div id="isSameAddrSectionN" <c:if test="${facProfile.sameAddress ne 'N'}">style="display: none"</c:if>>
         <div class="form-group">
             <div class="col-sm-5 control-label">
                 <label for="postalCodeN">Postal Code</label>
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
-            <div class="col-sm-5 col-md-7">
+            <div class="col-sm-5">
                 <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCodeN" value='<c:out value="${facProfile.postalCode}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
                 <span data-err-ind="postalCode" class="error-msg"></span>
             </div>
@@ -186,7 +186,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <input maxLength="32" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.streetName}"/>'/>
+                <input maxLength="32" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.buildingName}"/>'/>
                 <span data-err-ind="buildingName" class="error-msg"></span>
             </div>
         </div>
@@ -201,19 +201,19 @@
         <div class="col-sm-6 col-md-7">
             <div class="col-sm-4 col-md-2" style="margin-top: 8px">
                 <label for="isAProtectedPlace">Yes</label>
-                <input type="radio" name="protectedPlace" id="isAProtectedPlace" value="Y" <c:if test="${facProfile.isFacilityProtected eq 'Y'}">checked="checked"</c:if> />
+                <input type="radio" name="protectedPlace" id="isAProtectedPlace" value="Y" <c:if test="${facProfile.facilityProtected eq 'Y'}">checked="checked"</c:if> />
             </div>
             <div class="col-sm-4 col-md-2" style="margin-top: 8px">
                 <label for="notAProtectedPlace">No</label>
-                <input type="radio" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.isFacilityProtected eq 'N'}">checked="checked"</c:if> />
+                <input type="radio" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.facilityProtected eq 'N'}">checked="checked"</c:if> />
             </div>
-            <span data-err-ind="isFacilityProtected" class="error-msg"></span>
+            <span data-err-ind="facilityProtected" class="error-msg"></span>
         </div>
     </div>
 </div>
 
 
-<div id="docUploadDiv" class="document-upload-gp" <c:if test="${facProfile.isFacilityProtected ne 'Y'}">style="display: none"</c:if>>
+<div id="docUploadDiv" class="document-upload-gp" <c:if test="${facProfile.facilityProtected ne 'Y'}">style="display: none"</c:if>>
     <div class="document-upload-list">
         <h3>Gazette Order <span class="mandatory otherQualificationSpan">*</span></h3>
         <div class="file-upload-gp">

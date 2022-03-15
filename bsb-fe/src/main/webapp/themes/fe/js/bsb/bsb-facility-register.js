@@ -102,13 +102,13 @@ $(function () {
         }
     })
 
-    $("input[name=isSameAddr ]").change(function (){
+    $("input[name=isSameAddress ]").change(function (){
         var id = $(this).attr("id");
-        if(id === 'isSameAddr'){
+        if(id === 'isSameAddress'){
             $("#isSameAddrSection").show();
             $("#isSameAddrSectionY").show();
             $("#isSameAddrSectionN").hide();
-        } else if(id === 'notSameAddr'){
+        } else if(id === 'notSameAddress'){
             $("#isSameAddrSection").show();
             $("#isSameAddrSectionY").hide();
             $("#isSameAddrSectionN").show();
