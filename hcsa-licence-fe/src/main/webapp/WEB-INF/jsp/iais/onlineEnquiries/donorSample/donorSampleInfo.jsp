@@ -68,14 +68,15 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row" style="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}" >
-                                    <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
-
-                                    <div class="col-md-6">
-                                        <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
+                                <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown !='DIK001' }">
+                                    <div class="row"  >
+                                        <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
+                                        <div class="col-md-6">
+                                            <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
+                                        </div>
                                     </div>
-                                </div>
-                                <hr>
+                                    <hr>
+                                </c:if>
 
                             </c:if>
                             <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.directedDonation ||donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown =='DIK001'}">
