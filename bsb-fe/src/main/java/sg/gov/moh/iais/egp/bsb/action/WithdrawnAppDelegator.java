@@ -16,7 +16,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.WithdrawnClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;

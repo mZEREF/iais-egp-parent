@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;

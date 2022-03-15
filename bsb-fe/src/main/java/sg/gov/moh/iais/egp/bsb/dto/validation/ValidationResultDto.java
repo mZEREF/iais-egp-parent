@@ -1,12 +1,14 @@
-package sg.gov.moh.iais.egp.bsb.dto;
+package sg.gov.moh.iais.egp.bsb.dto.validation;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.SneakyThrows;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -17,16 +19,18 @@ import java.util.Map;
  */
 @Data
 public class ValidationResultDto implements Serializable {
-    private boolean pass;
+    protected boolean pass;
 
     @JsonProperty("error_map")
-    private Map<String, String> errorMap;
+    protected HashMap<String, String> errorMap;
 
 
     public static ValidationResultDto of(boolean pass, Map<String, String> errorMap) {
         ValidationResultDto resultDto = new ValidationResultDto();
         resultDto.setPass(pass);
-        resultDto.setErrorMap(errorMap);
+        if (errorMap != null) {
+            resultDto.setErrorMap(new HashMap<>(errorMap));
+        }
         return resultDto;
     }
 

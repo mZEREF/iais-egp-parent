@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;

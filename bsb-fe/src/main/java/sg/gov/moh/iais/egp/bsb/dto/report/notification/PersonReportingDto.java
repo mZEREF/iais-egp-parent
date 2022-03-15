@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;

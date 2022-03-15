@@ -1,13 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;

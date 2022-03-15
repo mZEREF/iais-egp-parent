@@ -16,7 +16,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;

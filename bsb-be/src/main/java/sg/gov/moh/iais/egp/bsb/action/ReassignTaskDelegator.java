@@ -21,7 +21,7 @@ import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.TaskView;
@@ -226,7 +226,6 @@ public class ReassignTaskDelegator {
         }
 
         String actionType = "";
-        ValidationResultDto validationResultDto = new ValidationResultDto();
         if (StringUtils.hasLength(maskedUserId)) {
             actionType = ACTION_TYPE_NEXT;
             String userId = MaskUtil.unMaskValue(MASK_USER_ID, maskedUserId);
@@ -234,7 +233,7 @@ public class ReassignTaskDelegator {
         } else {
             Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
             errorMap.put(USER_ID, "This is a mandatory field");
-            validationResultDto.setErrorMap(errorMap);
+            ValidationResultDto validationResultDto = ValidationResultDto.of(false, errorMap);
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
         }

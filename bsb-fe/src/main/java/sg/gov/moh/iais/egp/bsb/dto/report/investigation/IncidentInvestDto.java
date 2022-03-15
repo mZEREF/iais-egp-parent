@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 

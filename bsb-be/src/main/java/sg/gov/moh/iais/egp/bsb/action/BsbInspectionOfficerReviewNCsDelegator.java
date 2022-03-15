@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.*;

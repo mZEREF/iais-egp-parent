@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;

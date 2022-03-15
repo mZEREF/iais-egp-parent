@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.action.BsbSubmissionCommon;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;

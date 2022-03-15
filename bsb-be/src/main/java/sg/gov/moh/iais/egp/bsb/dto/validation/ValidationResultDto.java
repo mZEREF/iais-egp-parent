@@ -1,10 +1,11 @@
-package sg.gov.moh.iais.egp.bsb.dto;
+package sg.gov.moh.iais.egp.bsb.dto.validation;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.SneakyThrows;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 
 import java.io.Serializable;
 import java.util.HashMap;
