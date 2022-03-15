@@ -181,7 +181,7 @@ public final class MasterCodeUtil {
     //
     public static final String CATE_ID_BSB_REASON_FOR_WITHDRAWN                         = "F81D1731-7768-43F7-A894-CE34E214F4B2";
     //NEW FACILITY REGISTER
-    public static final String CATE_ID_BSB_SALUTATION                                   = "5D8A8777-DEB5-4CA2-887B-DBBF69026150";
+    public static final String CATE_ID_BSB_SALUTATION                                   = "1C5A02C3-2D1C-449B-9A24-63BD568CE1AE";
 
 
 

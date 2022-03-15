@@ -9,7 +9,7 @@
         </div>
         <div class="col-sm-6 col-md-7">
             <select name="salutationM" id="salutationM">
-                <option value="" <c:if test="${facAdmin.mainAdmin.salutation eq item.value}">selected = 'selected'</c:if>>Please Select</option>
+                <option value="" <c:if test="${facAdmin.mainAdmin.salutation eq null || facAdmin.mainAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${facAdmin.mainAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                 </c:forEach>
@@ -73,7 +73,7 @@
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
-            <label for="emailM">Email Address</label>
+            <label for="emailM">Email</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
@@ -102,7 +102,7 @@
         </div>
         <div class="col-sm-6 col-md-7">
             <select name="salutationA" id="salutationA">
-                <option value="" <c:if test="${facAdmin.alternativeAdmin.salutation eq item.value}">selected = 'selected'</c:if>>Please Select</option>
+                <option value="" <c:if test="${facAdmin.alternativeAdmin.salutation eq null || facAdmin.alternativeAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${facAdmin.alternativeAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
                 </c:forEach>
@@ -136,14 +136,13 @@
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
-            <label for="idNumberA">NRIC/FIN</label>
+            <label for="idNumberA">ID No</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-3">
             <select name="idTypeA" id="idTypeA">
                 <option value="IDTYPE001" <c:if test="${facAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                 <option value="IDTYPE002" <c:if test="${facAdmin.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
-                <option value="IDTYPE003" <c:if test="${facAdmin.alternativeAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
             </select>
             <span data-err-ind="idTypeA" class="error-msg"></span>
         </div>
@@ -174,7 +173,7 @@
     </div>
     <div class="form-group ">
         <div class="col-sm-5 control-label">
-            <label for="emailA">Email Address</label>
+            <label for="emailA">Email</label>
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
@@ -196,5 +195,5 @@
 
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
 <section id="facilityOfficer">
-    
+
 </section>

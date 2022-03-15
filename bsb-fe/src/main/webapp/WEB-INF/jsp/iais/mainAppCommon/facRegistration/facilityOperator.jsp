@@ -31,7 +31,7 @@
     </div>
     <div class="col-sm-6 col-md-7">
         <select name="salutation" id="salutation">
-            <option value="" <c:if test="${facOperator.salutation eq item.value}">selected = 'selected'</c:if>>Please Select</option>
+            <option value="" <c:if test="${facOperator.salutation eq '' || facOperator.salutation eq null}">selected = 'selected'</c:if>>Please Select</option>
             <c:forEach var="item" items="${salutationOps}">
             <option value="${item.value}" <c:if test="${facOperator.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
             </c:forEach>

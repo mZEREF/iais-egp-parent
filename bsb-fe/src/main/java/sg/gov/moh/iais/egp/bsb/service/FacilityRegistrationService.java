@@ -29,6 +29,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -957,14 +958,7 @@ public class FacilityRegistrationService {
     }
 
     public static List<SelectOption> tempSalutationOps(){
-        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_BSB_SALUTATION);
-        List<SelectOption> ops = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(views)){
-            for (MasterCodeView view : views) {
-                ops.add(new SelectOption(view.getCode(),view.getCodeValue()));
-            }
-        }
-        return ops;
+       return MasterCodeHolder.SALUTATION.allOptions();
     }
 
     /* Will be removed in future, will get this from master code */
