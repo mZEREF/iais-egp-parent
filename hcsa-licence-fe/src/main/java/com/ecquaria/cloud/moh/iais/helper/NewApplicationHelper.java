@@ -4155,7 +4155,52 @@ public class NewApplicationHelper {
         return text;
     }
 
-    private static Map<String, String> doPsnCommValidate(Map<String, String> errMap, String idType, String idNo, boolean licPerson,
+    public static boolean psnDoPartValidate(String idType, String idNo, String name) {
+        boolean isValid = true;
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
+            isValid = false;
+        } else {
+            if (name.length() > 110) {
+                isValid = false;
+            } else if (!SgNoValidator.validateMaxLength(idType, idNo)) {
+                isValid = false;
+            } else if (!SgNoValidator.validateIdNo(idType, idNo)) {
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+
+    public static boolean validateId(String nationality, String idType, String idNo, String keyNationality, String keyIdType,
+            String keyIdNo, Map<String, String> errMap) {
+        boolean isValid = true;
+        if ("-1".equals(idType) || StringUtil.isEmpty(idType)) {
+            errMap.put(keyIdType, MessageUtil.replaceMessage("GENERAL_ERR0006", "ID Type", "field"));
+            isValid = false;
+        }
+        if (StringUtil.isEmpty(idNo)) {
+            errMap.put(keyIdNo, MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
+            isValid = false;
+        } else if (!SgNoValidator.validateMaxLength(idType, idNo)) {
+            Map<String, String> argv = IaisCommonUtils.genNewHashMap();
+            argv.put("field", "Id No.");
+            argv.put("maxlength", OrganizationConstants.MAXLENGTH_ID_NO_STR);
+            errMap.put(keyIdNo, MessageUtil.getMessageDesc("GENERAL_ERR0041", argv));
+            isValid = false;
+        } else if (!SgNoValidator.validateIdNo(idType, idNo)) {
+            errMap.put(keyIdNo, "RFC_ERR0012");
+            isValid = false;
+        }
+        if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType)) {
+            // check it only for Passport
+            if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
+                errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Nationality", "field"));
+            }
+        }
+        return isValid;
+    }
+
+    public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson) {
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
