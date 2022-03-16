@@ -3186,8 +3186,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
                     .map(SubLicenseeDto::getLicenseeType)
                     .filter(licenseeType -> StringUtil.isEmpty(licenseeType)
-                            || OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)
-                            || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType))
+                            || OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
                     .isPresent();
             appEditSelectDto.setLicenseeEdit(licenseeEdit);
             appEditSelectDto.setPremisesEdit(true);
