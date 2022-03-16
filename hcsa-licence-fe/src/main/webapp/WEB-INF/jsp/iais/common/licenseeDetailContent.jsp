@@ -18,7 +18,7 @@
   </iais:row>
 
   <iais:row cssClass="ind-no nationalityDiv ${dto.licenseeType == individualType ? '' : 'hidden'}">
-    <iais:field width="5" mandatory="true" value="Nationality"/>
+    <iais:field width="5" mandatory="true" value="Country of issuance"/>
     <iais:value width="7" cssClass="col-md-7">
       <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                    cssClass="nationality" value="${dto.nationality}" />

@@ -133,7 +133,7 @@
                     <div class="row control control-caption-horizontal nationalityDiv">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Nationality</label>
+                                <label class="control-label control-set-font control-font-label">Country of issuance</label>
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-md-7 col-xs-12">

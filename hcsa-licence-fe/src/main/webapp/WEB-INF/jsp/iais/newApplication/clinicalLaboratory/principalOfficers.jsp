@@ -173,7 +173,7 @@
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
-                                                            Nationality
+                                                            Country of issuance
                                                             <span class="mandatory">*</span>
                                                         </div>
                                                         <div class="col-sm-5 col-md-8">
@@ -509,7 +509,7 @@
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
-                                                            Nationality
+                                                            Country of issuance
                                                             <span class="mandatory">*</span>
                                                         </div>
                                                         <div class="col-sm-5 col-md-8">

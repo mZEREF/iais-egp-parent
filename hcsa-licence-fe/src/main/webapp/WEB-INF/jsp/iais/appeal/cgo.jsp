@@ -165,7 +165,7 @@
                                 <div class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
-                                      <label class="control-label control-set-font control-font-label">Nationality</label>
+                                      <label class="control-label control-set-font control-font-label">Country of issuance</label>
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>

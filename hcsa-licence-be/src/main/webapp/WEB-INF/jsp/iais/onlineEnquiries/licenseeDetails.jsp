@@ -211,7 +211,7 @@
                         </tr>
                         <c:if test="${subLicenseeDto.idType == 'IDTYPE003'}">
                             <tr>
-                                <td align="right">Nationality</td>
+                                <td align="right">Country of issuance</td>
                                 <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.nationality}"/><c:if test="${empty subLicenseeDto.nationality}">-</c:if></td>
                             </tr>
                         </c:if>

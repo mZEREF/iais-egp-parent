@@ -141,7 +141,7 @@
                         </jsp:include>
                         <c:if test="${curDto.idType == 'IDTYPE003' || oldDto.idType == 'IDTYPE003'}">
                         <div class="row">
-                            <div class="col-md-6">Nationality</div>
+                            <div class="col-md-6">Country of issuance</div>
                             <div class="col-md-6">
                                 <div class="col-md-6">
                                         <span class="newVal" attr="${curDto.nationality}">
