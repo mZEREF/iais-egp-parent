@@ -19,7 +19,7 @@
                 </h3>
                 <iais:row>
                     <iais:field width="5"  value="" />
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="Current Version"/>
                     </iais:value>
                 </iais:row>
@@ -58,8 +58,8 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="section2nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
+                <div id="section3nd"
+                     <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Age of 3rd Embryo Transferred" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
