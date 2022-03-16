@@ -204,7 +204,7 @@
                     </iais:row>
                     <div id="donatedForResearchOtherDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchOther !=1 }">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="5" value="Other Type of Research Donated for" />
+                            <iais:field width="5" value="Other Type of Research Donated for"  mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
