@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -1420,9 +1421,9 @@ public class ClinicalLaboratoryDelegator {
                                 }*/
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
-                                String cgoIdNo = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName.toString());
+                                String cgoIdNo = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName);
                                 appSvcDisciplineAllocationDto.setIdNo(cgoIdNo);
-                                String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName.toString());
+                                String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName);
                                 appSvcDisciplineAllocationDto.setSlIndex(slIndex);
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
@@ -3249,7 +3250,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcClinicalDirectorDto.setIdType(idType);
                 }
                 if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setIdNo(idNo);
+                    appSvcClinicalDirectorDto.setIdNo(StringUtil.toUpperCase(idNo));
                 }
                 if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setDesignation(designation);
@@ -4243,7 +4244,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcKeyAppointmentHolderDto.setIdType(idType);
                 }
                 if (isNewOfficer && (appPsnEditDto.isIdNo() || partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setIdNo(idNo);
+                    appSvcKeyAppointmentHolderDto.setIdNo(StringUtil.toUpperCase(idNo));
                 }
                 if (StringUtil.isEmpty(indexNo)) {
                     appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());

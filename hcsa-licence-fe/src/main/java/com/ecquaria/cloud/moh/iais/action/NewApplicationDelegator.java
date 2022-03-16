@@ -469,7 +469,7 @@ public class NewApplicationDelegator {
                 SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
                 if (old != null) {
                     dto.setIdType(old.getIdType());
-                    dto.setIdNumber(old.getIdNumber());
+                    dto.setIdNumber(StringUtil.toUpperCase(old.getIdNumber()));
                     dto.setLicenseeName(old.getLicenseeName());
                     dto.setLicenseeType(old.getLicenseeType());
                 }
@@ -494,7 +494,7 @@ public class NewApplicationDelegator {
                     } else {
                         SubLicenseeDto selectedDto = optional.get();
                         dto.setIdType(selectedDto.getIdType());
-                        dto.setIdNumber(selectedDto.getIdNumber());
+                        dto.setIdNumber(StringUtil.toUpperCase(selectedDto.getIdNumber()));
                         dto.setLicenseeName(selectedDto.getLicenseeName());
                     }
                 }
@@ -536,7 +536,7 @@ public class NewApplicationDelegator {
 
         SubLicenseeDto dto = new SubLicenseeDto();
         dto.setIdType(idType);
-        dto.setIdNumber(idNumber);
+        dto.setIdNumber(StringUtil.toUpperCase(idNumber));
         dto.setLicenseeName(licenseeName);
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
