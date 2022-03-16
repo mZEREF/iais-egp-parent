@@ -1,4 +1,3 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/donationSection.js"></script>
 
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
@@ -249,3 +248,5 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/donationSection.js"></script>

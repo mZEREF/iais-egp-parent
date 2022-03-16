@@ -150,7 +150,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 errorMap.put("otherDonationReason", errMsg);
             }
         }
-        if(donationStageDto.getDonatedForResearchOther()==1){
+        if(donationStageDto.getDonatedForResearchOther()!=null&&donationStageDto.getDonatedForResearchOther()==1){
             if(StringUtil.isNotEmpty(donationStageDto.getDonatedForResearchOtherType())){
                 if(donationStageDto.getDonatedForResearchOtherType().length()>100){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
