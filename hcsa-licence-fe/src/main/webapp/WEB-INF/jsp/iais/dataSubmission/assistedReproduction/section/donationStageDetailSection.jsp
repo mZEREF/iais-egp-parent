@@ -234,6 +234,7 @@
                     <iais:field width="5" value="Total No. Donated" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <div id="totalNum" name="totalNum">${arSuperDataSubmissionDto.donationStageDto.totalNum}</div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_totalNum"></span>
                     </iais:value>
                 </iais:row>
 

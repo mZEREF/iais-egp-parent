@@ -173,7 +173,9 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 errorMap.put("donatedRecipientNum", errMsg);
             }
         }
-
+        if(donationStageDto.getTotalNum()>maxSamplesNum){
+            errorMap.put("totalNum", "Cannot be greater than number of samples under patient");
+        }
         return errorMap;
     }
 
