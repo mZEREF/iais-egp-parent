@@ -34,6 +34,9 @@ public interface FacilityRegisterClient {
     @PostMapping(path = "/register/facility/form-validation/officer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOfficer(@RequestBody FacilityOfficerDto dto);
 
+    @PostMapping(path = "/register/facility/form-validation/approved-facility-certifier", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateApprovedFacilityCertifier(@RequestBody ApprovedFacilityCertifierDto dto);
+
     @PostMapping(path = "/register/facility/form-validation/committee", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityCommittee(@RequestBody FacilityCommitteeDto dto);
 

@@ -44,6 +44,7 @@
 
                                     <div class="form-horizontal">
                                         <%@include file="../mainAppCommon/facRegistration/facilityProfile.jsp"%>
+                                        <%@include file="../mainAppCommon/facRegistration/approvedFacilityCertifier.jsp" %>
                                     </div>
                                 </div>
 

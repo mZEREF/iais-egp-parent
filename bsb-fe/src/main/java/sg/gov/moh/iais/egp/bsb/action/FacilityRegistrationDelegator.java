@@ -196,6 +196,10 @@ public class FacilityRegistrationDelegator {
         facilityRegistrationService.handlePrimaryDoc(bpc);
     }
 
+    public void preApprovedFacilityCertifier(BaseProcessClass bpc){facilityRegistrationService.preApprovedFacilityCertifier(bpc);}
+
+    public void handleApprovedFacilityCertifier(BaseProcessClass bpc){facilityRegistrationService.handleApprovedFacilityCertifier(bpc);}
+
     public void prePreviewSubmit(BaseProcessClass bpc) {
         facilityRegistrationService.prePreviewSubmit(bpc);
     }

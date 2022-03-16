@@ -1,6 +1,6 @@
 <br/>
-<div class="col-xs-12 col-sm-12" style="background-color: rgba(242, 242, 242, 1); padding: 20px 30px 10px 30px; border-radius: 15px;">
-    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Company Profile</p>
+<div class="col-xs-12 col-sm-12">
+    <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Company Profile</h3>
     <div>
         <div class="form-group ">
             <div class="col-sm-5 control-label">

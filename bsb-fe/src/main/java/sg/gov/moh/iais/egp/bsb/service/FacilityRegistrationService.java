@@ -514,6 +514,40 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
+    public void preApprovedFacilityCertifier(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        SimpleNode facCertifierNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_APPROVED_FACILITY_CERTIFIER);
+        ApprovedFacilityCertifierDto facilityCertifierDto = (ApprovedFacilityCertifierDto) facCertifierNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facilityCertifierDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(facRegRoot, NODE_NAME_APPROVED_FACILITY_CERTIFIER);
+        ParamUtil.setRequestAttr(request,NODE_NAME_APPROVED_FACILITY_CERTIFIER,facilityCertifierDto);
+        ParamUtil.setRequestAttr(request,"facCertifierSelection",MasterCodeHolder.APPROVED_FACILITY_CERTIFIER.allOptions());
+    }
+
+    public void handleApprovedFacilityCertifier(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        SimpleNode facCertifierNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_APPROVED_FACILITY_CERTIFIER);
+        ApprovedFacilityCertifierDto facilityCertifierDto = (ApprovedFacilityCertifierDto) facCertifierNode.getValue();
+        facilityCertifierDto.reqObjectMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, facRegRoot, NODE_NAME_APPROVED_FACILITY_CERTIFIER, facCertifierNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_APPROVED_FACILITY_CERTIFIER);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+
+    }
+
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         preparePreviewData(request);

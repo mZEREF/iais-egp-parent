@@ -115,6 +115,15 @@ $(function () {
         }
     })
 
+    $("input[name=hasAppointedCertifier ]").change(function (){
+        var id = $(this).attr("id");
+        if(id === 'hasAppointedCertifier'){
+            $("#appointedCertifierSection").show();
+        } else if(id === 'notAppointedCertifier'){
+            $("#appointedCertifierSection").hide();
+        }
+    })
+
     $("input[data-custom-ind=committeePersonnelIsEmployee]").change(function () {
         var id = $(this).attr("id");
         var idx;

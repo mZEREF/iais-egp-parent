@@ -20,6 +20,7 @@ public class FacRegisterConstants {
     public static final String NODE_NAME_FAC_ADMIN         = "facAdmin";
     public static final String NODE_NAME_FAC_OFFICER       = "facOfficer";
     public static final String NODE_NAME_FAC_COMMITTEE     = "facCommittee";
+    public static final String NODE_NAME_APPROVED_FACILITY_CERTIFIER = "facCertifier";
 
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
 
