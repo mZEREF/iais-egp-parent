@@ -47,12 +47,12 @@
                 <iais:row>
                     <iais:field width="4" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
+                        <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getEfoCycleStageDto().getYearNum(), arSuperDsDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDtoVersion = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDtoVersion");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDtoVersion.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDtoVersion.getEfoCycleStageDto().getMonthNum())%>
+                        <%ArSuperDataSubmissionDto arSuperDsVersion = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDtoVersion");%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDsVersion.getEfoCycleStageDto().getYearNum(), arSuperDsVersion.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
