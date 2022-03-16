@@ -170,7 +170,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row cssClass="nationalityDiv">
-                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:field value="Country of issuance " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                             <iais:select name="nationalityShow" firstOption="Please Select"
                                                          codeCategory="CATE_ID_NATIONALITY" cssClass="nationalitySel"
@@ -264,7 +264,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row cssClass="nationalityDiv">
-                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:field value="Country of issuance " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="nationalitySel" name="nationality"
                                                          codeCategory="CATE_ID_NATIONALITY" value="${personnelEditDto.nationality}"
@@ -360,7 +360,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row cssClass="nationalityDiv">
-                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:field value="Country of issuance " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="nationalitySel" name="nationality1"
                                                          codeCategory="CATE_ID_NATIONALITY" value="${newPerson.nationality}"
@@ -443,7 +443,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row cssClass="nationalityDiv">
-                                        <iais:field value="Nationality " width="12" mandatory="true"/>
+                                        <iais:field value="Country of issuance " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                             <iais:select name="nationality2" firstOption="Please Select"
                                                          codeCategory="CATE_ID_NATIONALITY" cssClass="nationalitySel"

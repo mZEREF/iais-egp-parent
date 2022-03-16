@@ -109,7 +109,7 @@
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>Nationality
+                                        <span class="check-square"></span>Country of issuance
                                     </p>
                                 </td>
                                 <td>

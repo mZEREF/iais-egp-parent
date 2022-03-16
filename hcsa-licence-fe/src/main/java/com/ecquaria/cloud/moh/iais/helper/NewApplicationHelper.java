@@ -1595,19 +1595,8 @@ public class NewApplicationHelper {
             if (!psnDoPartValidate(psnDto.getIdType(), psnDto.getIdNo(), psnDto.getName())) {
                 continue;
             }
-            String oldPersonKey = psnDto.getAssignSelect();
             String personMapKey = getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
-            if (!StringUtil.isEmpty(oldPersonKey) && !Objects.equals(personMapKey, oldPersonKey)
-                    && personMap.containsKey(oldPersonKey)) {
-                log.info(StringUtil.changeForLog("Old Person Key: " + oldPersonKey));
-                if (appSvcPersonAndExtDto == null) {
-                    appSvcPersonAndExtDto = personMap.get(oldPersonKey);
-                }
-                personMap.remove(oldPersonKey);
-            } else {
-                oldPersonKey = null;
-            }
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
             AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, true);
             Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
@@ -1645,7 +1634,6 @@ public class NewApplicationHelper {
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                 newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
-                newPersonAndExtDto.setOldPersonKey(oldPersonKey);
                 personMap.put(personMapKey, newPersonAndExtDto);
             } else {
                 //set different page column
@@ -1777,7 +1765,6 @@ public class NewApplicationHelper {
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                 newPersonAndExtDto.setLicPerson(person.isLicPerson());
-                newPersonAndExtDto.setOldPersonKey(oldPersonKey);
                 personMap.put(personMapKey, newPersonAndExtDto);
             }
         }
@@ -3914,13 +3901,6 @@ public class NewApplicationHelper {
         for (AppSvcPrincipalOfficersDto person : appSvcCgoDtos) {
             String personKey = getPersonKey(person.getNationality(), person.getIdType(), person.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            if (appSvcPersonAndExtDto == null) {
-                appSvcPersonAndExtDto = personMap.entrySet().stream()
-                        .filter(entry -> Objects.equals(personKey, entry.getValue().getOldPersonKey()))
-                        .map(Map.Entry::getValue)
-                        .findAny()
-                        .orElse(null);
-            }
             AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto, svcCode, false);
             if (selPerson != null) {
                 syncPsnDto(selPerson, person);
@@ -4101,7 +4081,7 @@ public class NewApplicationHelper {
         if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType)) {
             // check it only for Passport
             if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
-                errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Nationality", "field"));
+                errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Country of issuance", "field"));
             }
         }
         return isValid;
