@@ -76,7 +76,7 @@
                             <iais:field value="ID Type" width="12" required="true"/>
                             <iais:value width="12">
                                 <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
-                                             codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
+                                             codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select" filterValue="IDTYPE003"/>
                                 <span class="error-msg" name="errorMsg" id="error_idType"></span>
                             </iais:value>
                         </iais:row>
