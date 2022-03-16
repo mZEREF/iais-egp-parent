@@ -358,9 +358,12 @@ public class TransferInOutDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto outArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
         if (outArSuperDto != null) {
             TransferInOutStageDto outStageDto = outArSuperDto.getTransferInOutStageDto();
-            boolean diffOocyte = !outStageDto.getOocyteNum().equals(transferInOutStageDto.getOocyteNum());
-            boolean diffEmbryo = !outStageDto.getEmbryoNum().equals(transferInOutStageDto.getEmbryoNum());
-            boolean diffSpermVial = !outStageDto.getSpermVialsNum().equals(transferInOutStageDto.getSpermVialsNum());
+            String oocyteNum = outStageDto.getOocyteNum();
+            String embryoNum = outStageDto.getEmbryoNum();
+            String spermVialsNum = outStageDto.getSpermVialsNum();
+            boolean diffOocyte = !(oocyteNum == null || oocyteNum.equals(transferInOutStageDto.getOocyteNum()));
+            boolean diffEmbryo = !(embryoNum == null || embryoNum.equals(transferInOutStageDto.getEmbryoNum()));
+            boolean diffSpermVial = !(spermVialsNum == null || spermVialsNum.equals(transferInOutStageDto.getSpermVialsNum()));
             ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
             ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
             ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
