@@ -1,9 +1,9 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <div class="form-horizontal treatmentDetails">
-    <iais:row>
+    <%--<iais:row>
         <iais:value width="6" cssClass="col-md-6">
-           <%-- <strong class="app-font-size-22 premHeader">title</strong>--%>
+           &lt;%&ndash; <strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
@@ -13,7 +13,7 @@
                 </a>
             </c:if>
         </iais:value>
-    </iais:row>
+    </iais:row>--%>
 
     <iais:row>
         <iais:field width="5" value="Name Of Patient" mandatory="true"/>
@@ -28,7 +28,7 @@
                          value="${treatmentDto.idType}" />
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input maxLength="20" type="text" name="idNumber" value="${treatmentDto.idNumber}" />
+            <iais:input maxLength="15" type="text" name="idNumber" value="${treatmentDto.idNumber}" />
         </iais:value>
     </iais:row>
     <iais:row>
@@ -48,10 +48,11 @@
         <iais:field width="5" value="Residence Status" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="residenceStatus" codeCategory="VSS_RESIDENCE_STATUS" firstOption="Please Select"
+                         onchange ="toggleOnSelect(this, 'VSSRS003', 'residenceStatusOthers')"
                          value="${treatmentDto.residenceStatus}" />
         </iais:value>
     </iais:row>
-    <iais:row>
+    <iais:row id="residenceStatusOthers" style="${treatmentDto.residenceStatus eq 'VSSRS003' ? '' : 'display: none'}">
         <iais:field value="Other Residence Status"  width="5"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input type="text" name="otherResidenceStatus" maxLength="200" value="${treatmentDto.otherResidenceStatus}"/>
@@ -61,10 +62,11 @@
         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
+                         onchange ="toggleOnSelect(this, 'ETHG005', 'ethnicOthers')"
                          value="${treatmentDto.ethnicGroup}"/>
         </iais:value>
     </iais:row>
-    <iais:row>
+    <iais:row id="ethnicOthers" style="${treatmentDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
         <iais:field value="Other Ethnic Group" width="5"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="200" type="text" name="otherEthnicGroup" value="${treatmentDto.otherEthnicGroup}"/>

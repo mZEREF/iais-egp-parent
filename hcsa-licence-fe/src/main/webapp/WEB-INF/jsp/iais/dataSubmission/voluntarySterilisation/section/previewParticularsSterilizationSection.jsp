@@ -4,7 +4,7 @@
     <div class="panel-heading ${sexualSterilizationDto != null && sexualSterilizationDto.headStatus == true ? 'completed':'incompleted' }">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#pssDetails">
-                Particulars of Person Who Applied for Court Order
+                Particulars of Treatment for Sexual Sterilization Performed
             </a>
         </h4>
     </div>
@@ -44,7 +44,8 @@
                 <iais:row>
                     <iais:field width="6" value="Reviewed by Hospital Ethics Committee (HEC) (state name of hospital)"/>
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${sexualSterilizationDto.reviewedByHec}"/>
+                        <c:if test="${sexualSterilizationDto.reviewedByHec == true}"><c:out value="Yes"/></c:if>
+                        <c:if test="${sexualSterilizationDto.reviewedByHec == false}"><c:out value="No"/></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>

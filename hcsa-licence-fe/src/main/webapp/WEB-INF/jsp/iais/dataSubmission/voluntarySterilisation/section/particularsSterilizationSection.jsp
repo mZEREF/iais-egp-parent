@@ -1,9 +1,9 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="sexualSterilizationDto" value="${vssTreatmentDto.sexualSterilizationDto}" />
 <div class="form-horizontal treatmentDetails">
-    <iais:row>
+   <%-- <iais:row>
         <iais:value width="6" cssClass="col-md-6">
-            <%--<strong class="app-font-size-22 premHeader">title</strong>--%>
+            &lt;%&ndash;<strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
@@ -13,7 +13,7 @@
                 </a>
             </c:if>
         </iais:value>
-    </iais:row>
+    </iais:row>--%>
     <iais:row>
         <iais:field width="5" value="Doctor Professional Registration No." mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
@@ -80,7 +80,7 @@
     <iais:row>
         <iais:field width="5" value="Date of HEC Review" />
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
+            <iais:datePicker id="hecReviewDate" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewDate"></span>
         </iais:value>
     </iais:row>
