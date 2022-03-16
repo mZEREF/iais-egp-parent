@@ -141,7 +141,7 @@ public class RequestForChangeDelegator {
                     }
                     log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
                     String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen,licenceDto),
-                            NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
+                            NewApplicationDelegator.FIRESTOPTION, checkedVals, false,true);
 
                     String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
                     chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_subLicenseeError\">";
