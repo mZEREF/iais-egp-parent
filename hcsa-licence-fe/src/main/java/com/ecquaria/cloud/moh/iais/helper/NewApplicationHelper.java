@@ -3488,11 +3488,14 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "sectionLeaderList", appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
         }
     }
-
     public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
-            List<String> checkedVals, boolean multiSelect) {
+                                              List<String> checkedVals, boolean multiSelect,boolean isTransfer) {
         StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<div class=\"col-md-12 col-xs-12 multi-select\">").append("<select ");
+        sBuffer.append("<div ");
+        if(!isTransfer){
+            sBuffer.append("class=\"col-md-12 col-xs-12 multi-select\"");
+        }
+        sBuffer.append("><select ");
         if (multiSelect) {
             sBuffer.append("multiple=\"multiple\" ");
         }
@@ -3533,6 +3536,10 @@ public class NewApplicationHelper {
                 .append("<span class=\"error-msg \" name=\"iaisErrorMsg\" id=\"error_").append(name).append("\"></span>")
                 .append("</div>");
         return sBuffer.toString();
+    }
+    public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
+            List<String> checkedVals, boolean multiSelect) {
+       return genMutilSelectOpHtml(attrMap,selectOptionList,firestOption,checkedVals,multiSelect,false);
     }
 
     public static String getPsnType(String dupForPerson) {
