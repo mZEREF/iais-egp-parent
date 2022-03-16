@@ -554,7 +554,10 @@ public class RequestForChangeDelegator {
         if(confirms == null || confirms.length == 0){
             error.put("confirmError","RFC_ERR004");
         }
-
+        if(StringUtil.isNotEmpty(reason) && reason.length()>=300){
+            String general_err0041= NewApplicationHelper.repLength("This","300");
+            error.put("reasonError",general_err0041);
+        }
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
