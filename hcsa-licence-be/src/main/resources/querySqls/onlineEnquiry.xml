@@ -322,6 +322,7 @@
                 <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
                 <#if freshCycleNumFrom0??> AND  (:freshCycleNumFrom0 <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009')) </#if>
                 <#if freshCycleNumTo0??> AND  (:freshCycleNumTo0 >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if freshCycleNum0??> AND  (:freshCycleNum0 = dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
