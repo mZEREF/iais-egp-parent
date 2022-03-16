@@ -7,6 +7,7 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<c:set var="individualType" value="LICTSUB002" />
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
@@ -70,14 +71,36 @@
                 </p>
               </iais:value>
             </iais:row>
-            <iais:row>
-              <iais:field width="7" value="ID No."></iais:field>
-              <iais:value width="10">
-                <p>
-                  <c:out value="${subLicenseeDto.getIdNumber()}"></c:out>
-                </p>
+            <%--<iais:row>--%>
+              <%--<iais:field width="7" value="ID No."></iais:field>--%>
+              <%--<iais:value width="10">--%>
+                <%--<p>--%>
+                  <%--<c:out value="${subLicenseeDto.getIdNumber()}"></c:out>--%>
+                <%--</p>--%>
+              <%--</iais:value>--%>
+            <%--</iais:row>--%>
+
+            <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
+              <iais:field width="5" value="ID Type"/>
+              <iais:value width="7" display="true">
+                <iais:code code="${subLicenseeDto.idType}" />
               </iais:value>
             </iais:row>
+            <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
+              <iais:field width="5" value="ID No."/>
+              <iais:value width="7" display="true">
+                <c:out value="${subLicenseeDto.idNumber}" />
+              </iais:value>
+            </iais:row>
+
+            <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType
+            && subLicenseeDto.idType == 'IDTYPE003'? '' : 'hidden'}">
+              <iais:field width="5" value="Country of issuance"/>
+              <iais:value width="7" display="true">
+                <iais:code code="${subLicenseeDto.nationality}" />
+              </iais:value>
+            </iais:row>
+
             <iais:row>
               <iais:field width="7" value="Licensee Name"></iais:field>
               <iais:value width="10">
