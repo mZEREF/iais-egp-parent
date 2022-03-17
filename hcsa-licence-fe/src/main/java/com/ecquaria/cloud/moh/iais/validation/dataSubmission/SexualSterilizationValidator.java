@@ -29,12 +29,12 @@ public class SexualSterilizationValidator implements CustomizeValidator {
         if(sexualSterilizationDto ==null){
             sexualSterilizationDto= new SexualSterilizationDto();
         }
-        if(!StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec()) && sexualSterilizationDto.getReviewedByHec()==true){
+        if(!StringUtil.isEmpty(sexualSterilizationDto.isReviewedByHec()) && sexualSterilizationDto.isReviewedByHec() ==true){
             if(sexualSterilizationDto.getHecReviewDate() == null){
                 erMap.put("hecReviewDate", "GENERAL_ERR0006");
             }
         }
-        if(StringUtil.isEmpty(sexualSterilizationDto.getReviewedByHec())){
+        if(StringUtil.isEmpty(sexualSterilizationDto.isReviewedByHec())){
             erMap.put("reviewedByHec", "GENERAL_ERR0006");
         }
         if(sexualSterilizationDto.getOperationDate() != null){
