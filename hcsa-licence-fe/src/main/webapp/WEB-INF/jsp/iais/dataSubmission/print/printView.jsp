@@ -64,6 +64,9 @@
             <c:when test="${printflag == 'ACKWD'}">
                 <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckWd.jsp" %>
             </c:when>
+            <c:when test="${printflag == 'ACKVSS'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckVSS.jsp" %>
+            </c:when>
             <c:otherwise>
             <div class="col-xs-12">
                 <div class="row">
