@@ -473,6 +473,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     private void createGiroPaymentSendGroupDto(String tag,String xml,GiroXmlPaymentDto grioXmlPaymentDto,Map<String,String> mapTrans,List<GiroPaymentXmlDto> giroPaymentXmlDtosGen){
+        log.info(StringUtil.changeForLog("-----------createGiroPaymentSendGroupDto tag :" + tag +"---------------------------------"));
         GiroPaymentSendGroupDto giroPaymentSendGroupDto = new GiroPaymentSendGroupDto();
         GiroDataXmlDto giroDataXmlDto = new GiroDataXmlDto();
         giroDataXmlDto.setFileName(tag);
@@ -852,17 +853,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                               String ack02 =  FileUtil.getContentByPostfixNotation(".ACK2",downPath,remoteFileNames);
                               if(StringUtil.isEmpty(ack01)){
                                   ack01Stfp = false;
-                              }else {
+                              }else{
                                   log.info(StringUtil.changeForLog("--------ACK01 :" + ack01));
-                                  saveAck(ack01,ApplicationConsts.GIRO_GET_ACK1_TYPE,tag);
-                                  log.info(StringUtil.changeForLog("--------save ACK01 ok ,tag :" + tag+"------------------"));
                               }
                               if(StringUtil.isEmpty(ack02)){
                                   ack02Stfp = false;
                               }else {
                                   log.info(StringUtil.changeForLog("--------ACK02 :" + ack02));
-                                  saveAck(ack02,ApplicationConsts.GIRO_GET_ACK2_TYPE,tag);
-                                  log.info(StringUtil.changeForLog("--------save ACK02 ok ,tag :" + tag+"------------------"));
                               }
                               //change get ack 01 ack 02
                               InputAck1Dto inputAck1Dto = new InputAck1Dto();
@@ -870,20 +867,24 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                               if(inputAck1Dto.getINPUT_HEADER() == null || GrioConsts.ACK1_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck1Dto.getINPUT_HEADER().getGroupStatus())){
                                   ack01Stfp = false;
                               }
+                              saveAck(ack01,ApplicationConsts.GIRO_GET_ACK1_TYPE,tag,FileUtil.getFileName(remoteFileNames,".ACK1"),giroPaymentXmlDto.getXmlData(),null,inputAck1Dto.getINPUT_HEADER()!= null ? inputAck1Dto.getINPUT_HEADER().getGroupStatus() : null);
+                              log.info(StringUtil.changeForLog("--------save ACK01 ok ,tag :" + tag+"------------------"));
                               InputAck2Or3Dto inputAck2Dto = new InputAck2Or3Dto();
                               inputAck2Dto.setDtoByStringAck(ack02, inputAck2Dto);
                               if(inputAck2Dto.getINPUT_HEADER() == null || GrioConsts.ACK2_GROUP_LEVEL_REJECTED_VALUE.equalsIgnoreCase(inputAck2Dto.getINPUT_HEADER().getGroupStatus())){
                                   ack02Stfp = false;
                               }
+                              saveAck(ack02,ApplicationConsts.GIRO_GET_ACK2_TYPE,tag,FileUtil.getFileName(remoteFileNames,".ACK2"),giroPaymentXmlDto.getXmlData(),inputAck2Dto.getDATAS(),inputAck2Dto.getINPUT_HEADER() !=null ? inputAck2Dto.getINPUT_HEADER().getGroupStatus() : null);
+                              log.info(StringUtil.changeForLog("--------save ACK02 ok ,tag :" + tag+"------------------"));
                               if( ack01Stfp && ack02Stfp){
                                   if(FileUtil.checkFileNamesExistKeyWords(remoteFileNames,".ACK3")){
                                       String ack03 =  FileUtil.getContentByPostfixNotation(".ACK3",downPath,remoteFileNames);
                                       log.info(StringUtil.changeForLog("--------ACK03 :" + ack03));
-                                      saveAck(ack03,ApplicationConsts.GIRO_GET_ACK3_TYPE,tag);
-                                      log.info(StringUtil.changeForLog("--------save ACK03 ok ,tag :" + tag+"------------------"));
                                       //change get ack 03
                                       InputAck2Or3Dto inputAck3Dto = new InputAck2Or3Dto();
                                       String ack03Xml = inputAck3Dto.setDtoByStringAck(ack03, inputAck3Dto);
+                                      saveAck(ack03,ApplicationConsts.GIRO_GET_ACK3_TYPE,tag,FileUtil.getFileName(remoteFileNames,".ACK3"),giroPaymentXmlDto.getXmlData(),inputAck3Dto.getDATAS(),inputAck3Dto.getINPUT_HEADER().getGroupStatus());
+                                      log.info(StringUtil.changeForLog("--------save ACK03 ok ,tag :" + tag+"------------------"));
                                       List<InputDataAck2Or3Dto> DATAS = inputAck3Dto.getDATAS();
                                       if( !IaisCommonUtils.isEmpty(DATAS)){
                                           boolean noRejectPending = true;
@@ -947,14 +948,29 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
           sysnSaveGroupToBe();
         log.info("------------getGiroXmlFromSftpAndSaveXml end ----------");
     }
-    private void saveAck(String ACK,String type,String tag){
+    private void saveAck(String ACK,String type,String tag,String fileName,String sendXmlData,List<InputDataAck2Or3Dto> datas,String groupStatus){
         GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
         giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         giroPaymentXmlDto.setXmlData(ACK);
         giroPaymentXmlDto.setXmlType(type);
         giroPaymentXmlDto.setTag(tag+"_"+type);
+        giroPaymentXmlDto.setFileName(fileName);
+        giroPaymentXmlDto.setFileType(type);
+        giroPaymentXmlDto.setOutcome(groupStatus);
+        giroPaymentXmlDto.setInputDetailDtos(getPendingGiroGroupNos(sendXmlData));
+        giroPaymentXmlDto.setDatas(datas);
         giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-        appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+        appPaymentStatusClient.updateGiroAckByGiroPaymentXmlDto(giroPaymentXmlDto);
+    }
+
+    private List<InputDetailDto> getPendingGiroGroupNos(String sendXmlData){
+        try {
+            GiroXmlPaymentDto grioXmlPaymentDto = (GiroXmlPaymentDto) XmlBindUtil.convertToObject(GiroXmlPaymentDto.class,sendXmlData);
+            return grioXmlPaymentDto.getINPUT_DETAIL();
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("-------------Failed convertToGiroXmlPaymentDto XML DATA :"+sendXmlData+"--------------------"));
+        }
+        return null;
     }
     private void deleteListFileNameByAckTag( List<String> remoteFileNames,String ackTag){
         int index = 0;
