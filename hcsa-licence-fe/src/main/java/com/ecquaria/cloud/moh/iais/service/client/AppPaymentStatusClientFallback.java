@@ -96,5 +96,13 @@ public class AppPaymentStatusClientFallback implements AppPaymentStatusClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<GiroPaymentXmlDto> updateGiroAckByGiroPaymentXmlDto(GiroPaymentXmlDto giroPaymentXmlDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

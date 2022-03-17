@@ -321,6 +321,18 @@ public class FileUtil {
 		return "";
 	}
 
+	public static String getFileName(List<String> remoteFileNames,String postfixNotation){
+		if(IaisCommonUtils.isEmpty(remoteFileNames)){
+			return "";
+		}
+		for(String remoteFileName : remoteFileNames){
+			if(remoteFileName.contains(postfixNotation)){
+				return remoteFileName;
+			}
+		}
+		return "";
+	}
+
 	public static List<String> getRemoteFileNames(String fileName, String remotePath){
 		File[] files = MiscUtil.generateFile(remotePath).listFiles();
 		if(files == null){
