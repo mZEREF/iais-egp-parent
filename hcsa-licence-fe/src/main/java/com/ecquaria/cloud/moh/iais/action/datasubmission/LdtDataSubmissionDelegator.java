@@ -352,15 +352,7 @@ public class LdtDataSubmissionDelegator {
                             Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PremisesDto::getHciCode))), ArrayList::new));
             for (PremisesDto appGrpPremisesDto : collect
             ) {
-                String hciName = appGrpPremisesDto.getAddress();
-                if (!StringUtil.isEmpty(appGrpPremisesDto.getBusinessName())) {
-                    hciName = appGrpPremisesDto.getBusinessName() + "," + hciName;
-                }
-                String hciCode = appGrpPremisesDto.getHciCode();
-                if (!StringUtil.isEmpty(hciName)) {
-                    SelectOption selectOption = new SelectOption(hciCode, hciName);
-                    selectOptions.add(selectOption);
-                }
+                selectOptions.add(new SelectOption(appGrpPremisesDto.getHciCode(), appGrpPremisesDto.getPremiseLabel()));
             }
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_PREMISS_OPTION, (Serializable) selectOptions);

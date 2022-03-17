@@ -6,7 +6,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.dto.LoginContext" %>
@@ -21,10 +20,7 @@
     List<PremisesDto> entity = dsLicenceService.getLdtCenterPremiseList(loginContext.getOrgId());
     PremisesDto premisesDto = entity.stream().filter(premisesDto1 -> dsLaboratoryDevelopTestDto.getHciCode().equals(premisesDto1.getHciCode())).findFirst().get();
     if (premisesDto != null) {
-        hciName = premisesDto.getAddress();
-        if (!StringUtil.isEmpty(premisesDto.getBusinessName())) {
-            hciName = premisesDto.getBusinessName() + "," + hciName;
-        }
+        hciName = premisesDto.getPremiseLabel();
     }
 %>
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>

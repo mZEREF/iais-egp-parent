@@ -181,7 +181,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         List<SelectOption> premisesSel = IaisCommonUtils.genNewArrayList();
         for (PremisesDto premisesDto : premisesDtos) {
             String licenseeId = getLicenseeId(premisesDto.getOrganizationId());
-            premisesSel.add(new SelectOption(licenseeId + "/" + premisesDto.getHciCode(), premisesDto.getBusinessName()));
+            premisesSel.add(new SelectOption(licenseeId + "/" + premisesDto.getHciCode(), premisesDto.getPremiseLabel()));
         }
         premisesSel.add(new SelectOption("Others", "Others"));
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL, (Serializable) premisesSel);
