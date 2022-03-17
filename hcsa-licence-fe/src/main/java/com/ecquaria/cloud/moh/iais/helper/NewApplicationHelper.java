@@ -617,7 +617,6 @@ public class NewApplicationHelper {
 
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        List<String> assignList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appSvcCgoList.size(); i++) {
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if ("-1".equals(assignSelect)) {
@@ -645,13 +644,6 @@ public class NewApplicationHelper {
                         } else {
                             stringList.add(personKey);
                         }
-                    }
-                }
-                if (isValid) {
-                    if (assignList.contains(assignSelect)) {
-                        errMap.put("assignSelect" + i, "NEW_ERR0012");
-                    } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
-                        assignList.add(assignSelect);
                     }
                 }
 
@@ -824,7 +816,6 @@ public class NewApplicationHelper {
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode, SubLicenseeDto subLicenseeDto) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        List<String> assignList = IaisCommonUtils.genNewArrayList();
         int poIndex = 0;
         int dpoIndex = 0;
         if (IaisCommonUtils.isEmpty(poDto)) {
@@ -867,13 +858,6 @@ public class NewApplicationHelper {
                             } else {
                                 stringList.add(personKey);
                             }
-                        }
-                    }
-                    if (isValid) {
-                        if (assignList.contains(assignSelect)) {
-                            oneErrorMap.put("assignSelect" + poIndex, "NEW_ERR0012");
-                        } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
-                            assignList.add(assignSelect);
                         }
                     }
 
@@ -988,13 +972,6 @@ public class NewApplicationHelper {
                                     isValid = false;
                                 }
                             }
-                        }
-                    }
-                    if (isValid) {
-                        if (assignList.contains(assignSelect)) {
-                            oneErrorMap.put("deputyAssignSelect" + dpoIndex, "NEW_ERR0012");
-                        } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
-                            assignList.add(assignSelect);
                         }
                     }
 
@@ -1421,7 +1398,6 @@ public class NewApplicationHelper {
             return errMap;
         }
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        List<String> assignList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < medAlertPsnDtos.size(); i++) {
             String assignSelect = medAlertPsnDtos.get(i).getAssignSelect();
             if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
@@ -1449,13 +1425,6 @@ public class NewApplicationHelper {
                         } else {
                             stringList.add(personKey);
                         }
-                    }
-                }
-                if (isValid) {
-                    if (assignList.contains(assignSelect)) {
-                        errMap.put("assignSelect" + i, "NEW_ERR0012");
-                    } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
-                        assignList.add(assignSelect);
                     }
                 }
 
@@ -1515,7 +1484,6 @@ public class NewApplicationHelper {
             return errMap;
         }
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        List<String> assignList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appSvcKeyAppointmentHolderList.size(); i++) {
             AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolder = appSvcKeyAppointmentHolderList.get(i);
             String assignSelect = appSvcKeyAppointmentHolder.getAssignSelect();
@@ -1544,13 +1512,6 @@ public class NewApplicationHelper {
                         } else {
                             stringList.add(personKey);
                         }
-                    }
-                }
-                if (isValid) {
-                    if (assignList.contains(assignSelect)) {
-                        errMap.put("assignSel" + i, "NEW_ERR0012");
-                    } else if (!NewApplicationConstant.NEW_PSN.equals(assignSelect)) {
-                        assignList.add(assignSelect);
                     }
                 }
 
