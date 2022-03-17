@@ -2,10 +2,10 @@
 <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${guardianAppliedPartDto !=null && guardianAppliedPartDto.headStatus == true ? 'completed' : 'incompleted' }">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#pccoDetails">
-                Particulars of Treatment for Sexual Sterilization Performed
+                Particulars of Person Who Applied for Court Order
             </a>
         </h4>
     </div>

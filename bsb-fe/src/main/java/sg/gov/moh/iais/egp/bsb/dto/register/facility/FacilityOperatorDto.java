@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
@@ -14,8 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityOperatorDto extends ValidatableNodeValue {
 
+    private String operatorDesc;
+
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.name")
     private String facOperator;
+
+    private String salutation;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.designeeName")
     private String designeeName;
@@ -61,6 +65,22 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+    public String getOperatorDesc() {
+        return operatorDesc;
+    }
+
+    public void setOperatorDesc(String operatorDesc) {
+        this.operatorDesc = operatorDesc;
+    }
+
+    public String getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(String salutation) {
+        this.salutation = salutation;
     }
 
     public String getFacOperator() {
@@ -136,7 +156,9 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     }
 
     //    ---------------------------- request -> object ----------------------------------------------
+    private static final String KEY_FACILITY_OPERATOR_DESIGNATION = "operatorDesc";
     private static final String KEY_FAC_OPERATOR = "facOperator";
+    private static final String KEY_SALUTATION = "salutation";
     private static final String KEY_OP_NAME = "operatorName";
     private static final String KEY_ID_TYPE = "idType";
     private static final String KEY_ID_NUMBER = "idNumber";
@@ -147,7 +169,9 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     private static final String KEY_EMP_START_DATE = "employmentStartDt";
 
     public void reqObjMapping(HttpServletRequest request) {
+        setOperatorDesc(ParamUtil.getString(request,KEY_FACILITY_OPERATOR_DESIGNATION));
         setFacOperator(ParamUtil.getString(request, KEY_FAC_OPERATOR));
+        setSalutation(ParamUtil.getString(request,KEY_SALUTATION));
         setDesigneeName(ParamUtil.getString(request, KEY_OP_NAME));
         setIdType(ParamUtil.getString(request, KEY_ID_TYPE));
         setIdNumber(ParamUtil.getString(request, KEY_ID_NUMBER));

@@ -27,7 +27,7 @@ public class FacilityCertifierRegisterDto implements Serializable {
     //this is used to saveDraft module
     private String appType;
 
-    private OrganisationProfileDto profileDto;
+    private CompanyProfileDto profileDto;
     private CertifyingTeamDto certifyingTeamDto;
     private AdministratorDto administratorDto;
     private Collection<DocRecordInfo> docRecordInfos;
@@ -39,9 +39,9 @@ public class FacilityCertifierRegisterDto implements Serializable {
 
     public static FacilityCertifierRegisterDto from(NodeGroup facRegRoot){
         FacilityCertifierRegisterDto dto = new FacilityCertifierRegisterDto();
-        dto.setProfileDto((OrganisationProfileDto) ((SimpleNode) facRegRoot.at( NODE_NAME_ORGANISATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
-        dto.setCertifyingTeamDto((CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
-        dto.setAdministratorDto((AdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+        dto.setProfileDto((CompanyProfileDto) ((SimpleNode) facRegRoot.at( NODE_NAME_ORGANISATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
+        dto.setCertifyingTeamDto((CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM)).getValue());
+        dto.setAdministratorDto((AdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR)).getValue());
         dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_CER_PREVIEW_SUBMIT)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
         dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
@@ -50,9 +50,9 @@ public class FacilityCertifierRegisterDto implements Serializable {
 
     public NodeGroup toFacilityCertRegister(String name){
         //generate new NodeGroup
-        SimpleNode orgProfileNode = new SimpleNode(profileDto,NODE_NAME_ORG_PROFILE,new Node[0]);
-        SimpleNode certifierTeamNode = new SimpleNode(certifyingTeamDto,NODE_NAME_ORG_CERTIFYING_TEAM,new Node[]{orgProfileNode});
-        SimpleNode administratorNode = new SimpleNode(administratorDto,NODE_NAME_ORG_FAC_ADMINISTRATOR,new Node[]{orgProfileNode,certifierTeamNode});
+        SimpleNode orgProfileNode = new SimpleNode(profileDto,NODE_NAME_COMPANY_PROFILE,new Node[0]);
+        SimpleNode certifierTeamNode = new SimpleNode(certifyingTeamDto,NODE_NAME_COMPANY_CERTIFYING_TEAM,new Node[]{orgProfileNode});
+        SimpleNode administratorNode = new SimpleNode(administratorDto,NODE_NAME_COMPANY_FAC_ADMINISTRATOR,new Node[]{orgProfileNode,certifierTeamNode});
         NodeGroup facCertInfoGroup = new NodeGroup.Builder().name(NODE_NAME_ORGANISATION_INFO)
                 .dependNodes(new Node[0])
                 .addNode(orgProfileNode)
@@ -86,9 +86,9 @@ public class FacilityCertifierRegisterDto implements Serializable {
     }
 
     public NodeGroup toRenewalFacCerRegRootGroup(String name) {
-        SimpleNode orgProfileNode = new SimpleNode(profileDto, NODE_NAME_ORG_PROFILE, new Node[0]);
-        SimpleNode certifierTeamNode = new SimpleNode(certifyingTeamDto, NODE_NAME_ORG_CERTIFYING_TEAM, new Node[]{orgProfileNode});
-        SimpleNode administratorNode = new SimpleNode(administratorDto, NODE_NAME_ORG_FAC_ADMINISTRATOR, new Node[]{orgProfileNode,certifierTeamNode});
+        SimpleNode orgProfileNode = new SimpleNode(profileDto, NODE_NAME_COMPANY_PROFILE, new Node[0]);
+        SimpleNode certifierTeamNode = new SimpleNode(certifyingTeamDto, NODE_NAME_COMPANY_CERTIFYING_TEAM, new Node[]{orgProfileNode});
+        SimpleNode administratorNode = new SimpleNode(administratorDto, NODE_NAME_COMPANY_FAC_ADMINISTRATOR, new Node[]{orgProfileNode,certifierTeamNode});
         NodeGroup facCertInfoGroup = new NodeGroup.Builder().name(NODE_NAME_ORGANISATION_INFO)
                 .dependNodes(new Node[0])
                 .addNode(orgProfileNode)
@@ -110,9 +110,9 @@ public class FacilityCertifierRegisterDto implements Serializable {
 
     public static FacilityCertifierRegisterDto fromRenewal(NodeGroup viewApprovalRoot, NodeGroup facRegRoot){
         FacilityCertifierRegisterDto dto = new FacilityCertifierRegisterDto();
-        dto.setProfileDto((OrganisationProfileDto) ((SimpleNode) facRegRoot.at( NODE_NAME_ORGANISATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
-        dto.setCertifyingTeamDto((CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
-        dto.setAdministratorDto((AdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+        dto.setProfileDto((CompanyProfileDto) ((SimpleNode) facRegRoot.at( NODE_NAME_ORGANISATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
+        dto.setCertifyingTeamDto((CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM)).getValue());
+        dto.setAdministratorDto((AdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
         dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
         dto.setFacilityCertifierRegistrationReviewDto((FacilityCertifierRegistrationReviewDto) ((SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW)).getValue());

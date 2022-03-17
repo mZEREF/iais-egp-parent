@@ -12,7 +12,7 @@ import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAfcResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalSearchDto;
 import sop.webflow.rt.api.BaseProcessClass;

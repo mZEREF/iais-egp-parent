@@ -1,6 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="document-upload-gp">
-    <h2>PRIMARY DOCUMENTS</h2>
+    <h2>Supporting Documents</h2>
     <c:forEach var="doc" items="${docSettings}">
         <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
         <div class="document-upload-list">
@@ -32,4 +32,25 @@
             </div>
         </div>
     </c:forEach>
+    <div class="document-upload-list">
+        <h3>Team members' testimonials and curriculum vitae <span class="mandatory otherQualificationSpan">*</span></h3>
+        <div>
+            <table aria-describedby="">
+                <tr style="text-align: center">
+                    <th id="no" style="width: 20%;">SN</th>
+                    <th id="name" style="width: 20%;">Name</th>
+                    <th id="idNo" style="width: 20%;">ID No.</th>
+                    <th id="testimonialsUpload" style="width: 20%">Testimonials Upload</th>
+                    <th id="curriculumVitaeUpload" style="width: 20%">Curriculum Vitae Upload</th>
+                </tr>
+                <tr style="text-align: center">
+                    <td>1</td>
+                    <td>Kim</td>
+                    <td>S9992887K</td>
+                    <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
+                    <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>

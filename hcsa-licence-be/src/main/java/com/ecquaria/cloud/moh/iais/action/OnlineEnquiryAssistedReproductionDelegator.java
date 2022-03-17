@@ -527,23 +527,48 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("cart_foe",1);
             }
 //TOTAL_PREVIOUSLY_PREVIOUSLY freshCycleNumFrom
-            if(arDto.getFreshCycleNumFrom()!=null){
+            boolean freshCycleNum0=false;
+            if(arDto.getFreshCycleNumFrom()!=null&&arDto.getFreshCycleNumTo()!=null){
                 try {
                     int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
-                    filter.put("freshCycleNumFrom", totPreFreFrom);
+                    int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
+
+                    if(totPreFreFrom==0&&totPreFreTo==0){
+                        filter.put("freshCycleNum0", 0);
+                        freshCycleNum0=true;
+                    }
                 }catch (Exception e){
                     log.error("Total No. of AR cycles previously undergone by patient not int");
+                }
+            }
+            if(!freshCycleNum0){
+                if(arDto.getFreshCycleNumFrom()!=null){
+                    try {
+                        int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
+                        if(totPreFreFrom==0){
+                            filter.put("freshCycleNumFrom0", totPreFreFrom);
+                        }else {
+                            filter.put("freshCycleNumFrom", totPreFreFrom);
+                        }
+                    }catch (Exception e){
+                        log.error("Total No. of AR cycles previously undergone by patient not int");
+                    }
+                }
+
+                if(arDto.getFreshCycleNumTo()!=null){
+                    try {
+                        int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
+                        if(totPreFreTo==0){
+                            filter.put("freshCycleNumTo0", totPreFreTo);
+                        }else {
+                            filter.put("freshCycleNumTo", totPreFreTo);
+                        }
+                    }catch (Exception e){
+                        log.error("Total No. of AR cycles previously undergone by patient not int");
+                    }
                 }
             }
 
-            if(arDto.getFreshCycleNumTo()!=null){
-                try {
-                    int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
-                    filter.put("freshCycleNumTo", totPreFreTo);
-                }catch (Exception e){
-                    log.error("Total No. of AR cycles previously undergone by patient not int");
-                }
-            }
 
             if(arDto.getAbandonedCycle()!=null){//bit
                 filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
@@ -705,11 +730,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(arDto.getPatientIUI()!=null){
-                if("1".equals(arDto.getPatientIUI())){
+                if("0".equals(arDto.getPatientIUI())){
                     filter.put("patientIuiYes",1);
 
                 }
-                if("0".equals(arDto.getPatientIUI())){
+                if("1".equals(arDto.getPatientIUI())){
                     filter.put("patientIuiNo",1);
                 }
             }
@@ -1153,18 +1178,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         currentFrozenEmbryos+=aci.getFrozenEmbryoNum();
                         currentThawedEmbryos+=aci.getThawedEmbryoNum();
                         currentFreshEmbryos+=aci.getFreshEmbryoNum();
-                        currentFrozenSperms+=aci.getFrozenEmbryoNum();
+                        currentFrozenSperms+=aci.getFrozenSpermNum();
                         if(premisesMap.containsKey(aci.getHciCode())){
                             arCurrentInventoryDtoLinkedHashMap.put(premisesMap.get(aci.getHciCode()).getPremiseLabel(),aci);
                         }
                     }
                 }
                 patientInventoryDtoTotal.setThawedEmbryoNum(currentThawedEmbryos);
-                patientInventoryDtoTotal.setFreshOocyteNum(currentFreshOocytes);
-                patientInventoryDtoTotal.setFreshEmbryoNum(currentFrozenEmbryos);
-                patientInventoryDtoTotal.setFreshEmbryoNum(currentFreshEmbryos);
-                patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
                 patientInventoryDtoTotal.setThawedOocyteNum(currentThawedOocytes);
+                patientInventoryDtoTotal.setFreshOocyteNum(currentFreshOocytes);
+                patientInventoryDtoTotal.setFreshEmbryoNum(currentFreshEmbryos);
+                patientInventoryDtoTotal.setFrozenEmbryoNum(currentFrozenEmbryos);
+                patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
                 patientInventoryDtoTotal.setFrozenSpermNum(currentFrozenSperms);
                 arCurrentInventoryDtoLinkedHashMap.put("Total",patientInventoryDtoTotal);
                 ParamUtil.setSessionAttr(request,"patientInventoryDtos",  arCurrentInventoryDtoLinkedHashMap);

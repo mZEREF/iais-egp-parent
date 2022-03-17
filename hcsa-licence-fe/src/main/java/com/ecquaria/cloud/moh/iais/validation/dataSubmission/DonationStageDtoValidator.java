@@ -150,13 +150,17 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 errorMap.put("otherDonationReason", errMsg);
             }
         }
-        if(StringUtil.isNotEmpty(donationStageDto.getDonatedForResearchOtherType())){
-            if(donationStageDto.getDonatedForResearchOtherType().length()>100){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","100");
-                repMap.put("fieldNo","Field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
-                errorMap.put("donatedForResearchOtherType", errMsg);
+        if(donationStageDto.getDonatedForResearchOther()!=null&&donationStageDto.getDonatedForResearchOther()==1){
+            if(StringUtil.isNotEmpty(donationStageDto.getDonatedForResearchOtherType())){
+                if(donationStageDto.getDonatedForResearchOtherType().length()>100){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","100");
+                    repMap.put("fieldNo","Field");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                    errorMap.put("donatedForResearchOtherType", errMsg);
+                }
+            }else {
+                errorMap.put("donatedForResearchOtherType", errMsgErr006);
             }
         }
 
@@ -169,7 +173,9 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 errorMap.put("donatedRecipientNum", errMsg);
             }
         }
-
+        if(donationStageDto.getTotalNum()>maxSamplesNum){
+            errorMap.put("totalNum", "Cannot be greater than number of samples under patient");
+        }
         return errorMap;
     }
 

@@ -128,18 +128,17 @@ function printData() {
             }
         });
     }
-    function getDataForPrinting() {
-        var declaration = $('input[name="declaration"]:checked').val();
-        if (isEmpty(declaration)) {
-            return null;
-        }
-        var printflag = $('#printflag').val();
-        if (isEmpty(printflag)) {
-            printflag = '';
-        }
-        return {declaration: declaration, printflag: printflag};
+}
+function getDataForPrinting() {
+    var declaration = $('input[name="declaration"]:checked').val();
+    if (isEmpty(declaration)) {
+        return null;
     }
-
+    var printflag = $('#printflag').val();
+    if (isEmpty(printflag)) {
+        printflag = '';
+    }
+    return {declaration: declaration, printflag: printflag};
 }
 function showPopCommon(controlId,showPopId,val){
     if($(controlId).length == 0){

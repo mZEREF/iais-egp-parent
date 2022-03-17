@@ -5,7 +5,7 @@
 %>
 
 <ul class="progress-tracker">
-  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_ORG_PROFILE)%>" data-step-key="orgInfo_orgProfile">Organisation Profile</li>
-  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_ORG_CERTIFYING_TEAM)%>" data-step-key="orgInfo_orgCerTeam">Certifying Team</li>
-  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_ORG_FAC_ADMINISTRATOR)%>" data-step-key="orgInfo_orgAdmin">Administrator</li>
+  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_COMPANY_PROFILE)%>" data-step-key="orgInfo_companyProfile">Company Profile</li>
+  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_COMPANY_CERTIFYING_TEAM)%>" data-step-key="orgInfo_companyCerTeam">Certifying Team</li>
+  <li class="tracker-item <%=FacilityCertifierRegistrationService.computeStepClassnameForJsp(facInfoGroup, NODE_NAME_COMPANY_FAC_ADMINISTRATOR)%>" data-step-key="orgInfo_companyAdmin">Administrator</li>
 </ul>

@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DeRegOrCancellationClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.deregorcancellation.DeRegistrationFacilityDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.*;
 import sg.gov.moh.iais.egp.bsb.service.DeRegOrCancellationService;

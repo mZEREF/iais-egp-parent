@@ -13,6 +13,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
+<link rel="stylesheet" href="<%=WEB_ROOT%>/css/bsb/bsb-facility-certifer-register.css">
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
@@ -45,7 +46,8 @@
                                         <div class="document-info-list">
                                             <ul>
                                                 <li><p>The maximum file size for each upload is 5MB</p></li>
-                                                <li><p>Acceptable file formats are PDF, word, JPG, Excel and PNG</p></li>
+                                                <li><p>Acceptable file formats: JPG, PNG, PDF, CSV, DOCX, JPEG, XLS, DOC and XLSX</p></li>
+                                                <li><p>Please ensure that the corresponding Document Type is selected for each document uploaded under Others.</p></li>
                                             </ul>
                                         </div>
                                         <%@ include file="../mainAppCommon/facCertifierRegistration/orgPrimaryDocs.jsp" %>

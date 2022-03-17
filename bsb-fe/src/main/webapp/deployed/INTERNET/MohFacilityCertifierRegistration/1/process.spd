@@ -9,11 +9,11 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreOrganisationInfo" x="260" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="PreCompanyProfile" x="260" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preOrganisationInfo_OnStepProcess_0" name="preOrganisationInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preCompanyProfile_OnStepProcess_0" name="PreCompanyProfile_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="140" y="550">
@@ -58,11 +58,11 @@
     <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doOriganisationProfile" x="620" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="doCompanyProfile" x="620" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doOriganisationProfile_OnStepProcess_0" name="doOriganisationProfile_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doCompanyProfile_OnStepProcess_0" name="doCompanyProfile_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreCertifyingTeam" x="260" y="170">
@@ -141,7 +141,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="OrganisationProfile" stageIndicator="" x="410" y="240">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyProfile" stageIndicator="" x="410" y="240">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -174,7 +174,7 @@
   <SynchronousLink destinationName="/Pages/WebPage/Preview" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="rectanular">
    <position>{(300,510)(450,510)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreOrganisationInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompanyProfile" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(180,370)(280,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
@@ -204,13 +204,13 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(930,260)(930,570)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doOriganisationProfile" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/OrganisationProfile" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCompanyProfile" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/CompanyProfile" style="rectanular">
    <position>{(430,260)(640,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doOriganisationProfile" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCompanyProfile" style="oblique">
    <position>{(640,260)(820,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/OrganisationProfile" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreOrganisationInfo" style="rectanular">
+  <SynchronousLink destinationName="/Pages/WebPage/CompanyProfile" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreCompanyProfile" style="rectanular">
    <position>{(280,260)(430,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreCertifyingTeam" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
@@ -269,11 +269,11 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="Switch1" x="160" y="350">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PreOrganisationInfo" value="&quot;orgInfo_orgProfile&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreCompanyProfile" value="&quot;orgInfo_companyProfile&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;primaryDoc&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;previewSubmit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreCertifyingTeam" value="&quot;orgInfo_orgCerTeam&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_orgAdmin&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreCertifyingTeam" value="&quot;orgInfo_companyCerTeam&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_companyAdmin&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch2" x="910" y="240">

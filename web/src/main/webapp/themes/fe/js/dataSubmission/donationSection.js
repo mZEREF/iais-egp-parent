@@ -1,16 +1,23 @@
+function changeTotalNum() {
+    var totalNum = 0 ;
+    if($('#donatedForResearch').is(':checked')){
+        var donResForTreatNum = $('#donResForTreatNum').val();
+        var donResForCurCenNotTreatNum = $('#donResForCurCenNotTreatNum').val();
+        totalNum=totalNum+Number(donResForTreatNum)+Number(donResForCurCenNotTreatNum);
+    }
+    if($('#donatedForTraining').is(':checked')){
+        var trainingNum = $('#trainingNum').val();
+        var treatNum = $('#treatNum').val();
+        totalNum=totalNum+Number(trainingNum)+Number(treatNum);
+    }
+
+    $('#totalNum').html(totalNum);
+}
+
 $(document).ready(function () {
 
     $('input[type="text"]').blur(function () {
-
-        var donResForTreatNum = $('#donResForTreatNum').val();
-        var donResForCurCenNotTreatNum = $('#donResForCurCenNotTreatNum').val();
-        var trainingNum = $('#trainingNum').val();
-        var treatNum = $('#treatNum').val();
-
-        var totalNum = Number(donResForTreatNum)+Number(donResForCurCenNotTreatNum)+Number(trainingNum)+Number(treatNum);
-
-
-        $('#totalNum').html(totalNum);
+        changeTotalNum();
 
     });
 
@@ -22,6 +29,7 @@ $(document).ready(function () {
         }else {
             $('#researchDisplay').attr("style","display: none");
         }
+        changeTotalNum();
     });
 
     $('#donatedForTraining').change(function () {
@@ -30,6 +38,7 @@ $(document).ready(function () {
         }else {
             $('#trainingDisplay').attr("style","display: none");
         }
+        changeTotalNum();
     });
 
     $('#donatedForResearchOther').change(function () {

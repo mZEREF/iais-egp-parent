@@ -20,23 +20,33 @@ public class FacRegisterConstants {
     public static final String NODE_NAME_FAC_ADMIN         = "facAdmin";
     public static final String NODE_NAME_FAC_OFFICER       = "facOfficer";
     public static final String NODE_NAME_FAC_COMMITTEE     = "facCommittee";
+    public static final String NODE_NAME_APPROVED_FACILITY_CERTIFIER = "facCertifier";
 
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
+
+    public static final String STEP_NAME_COMMITTEE_PREVIEW = "committeePreview";
 
     public static final String KEY_EDIT_APP_ID             = "editId";
     public static final String KEY_ACTION_TYPE             = "action_type";
     public static final String KEY_INDEED_ACTION_TYPE      = "indeed_action_type";
     public static final String KEY_ACTION_VALUE            = "action_value";
     public static final String KEY_VALIDATION_ERRORS       = "errorMsg";
+    public static final String KEY_VALID_DATA_FILE         = "VALID_FILE";
+    public static final String KEY_ERROR_IN_DATA_FILE      = "DATA_HAS_ERROR";
+    public static final String KEY_DATA_ERRORS             = "DATA_ERRORS";
+    public static final String KEY_DATA_LIST               = "DATA_LIST";
+    public static final String KEY_SOURCE_NODE_PATH        = "srcNodePath";
 
     public static final String KEY_NAV_NEXT                = "next";
     public static final String KEY_NAV_BACK                = "back";
 
+    public static final String KEY_ACTION_LOAD_DATA_FILE   = "loadDataFile";
+    public static final String KEY_ACTION_EXPAND_FILE      = "expandFile";
     public static final String KEY_ACTION_SUBMIT           = "submit";
     public static final String KEY_ACTION_JUMP             = "jump";
     public static final String KEY_ACTION_SAVE_AS_DRAFT    = "draft";
     public static final String KEY_JUMP_DEST_NODE          = "destNode";
-    public static final String KEY_DEST_NODE_ROUTE         =   "nodeRoute";
+    public static final String KEY_DEST_NODE_ROUTE         = "nodeRoute";
 
     public static final String KEY_SHOW_ERROR_SWITCH       = "needShowValidationError";
 
@@ -65,4 +75,5 @@ public class FacRegisterConstants {
     public static final String KEY_INSTRUCTION_INFO                      = "instructionInfo";
     //renewal special action value 'reviewEdit'
     public static final String KEY_ACTION_REVIEW_EDIT                    = "reviewEdit";
+    public static final String KEY_OPTION_SALUTATION                     = "salutationOps";
 }

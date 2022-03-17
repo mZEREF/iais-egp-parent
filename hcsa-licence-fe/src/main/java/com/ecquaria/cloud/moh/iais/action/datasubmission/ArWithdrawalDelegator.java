@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsWithdrawCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -151,6 +153,32 @@ public class ArWithdrawalDelegator {
              ) {
             arSuperDataSubmission.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
             arSuperDataSubmission.getDataSubmissionDto().setLockStatus(arSuperDataSubmission.getDataSubmissionDto().getLockStatus()+1);
+            if(arSuperDataSubmission.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_CYCLE_AR)){
+                if(IaisCommonUtils.isNotEmpty(arSuperDataSubmission.getArCycleStageDto().getDonorDtos())){
+                    for (DonorDto donorDto:arSuperDataSubmission.getArCycleStageDto().getDonorDtos()
+                         ) {
+                        if(IaisCommonUtils.isNotEmpty(donorDto.getDonorSampleAgeDtos())){
+                            for (DonorSampleAgeDto age :donorDto.getDonorSampleAgeDtos()
+                                 ) {
+                                age.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                            }
+                        }
+                    }
+                }
+            }
+            if(arSuperDataSubmission.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_CYCLE_IUI)){
+                if(IaisCommonUtils.isNotEmpty(arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos())){
+                    for (DonorDto donorDto:arSuperDataSubmission.getIuiCycleStageDto().getDonorDtos()
+                    ) {
+                        if(IaisCommonUtils.isNotEmpty(donorDto.getDonorSampleAgeDtos())){
+                            for (DonorSampleAgeDto age :donorDto.getDonorSampleAgeDtos()
+                            ) {
+                                age.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                            }
+                        }
+                    }
+                }
+            }
             DsWithdrawCorrelationDto dsWithdrawCorrelationDto=new DsWithdrawCorrelationDto();
             dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
             list.add(dsWithdrawCorrelationDto);

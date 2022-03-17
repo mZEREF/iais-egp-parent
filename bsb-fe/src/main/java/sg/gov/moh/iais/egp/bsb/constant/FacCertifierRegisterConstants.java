@@ -11,9 +11,9 @@ public class FacCertifierRegisterConstants {
     public static final String NODE_NAME_ORGANISATION_INFO = "orgInfo";
     public static final String NODE_NAME_FAC_PRIMARY_DOCUMENT = "primaryDoc";
     public static final String NODE_NAME_CER_PREVIEW_SUBMIT = "previewSubmit";
-    public static final String NODE_NAME_ORG_PROFILE = "orgProfile";
-    public static final String NODE_NAME_ORG_CERTIFYING_TEAM = "orgCerTeam";
-    public static final String NODE_NAME_ORG_FAC_ADMINISTRATOR = "orgAdmin";
+    public static final String NODE_NAME_COMPANY_PROFILE = "companyProfile";
+    public static final String NODE_NAME_COMPANY_CERTIFYING_TEAM = "companyCerTeam";
+    public static final String NODE_NAME_COMPANY_FAC_ADMINISTRATOR = "companyAdmin";
 
     public static final String KEY_ROOT_NODE_GROUP = "facCertifierRegRoot";
 

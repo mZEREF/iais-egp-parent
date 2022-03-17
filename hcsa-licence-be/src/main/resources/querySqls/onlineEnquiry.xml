@@ -276,6 +276,7 @@
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_efo_cycle_stage defocs on defocs.SUBMISSION_ID=dds.ID
                 left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
                 left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
                 left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
@@ -309,16 +310,19 @@
 
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
-                <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
-                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(datetime,:cycleStagesDateTo)</#if>
+                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) or dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) or dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
                 <#if cart_foc??> AND  :cart_foc = dacs.TREATMENT_FROZEN_OOCYTE </#if>
                 <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
-                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
-                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
+                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY  and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumFrom0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND  (:freshCycleNumFrom0 <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009')) </#if>
+                <#if freshCycleNumTo0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNumTo0 >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if freshCycleNum0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNum0 = dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
                 <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
@@ -342,7 +346,7 @@
                 <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
                 <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
                 <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
                 <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
@@ -475,7 +479,7 @@
                   when null then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+               case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dds2lp.BUSINESS_NAME
@@ -521,7 +525,7 @@
 
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
@@ -541,7 +545,7 @@
                , case dcen.UNIT_NO when null then null else '-'+dcen.UNIT_NO end
                ,case dcen.POSTAL_CODE when null then null else ', '+dcen.POSTAL_CODE end
               ) AS BUSINESS_NAME,
-              dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
+              case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end as DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
             case dds2.SAMPLE_FROM_HCI_CODE when 'AR_SC_001' then CONCAT('Others - ',dds2.SAMPLE_FROM_OTHERS)
             else
            		CONCAT(case dcen2.CENTER_NAME
@@ -576,7 +580,7 @@
 				left join ds_center dcen2  on dds2.SAMPLE_FROM_HCI_CODE =dcen2.HCI_CODE and dcen2.CENTER_TYPE ='ART'
                 where dc.CYCLE_TYPE ='DSCL_003' and dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
-            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, (case dds2.ID_TYPE when 'AR_IT_005' then dds2.ID_NUMBER else dds2.DONOR_SAMPLE_CODE end)) >0</#if>
             <#if othersDonorSampleCode??> AND  charindex(:othersDonorSampleCode, dds2.SAMPLE_FROM_OTHERS) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>

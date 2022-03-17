@@ -32,3 +32,25 @@
         </div>
     </c:if>
 </c:forEach>
+<div class="form-group">
+    <div class="col-10"><strong>Team members' testiomonials and curriculum vitae</strong></div>
+    <div class="clear"></div>
+</div>
+<div class="form-group">
+    <table aria-describedby="">
+        <tr style="text-align: center">
+            <th id="no" style="width: 20%;">SN</th>
+            <th id="name" style="width: 20%;">Name</th>
+            <th id="idNo" style="width: 20%;">ID No.</th>
+            <th id="testimonialsUpload" style="width: 20%">Testimonials Upload</th>
+            <th id="curriculumVitaeUpload" style="width: 20%">Curriculum Vitae Upload</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Kim</td>
+            <td>S9992887K</td>
+            <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
+            <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
+        </tr>
+    </table>
+</div>

@@ -23,17 +23,7 @@
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <%@ include file="../mainAppCommon/facRegistration/companyInfo.jsp" %>
-            <div class="row">
-                <div class="col-xs-12 col-md-3">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>
-                </div>
-                <div class="col-xs-12 col-md-9">
-                    <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" id="next" href="javascript:void(0);">START APPLICATION</a>
-                    </div>
-                </div>
-            </div>
-
+            <%@include file="InnerFooter.jsp"%>>
         </div>
     </div>
 </form>

@@ -124,7 +124,7 @@
                 <div class="col-sm-5 control-label">
                     <label for="securityClearanceDt--v--${status.index}">Security Clearance Date</label>
                     <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>For Facility that is Protected Place, security clearance date is mandatory.</p>">i</a>
-                    <c:if test="${facAuth.isProtectedPlace eq 'Y'}">
+                    <c:if test="${facAuth.protectedPlace eq 'Y'}">
                         <span class="mandatory otherQualificationSpan">*</span>
                     </c:if>
                 </div>

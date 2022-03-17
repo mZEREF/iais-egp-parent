@@ -11,6 +11,8 @@
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
                     <h1>New Facility Registration</h1>
+                    <p>You are applying for <strong>Facility Classification</strong> with activity type:</p>
+                    <p><strong>Facility Activity Type</strong></p>
                 </div>
             </div>
         </div>

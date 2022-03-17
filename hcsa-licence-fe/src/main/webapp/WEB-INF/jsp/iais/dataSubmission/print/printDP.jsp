@@ -21,6 +21,7 @@
         <%-- Sovenor Inventory --%>
     </c:when>
 </c:choose>
+<%@include file="../drugPractices/common/previewDpDsAmendment.jsp" %>
 <style>
     .panel-group .panel.panel-default > .panel-heading h4 a {
         text-decoration: none;

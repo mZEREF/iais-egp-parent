@@ -19,4 +19,5 @@
         <%-- Sovenor Inventory --%>
     </c:when>
 </c:choose>
+<%@include file="../drugPractices/common/previewDpDsAmendment.jsp" %>
 <%@include file="../drugPractices/common/dpDeclaration.jsp" %>

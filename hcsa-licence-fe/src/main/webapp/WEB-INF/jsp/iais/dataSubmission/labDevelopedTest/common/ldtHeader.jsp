@@ -12,6 +12,8 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
+<c:set value="${LdtSuperDataSubmissionDto != null && LdtSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(LdtSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
+       var="isRfc"/>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ldt_common.js"></script>
 <input type="hidden" name="current_page" value="${ldt_current_page}"/>
 <input type="hidden" name="_contextPath" id="_contextPath" value="${pageContext.request.contextPath}"/>
@@ -26,7 +28,12 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                        <c:if test="${isRfc}">
+                            <h1 class="font-weight 0">Amendment</h1>
+                        </c:if>
+                        <c:if test="${!isRfc}">
+                            <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                        </c:if>
                     </div>
                 </div>
             </div>

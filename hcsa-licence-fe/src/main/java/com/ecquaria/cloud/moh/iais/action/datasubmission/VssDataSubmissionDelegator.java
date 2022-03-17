@@ -40,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController.SEESION_FILES_MAP_AJAX;
-import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.PRINT_FLAG_VSS;
 
 /**
  * Process: MohVSSDataSubmission
@@ -82,6 +81,11 @@ public class VssDataSubmissionDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(" ----- PrepareSwitch ------ ");
+      /*  VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(vssSuperDataSubmissionDto.getAppType())) {
+            String crud_action_type = "rfc";
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, crud_action_type);
+        }*/
         String actionType = getActionType(bpc.request);
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
@@ -91,13 +95,9 @@ public class VssDataSubmissionDelegator {
         if (config != null) {
             smallTitle = config.getText();
         }
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + "Voluntary Sterilisation" + "</strong>");
 
-       /* VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
-        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(vssSuperDataSubmissionDto.getAppType())) {
-            String crud_action_type = "rfc";
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, crud_action_type);
-        }*/
+
     }
 
     private String getActionType(HttpServletRequest request) {
@@ -125,8 +125,8 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
-
-       /* String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+/*
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         //draft
         VssSuperDataSubmissionDto dataSubmissionDraft = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
         if (dataSubmissionDraft != null) {
@@ -155,7 +155,6 @@ public class VssDataSubmissionDelegator {
         }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
             preparePreview(bpc.request);
         }
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, PRINT_FLAG_VSS);
     }
 
     private VssSuperDataSubmissionDto initVssSuperDataSubmissionDto(HttpServletRequest request) {
@@ -330,10 +329,17 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
-        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
-        ControllerHelper.get(request,sexualSterilizationDto);
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        String doctorReignNo = ParamUtil.getString(request,"doctorReignNo");
+        String doctorName = ParamUtil.getString(request,"doctorName");
+        String sterilizationMethod = ParamUtil.getString(request,"sterilizationMethod");
         String operationDate = ParamUtil.getString(request,"operationDate");
+        String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
+        sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
+        sexualSterilizationDto.setDoctorName(doctorName);
+        sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
+        sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         try {
             Date oDate = Formatter.parseDate(operationDate);
             Date hDate = Formatter.parseDate(hecReviewDate);
@@ -417,6 +423,7 @@ public class VssDataSubmissionDelegator {
     private void preparePreview(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        ParamUtil.setRequestAttr(request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_VSS);
     }
 
     private int doPreview(HttpServletRequest request) {
@@ -509,8 +516,8 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
     }
 
     /**

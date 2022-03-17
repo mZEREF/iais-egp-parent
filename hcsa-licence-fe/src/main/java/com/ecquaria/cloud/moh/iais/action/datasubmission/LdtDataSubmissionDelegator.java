@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -257,16 +256,6 @@ public class LdtDataSubmissionDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(dsLaboratoryDevelopTestDto, "save");
             errorMap = validationResult.retrieveAll();
             if (isRfc(request)) {
-                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
-                if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
-                    errorMap.put("amendReason", "GENERAL_ERR0006");
-                } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
-                    if (StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
-                        errorMap.put("amendReasonOther", "GENERAL_ERR0006");
-                    } else {
-                        errorMap.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
-                    }
-                }
                 LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(request);
                 if (errorMap.isEmpty() && oldLdtSuperDataSubmissionDto != null && oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto() != null && dsLaboratoryDevelopTestDto.equals(oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto())) {
                     ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
@@ -363,15 +352,7 @@ public class LdtDataSubmissionDelegator {
                             Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PremisesDto::getHciCode))), ArrayList::new));
             for (PremisesDto appGrpPremisesDto : collect
             ) {
-                String hciName = appGrpPremisesDto.getAddress();
-                if (!StringUtil.isEmpty(appGrpPremisesDto.getBusinessName())) {
-                    hciName = appGrpPremisesDto.getBusinessName() + "," + hciName;
-                }
-                String hciCode = appGrpPremisesDto.getHciCode();
-                if (!StringUtil.isEmpty(hciName)) {
-                    SelectOption selectOption = new SelectOption(hciCode, hciName);
-                    selectOptions.add(selectOption);
-                }
+                selectOptions.add(new SelectOption(appGrpPremisesDto.getHciCode(), appGrpPremisesDto.getPremiseLabel()));
             }
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_PREMISS_OPTION, (Serializable) selectOptions);

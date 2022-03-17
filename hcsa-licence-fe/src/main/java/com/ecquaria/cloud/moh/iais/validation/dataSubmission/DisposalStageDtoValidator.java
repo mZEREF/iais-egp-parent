@@ -225,7 +225,9 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                 errorMap.put("otherDiscardedNum", errMsgErr002);
             }
         }
-
+        if(disposalStageDto.getTotalNum()>maxSamplesNum){
+            errorMap.put("totalNum", "Cannot be greater than number of samples under patient");
+        }
         return errorMap;
     }
 }

@@ -2,9 +2,9 @@
 <c:set var="guardianAppliedPartDto" value="${vssTreatmentDto.guardianAppliedPartDto}" />
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}" />
 <div class="form-horizontal treatmentDetails">
-    <iais:row>
+    <%--<iais:row>
         <iais:value width="6" cssClass="col-md-6">
-            <%--<strong class="app-font-size-22 premHeader">title</strong>--%>
+            &lt;%&ndash;<strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
@@ -14,7 +14,7 @@
                 </a>
             </c:if>
         </iais:value>
-    </iais:row>
+    </iais:row>--%>
 <div style="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002' ? '' : 'display: none'}">
     <iais:row style="border-bottom: 1px solid #BABABA; ">
         <iais:value width="7" cssClass="col-md-7">

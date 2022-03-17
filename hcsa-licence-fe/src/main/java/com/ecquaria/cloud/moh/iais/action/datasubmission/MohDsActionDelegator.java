@@ -242,6 +242,7 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(dpSuper));
             dpSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
         return uri;
@@ -270,7 +271,7 @@ public class MohDsActionDelegator {
         if (vssSuperDataSubmissionDto == null) {
             uri = DEFAULT_URI;
         } else {
-            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission";
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission/PrepareSwitch";
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(vssSuperDataSubmissionDto));
             vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

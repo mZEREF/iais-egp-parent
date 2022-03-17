@@ -4,8 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +15,19 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class OrganisationProfileDto extends ValidatableNodeValue {
+public class CompanyProfileDto extends ValidatableNodeValue {
     private String draftAppNo;
 
     private String facCertEntityId;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.name")
     private String orgName;
+
+    private String sameAddress;
+
+    private String registered;
+
+    private String block;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.addressType")
     private String addressType;
@@ -39,15 +44,6 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.streetName")
     private String streetName;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address1")
-    private String address1;
-
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address2")
-    private String address2;
-
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address3")
-    private String address3;
-
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.postalCode")
     private String postalCode;
 
@@ -63,22 +59,14 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.yearEstablished")
     private String yearEstablished;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.email")
-    private String email;
-
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.contactNo")
-    private String contactNo;
-
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.contactPerson")
-    private String contactPerson;
-
     private ValidationResultDto validationResultDto;
 
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateOrganisationProfile", new Object[]{this});
-        return validationResultDto.isPass();
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateOrganisationProfile", new Object[]{this});
+//        return validationResultDto.isPass();
+        return true;
     }
 
     @Override
@@ -97,6 +85,14 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
         this.draftAppNo = draftAppNo;
     }
 
+    public String getSameAddress() {
+        return sameAddress;
+    }
+
+    public void setSameAddress(String sameAddress) {
+        this.sameAddress = sameAddress;
+    }
+
     public String getOrgName() {
         return orgName;
     }
@@ -107,6 +103,22 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
 
     public String getAddressType() {
         return addressType;
+    }
+
+    public String getRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(String registered) {
+        this.registered = registered;
+    }
+
+    public String getBlock() {
+        return block;
+    }
+
+    public void setBlock(String block) {
+        this.block = block;
     }
 
     public void setAddressType(String addressType) {
@@ -153,30 +165,6 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
         this.streetName = streetName;
     }
 
-    public String getAddress1() {
-        return address1;
-    }
-
-    public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
-    public String getAddress2() {
-        return address2;
-    }
-
-    public void setAddress2(String address2) {
-        this.address2 = address2;
-    }
-
-    public String getAddress3() {
-        return address3;
-    }
-
-    public void setAddress3(String address3) {
-        this.address3 = address3;
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
@@ -191,30 +179,6 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
 
     public void setYearEstablished(String yearEstablished) {
         this.yearEstablished = yearEstablished;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContactNo() {
-        return contactNo;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
-    public String getContactPerson() {
-        return contactPerson;
-    }
-
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
     }
 
     public String getCity() {
@@ -269,15 +233,9 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
         this.setUnitNo(ParamUtil.getString(request,KEY_UNIT_NO));
         this.setBuilding(ParamUtil.getString(request,KEY_BUILDING));
         this.setPostalCode(ParamUtil.getString(request,KEY_POSTAL_CODE));
-        this.setAddress1(ParamUtil.getString(request,KEY_ADDRESS1));
-        this.setAddress2(ParamUtil.getString(request,KEY_ADDRESS2));
-        this.setAddress3(ParamUtil.getString(request,KEY_ADDRESS3));
         this.setCity(ParamUtil.getString(request,KEY_CITY));
         this.setState(ParamUtil.getString(request,KEY_STATE));
         this.setCountry(ParamUtil.getString(request,KEY_COUNTRY));
         this.setYearEstablished(ParamUtil.getString(request,KEY_YEAR_ESTABLISHED));
-        this.setEmail(ParamUtil.getString(request,KEY_EMAIL));
-        this.setContactNo(ParamUtil.getString(request,KEY_CONTACT_NO));
-        this.setContactPerson(ParamUtil.getString(request,KEY_CONTACT_PERSON));
     }
 }

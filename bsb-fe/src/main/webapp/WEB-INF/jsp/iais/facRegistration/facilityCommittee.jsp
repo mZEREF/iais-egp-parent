@@ -5,7 +5,6 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -17,24 +16,18 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <%@include file="dashboard.jsp"%>
 
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
-<form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
+<form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(facCommittee.facCommitteePersonnelList.size())}">
-
-    <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
-    <input type="hidden" id="section_repeat_section_id_prefix" value="committeeSection" readonly disabled>
-    <input type="hidden" id="section_repeat_header_title_prefix" value="Biosafety Committee " readonly disabled>
-    <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
-    <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
 
     <div class="main-content">
         <div class="container">
@@ -48,7 +41,7 @@
                                     <%@include file="../mainAppCommon/facRegistration/subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <%@ include file="../mainAppCommon/facRegistration/facilityCommittee.jsp" %>
+                                        <%@ include file="../mainAppCommon/facRegistration/facilityCommiteeNew.jsp" %>
                                     </div>
                                 </div>
 

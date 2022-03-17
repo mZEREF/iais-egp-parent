@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.withdrawn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 
 import java.io.Serializable;

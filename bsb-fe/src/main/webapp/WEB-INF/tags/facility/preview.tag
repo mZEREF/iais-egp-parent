@@ -55,7 +55,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Is the facility a Protected Place?</label>
-                                        <div class="col-xs-6"><p>${facProfile.isFacilityProtected}</p></div>
+                                        <div class="col-xs-6"><p>${facProfile.facilityProtected}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>

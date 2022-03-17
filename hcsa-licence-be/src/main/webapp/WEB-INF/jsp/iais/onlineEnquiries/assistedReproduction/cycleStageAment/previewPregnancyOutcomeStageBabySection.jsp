@@ -13,24 +13,22 @@
         <c:set value="${otherDefectTypes[status.index]}" var="otherDefectType"/>
         <c:set var="displayNum" value="${status.index + 1}"/>
         <iais:row>
-            <iais:field width="6" value="Baby ${displayNum} Birth Weight"
-                        cssClass="col-md-6"/>
-            <iais:value width="5" cssClass="col-md-6" display="true">
+            <iais:field width="5" value="Baby ${displayNum} Birth Weight"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
                 <iais:code code="${pregnancyOutcomeBabyDto.birthWeight}"/>
             </iais:value>
         </iais:row>
         <iais:row>
-            <iais:field width="6" value="Baby ${displayNum} Birth Defect"
-                        cssClass="col-md-6"/>
-            <iais:value width="5" cssClass="col-md-6" display="true">
+            <iais:field width="5" value="Baby ${displayNum} Birth Defect"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
                 <c:out value="${pregnancyOutcomeBabyDto.birthDefect}"/>
             </iais:value>
         </iais:row>
         <div name="defectTypeSectionName"
              <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'Yes'}">style="display:none;"</c:if>>
             <iais:row>
-                <iais:field width="6" value="Baby ${displayNum} Defect Type" cssClass="col-md-6"/>
-                <iais:value width="5" cssClass="col-md-6">
+                <iais:field width="5" value="Baby ${displayNum} Defect Type" />
+                <iais:value width="7" cssClass="col-md-7">
                     <c:forEach var="pregnancyOutcomeBabyDefectDto"
                                items="${pregnancyOutcomeBabyDto.pregnancyOutcomeBabyDefectDtos}"
                                varStatus="defectStatus">
@@ -41,9 +39,8 @@
             <div name="otherDefectTypeDivName"
                  <c:if test="${!fn:contains(defectTypes,'POSBDT008')}">style="display:none;"</c:if>>
                 <iais:row>
-                    <iais:field width="6" value="Baby ${displayNum} Defect Type (Others)"
-                                cssClass="col-md-6"/>
-                    <iais:value width="5" cssClass="col-md-6" display="true">
+                    <iais:field width="5" value="Baby ${displayNum} Defect Type (Others)"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${otherDefectType}"/>
                     </iais:value>
                 </iais:row>

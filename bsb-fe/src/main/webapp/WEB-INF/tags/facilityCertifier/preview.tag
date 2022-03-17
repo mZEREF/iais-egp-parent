@@ -4,9 +4,9 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 
-<%@attribute name="orgProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.OrganisationProfileDto" %>
-<%@attribute name="orgCerTeam" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto" %>
-<%@attribute name="orgAdmin" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.AdministratorDto" %>
+<%@attribute name="companyProfile" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.CompanyProfileDto" %>
+<%@attribute name="companyCerTeam" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto" %>
+<%@attribute name="companyAdmin" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.AdministratorDto" %>
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
 <%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
@@ -37,12 +37,12 @@
                                 <div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgProfile.orgName}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.orgName}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgProfile.streetName} ${orgProfile.building} ${orgProfile.floor} - ${orgProfile.unitNo} ${orgProfile.postalCode}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.streetName} ${companyProfile.building} ${companyProfile.floor} - ${companyProfile.unitNo} ${companyProfile.postalCode}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -58,9 +58,9 @@
                                     <div class="col-10"><strong>Facility Certifier Team Member</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <c:forEach var="tMember" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">
+                                <c:forEach var="tMember" items="${companyCerTeam.certifierTeamMemberList}" varStatus="status">
                                     <div>
-                                        <c:if test="${orgCerTeam.certifierTeamMemberList.size() > 1}">
+                                        <c:if test="${companyCerTeam.certifierTeamMemberList.size() > 1}">
                                             <div class="form-group">
                                                 <label class="col-xs-5 col-md-4 control-label">Team Member ${status.index + 1}</label>
                                                 <div class="clear"></div>
@@ -117,37 +117,37 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.adminName}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.adminName}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.idNo}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.idNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.nationality}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.nationality}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.designation}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.designation}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.contactNo}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.contactNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.email}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.email}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.employmentStartDate}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.employmentStartDate}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
@@ -158,37 +158,37 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.adminName}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.adminName}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.idNo}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.idNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.nationality}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.nationality}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.designation}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.designation}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.contactNo}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.contactNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.email}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.email}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.employmentStartDate}</p></div>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.employmentStartDate}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>

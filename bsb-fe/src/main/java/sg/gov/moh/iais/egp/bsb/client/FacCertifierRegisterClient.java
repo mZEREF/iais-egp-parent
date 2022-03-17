@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDto;
@@ -17,7 +17,7 @@ import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDt
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "cerReg")
 public interface FacCertifierRegisterClient {
     @PostMapping(path = "/register/facility-certifier/form-validation/org-profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateOrganisationProfile(@RequestBody OrganisationProfileDto dto);
+    ValidationResultDto validateOrganisationProfile(@RequestBody CompanyProfileDto dto);
 
     @PostMapping(path = "/register/facility-certifier/form-validation/certifying-team", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateCertifierTeam(@RequestBody CertifyingTeamDto dto);

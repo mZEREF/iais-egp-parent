@@ -32,4 +32,6 @@ public class FacilityActivityDto extends BaseEntityDto {
     private String cloned;
 
     private String useStatus;
+
+    private String status;
 }

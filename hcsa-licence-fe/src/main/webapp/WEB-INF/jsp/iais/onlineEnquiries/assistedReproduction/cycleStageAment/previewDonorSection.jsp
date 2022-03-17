@@ -9,12 +9,14 @@
 
     <div id="donorDtoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <iais:row>
-                <iais:field width="5"  value="" />
-                <iais:value width="7" cssClass="col-md-7" display="true">
-                    <c:out value="Version "/>${arSuperDataSubmissionDtoVersion.dataSubmissionDto.version}
-                </iais:value>
-            </iais:row>
+            <div class="panel-main-content form-horizontal">
+                <iais:row>
+                    <iais:field width="5"  value="" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="Version "/>${arSuperDataSubmissionDtoVersion.dataSubmissionDto.version}
+                    </iais:value>
+                </iais:row>
+            </div>
             <c:forEach items="${donorDtosVersion}" var="donorDto">
                 <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
                 <div class="panel-main-content form-horizontal">
@@ -62,8 +64,8 @@
                         <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
                             <iais:field width="5" value="Donor Sample Code / ID" />
                             <iais:value width="7" cssClass="col-md-3" display="true">
-                                <c:if test="${donorDto.idType = 'AR_IT_005'}">Code</c:if>
-                                <c:if test="${donorDto.idType != 'AR_IT_005'}"><iais:code code="${donorDto.idType}"/></c:if>
+                                <c:if test="${donorDto.idType == 'AR_IT_005'}">Code</c:if>
+                                <iais:code code="${donorDto.idType}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>

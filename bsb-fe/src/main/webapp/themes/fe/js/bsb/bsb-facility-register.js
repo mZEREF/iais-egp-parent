@@ -102,6 +102,28 @@ $(function () {
         }
     })
 
+    $("input[name=isSameAddress ]").change(function (){
+        var id = $(this).attr("id");
+        if(id === 'isSameAddress'){
+            $("#isSameAddrSection").show();
+            $("#isSameAddrSectionY").show();
+            $("#isSameAddrSectionN").hide();
+        } else if(id === 'notSameAddress'){
+            $("#isSameAddrSection").show();
+            $("#isSameAddrSectionY").hide();
+            $("#isSameAddrSectionN").show();
+        }
+    })
+
+    $("input[name=hasAppointedCertifier ]").change(function (){
+        var id = $(this).attr("id");
+        if(id === 'hasAppointedCertifier'){
+            $("#appointedCertifierSection").show();
+        } else if(id === 'notAppointedCertifier'){
+            $("#appointedCertifierSection").hide();
+        }
+    })
+
     $("input[data-custom-ind=committeePersonnelIsEmployee]").change(function () {
         var id = $(this).attr("id");
         var idx;

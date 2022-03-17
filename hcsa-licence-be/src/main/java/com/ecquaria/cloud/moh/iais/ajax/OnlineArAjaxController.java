@@ -397,6 +397,7 @@ public class OnlineArAjaxController {
 
         if (!Objects.isNull(results)){
             List<DsLaboratoryDevelopTestEnquiryResultsDto> queryList = results.getRows();
+            queryList.forEach(i -> i.setLdtDateStr(Formatter.formatDateTime(i.getLdtDate(), AppConsts.DEFAULT_DATE_FORMAT)));
 
             try {
                 file = ExcelWriter.writerToExcel(queryList, DsLaboratoryDevelopTestEnquiryResultsDto.class, "LaboratoryDevelopTest_SearchResults_Download");
