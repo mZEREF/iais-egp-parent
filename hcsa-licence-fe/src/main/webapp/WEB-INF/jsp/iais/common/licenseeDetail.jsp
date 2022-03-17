@@ -103,6 +103,7 @@
             disableContent('div.licensee-detail');
             $('.retrieveAddr').addClass('hidden');
         }
+        //toggleIdType('#idType', '.nationalityDiv');
     }
 
     function checkLicenseeType() {
@@ -144,6 +145,7 @@
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         }
+        toggleIdType('#idType', '.nationalityDiv');
     }
 
     function editContent() {
