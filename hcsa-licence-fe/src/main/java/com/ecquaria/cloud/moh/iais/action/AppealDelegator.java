@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -273,14 +274,11 @@ public class AppealDelegator {
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
 
         List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption sp0 = new SelectOption("-1", "Please Select");
+        SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         cgoSelectList.add(sp0);
-        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         cgoSelectList.add(sp1);
         ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
-
-        List<SelectOption> idTypeSelectList = getIdTypeSelOp();
-        ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelectList);
 
         String currentSvcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         List<SelectOption> specialtySelectList = genSpecialtySelectList(currentSvcCode);
@@ -288,68 +286,26 @@ public class AppealDelegator {
         //reload
 
         log.debug(StringUtil.changeForLog("gen governance officer html start ...."));
-        String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
+        String sql = SqlMap.INSTANCE.getSql("appealGovernanceOfficer", "appealGenerateGovernanceOfficerHtml").getSqlStr();
+
 
         //assign cgo select
-        Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
-        cgoSelectAttr.put("class", "assignSel");
-        cgoSelectAttr.put("name", "assignSelect");
-        cgoSelectAttr.put("style", "display: none;");
-        String cgoSelectStr =getHtml(cgoSelectAttr, cgoSelectList, null);
-
+        sql = sql.replace("(1)", generateDropDownHtml(cgoSelectList, "assignSelect", "assignSel", null));
         //salutation
-        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
-        Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
-        salutationAttr.put("class", "salutationSel");
-        salutationAttr.put("name", "salutation");
-        salutationAttr.put("style", "display: none;");
-        String salutationSelectStr = getHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
-
+        sql = sql.replace("(2)",  generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation", "salutationSel"));
         //ID Type
-        List<SelectOption> idTypeList = getIdTypeSelOp();
-        Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
-        idTypeAttr.put("class", "idTypeSel");
-        idTypeAttr.put("name", "idType");
-        idTypeAttr.put("style", "display: none;");
-        String idTypeSelectStr = getHtml(idTypeAttr, idTypeList, null);
-
+        sql = sql.replace("(3)", generateDropDownHtml(MasterCodeUtil.CATE_ID_ID_TYPE, "idType", "idTypeSel"));
         //Designation
-        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
-        designationAttr.put("class", "designationSel");
-        designationAttr.put("name", "designation");
-        designationAttr.put("style", "display: none;");
-        String designationSelectStr = getHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
-
+        sql = sql.replace("(4)", generateDropDownHtml(MasterCodeUtil.CATE_ID_DESIGNATION, "designation", "designationSel"));
         //Professional Regn Type
-        List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
-        Map<String,String> proRegnTypeAttr = IaisCommonUtils.genNewHashMap();
-        proRegnTypeAttr.put("class", "professionTypeSel");
-        proRegnTypeAttr.put("name", "professionType");
-        proRegnTypeAttr.put("style", "display: none;");
-        String proRegnTypeSelectStr = getHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
-
+        sql = sql.replace("(5)", generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE, "professionType", "professionTypeSel"));
         //Specialty
-
-        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-        specialtyAttr.put("name", "specialty");
-        specialtyAttr.put("class", "specialty");
-        specialtyAttr.put("style", "display: none;");
         String serviceName =(String)request.getSession().getAttribute("serviceName");
         HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         specialtySelectList= genSpecialtySelectList(serviceByServiceName.getSvcCode());
-        ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  specialtySelectList);
-
-        String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
-
-
-
-        sql = sql.replace("(1)", cgoSelectStr);
-        sql = sql.replace("(2)", salutationSelectStr);
-        sql = sql.replace("(3)", idTypeSelectStr);
-        sql = sql.replace("(4)", designationSelectStr);
-        sql = sql.replace("(5)", proRegnTypeSelectStr);
-        sql = sql.replace("(6)", specialtySelectStr);
+        ParamUtil.setSessionAttr(request, "SpecialtySelectList", (Serializable) specialtySelectList);
+        sql = sql.replace("(6)", generateDropDownHtml(specialtySelectList, "specialty", null));
+        // Nationality
         sql = sql.replace("(7)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
 
 
@@ -401,52 +357,6 @@ public class AppealDelegator {
     }
 
 
-    private String getHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption){
-        StringBuilder sBuffer = new StringBuilder();
-        sBuffer.append("<select ");
-        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\" ");
-        }
-        sBuffer.append(" >");
-        for(SelectOption sp:selectOptionList){
-            sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-        }
-        sBuffer.append("</select>");
-        String classNameValue = premisesOnSiteAttr.get("class");
-        String className = "premSelect";
-        if(!StringUtil.isEmpty(classNameValue)){
-            className =  classNameValue;
-        }
-        sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
-        if(StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
-        }else {
-            sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
-        }
-        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
-        if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">").append(firestOption).append("</li>");
-        }
-        for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-        }
-        sBuffer.append("</div>")
-                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
-                .append("<div class=\"mCSB_draggerContainer\">")
-                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
-                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
-                .append("</div>")
-                .append("</div>")
-                .append("<div class=\"mCSB_draggerRail\"></div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</ul>")
-                .append("</div>");
-        return sBuffer.toString();
-    }
 
     private void setFileConfig(HttpServletRequest request){
         int configFileSize = systemParamConfig.getUploadFileLimit();
@@ -467,5 +377,17 @@ public class AppealDelegator {
         attrs.put("style", "display: none;");
         return NewApplicationHelper.generateDropDownHtml(attrs, list, NewApplicationDelegator.FIRESTOPTION, null,
                 !MasterCodeUtil.CATE_ID_NATIONALITY.equals(cateId));
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String name, String firstOption) {
+        return generateDropDownHtml(options, name, name, firstOption);
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String name, String className, String firstOption) {
+        Map<String, String> attrs = IaisCommonUtils.genNewHashMap();
+        attrs.put("class", className);
+        attrs.put("name", name);
+        attrs.put("style", "display: none;");
+        return NewApplicationHelper.generateDropDownHtml(attrs, options, firstOption, null);
     }
 }

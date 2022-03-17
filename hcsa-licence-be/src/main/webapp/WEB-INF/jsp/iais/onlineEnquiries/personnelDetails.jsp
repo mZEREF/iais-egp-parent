@@ -30,16 +30,16 @@
                                     <td align="right">ID Type</td>
                                     <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.idType}"/><c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
                                 </tr>
+                                <tr>
+                                    <td align="right">ID No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
+                                </tr>
                                 <c:if test="${personnel.keyPersonnelDto.idType == 'IDTYPE003'}">
                                     <tr>
                                         <td align="right">Country of issuance</td>
                                         <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.nationality}"/><c:if test="${empty personnel.keyPersonnelDto.nationality}">-</c:if></td>
                                     </tr>
                                 </c:if>
-                                <tr>
-                                    <td align="right">ID No</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -61,16 +61,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class="col-xs-6" align="right">Name</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
-                                </tr>
-                                <tr>
                                     <td align="right">Salutation</td>
                                     <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
                                 </tr>
                                 <tr>
+                                    <td class="col-xs-6" align="right">Name</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
+                                </tr>
+                                <tr>
                                     <td align="right">ID Type</td>
                                     <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.idType}"/><c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">ID No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
                                 </tr>
                                 <c:if test="${personnel.keyPersonnelDto.idType == 'IDTYPE003'}">
                                     <tr>
@@ -78,10 +82,6 @@
                                         <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.nationality}"/><c:if test="${empty personnel.keyPersonnelDto.nationality}">-</c:if></td>
                                     </tr>
                                 </c:if>
-                                <tr>
-                                    <td align="right">ID No</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
-                                </tr>
                                 <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
                                     <tr>
                                         <td align="right">Designation</td>
