@@ -1,7 +1,7 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="sexualSterilizationDto" value="${vssTreatmentDto.sexualSterilizationDto}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${sexualSterilizationDto != null && sexualSterilizationDto.headStatus == true ? 'completed':'incompleted' }">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#pssDetails">
                 Particulars of Treatment for Sexual Sterilization Performed

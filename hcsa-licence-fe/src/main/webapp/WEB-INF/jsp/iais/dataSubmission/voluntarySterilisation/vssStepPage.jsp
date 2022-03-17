@@ -16,6 +16,7 @@
 <%@ include file="common/vssHeader.jsp" %>
 
 <c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
+<c:set var="headingSign" value="completed"/>
 <%--<c:set var="headingSign" value="${headingStatus = 1 ? 'completed' : 'incompleted' }"/>--%>
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
@@ -42,6 +43,7 @@
                                     <c:when test="${currCode == 'VSST010'}">
                                         <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
                                             <div class="col-xs-12 col-md-10">
+                                                <strong style="font-size: 2rem;">Preview & Submit</strong>
                                             </div>
                                             <div class="col-xs-12 col-md-2 text-right">
                                                 <p class="print" style="font-size: 16px;">

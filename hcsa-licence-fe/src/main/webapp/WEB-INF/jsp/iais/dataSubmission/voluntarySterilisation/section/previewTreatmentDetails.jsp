@@ -1,7 +1,7 @@
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}"/>
 <c:set var="treatmentDto" value="${vssTreatmentDto.treatmentDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${treatmentDto !=null && treatmentDto.headStatus ==true ? 'completed' : 'incompleted'}">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#treatmentDetails">
                 Treatment Details
