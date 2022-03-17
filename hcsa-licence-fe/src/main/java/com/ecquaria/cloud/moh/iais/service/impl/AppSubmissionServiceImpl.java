@@ -81,7 +81,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -120,15 +119,6 @@ import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.webflow.rt.api.BaseProcessClass;
-import sop.webflow.rt.api.Process;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -148,6 +138,14 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
+import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmisionServiceImpl
@@ -819,7 +817,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         String propertyName = "save";
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())){
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())){
             propertyName = "soloSave";
         }
         ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, propertyName);
