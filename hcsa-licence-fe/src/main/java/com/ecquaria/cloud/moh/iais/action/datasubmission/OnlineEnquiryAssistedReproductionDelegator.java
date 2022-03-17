@@ -1133,18 +1133,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         currentFrozenEmbryos+=aci.getFrozenEmbryoNum();
                         currentThawedEmbryos+=aci.getThawedEmbryoNum();
                         currentFreshEmbryos+=aci.getFreshEmbryoNum();
-                        currentFrozenSperms+=aci.getFrozenEmbryoNum();
+                        currentFrozenSperms+=aci.getFrozenSpermNum();
                         if(premisesMap.containsKey(aci.getHciCode())){
                             arCurrentInventoryDtoLinkedHashMap.put(premisesMap.get(aci.getHciCode()).getPremiseLabel(),aci);
                         }
                     }
                 }
                 patientInventoryDtoTotal.setThawedEmbryoNum(currentThawedEmbryos);
-                patientInventoryDtoTotal.setFreshOocyteNum(currentFreshOocytes);
-                patientInventoryDtoTotal.setFreshEmbryoNum(currentFrozenEmbryos);
-                patientInventoryDtoTotal.setFreshEmbryoNum(currentFreshEmbryos);
-                patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
                 patientInventoryDtoTotal.setThawedOocyteNum(currentThawedOocytes);
+                patientInventoryDtoTotal.setFreshOocyteNum(currentFreshOocytes);
+                patientInventoryDtoTotal.setFreshEmbryoNum(currentFreshEmbryos);
+                patientInventoryDtoTotal.setFrozenEmbryoNum(currentFrozenEmbryos);
+                patientInventoryDtoTotal.setFrozenOocyteNum(currentFrozenOocytes);
                 patientInventoryDtoTotal.setFrozenSpermNum(currentFrozenSperms);
                 arCurrentInventoryDtoLinkedHashMap.put("Total",patientInventoryDtoTotal);
                 ParamUtil.setSessionAttr(request,"patientInventoryDtos",  arCurrentInventoryDtoLinkedHashMap);
