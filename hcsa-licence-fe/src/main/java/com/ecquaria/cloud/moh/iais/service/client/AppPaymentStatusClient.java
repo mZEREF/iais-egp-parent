@@ -53,4 +53,7 @@ public interface  AppPaymentStatusClient {
     @PostMapping(value = "/iais-payment/create-giro-send-sftp-group" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentSendGroupDto> createGiroPaymentSendGroupDto(@RequestBody GiroPaymentSendGroupDto giroPaymentSendGroupDto);
 
+    @PostMapping(value = "/iais-payment/update-giro-ack-by-xml-dto" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GiroPaymentXmlDto> updateGiroAckByGiroPaymentXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
+
 }
