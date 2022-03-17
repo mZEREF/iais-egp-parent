@@ -97,11 +97,11 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="col-xs-6" align="right">Name</td>
+                                <td align="right">Salutation</td>
                                 <td class="col-xs-6" style="padding-left: 15px;">-</td>
                             </tr>
                             <tr>
-                                <td align="right">Salutation</td>
+                                <td class="col-xs-6" align="right">Name</td>
                                 <td class="col-xs-6" style="padding-left: 15px;">-</td>
                             </tr>
                             <tr>
@@ -143,12 +143,12 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="col-xs-6" align="right">Name</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${member.name}<c:if test="${empty member.name}">-</c:if></td>
-                            </tr>
-                            <tr>
                                 <td align="right">Salutation</td>
                                 <td class="col-xs-6" style="padding-left: 15px;">${member.salutation}<c:if test="${empty member.salutation}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6" align="right">Name</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${member.name}<c:if test="${empty member.name}">-</c:if></td>
                             </tr>
                             <tr>
                                 <td align="right">ID Type</td>
@@ -198,16 +198,20 @@
                             <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.uenNo}<c:if test="${empty subLicenseeDto.uenNo}">-</c:if></td>
                         </tr>
                         <tr>
-                            <td class="col-xs-6" align="right">Name</td>
-                            <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.licenseeName}<c:if test="${empty subLicenseeDto.licenseeName}">-</c:if></td>
-                        </tr>
-                        <tr>
                             <td align="right">Salutation</td>
                             <td class="col-xs-6" style="padding-left: 15px;">-</td>
                         </tr>
                         <tr>
+                            <td class="col-xs-6" align="right">Name</td>
+                            <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.licenseeName}<c:if test="${empty subLicenseeDto.licenseeName}">-</c:if></td>
+                        </tr>
+                        <tr>
                             <td align="right">ID Type</td>
                             <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.idType}"/><c:if test="${empty subLicenseeDto.idType}">-</c:if></td>
+                        </tr>
+                        <tr>
+                            <td align="right">ID No</td>
+                            <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.idNumber}<c:if test="${empty subLicenseeDto.idNumber}">-</c:if></td>
                         </tr>
                         <c:if test="${subLicenseeDto.idType == 'IDTYPE003'}">
                             <tr>
@@ -215,10 +219,6 @@
                                 <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.nationality}"/><c:if test="${empty subLicenseeDto.nationality}">-</c:if></td>
                             </tr>
                         </c:if>
-                        <tr>
-                            <td align="right">ID No</td>
-                            <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.idNumber}<c:if test="${empty subLicenseeDto.idNumber}">-</c:if></td>
-                        </tr>
                         <tr>
                             <td align="right">Postal Code</td>
                             <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.postalCode}<c:if test="${empty subLicenseeDto.postalCode}">-</c:if></td>

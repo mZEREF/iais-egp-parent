@@ -1,17 +1,6 @@
 
-
-
-
-<style>
-    table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
-        margin-bottom: 15px;margin-top: 25px;
-
-
-    }
-
-</style>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
-  <div id="wizard-page-title">A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</div>
+  <div id="wizard-page-title">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
@@ -182,7 +171,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-4">
                                       <div class="">
-                                        <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
+                                        <iais:input maxLength="20" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo"></span>
                                       </div>
@@ -470,6 +459,11 @@
         $('input[type="text"]').css('border-color','#ededed');
         $('input[type="text"]').css('color','#999');
         $(".assignContent div.nice-select").addClass('disabled');
+        if($('.designationSel').val()=='DES999'){
+          $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else {
+          $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
     });
 
     var disabledAll = function () {
@@ -553,7 +547,9 @@
 
     var changePsnItem = function () {
         $('.assign-psn-item').each(function (k,v) {
+          if(k!==0){
             $(this).html(k+1);
+          }
         });
 
     }

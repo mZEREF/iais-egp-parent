@@ -819,7 +819,7 @@ public class AppealServiceImpl implements AppealService {
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = reAppSvcCgo(request);
-        ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
+        ParamUtil.setSessionAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
 
         AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
@@ -839,7 +839,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private List<AppSvcPrincipalOfficersDto> reAppSvcCgo(HttpServletRequest req) {
+    public List<AppSvcPrincipalOfficersDto> reAppSvcCgo(HttpServletRequest req) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto appSvcCgoDto ;
@@ -1023,8 +1023,15 @@ public class AppealServiceImpl implements AppealService {
                         map.put("assignSelect" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
                     } else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
+                        String nationality  = appSvcCgoList.get(i).getNationality();
+
                         if ("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)) {
                             map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
+                        }else if("IDTYPE003".equals(idTyp)){
+                            if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
+                                map.put("nationality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Country of issuance","field"));
+                            }
+
                         }
                         String salutation = appSvcCgoList.get(i).getSalutation();
                         if (StringUtil.isEmpty(salutation)) {
@@ -1862,7 +1869,7 @@ public class AppealServiceImpl implements AppealService {
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
-                if (size > maximumCount) {
+                if (size >= maximumCount) {
                     return false;
                 }
             }

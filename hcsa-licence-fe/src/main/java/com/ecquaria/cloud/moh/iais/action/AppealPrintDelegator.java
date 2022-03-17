@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,7 @@ public class AppealPrintDelegator {
     @Autowired
     CessationApplicationFeDelegator cessationApplicationFeDelegator;
 
-    @Autowired
-    private ApplicationFeClient applicationFeClient;
+
 
     public void prepareData(BaseProcessClass bpc){
         log.info("------>prepareData start<------");
