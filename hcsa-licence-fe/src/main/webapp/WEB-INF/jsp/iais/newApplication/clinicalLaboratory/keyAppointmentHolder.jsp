@@ -224,6 +224,7 @@
                 if (initEnd){
                     clearFields($keyAppointmentHolder);
                 }
+                toggleIdType($keyAppointmentHolder.find('select[name^="idType"]'), $keyAppointmentHolder.find('.nationalityDiv'));
             }else if('newOfficer' == assignSelVal){
                 $keyAppointmentHolder.removeClass('hidden');
                 unDisabledPartPage($keyAppointmentHolder);
@@ -232,6 +233,7 @@
                 }else {
                     addDisabled();
                 }
+                toggleIdType($keyAppointmentHolder.find('select[name^="idType"]'), $keyAppointmentHolder.find('.nationalityDiv'));
             }else{
                 $keyAppointmentHolder.removeClass('hidden');
                 var arr = $(this).val().split(',');
