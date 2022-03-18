@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
-import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.action.RequestForChangeMenuDelegator;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -49,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
@@ -100,7 +98,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /****
@@ -1457,7 +1454,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         // check seq num and remove duplicate the documents
-        int maxSeqNum = NewApplicationHelper.getMaxFileIndex(appSubmissionDto.getMaxFileIndex() + 1);
+        int maxSeqNum = NewApplicationHelper.getMaxFileIndex(appSubmissionDto.getMaxFileIndex());
+        Integer seqNum = appGrpPrimaryDocDtos.stream()
+                .map(AppGrpPrimaryDocDto::getSeqNum)
+                .filter(Objects::nonNull)
+                .max(Integer::compareTo)
+                .orElse(-1);
+        if (seqNum >= maxSeqNum) {
+            maxSeqNum = seqNum + 1;
+        }
         for (int i = 0; i < appGrpPrimaryDocDtos.size(); i++) {
             if (appGrpPrimaryDocDtos.get(i).getSeqNum() == null) {
                 appGrpPrimaryDocDtos.get(i).setSeqNum(maxSeqNum++);
@@ -1799,19 +1804,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     return flag==true ? String.valueOf(false): "";
                 }
                 Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
-                while (iterator1.hasNext()){
+                while (iterator1.hasNext()) {
                     LicBaseSpecifiedCorrelationDto next = iterator1.next();
-                    if(next.getSpecLicId().equals(licenceDto.getId())){
+                    if (next.getSpecLicId().equals(licenceDto.getId())) {
                         String baseLicId = next.getBaseLicId();
-                        LicenceDto licenceDto1 = licenceClient.getLicBylicId(baseLicId).getEntity();
-                        if(licenceDto1==null){
+                        LicenceDto licenceDto1 = getLicenceById(baseLicId);
+                        if (licenceDto1 == null) {
                             log.info(StringUtil.changeForLog("The base Licence is empty!"));
-                            return flag==true ? String.valueOf(false): "";
+                            return flag == true ? String.valueOf(false) : "";
                         }
                         String svcName1 = licenceDto1.getSvcName();
                         String svc_name = appConfigClient.getServiceNameById(baseService).getEntity();
-                        if(svcName1.equals(svc_name)){
-                            return flag==true ?String.valueOf(true):baseService;
+                        if (svcName1.equals(svc_name)) {
+                            return flag == true ? String.valueOf(true) : baseService;
                         }
                     }
                 }
