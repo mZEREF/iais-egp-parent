@@ -11,7 +11,7 @@
                        name="givenPostCounselling"
                        value="1"
                        id="radioYes"
-                       <c:if test="${postTerminationDto.givenPostCounselling}">checked</c:if>
+                       <c:if test="${postTerminationDto.givenPostCounselling == true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="radioYes"><span
@@ -26,7 +26,7 @@
                        name="givenPostCounselling"
                        value="0"
                        id="radioNo"
-                       <c:if test="${postTerminationDto.givenPostCounselling == 'false'}">checked</c:if>
+                       <c:if test="${postTerminationDto.givenPostCounselling == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="radioNo"><span
@@ -35,7 +35,11 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="If post-counselling was not given"/>
+        <label class="col-xs-5 col-md-4 control-label">If post-counselling was not given
+            <span id="ifCounsellingNotGiven" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="ifCounsellingNotGiven" firstOption="Please Select" codeCategory=""
                          value="${postTerminationDto.ifCounsellingNotGiven}" cssClass="ifCounsellingNotGiven"/>
@@ -43,7 +47,11 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post-Termination Counsellor ID Type"/>
+        <label class="col-xs-5 col-md-4 control-label">Post-Termination Counsellor ID Type
+            <span id="counsellorIdType" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${postTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
@@ -51,31 +59,69 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post-Termination Counsellor ID No."/>
+        <label class="col-xs-5 col-md-4 control-label">Post-Termination Counsellor ID No.
+            <span id="counsellorIdNo" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${postTerminationDto.counsellorIdNo}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Doctor Professional Regn No."/>
+        <label class="col-xs-5 col-md-4 control-label">Post Termination Counsellor Name
+            <span id="counsellorName" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellorName" value="${postTerminationDto.counsellorName}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Post-Counselling Date"/>
+        <label class="col-xs-5 col-md-4 control-label">Post-Counselling Date
+            <span id="counsellingDate" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="counsellingDate" value="${postTerminationDto.counsellingDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Place of Post-Counselling"/>
+        <label class="col-xs-5 col-md-4 control-label">Place of Post-Counselling
+            <span id="counsellingPlace" class="mandatory">
+                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellingPlace" value="${postTerminationDto.counsellingPlace}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
         </iais:value>
     </iais:row>
 </div>
+<script>
+    $(document).ready(function () {
+        $('input[name=givenPostCounselling]').change(function () {
+            if($('#radioYes').prop('checked')) {
+                $('#ifCounsellingNotGiven').text('*');
+                $('#counsellorIdType').text('*');
+                $('#counsellorIdNo').text('*');
+                $('#counsellorName').text('*');
+                $('#counsellingDate').text('*');
+                $('#counsellingPlace').text('*');
+            }
+            if($('#radioNo').prop('checked')) {
+                $('#ifCounsellingNotGiven').text('');
+                $('#counsellorIdType').text('');
+                $('#counsellorIdNo').text('');
+                $('#counsellorName').text('');
+                $('#counsellingDate').text('');
+                $('#counsellingPlace').text('');
+            }
+        });
+    });
+</script>
