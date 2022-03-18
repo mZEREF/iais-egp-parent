@@ -97,7 +97,9 @@ public class FertilisationDelegator extends CommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, fertilisationDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, fertilisationDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {
@@ -120,7 +122,18 @@ public class FertilisationDelegator extends CommonDelegator{
     private void setFertilisationDto(HttpServletRequest request, FertilisationDto fertilisationDto){
         String[] sourceOfSemens = ParamUtil.getStrings(request,"sourceOfSemen");
         String[] arTechniquesUseds = ParamUtil.getStrings(request,"arTechniquesUsed");
-        ControllerHelper.get(request,fertilisationDto);
+        String extractedSpermVialsNum = ParamUtil.getRequestString(request,"extractedSpermVialsNum");
+        String usedSpermVialsNum = ParamUtil.getRequestString(request,"usedSpermVialsNum");
+        String freshOocytesInseminatedNum = ParamUtil.getRequestString(request,"freshOocytesInseminatedNum");
+        String freshOocytesMicroInjectedNum = ParamUtil.getRequestString(request,"freshOocytesMicroInjectedNum");
+        String freshOocytesGiftNum = ParamUtil.getRequestString(request,"freshOocytesGiftNum");
+        String freshOocytesZiftNum = ParamUtil.getRequestString(request,"freshOocytesZiftNum");
+        String thawedOocytesInseminatedNum = ParamUtil.getRequestString(request,"thawedOocytesInseminatedNum");
+        String thawedOocytesMicroinjectedNum = ParamUtil.getRequestString(request,"thawedOocytesMicroinjectedNum");
+        String thawedOocytesGiftNum = ParamUtil.getRequestString(request,"thawedOocytesGiftNum");
+        String thawedOocytesZiftNum = ParamUtil.getRequestString(request,"thawedOocytesZiftNum");
+        fertilisationDto.setExtractedSpermVialsNum(extractedSpermVialsNum);
+        fertilisationDto.setUsedSpermVialsNum(usedSpermVialsNum);
         if( !IaisCommonUtils.isEmpty(sourceOfSemens)){
             fertilisationDto.setSosList(Arrays.asList(sourceOfSemens));
             fertilisationDto.setFromDonorTissue(false);
@@ -153,19 +166,35 @@ public class FertilisationDelegator extends CommonDelegator{
             for (String arTechniquesUsed:arTechniquesUseds) {
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF)){
                     fertilisationDto.setIvfUsed(true);
+                    fertilisationDto.setFreshOocytesInseminatedNum(freshOocytesInseminatedNum);
+                    fertilisationDto.setThawedOocytesInseminatedNum(thawedOocytesInseminatedNum);
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
                     fertilisationDto.setIcsiUsed(true);
+                    fertilisationDto.setFreshOocytesMicroInjectedNum(freshOocytesMicroInjectedNum);
+                    fertilisationDto.setThawedOocytesMicroinjectedNum(thawedOocytesMicroinjectedNum);
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_GIFT)){
                     fertilisationDto.setGiftUsed(true);
+                    fertilisationDto.setFreshOocytesGiftNum(freshOocytesGiftNum);
+                    fertilisationDto.setThawedOocytesGiftNum(thawedOocytesGiftNum);
                 }
                 if(arTechniquesUsed.equals(DataSubmissionConsts.AR_TECHNIQUES_USED_ZIFT)){
                     fertilisationDto.setZiftUsed(true);
+                    fertilisationDto.setFreshOocytesZiftNum(freshOocytesZiftNum);
+                    fertilisationDto.setThawedOocytesZiftNum(thawedOocytesZiftNum);
                 }
             }
         }else{
             fertilisationDto.setAtuList(null);
+            fertilisationDto.setFreshOocytesInseminatedNum(null);
+            fertilisationDto.setThawedOocytesInseminatedNum(null);
+            fertilisationDto.setFreshOocytesMicroInjectedNum(null);
+            fertilisationDto.setThawedOocytesMicroinjectedNum(null);
+            fertilisationDto.setFreshOocytesGiftNum(null);
+            fertilisationDto.setThawedOocytesGiftNum(null);
+            fertilisationDto.setFreshOocytesZiftNum(null);
+            fertilisationDto.setThawedOocytesZiftNum(null);
         }
     }
 
