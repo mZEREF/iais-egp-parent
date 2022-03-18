@@ -115,13 +115,17 @@
                                          codeCategory="TOP_ACTIVITY_STATUS" value="${patientInformationDto.activityStatus}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Occupation" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="occupation" name="occupation" firstOption="Please Select"
-                                         codeCategory="TOP_OCCUPATION" value="${patientInformationDto.occupation}"/>
-                        </iais:value>
-                    </iais:row>
+                    <div id="occupations"
+                         <c:if test="${patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Occupation" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:select cssClass="occupation" name="occupation" firstOption="Please Select"
+                                             codeCategory="TOP_OCCUPATION" value="${patientInformationDto.occupation}"/>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_occupation"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                     <div id="otherOccupation"
                          <c:if test="${patientInformationDto.occupation!='TOPOCC014'}">style="display: none"</c:if>>
                         <iais:row>
@@ -184,6 +188,18 @@
                 $('#otherEthnicGroup').attr("style", "display: block");
             } else {
                 $('#otherEthnicGroup').attr("style", "display: none");
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#activityStatus').change(function () {
+
+            var activityStatus = $('#activityStatus option:selected').val();
+
+            if (activityStatus == "TOPAS001") {
+                $('#occupations').attr("style", "display: block");
+            } else {
+                $('#occupations').attr("style", "display: none");
             }
         });
     });
