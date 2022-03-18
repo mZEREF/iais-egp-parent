@@ -31,6 +31,7 @@
                     </label>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
+                                     onchange="checkMantory(this, '#ethnicGroupLabel', 'NAT0001')"
                                      value="${patientDto.nationality}" cssClass="nationalitySel"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                     </iais:value>
@@ -136,7 +137,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Ethnic Group" mandatory="true"/>
+                    <iais:field width="5" value="Ethnic Group" id="ethnicGroupLabel" mandatory="${patientDto.nationality eq 'NAT0001' ? true : false}"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
                                      value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ETHG005', 'ethnicOthers')" />
