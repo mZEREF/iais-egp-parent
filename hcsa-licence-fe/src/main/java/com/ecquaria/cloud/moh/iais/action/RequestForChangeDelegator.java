@@ -141,7 +141,7 @@ public class RequestForChangeDelegator {
                     }
                     log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
                     String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen,licenceDto),
-                            NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
+                            NewApplicationDelegator.FIRESTOPTION, checkedVals, false,true);
 
                     String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
                     chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_subLicenseeError\">";
@@ -554,7 +554,10 @@ public class RequestForChangeDelegator {
         if(confirms == null || confirms.length == 0){
             error.put("confirmError","RFC_ERR004");
         }
-
+        if(StringUtil.isNotEmpty(reason) && reason.length()>=300){
+            String general_err0041= NewApplicationHelper.repLength("This","300");
+            error.put("reasonError",general_err0041);
+        }
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
@@ -648,7 +651,10 @@ public class RequestForChangeDelegator {
         if(!isEmail){
             error.put("emailError","GENERAL_ERR0014");
         }
-
+        if(StringUtil.isNotEmpty(reason) && reason.length()>=300){
+            String general_err0041= NewApplicationHelper.repLength("This","300");
+            error.put("reasonError",general_err0041);
+        }
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
         if(map == null || map.size()==0){
@@ -1143,6 +1149,9 @@ public class RequestForChangeDelegator {
         }
         if(StringUtil.isEmpty(email)){
             error.put("emailError","GENERAL_ERR0006");
+        }if(email.length()>=320){
+            String general_err0041= NewApplicationHelper.repLength("This","320");
+            error.put("emailError",general_err0041);
         }
         return error;
     }

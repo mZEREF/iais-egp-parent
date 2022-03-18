@@ -500,21 +500,22 @@ public class NewApplicationHelper {
         targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
-    public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+    public static int getMaxFileIndex(Integer maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+        int seqNum = maxSeqNum != null ? maxSeqNum + 1 : 0;
         Integer maxFileIndex = 0;
         if (checkGlobal && request != null) {
             maxFileIndex = (Integer) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
-        if (maxFileIndex != null && maxFileIndex > maxSeqNum) {
-            maxSeqNum = maxFileIndex;
+        if (maxFileIndex != null && (maxFileIndex > seqNum)) {
+            seqNum = maxFileIndex;
         }
         if (checkGlobal && request != null) {
-            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, maxSeqNum);
+            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, seqNum);
         }
-        return maxSeqNum;
+        return seqNum;
     }
 
-    public static int getMaxFileIndex(int maxSeqNum) {
+    public static int getMaxFileIndex(Integer maxSeqNum) {
         return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
     }
 
@@ -3370,31 +3371,6 @@ public class NewApplicationHelper {
         return workingDaySp;
     }
 
-    public static boolean psnDoPartValidate(String idType, String idNo, String name) {
-        boolean result = true;
-        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
-            result = false;
-        } else {
-            if (idNo.length() > 9) {
-                result = false;
-            }
-            if (OrganizationConstants.ID_TYPE_FIN.equals(idType)) {
-                boolean b = SgNoValidator.validateFin(idNo);
-                if (!b) {
-                    result = false;
-                }
-            }
-            if (OrganizationConstants.ID_TYPE_NRIC.equals(idType)) {
-                boolean b1 = SgNoValidator.validateNric(idNo);
-                if (!b1) {
-                    result = false;
-                }
-            }
-
-        }
-        return result;
-    }
-
     public static List<AppSvcPrincipalOfficersDto> getPsnByDupForPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
             String dupForPerson) {
         List<AppSvcPrincipalOfficersDto> psnDtoList = IaisCommonUtils.genNewArrayList();
@@ -3595,11 +3571,14 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "sectionLeaderList", appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
         }
     }
-
     public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
-            List<String> checkedVals, boolean multiSelect) {
+                                              List<String> checkedVals, boolean multiSelect,boolean isTransfer) {
         StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<div class=\"col-md-12 col-xs-12 multi-select\">").append("<select ");
+        sBuffer.append("<div ");
+        if(!isTransfer){
+            sBuffer.append("class=\"col-md-12 col-xs-12 multi-select\"");
+        }
+        sBuffer.append("><select ");
         if (multiSelect) {
             sBuffer.append("multiple=\"multiple\" ");
         }
@@ -3640,6 +3619,10 @@ public class NewApplicationHelper {
                 .append("<span class=\"error-msg \" name=\"iaisErrorMsg\" id=\"error_").append(name).append("\"></span>")
                 .append("</div>");
         return sBuffer.toString();
+    }
+    public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
+            List<String> checkedVals, boolean multiSelect) {
+       return genMutilSelectOpHtml(attrMap,selectOptionList,firestOption,checkedVals,multiSelect,false);
     }
 
     public static String getPsnType(String dupForPerson) {
@@ -4154,7 +4137,32 @@ public class NewApplicationHelper {
         return text;
     }
 
-    private static Map<String, String> doPsnCommValidate(Map<String, String> errMap, String idType, String idNo, boolean licPerson,
+    public static boolean psnDoPartValidate(String idType, String idNo, String name) {
+        boolean result = true;
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
+            result = false;
+        } else {
+            if (idNo.length() > 9) {
+                result = false;
+            }
+            if (OrganizationConstants.ID_TYPE_FIN.equals(idType)) {
+                boolean b = SgNoValidator.validateFin(idNo);
+                if (!b) {
+                    result = false;
+                }
+            }
+            if (OrganizationConstants.ID_TYPE_NRIC.equals(idType)) {
+                boolean b1 = SgNoValidator.validateNric(idNo);
+                if (!b1) {
+                    result = false;
+                }
+            }
+
+        }
+        return result;
+    }
+
+    public static Map<String, String> doPsnCommValidate(Map<String, String> errMap, String idType, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson) {
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);

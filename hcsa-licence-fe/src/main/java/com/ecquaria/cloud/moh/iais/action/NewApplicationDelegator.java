@@ -469,7 +469,7 @@ public class NewApplicationDelegator {
                 SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
                 if (old != null) {
                     dto.setIdType(old.getIdType());
-                    dto.setIdNumber(old.getIdNumber());
+                    dto.setIdNumber(StringUtil.toUpperCase(old.getIdNumber()));
                     dto.setLicenseeName(old.getLicenseeName());
                     dto.setLicenseeType(old.getLicenseeType());
                 }
@@ -494,7 +494,7 @@ public class NewApplicationDelegator {
                     } else {
                         SubLicenseeDto selectedDto = optional.get();
                         dto.setIdType(selectedDto.getIdType());
-                        dto.setIdNumber(selectedDto.getIdNumber());
+                        dto.setIdNumber(StringUtil.toUpperCase(selectedDto.getIdNumber()));
                         dto.setLicenseeName(selectedDto.getLicenseeName());
                     }
                 }
@@ -536,7 +536,7 @@ public class NewApplicationDelegator {
 
         SubLicenseeDto dto = new SubLicenseeDto();
         dto.setIdType(idType);
-        dto.setIdNumber(idNumber);
+        dto.setIdNumber(StringUtil.toUpperCase(idNumber));
         dto.setLicenseeName(licenseeName);
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
@@ -1646,7 +1646,6 @@ public class NewApplicationDelegator {
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
-        preDataDeclaration(bpc.request,appSubmissionDto);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         if("exitSaveDraft".equals(crud_action_additional)){
             jumpYeMian(bpc.request, bpc.response);
@@ -1656,29 +1655,7 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("saveDraftSuccess", "success");
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
-    private void preDataDeclaration(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
-        if(appSubmissionDto==null){
-            return;
-        }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, request);
-            if((declarationFiles==null || declarationFiles .isEmpty()) && isEmptyData(appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
 
-            }else {
-                appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-            }
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-
-        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, request);
-            appSubmissionService.getAppDeclarationMessageDto(request,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-            appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-        }
-    }
     /*NewApplicationDelegator
     * */
     private boolean isEmptyData( AppDeclarationMessageDto appDeclarationMessageDto ,String apptye){
@@ -2567,7 +2544,8 @@ public class NewApplicationDelegator {
         // reSet: isNeedNewLicNo and self assessment flag
         NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        log.info(StringUtil.changeForLog("App Edit Select Dto: " + JsonUtil.parseToJson(appEditSelectDto)));
+        log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
+                + JsonUtil.parseToJson(appEditSelectDto)));
         // the declaration only for HCI name changed
         if(!appEditSelectDto.isChangeHciName()){
             appSubmissionDto.setAppDeclarationMessageDto(null);
@@ -2661,11 +2639,12 @@ public class NewApplicationDelegator {
                 groupNo = appGroupNo;
             }
             // reSet amount
-            /*double otherAmount = 0.0D;
-            FeeDto feeDto = appSubmissionService.getGroupAmendAmount(getAmendmentFeeDto(changeSelectDto, isCharity));
-            if (feeDto != null && feeDto.getTotal() != null) {
-                otherAmount = feeDto.getTotal();
-            }*/
+            double otherAmount = 0.0D;
+            FeeDto premiseFee = appSubmissionService.getGroupAmendAmount(getAmendmentFeeDto(changeSelectDto, isCharity));
+            if (premiseFee != null && premiseFee.getTotal() != null) {
+                otherAmount = premiseFee.getTotal();
+            }
+            log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppSubmissionDto> appSubmissionDtos;
             if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
@@ -2674,7 +2653,7 @@ public class NewApplicationDelegator {
                 if (IaisCommonUtils.isNotEmpty(appSubmissionDtos)) {
                     StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                             .forEach(dto -> NewApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));
-                    boolean isValid = checkAffectedAppSubmissions(appSubmissionDtos, amount, draftNo, groupNo, changeSelectDto,
+                    boolean isValid = checkAffectedAppSubmissions(appSubmissionDtos, otherAmount, draftNo, groupNo, changeSelectDto,
                             NewApplicationConstant.SECTION_PREMISES, bpc.request);
                     if (!isValid) {
                         return;
@@ -2682,7 +2661,7 @@ public class NewApplicationDelegator {
                 }
             } else {
                 appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-                boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, amount, draftNo, groupNo, changeSelectDto,
+                boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
                         appSubmissionDtos, bpc.request);
                 if (!isValid) {
                     return;
@@ -4184,13 +4163,8 @@ public class NewApplicationDelegator {
                     requestForChangeService.svcDocToPresmise(appSubmissionDto.getOldAppSubmissionDto());
                 }
                 //set max file index into session
-                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-                if(maxFileIndex == null){
-                    maxFileIndex = 0;
-                }else{
-                    maxFileIndex ++;
-                }
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+                NewApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
+
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if (stepColor != null) {
                     HashMap<String, String> coMap = new HashMap<>(4);
@@ -4302,13 +4276,7 @@ public class NewApplicationDelegator {
             if (appSubmissionDto != null) {
                 svcRelatedInfoRFI(appSubmissionDto, appNo);
                 //set max file index into session
-                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-                if(maxFileIndex == null){
-                    maxFileIndex = 0;
-                }else{
-                    maxFileIndex ++;
-                }
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+                NewApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
 
                 appSubmissionDto.setRfiAppNo(appNo);
                 //clear svcDoc id
