@@ -33,7 +33,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         int countNo = (int) ParamUtil.getSessionAttr(request,"count");
 
-        if(countNo>=6&&pgtStageDto.getIsThereAppeal()==0){
+        if(countNo>=6&&(pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1&&pgtStageDto.getIsThereAppeal()==0){
             errorMap.put("isThereAppeal", "Disallow submission if patient's total PGT-M/SR co-funded cycles entered in the system is ≥6 and option selected for 'Is there an Appeal?' is 'No'");
         }
         if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
