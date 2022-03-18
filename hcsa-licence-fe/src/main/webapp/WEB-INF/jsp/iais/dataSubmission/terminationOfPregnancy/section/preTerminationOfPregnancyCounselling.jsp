@@ -11,7 +11,7 @@
                        name="counsellingGiven"
                        value="1"
                        id="counsellingYes"
-                       <c:if test="${preTerminationDto.counsellingGiven}">checked</c:if>
+                       <c:if test="${preTerminationDto.counsellingGiven == true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="counsellingYes"><span
@@ -26,7 +26,7 @@
                        name="counsellingGiven"
                        value="0"
                        id="counsellingNo"
-                       <c:if test="${preTerminationDto.counsellingGiven == 'false'}">checked</c:if>
+                       <c:if test="${preTerminationDto.counsellingGiven == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="counsellingNo"><span
@@ -43,7 +43,7 @@
                        name="counsellingGivenOnMin"
                        value="1"
                        id="pregnancyYes"
-                       <c:if test="${preTerminationDto.counsellingGivenOnMin}">checked</c:if>
+                       <c:if test="${preTerminationDto.counsellingGivenOnMin== true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="pregnancyYes"><span
@@ -58,7 +58,7 @@
                        name="counsellingGivenOnMin"
                        value="0"
                        id="pregnancyNo"
-                       <c:if test="${preTerminationDto.counsellingGivenOnMin == 'false'}">checked</c:if>
+                       <c:if test="${preTerminationDto.counsellingGivenOnMin == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="pregnancyNo"><span
@@ -67,7 +67,11 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"/>
+        <label class="col-xs-5 col-md-4 control-label">Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination
+            <span id="patientSign" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="3" cssClass="col-md-3">
             <div class="form-check">
                 <input class="form-check-input"
@@ -75,7 +79,7 @@
                        name="patientSign"
                        value="1"
                        id="acknowledgementYes"
-                       <c:if test="${preTerminationDto.patientSign}">checked</c:if>
+                       <c:if test="${preTerminationDto.patientSign == true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="acknowledgementYes"><span
@@ -90,7 +94,7 @@
                        name="patientSign"
                        value="0"
                        id="acknowledgementNo"
-                       <c:if test="${preTerminationDto.patientSign == 'false'}">checked</c:if>
+                       <c:if test="${preTerminationDto.patientSign == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="acknowledgementNo"><span
@@ -99,12 +103,11 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <%--<label class="col-xs-6 col-md-6 control-label">Pre-Termination Counsellor ID Type
+        <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counsellor ID Type
             <span id="counsellorIdType" class="mandatory">
-                <c:if test="${preTerminationDto.counsellingGiven == 'Yes'}">*</c:if>
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
             </span>
-        </label>--%>
-        <iais:field width="5" value="Pre-Termination Counsellor ID Type"/>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
@@ -113,35 +116,55 @@
 
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Pre-Termination Counsellor ID No."/>
+        <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counsellor ID No.
+            <span id="counsellorIdNo" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" name="counsellorIdNo" value="${preTerminationDto.counsellorIdNo}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdNo"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Pre-Termination Counsellor Name"/>
+        <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counsellor Name
+            <span id="counsellorName" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellorName" value="${preTerminationDto.counsellorName}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorName"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Pre-Termination Counselling Date"/>
+        <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counselling Date
+            <span id="counsellingDate" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="counsellingDate" value="${preTerminationDto.counsellingDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingDate"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Pre-Counselling Place"/>
+        <label class="col-xs-5 col-md-4 control-label">Pre-Counselling Place
+            <span id="counsellingPlace" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="counsellingPlace" value="${preTerminationDto.counsellingPlace}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Pre-Counselling Result"/>
+        <label class="col-xs-5 col-md-4 control-label">Pre-Counselling Result
+            <span id="counsellingResult" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellingResult" firstOption="Please Select" codeCategory="TOP_CONSULTATION_RESULTS"
                          value="${preTerminationDto.counsellingResult}" cssClass="counsellingResult"/>
@@ -149,14 +172,22 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="If undecided, date of second pre-counselling"/>
+        <label class="col-xs-5 col-md-4 control-label">If undecided, date of second pre-counselling
+            <span id="secCounsellingDate" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="secCounsellingDate" value="${preTerminationDto.secCounsellingDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_secCounsellingDate"></span>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Result of Second Pre-Counselling"/>
+        <label class="col-xs-5 col-md-4 control-label">Result of Second Pre-Counselling
+            <span id="secCounsellingResult" class="mandatory">
+                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
+            </span>
+        </label>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="secCounsellingResult" firstOption="Please Select" codeCategory="TOP_CONSULTATION_RESULTS"
                          value="${preTerminationDto.secCounsellingResult}" cssClass="secCounsellingResult"/>
@@ -166,12 +197,28 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('input[name=counsellingGiven]:checked').change(function () {
-            if($('#pregnancyYes').prop('checked')) {
-                console.log("1");
+        $('input[name=counsellingGiven]').change(function () {
+            if($('#counsellingYes').prop('checked')) {
+                $('#patientSign').text('*');
                 $('#counsellorIdType').text('*');
-            }else {
+                $('#counsellorIdNo').text('*');
+                $('#counsellorName').text('*');
+                $('#counsellingDate').text('*');
+                $('#counsellingPlace').text('*');
+                $('#counsellingResult').text('*');
+                $('#secCounsellingDate').text('*');
+                $('#secCounsellingResult').text('*');
+            }
+            if($('#counsellingNo').prop('checked')) {
+                $('#patientSign').text('');
                 $('#counsellorIdType').text('');
+                $('#counsellorIdNo').text('');
+                $('#counsellorName').text('');
+                $('#counsellingDate').text('');
+                $('#counsellingPlace').text('');
+                $('#counsellingResult').text('');
+                $('#secCounsellingDate').text('');
+                $('#secCounsellingResult').text('');
             }
         });
     });
