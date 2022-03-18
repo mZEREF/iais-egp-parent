@@ -372,7 +372,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             appGrp.setPmtStatus( ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
         }
          GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
-         //appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
          appPaymentStatusClient.createNewGiroPaymentXmlDto(giroPaymentXmlDto);
          return appGrp;
     }
@@ -901,11 +900,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                                               }
                                           }
                                           if(noRejectPending){
-                                              saveXml(ack03Xml,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP,tag);
+                                              saveXml(ack03Xml,AppConsts.COMMON_STATUS_IACTIVE,ApplicationConsts.GIRO_DOWN_XML_SFTP,FileUtil.getFileName(remoteFileNames,".ACK3"),null);
                                               //save upload xml inactive
                                               giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                                               giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                                              appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+                                              appPaymentStatusClient.updateGiroDataXmlDto(giroPaymentXmlDto);
                                               //upload GiroPayment
                                               saveGiroPaymentDtosByDatas(paySucDATAS,ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS,ApplicationConsts.GIRO_GET_ACK3_TYPE);
                                               //upload app group
@@ -927,7 +926,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                                   //fail need send email
                                   giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                                   giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                                  appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+                                  appPaymentStatusClient.updateGiroDataXmlDto(giroPaymentXmlDto);
                                   // Releasing the already inactive AppGroup
                                   List<InputDataAck2Or3Dto> DATAS  =  inputAck2Dto.getDATAS();
                                   if(IaisCommonUtils.isEmpty(DATAS)){
@@ -1085,7 +1084,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 //sysn be create need sysn appgroup in xml
-                saveXml( JsonUtil.parseToJson(applicationGroupDto),AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_PAY_SUCCESS_SYSN_BE,applicationGroupDto.getGroupNo());
+                saveXml( JsonUtil.parseToJson(applicationGroupDto),AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_PAY_SUCCESS_SYSN_BE,applicationGroupDto.getGroupNo(),giroPaymentDtos.get(0));
             }
         }
     }
@@ -1109,7 +1108,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
          if( AppConsts.YES.equalsIgnoreCase(sysn)){
              giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
              giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-             appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
+             appPaymentStatusClient.updateGiroDataXmlDto(giroPaymentXmlDto);
          }
        }
         log.info(" sysnSaveGroupToBe end");
@@ -1185,13 +1184,16 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return organizationLienceseeClient.findOrganizationByUen(uen).getEntity();
     }
 
-    private GiroPaymentXmlDto saveXml(String xml,String status,String type,String tag){
+    private GiroPaymentXmlDto saveXml(String xml,String status,String type,String tag,GiroPaymentDto giroPaymentDto){
         GiroPaymentXmlDto giroPaymentXmlDto = new GiroPaymentXmlDto();
         giroPaymentXmlDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         giroPaymentXmlDto.setXmlData(xml);
         giroPaymentXmlDto.setXmlType(type);
+        giroPaymentXmlDto.setFileType(type);
+        giroPaymentXmlDto.setFileName(tag);
         giroPaymentXmlDto.setTag(tag);
         giroPaymentXmlDto.setStatus(status);
-       return appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto).getEntity();
+        giroPaymentXmlDto.setGiroPaymentDto(giroPaymentDto);
+       return appPaymentStatusClient.updateGiroDataXmlDto(giroPaymentXmlDto).getEntity();
     }
 }
