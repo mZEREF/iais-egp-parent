@@ -20,7 +20,7 @@
   <p class="col-xs-12 margin-btm">- <strong><iais:code code="${vssSuperDataSubmissionDto.submissionType}"/></strong></p>
   <div class="ack-font-16">
     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
-    <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG011" escape="false"></iais:message></p>
+    <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG012" escape="false"></iais:message></p>
   </div>
   <div class="ack-font-16">
     <p class="col-xs-12">Submission details:</p>
