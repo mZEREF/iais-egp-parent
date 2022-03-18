@@ -868,7 +868,7 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setSalutation(salutation[i]);
             appSvcCgoDto.setName(name[i]);
             appSvcCgoDto.setIdType(idType[i]);
-            appSvcCgoDto.setIdNo(idNo[i]);
+            appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
             if("IDTYPE003".equals(appSvcCgoDto.getIdType())){
                 appSvcCgoDto.setNationality(nationality[i]);
             }
@@ -1037,10 +1037,7 @@ public class AppealServiceImpl implements AppealService {
                         if (StringUtil.isEmpty(salutation)) {
                             map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                         }
-                        String speciality = appSvcCgoList.get(i).getSpeciality();
-                        if ("-1".equals(speciality)) {
-                            map.put("speciality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
-                        }
+
                         String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {
                             map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
@@ -1061,9 +1058,10 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         String otherQualification = appSvcCgoList.get(i).getOtherQualification();
-                        if(StringUtil.isEmpty(otherQualification)){
+                        if(StringUtil.isEmpty(appSvcCgoList.get(i).getQualification())&&StringUtil.isEmpty(otherQualification)){
                             map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
-                        }else if(otherQualification.length()>100){
+                        }
+                         if(StringUtil.isNotEmpty(otherQualification)&&otherQualification.length()>100){
                             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                             repMap.put("maxlength","100");
                             repMap.put("field","Other Qualification");
@@ -1128,10 +1126,7 @@ public class AppealServiceImpl implements AppealService {
                         }
                         //to do
 
-                        String Specialty = appSvcCgoList.get(i).getSpeciality();
-                        if (StringUtil.isEmpty(Specialty)) {
-                            map.put("speciality" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
-                        }
+
 
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
