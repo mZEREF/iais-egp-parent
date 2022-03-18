@@ -26,8 +26,8 @@ public interface  AppPaymentStatusClient {
     @GetMapping(value = "/iais-payment/payment-status-appGrpId/{sysClientId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos(@PathVariable("sysClientId") String sysClientId);
 
-    @PostMapping(value = "/iais-payment/update-giropaymentxml" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<GiroPaymentXmlDto> updateGiroPaymentXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
+    @PostMapping(value = "/iais-payment/update-giro-data-xml-by-giro-xml" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GiroPaymentXmlDto> updateGiroDataXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
 
     @GetMapping(value = "/iais-payment/get-giropaymentxmls-status-xmltype",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroPaymentXmlDto>> getGiroPaymentDtosByStatusAndXmlType(@RequestParam("status") String status, @RequestParam("xmlType")String xmlType);
