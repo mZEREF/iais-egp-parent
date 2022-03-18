@@ -1864,7 +1864,7 @@ public class AppealServiceImpl implements AppealService {
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
-                if (size >= maximumCount) {
+                if (size < maximumCount) {
                     return false;
                 }
             }
