@@ -224,6 +224,14 @@ public final class DataSubmissionHelper {
         return vssSuperDataSubmissionDto;
     }
 
+    public static TopSuperDataSubmissionDto getOldTopSuperDataSubmissionDto(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
+        if (topSuperDataSubmissionDto == null) {
+            log.info("------------------------------------getOldTopSuperDataSubmissionDto is null-----------------");
+        }
+        return topSuperDataSubmissionDto;
+    }
+
     /**
      * Cycle Stages
      *

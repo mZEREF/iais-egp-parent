@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 
@@ -25,9 +24,9 @@ public class FamilyPlanValidator implements CustomizeValidator {
             familyPlanDto = new FamilyPlanDto();
         }
 
-        if("TOPSCTP009".equals(familyPlanDto.getSubRopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherSubTopReason())){
+       /* if("TOPSCTP009".equals(familyPlanDto.getSubRopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherSubTopReason())){
             errorMap.put("otherSubTopReason", "GENERAL_ERR0006");
-        }
+        }*/
 
         return errorMap;
     }

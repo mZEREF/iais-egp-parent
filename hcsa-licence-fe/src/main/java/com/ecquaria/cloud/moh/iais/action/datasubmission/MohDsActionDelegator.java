@@ -4,16 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,10 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -62,6 +50,9 @@ public class MohDsActionDelegator {
 
     @Autowired
     private VssDataSubmissionService vssDataSubmissionService;
+
+    @Autowired
+    private TopDataSubmissionService topDataSubmissionService;
 
     @Autowired
     private ArCycleStageDelegator arCycleStageDelegator;
@@ -128,6 +119,9 @@ public class MohDsActionDelegator {
         } else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
             VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+        }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
+            TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
@@ -220,6 +214,8 @@ public class MohDsActionDelegator {
             uri = prepareLdtRfc(submissionNo, bpc.request);
         }else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
             uri = prepareVssRfc(submissionNo, bpc.request);
+        }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
+            uri = prepareTopRfc(submissionNo, bpc.request);
         }
         log.info(StringUtil.changeForLog("------URI: " + uri));
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
@@ -279,6 +275,27 @@ public class MohDsActionDelegator {
             vssSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
         }
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
+        return uri;
+    }
+
+    private String prepareTopRfc(String submissionNo, HttpServletRequest request) {
+        String uri = "";
+        TopSuperDataSubmissionDto topSuper = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
+        if (topSuper == null) {
+            uri = DEFAULT_URI;
+        } else {
+            if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/PatientInformation";
+            } else if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
+            }
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
+                    CopyUtil.copyMutableObject(topSuper));
+            topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            topSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        }
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
     }
 

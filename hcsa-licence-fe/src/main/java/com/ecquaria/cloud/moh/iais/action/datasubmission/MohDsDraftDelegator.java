@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -44,6 +41,9 @@ public class MohDsDraftDelegator {
 
     @Autowired
     private VssDataSubmissionService vssDataSubmissionService;
+
+    @Autowired
+    private TopDataSubmissionService topDataSubmissionService;
 
     private static final String DEFAULT_URI = "/main-web/eservice/INTERNET/MohDataSubmissionsInbox";
 
@@ -78,6 +78,8 @@ public class MohDsDraftDelegator {
             uri = prepareLdt(draftNo, bpc.request);
         } else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
             uri = prepareVss(draftNo, bpc.request);
+        } else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
+            uri = prepareTop(draftNo, bpc.request);
         }
 
         log.info(StringUtil.changeForLog("------URI: " + uri));
@@ -123,6 +125,22 @@ public class MohDsDraftDelegator {
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission";
         }
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuper, request);
+        return uri;
+    }
+
+    private String prepareTop(String draftNo, HttpServletRequest request) {
+        String uri = "";
+        TopSuperDataSubmissionDto topSuper = topDataSubmissionService.getTopSuperDataSubmissionDtoByDraftNo(draftNo);
+        if (topSuper == null) {
+            uri = DEFAULT_URI;
+        } else {
+            if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/PatientInformation";
+            } else if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
+            }
+        }
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
     }
 
