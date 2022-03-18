@@ -1040,6 +1040,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        List<SelectOption> transferredSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        transferredSelectOption.add(new SelectOption("Others","Others"));
+        ParamUtil.setRequestAttr(bpc.request,"transferredSelectOption",transferredSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
 

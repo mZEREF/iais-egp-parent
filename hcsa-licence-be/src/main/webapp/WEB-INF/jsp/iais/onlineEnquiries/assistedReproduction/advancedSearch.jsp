@@ -1047,7 +1047,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Transferred In From"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <iais:select name="transferredInFrom" id="transferredInFrom" firstOption="Please Select" options="arCentreSelectOption"
+                                        <iais:select name="transferredInFrom" id="transferredInFrom" firstOption="Please Select" options="transferredSelectOption"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferredInFrom}"  />
                                     </iais:value>
                                 </iais:row>
@@ -1055,7 +1055,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Transfer Out To"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <iais:select name="transferOutTo" id="transferOutTo" firstOption="Please Select" options="arCentreSelectOption"
+                                        <iais:select name="transferOutTo" id="transferOutTo" firstOption="Please Select" options="transferredSelectOption"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferOutTo}" />
                                     </iais:value>
                                 </iais:row>
