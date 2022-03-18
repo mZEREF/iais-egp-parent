@@ -53,7 +53,7 @@
         </iais:value>
     </iais:row>
     <iais:row id="residenceStatusOthers" style="${treatmentDto.residenceStatus eq 'VSSRS003' ? '' : 'display: none'}">
-        <iais:field value="Other Residence Status"  width="5"/>
+        <iais:field value="Other Residence Status"  width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input type="text" name="otherResidenceStatus" maxLength="200" value="${treatmentDto.otherResidenceStatus}"/>
         </iais:value>
@@ -67,7 +67,7 @@
         </iais:value>
     </iais:row>
     <iais:row id="ethnicOthers" style="${treatmentDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
-        <iais:field value="Other Ethnic Group" width="5"/>
+        <iais:field value="Other Ethnic Group" width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="200" type="text" name="otherEthnicGroup" value="${treatmentDto.otherEthnicGroup}"/>
         </iais:value>
