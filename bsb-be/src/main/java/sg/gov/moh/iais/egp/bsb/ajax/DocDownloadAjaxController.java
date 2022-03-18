@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
+
 
 @RestController
 @RequestMapping(path = "/ajax/doc/download")
@@ -145,6 +147,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getApplicationFile);
     }
 
+    @GetMapping("/appointment/fac/repo/{id}")
+    public void downloadAppointmentFacFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::appointmentGetSavedFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id
@@ -251,5 +258,15 @@ public class DocDownloadAjaxController {
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, fileName, null, content);
+    }
+
+    public MultipartFile appointmentGetSavedFile(HttpServletRequest request, String id){
+        List<DocDisplayDto> docDisplayDtoList = (List<DocDisplayDto>) ParamUtil.getSessionAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST);
+        DocDisplayDto dto = CollectionUtils.uniqueIndexMap(docDisplayDtoList,DocDisplayDto::getFileRepoId).get(id);
+        if (dto == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, dto.getDocName(), null, content);
     }
 }

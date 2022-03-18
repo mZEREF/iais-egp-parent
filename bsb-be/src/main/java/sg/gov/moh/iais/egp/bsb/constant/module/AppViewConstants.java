@@ -44,6 +44,7 @@ public class AppViewConstants {
     public static final String MODULE_VIEW_CANCELLATION_APPROVAL_APP        = "viewCancellationApprovalApp";
     public static final String MODULE_VIEW_DEREGISTRATION_FAC_CER_REG       = "viewDeRegistrationFacCerReg";
     public static final String MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS       = "viewInspectionFollowUpItems";
+    public static final String MODULE_VIEW_APPOINTMENT                      = "viewAppointment";
 
     public static final String KEY_VIEW_DATA_SUBMISSION                     = "dataSubInfo";
 }

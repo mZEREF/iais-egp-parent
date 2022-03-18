@@ -14,4 +14,7 @@ public class AppConstants {
 
     public static final String YEAR_FORMAT                              = "yyyy";
     public static final DateTimeFormatter YEAR_FORMATTER                = DateTimeFormatter.ofPattern(YEAR_FORMAT);
+
+    public static final String DEFAULT_DATE_TIME_FORMAT                 = "dd/MM/yyyy HH:mm:ss";
+    public static final String DATE_TIME_FORMAT                         = "yyyy-MM-dd HH:mm:ss";
 }
