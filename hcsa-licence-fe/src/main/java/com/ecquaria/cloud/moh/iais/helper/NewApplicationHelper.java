@@ -3371,31 +3371,6 @@ public class NewApplicationHelper {
         return workingDaySp;
     }
 
-    public static boolean psnDoPartValidate(String idType, String idNo, String name) {
-        boolean result = true;
-        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
-            result = false;
-        } else {
-            if (idNo.length() > 9) {
-                result = false;
-            }
-            if (OrganizationConstants.ID_TYPE_FIN.equals(idType)) {
-                boolean b = SgNoValidator.validateFin(idNo);
-                if (!b) {
-                    result = false;
-                }
-            }
-            if (OrganizationConstants.ID_TYPE_NRIC.equals(idType)) {
-                boolean b1 = SgNoValidator.validateNric(idNo);
-                if (!b1) {
-                    result = false;
-                }
-            }
-
-        }
-        return result;
-    }
-
     public static List<AppSvcPrincipalOfficersDto> getPsnByDupForPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
             String dupForPerson) {
         List<AppSvcPrincipalOfficersDto> psnDtoList = IaisCommonUtils.genNewArrayList();
@@ -4207,7 +4182,7 @@ public class NewApplicationHelper {
         return isValid;
     }
 
-    public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
+    public static Map<String, String> doPsnCommValidate(Map<String, String> errMap, String idType, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson) {
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
