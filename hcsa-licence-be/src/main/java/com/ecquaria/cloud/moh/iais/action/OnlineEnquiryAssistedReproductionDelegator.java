@@ -1586,6 +1586,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         }
                     }
                 }
+            } else if (arSuper.getTransferInOutStageDto() != null) {
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransOutToHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransOutToHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransOutToHciCode(map.get(arSuper.getTransferInOutStageDto().getTransOutToHciCode()));
+                }
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
+                }
             }
         }
 
