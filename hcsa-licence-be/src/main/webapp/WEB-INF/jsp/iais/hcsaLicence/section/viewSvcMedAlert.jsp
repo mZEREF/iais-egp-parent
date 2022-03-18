@@ -116,8 +116,9 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="<iais:code code="${appSvcMedAlertPerson.nationality}"/>">
-                                            <iais:code code="${appSvcMedAlertPerson.nationality}"/></span>
+                                        <span class="newVal " attr="${appSvcMedAlertPerson.nationality}"/>">
+                                            <iais:code code="${appSvcMedAlertPerson.nationality}"/>
+                                        </span>
                                     </div>
                                     <div class="col-xs-6">
                                         <span class="oldVal " attr="${oldMap.nationality}" style="display: none">
