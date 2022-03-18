@@ -99,14 +99,15 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <label class="col-xs-6 col-md-6 control-label">Pre-Termination Counsellor ID Type
+        <%--<label class="col-xs-6 col-md-6 control-label">Pre-Termination Counsellor ID Type
             <span id="counsellorIdType" class="mandatory">
                 <c:if test="${preTerminationDto.counsellingGiven == 'Yes'}">*</c:if>
             </span>
-        </label>
-        <iais:value width="6" cssClass="col-md-6">
+        </label>--%>
+        <iais:field width="5" value="Pre-Termination Counsellor ID Type"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                         value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType" id="counsellorIdType"/>
+                         value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellorIdType"></span>
         </iais:value>
 
