@@ -62,7 +62,7 @@ $(document).ready(function() {
     if ($('#nextBtn').length > 0) {
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
-        } else if ('VSST003' == currPage) {
+        } else if ('stage' == currPage) {
             $('#nextBtn').html('Preview');
         }
         $('#nextBtn').click(function () {
