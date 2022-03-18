@@ -2746,17 +2746,18 @@ public class NewApplicationDelegator {
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
-            autoGroupNo = getRfcGroupNo(autoGroupNo);
-
             String licenseeId = NewApplicationHelper.getLicenseeId(bpc.request);
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,
                     appSubmissionDto, oldAppSubmissionDto, rfcSplitFlag ? 0 : 1);
-            boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo, null,
-                    NewApplicationConstant.SECTION_SVCINFO, bpc.request);
-            if (!isValid) {
-                return;
+            if (personAppSubmissionList != null && !personAppSubmissionList.isEmpty()) {
+                autoGroupNo = getRfcGroupNo(autoGroupNo);
+                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo,
+                        null, NewApplicationConstant.SECTION_SVCINFO, bpc.request);
+                if (!isValid) {
+                    return;
+                }
+                NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             }
-            NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
 
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
