@@ -59,8 +59,10 @@ $(document).ready(function() {
     if ($('#nextBtn').length > 0) {
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
-        } else if ('stage' == currPage) {
+        } else if ('confirm' == currPage) {
             $('#nextBtn').html('Preview');
+        } else if ('top-submission' == currPage){
+            $('#nextBtn').html('Proceed');
         }
         $('#nextBtn').click(function () {
             showWaiting();
