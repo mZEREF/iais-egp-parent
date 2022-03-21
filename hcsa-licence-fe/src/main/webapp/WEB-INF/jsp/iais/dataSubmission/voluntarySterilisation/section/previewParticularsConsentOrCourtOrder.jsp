@@ -40,7 +40,7 @@
                         <iais:field width="6" value="Relationship to Person Who Was Sterilized"/>
                         <iais:value width="6" display="true" cssClass="col-md-6">
                            <%-- <iais:code code="${guardianAppliedPartDto.guardianRelationship}"/>--%>
-                            <c:out value="${guardianAppliedPartDto.appliedPartRelationship}"/>
+                            <c:out value="${guardianAppliedPartDto.guardianRelationship}"/>
                         </iais:value>
                     </iais:row>
                 </div>

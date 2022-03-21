@@ -16,7 +16,7 @@
     </iais:row>--%>
 
     <iais:row>
-        <iais:field width="5" value="Name Of Patient" mandatory="true"/>
+        <iais:field width="5" value="Name of Patient" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="patientName" value="${treatmentDto.patientName}" />
         </iais:value>
@@ -80,7 +80,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Education Leve" mandatory="true"/>
+        <iais:field width="5" value="Education Level" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="educationLevel" firstOption="Please Select" codeCategory="VSS_EDUCATION_LEVEL"
                          value="${treatmentDto.educationLevel}"/>
