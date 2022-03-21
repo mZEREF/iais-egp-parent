@@ -7,8 +7,11 @@ function changeTotalNum() {
     }
     if($('#donatedForTraining').is(':checked')){
         var trainingNum = $('#trainingNum').val();
+        totalNum=totalNum+Number(trainingNum);
+    }
+    if($('#donatedForTreatment').is(':checked')){
         var treatNum = $('#treatNum').val();
-        totalNum=totalNum+Number(trainingNum)+Number(treatNum);
+        totalNum=totalNum+Number(treatNum);
     }
 
     $('#totalNum').html(totalNum);
@@ -37,6 +40,15 @@ $(document).ready(function () {
             $('#trainingDisplay').attr("style","display: block");
         }else {
             $('#trainingDisplay').attr("style","display: none");
+        }
+        changeTotalNum();
+    });
+
+    $('#donatedForTreatment').change(function () {
+        if($(this).is(':checked')){
+            $('#treatmentDisplay').attr("style","display: block");
+        }else {
+            $('#treatmentDisplay').attr("style","display: none");
         }
         changeTotalNum();
     });

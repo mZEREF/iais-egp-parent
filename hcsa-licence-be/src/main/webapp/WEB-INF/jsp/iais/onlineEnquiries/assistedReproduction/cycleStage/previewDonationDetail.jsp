@@ -97,7 +97,8 @@
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.trainingNum}"/>
                         </iais:value>
                     </iais:row>
-
+                </div>
+                <div id="treatmentDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTreatment !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="No. Donated For Treatment" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
