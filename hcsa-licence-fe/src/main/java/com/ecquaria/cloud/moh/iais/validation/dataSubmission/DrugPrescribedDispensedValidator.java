@@ -155,10 +155,10 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             if(StringUtil.isNotEmpty(drugMedicationDto.getQuantity()) && !StringUtil.isNumber(drugMedicationDto.getQuantity())){
                 errorMap.put("quantity"+i, "GENERAL_ERR0002");
             }
-            if(StringUtil.isNotEmpty(drugMedicationDto.getFrequency()) && StringUtil.isNumber(drugMedicationDto.getFrequency())){
-                int b=Integer.valueOf(drugMedicationDto.getFrequency());
+            if(StringUtil.isNotEmpty(drugMedicationDto.getQuantity()) && StringUtil.isNumber(drugMedicationDto.getQuantity())){
+                int b=Integer.valueOf(drugMedicationDto.getQuantity());
                 if(b<m){
-                    errorMap.put("strength"+i, "Negative numbers are not allowed on this field");
+                    errorMap.put("quantity"+i, "Negative numbers are not allowed on this field");
                 }
             }
             if(StringUtil.isEmpty(drugMedicationDto.getFrequency())){
