@@ -134,7 +134,7 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${ appealDisplayShow}">style="display: none"</c:if>>
+                <div <c:if test="${ appealDisplayShow!=true}">style="display: none"</c:if>>
                     <iais:row >
                         <iais:field width="5" value="Is there an Appeal?"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
