@@ -49,13 +49,15 @@
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Date LDT was made or will be made available"/>
-                                <iais:value width="4" cssClass="col-md-4">
-                                    <iais:datePicker id="ldtDateFrom" name="ldtDateFrom" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateFrom}"/>
-                                </iais:value>
-                                <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
-                                <iais:value width="3" cssClass="col-md-3">
-                                    <iais:datePicker id="ldtDateTo" name="ldtDateTo" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateTo}"/>
-                                </iais:value>
+                                <div class="col-md-4 " style="padding-right: 0;padding-left: 0;">
+                                    <iais:value width="6" cssClass="col-md-6">
+                                        <iais:datePicker id="ldtDateFrom" name="ldtDateFrom" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateFrom}"/>
+                                    </iais:value>
+                                    <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
+                                    <iais:value width="5" cssClass="col-md-5">
+                                        <iais:datePicker id="ldtDateTo" name="ldtDateTo" dateVal="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtDateTo}"/>
+                                    </iais:value>
+                                </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Person responsible for the test"/>
