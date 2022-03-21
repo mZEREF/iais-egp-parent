@@ -4043,6 +4043,7 @@ public class NewApplicationHelper {
             // check it only for Passport
             if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
                 errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Country of issuance", "field"));
+                isValid = false;
             }
         }
         return isValid;
