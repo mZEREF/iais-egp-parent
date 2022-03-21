@@ -13,6 +13,7 @@ $(document).ready(function () {
         }else {
             $('#pgtMDisplay').attr("style","display: none");
         }
+        isThereAppealDisplay();
     });
     $('#isPgtMRare').change(function () {
         if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
@@ -20,6 +21,7 @@ $(document).ready(function () {
         }else {
             $('#pgtMDisplay').attr("style","display: none");
         }
+        isThereAppealDisplay();
     });
     $('#isPgtMEbt').change(function () {
         if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
@@ -27,6 +29,7 @@ $(document).ready(function () {
         }else {
             $('#pgtMDisplay').attr("style","display: none");
         }
+        isThereAppealDisplay();
     });
 
     $('#isPgtMDsld').change(function () {
@@ -43,6 +46,14 @@ $(document).ready(function () {
         }else {
             $('#pgtSrDisplay').attr("style","display: none");
         }
+        isThereAppealDisplay();
+    });
+
+    $('#radioYes').change(function () {
+        isThereAppealDisplay();
+    });
+    $('#radioNo').change(function () {
+        isThereAppealDisplay();
     });
 
     $('#isPgtA').change(function () {
@@ -95,3 +106,18 @@ $(document).ready(function () {
 
     });
 });
+
+
+var isThereAppealDisplay = function () {
+    var pgtMCom=$("#isPgtMCom").is(':checked');
+    var pgtMRare=$("#isPgtMRare").is(':checked');
+    var pgtMEbt=$("#isPgtMEbt").is(':checked');
+    var pgtSr=$("#isPgtSr").is(':checked');
+    var radioYes=$("#radioYes").is(':checked');
+    var count= '<%= request.getAttribute("count")%>';
+    if((pgtMCom || pgtMRare|| pgtMEbt|| pgtSr)&& radioYes && count>=6){
+        $('#appealDisplay').attr("style","display: block");
+    }else {
+        $('#appealDisplay').attr("style","display: none");
+    }
+}

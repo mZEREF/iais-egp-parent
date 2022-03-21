@@ -2,13 +2,12 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -104,6 +103,7 @@ public class TopPatientInformationDelegator {
                 DataSubmissionHelper.getLicenseeId(bpc.request), false));
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
         DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
+        CycleDto cycle = topSuperDataSubmissionDto.getCycleDto();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = topDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_TOP);
             dataSubmissionDto.setSubmissionNo(submissionNo);
@@ -111,6 +111,14 @@ public class TopPatientInformationDelegator {
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
+
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        }else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
+
+        cycle.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
 
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
@@ -155,6 +163,15 @@ public class TopPatientInformationDelegator {
     public void doPageAction(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        if (isRfc(request)) {
+            DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
+            if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
+            } else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
         topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
         PatientInformationDto patientInformationDto=topSuperDataSubmissionDto.getPatientInformationDto();
         if(patientInformationDto == null){
@@ -181,6 +198,13 @@ public class TopPatientInformationDelegator {
         if (crud_action_type.equals(ACTION_TYPE_CONFIRM)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInformationDto, "TOP");
             errorMap = validationResult.retrieveAll();
+            if (isRfc(request)) {
+                TopSuperDataSubmissionDto oldTopSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(request);
+                if (errorMap.isEmpty() && oldTopSuperDataSubmissionDto != null && oldTopSuperDataSubmissionDto.getPatientInformationDto() != null && patientInformationDto.equals(oldTopSuperDataSubmissionDto.getPatientInformationDto())) {
+                    ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                    crud_action_type = ACTION_TYPE_PAGE;
+                }
+            }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -284,5 +308,18 @@ public class TopPatientInformationDelegator {
         }
     }
 
+    protected void valRFC(HttpServletRequest request, DrugPrescribedDispensedDto drugPrescribedDispensed){
+        if(isRfc(request)){
+            DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
+            if(dpOldSuperDataSubmissionDto != null && dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null && drugPrescribedDispensed.equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto())){
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+            }
+        }
+    }
+    private boolean isRfc(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        return vssSuperDataSubmissionDto != null && vssSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(vssSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
+    }
 
 }

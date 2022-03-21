@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -65,7 +64,7 @@ public class TopDataSubmissionDelegator {
             String crudype = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, crudype);
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "top-submission");
-            Map<String, PremisesDto> premisesMap =
+           /* Map<String, PremisesDto> premisesMap =
                     (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
             if (premisesMap == null || premisesMap.isEmpty()) {
                 LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
@@ -87,7 +86,7 @@ public class TopDataSubmissionDelegator {
                 });
             } else {
                 bpc.request.setAttribute("premisesOpts", DataSubmissionHelper.genPremisesOptions(premisesMap));
-            }
+            }*/
         }
 
         /**
@@ -114,12 +113,12 @@ public class TopDataSubmissionDelegator {
                 actionType = "top";
             }
             // check premises
-            HttpSession session = bpc.request.getSession();
+            /*HttpSession session = bpc.request.getSession();
             String premises = ParamUtil.getString(bpc.request, PREMISES);
             Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) session.getAttribute(
                     DataSubmissionConstant.TOP_PREMISES_MAP);
-            PremisesDto premisesDto = (PremisesDto) session.getAttribute(DataSubmissionConstant.TOP_PREMISES);
-            if (!StringUtil.isEmpty(premises)) {
+            PremisesDto premisesDto = (PremisesDto) session.getAttribute(DataSubmissionConstant.TOP_PREMISES);*/
+            /*if (!StringUtil.isEmpty(premises)) {
                 if (premisesMap != null) {
                     premisesDto = premisesMap.get(premises);
                 }
@@ -130,23 +129,23 @@ public class TopDataSubmissionDelegator {
                 map.put(PREMISES, "GENERAL_ERR0006");
             } else if (premisesDto == null) {
                 map.put(PREMISES, "There are no active Assisted Reproduction licences");
-            }
+            }*/
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
-            if (reNew(topSuperDataSubmissionDto, submissionType, premisesDto)) {
+            /*if (reNew(topSuperDataSubmissionDto, submissionType, premisesDto)) {
                 topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
-            }
+            }*/
             if (!map.isEmpty()) {
                 topSuperDataSubmissionDto.setSubmissionType(submissionType);
-                topSuperDataSubmissionDto.setPremisesDto(premisesDto);
+                /*topSuperDataSubmissionDto.setPremisesDto(premisesDto);*/
                 actionType = "back";
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
             } else {
                 String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                         .map(LoginContext::getOrgId).orElse("");
                 String hciCode = null;
-                if(premisesDto != null){
+               /* if(premisesDto != null){
                     hciCode = premisesDto.getHciCode();
-                }
+                }*/
                 String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
                 log.info(StringUtil.changeForLog("Action Type: " + actionValue));
                 if (StringUtil.isEmpty(actionValue)) {
@@ -166,10 +165,14 @@ public class TopDataSubmissionDelegator {
                 } else if ("delete".equals(actionValue)) {
                     topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
                 }
+                if (topSuperDataSubmissionDto == null) {
+                    log.warn("Can't resume data!");
+                    topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+                }
                 topSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
                 topSuperDataSubmissionDto.setOrgId(orgId);
                 topSuperDataSubmissionDto.setSubmissionType(submissionType);
-                topSuperDataSubmissionDto.setPremisesDto(premisesDto);
+                /*topSuperDataSubmissionDto.setPremisesDto(premisesDto);*/
                 topSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto,
                         false));

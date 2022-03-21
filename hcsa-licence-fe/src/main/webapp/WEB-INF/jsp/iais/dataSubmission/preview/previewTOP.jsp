@@ -5,7 +5,7 @@
 
 <c:choose>
     <c:when test="${submissionType == 'TOP_TP002'}">
-        <%@include file="../terminationOfPregnancy/section/patientDetails.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'TOP_TP001'}">
         <%@include file="../terminationOfPregnancy/section/topPatientSelectionSection.jsp" %>

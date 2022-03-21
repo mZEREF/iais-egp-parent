@@ -805,19 +805,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())
                     ||arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())
                     ||arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredOocyte",0);
-                filter.put("transferredEmbryo",0);
-                filter.put("transferredSperm",0);
-                filter.put("transferredList",0);
+                filter.put("transferredOocyte",-1);
+                filter.put("transferredEmbryo",-1);
+                filter.put("transferredSperm",-1);
+                filter.put("transferredList",1);
             }
             if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())){
-                filter.put("transferredOocyte",1);
+                filter.put("transferredOocyte",0);
             }
             if(arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())){
-                filter.put("transferredEmbryo",1);
+                filter.put("transferredEmbryo",0);
             }
             if(arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredSperm",1);
+                filter.put("transferredSperm",0);
             }
             if(StringUtil.isNotEmpty(arDto.getTransferredInFrom())) {
                 filter.put("transferredInFrom", arDto.getTransferredInFrom());
@@ -1040,6 +1040,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        List<SelectOption> transferredSelectOption  = assistedReproductionService.genPremisesOptions("null");
+        transferredSelectOption.add(new SelectOption("Others","Others"));
+        ParamUtil.setRequestAttr(bpc.request,"transferredSelectOption",transferredSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
 
@@ -1527,12 +1530,17 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                            count+=pgt.getIsPgtCoFunding();
+                        }
+                        if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
                             count+=pgt.getIsPgtCoFunding();
                         }
                     }
                 }
-                ParamUtil.setRequestAttr(request, "count",count);
+                if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMEbt()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0 &&arSuper.getPgtStageDto().getIsPgtCoFunding()==1){
+                    ParamUtil.setRequestAttr(request, "appealDisplayShow",true);
+                }
             }
             List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
             Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
@@ -1582,6 +1590,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                             donor.setSource(map.get(donor.getSource()));
                         }
                     }
+                }
+            } else if (arSuper.getTransferInOutStageDto() != null) {
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransOutToHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransOutToHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransOutToHciCode(map.get(arSuper.getTransferInOutStageDto().getTransOutToHciCode()));
+                }
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
                 }
             }
         }

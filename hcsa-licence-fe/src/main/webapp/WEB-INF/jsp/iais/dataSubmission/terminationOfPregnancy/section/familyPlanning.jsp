@@ -80,7 +80,7 @@
         <iais:row>
             <iais:field width="5" value="Other Main Reason for Termination of Pregnancy"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}" />
+                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}" />
             </iais:value>
         </iais:row>
     </div>
@@ -93,10 +93,10 @@
     </iais:row>
     <div id="otherSubTopReason" <c:if test="${familyPlanDto.subRopReason!='TOPSCTP009'}">style="display: none"</c:if> >
         <iais:row>
-            <iais:field width="5" value="Other Sub Reason for Request to Terminate Pregnancy" mandatory="true"/>
+            <iais:field width="5" value="Other Sub Reason for Request to Terminate Pregnancy" mandatory="false"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}" />
-                <span class="error-msg" name="iaisErrorMsg" id="error_otherSubTopReason"></span>
+                <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}" />
+                <%--<span class="error-msg" name="iaisErrorMsg" id="error_otherSubTopReason"></span>--%>
             </iais:value>
         </iais:row>
     </div>

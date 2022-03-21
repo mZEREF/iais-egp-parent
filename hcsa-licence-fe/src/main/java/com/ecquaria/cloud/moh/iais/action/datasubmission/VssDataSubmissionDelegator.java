@@ -72,7 +72,15 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request,"seesion_files_map_ajax_feselectedVssFile_MaxIndex",null);
         ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+
+     /*   String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                .map(LoginContext::getOrgId).orElse("");
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+        if (vssSuperDataSubmissionDto != null) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+        }*/
     }
+
 
     /**
      * Step: PrepareSwitch
@@ -125,8 +133,7 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
-/*
-        String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+   /*     String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         //draft
         VssSuperDataSubmissionDto dataSubmissionDraft = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
         if (dataSubmissionDraft != null) {
@@ -339,7 +346,9 @@ public class VssDataSubmissionDelegator {
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
-        sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
+        if(StringUtil.isNotEmpty(reviewedByHec)){
+            sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
+        }
         try {
             Date oDate = Formatter.parseDate(operationDate);
             Date hDate = Formatter.parseDate(hecReviewDate);

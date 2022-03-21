@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -126,22 +127,35 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     log.error(e.getMessage(),e);
                 }
             }
-            ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
-            if(arSuperDataSubmissionDto == null) {
-                arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+            DpSuperDataSubmissionDto dpSuperDataSubmissionDto= DataSubmissionHelper.getCurrentDpDataSubmission(request);
+            if(dpSuperDataSubmissionDto == null) {
+                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
             }
-            DataSubmissionDto dataSubmissionDto= arSuperDataSubmissionDto.getDataSubmissionDto();
+            DataSubmissionDto dataSubmissionDto= dpSuperDataSubmissionDto.getDataSubmissionDto();
             if(dataSubmissionDto == null) {
                 dataSubmissionDto = new DataSubmissionDto();
             }
             String declaration=ParamUtil.getRequestString(request, "declaration");
             String remarks=ParamUtil.getRequestString(request, "remarks");
+            if(remarks!=null){
+                if (remarks.length() > 500) {
+                    Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                    repMap.put("maxlength", "500");
+                    repMap.put("field", "Reason for Late Submission");
+                    String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
+                    errorMap.put("remarks", errMsg);
+                }
+                dataSubmissionDto.setRemarks(remarks);
+            }
+            if(declaration!=null){
+                dataSubmissionDto.setDeclaration(declaration);
+            }
+            dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
             if (!errorMap.isEmpty() && StringUtil.isEmpty(declaration) || StringUtil.isEmpty(remarks)){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }
-            dataSubmissionDto.setDeclaration(declaration);
-            arSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
         }
 
     }

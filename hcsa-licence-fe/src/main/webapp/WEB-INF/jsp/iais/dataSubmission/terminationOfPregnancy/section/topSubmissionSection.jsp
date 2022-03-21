@@ -2,13 +2,13 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <iais:row>
-                   <%-- <div class="form-check-gp col-xs-12 col-md-12">
+               <%-- <iais:row>
+                   &lt;%&ndash; <div class="form-check-gp col-xs-12 col-md-12">
                         <p class="form-check-title">
                             Acute hospital licence / Nursing home licence / Community hospital licence that
                             is performing this submission
                         </p>
-                    </div>--%>
+                    </div>&ndash;%&gt;
                     <div class="col-xs-12 col-md-8">
                         <c:if test="${not empty premisesLabel}">
                             <p>${premisesLabel}</p>
@@ -19,7 +19,7 @@
                         </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_premises"></span>
                     </div>
-                </iais:row>
+                </iais:row>--%>
                 <iais:row>
                     <div class="form-check-gp col-xs-12 col-md-12">
                         <p class="form-check-title">

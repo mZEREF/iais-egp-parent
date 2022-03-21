@@ -1457,12 +1457,17 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
+                            count+=pgt.getIsPgtCoFunding();
+                        }
+                        if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
                             count+=pgt.getIsPgtCoFunding();
                         }
                     }
                 }
-                ParamUtil.setRequestAttr(request, "count",count);
+                if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMEbt()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0 &&arSuper.getPgtStageDto().getIsPgtCoFunding()==1){
+                    ParamUtil.setRequestAttr(request, "appealDisplayShow",true);
+                }
             }
             List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();
             Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
@@ -1510,6 +1515,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                             donor.setSource(map.get(donor.getSource()));
                         }
                     }
+                }
+            } else if (arSuper.getTransferInOutStageDto() != null) {
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransOutToHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransOutToHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransOutToHciCode(map.get(arSuper.getTransferInOutStageDto().getTransOutToHciCode()));
+                }
+                if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
+                    arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
                 }
             }
         }

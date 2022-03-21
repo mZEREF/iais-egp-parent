@@ -128,7 +128,7 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${ count<6 }">style="display: none"</c:if>>
+                <div <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
                     <iais:row >
                         <iais:field width="5" value="Is there an Appeal?"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">

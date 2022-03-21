@@ -69,6 +69,9 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
             errorMap.put("otherOccupation", "GENERAL_ERR0006");
         }
+        if("TOPAS001".equals(patientInformationDto.getActivityStatus()) && StringUtil.isEmpty(patientInformationDto.getOccupation())){
+            errorMap.put("occupation", "GENERAL_ERR0006");
+        }
         int i = 0;
         List<String> livingChildrenGenders= patientInformationDto.getLivingChildrenGenders();
         if(!StringUtil.isEmpty(livingChildrenGenders)){

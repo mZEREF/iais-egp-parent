@@ -27,3 +27,11 @@
         text-decoration: none;
     }
 </style>
+<script type="text/javascript">
+    // textarea
+    $('textarea').each(function(index, ele){
+        $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;min-height: 100px;width: 100%">'
+            + $(ele).val() + '</div>');
+        $(ele).remove();
+    });
+</script>

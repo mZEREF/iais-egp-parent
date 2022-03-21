@@ -474,6 +474,13 @@ public class TopTerminationOfPregnancyDelegator {
      */
     public void doRfc(BaseProcessClass bpc) {
         log.info(" ----- DoRfc ------ ");
+        if(isRfc(bpc.request)){
+            TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getOldTopSuperDataSubmissionDto(bpc.request);
+            if(topSuperDataSubmissionDto != null){
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
+            }
+        }
     }
 
     /**
@@ -563,6 +570,11 @@ public class TopTerminationOfPregnancyDelegator {
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
 
         return topSuperDataSubmissionDto;
+    }
+
+    private boolean isRfc(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        return topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
 }
 

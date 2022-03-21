@@ -66,10 +66,11 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         if(oldPgtList!=null){
             for (PgtStageDto pgt:oldPgtList
             ) {
-                if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
-                    if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(new Date())){
-                        countNo+=pgt.getIsPgtCoFunding();
-                    }
+                if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(new Date())){
+                    countNo+=pgt.getIsPgtCoFunding();
+                }
+                if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(new Date())){
+                    countNo+=pgt.getIsPgtCoFunding();
                 }
 
             }
@@ -214,7 +215,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setOtherBiopsyAddr(otherBiopsyAddr);
         }
         int count = (int) ParamUtil.getSessionAttr(request,"count");
-        if(count>=6){
+        if(count>=6&&(pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1){
             String isThereAppeal = ParamUtil.getString(request, "isThereAppeal");
             if("0".equals(isThereAppeal)){
                 pgtStageDto.setIsThereAppeal(0);
@@ -222,6 +223,8 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             if("1".equals(isThereAppeal)){
                 pgtStageDto.setIsThereAppeal(1);
             }
+        }else {
+            pgtStageDto.setIsThereAppeal(0);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);

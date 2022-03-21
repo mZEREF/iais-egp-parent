@@ -26,4 +26,15 @@ public class DateUtil {
     public static String convertToString(LocalDate localDate){
         return AppConstants.DEFAULT_DATE_FORMATTER.format(localDate);
     }
+
+    public static String convertToString(Date date, String pattern) {
+        if (date == null) {
+            return null;
+        }
+        if (pattern == null) {
+            pattern = AppConstants.DEFAULT_DATE_TIME_FORMAT;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        return sdf.format(date);
+    }
 }

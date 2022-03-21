@@ -78,13 +78,20 @@
                 </iais:row>
                 </div>
                 <div  id="dispensingDate" <c:if test="${drugSubmission.drugType!='DPD002'}">style="display: none"</c:if> >
-                <iais:row>
-                    <iais:field width="5" value="Date of Dispensing" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker name="dispensingDate" value="${drugSubmission.dispensingDate}"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_dispensingDate"></span>
-                    </iais:value>
-                </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Prescription Submission ID" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="16" type="text" name="prescriptionSubmissionId" value="${drugSubmission.prescriptionSubmissionId}" />
+                            <span class="error-msg" name="iaisErrorMsg" id="error_prescriptionSubmissionId"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Date of Dispensing" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker name="dispensingDate" value="${drugSubmission.dispensingDate}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_dispensingDate"></span>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="5" value="Medication" mandatory="true"/>

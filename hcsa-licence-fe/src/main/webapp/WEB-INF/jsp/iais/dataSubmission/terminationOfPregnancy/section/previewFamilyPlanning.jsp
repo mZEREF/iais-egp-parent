@@ -10,6 +10,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
+                <c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
                 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}" />
                 <iais:row>
                     <iais:field width="5" value="Contraceptive History"/>
@@ -37,8 +38,8 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient Age(Years)"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${familyPlanDto.patientAge}"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="age">
+                        ${patientInformationDto.patientAge}
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${empty familyPlanDto.gestAgeBaseOnUltrWeek}">style="display: none"</c:if>>
