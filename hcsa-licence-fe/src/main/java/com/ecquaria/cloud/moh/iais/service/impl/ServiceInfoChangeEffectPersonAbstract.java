@@ -117,7 +117,8 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         boolean isOld = true;
         for (AppSvcDisciplineAllocationDto dto : newAllocations) {
-            isOld = oldSvcInfoDto.getAppSvcCgoDtoList().stream().anyMatch(cgo -> Objects.equals(cgo.getIdNo(), dto.getIdNo()));
+            isOld = oldSvcInfoDto.getAppSvcCgoDtoList().stream().anyMatch(cgo -> Objects.equals(dto.getCgoPerson(),
+                    NewApplicationHelper.getPersonKey(cgo)));
             if (!isOld) {
                 break;
             }

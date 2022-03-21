@@ -2431,7 +2431,11 @@ public class NewApplicationHelper {
     }
 
     public static String getPersonKey(String nationality, String idType, String idNo) {
-        return MiscUtil.getPersonKey(nationality, idType, idNo);
+        return IaisCommonUtils.getPersonKey(nationality, idType, idNo);
+    }
+
+    public static String getIdNo(String personKey) {
+        return IaisCommonUtils.getIdNo(personKey);
     }
 
     public static String getPersonView(String idType, String idNo, String name) {

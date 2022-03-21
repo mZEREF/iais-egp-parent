@@ -385,6 +385,7 @@ public class PageDataCopyUtil {
         }
         return list;
     }
+
     public static List<AppSvcDisciplineAllocationDto>  copyAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList){
         if(appSvcDisciplineAllocationDtoList==null){
             return new ArrayList<>();
@@ -394,11 +395,12 @@ public class PageDataCopyUtil {
             AppSvcDisciplineAllocationDto o=new AppSvcDisciplineAllocationDto();
             o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
             o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
+            o.setCgoPerson(appSvcDisciplineAllocationDto.getCgoPerson());
             o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
             list.add(o);
         }
         return list;
-    };
+    }
 
     public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList) {
         return copyAppSvcVehicleDto(appSvcVehicleDtoList, true);

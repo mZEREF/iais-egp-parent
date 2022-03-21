@@ -1954,6 +1954,7 @@ public class LicenceViewServiceDelegator {
                         appSvcDisciplineAllocationDto);
                 appSvcDisciplineAllocationDto1.setCheck(false);
                 appSvcDisciplineAllocationDto1.setIdNo(null);
+                appSvcDisciplineAllocationDto1.setCgoPerson(null);
                 appSvcDisciplineAllocationDto1.setCgoSelName(null);
                 appSvcDisciplineAllocationDto1.setSlIndex(null);
                 appSvcDisciplineAllocationDto1.setSectionLeaderName(null);

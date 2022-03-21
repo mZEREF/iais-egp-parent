@@ -638,7 +638,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (appSvcCgoDtoList != null && !appSvcCgoDtoList.isEmpty()) {
             for (AppSvcPrincipalOfficersDto cgo : appSvcCgoDtoList) {
-                SelectOption sp = new SelectOption(cgo.getIdNo(), cgo.getName());
+                SelectOption sp = new SelectOption(NewApplicationHelper.getPersonKey(cgo), cgo.getName());
                 spList.add(sp);
             }
         }
@@ -657,8 +657,10 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         if (appSvcDisciplineAllocationDtoList != null && !appSvcDisciplineAllocationDtoList.isEmpty()) {
             for (AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList) {
-                reloadAllocation.put("cgo" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(), allocationDto.getIdNo());
-                reloadAllocation.put("sl" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(), allocationDto.getSlIndex());
+                reloadAllocation.put("cgo" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(),
+                        allocationDto.getCgoPerson());
+                reloadAllocation.put("sl" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(),
+                        allocationDto.getSlIndex());
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
@@ -1298,10 +1300,11 @@ public class ClinicalLaboratoryDelegator {
             if (allocationList != null && !allocationList.isEmpty()) {
                 List<AppSvcPrincipalOfficersDto> cgoList = appSvcCgoDtoList;
                 allocationList.forEach(dto -> {
-                    String idNo = dto.getIdNo();
-                    if (!StringUtil.isEmpty(idNo) && cgoList.stream()
-                            .noneMatch(cgo -> idNo.equals(cgo.getIdNo()))) {
+                    String cgoPerson = dto.getCgoPerson();
+                    if (!StringUtil.isEmpty(cgoPerson) && cgoList.stream()
+                            .noneMatch(cgo -> cgoPerson.equals(NewApplicationHelper.getPersonKey(cgo)))) {
                         dto.setIdNo(null);
+                        dto.setCgoPerson(null);
                     }
                 });
                 currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(allocationList);
@@ -1365,7 +1368,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Set<String> clickEditPage = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1408,14 +1410,10 @@ public class ClinicalLaboratoryDelegator {
                             String svcScopeConfigId = chkAndCgoValue;
                             if(!StringUtil.isEmpty(svcScopeConfigId)){
                                 HcsaSvcSubtypeOrSubsumedDto svcScopeConfigDto = svcScopeAlignMap.get(svcScopeConfigId);
-                                /*if(targetChkDto != null && svcScopeConfigDto != null && ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(svcScopeConfigDto.getName())){
-                                    pleaseIndicateLabId = svcScopeConfigDto.getId();
-                                    continue;
-                                }*/
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
-                                String cgoIdNo = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName);
-                                appSvcDisciplineAllocationDto.setIdNo(cgoIdNo);
+                                String cgoPerson = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName);
+                                appSvcDisciplineAllocationDto.setCgoPerson(cgoPerson);
                                 String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName);
                                 appSvcDisciplineAllocationDto.setSlIndex(slIndex);
                                 daList.add(appSvcDisciplineAllocationDto);
