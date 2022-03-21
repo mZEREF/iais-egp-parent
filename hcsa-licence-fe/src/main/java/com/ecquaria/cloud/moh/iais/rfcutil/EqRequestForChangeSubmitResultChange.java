@@ -232,7 +232,7 @@ public class EqRequestForChangeSubmitResultChange {
         boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, changeList);
         boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
                 oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
-        if (flag1 && flag != 1 && flag != 0) {
+        if (flag1 && flag == 0) {
             changeList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
         }
         if (eqSvcDoc) {

@@ -1348,7 +1348,6 @@ public class ClinicalLaboratoryDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        boolean cgoChange=false;
         String appType = appSubmissionDto.getAppType();
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if (isRfi || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))) {
@@ -1356,33 +1355,17 @@ public class ClinicalLaboratoryDelegator {
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
             }
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
-            if(oldAppSubmissionDto!=null){
-                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
-                if(appSvcCgoDtoList!=null){
-                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
-                    if(!appSvcCgoDtoList.equals(appSvcCgoDtoList1)){
-                        cgoChange=true;
-                    }
-                }
-            }
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        Set<String> clickEditPage = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-        boolean svcScopeEdit = false;
-        for (String item : clickEditPage) {
-            if (NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY.equals(item)) {
-                svcScopeEdit = true;
-                break;
-            }
-        }
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = null;
-        if (isGetDataFromPage || svcScopeEdit || cgoChange) {
+        if (isGetDataFromPage /*|| svcScopeEdit || cgoChange*/) {
+            List<AppSvcPersonnelDto> appSvcSectionLeaderList =
+                    IaisCommonUtils.getList(currentSvcRelatedDto.getAppSvcSectionLeaderList());
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             svcScopeAlignMap = NewApplicationHelper.getScopeAlignMap(currentSvcId, bpc.request);
             List<AppSvcDisciplineAllocationDto> daList = IaisCommonUtils.genNewArrayList();
@@ -1416,6 +1399,13 @@ public class ClinicalLaboratoryDelegator {
                                 appSvcDisciplineAllocationDto.setCgoPerson(cgoPerson);
                                 String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName);
                                 appSvcDisciplineAllocationDto.setSlIndex(slIndex);
+                                String sectionLeaderName = appSvcSectionLeaderList.stream()
+                                        .filter(dto -> Objects.equals(slIndex, dto.getIndexNo()))
+                                        .map(AppSvcPersonnelDto::getName)
+                                        .filter(Objects::nonNull)
+                                        .findAny()
+                                        .orElse(null);
+                                appSvcDisciplineAllocationDto.setSectionLeaderName(sectionLeaderName);
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
                                     targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
