@@ -256,7 +256,12 @@ public class MohDsActionDelegator {
                     CopyUtil.copyMutableObject(ldtSuperDataSubmissionDto));
             ldtSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            ldtSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            if (ldtSuperDataSubmissionDto.getDataSubmissionDto() != null) {
+                DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+                dataSubmissionDto.setAmendReason(null);
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
         return uri;
