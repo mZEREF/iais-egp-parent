@@ -53,13 +53,13 @@
                               <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
                                 <div class="col-sm-4 control-label formtext control">
                                   <div class="cgo-header">
-                                    <strong>Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                                    <strong>Clinical Governance Officer </strong>
                                   </div>
                                 </div>
                                 <div class="col-sm-8 text-right">
                                   <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                     <div class="">
-                                      <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
+
                                     </div>
                                   </c:if>
                                 </div>
