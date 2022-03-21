@@ -183,11 +183,100 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
-                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS != 'DS002'
+                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =ddsAcs.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                left join ds_husband dh on dpi.ID= dh.PATIENT_ID
+                left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
+                left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
+                left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
+                left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
+                left join ds_pgt_stage dps on dps.SUBMISSION_ID=dds.ID
+                left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
+                left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
+                left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where dc.CYCLE_TYPE ='DSCL_008' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
+                <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+                <#if patient_id_types??> AND  ${patient_id_types}</#if>
+                <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
+                <#if husband_id_types??> AND  ${husband_id_types}</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
+
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
+                <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
+
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
+                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) )</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
+                <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
+                <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
+                <#if cart_foc??> AND  :cart_foc = dacs.TREATMENT_FROZEN_OOCYTE </#if>
+                <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
+                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY  and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumFrom0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND  (:freshCycleNumFrom0 <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009')) </#if>
+                <#if freshCycleNumTo0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNumTo0 >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if freshCycleNum0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNum0 = dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
+
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
+                <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
+                <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
+                <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
+                <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
+                <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
+                <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
+                <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
+                <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
+                <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
+                <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
+                <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
+                <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
+                <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
+                <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
+                <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
+                <#if pgtSr??> AND  dps.IS_PGT_SR = :pgtSr </#if>
+                <#if pgtA??> AND  dps.IS_PGT_A = :pgtA </#if>
+                <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
+                <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
+                <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
                 SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
             CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
@@ -200,10 +289,99 @@
               ) AS BUSINESS_NAME  ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
-                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS != 'DS002'
+                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =ddsAcs.ID
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
+                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                left join ds_husband dh on dpi.ID= dh.PATIENT_ID
+                left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
+                left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
+                left join ds_donor_sample dad_donor on dad_donor.ID=dad.DONOR_SAMPLE_ID
+                left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
+                left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
+                left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
+                left join ds_pgt_stage dps on dps.SUBMISSION_ID=dds.ID
+                left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
+                left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
+                left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where dc.CYCLE_TYPE ='DSCL_008'
+                <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+                <#if patient_id_types??> AND  ${patient_id_types}</#if>
+                <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
+                <#if husband_id_types??> AND  ${husband_id_types}</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
+
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
+                <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
+
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
+                <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) )</#if>
+                <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) )</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
+                <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
+                <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
+                <#if cart_foc??> AND  :cart_foc = dacs.TREATMENT_FROZEN_OOCYTE </#if>
+                <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
+                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY  and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY and  dc.STATUS in  ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
+                <#if freshCycleNumFrom0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND  (:freshCycleNumFrom0 <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009')) </#if>
+                <#if freshCycleNumTo0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNumTo0 >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if freshCycleNum0??> AND dacs.TOTAL_PREVIOUSLY_PREVIOUSLY is not null AND (:freshCycleNum0 = dacs.TOTAL_PREVIOUSLY_PREVIOUSLY or dc.STATUS not in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009'))</#if>
+                <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
+
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
+                <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
+                <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
+                <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
+                <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
+                <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
+                <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
+                <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
+                <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
+                <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
+                <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
+                <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
+                <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
+                <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
+                <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
+                <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
+                <#if pgtSr??> AND  dps.IS_PGT_SR = :pgtSr </#if>
+                <#if pgtA??> AND  dps.IS_PGT_A = :pgtA </#if>
+                <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
+                <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
+                <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
@@ -232,10 +410,90 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                join ds_data_submission ddsOther on ddsOther.CYCLE_ID = dc.ID and ddsOther.STATUS != 'DS002'
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_husband dh on dpi.ID= dh.PATIENT_ID
+                left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
+                left join ds_efo_cycle_stage defocs on defocs.SUBMISSION_ID=dds.ID
+                left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
+                left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
+                left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
+                left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
+                left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
+                left join ds_pgt_stage dps on dps.SUBMISSION_ID=dds.ID
+                left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
+                left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
+                left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011') and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
+                <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+                <#if patient_id_types??> AND  ${patient_id_types}</#if>
+                <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
+                <#if husband_id_types??> AND  ${husband_id_types}</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
+
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
+                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+
+                <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
+
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
+                <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
+                <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
+                <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
+                <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
+                <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
+                <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
+                <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
+                <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
+                <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
+                <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
+                <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
+                <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
+                <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
+                <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
+                <#if pgtSr??> AND  dps.IS_PGT_SR = :pgtSr </#if>
+                <#if pgtA??> AND  dps.IS_PGT_A = :pgtA </#if>
+                <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
+                <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
+                <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
                 UNION ALL
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
@@ -256,7 +514,87 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
+                left join ds_husband dh on dpi.ID= dh.PATIENT_ID
+                left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
+                left join ds_efo_cycle_stage defocs on defocs.SUBMISSION_ID=dds.ID
+                left join ds_iui_cycle_stage dics on dics.SUBMISSION_ID=dds.ID
+                left join ds_iui_donor did on did.IUI_CYCLE_STAGE_ID = dics.ID
+                left join ds_donor_sample did_donor on did_donor.ID=did.DONOR_SAMPLE_ID
+                left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transfer_stage dets on dets.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
+                left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
+                left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
+                left join ds_pgt_stage dps on dps.SUBMISSION_ID=dds.ID
+                left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
+                left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
+                left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where dc.CYCLE_TYPE in ('DSCL_009','DSCL_010','DSCL_011')
+                <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+                <#if patient_id_types??> AND  ${patient_id_types}</#if>
+                <#if patientIdNumber??> AND  :patientIdNumber = dpi.ID_NUMBER </#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateTo)</#if>
+                <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+
+                <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
+                <#if husband_id_types??> AND  ${husband_id_types}</#if>
+                <#if husbandIdNumber??> AND  :husbandIdNumber = dh.ID_NUMBER</#if>
+
+                <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
+                <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
+                <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+
+                <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
+
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
+                <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
+                <#if FROM_HUSBAND??> AND  (:FROM_HUSBAND = dfs.IS_FROM_HUSBAND or :FROM_HUSBAND = dfs.IS_FROM_HUSBAND_TISSUE)</#if>
+                <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
+                <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
+                <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
+                <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
+                <#if embTransNums??> AND dets.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dets.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dets.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dets.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
+                <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
+                <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(datetime,:deliveryDateTo)</#if>
+                <#if patientArtYes??> AND :patientArtYes = 1 AND 'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND :patientArtNo = 1 AND 'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND :patientIuiYes = 1 AND 'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND :patientIuiNo = 1 AND 'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND :patientPgtYes = 1 and 1 = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientPgtNo??> AND :patientPgtNo = 1 and 0 = dps.IS_PGT_CONFUNDING </#if>
+                <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
+                <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
+                <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
+                <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
+                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
+                <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
+                <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
+                <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
+                <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
+                <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
+                <#if pgtSr??> AND  dps.IS_PGT_SR = :pgtSr </#if>
+                <#if pgtA??> AND  dps.IS_PGT_A = :pgtA </#if>
+                <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
+                <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
+                <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
 
             ) ajax
             where 1=1
