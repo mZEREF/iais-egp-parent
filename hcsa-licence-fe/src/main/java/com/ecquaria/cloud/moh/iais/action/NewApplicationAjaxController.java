@@ -498,7 +498,7 @@ public class NewApplicationAjaxController {
         String errMsg = "You are allowed to add up till only " + hasNumber + " PO";
         if (poMmaximumCount - hasNumber > 0) {
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, true);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
 
             sql = sql.replace("(1)", generateDropDownHtml(assignPrincipalOfficerSel, "poSelect", NewApplicationDelegator.FIRESTOPTION));
             sql = sql.replace("(2)", generateDropDownHtml(MasterCodeUtil.CATE_ID_SALUTATION, "salutation"));
