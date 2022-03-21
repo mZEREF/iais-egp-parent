@@ -876,12 +876,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, String> cgoMap = new HashMap<>();
         Map<String, String> slMap = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            String idNo = daList.get(i).getIdNo();
-            if (StringUtil.isEmpty(idNo)) {
+            String cgoPerson = daList.get(i).getCgoPerson();
+            if (StringUtil.isEmpty(cgoPerson)) {
                 map.put("disciplineAllocation" + i,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officers", "field"));
             } else {
-                cgoMap.put(idNo, idNo);
+                cgoMap.put(cgoPerson, cgoPerson);
             }
             String indexNo = daList.get(i).getSlIndex();
             if (StringUtil.isEmpty(indexNo)) {
@@ -899,7 +899,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 int objSize = appSvcCgoList.size();
                 if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
                     String result = currentSvcDto.getAppSvcCgoDtoList().stream()
-                            .filter(appSvcCgoDto -> !cgoMap.containsKey(appSvcCgoDto.getIdNo()))
+                            .filter(appSvcCgoDto -> !cgoMap.containsKey(NewApplicationHelper.getPersonKey(appSvcCgoDto)))
                             .map(AppSvcPrincipalOfficersDto::getName)
                             .filter(Objects::nonNull)
                             .reduce((x, y) -> x + ", " + y)
@@ -3127,10 +3127,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);
                                 }
                                 //set selCgoName
-                                String idNo = allocation.getIdNo();
-                                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)){
-                                    for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtoList){
-                                        if(idNo.equals(appSvcCgoDto.getIdNo())){
+                                String cgoPerson = allocation.getCgoPerson();
+                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(cgoPerson)) {
+                                    for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                                        if (Objects.equals(cgoPerson, NewApplicationHelper.getPersonKey(appSvcCgoDto))) {
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
                                             break;

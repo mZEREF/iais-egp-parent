@@ -743,7 +743,8 @@ public class RequestForChangeMenuDelegator {
             requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
                     appEditSelectDto, null);
             if ("replace".equals(editSelect)) {
-                replacePersonnelDate(appSubmissionDto, newPerson, oldPersonnelDto.getIdNo());
+                replacePersonnelDate(appSubmissionDto, newPerson, NewApplicationHelper.getPersonKey(oldPersonnelDto.getNationality(),
+                        personnelEditDto.getIdType(),oldPersonnelDto.getIdNo()));
             } else {
                 setPersonnelDate(appSubmissionDto, personnelEditDto);
             }
@@ -1887,7 +1888,7 @@ public class RequestForChangeMenuDelegator {
     }
 
     private AppSubmissionDto replacePersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto,
-            String oldIdNo) {
+            String personKey) {
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelListDto.getLicPsnTypeDtoMaps();
         String licenceNo = appSubmissionDto.getLicenceNo();
         List<String> psnTypes = licPsnTypeDtoMaps.get(licenceNo).getPsnTypes();
@@ -1897,20 +1898,18 @@ public class RequestForChangeMenuDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             for (String psnType : psnTypes) {
-                reSetPersonnels(appSvcRelatedInfoDto, personnelListDto, psnType, oldIdNo);
+                reSetPersonnels(appSvcRelatedInfoDto, personnelListDto, psnType, personKey);
             }
         }
         return appSubmissionDto;
     }
 
-    private void reSetPersonnels(AppSvcRelatedInfoDto targetReletedInfo, PersonnelListDto newPerson, String psnType, String oldIdNo) {
+    private void reSetPersonnels(AppSvcRelatedInfoDto targetReletedInfo, PersonnelListDto newPerson, String psnType, String personKey) {
         if (targetReletedInfo == null || newPerson == null || psnType == null) {
             return;
         }
-        if (oldIdNo == null) {
-            oldIdNo = newPerson.getIdNo();
-        }
-        boolean changePersonnel = !Objects.equals(oldIdNo, newPerson.getIdNo());
+        String newKey = NewApplicationHelper.getPersonKey(newPerson.getNationality(), newPerson.getIdType(), newPerson.getIdNo());
+        boolean changePersonnel = !Objects.equals(personKey, newKey);
         List<AppSvcPrincipalOfficersDto> targetList = null;
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
             targetList = targetReletedInfo.getAppSvcCgoDtoList();
@@ -1926,10 +1925,11 @@ public class RequestForChangeMenuDelegator {
         }
         if (!IaisCommonUtils.isEmpty(targetList)) {
             for (AppSvcPrincipalOfficersDto target : targetList) {
-                if (Objects.equals(target.getIdNo(), oldIdNo) && Objects.equals(target.getPsnType(), psnType)) {
+                if (Objects.equals(NewApplicationHelper.getPersonKey(target), personKey)) {
                     if (changePersonnel) {
                         target.setIdNo(newPerson.getIdNo());
                         target.setIdType(newPerson.getIdType());
+                        target.setNationality(newPerson.getNationality());
                     }
                     target.setName(newPerson.getPsnName());
                     target.setSalutation(newPerson.getSalutation());
@@ -1941,10 +1941,9 @@ public class RequestForChangeMenuDelegator {
         if (changePersonnel && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = targetReletedInfo.getAppSvcDisciplineAllocationDtoList();
             if (appSvcDisciplineAllocationDtoList != null) {
-                String idNo = newPerson.getIdNo();
                 for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                    if (Objects.equals(appSvcDisciplineAllocationDto.getIdNo(), oldIdNo)) {
-                        appSvcDisciplineAllocationDto.setIdNo(idNo);
+                    if (Objects.equals(appSvcDisciplineAllocationDto.getCgoPerson(), personKey)) {
+                        appSvcDisciplineAllocationDto.setCgoPerson(newKey);
                     }
                 }
             }
