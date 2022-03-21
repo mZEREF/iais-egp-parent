@@ -1073,6 +1073,12 @@ public class AppealServiceImpl implements AppealService {
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
 */
                         } else {
+                            if (professionRegoNo.length() > 20) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "20");
+                                repMap.put("field", "Professional Regn. No.");
+                                map.put("professionRegoNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
+                            }
                             ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo);
                             if (professionalResponseDto != null) {
                                 if (professionalResponseDto.isHasException()) {
@@ -1121,6 +1127,12 @@ public class AppealServiceImpl implements AppealService {
                                         }
                                     });
                                 }
+                            }
+                            if (idNo.length() > 20) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                repMap.put("maxlength", "20");
+                                repMap.put("field", "ID No.");
+                                map.put("idNo" + i, MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap));
                             }
 
                         }
