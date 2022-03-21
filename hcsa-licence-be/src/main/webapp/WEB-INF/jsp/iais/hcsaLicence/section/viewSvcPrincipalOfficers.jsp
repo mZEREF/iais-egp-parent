@@ -18,8 +18,7 @@
                             <c:set var="poIndex" value="${poIndex+1}"></c:set>
                         </c:if>
                         <c:if test="${po.psnType =='DPO'}">
-                            <p><strong class="col-xs-6">Nominee <c:if
-                                    test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
+                            <p><strong class="col-xs-6">Nominee <c:if test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
                             <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                         </c:if>
                         <table aria-describedby="" class="col-xs-12">
@@ -50,7 +49,7 @@
                                     </div>
                                     <div class="col-xs-6">
                                         <span class="oldVal " attr="${oldPo.name}" style="display: none">
-                                                <c:out value="${oldPo.name}"/>
+                                            <c:out value="${oldPo.name}"/>
                                         </span>
                                     </div>
                                 </td>
@@ -116,12 +115,12 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="<iais:code code="${po.nationality}"/>">
+                                        <span class="newVal " attr="${po.nationality}">
                                             <iais:code code="${po.nationality}"/>
                                         </span>
                                     </div>
                                     <div class="col-xs-6">
-                                        <span class="oldVal " attr="<iais:code code="${oldPo.nationality}"/>" style="display:none">
+                                        <span class="oldVal " attr="${oldPo.nationality}" style="display:none">
                                             <iais:code code="${oldPo.nationality}"/>
                                         </span>
                                     </div>

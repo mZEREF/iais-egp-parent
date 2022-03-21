@@ -640,7 +640,6 @@ public class NewApplicationHelper {
                     if (isValid) {
                         if (stringList.contains(personKey)) {
                             errMap.put(keyIdNo, "NEW_ERR0012");
-                            isValid = false;
                         } else {
                             stringList.add(personKey);
                         }
@@ -854,7 +853,6 @@ public class NewApplicationHelper {
                         if (isValid) {
                             if (stringList.contains(personKey)) {
                                 oneErrorMap.put(keyIdNo, "NEW_ERR0012");
-                                isValid = false;
                             } else {
                                 stringList.add(personKey);
                             }
@@ -954,7 +952,6 @@ public class NewApplicationHelper {
                         if (isValid) {
                             if (stringList.contains(personKey)) {
                                 oneErrorMap.put(keyIdNo, "NEW_ERR0012");
-                                isValid = false;
                             } else {
                                 stringList.add(personKey);
                             }
@@ -969,7 +966,6 @@ public class NewApplicationHelper {
                                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
                                 if (Objects.equals(subLicenseeKey, personKey)) {
                                     oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
-                                    isValid = false;
                                 }
                             }
                         }
@@ -1421,7 +1417,6 @@ public class NewApplicationHelper {
                     if (isValid) {
                         if (stringList.contains(personKey)) {
                             errMap.put(keyIdNo, "NEW_ERR0012");
-                            isValid = false;
                         } else {
                             stringList.add(personKey);
                         }
@@ -1508,7 +1503,6 @@ public class NewApplicationHelper {
                     if (isValid) {
                         if (stringList.contains(personKey)) {
                             errMap.put(keyIdNo, "NEW_ERR0012");
-                            isValid = false;
                         } else {
                             stringList.add(personKey);
                         }
