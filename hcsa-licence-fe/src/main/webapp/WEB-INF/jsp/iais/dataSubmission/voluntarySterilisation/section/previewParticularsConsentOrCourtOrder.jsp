@@ -19,7 +19,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Name Of Person"/>
+                        <iais:field width="6" value="Name of Person"/>
                         <iais:value width="6" display="true" cssClass="col-md-6">
                             <c:out value="${guardianAppliedPartDto.guardianName}"/>
                         </iais:value>
@@ -51,7 +51,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="Name Of Person"/>
+                        <iais:field width="6" value="Name of Person"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <c:out value="${guardianAppliedPartDto.appliedPartName}"/>
                         </iais:value>

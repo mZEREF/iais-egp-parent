@@ -12,7 +12,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <iais:row>
-                    <iais:field width="6" value="Name Of Patient" />
+                    <iais:field width="6" value="Name of Patient" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${treatmentDto.patientName}"/>
                     </iais:value>
@@ -66,7 +66,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Education Leve" />
+                    <iais:field width="6" value="Education Level" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <iais:code code="${treatmentDto.educationLevel}"/>
                     </iais:value>

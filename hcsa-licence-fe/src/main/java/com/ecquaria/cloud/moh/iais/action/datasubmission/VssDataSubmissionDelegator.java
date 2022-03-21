@@ -57,6 +57,8 @@ public class VssDataSubmissionDelegator {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
+    public static final String ACTION_TYPE_CONFIRM = "confirm";
+
     /**
      * Step: Start
      *
@@ -73,7 +75,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
 
-     /*   String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+       /* String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS);
         if (vssSuperDataSubmissionDto != null) {
@@ -133,23 +135,6 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
-   /*     String crud_action_type = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        //draft
-        VssSuperDataSubmissionDto dataSubmissionDraft = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
-        if (dataSubmissionDraft != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-        }
-        if (crud_action_type.equals("resume")) {
-            vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
-            if (vssSuperDataSubmissionDto == null) {
-                log.warn("Can't resume data!");
-                vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
-            }
-            DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
-        } else if (crud_action_type.equals("delete")) {
-            vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
-        }*/
-
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
@@ -159,6 +144,7 @@ public class VssDataSubmissionDelegator {
             prepareConsentParticulars(bpc.request);
         }else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
+
         }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
             preparePreview(bpc.request);
         }
@@ -207,6 +193,7 @@ public class VssDataSubmissionDelegator {
             status = doConsentParticulars(bpc.request);
         }else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             status = doTfsspParticulars(bpc.request);
+
         }else if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)) {
             status = doPreview(bpc.request);
         }
@@ -329,6 +316,7 @@ public class VssDataSubmissionDelegator {
     private void prepareTfsspParticulars(HttpServletRequest request) {
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE,ACTION_TYPE_CONFIRM);
     }
 
     private int doTfsspParticulars(HttpServletRequest request) {
@@ -343,6 +331,8 @@ public class VssDataSubmissionDelegator {
         String operationDate = ParamUtil.getString(request,"operationDate");
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
+        String disinfectionPlace = ParamUtil.getString(request,"disinfectionPlace");
+        sexualSterilizationDto.setDisinfectionPlace(disinfectionPlace);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
@@ -537,7 +527,7 @@ public class VssDataSubmissionDelegator {
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, currentStage);
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
         if (vssSuperDataSubmissionDto != null) {
             vssSuperDataSubmissionDto.setDraftNo(vssDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_VSS,

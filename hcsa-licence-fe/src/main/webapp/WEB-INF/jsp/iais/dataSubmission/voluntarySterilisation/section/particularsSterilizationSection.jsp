@@ -29,8 +29,7 @@
     <iais:row>
         <iais:field width="5" value="Hospital/Clinic where the sterilization was performed" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" codeCategory="" firstOption="Please Select"
-                         value="" />
+            <iais:input type="text" name="disinfectionPlace" value="${sexualSterilizationDto.disinfectionPlace}" />
         </iais:value>
     </iais:row>
     <iais:row>
