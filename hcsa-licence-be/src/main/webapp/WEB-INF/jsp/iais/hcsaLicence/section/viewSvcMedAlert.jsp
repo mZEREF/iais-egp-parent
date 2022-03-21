@@ -116,7 +116,7 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                        <span class="newVal " attr="${appSvcMedAlertPerson.nationality}"/>">
+                                        <span class="newVal " attr="${appSvcMedAlertPerson.nationality}">
                                             <iais:code code="${appSvcMedAlertPerson.nationality}"/>
                                         </span>
                                     </div>
