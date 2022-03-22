@@ -67,9 +67,6 @@ public class ProcessDataSubmissionDelegator {
                     ParamUtil.setSessionAttr(request, DATA_SUBMISSION_PROCESS_DTO, dto);
                     //show routingHistory list
                     processHistoryService.getAndSetHistoryInSession(dto.getSubmissionDetailsDto().getApplicationNo(), request);
-                    // view application need appId and moduleType
-                    ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-                    ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, dto.getNotificationType());
                     //
                     ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, dto.getDocDisplayDtoList());
                 } else {
@@ -78,6 +75,9 @@ public class ProcessDataSubmissionDelegator {
                 }
             }
         }
+        // view application need appId and moduleType
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, dto.getNotificationType());
     }
 
     public void doValidate(BaseProcessClass bpc) {

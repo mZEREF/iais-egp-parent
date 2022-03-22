@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_APPOINTMENT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -81,9 +81,6 @@ public class AppointInspectionDateDelegator {
                 ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, dto);
                 //show routingHistory list
                 processHistoryService.getAndSetHistoryInSession(dto.getSubmissionDetailsDto().getApplicationNo(), request);
-                // view application need appId and moduleType
-                ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-                ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_APPOINTMENT);
                 //
                 List<DocDisplayDto> docDisplayDtoList = dto.getDocDisplayDtoList();
                 ParamUtil.setSessionAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, (Serializable) docDisplayDtoList);
@@ -94,6 +91,9 @@ public class AppointInspectionDateDelegator {
             setApptInspectionDateDto(taskId, request);
             setInspApptDraftDto(dto.getApplicationNo(), request);
         }
+        // view application need appId and moduleType
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
     }
 
     public void setApptInspectionDateDto(String taskId, HttpServletRequest request) {
