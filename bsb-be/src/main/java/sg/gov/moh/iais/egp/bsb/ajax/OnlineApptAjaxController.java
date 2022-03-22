@@ -54,111 +54,100 @@ public class OnlineApptAjaxController {
     @PostMapping(value = "insp.date")
     public @ResponseBody
     Map<String, Object> getInspectionDate(HttpServletRequest request) {
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(3);
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO);
         List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos = (List<InspectionAppointmentDraftDto>) ParamUtil.getSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DRAFT_DTO);
         boolean newInspDateFlag = getNewInspDateFlag(appPremInspApptDraftDtos);
-        if(apptInspectionDateDto != null && CollectionUtils.isEmpty(apptInspectionDateDto.getInspectionDate())){
+        if (apptInspectionDateDto != null && CollectionUtils.isEmpty(apptInspectionDateDto.getInspectionDate())) {
             AppointmentReviewDataDto dto = (AppointmentReviewDataDto) ParamUtil.getSessionAttr(request, APPOINTMENT_REVIEW_DATA);
             String appType = dto.getApplicationType();
             String actionButtonFlag = apptInspectionDateDto.getActionButtonFlag();
             //get inspection date
-//            if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
-                if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
-                    AppointmentDto appointmentDto = new AppointmentDto();
-                    List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
-                    AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                    appointmentUserDto.setLoginUserId(loginContext.getLoginId());
-                    appointmentUserDto.setWorkHours(1);
-                    //
-                    appointmentUserDto.setWorkGrpName("BSB-Inspect");
-                    appointmentUserDtos.add(appointmentUserDto);
-                    appointmentDto.setUsers(appointmentUserDtos);
-                    //set system key
-                    appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            if (AppConsts.SUCCESS.equals(actionButtonFlag)) {
+                //todo get inspection start date and end date from application
+                AppointmentDto appointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getApplicationId()).getEntity();
+                List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
+                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+                appointmentUserDto.setLoginUserId(loginContext.getLoginId());
+                appointmentUserDto.setWorkHours(6);
+                //
+                appointmentUserDto.setWorkGrpName("BSB-Inspect");
+                appointmentUserDtos.add(appointmentUserDto);
+                //set system key
+                appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                //get Start date and End date when application no date
+                if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+                    //todo get startDate and endDate from service table,no table now,set time as below
                     Calendar startCal = Calendar.getInstance();
                     //todo the startCal is submitDt + date
                     startCal.setTime(new Date());
-                    startCal.add(Calendar.DAY_OF_YEAR,7);
-                    appointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(),null));
+                    startCal.add(Calendar.DAY_OF_YEAR, 7);
+                    appointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(), null));
 
                     Calendar endCal = Calendar.getInstance();
                     //todo the endCal is expiryDt + (-date)
                     endCal.setTime(startCal.getTime());
                     endCal.add(Calendar.DATE, 2);
-                    appointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(),null));
-
+                    appointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(), null));
+                }
 //                    List<String> premCorrIds = apptInspectionDateDto.getRefNo();
-                    //todo no service in application
-//                    Map<String, String> appIdServiceIdMap = getappIdServiceIdMapByRefNo(premCorrIds);
+                //todo no service in application
+//               Map<String, String> appIdServiceIdMap = getappIdServiceIdMapByRefNo(premCorrIds);
 
 //                    List<String> serviceIds = new ArrayList<>(appIdServiceIdMap.size());
-                    //get service data for get Date period
+                //get service data for get Date period
 //                    appointmentDto = getServiceDataForDatePeriod(appointmentDto, appType, appIdServiceIdMap, serviceIds);
-                    //get Start date and End date when group no date
-//                    if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
-                        //todo get date by service
-//                        appointmentDto.setServiceIds(serviceIds);
-//                        appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
-//                    }
-                    //get inspection date
-                    //todo get task dto list by refNo
-                    List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
-//                    List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>(taskDtoList.size());
-                    //set manHours and inspectors
-                    // todo use this method when ref_no is not null
-                    getManHoursInspectors(appointmentUserDtos, taskDtoList, null, appType);
-                    //If one person is doing multiple services at the same time, The superposition of time
-//                    appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
-//                    appointmentDto.setUsers(appointmentUserDtos);
-                    apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                    boolean dateFlag = getStartEndDateFlag(appointmentDto);
-                    if(dateFlag && newInspDateFlag) {
-                        //set Inspection date show, flag,
-                        getNewInspDateData(apptInspectionDateDto, appointmentDto, map, request,taskDtoList);
-                    } else if(!newInspDateFlag) {
-                        //get Inspection date Draft
-                        setInspDateDraftData(apptInspectionDateDto, appPremInspApptDraftDtos);
-                        apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
-                        apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
-                        map.put(BUTTON_FLAG, AppConsts.TRUE);
-                        map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
-                        map.put(INSP_DATE_LIST, apptInspectionDateDto.getInspectionDate());
-                    } else {
-                        map.put(BUTTON_FLAG, AppConsts.FALSE);
-                        map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
-                        map.put(INSP_DATE_LIST, null);
-                    }
-                    //specific date dto
-                    AppointmentDto specificApptDto = new AppointmentDto();
-                    specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
-                    specificApptDto.setUsers(appointmentDto.getUsers());
-                    specificApptDto.setSysClientKey(appointmentDto.getSysClientKey());
-                    specificApptDto.setServiceIds(appointmentDto.getServiceIds());
-                    specificApptDto.setServiceId(appointmentDto.getServiceId());
-                    apptInspectionDateDto.setSpecificApptDto(specificApptDto);
-                    ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, apptInspectionDateDto);
+                //get inspection date
+                //todo get task dto list by refNo
+                List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
+                //set manHours and inspectors
+                // todo use this method when ref_no is not null
+                getManHoursInspectors(appointmentUserDtos, taskDtoList, null, appType);
+                //If one person is doing multiple services at the same time, The superposition of time
+                appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
+                appointmentDto.setUsers(appointmentUserDtos);
+                apptInspectionDateDto.setAppointmentDto(appointmentDto);
+                boolean dateFlag = getStartEndDateFlag(appointmentDto);
+                if (dateFlag && newInspDateFlag) {
+                    //set Inspection date show, flag,
+                    getNewInspDateData(apptInspectionDateDto, appointmentDto, map, request, taskDtoList);
+                } else if (!newInspDateFlag) {
+                    //get Inspection date Draft
+                    setInspDateDraftData(apptInspectionDateDto, appPremInspApptDraftDtos);
+                    apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
+                    map.put(BUTTON_FLAG, AppConsts.TRUE);
+                    map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
+                    map.put(INSP_DATE_LIST, apptInspectionDateDto.getInspectionDate());
+                } else {
+                    map.put(BUTTON_FLAG, AppConsts.FALSE);
+                    map.put(SPEC_BUTTON_FLAG, AppConsts.TRUE);
+                    map.put(INSP_DATE_LIST, null);
                 }
-                //Audit Task
-//            } else {
-//                // set data for validate
-//                setSomeDataForVali(apptInspectionDateDto, map, appType);
-//                ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, apptInspectionDateDto);
-//            }
+                //specific date dto
+                AppointmentDto specificApptDto = new AppointmentDto();
+                specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
+                specificApptDto.setUsers(appointmentDto.getUsers());
+                specificApptDto.setSysClientKey(appointmentDto.getSysClientKey());
+                specificApptDto.setServiceIds(appointmentDto.getServiceIds());
+                specificApptDto.setServiceId(appointmentDto.getServiceId());
+                apptInspectionDateDto.setSpecificApptDto(specificApptDto);
+                ParamUtil.setSessionAttr(request, APPOINTMENT_INSPECTION_DATE_DTO, apptInspectionDateDto);
+            }
         }
         return map;
     }
 
     private void setInspDateDraftData(ApptInspectionDateDto apptInspectionDateDto, List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos) {
-        if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
+        if (!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
             log.info(StringUtil.changeForLog("Inspection Scheduling appPremInspApptDraftDtos Size ====" + appPremInspApptDraftDtos.size()));
             Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(4);
-            for(InspectionAppointmentDraftDto appPremInspApptDraftDto : appPremInspApptDraftDtos) {
-                if(appPremInspApptDraftDto != null) {
+            for (InspectionAppointmentDraftDto appPremInspApptDraftDto : appPremInspApptDraftDtos) {
+                if (appPremInspApptDraftDto != null) {
                     String apptRefNo = appPremInspApptDraftDto.getApptRefNo();
                     List<ApptUserCalendarDto> apptUserCalendarDtos = inspectionDateMap.computeIfPresent(apptRefNo, (s, apptUserCalendarDtos1) -> new ArrayList<>(1));
-                    if (CollectionUtils.isEmpty(apptUserCalendarDtos)){
+                    if (CollectionUtils.isEmpty(apptUserCalendarDtos)) {
                         apptUserCalendarDtos = new ArrayList<>();
                     }
                     ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
@@ -252,7 +241,7 @@ public class OnlineApptAjaxController {
     }
 
     private void getNewInspDateData(ApptInspectionDateDto apptInspectionDateDto, AppointmentDto appointmentDto, Map<String, Object> map,
-                                    HttpServletRequest request,List<TaskDto> taskDtoList) {
+                                    HttpServletRequest request, List<TaskDto> taskDtoList) {
         try {
             appointmentDto.setResultNum(1);
             FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
@@ -292,18 +281,18 @@ public class OnlineApptAjaxController {
 
     private List<InspectionAppointmentDraftDto> saveInspectionDateDraft(List<ApptRequestDto> apptRequestDtos, List<TaskDto> taskDtoList) {
         List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos = new ArrayList<>();
-        if(!IaisCommonUtils.isEmpty(taskDtoList) && !IaisCommonUtils.isEmpty(apptRequestDtos)) {
+        if (!IaisCommonUtils.isEmpty(taskDtoList) && !IaisCommonUtils.isEmpty(apptRequestDtos)) {
             appPremInspApptDraftDtos = new ArrayList<>(taskDtoList.size());
             List<String> appNoList = new ArrayList<>(taskDtoList.size());
-            for(TaskDto taskDto : taskDtoList) {
-                for(ApptRequestDto apptRequestDto : apptRequestDtos) {
-                    if(taskDto != null && apptRequestDto != null) {
+            for (TaskDto taskDto : taskDtoList) {
+                for (ApptRequestDto apptRequestDto : apptRequestDtos) {
+                    if (taskDto != null && apptRequestDto != null) {
                         //get date
                         int endTimeSize = apptRequestDto.getUserClandars().get(0).getEndSlot().size();
                         Date inspStartDate = apptRequestDto.getUserClandars().get(0).getStartSlot().get(0);
                         Date inspEndDate = apptRequestDto.getUserClandars().get(0).getEndSlot().get(endTimeSize - 1);
                         //set data
-                        if(!appNoList.contains(taskDto.getApplicationNo())) {
+                        if (!appNoList.contains(taskDto.getApplicationNo())) {
                             appNoList.add(taskDto.getApplicationNo());
                             InspectionAppointmentDraftDto draftDto = new InspectionAppointmentDraftDto();
                             draftDto.setApplicationNo(taskDto.getApplicationNo());
@@ -322,41 +311,11 @@ public class OnlineApptAjaxController {
         return appPremInspApptDraftDtos;
     }
 
-//    private List<AppPremInspApptDraftDto> saveInspectionDateDraft(List<ApptRequestDto> apptRequestDtos, List<TaskDto> taskDtoList) {
-//        List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = IaisCommonUtils.genNewArrayList();
-//        if(!IaisCommonUtils.isEmpty(taskDtoList) && !IaisCommonUtils.isEmpty(apptRequestDtos)) {
-//            List<String> appNoList = IaisCommonUtils.genNewArrayList();
-//            for(TaskDto taskDto : taskDtoList) {
-//                for(ApptRequestDto apptRequestDto : apptRequestDtos) {
-//                    if(taskDto != null && apptRequestDto != null) {
-//                        //get date
-//                        int endTimeSize = apptRequestDto.getUserClandars().get(0).getEndSlot().size();
-//                        Date inspStartDate = apptRequestDto.getUserClandars().get(0).getStartSlot().get(0);
-//                        Date inspEndDate = apptRequestDto.getUserClandars().get(0).getEndSlot().get(endTimeSize - 1);
-//                        //set data
-//                        if(!appNoList.contains(taskDto.getApplicationNo())) {
-//                            appNoList.add(taskDto.getApplicationNo());
-//                            AppPremInspApptDraftDto appPremInspApptDraftDto = new AppPremInspApptDraftDto();
-//                            appPremInspApptDraftDto.setApplicationNo(taskDto.getApplicationNo());
-//                            appPremInspApptDraftDto.setApptRefNo(apptRequestDto.getApptRefNo());
-//                            appPremInspApptDraftDto.setStartDate(inspStartDate);
-//                            appPremInspApptDraftDto.setEndDate(inspEndDate);
-//                            appPremInspApptDraftDto.setUserId(taskDto.getUserId());
-//                            appPremInspApptDraftDtos.add(appPremInspApptDraftDto);
-//                        }
-//                    }
-//                }
-//            }
-//            appPremInspApptDraftDtos = inspectionTaskClient.createAppPremisesInspecApptDto(appPremInspApptDraftDtos).getEntity();
-//        }
-//        return appPremInspApptDraftDtos;
-//    }
-
     private AppointmentDto getServiceDataForDatePeriod(AppointmentDto appointmentDto, String appType, Map<String, String> corrIdServiceIdMap, List<String> serviceIds) {
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             Map<String, Date> svcIdLicDtMap = Maps.newHashMapWithExpectedSize(corrIdServiceIdMap.size());
             for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-                if(StringUtils.hasLength(mapDate.getValue())){
+                if (StringUtils.hasLength(mapDate.getValue())) {
                     setSvcIdLicDtMapByApp(mapDate.getKey(), mapDate.getValue(), svcIdLicDtMap);
                     serviceIds.add(mapDate.getValue());
                 }
@@ -364,7 +323,7 @@ public class OnlineApptAjaxController {
             appointmentDto.setSvcIdLicDtMap(svcIdLicDtMap);
         } else {
             for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-                if(StringUtils.hasLength(mapDate.getValue())){
+                if (StringUtils.hasLength(mapDate.getValue())) {
                     serviceIds.add(mapDate.getValue());
                 }
             }
@@ -374,7 +333,7 @@ public class OnlineApptAjaxController {
     }
 
     private void getManHoursInspectors(List<AppointmentUserDto> appointmentUserDtos, List<TaskDto> taskDtoList,
-                                                           Map<String, String> corrIdServiceIdMap, String appType) {
+                                       Map<String, String> corrIdServiceIdMap, String appType) {
         for (TaskDto tDto : taskDtoList) {
             //todo the if will be deleted future
             if (StringUtils.hasLength(tDto.getRefNo())) {
@@ -396,7 +355,7 @@ public class OnlineApptAjaxController {
 //            apptAppInfoShowDto.setServiceId(serviceId);
                 //todo get manHours
 //            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
-                int manHours = 1;
+                int manHours = 2;
                 //Divide the time according to the number of people
                 //get the tasks where status in (pending,read)
                 List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
@@ -410,7 +369,7 @@ public class OnlineApptAjaxController {
 
     private boolean getNewInspDateFlag(List<InspectionAppointmentDraftDto> appPremInspApptDraftDtos) {
         boolean newInspDateFlag = true;
-        if(!CollectionUtils.isEmpty(appPremInspApptDraftDtos)) {
+        if (!CollectionUtils.isEmpty(appPremInspApptDraftDtos)) {
             newInspDateFlag = false;
         }
         return newInspDateFlag;
@@ -425,34 +384,34 @@ public class OnlineApptAjaxController {
         Date endDate = null;
         try {
             today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
-            if(StringUtils.hasLength(startDateStr)) {
+            if (StringUtils.hasLength(startDateStr)) {
                 startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
             }
-            if(StringUtils.hasLength(endDateStr)) {
+            if (StringUtils.hasLength(endDateStr)) {
                 endDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
             }
         } catch (ParseException e) {
             log.info("Appt Date Error!!!!!");
             log.error(e.getMessage(), e);
         }
-        if(endDate != null){
-            if(endDate.before(today)){
+        if (endDate != null) {
+            if (endDate.before(today)) {
                 return false;
             } else {
-                if(startDate == null){
+                if (startDate == null) {
                     return false;
                 } else {
-                    if(startDate.before(today)){
+                    if (startDate.before(today)) {
                         startDate = new Date();
                         appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                     }
                 }
             }
         } else {
-            if(startDate == null){
+            if (startDate == null) {
                 return false;
             } else {
-                if(startDate.before(today)){
+                if (startDate.before(today)) {
                     startDate = new Date();
                     appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
                 }
@@ -486,7 +445,7 @@ public class OnlineApptAjaxController {
     private void filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
         List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>(appointmentUserDtoList.size());
         boolean sameUserFlag = false;
-        for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
+        for (AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList) {
             String loginUserId = appointmentUserDto.getLoginUserId();
             String curLoginUserId = appointmentUserDto1.getLoginUserId();
             if (loginUserId.equals(curLoginUserId)) {
@@ -497,12 +456,12 @@ public class OnlineApptAjaxController {
                 sameUserFlag = true;
             }
         }
-        if(!sameUserFlag) {
+        if (!sameUserFlag) {
             appointmentUserDtos.add(appointmentUserDto);
         }
-        if(!CollectionUtils.isEmpty(appointmentUserDtos)){
-            for(AppointmentUserDto auDto : appointmentUserDtos){
-                if(auDto != null){
+        if (!CollectionUtils.isEmpty(appointmentUserDtos)) {
+            for (AppointmentUserDto auDto : appointmentUserDtos) {
+                if (auDto != null) {
                     appointmentUserDtoList.add(auDto);
                 }
             }
@@ -526,9 +485,9 @@ public class OnlineApptAjaxController {
     }
 
     private void getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, ApptInspectionDateDto apptInspectionDateDto) {
-        List<String> inspectionDates = IaisCommonUtils.genNewArrayList();
-        if(inspectionDateMap != null){
-            for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
+        if (inspectionDateMap != null) {
+            List<String> inspectionDates = new ArrayList<>(inspectionDateMap.size());
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
                 int endTimeSize = apptUserCalendarDtos.get(0).getEndSlot().size();
                 String inspStartDate = apptDateToStringShow(apptUserCalendarDtos.get(0).getStartSlot().get(0));
@@ -549,12 +508,12 @@ public class OnlineApptAjaxController {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int minutes = cal.get(Calendar.MINUTE);
-        if(minutes > 0){
+        if (minutes > 0) {
             cal.add(Calendar.HOUR_OF_DAY, 1);
         }
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
         String hoursShow = "";
-        if(curHour24 < 10){
+        if (curHour24 < 10) {
             hoursShow = "0";
         }
         specificDate = specificDate + " " + hoursShow + curHour24 + ":00";

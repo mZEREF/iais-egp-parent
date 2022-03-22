@@ -4,6 +4,7 @@ package sg.gov.moh.iais.egp.bsb.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -55,4 +56,8 @@ public class Application implements Serializable {
     private String aoUserId;
 
     private String hmUserId;
+
+    private LocalDate prefInspectionStart;
+
+    private LocalDate prefInspectionEnd;
 }
