@@ -39,17 +39,13 @@ public class Application implements Serializable {
 
     private Date hmVerifiedDt;
 
-    private Date createdAt;
+    private String assigned;
 
-    private String createdBy;
+    private LocalDate effectiveDate;
 
-    private Date modifiedAt;
+    private String stageId;
 
-    private String modifiedBy;
-
-    private String bioName;
-
-    private String riskLevel;
+    private String toBeSuspendReinstateAppId;
 
     private String doUserId;
 
@@ -60,4 +56,12 @@ public class Application implements Serializable {
     private LocalDate prefInspectionStart;
 
     private LocalDate prefInspectionEnd;
+
+    private Date createdAt;
+
+    private String createdBy;
+
+    private Date modifiedAt;
+
+    private String modifiedBy;
 }

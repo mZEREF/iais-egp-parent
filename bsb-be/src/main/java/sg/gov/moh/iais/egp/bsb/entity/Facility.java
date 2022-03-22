@@ -16,7 +16,7 @@ public class Facility implements Serializable {
 
     private FacilityOperator operator;
 
-    private FacilityOfficer officer;
+    private List<FacilityOfficer> officers;
 
     private List<FacilityAdmin> admins;
 
@@ -44,6 +44,8 @@ public class Facility implements Serializable {
 
     private String isProtected;
 
+    private String facilityNo;
+
     private Date createdAt;
 
     private String createdBy;
@@ -51,8 +53,4 @@ public class Facility implements Serializable {
     private Date modifiedAt;
 
     private String modifiedBy;
-
-    private String facilityAddress;
-
-    private String activeType;
 }

@@ -21,7 +21,7 @@ public class FacilityDto extends BaseEntityDto {
 
     private FacilityOperatorDto operator;
 
-    private FacilityOfficerDto officer;
+    private List<FacilityOfficerDto> officers;
 
     private List<FacilityAdminDto> admins;
 
@@ -48,4 +48,6 @@ public class FacilityDto extends BaseEntityDto {
     private String streetName;
 
     private String isProtected;
+
+    private String facilityNo;
 }
