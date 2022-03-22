@@ -34,6 +34,10 @@ public class Facility extends BaseEntity {
 
     private String facilityClassification;
 
+    private String facilityType;
+
+    private String sameAddressAsCompany;
+
     private String postalCode;
 
     private String blkNo;
@@ -43,6 +47,8 @@ public class Facility extends BaseEntity {
     private String unitNo;
 
     private String streetName;
+
+    private String building;
 
     private String isProtected;
 

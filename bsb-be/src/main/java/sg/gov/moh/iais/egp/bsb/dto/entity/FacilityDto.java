@@ -37,6 +37,10 @@ public class FacilityDto extends BaseEntityDto {
 
     private String facilityClassification;
 
+    private String facilityType;
+
+    private String sameAddressAsCompany;
+
     private String postalCode;
 
     private String blkNo;
@@ -46,6 +50,8 @@ public class FacilityDto extends BaseEntityDto {
     private String unitNo;
 
     private String streetName;
+
+    private String building;
 
     private String isProtected;
 

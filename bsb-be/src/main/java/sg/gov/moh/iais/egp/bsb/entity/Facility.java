@@ -1,15 +1,17 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 
 @Data
-public class Facility implements Serializable {
-
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Facility extends BaseEntity {
     private String id;
 
     private List<FacilityDoc> docs;
@@ -32,6 +34,10 @@ public class Facility implements Serializable {
 
     private String facilityClassification;
 
+    private String facilityType;
+
+    private String sameAddressAsCompany;
+
     private String postalCode;
 
     private String blkNo;
@@ -42,15 +48,9 @@ public class Facility implements Serializable {
 
     private String streetName;
 
+    private String building;
+
     private String isProtected;
 
     private String facilityNo;
-
-    private Date createdAt;
-
-    private String createdBy;
-
-    private Date modifiedAt;
-
-    private String modifiedBy;
 }

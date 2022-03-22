@@ -17,6 +17,8 @@ public class FacilityOperator extends BaseEntity {
 
     private String facOperator;
 
+    private String salutation;
+
     private String designeeName;
 
     private String nationality;

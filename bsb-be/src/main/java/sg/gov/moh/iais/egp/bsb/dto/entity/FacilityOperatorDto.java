@@ -23,6 +23,8 @@ public class FacilityOperatorDto extends BaseEntityDto {
 
     private String facOperator;
 
+    private String salutation;
+
     private String designeeName;
 
     private String nationality;

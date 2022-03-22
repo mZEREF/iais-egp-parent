@@ -21,6 +21,8 @@ public class FacilityAdminDto extends BaseEntityDto {
     @JMap(value = "${facility.id}")
     private String facilityId;
 
+    private String salutation;
+
     private String name;
 
     private String type;
