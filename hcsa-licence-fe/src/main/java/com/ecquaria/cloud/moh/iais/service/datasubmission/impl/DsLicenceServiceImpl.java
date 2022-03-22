@@ -60,7 +60,7 @@ public class DsLicenceServiceImpl implements DsLicenceService {
     @Override
     public List<PremisesDto> getArCenterPremiseList(String orgId) {
         if (tempCenterEnable) {
-            return getCenterPremisesByCentreType(orgId, DataSubmissionConsts.DS_AR);
+            return getCenterPremisesByCentreType(DataSubmissionConsts.DS_AR);
         } else {
             List<String> svcNames = new ArrayList<>();
             //TODO
@@ -148,12 +148,12 @@ public class DsLicenceServiceImpl implements DsLicenceService {
         return premisesDtoMap;
     }
 
-    private List<PremisesDto> getCenterPremisesByCentreType(String orgId, String dsType) {
+    private List<PremisesDto> getCenterPremisesByCentreType(String dsType) {
         List<PremisesDto> premisesDtos = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(dsType)) {
             return premisesDtos;
         }
-        List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(orgId, dsType).getEntity();
+        List<DsCenterDto> centerDtos = licenceClient.getCenterDtosByCentreType(dsType).getEntity();
         if (centerDtos == null || centerDtos.isEmpty()) {
             return premisesDtos;
         }
