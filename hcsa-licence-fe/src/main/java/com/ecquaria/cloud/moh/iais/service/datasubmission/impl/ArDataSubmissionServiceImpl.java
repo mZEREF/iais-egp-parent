@@ -208,20 +208,23 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             log.warn(StringUtil.changeForLog("---No data to be saved---"));
             return arSuperList;
         }
-        arSuperList.forEach(dto -> dto.setFe(false));
-        arSuperList = saveBeArSuperDataSubmissionDtoList(arSuperList);
-
         DataSubmissionDto dataSubmission = arSuperList.get(0).getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
-        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE refNo is -->:" + refNo));
+        arSuperList.forEach(dto -> dto.setFe(false));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-        if (eicRequestTrackingDto != null) {
-            eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
+        Date now = new Date();
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+        eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
+        try {
+            arSuperList = saveBeArSuperDataSubmissionDtoList(arSuperList);
             eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             licEicClient.saveEicTrack(eicRequestTrackingDto);
-        } else {
-            log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
+        } catch (Throwable e) {
+            licEicClient.saveEicTrack(eicRequestTrackingDto);
         }
+
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE refNo is -->:" + refNo));
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE end ..."));
         return arSuperList;
     }
