@@ -352,30 +352,8 @@ public class EqRequestForChangeSubmitResultChange {
             List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<String> cgoList, List<String> slList) {
         int flag = 0;
         if (appSvcDisciplineAllocationDtoList != null && oldAppSvcDisciplineAllocationDtoList != null) {
-            List<AppSvcDisciplineAllocationDto> list1 = MiscUtil.transferEntityDtos(appSvcDisciplineAllocationDtoList,
-                    AppSvcDisciplineAllocationDto.class);
-            List<AppSvcDisciplineAllocationDto> list2 = MiscUtil.transferEntityDtos(oldAppSvcDisciplineAllocationDtoList,
-                    AppSvcDisciplineAllocationDto.class);
-
-            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list1) {
-                String cgoPerson = appSvcDisciplineAllocationDto.getCgoPerson();
-                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
-                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
-                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
-                for (AppSvcDisciplineAllocationDto allocationDto : list2) {
-                    String cgoPerson1 = allocationDto.getCgoPerson();
-                    String premiseVal1 = allocationDto.getPremiseVal();
-                    String chkLstConfId1 = allocationDto.getChkLstConfId();
-                    if (Objects.equals(cgoPerson, cgoPerson1)
-                            && Objects.equals(premiseVal, premiseVal1)
-                            && Objects.equals(chkLstConfId, chkLstConfId1)) {
-                        allocationDto.setCgoSelName(cgoSelName);
-                        allocationDto.setChkLstName(chkLstName);
-                        allocationDto.setSectionLeaderName(appSvcDisciplineAllocationDto.getSectionLeaderName());
-                    }
-                }
-            }
+            List<AppSvcDisciplineAllocationDto> list1 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList);
+            List<AppSvcDisciplineAllocationDto> list2 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(oldAppSvcDisciplineAllocationDtoList);
             flag = list1.equals(list2) ? 0 : 1;
         } else if (appSvcDisciplineAllocationDtoList != null ^ oldAppSvcDisciplineAllocationDtoList != null) {
             flag = 1;

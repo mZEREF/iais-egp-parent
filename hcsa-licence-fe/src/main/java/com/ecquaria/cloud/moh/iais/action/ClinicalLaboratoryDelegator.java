@@ -78,6 +78,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -446,9 +447,34 @@ public class ClinicalLaboratoryDelegator {
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SECTION_LEADER, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
+            reSetAllocations(appSubmissionDto, bpc.request);
             removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SL, bpc.request);
         }
         log.debug(StringUtil.changeForLog("doSectionLeader end ..."));
+    }
+
+    private void reSetAllocations(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        String currSvcId = getCurrentServiceId(request);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currSvcId, null);
+        if (currSvcInfoDto == null || currSvcInfoDto.getAppSvcDisciplineAllocationDtoList() == null
+                || currSvcInfoDto.getAppSvcSectionLeaderList() == null) {
+            return;
+        }
+        boolean changeName = false;
+        List<String> slList = currSvcInfoDto.getAppSvcSectionLeaderList().stream()
+                .map(AppSvcPersonnelDto::getName)
+                .collect(Collectors.toList());
+        for (AppSvcDisciplineAllocationDto allocationDto : currSvcInfoDto.getAppSvcDisciplineAllocationDtoList()) {
+            if (!slList.contains(allocationDto.getSectionLeaderName())) {
+                allocationDto.setSectionLeaderName(null);
+                allocationDto.setSlIndex(null);
+                changeName = true;
+            }
+        }
+        if (changeName) {
+            log.info(StringUtil.changeForLog("--- reSetAllocations For Section Leader: " + changeName + "---"));
+            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
     }
 
     private List<AppSvcPersonnelDto> getSectionLeadersFromPage(HttpServletRequest request) {
