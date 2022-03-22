@@ -29,6 +29,8 @@ public interface ArDataSubmissionService {
 
     List<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDtoListToBE(List<ArSuperDataSubmissionDto> arSuperList);
 
+    void  saveBeArSuperDataSubmissionDtoForEic(EicArSuperDataSubmissionDto eicArSuperDataSubmissionDto);
+
     ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);

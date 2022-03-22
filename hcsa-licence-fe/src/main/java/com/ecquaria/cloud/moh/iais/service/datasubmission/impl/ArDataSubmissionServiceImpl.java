@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EicArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -223,10 +224,25 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         } catch (Throwable e) {
             licEicClient.saveEicTrack(eicRequestTrackingDto);
         }
-
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE refNo is -->:" + refNo));
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE end ..."));
         return arSuperList;
+    }
+
+    @Override
+    public void saveBeArSuperDataSubmissionDtoForEic(EicArSuperDataSubmissionDto eicArSuperDataSubmissionDto) {
+        log.info(StringUtil.changeForLog(" the saveBeArSuperDataSubmissionDtoForEic start ..."));
+        if(eicArSuperDataSubmissionDto != null ){
+           List<ArSuperDataSubmissionDto> arSuperList =  eicArSuperDataSubmissionDto.getArSuperDataSubmissionDtos();
+           if(IaisCommonUtils.isNotEmpty(arSuperList)){
+               saveArSuperDataSubmissionDtoListToBE(arSuperList);
+           }else{
+               log.error(StringUtil.changeForLog(" the saveBeArSuperDataSubmissionDtoForEic arSuperList is null"));
+           }
+        }else{
+            log.error(StringUtil.changeForLog(" the saveBeArSuperDataSubmissionDtoForEic eicArSuperDataSubmissionDto is null"));
+        }
+        log.info(StringUtil.changeForLog(" the saveBeArSuperDataSubmissionDtoForEic end ..."));
     }
 
     private List<ArSuperDataSubmissionDto> saveBeArSuperDataSubmissionDtoList(List<ArSuperDataSubmissionDto> arSuperList) {
