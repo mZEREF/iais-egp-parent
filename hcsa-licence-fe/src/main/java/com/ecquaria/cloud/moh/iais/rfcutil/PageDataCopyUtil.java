@@ -386,19 +386,23 @@ public class PageDataCopyUtil {
         return list;
     }
 
-    public static List<AppSvcDisciplineAllocationDto>  copyAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList){
-        if(appSvcDisciplineAllocationDtoList==null){
+    public static List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDto(
+            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList) {
+        if (appSvcDisciplineAllocationDtoList == null) {
             return new ArrayList<>();
         }
-        List<AppSvcDisciplineAllocationDto> list=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
-        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-            AppSvcDisciplineAllocationDto o=new AppSvcDisciplineAllocationDto();
+        List<AppSvcDisciplineAllocationDto> list = new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
+        for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+            AppSvcDisciplineAllocationDto o = new AppSvcDisciplineAllocationDto();
             o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
             o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
             o.setCgoPerson(appSvcDisciplineAllocationDto.getCgoPerson());
             o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
+            o.setSectionLeaderName(appSvcDisciplineAllocationDto.getSectionLeaderName());
             list.add(o);
         }
+        list.sort(Comparator.comparing(AppSvcDisciplineAllocationDto::getPremiseVal)
+                .thenComparing(AppSvcDisciplineAllocationDto::getChkLstConfId));
         return list;
     }
 
