@@ -61,15 +61,16 @@
     <iais:row>
         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
-                         onchange ="toggleOnSelect(this, 'ETHG005', 'ethnicOthers')"
+            <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="VSS_ETHNIC_GROUP"
+                         onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOthers')"
                          value="${treatmentDto.ethnicGroup}"/>
         </iais:value>
     </iais:row>
-    <iais:row id="ethnicOthers" style="${treatmentDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
+    <iais:row id="ethnicOthers" style="${treatmentDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
         <iais:field value="Other Ethnic Group" width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="200" type="text" name="otherEthnicGroup" value="${treatmentDto.otherEthnicGroup}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_otherEthnicGroup"></span>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -89,16 +90,31 @@
     <iais:row>
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-           <%-- <iais:select name="occupation" firstOption="Please Select" codeCategory=""
-                         value="${treatmentDto.occupation}"/>--%>
-            <iais:input type="text" name="occupation" value="${treatmentDto.occupation}"/>
+            <iais:select name="occupation" firstOption="Please Select" codeCategory="VSS_OCCUPATION"
+                         onchange ="toggleOnSelect(this, 'VSSOP011', 'occupationOthers')"
+                         value="${treatmentDto.occupation}"/>
+        </iais:value>
+    </iais:row>
+    <iais:row id="occupationOthers" style="${treatmentDto.occupation eq 'VSSOP011' ? '' : 'display: none'}">
+        <iais:field width="5" value="Other Occupation" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="200" type="text" name="otherOccupation" value="${treatmentDto.otherOccupation}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="sterilizationReason" firstOption="Please Select"  codeCategory="VSS_STERILIZATION_REASON"
+                         onchange ="toggleOnSelect(this, 'VSSRFS009', 'sterilizationReasonOthers')"
                          value="${treatmentDto.sterilizationReason}"/>
+        </iais:value>
+    </iais:row>
+    <iais:row id="sterilizationReasonOthers" style="${treatmentDto.sterilizationReason eq 'VSSRFS009' ? '' : 'display: none'}">
+        <iais:field width="5" value="Main Reason for Sterilization(Others)" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="200" type="text" name="otherSterilizationReason" value="${treatmentDto.otherSterilizationReason}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_otherSterilizationReason"></span>
         </iais:value>
     </iais:row>
     <iais:row>

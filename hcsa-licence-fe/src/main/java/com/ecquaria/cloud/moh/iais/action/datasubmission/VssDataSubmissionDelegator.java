@@ -75,7 +75,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
 
-       /* String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+    /*    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS);
         if (vssSuperDataSubmissionDto != null) {
@@ -135,6 +135,19 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
+       /* String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
+        //draft
+        if (crud_action_type.equals("resume")) {
+            vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
+            if (vssSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
+            }
+            DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+        } else if (crud_action_type.equals("delete")) {
+            vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+        }*/
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
@@ -235,6 +248,15 @@ public class VssDataSubmissionDelegator {
             treatmentDto.setAge(age/365);
         }catch (Exception e){
            log.error(e.getMessage(),e);
+        }
+        if (StringUtil.isNotEmpty(treatmentDto.getEthnicGroup()) && !treatmentDto.getEthnicGroup().equals("ECGP004")) {
+            treatmentDto.setOtherEthnicGroup(null);
+        }
+        if (StringUtil.isNotEmpty(treatmentDto.getOccupation()) && !treatmentDto.getOccupation().equals("VSSOP011")) {
+            treatmentDto.setOtherOccupation(null);
+        }
+        if (StringUtil.isNotEmpty(treatmentDto.getSterilizationReason()) && !treatmentDto.getSterilizationReason().equals("VSSRFS009")) {
+            treatmentDto.setOtherSterilizationReason(null);
         }
         vssTreatmentDto.setTreatmentDto(treatmentDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);

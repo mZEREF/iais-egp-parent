@@ -30,13 +30,24 @@ public class TreatmentValidator implements CustomizeValidator {
            }
         }
         String ethnicGroup = treatmentDto.getEthnicGroup();
-        if(!StringUtil.isEmpty(ethnicGroup) && ethnicGroup.equals("ETHG005")){
+        if(!StringUtil.isEmpty(ethnicGroup) && ethnicGroup.equals("ECGP004")){
             if(StringUtil.isEmpty(treatmentDto.getOtherEthnicGroup())){
                 errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
             }
         }
+       String occupation = treatmentDto.getOccupation();
+        if(StringUtil.isNotEmpty(occupation) && occupation.equals("VSSOP011")){
+            if(StringUtil.isEmpty(treatmentDto.getOtherOccupation())){
+                errorMap.put("otherOccupation", "GENERAL_ERR0006");
+            }
+        }
+        String sterilizationReason = treatmentDto.getSterilizationReason();
+        if(StringUtil.isNotEmpty(sterilizationReason) && sterilizationReason.equals("VSSRFS009")){
+            if(StringUtil.isEmpty(treatmentDto.getOtherSterilizationReason())){
+                errorMap.put("otherSterilizationReason", "GENERAL_ERR0006");
+            }
+        }
         String livingChildrenNo = treatmentDto.getLivingChildrenNo();
-
         if(StringUtil.isNotEmpty(livingChildrenNo) && StringUtil.isNumber(livingChildrenNo)){
             if(Integer.parseInt(livingChildrenNo) >=1){
                 if(StringUtil.isEmpty(lastChildBirthday)){
