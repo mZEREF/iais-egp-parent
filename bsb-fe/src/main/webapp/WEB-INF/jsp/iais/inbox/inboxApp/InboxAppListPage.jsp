@@ -223,6 +223,9 @@
                                                                         <c:if test="${AppWithdrawableJudge}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdraw</option>
                                                                         </c:if>
+                                                                        <c:if test="${InsAppointmentJudge}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Indicate Preferred Inspection Date</option>
+                                                                        </c:if>
                                                                         </select>
                                                                     </c:otherwise>
                                                                 </c:choose>
