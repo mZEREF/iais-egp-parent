@@ -224,6 +224,7 @@ public final class MasterCodeUtil {
     public static final String VSS_EDUCATION_LEVEL                  ="7A9A6EC2-96FE-4AF9-858F-6F6830B018D1";
     public static final String VSS_STERILIZATION_REASON             ="A2725934-1C1D-489F-87FA-04192B2BB357";
     public static final String VSS_METHOD_OF_STERILIZATION          ="E57182E9-6C22-4A36-A338-698702A90C6D";
+    public static final String VSS_ETHNIC_GROUP                     ="7E43824F-C007-4325-B5D7-5709F79CDF88";
 
     //Termination of Pregnancy
     //Patient Information
