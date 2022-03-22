@@ -61,7 +61,7 @@
                     </iais:row>
                 </div>
                 <div id="liveBirthNumSection"
-                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'OUTOPRE001' || pregnancyOutcomeStageDtoVersion.pregnancyOutcome != 'OUTOPRE001'}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'OUTOPRE001' && pregnancyOutcomeStageDtoVersion.pregnancyOutcome != 'OUTOPRE001'}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="No. Live Birth (Male)" cssClass="col-md-4"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
@@ -141,7 +141,7 @@
                     </iais:row>
                 </div>
                 <div id="deliverySection"
-                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE003' || pregnancyOutcomeStageDtoVersion.pregnancyOutcome == 'OUTOPRE003'}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE003' && pregnancyOutcomeStageDtoVersion.pregnancyOutcome == 'OUTOPRE003'}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="Mode of Delivery"
                                     cssClass="col-md-4"/>
@@ -211,7 +211,7 @@
 </div>
 
 <div class="panel panel-default babyDetailsPageDiv"
-     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1 || (pregnancyOutcomeStageDtoVersion.maleLiveBirthNum + pregnancyOutcomeStageDtoVersion.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
+     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1 && (pregnancyOutcomeStageDtoVersion.maleLiveBirthNum + pregnancyOutcomeStageDtoVersion.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
     <div class="panel-heading">
         <h4 class="panel-title">
             <a href="#babyDetals" data-toggle="collapse">
@@ -226,7 +226,7 @@
                 <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
 
                 <div id="careBabyNumSection"
-                     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1 || (pregnancyOutcomeStageDtoVersion.maleLiveBirthNum + pregnancyOutcomeStageDtoVersion.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
+                     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1 && (pregnancyOutcomeStageDtoVersion.maleLiveBirthNum + pregnancyOutcomeStageDtoVersion.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="Total No. of Baby Admitted to NICU Care"
                                     cssClass="col-md-4"/>
@@ -240,7 +240,7 @@
                 </div>
 
                 <div id="careBabyNumSection2"
-                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1 || pregnancyOutcomeStageDtoVersion.l2CareBabyNum + pregnancyOutcomeStageDtoVersion.l3CareBabyNum < 1}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1 && pregnancyOutcomeStageDtoVersion.l2CareBabyNum + pregnancyOutcomeStageDtoVersion.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="No. of Baby Admitted to L2 Care"
                                     cssClass="col-md-4"/>
@@ -263,7 +263,7 @@
                     </iais:row>
                 </div>
                 <div id="l2CareBabyDaysDiv"
-                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1 || pregnancyOutcomeStageDtoVersion.l2CareBabyNum < 1}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1 && pregnancyOutcomeStageDtoVersion.l2CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"
                                     cssClass="col-md-4"/>
@@ -276,7 +276,7 @@
                     </iais:row>
                 </div>
                 <div id="l3CareBabyDaysDiv"
-                     <c:if test="${pregnancyOutcomeStageDto.l3CareBabyNum < 1 || pregnancyOutcomeStageDtoVersion.l3CareBabyNum < 1}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.l3CareBabyNum < 1 && pregnancyOutcomeStageDtoVersion.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="4" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"
                                     cssClass="col-md-4"/>
