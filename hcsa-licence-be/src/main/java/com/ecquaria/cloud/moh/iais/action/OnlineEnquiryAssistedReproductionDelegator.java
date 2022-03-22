@@ -722,10 +722,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getPatientART()!=null){
-                if("1".equals(arDto.getPatientART())){
+                if("0".equals(arDto.getPatientART())){
                     filter.put("patientArtYes",1);
                 }
-                if("0".equals(arDto.getPatientART())){
+                if("1".equals(arDto.getPatientART())){
                     filter.put("patientArtNo",1);
                 }
             }
@@ -839,12 +839,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(arDto.getPGT()!=null){
                 if("1".equals(arDto.getPGT())){
-                    filter.put("pgtNo", 1);
-
+                    filter.put("pgtYes", 1);
                 }
                 if("0".equals(arDto.getPGT())){
-                    filter.put("pgtYes", 1);
-
+                    filter.put("pgtNo", 1);
                 }
             }
 
