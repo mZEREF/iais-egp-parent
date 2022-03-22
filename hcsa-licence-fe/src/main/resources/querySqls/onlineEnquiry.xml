@@ -145,7 +145,7 @@
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) )</#if>
-                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
@@ -250,7 +250,7 @@
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND (dacs.START_DATE >= convert(date,:cycleStagesDateFrom) )</#if>
                 <#if cycleStagesDateTo??> AND ( dacs.START_DATE <= convert(datetime,:cycleStagesDateTo) )</#if>
-                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
@@ -369,7 +369,7 @@
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
-                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
@@ -470,7 +470,7 @@
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
-                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
@@ -571,7 +571,7 @@
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
                 <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(datetime,:cycleStagesDateTo)</#if>
-                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
+                <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
