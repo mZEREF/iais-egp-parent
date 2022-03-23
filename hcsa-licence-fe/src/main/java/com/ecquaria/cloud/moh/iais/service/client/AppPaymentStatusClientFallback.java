@@ -8,6 +8,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -98,6 +99,30 @@ public class AppPaymentStatusClientFallback implements AppPaymentStatusClient {
 
     @Override
     public FeignResponseEntity<GiroPaymentXmlDto> updateGiroAckByGiroPaymentXmlDto(GiroPaymentXmlDto giroPaymentXmlDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> checkOldGiroDataToNewData() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> getGroupNosFromOldGiro() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> changeOldGiroDataToNewData(Map<String,List<String>> groupNoGiroAccMap) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
