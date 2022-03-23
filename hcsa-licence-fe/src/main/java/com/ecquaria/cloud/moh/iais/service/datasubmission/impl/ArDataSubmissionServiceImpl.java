@@ -818,8 +818,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode) {
-        return arFeClient.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode).getEntity();
+    public ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName) {
+        return arFeClient.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode, svcName).getEntity();
     }
 
     @Override

@@ -269,7 +269,7 @@ public class ArCycleStagesManualDelegator {
             throw new IaisRuntimeException(msg);
         }
         String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode());
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode(), currentSuper.getSvcName());
         if (arCurrentInventoryDto == null) {
             arCurrentInventoryDto = new ArCurrentInventoryDto();
             arCurrentInventoryDto.setHciCode(hciCode);

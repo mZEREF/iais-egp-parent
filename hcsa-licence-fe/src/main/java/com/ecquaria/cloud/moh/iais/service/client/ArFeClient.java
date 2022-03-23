@@ -198,7 +198,8 @@ public interface ArFeClient {
     @GetMapping(value = "/data-submission/ar-current-inventory-by-conds", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(@RequestParam(name = "hciCode") String hciCode,
                                                                                @RequestParam(name = "licenseeId") String licenseeId,
-                                                                               @RequestParam(name = "patientCode") String patientCode);
+                                                                               @RequestParam(name = "patientCode") String patientCode,
+                                                                               @RequestParam(name = "svcName") String svcName);
 
     @GetMapping(value = "/ar-common/ar-current-inventory-by-submissionNo", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoBySubmissionNo(@RequestParam(name = "submissionNo") String submissionNo, @RequestParam(name = "hasAfter") boolean hasAfter);

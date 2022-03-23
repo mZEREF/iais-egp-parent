@@ -320,7 +320,7 @@ public class TransferInOutDelegator extends CommonDelegator {
             arSuper.setPatientInfoDto(newDto.getPatientInfoDto());
         }
 
-        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode);
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode, svcName);
         if (arCurrentInventoryDto == null) {
             arCurrentInventoryDto = new ArCurrentInventoryDto();
             arCurrentInventoryDto.setHciCode(hciCode);

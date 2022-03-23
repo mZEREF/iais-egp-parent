@@ -124,7 +124,7 @@ public interface ArDataSubmissionService {
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
 
-    ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode);
+    ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName);
 
     ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
 
