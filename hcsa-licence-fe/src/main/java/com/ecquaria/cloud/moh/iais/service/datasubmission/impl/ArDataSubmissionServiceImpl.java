@@ -251,14 +251,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
-            String orgId, String hciCode) {
+            String orgId, String hciCode, boolean onlyStage) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + hciCode + " : " + idType
                 + " : " + idNumber + " : " + nationality + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
                 || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
             return null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode, onlyStage).getEntity();
     }
 
     @Override

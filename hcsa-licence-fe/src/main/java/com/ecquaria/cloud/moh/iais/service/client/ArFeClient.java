@@ -101,7 +101,8 @@ public interface ArFeClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
-            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "hciCode") String hciCode);
+            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "hciCode") String hciCode,
+            @RequestParam(name = "onlyStage") boolean onlyStage);
 
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
