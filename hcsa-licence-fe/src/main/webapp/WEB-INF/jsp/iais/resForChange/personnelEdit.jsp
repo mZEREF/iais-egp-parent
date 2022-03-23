@@ -689,6 +689,8 @@
 
     function addNew() {
         const personSelect = $('#replaceOptionsId').val();
+        clearFields("#newPerson");
+        toggleIdType($("#newPerson").find('select[name="idType1"]'), $("#newPerson").find(".nationalityDiv"));
         if (personSelect == 'new') {
             $("#update").hide();
             $('#newPerson').show();
@@ -699,6 +701,7 @@
             $('#newPerson').hide();
             $('#show').hide();
             $('#newPersonExist').hide();
+            toggleIdType($(ele).find(idTypeTag), $(ele).find(nationalityDiv));
         } else {
             $('#newPersonExist').show();
             $('#newPerson').hide();
