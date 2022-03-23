@@ -1553,7 +1553,7 @@ public class LicenceApproveBatchjob {
             }
             KeyPersonnelDto keyPersonnelDto = MiscUtil.transferEntityDto(appGrpPersonnelDto, KeyPersonnelDto.class);
             //:controller the psersonnel version
-            keyPersonnelDto.setVersion(getKeyPersonnelVersion(keyPersonnelDto.getIdNo(), organizationId));
+            keyPersonnelDto.setVersion(getKeyPersonnelVersion(keyPersonnelDto.getIdNo(), organizationId,keyPersonnelDto.getNationality()));
             //todo: controller status
             keyPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             //: controller the Organization
@@ -1578,21 +1578,21 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private Integer getKeyPersonnelVersion(String idNo, String orgId) {
+    private Integer getKeyPersonnelVersion(String idNo, String orgId,String nationality) {
         Integer result = 1;
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(orgId)) {
             return result;
         }
-        Integer version = keyPersonnelVersion.get(idNo + orgId);
+        Integer version = keyPersonnelVersion.get(idNo + orgId+nationality);
         if (version == null) {
-            KeyPersonnelDto keyPersonnelDto = licenceService.getLatestVersionKeyPersonnelByIdNoAndOrgId(idNo, orgId);
+            KeyPersonnelDto keyPersonnelDto = licenceService.getLatestVersionKeyPersonnelByIdNoAndOrgId(idNo, orgId,nationality);
             if (keyPersonnelDto != null) {
                 result = keyPersonnelDto.getVersion() + 1;
             }
         } else {
             result = version + 1;
         }
-        keyPersonnelVersion.put(idNo + orgId, result);
+        keyPersonnelVersion.put(idNo + orgId+nationality, result);
         return result;
     }
 
