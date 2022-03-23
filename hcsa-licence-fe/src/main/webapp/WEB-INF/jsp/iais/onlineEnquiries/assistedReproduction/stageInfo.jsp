@@ -61,6 +61,8 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" name="arSuperVisSubmissionNo" id="arSuperVisSubmissionNo" value="${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}"/>
+
     <div class="container">
         <div class="row">
             <div class="col-xs-12">

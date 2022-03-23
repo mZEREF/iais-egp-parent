@@ -1361,7 +1361,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String cycleId = ParamUtil.getString(request,"crud_action_value");
         String submissionNo = ParamUtil.getString(request,"crud_action_additional");
         String oldId = ParamUtil.getString(request,"crud_type");
-
+        String arSuperVisSubmissionNo = ParamUtil.getString(request,"arSuperVisSubmissionNo");
+        if("${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}".equals(submissionNo)){
+            submissionNo=arSuperVisSubmissionNo;
+        }
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
             cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmissionNo));
