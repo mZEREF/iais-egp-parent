@@ -1444,6 +1444,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         break;
                     }
                 }
+                if(StringUtil.isEmpty(oldId)){
+                    initDataForView(arSuperOld, bpc.request);
+                    arSuperOld.setDonorSampleDto(setflagMsg(arSuperOld.getDonorSampleDto()));
+                }
                 ParamUtil.setRequestAttr(bpc.request,"versionOptions",versionOptions);
                 ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
             }
