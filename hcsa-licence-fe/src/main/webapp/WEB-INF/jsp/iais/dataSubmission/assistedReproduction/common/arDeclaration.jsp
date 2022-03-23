@@ -13,7 +13,12 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <div class="col-xs-12"><iais:message key="DS_DEC001" /></div>
+                    <div class="form-check">
+                        <input class="form-check-input" id="declaration" type="checkbox" name="declaration" aria-invalid="false" value="1"  >
+                        <label class="form-check-label" for="declaration"><span class="check-square"></span><iais:message key="DS_DEC001" escape="false" /></label>
+                        <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_declaration"></span>
+                    </div>
+
                     <%--<div class="form-check col-md-3 col-xs-3">
                         <input class="form-check-input" <c:if test="${declaration == 'Yes'}">checked="checked"</c:if>
                                type="radio" name="declaration" value="Yes" aria-invalid="false">
