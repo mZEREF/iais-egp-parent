@@ -91,8 +91,8 @@
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Cycle No."/>
-                            <iais:value width="8" cssClass="col-md-8">
-                                <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="cycleNumber"  name="cycleNumber" value="${arTransactionHistoryFilterDto.cycleNumber}" >
+                            <iais:value width="4" cssClass="col-md-4">
+                                <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="cycleNumber"  name="cycleNumber" value="${arTransactionHistoryFilterDto.cycleNumber}" >
                             </iais:value>
                         </iais:row>
                         <iais:row>

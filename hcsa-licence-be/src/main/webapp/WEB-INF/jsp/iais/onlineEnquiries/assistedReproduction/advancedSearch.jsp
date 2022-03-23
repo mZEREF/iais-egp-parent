@@ -69,11 +69,11 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient's Age as of This Cycle"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberFrom"  name="patientAgeNumberFrom" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberFrom}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="patientAgeNumberFrom"  name="patientAgeNumberFrom" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberFrom}" >
                                     </iais:value>
                                     <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -273,11 +273,11 @@
                                 <iais:row>
                                     <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
                                     </iais:value>
                                     <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumTo"  name="freshCycleNumTo" value="${assistedReproductionEnquiryFilterDto.freshCycleNumTo}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;"  id="freshCycleNumTo"  name="freshCycleNumTo" value="${assistedReproductionEnquiryFilterDto.freshCycleNumTo}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -951,7 +951,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Total No. Disposed Of"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
                                     </iais:value>
                                 </iais:row>
 
