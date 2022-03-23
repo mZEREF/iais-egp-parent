@@ -7,13 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author weilu
@@ -56,4 +54,12 @@ public interface  AppPaymentStatusClient {
     @PostMapping(value = "/iais-payment/update-giro-ack-by-xml-dto" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroPaymentXmlDto> updateGiroAckByGiroPaymentXmlDto(@RequestBody GiroPaymentXmlDto giroPaymentXmlDto);
 
+    @GetMapping(value = "/iais-payment/check-old-giro-data-to-new-data",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> checkOldGiroDataToNewData();
+
+    @GetMapping(value = "/iais-payment/get-group-nos-from-old-giro",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getGroupNosFromOldGiro();
+
+    @PutMapping(value = "/iais-payment/change-old-giro-data-to-new-data",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> changeOldGiroDataToNewData(@RequestBody Map<String,List<String>> groupNoGiroAccMap);
 }

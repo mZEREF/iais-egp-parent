@@ -422,6 +422,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
            log.info("pay.giro.switch is closed");
            return;
        }
+        changeOldGiroData();
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_NEED_GEN_XML).getEntity();
        if(IaisCommonUtils.isEmpty(giroPaymentXmlDtos)){
           return;
@@ -469,6 +470,16 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             genFakeAck(grioXmlPaymentDto,tag);
         }
         log.info("-------sendGiroXmlToSftp end---------");
+    }
+    private void changeOldGiroData(){
+        if(ConfigHelper.getBoolean("giro.old.data.change.flag",true) && !appPaymentStatusClient.checkOldGiroDataToNewData().getEntity()){
+         List<String> groupNos = appPaymentStatusClient.getGroupNosFromOldGiro().getEntity();
+         Map<String,List<String>> groupNoGiroAccMap = IaisCommonUtils.genNewHashMap();
+         if(IaisCommonUtils.isNotEmpty(groupNos)){
+             groupNos.stream().forEach(groupNo -> groupNoGiroAccMap.put(groupNo,getGiroAccountAndBICByGroupNo(groupNo)));
+         }
+         appPaymentStatusClient.changeOldGiroDataToNewData(groupNoGiroAccMap);
+        }
     }
 
     private void createGiroPaymentSendGroupDto(String tag,String xml,GiroXmlPaymentDto grioXmlPaymentDto,Map<String,String> mapTrans,List<GiroPaymentXmlDto> giroPaymentXmlDtosGen){
