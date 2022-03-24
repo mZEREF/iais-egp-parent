@@ -1196,6 +1196,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                             SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                     filter.put("submission_to_date", submissionDateTo);
                 }
+                if(arDto.getSubmissionDateFrom()==null&&arDto.getSubmissionDateTo()==null){
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.YEAR, -1);
+                    Date y = c.getTime();
+                    String submissionDateFrom = Formatter.formatDateTime(y,
+                            SystemAdminBaseConstants.DATE_FORMAT);
+                    filter.put("submission_start_date", submissionDateFrom);
+                }
                 if(arDto.getIncludeTransfers()!=null) {
                     filter.put("transfers", 1);
                 }
