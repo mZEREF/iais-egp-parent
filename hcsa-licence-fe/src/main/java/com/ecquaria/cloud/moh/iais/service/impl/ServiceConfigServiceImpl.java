@@ -930,6 +930,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                                           log.info(StringUtil.changeForLog("-----------------ACK3 DATA IS NULL"));
                                       }
                                   }else {
+                                      deleteListFileNameByAckTag(remoteFileNames,".ACK1");
+                                      deleteListFileNameByAckTag(remoteFileNames,".ACK2");
                                       log.info(StringUtil.changeForLog("-----------------ACK3 File No find --------------"));
                                   }
                               }else {
