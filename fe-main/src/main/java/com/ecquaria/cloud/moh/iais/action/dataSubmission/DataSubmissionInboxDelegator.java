@@ -341,6 +341,7 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	ParamUtil.setRequestAttr(request,"selectAllTypeSub",ParamUtil.getString(request,"selectAllTypeSub"));
 	      	setShowPopMsg(request,actionValue);
 		  }else {
 	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
