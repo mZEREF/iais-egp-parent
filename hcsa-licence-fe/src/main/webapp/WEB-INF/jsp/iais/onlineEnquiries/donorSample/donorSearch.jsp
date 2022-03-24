@@ -69,7 +69,7 @@
                         <iais:row>
                             <iais:field width="4" value="Donor Sample Code"/>
                             <iais:value width="4" cssClass="col-md-4" >
-                                <input type="text"  id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
+                                <input type="text" maxlength="20" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -87,7 +87,7 @@
                             </iais:value>
                             <iais:value width="4" cssClass="col-md-4">
                                 <div id="othersDisplay" <c:if test="${arEnquiryDonorSampleFilterDto.sampleHciCode!='AR_SC_001'}">style="display: none"</c:if> >
-                                    <input type="text"  id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
+                                    <input type="text" maxlength="66" id="othersSampleHciCode"  name="othersSampleHciCode" value="${arEnquiryDonorSampleFilterDto.othersSampleHciCode}" >
 
                                 </div>
                             </iais:value>

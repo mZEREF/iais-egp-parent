@@ -38,13 +38,13 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of Laboratory"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text"  id="laboratoryName"  name="laboratoryName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.laboratoryName}" >
+                                    <input type="text" maxlength="66" id="laboratoryName"  name="laboratoryName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.laboratoryName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="Name of LDT Test"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text"  id="ldtTestName"  name="ldtTestName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtTestName}" >
+                                    <input type="text" maxlength="66" id="ldtTestName"  name="ldtTestName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtTestName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -62,7 +62,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Person responsible for the test"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text"  id="responsePerson"  name="responsePerson" value="${dsLaboratoryDevelopTestEnquiryFilterDto.responsePerson}" >
+                                    <input type="text" maxlength="66" id="responsePerson"  name="responsePerson" value="${dsLaboratoryDevelopTestEnquiryFilterDto.responsePerson}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
