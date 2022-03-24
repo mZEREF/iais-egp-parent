@@ -230,6 +230,8 @@
             $('#ds-deleteDraft').removeClass("disabled");
             if(selectAllTypeSub.indexOf('VSS') < 0){
                 $('#ds-amend').removeClass("disabled");
+            }else {
+                $('#ds-amend').addClass("disabled");
             }
             $('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
@@ -242,6 +244,8 @@
             $('#ds-amend').addClass("disabled");
             if(selectAllTypeSub.indexOf(',') > 0){
                 $('#ds-withdraw').addClass("disabled");
+            }else {
+                $('#ds-withdraw').removeClass("disabled");
             }
         }
     }
