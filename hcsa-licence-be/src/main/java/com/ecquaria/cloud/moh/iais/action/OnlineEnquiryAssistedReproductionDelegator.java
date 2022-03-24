@@ -527,45 +527,23 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("cart_foe",1);
             }
 //TOTAL_PREVIOUSLY_PREVIOUSLY freshCycleNumFrom
-            boolean freshCycleNum0=false;
-            if(arDto.getFreshCycleNumFrom()!=null&&arDto.getFreshCycleNumTo()!=null){
+            if(arDto.getFreshCycleNumFrom()!=null){
                 try {
                     int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
-                    int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
+                    filter.put("freshCycleNumFrom", totPreFreFrom);
 
-                    if(totPreFreFrom==0&&totPreFreTo==0){
-                        filter.put("freshCycleNum0", 0);
-                        freshCycleNum0=true;
-                    }
                 }catch (Exception e){
                     log.error("Total No. of AR cycles previously undergone by patient not int");
                 }
             }
-            if(!freshCycleNum0){
-                if(arDto.getFreshCycleNumFrom()!=null){
-                    try {
-                        int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
-                        if(totPreFreFrom==0){
-                            filter.put("freshCycleNumFrom0", totPreFreFrom);
-                        }else {
-                            filter.put("freshCycleNumFrom", totPreFreFrom);
-                        }
-                    }catch (Exception e){
-                        log.error("Total No. of AR cycles previously undergone by patient not int");
-                    }
-                }
 
-                if(arDto.getFreshCycleNumTo()!=null){
-                    try {
-                        int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
-                        if(totPreFreTo==0){
-                            filter.put("freshCycleNumTo0", totPreFreTo);
-                        }else {
-                            filter.put("freshCycleNumTo", totPreFreTo);
-                        }
-                    }catch (Exception e){
-                        log.error("Total No. of AR cycles previously undergone by patient not int");
-                    }
+            if(arDto.getFreshCycleNumTo()!=null){
+                try {
+                    int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
+                    filter.put("freshCycleNumTo", totPreFreTo);
+
+                }catch (Exception e){
+                    log.error("Total No. of AR cycles previously undergone by patient not int");
                 }
             }
 
