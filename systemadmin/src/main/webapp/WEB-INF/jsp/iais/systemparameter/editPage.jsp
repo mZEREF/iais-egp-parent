@@ -31,8 +31,7 @@
         <br><br>
         <div class="bg-title"><h2>System Parameters Update</h2></div>
 
-      <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
-      <br><br>
+        <br><br>
         <div class="form-horizontal">
             <div class="form-group">
                 <iais:field value="Type of System Parameter:"  />
@@ -84,6 +83,7 @@
                         </c:otherwise>
                     </c:choose>
                     <span id="error_value" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
