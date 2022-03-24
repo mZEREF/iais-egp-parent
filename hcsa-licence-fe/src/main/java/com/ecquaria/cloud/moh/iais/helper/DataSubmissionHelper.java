@@ -150,6 +150,26 @@ public final class DataSubmissionHelper {
         currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return newDto;
     }
+    public static DpSuperDataSubmissionDto dpReNew(DpSuperDataSubmissionDto currentSuper) {
+        DpSuperDataSubmissionDto newDto = new DpSuperDataSubmissionDto();
+        newDto.setAppType(currentSuper.getAppType());
+        newDto.setOrgId(currentSuper.getOrgId());
+        newDto.setSubmissionType(currentSuper.getSubmissionType());
+        newDto.setPremisesDto(currentSuper.getPremisesDto());
+        newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        newDto.setDraftId(currentSuper.getDraftId());
+        newDto.setDraftNo(currentSuper.getDraftNo());
+        DataSubmissionDto dataSubmissionDto = DataSubmissionHelper.initDataSubmission(newDto, true);
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
+        dataSubmissionDto.setDeclaration(null);
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto,currentSuper.getCycleDto().getLicenseeId(), true));
+        return newDto;
+    }
 
     public static DpSuperDataSubmissionDto getCurrentDpDataSubmission(HttpServletRequest request) {
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = (DpSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
