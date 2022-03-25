@@ -483,7 +483,7 @@ function checkMantory(sel, targetLabel, val) {
         return;
     }
     $target.find('.mandatory').remove();
-    if (isEmpty(val) && val != '' && $target.is(':checked') || val == $selector.val()) {
+    if (isEmpty(val) && val != '' && $selector.is(':checked') || val == $selector.val()) {
         $target.append('<span class="mandatory">*</span>');
     }
 }
