@@ -228,7 +228,7 @@
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
-            if(selectAllTypeSub.indexOf('VSS') < 0){
+            if(selectAllTypeSub.indexOf('DSCL_012') < 0){
                 $('#ds-amend').removeClass("disabled");
             }else {
                 $('#ds-amend').addClass("disabled");
