@@ -50,16 +50,28 @@
                     <%--@elvariable id="taskListSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto"--%>
                     <div id="taskListSearchFilter" class="collapse">
                         <div class="col-xs-12 col-sm-12"><%-- div for app date from and to --%>
-                            <label for="searchAppNo" class="col-sm-5 col-md-5 control-label">Application No.</label>
+                            <label for="searchAppNo" class="col-sm-5 col-md-5 control-label">Reference No.</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppNo" class="error-msg"></span>
-                                <input type="text" id="searchAppNo" name="searchAppNo" value="${taskListSearchDto.searchAppNo}"/>
+                                <input type="text" id="searchAppNo" name="searchAppNo" value=""/>
                             </div>
                             <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppType" class="error-msg"></span>
                                 <iais:select name="searchAppType" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
-                                             firstOption="Please Select" value="${taskListSearchDto.searchAppType}"/>
+                                             firstOption="Please Select" value=""/>
+                            </div>
+                            <label for="searchSubmissionType" class="col-sm-5 col-md-5 control-label">Submission Type</label>
+                            <div class="col-sm-7 col-md-5">
+                                <span data-err-ind="searchAppType" class="error-msg"></span>
+                                <iais:select name="searchSubmissionType" id="searchSubmissionType" codeCategory="CATE_ID_BSB_APP_TYPE"
+                                             firstOption="Please Select" value=""/>
+                            </div>
+                            <label for="searchAppStatus" class="col-sm-5 col-md-5 control-label">Status</label>
+                            <div class="col-sm-7 col-md-5">
+                                <span data-err-ind="searchStatus" class="error-msg"></span>
+                                <iais:select name="searchAppStatus" id="searchAppStatus" options="insAppStatus"
+                                             firstOption="Please Select" value="${taskListSearchDto.searchAppStatus}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12" style="text-align:right;"><%-- div for btn --%>
@@ -81,12 +93,11 @@
                             <th scope="col" style="display: none"></th>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
                             <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
-                            <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>
                             <iais:sortableHeader needSort="false" field="appType" value="Application Type"/>
-                            <iais:sortableHeader needSort="false" field="applicationDt" value="Application Date"/>
+                            <iais:sortableHeader needSort="false" field="submissionType" value="Submission Type"/>
                             <iais:sortableHeader needSort="false" field="applicationStatus" value="Application Status"/>
-                            <iais:sortableHeader needSort="false" field="role" value="Current Owner"/>
-                            <iais:sortableHeader needSort="false" field="" value="Action"/>
+                            <iais:sortableHeader needSort="false" field="applicationDt" value="Application Date"/>
+                            <iais:sortableHeader needSort="false" field="role" value="Duty Officer"/>
                         </tr>
                         </thead>
                         <c:choose>
@@ -108,32 +119,27 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <p><c:out value="${entity.application.applicationNo}"/></p>
-                                        </td>
-                                        <td>
-                                            <p class="visible-xs visible-sm table-row-title">Process Type</p>
-                                            <p><iais:code code="${entity.application.processType}"/></p>
+                                            <a href="/bsb-be/eservicecontinue/INTRANET/MultiAssignInspectionTask?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
                                             <p><iais:code code="${entity.application.appType}"/></p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Application Date</p>
-                                            <p><fmt:formatDate value="${entity.application.applicationDt}" pattern="dd/MM/yyyy"/></p>
+                                            <p class="visible-xs visible-sm table-row-title">Submission Type</p>
+                                            <p><iais:code code="${entity.application.processType}"/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Status</p>
                                             <p><iais:code code="${entity.application.status}"/></p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Current Owner</p>
-                                            <p><iais:code code="${entity.curOwner}"/></p>
+                                            <p class="visible-xs visible-sm table-row-title">Application Date</p>
+                                            <p><fmt:formatDate value="${entity.application.applicationDt}" pattern="dd/MM/yyyy"/></p>
                                         </td>
-                                        <td style="width: 15%">
-                                            <p class="visible-xs visible-sm table-row-title">Action</p>
-                                            <button type="button" class="btn btn-default btn-sm" onclick="reassignTask('${maskedTaskId}')">Reassign</button>
-                                            <button type="button" class="btn btn-default btn-sm" onclick="viewTaskDetail('${maskedTaskId}')">Detail</button>
+                                        <td>
+                                            <p class="visible-xs visible-sm table-row-title">Duty Officer</p>
+                                            <p><iais:code code="${entity.curOwner}"/></p>
                                         </td>
                                     </tr>
                                 </c:forEach>
