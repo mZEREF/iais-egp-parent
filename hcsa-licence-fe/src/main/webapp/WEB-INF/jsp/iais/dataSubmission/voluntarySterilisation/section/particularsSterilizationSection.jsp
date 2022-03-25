@@ -35,9 +35,18 @@
     <iais:row>
         <iais:field width="5" value="Method of Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="sterilizationMethod" value="${sexualSterilizationDto.sterilizationMethod}" />
+            <iais:select name="sterilizationMethod" firstOption="Please Select"  codeCategory="VSS_METHOD_OF_STERILIZATION"
+                         onchange ="toggleOnSelect(this, 'VSMOS006', 'sterilizationMethodOthers')"
+                         value="${sexualSterilizationDto.sterilizationMethod}"/>
         </iais:value>
     </iais:row>
+       <iais:row id="sterilizationMethodOthers" style="${sexualSterilizationDto.sterilizationMethod eq 'VSMOS006' ? '' : 'display: none'}">
+           <iais:field width="5" value="Other Method of Sterilization" mandatory="true"/>
+           <iais:value width="7" cssClass="col-md-7">
+               <iais:input maxLength="200" type="text" name="otherSterilizationMethod" value="${sexualSterilizationDto.otherSterilizationMethod}"/>
+               <span class="error-msg" name="iaisErrorMsg" id="error_otherSterilizationMethod"></span>
+           </iais:value>
+       </iais:row>
     <iais:row>
         <iais:field width="5" value="Date of Operation " mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">

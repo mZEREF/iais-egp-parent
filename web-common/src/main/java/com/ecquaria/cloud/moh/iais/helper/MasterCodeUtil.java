@@ -223,7 +223,7 @@ public final class MasterCodeUtil {
     public static final String VSS_MARITAL_STATUS                   ="6B61A48F-BF8B-48AD-8FAD-20DBAD439ED1";
     public static final String VSS_EDUCATION_LEVEL                  ="7A9A6EC2-96FE-4AF9-858F-6F6830B018D1";
     public static final String VSS_STERILIZATION_REASON             ="A2725934-1C1D-489F-87FA-04192B2BB357";
-    public static final String VSS_METHOD_OF_STERILIZATION          ="E57182E9-6C22-4A36-A338-698702A90C6D";
+    public static final String VSS_METHOD_OF_STERILIZATION          ="A7B66B93-3D27-4033-849C-3B059CA06A20";
     public static final String VSS_ETHNIC_GROUP                     ="7E43824F-C007-4325-B5D7-5709F79CDF88";
     public static final String VSS_OCCUPATION                       ="7A6E622A-F986-45E2-AD3F-13C3B5639702";
     //Termination of Pregnancy

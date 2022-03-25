@@ -111,7 +111,7 @@
         </iais:value>
     </iais:row>
     <iais:row id="sterilizationReasonOthers" style="${treatmentDto.sterilizationReason eq 'VSSRFS009' ? '' : 'display: none'}">
-        <iais:field width="5" value="Main Reason for Sterilization(Others)" mandatory="true"/>
+        <iais:field width="5" value="Other Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="200" type="text" name="otherSterilizationReason" value="${treatmentDto.otherSterilizationReason}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_otherSterilizationReason"></span>

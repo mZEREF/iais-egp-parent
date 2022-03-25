@@ -75,12 +75,12 @@ public class VssDataSubmissionDelegator {
         ParamUtil.clearSession(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedVssFile",SEESION_FILES_MAP_AJAX
                 + "selectedVssFile" + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
 
-    /*    String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                 .map(LoginContext::getOrgId).orElse("");
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.VSS_TYPE_SBT_VSS);
         if (vssSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-        }*/
+        }
     }
 
 
@@ -135,7 +135,7 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
-       /* String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
+      /*  String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
         //draft
         if (crud_action_type.equals("resume")) {
             vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(),vssSuperDataSubmissionDto.getSubmissionType());
@@ -346,7 +346,6 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
-        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         String doctorReignNo = ParamUtil.getString(request,"doctorReignNo");
         String doctorName = ParamUtil.getString(request,"doctorName");
         String sterilizationMethod = ParamUtil.getString(request,"sterilizationMethod");
@@ -354,10 +353,12 @@ public class VssDataSubmissionDelegator {
         String reviewedByHec = ParamUtil.getString(request,"reviewedByHec");
         String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
         String disinfectionPlace = ParamUtil.getString(request,"disinfectionPlace");
+        String otherSterilizationMethod =  ParamUtil.getString(request,"otherSterilizationMethod");
         sexualSterilizationDto.setDisinfectionPlace(disinfectionPlace);
         sexualSterilizationDto.setDoctorReignNo(doctorReignNo);
         sexualSterilizationDto.setDoctorName(doctorName);
         sexualSterilizationDto.setSterilizationMethod(sterilizationMethod);
+        sexualSterilizationDto.setOtherSterilizationMethod(otherSterilizationMethod);
         if(StringUtil.isNotEmpty(reviewedByHec)){
             sexualSterilizationDto.setReviewedByHec(reviewedByHec.equals("true") ? true : false);
         }
@@ -368,11 +369,6 @@ public class VssDataSubmissionDelegator {
             sexualSterilizationDto.setHecReviewDate(hDate);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
-        }
-        if(StringUtil.isNotEmpty(sexualSterilizationDto.getSterilizationMethod())){
-            if(sexualSterilizationDto.getSterilizationMethod().equals(DataSubmissionConsts.METHOD_OF_STERILIZATION_TUBAL_LIGATION) && treatmentDto.getGender().equals(DataSubmissionConsts.GENDER_MALE)){
-                sexualSterilizationDto.setUnreasonable(true);
-            }
         }
         vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
