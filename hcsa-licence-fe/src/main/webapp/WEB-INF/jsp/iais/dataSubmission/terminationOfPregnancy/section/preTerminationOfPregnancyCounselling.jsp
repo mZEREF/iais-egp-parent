@@ -103,11 +103,9 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Pre-Termination Counsellor ID Type
-            <span id="counsellorIdType" class="mandatory">
-                <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
-            </span>
-        </label>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" /></c:set>
+        <iais:field width="5" id="counsellorIdTypeLabel" value="Pre-Termination Counsellor ID Type"
+                    mandatory="${preTerminationDto.counsellingGiven}" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${preTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
@@ -200,7 +198,6 @@
         $('input[name=counsellingGiven]').change(function () {
             if($('#counsellingYes').prop('checked')) {
                 $('#patientSign').text('*');
-                $('#counsellorIdType').text('*');
                 $('#counsellorIdNo').text('*');
                 $('#counsellorName').text('*');
                 $('#counsellingDate').text('*');
@@ -211,7 +208,6 @@
             }
             if($('#counsellingNo').prop('checked')) {
                 $('#patientSign').text('');
-                $('#counsellorIdType').text('');
                 $('#counsellorIdNo').text('');
                 $('#counsellorName').text('');
                 $('#counsellingDate').text('');
@@ -220,6 +216,7 @@
                 $('#secCounsellingDate').text('');
                 $('#secCounsellingResult').text('');
             }
+            checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
         });
     });
 </script>

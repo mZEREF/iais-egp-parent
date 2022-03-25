@@ -47,11 +47,9 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Post-Termination Counsellor ID Type
-            <span id="counsellorIdType" class="mandatory">
-                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
-            </span>
-        </label>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" /></c:set>
+        <iais:field width="5" id="counsellorIdTypeLabel" value="Post-Termination Counsellor ID Type"
+                    mandatory="${postTerminationDto.givenPostCounselling}" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${postTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
@@ -108,7 +106,6 @@
         $('input[name=givenPostCounselling]').change(function () {
             if($('#radioYes').prop('checked')) {
                 $('#ifCounsellingNotGiven').text('*');
-                $('#counsellorIdType').text('*');
                 $('#counsellorIdNo').text('*');
                 $('#counsellorName').text('*');
                 $('#counsellingDate').text('*');
@@ -116,12 +113,12 @@
             }
             if($('#radioNo').prop('checked')) {
                 $('#ifCounsellingNotGiven').text('');
-                $('#counsellorIdType').text('');
                 $('#counsellorIdNo').text('');
                 $('#counsellorName').text('');
                 $('#counsellingDate').text('');
                 $('#counsellingPlace').text('');
             }
+            checkMantory('#radioYes', "#counsellorIdTypeLabel");
         });
     });
 </script>
