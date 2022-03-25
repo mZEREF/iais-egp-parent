@@ -364,11 +364,15 @@ public abstract class CommonDelegator {
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         // declaration
-        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
+        String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
-        dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);*/
+        if(declaration != null && declaration.length >0){
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        }else{
+            dataSubmissionDto.setDeclaration(null);
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
         // others
         pageConfirmAction(bpc);
     }
