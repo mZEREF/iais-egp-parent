@@ -67,7 +67,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <c:set var="toolMsg"><iais:message key="DS_MSG014" /></c:set>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
         <iais:field width="5" id="counsellorIdTypeLabel" value="Post-Termination Counsellor ID Type"
                     mandatory="${postTerminationDto.givenPostCounselling}" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">

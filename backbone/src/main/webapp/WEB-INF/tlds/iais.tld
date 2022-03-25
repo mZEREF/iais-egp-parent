@@ -999,6 +999,16 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>paramKeys</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>paramValues</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>escape</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

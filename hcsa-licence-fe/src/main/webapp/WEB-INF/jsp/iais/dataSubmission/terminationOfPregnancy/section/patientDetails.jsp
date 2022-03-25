@@ -29,7 +29,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <c:set var="toolMsg"><iais:message key="DS_MSG014" /></c:set>
+                        <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
                         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
