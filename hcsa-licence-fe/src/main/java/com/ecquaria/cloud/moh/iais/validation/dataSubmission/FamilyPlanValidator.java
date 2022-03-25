@@ -32,6 +32,12 @@ public class FamilyPlanValidator implements CustomizeValidator {
         if("TOPRTP008".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherMainTopReason())){
             errorMap.put("otherMainTopReason", "GENERAL_ERR0006");
         }
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getTopRiskCondition())){
+            errorMap.put("topRiskCondition", "GENERAL_ERR0006");
+        }
+        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getTopMedCondition())){
+            errorMap.put("topMedCondition", "GENERAL_ERR0006");
+        }
         if("TOPRTP004".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getSubRopReason())){
             errorMap.put("subRopReason", "GENERAL_ERR0006");
         }

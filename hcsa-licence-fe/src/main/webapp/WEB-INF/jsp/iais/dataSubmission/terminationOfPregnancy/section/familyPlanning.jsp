@@ -83,7 +83,7 @@
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
-    <div id="topRiskCondition" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if> >
+    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if> >
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -92,9 +92,9 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="topMedCondition" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP008'}">style="display: none"</c:if> >
+    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP002'}">style="display: none"</c:if> >
         <iais:row>
-            <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy”" mandatory="true"/>
+            <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_topMedCondition"></span>
@@ -112,7 +112,7 @@
     </div>
     <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if> >
         <iais:row>
-            <iais:field width="5" value="Sub Reason for Request to Terminate Pregnancy" mandatory="true"/>
+            <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="subRopReason" firstOption="Please Select" codeCategory="TOP_SUB_CAUSES_TERMINATION_PREGNANCY"
                              value="${familyPlanDto.subRopReason}" cssClass="subRopReason"/>
@@ -122,7 +122,7 @@
     </div>
     <div id="otherSubTopReason" style="${familyPlanDto.subRopReason ==null || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
         <iais:row>
-            <iais:field width="5" value="Other Sub Reason for Request to Terminate Pregnancy" mandatory="true"/>
+            <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}" />
                 <span class="error-msg" name="iaisErrorMsg" id="error_otherSubTopReason"></span>
@@ -132,6 +132,13 @@
 </div>
 <script>
     $(document).ready(function() {
+        subRopReason();
+       mainTopReason();
+        mainTopReason();
+        gestAgeBaseOnUltrWeek();
+        contraHistory();
+    });
+    function subRopReason() {
         $('#subRopReason').change(function () {
 
             var subRopReason= $('#subRopReason option:selected').val();
@@ -142,8 +149,8 @@
                 $('#otherSubTopReason').attr("style","display: none");
             }
         });
-    });
-    $(document).ready(function() {
+    }
+    function mainTopReason() {
         $('#mainTopReason').change(function () {
 
             var mainTopReason= $('#mainTopReason option:selected').val();
@@ -154,13 +161,18 @@
                 $('#otherMainTopReason').attr("style","display: none");
             }
             if(mainTopReason == "TOPRTP005"){
-                $('#topRiskCondition').attr("style","display: block");
+                $('#topRiskConditions').attr("style","display: block");
             }else {
-                $('#topRiskCondition').attr("style","display: none");
+                $('#topRiskConditions').attr("style","display: none");
+            }
+            if(mainTopReason == "TOPRTP002"){
+                $('#topMedConditions').attr("style","display: block");
+            }else {
+                $('#topMedConditions').attr("style","display: none");
             }
         });
-    });
-    $(document).ready(function() {
+    }
+    function mainTopReason(){
         $('#mainTopReason').change(function () {
 
             var mainTopReason= $('#mainTopReason option:selected').val();
@@ -171,10 +183,10 @@
                 $('#subRopReasons').attr("style","display: none");
             }
         });
-    });
-    $(document).ready(function() {
+    }
+    function gestAgeBaseOnUltrWeek(){
         $('[name=gestAgeBaseOnUltrWeek]').change(function () {
-        console.log("1");
+            console.log("1");
             var gestAgeBaseOnUltrWeek= $('[name=gestAgeBaseOnUltrWeek]').val();
 
             if(gestAgeBaseOnUltrWeek >="15"){
@@ -183,8 +195,8 @@
                 $('#abortChdMoreWksGenders').attr("style","display: none");
             }
         });
-    });
-    $(document).ready(function() {
+    }
+    function contraHistory(){
         $('#contraHistory').change(function () {
 
             var contraHistory= $('#contraHistory option:selected').val();
@@ -195,5 +207,5 @@
                 $('#mostRecentContraMethods').attr("style","display: none");
             }
         });
-    });
+    }
 </script>

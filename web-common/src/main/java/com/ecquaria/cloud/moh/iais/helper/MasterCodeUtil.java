@@ -240,9 +240,15 @@ public final class MasterCodeUtil {
     public static final String TOP_SUB_CAUSES_TERMINATION_PREGNANCY      ="4972915B-0088-4A9E-BFC9-4BBCBFBD2FFC";
     //Pre-Termination Of Pregnancy Counselling
     public static final String TOP_CONSULTATION_RESULTS                  ="10BB38F8-5FBE-445F-B3DB-0C1BAA25472D";
+    public static final String TOP_PRE_COUNSELLING_PLACE                 ="8129555A-974F-4076-9A46-1E01FAFBD066";
+    public static final String TOP_FINAL_PRE_COUNSELLING_RESULT          ="408F78E6-FA22-4DAE-A43A-E1112063395E";
     //Termination Of Pregnancy
     public static final String TOP_TYPE_TERMINATION_PREGNANCY            ="7589A046-2D14-49C0-8AC7-FA141E53058C";
     public static final String TOP_TYPE_OF_DRUG                          ="94B44592-5DD6-4998-8498-2EA284148113";
+    public static final String TOP_TYPE_OF_SURGICAL_PROCEDURE            ="495BF24F-8AE6-41CB-9499-D490940A8CCE";
+    public static final String TOP_TYPE_OF_ANAESTHESIA                   ="2DC5F10B-8C8A-4407-9F05-3342EFD08F3F";
+    //Post-Termination Of Pregnancy Counselling
+    public static final String TOP_POST_COUNSELLING_RESULT               ="5E2DFDEF-DA59-4F61-AF3E-43FCA7D5CEB5";
 
     public static final String LDT_AMENDMENT_REASON                      = "B6F2B5FA-689E-4505-97EC-8C1479D19351";
 
