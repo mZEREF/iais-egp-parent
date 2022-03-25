@@ -222,6 +222,20 @@
                 }
                 selectAllTypeSub = selectAllTypeSub.substr(0,selectAllTypeSub.length-1);
             }
+
+            let containType = false;
+            $.each($("[name='submissionNo']:checked"),function(){
+                if(!containType && $(this).val().indexOf(type) >=0){
+                    containType = true;
+                }
+            });
+            if(containType){
+                if(selectAllTypeSub == ''){
+                    selectAllTypeSub = type;
+                }else {
+                    selectAllTypeSub += ',' + type;
+                }
+            }
             size--;
         }
         $("#selectAllTypeSub").val(selectAllTypeSub);
