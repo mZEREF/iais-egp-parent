@@ -44,7 +44,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Name of LDT Test"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="ldtTestName"  name="ldtTestName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtTestName}" >
+                                    <input type="text" maxlength="50" id="ldtTestName"  name="ldtTestName" value="${dsLaboratoryDevelopTestEnquiryFilterDto.ldtTestName}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
