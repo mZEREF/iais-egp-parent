@@ -122,7 +122,7 @@ public class MohDsDraftDelegator {
         if (vssSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission";
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission/PrepareSwitch";
         }
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuper, request);
         return uri;
