@@ -110,7 +110,7 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${inboxDataSubmissionQuery.type}')">
+                                                   name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${inboxDataSubmissionQuery.type}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
@@ -121,6 +121,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
+                                        <input type="hidden" value="${inboxDataSubmissionQuery.type}" id="typeValue${submissionNo}" name="typeValue${submissionNo}">
                                        <iais:code code="${inboxDataSubmissionQuery.type}"/>
                                     </td>
                                     <td>
@@ -225,8 +226,10 @@
 
             let containType = false;
             $.each($("[name='submissionNo']:checked"),function(){
-                if(!containType && $(this).val().indexOf(type) >=0){
-                    containType = true;
+                if(!containType){
+                    if($('#typeValue'+ $(this).val()).val() == type){
+                        containType = true;
+                    }
                 }
             });
             if(containType){
