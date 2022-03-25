@@ -271,4 +271,17 @@ public class MasterCodeConstants {
     public static final String REASONS_FOR_AFC_DEREGISTRATION_3 = "BSBRFAD003";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_4 = "BSBRFAD004";
     public static final String REASONS_FOR_AFC_DEREGISTRATION_5 = "BSBRFAD005";
+
+    //Mode of Procurement
+    public static final String PROCUREMENT_MODE_LOCAL_TRANSFER = "BMOP001";
+    public static final String PROCUREMENT_MODE_IMPORT = "BMOP002";
+    public static final String PROCUREMENT_MODE_ALREADY_IN_POSSESSION = "BMOP003";
+
+    //Type of work that will be carried out involving the biological agent/toxin
+    public static final String WORK_TYPE_CULTURING_ISOLATION_BAT = "BSBWT001";
+    public static final String WORK_TYPE_SEROLOGICAL_TEST = "BSBWT002";
+    public static final String WORK_TYPE_MOLECULAR_TEST = "BSBWT003";
+    public static final String WORK_TYPE_ANIMAL_STUDIES = "BSBWT004";
+    public static final String WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT = "BSBWT005";
+    public static final String WORK_TYPE_OTHERS = "BSBWT006";
 }
