@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
@@ -18,10 +19,11 @@ public class PreTerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto();
+        FamilyPlanDto familyPlanDto=terminationOfPregnancyDto.getFamilyPlanDto();
         if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true) {
-            if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
+           /* if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
                 errorMap.put("patientSign", "GENERAL_ERR0006");
-            }
+            }*/
             if(StringUtil.isEmpty(preTerminationDto.getCounsellorIdType())){
                 errorMap.put("counsellorIdType", "GENERAL_ERR0006");
             }
@@ -40,11 +42,28 @@ public class PreTerminationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingResult())){
                 errorMap.put("counsellingResult", "GENERAL_ERR0006");
             }
+            if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
+                errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
+                errorMap.put("patientSign", "GENERAL_ERR0006");
+            }
+        }
+        if (!StringUtil.isEmpty(preTerminationDto.getCounsellingResult()) && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
+            if(StringUtil.isEmpty(preTerminationDto.getPatientAppointment())){
+                errorMap.put("patientAppointment", "GENERAL_ERR0006");
+            }
+
+        }
+        if (!StringUtil.isEmpty(preTerminationDto.getPatientAppointment()) && preTerminationDto.getPatientAppointment()==true) {
             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
                 errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
             }
             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingResult())){
                 errorMap.put("secCounsellingResult", "GENERAL_ERR0006");
+            }
+        }
+        if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==false) {
+            if(StringUtil.isEmpty(preTerminationDto.getNoCounsReason())){
+                errorMap.put("noCounsReason", "GENERAL_ERR0006");
             }
         }
         return errorMap;

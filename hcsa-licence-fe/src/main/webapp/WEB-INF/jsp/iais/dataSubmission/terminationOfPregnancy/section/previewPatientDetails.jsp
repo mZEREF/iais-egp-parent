@@ -102,12 +102,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="gender"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.gender}"/>
-                    </iais:value>
-                </iais:row>
                 <div <c:if test="${empty patientInformationDto.livingChildrenGenders}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>

@@ -22,6 +22,22 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
+                <div <c:if test="${empty postTerminationDto.counsellingRslt}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Post-Counselling Result"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <iais:code code="${postTerminationDto.counsellingRslt}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${empty postTerminationDto.otherCounsellingRslt}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Post-Counselling Result - Others"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${postTerminationDto.otherCounsellingRslt}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <div <c:if test="${empty postTerminationDto.ifCounsellingNotGiven}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="If post-counselling was not given"/>
@@ -66,7 +82,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Post-Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${postTerminationDto.counsellingPlace}"/>
+                            <iais:code code="${postTerminationDto.counsellingPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>
