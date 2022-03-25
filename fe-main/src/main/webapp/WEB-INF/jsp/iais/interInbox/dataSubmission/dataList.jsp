@@ -215,7 +215,7 @@
             }else if(selectAllTypeSub.indexOf(type) >= 0){
                 var arr = selectAllTypeSub.split(',');
                 selectAllTypeSub = '';
-                for(const i in arr){
+                for(let i=0; i< arr.length;i++){
                     if(arr[i] != type && arr[i] != '' && arr[i] != null){
                         selectAllTypeSub += arr[i] + ',';
                     }
