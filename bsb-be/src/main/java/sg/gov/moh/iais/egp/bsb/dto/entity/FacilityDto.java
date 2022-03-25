@@ -56,4 +56,6 @@ public class FacilityDto extends BaseEntityDto {
     private String isProtected;
 
     private String facilityNo;
+
+    private Boolean blockFlag;
 }

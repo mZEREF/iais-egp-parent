@@ -15,7 +15,6 @@ public class FacilityActivity extends BaseEntity {
 
     private String id;
 
-
     private Facility facility;
 
     private Application application;
@@ -26,13 +25,7 @@ public class FacilityActivity extends BaseEntity {
 
     private Approval approval;
 
-    private String isCloned;
-
     private String useStatus;
 
-    private String bioName;
-
-    private String riskLevel;
-
-    private String admin;
+    private Boolean blockFlag;
 }

@@ -53,4 +53,6 @@ public class Facility extends BaseEntity {
     private String isProtected;
 
     private String facilityNo;
+
+    private Boolean blockFlag;
 }

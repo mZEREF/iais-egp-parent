@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
+
 import java.util.List;
 
 
@@ -11,6 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FacilityActivity extends BaseEntity {
+
     private String id;
 
     private Facility facility;
@@ -23,7 +25,7 @@ public class FacilityActivity extends BaseEntity {
 
     private Approval approval;
 
-    private String cloned;
-
     private String useStatus;
+
+    private Boolean blockFlag;
 }
