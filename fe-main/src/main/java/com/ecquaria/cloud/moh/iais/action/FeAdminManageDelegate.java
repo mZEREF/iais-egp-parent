@@ -132,7 +132,7 @@ public class FeAdminManageDelegate {
         if(IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())){
             StringBuilder stringBuilder = new StringBuilder();
             feUserDto.getOrgUserRoleDtos().stream().forEach( orgUserRoleDto ->
-                stringBuilder.append(IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(orgUserRoleDto.getRoleName()).getText()).append(" ")
+                stringBuilder.append(IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(orgUserRoleDto.getRoleName()).getText()).append(' ')
             );
             ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,stringBuilder.substring(0,stringBuilder.length()-1));
         }
