@@ -135,6 +135,10 @@ public class ArCycleStagesManualDelegator {
                 DataSubmissionDto dataSubmissionDto = currentSuper.getDataSubmissionDto();
                 if (dataSubmissionDto != null) {
                     // To reNew super data submission and retrieving draft data
+                    if (!Objects.equals(selectionDto.getStage(), dataSubmissionDto.getCycleStage())) {
+                        currentSuper = DataSubmissionHelper.reNew(currentSuper);
+                        currentSuper.setSelectionDto(selectionDto);
+                    }
                     dataSubmissionDto.setCycleStage(null);
                 }
                 /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
