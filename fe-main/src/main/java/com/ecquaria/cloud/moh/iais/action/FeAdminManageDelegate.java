@@ -128,7 +128,15 @@ public class FeAdminManageDelegate {
             isAdmin = "0";
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
-        ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,StringUtil.isEmpty(feUserDto.getRoles()) ? feUserDto.getRoles() : feUserDto.getRoles().replace("#"," "));
+
+        if(IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())){
+            StringBuilder stringBuilder = new StringBuilder();
+            feUserDto.getOrgUserRoleDtos().stream().forEach( orgUserRoleDto ->
+                stringBuilder.append(IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(orgUserRoleDto.getRoleName()).getText()).append(" ")
+            );
+            ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,stringBuilder.substring(0,stringBuilder.length()-1));
+        }
+
         ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(bpc.request,UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
