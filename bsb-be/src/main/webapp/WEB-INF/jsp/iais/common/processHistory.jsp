@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <div class="alert alert-info" role="alert">
     <strong>
         <h4>Processing History</h4>
@@ -39,3 +40,12 @@
         </div>
     </div>
 </div>
+<c:choose>
+    <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
+    <c:when test="${goBackUrl ne null}">
+        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+    </c:when>
+    <c:otherwise>
+        <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+    </c:otherwise>
+</c:choose>
