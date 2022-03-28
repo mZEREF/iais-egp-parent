@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -53,7 +53,7 @@ public final class ApplicationHelper {
             if ("1".equals(dupForPrem)) {
                 title.append(ApplicationConsts.TITLE_MODE_OF_SVCDLVY).append(" 1: ");
             }
-            title.append(getDupForPersonName(dupForPerson));
+            title.append(IaisCommonUtils.getPersonNameFromDup(dupForPrem, false));
             if (num != null) {
                 title.append(' ').append(num);
             }
@@ -64,34 +64,12 @@ public final class ApplicationHelper {
         return result;
     }
 
-    private static String getDupForPersonName(String dupForPerson) {
-        String psnName = "";
-        switch (dupForPerson) {
-            case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_PO:
-                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                psnName = HcsaConsts.NOMINEE;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                psnName = HcsaConsts.MEDALERT_PERSON;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                psnName = HcsaConsts.SERVICE_PERSONNEL;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_CD:
-                psnName = HcsaConsts.CLINICAL_DIRECTOR;
-                break;
-            case ApplicationConsts.DUP_FOR_PERSON_SL:
-                psnName = HcsaConsts.SECTION_LEADER;
-                break;
-            default:
-                break;
+    public static String getPersonKey(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto) {
+        if (appSvcPrincipalOfficersDto == null) {
+            return null;
         }
-        return psnName;
+        return IaisCommonUtils.getPersonKey(appSvcPrincipalOfficersDto.getNationality(), appSvcPrincipalOfficersDto.getIdType(),
+                appSvcPrincipalOfficersDto.getIdNo());
     }
 
     public static List<AppSvcChckListDto> handlerPleaseIndicateLab(List<AppSvcChckListDto> appSvcChckListDtos) {
