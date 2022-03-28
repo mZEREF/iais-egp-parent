@@ -105,7 +105,7 @@
                                             <iais:row>
                                                 <iais:field value="Assigned Roles" width="5" required="false" />
                                                 <iais:value width="7" cssClass="col-md-7" display="true">
-                                                    <c:out value="${feNoAdminRolesShow}"/>
+                                                    <c:out value="${feNoAdminRolesShow}" escapeXml="false"/>
                                                 </iais:value>
                                             </iais:row>
                                         </c:otherwise>

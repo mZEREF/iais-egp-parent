@@ -107,7 +107,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     arDonorDto.getIdNumber(),
                     arDonorDto.getIdType(),
                     arDonorDto.getDonorSampleCode(),
-                    DataSubmissionHelper.getCurrentArDataSubmission(request).getLicenseeId(),
+                    DataSubmissionHelper.getLoginContext(request).getLicenseeId(),
                     DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode());
             if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
