@@ -56,8 +56,9 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         }
         String cycleStages=dpSuperDataSubmissionDto.getCycleDto().getCycleType();
         if (cycleStages.equals("DSCL_005")) {
-            cycleStages = DataSubmissionConsts.DS_CYCLE_PATIENT_DRP;
-            dpSuperDataSubmissionDto.getCycleDto().setCycleType(cycleStages);
+            dpSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO);
+            dpSuperDataSubmissionDto = DataSubmissionHelper.dpReNew(dpSuperDataSubmissionDto);
+            DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
 
@@ -74,7 +75,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         if (StringUtil.isEmpty(patientDto.getEthnicGroup())) {
             patientDto.setEthnicGroup("");
         }
-        if (StringUtil.isNotEmpty(patientDto.getEthnicGroup()) && !DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(patientDto.getEthnicGroup())) {
+        if (StringUtil.isNotEmpty(patientDto.getEthnicGroup()) && !patientDto.getEthnicGroup().equals("ECGP004")) {
             patientDto.setEthnicGroupOther(null);
         }
         if (StringUtil.isEmpty(patientDto.getOrgId())) {

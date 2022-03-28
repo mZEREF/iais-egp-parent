@@ -85,16 +85,7 @@ public final class FieldTag extends DivTagSupport {
             html.append("<label class=\"col-xs-").append(width).append(" col-md-4 control-label");
         }
 
-        generateHtml(html);
-        if (isBackend && required) {
-            html.append("<span style=\"color: red\"> *</span>");
-        } else if (required) {
-            html.append("<span style=\"color: red\"> *</span>");
-        }
-
-        if(mandatory){
-            html.append("<span class=\"mandatory\">*</span>");
-        }
+        generateHtml(html, isBackend);
 
         html.append(ENDLABLE);
         if (script.length() > 0) {
@@ -107,7 +98,8 @@ public final class FieldTag extends DivTagSupport {
         }
         return SKIP_BODY;
     }
-    private void generateHtml(StringBuilder html){
+
+    private void generateHtml(StringBuilder html, boolean isBackend){
         if (!StringUtil.isEmpty(cssClass)) {
             html.append(' ').append(cssClass);
         }
@@ -120,6 +112,14 @@ public final class FieldTag extends DivTagSupport {
         html.append("\">");
 
         html.append(value);
+        if (isBackend && required) {
+            html.append("&nbsp;").append("<span style=\"color: red\"> *</span>");
+        } else if (required) {
+            html.append("&nbsp;").append("<span style=\"color: red\"> *</span>");
+        }
+        if (mandatory) {
+            html.append("&nbsp;").append("<span class=\"mandatory\">*</span>");
+        }
         if (!StringUtil.isEmpty(info)) {
             html.append("&nbsp;<a class=\"btn-tooltip styleguide-tooltip\" ")
                     .append("style=\"z-index: 10\" ")
@@ -131,12 +131,9 @@ public final class FieldTag extends DivTagSupport {
                     .append(info)
                     .append("&lt;/p&gt;\">")
                     .append("i</a>&nbsp;");
-        } else {
-            html.append("&nbsp;");
         }
-
-
     }
+
     private void generateNotBEHtml(StringBuilder html){
         html.append("<div class=\"col-lg-1 col-md-12 col-sm-12 float-left\">");
         html.append("<label class=\"checkbox-custom check-primary\">");

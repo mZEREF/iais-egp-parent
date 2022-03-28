@@ -223,8 +223,9 @@ public final class MasterCodeUtil {
     public static final String VSS_MARITAL_STATUS                   ="6B61A48F-BF8B-48AD-8FAD-20DBAD439ED1";
     public static final String VSS_EDUCATION_LEVEL                  ="7A9A6EC2-96FE-4AF9-858F-6F6830B018D1";
     public static final String VSS_STERILIZATION_REASON             ="A2725934-1C1D-489F-87FA-04192B2BB357";
-    public static final String VSS_METHOD_OF_STERILIZATION          ="E57182E9-6C22-4A36-A338-698702A90C6D";
-
+    public static final String VSS_METHOD_OF_STERILIZATION          ="A7B66B93-3D27-4033-849C-3B059CA06A20";
+    public static final String VSS_ETHNIC_GROUP                     ="7E43824F-C007-4325-B5D7-5709F79CDF88";
+    public static final String VSS_OCCUPATION                       ="7A6E622A-F986-45E2-AD3F-13C3B5639702";
     //Termination of Pregnancy
     //Patient Information
     public static final String TOP_RESIDENCE_STATUS                      ="61EBD041-A0A5-42E6-9E8D-58506EC47008";
@@ -239,9 +240,15 @@ public final class MasterCodeUtil {
     public static final String TOP_SUB_CAUSES_TERMINATION_PREGNANCY      ="4972915B-0088-4A9E-BFC9-4BBCBFBD2FFC";
     //Pre-Termination Of Pregnancy Counselling
     public static final String TOP_CONSULTATION_RESULTS                  ="10BB38F8-5FBE-445F-B3DB-0C1BAA25472D";
+    public static final String TOP_PRE_COUNSELLING_PLACE                 ="8129555A-974F-4076-9A46-1E01FAFBD066";
+    public static final String TOP_FINAL_PRE_COUNSELLING_RESULT          ="408F78E6-FA22-4DAE-A43A-E1112063395E";
     //Termination Of Pregnancy
     public static final String TOP_TYPE_TERMINATION_PREGNANCY            ="7589A046-2D14-49C0-8AC7-FA141E53058C";
     public static final String TOP_TYPE_OF_DRUG                          ="94B44592-5DD6-4998-8498-2EA284148113";
+    public static final String TOP_TYPE_OF_SURGICAL_PROCEDURE            ="495BF24F-8AE6-41CB-9499-D490940A8CCE";
+    public static final String TOP_TYPE_OF_ANAESTHESIA                   ="2DC5F10B-8C8A-4407-9F05-3342EFD08F3F";
+    //Post-Termination Of Pregnancy Counselling
+    public static final String TOP_POST_COUNSELLING_RESULT               ="5E2DFDEF-DA59-4F61-AF3E-43FCA7D5CEB5";
 
     public static final String LDT_AMENDMENT_REASON                      = "B6F2B5FA-689E-4505-97EC-8C1479D19351";
 

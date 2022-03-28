@@ -1,10 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.entity;
-import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
 import java.util.List;
+
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,10 +25,28 @@ public class FacilityBiologicalAgent extends BaseEntity {
 
 	private String biologicalId;
 
-	private List<FacilityAgentSample> facilityAgentSamples;
+	private String status;
 
 	private Approval approval;
 
+	private String procurementMode;
+
+	private BatLspInfo lspInfo;
+
+	private BatSpecialHandleInfo specialHandleInfo;
+
+	private List<BatSample> facilityAgentSamples;
+
+	private List<BatWorkActivity> agentWorkActivities;
+
+	private List<BatSpWorkActivity> agentSpecialHandleWorkActivities;
+
+	private BatFacilityDetail transferringFacility;
+
+	private BatContactPerson transferringFacilityContactPerson;
 
 	private String useStatus;
+
+	private Boolean blockFlag;
+
 }

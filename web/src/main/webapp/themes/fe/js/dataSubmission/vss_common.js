@@ -62,7 +62,7 @@ $(document).ready(function() {
     if ($('#nextBtn').length > 0) {
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
-        } else if ('stage' == currPage) {
+        } else if ('confirm' == currPage) {
             $('#nextBtn').html('Preview');
         }
         $('#nextBtn').click(function () {

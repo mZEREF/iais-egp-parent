@@ -42,7 +42,7 @@
                 <iais:row>
                     <iais:field width="5" value="Age"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="age">
-                        ${patientInformationDto.patientAge}
+                        <%--${patientInformationDto.patientAge}--%>
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="patientData">

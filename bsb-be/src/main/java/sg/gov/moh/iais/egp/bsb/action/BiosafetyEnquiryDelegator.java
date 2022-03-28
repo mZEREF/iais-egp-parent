@@ -391,9 +391,9 @@ public class BiosafetyEnquiryDelegator {
             List<FacilityActivity> activities = facilityResultDto.getBsbFac();
             for (FacilityActivity activity : activities) {
                 Map<String,String> infos = joinBioNameAndRiskLevelFromAgents(activity.getBiologicalAgents());
-                activity.setBioName(infos.get(PARAM_BIOLOGICAL_NAME));
-                activity.setRiskLevel(infos.get(PARAM_RISK_LEVEL));
-                activity.setAdmin(joinFacilityActivityAdmin(activity.getFacility()));
+//                activity.setBioName(infos.get(PARAM_BIOLOGICAL_NAME));
+//                activity.setRiskLevel(infos.get(PARAM_RISK_LEVEL));
+//                activity.setAdmin(joinFacilityActivityAdmin(activity.getFacility()));
             }
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT, facilityResultDto.getBsbFac());
             ParamUtil.setSessionAttr(request,PARAM_BIO_SAFETY_ENQUIRY,new ArrayList<>(facilityResultDto.getBsbFac()));
@@ -556,15 +556,15 @@ public class BiosafetyEnquiryDelegator {
             Approval approval = activity.getApproval();
             info.setFacilityAddress(TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
                     facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode()));
-            info.setFacilityAdmin(activity.getAdmin());
+//            info.setFacilityAdmin(activity.getAdmin());
             info.setFacilityType(activity.getActivityType());
             info.setFacilityName(facility.getFacilityName());
             info.setFacilityExpiryDate(sdf.format(approval.getApprovalExpiryDate()));
             info.setFacilityClassification(facility.getFacilityClassification());
             info.setFacilityOperator(facility.getOperator().getFacOperator());
-            info.setBiologicalAgent(activity.getBioName());
+//            info.setBiologicalAgent(activity.getBioName());
             info.setGazettedArea(facility.getIsProtected());
-            info.setRiskLevelOfTheBiologicalAgent(activity.getRiskLevel());
+//            info.setRiskLevelOfTheBiologicalAgent(activity.getRiskLevel());
             infos.add(info);
         }
         return infos;

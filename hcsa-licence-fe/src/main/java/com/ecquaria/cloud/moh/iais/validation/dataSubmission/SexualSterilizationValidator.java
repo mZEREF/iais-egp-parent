@@ -34,6 +34,11 @@ public class SexualSterilizationValidator implements CustomizeValidator {
                 erMap.put("hecReviewDate", "GENERAL_ERR0006");
             }
         }
+        if(!StringUtil.isEmpty(sexualSterilizationDto.getSterilizationMethod()) && sexualSterilizationDto.getSterilizationMethod().equals("VSMOS006")){
+            if(StringUtil.isEmpty(sexualSterilizationDto.getOtherSterilizationMethod())){
+                erMap.put("otherSterilizationMethod", "GENERAL_ERR0006");
+            }
+        }
         if(StringUtil.isEmpty(sexualSterilizationDto.isReviewedByHec())){
             erMap.put("reviewedByHec", "GENERAL_ERR0006");
         }

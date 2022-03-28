@@ -33,5 +33,5 @@ public class EmployeeInfo implements Serializable {
     private String email;
 
     @JsonProperty("employment_start_date")
-    private String employmentStartDt;
+    private String employmentStartDate;
 }

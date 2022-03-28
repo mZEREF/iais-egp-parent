@@ -30,6 +30,18 @@ $(function () {
         showWaiting();
         $("#mainForm").submit();
     });
+
+    $("#back").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("back");
+        $("#mainForm").submit();
+    });
+
+    $("#submitMultiAssignTask").click(function (){
+       showWaiting();
+        $("[name='action_type']").val("next");
+        $("#mainForm").submit();
+    });
 });
 
 

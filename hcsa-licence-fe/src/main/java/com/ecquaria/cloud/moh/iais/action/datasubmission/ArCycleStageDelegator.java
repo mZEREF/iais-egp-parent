@@ -108,6 +108,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             if(isRfc(request)){
                 arCycleStageDto.setOldDonorDtos(IaisCommonUtils.isNotEmpty(arDonorDtos) ? (List<DonorDto>) CopyUtil.copyMutableObjectList(arDonorDtos) : null);
             }
+            setNumberOfCyclesUndergoneLocally(arCycleStageDto,arSuperDataSubmissionDto.getSelectionDto());
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
             initOldDonorSelectSession(request,1);
         }
@@ -127,6 +128,13 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             }
         }
     }
+
+    public void setNumberOfCyclesUndergoneLocally(ArCycleStageDto arCycleStageDto,CycleStageSelectionDto selectionDto){
+        if(selectionDto != null && IaisCommonUtils.isNotEmpty(selectionDto.getCycleDtos())){
+            arCycleStageDto.setNumberOfCyclesUndergoneLocally((int)selectionDto.getCycleDtos().stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equalsIgnoreCase(cycleDto.getCycleType())).count());
+        }
+    }
+
 
     public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){

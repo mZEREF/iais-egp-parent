@@ -17,6 +17,12 @@
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="What was Donated?" mandatory="true"/>
+                    <label class="col-xs-4 col-md-4 control-label">What was Donated? <span class="mandatory">*</span>
+                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="${DSACK002Message}"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                     <div class="col-md-7">
                         <iais:value width="6" cssClass="col-md-6">
                             <div class="form-check">
@@ -220,7 +226,8 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_trainingNum"></span>
                         </iais:value>
                     </iais:row>
-
+                </div>
+                <div id="treatmentDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTreatment !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="No. Donated For Treatment" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -229,7 +236,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-
                 <iais:row>
                     <iais:field width="5" value="Total No. Donated" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">

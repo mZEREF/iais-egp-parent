@@ -18,7 +18,7 @@ public class Facility extends BaseEntity {
 
     private FacilityOperator operator;
 
-    private FacilityOfficer officer;
+    private List<FacilityOfficer> officers;
 
     private List<FacilityAdmin> admins;
 
@@ -34,6 +34,10 @@ public class Facility extends BaseEntity {
 
     private String facilityClassification;
 
+    private String facilityType;
+
+    private String sameAddressAsCompany;
+
     private String postalCode;
 
     private String blkNo;
@@ -44,12 +48,11 @@ public class Facility extends BaseEntity {
 
     private String streetName;
 
+    private String building;
+
     private String isProtected;
 
-    //self audit
-    private String facilityAddress;
+    private String facilityNo;
 
-    private String approval;
-
-    private String approvalStatus;
+    private Boolean blockFlag;
 }

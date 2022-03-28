@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -26,7 +27,10 @@ public interface BsbAppointmentClient {
     @GetMapping(path = "/inspection/appointment/draft", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<List<InspectionAppointmentDraftDto>> getActiveAppointmentDraftData(@RequestParam("appNo") String appNo);
 
-    @PostMapping(path = "/inspection/appointment/validate/date", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/inspection/appointment/inspection-date/appId", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AppointmentDto> getApptStartEndDateByAppId(@RequestParam("appId") String applicationId);
+
+    @PostMapping(path = "/inspection/appointment/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateAppointmentData(@RequestBody AppointmentReviewDataDto dto);
 
     @PostMapping(path = "/inspection/appointment/draft", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -81,6 +81,8 @@ public abstract class DpCommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_DRP,
+                superDto.getAppType(), superDto.getSubmissionType()));
     }
 
     /**
@@ -374,7 +376,7 @@ public abstract class DpCommonDelegator {
         return true;
     }
     protected boolean isOthers(String others){
-        return StringUtil.isIn(others,new String[]{DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS});
+        return StringUtil.isIn(others,DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS);
     }
     protected boolean isRfc(HttpServletRequest request){
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);

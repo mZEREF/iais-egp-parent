@@ -341,6 +341,7 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	ParamUtil.setRequestAttr(request,"selectAllTypeSub",ParamUtil.getString(request,"selectAllTypeSub"));
 	      	setShowPopMsg(request,actionValue);
 		  }else {
 	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
@@ -455,10 +456,12 @@ public class DataSubmissionInboxDelegator {
 		}
 
 		if(WITHDRAW.equals(actionValue)){
+			Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
+			params.put("dsType",actionInboxDataSubmissionQueryDtos.get(0).getDsType());
 
 			List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
 			ParamUtil.setSessionAttr(request,"submissionWithdrawalNos", (Serializable) submissionNos);
-			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,null);
+			IaisEGPHelper.redirectUrl(response,request, "MohArWithdrawal",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		} else if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
 			actionInboxDataSubmissionQueryDtos.forEach(obj-> licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo()));
 		}
@@ -489,48 +492,50 @@ public class DataSubmissionInboxDelegator {
 			}
 		} else if(actionValue.equals(WITHDRAW) ||actionValue.equals(AMENDED)){
 			if(actionValue.equals(WITHDRAW)){
-				ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
-				if(DsHelper.isCycleFinalStatus(arSuperDataSubmissionDto.getCycleDto().getStatus())&&arSuperDataSubmissionDto.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
-					return 3;
-				}
-				List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
-				List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
-				Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
-				for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
-				) {
-					if(!dataSubmissionDto.getSubmitDt().before(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt())){
-						ArSuperDataSubmissionDto arSuperData = licenceInboxClient.getArSuperDataSubmissionDto(
-								dataSubmissionDto.getSubmissionNo()).getEntity();
-						dataSubmissionDtoMap.put(arSuperData.getDataSubmissionDto().getSubmissionNo(),arSuperData);
-					}
-				}
-				for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
-				) {
-					addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
-				}
-				for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
-					 ) {
-					if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())&&arWd.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
+				if(inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_AR)){
+					ArSuperDataSubmissionDto arSuperDataSubmissionDto=licenceInboxClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+					if(DsHelper.isCycleFinalStatus(arSuperDataSubmissionDto.getCycleDto().getStatus())&&arSuperDataSubmissionDto.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
 						return 3;
 					}
-					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
-						addWithdrawnDtoList.remove(arWd);
+					List<DataSubmissionDto> dataSubmissionDtoList=licenceInboxClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
+					List<ArSuperDataSubmissionDto> addWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
+					Map<String, ArSuperDataSubmissionDto> dataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+					for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+					) {
+						if(!dataSubmissionDto.getSubmitDt().before(arSuperDataSubmissionDto.getDataSubmissionDto().getSubmitDt())){
+							ArSuperDataSubmissionDto arSuperData = licenceInboxClient.getArSuperDataSubmissionDto(
+									dataSubmissionDto.getSubmissionNo()).getEntity();
+							dataSubmissionDtoMap.put(arSuperData.getDataSubmissionDto().getSubmissionNo(),arSuperData);
+						}
 					}
-					if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
-						return 4;
+					for (Map.Entry<String, ArSuperDataSubmissionDto> dataSubmissionDtoEntry:dataSubmissionDtoMap.entrySet()
+					) {
+						addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
 					}
-				}
+					for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
+					) {
+						if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())&&arWd.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
+							return 3;
+						}
+						if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
+							addWithdrawnDtoList.remove(arWd);
+						}
+						if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
+							return 4;
+						}
+					}
 
-				if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
-					List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
-					if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
-						return 2;
+					if("PATIENT".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+						PatientDto patientDto=arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
+						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
+						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
+							return 2;
+						}
 					}
-				}
-				if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
-					if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
-						return 2;
+					if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+						if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
+							return 2;
+						}
 					}
 				}
 			}

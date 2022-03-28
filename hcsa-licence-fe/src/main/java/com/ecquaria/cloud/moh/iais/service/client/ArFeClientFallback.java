@@ -121,8 +121,8 @@ public class ArFeClientFallback implements ArFeClient {
 
     @Override
     public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber,
-            String nationality, String orgId, String hciCode) {
-        return getFeignResponseEntity();
+            String nationality, String orgId, String hciCode, boolean onlyStage) {
+        return getFeignResponseEntity(idType, idNumber, nationality, orgId, hciCode, onlyStage);
     }
 
     @Override
@@ -241,8 +241,8 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode) {
-        return getFeignResponseEntity(hciCode, licenseeId, patientCode);
+    public FeignResponseEntity<ArCurrentInventoryDto> getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName) {
+        return getFeignResponseEntity(hciCode, licenseeId,patientCode,svcName);
     }
 
     @Override

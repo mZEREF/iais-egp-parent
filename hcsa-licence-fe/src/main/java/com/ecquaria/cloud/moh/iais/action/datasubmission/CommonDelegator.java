@@ -364,11 +364,15 @@ public abstract class CommonDelegator {
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         // declaration
-        /*String declaration = ParamUtil.getString(bpc.request, "declaration");
+        String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
-        dataSubmissionDto.setDeclaration(declaration);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);*/
+        if(declaration != null && declaration.length >0){
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        }else{
+            dataSubmissionDto.setDeclaration(null);
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
         // others
         pageConfirmAction(bpc);
     }
@@ -395,6 +399,15 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }*/
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        //for declaration
+        String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if("submission".equals(crud_action_type)){
+            String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+            if(declaration == null || declaration.length == 0){
+                errorMap.put("declaration", "GENERAL_ERR0006");
+            }
+        }
+
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (isRfc(bpc.request) && ACTION_TYPE_SUBMISSION.equals(actionType)) {
             ArChangeInventoryDto arChangeInventoryDto = DataSubmissionHelper.getCurrentArChangeInventoryDto(bpc.request);

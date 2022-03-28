@@ -6,9 +6,11 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.multiassign.MultiAssignInsDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
 import java.util.Map;
@@ -33,4 +35,16 @@ public interface BsbTaskClient {
 
     @PostMapping(value = "/task/find/appNo", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     Map<String, String> findAppNoByTaskId(List<String> taskIdList);
+
+    @GetMapping(value = "/task/inspection-task-pool", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<TaskListSearchResultDto> searchInspectionTaskPool(@SpringQueryMap TaskListSearchDto searchDto);
+
+    @GetMapping(path = "/task/multi-assign/init-data", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<MultiAssignInsDto> getMultiAssignDataByAppId(@RequestParam("appId") String applicationId);
+
+    @PostMapping(path = "/task/multi-assign/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateMultiAssignInsDto(@RequestBody MultiAssignInsDto dto);
+
+    @PostMapping(value = "/task/multi-assign", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> multiAssignTask(@RequestBody MultiAssignInsDto dto);
 }

@@ -21,7 +21,8 @@ public class AppActionTag extends SimpleTagSupport {
                 new DraftAppJudge(info.getStatus()),
                 new SelfAssessJudge(info.getStatus()),
                 new InsReportJudge(info.getStatus()),
-                new AppWithdrawableJudge(info.getAppType(), info.getStatus()));
+                new AppWithdrawableJudge(info.getAppType(), info.getStatus()),
+                new InsAppointmentJudge(info.getAppType(), info.getStatus()));
         boolean actionAvailable = false;
         JspContext context = getJspContext();
         for (AppActionJudge judge : judgeList) {

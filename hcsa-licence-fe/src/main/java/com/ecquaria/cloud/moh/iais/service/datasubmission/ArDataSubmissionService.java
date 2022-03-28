@@ -29,6 +29,8 @@ public interface ArDataSubmissionService {
 
     List<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDtoListToBE(List<ArSuperDataSubmissionDto> arSuperList);
 
+    void  saveBeArSuperDataSubmissionDtoForEic(EicArSuperDataSubmissionDto eicArSuperDataSubmissionDto);
+
     ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);
@@ -36,7 +38,7 @@ public interface ArDataSubmissionService {
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
-            String hciCode);
+            String hciCode, boolean onlyStage);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 
@@ -122,7 +124,7 @@ public interface ArDataSubmissionService {
 
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
 
-    ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode);
+    ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName);
 
     ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
 

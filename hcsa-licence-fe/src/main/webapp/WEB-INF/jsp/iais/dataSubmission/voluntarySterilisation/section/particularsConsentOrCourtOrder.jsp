@@ -29,7 +29,8 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="ID No." mandatory="true"/>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="person"/></c:set>
+        <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
             <iais:select name="guardianIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${guardianAppliedPartDto.guardianIdType}" />
@@ -50,15 +51,13 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <%--<iais:select name="guardianRelationship" firstOption="Please Select" codeCategory=""
-                         value="${guardianAppliedPartDto.guardianRelationship}"/>--%>
-            <iais:input maxLength="15" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
+            <iais:input maxLength="200" type="text" name="guardianRelationship" value="${guardianAppliedPartDto.guardianRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianRelationship"></span>
         </iais:value>
     </iais:row>
 </div>
 
-<div style="${treatmentDto.sterilizationReason =='VSSRFS002' ? '' : 'display: none'}">
+<div style="${treatmentDto.sterilizationReason =='VSSRFS005' ? '' : 'display: none'}">
     <iais:row style="border-bottom: 1px solid #BABABA; ">
         <iais:value width="7" cssClass="col-md-7">
             <strong class="app-font-size-22 premHeader">Particulars of Court Order</strong>
@@ -72,7 +71,8 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="ID No." mandatory="true"/>
+        <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="person"/></c:set>
+        <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
         <iais:value width="3" cssClass="col-md-3">
             <iais:select name="appliedPartIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${guardianAppliedPartDto.appliedPartIdType}" />
@@ -93,9 +93,7 @@
     <iais:row>
         <iais:field width="5" value="Relationship to Person Who Was Sterilized" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <%--<iais:select name="appliedPartRelationship" firstOption="Please Select" codeCategory=""
-                         value="${guardianAppliedPartDto.appliedPartRelationship}"/>--%>
-            <iais:input maxLength="15" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
+            <iais:input maxLength="200" type="text" name="appliedPartRelationship" value="${guardianAppliedPartDto.appliedPartRelationship}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartRelationship"></span>
         </iais:value>
     </iais:row>

@@ -53,13 +53,13 @@
                             <label for="searchAppNo" class="col-sm-5 col-md-5 control-label">Application No.</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppNo" class="error-msg"></span>
-                                <input type="text" id="searchAppNo" name="searchAppNo" value=""/>
+                                <input type="text" id="searchAppNo" name="searchAppNo" value="${taskListSearchDto.searchAppNo}"/>
                             </div>
                             <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppType" class="error-msg"></span>
                                 <iais:select name="searchAppType" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
-                                             firstOption="Please Select" value=""/>
+                                             firstOption="Please Select" value="${taskListSearchDto.searchAppType}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12" style="text-align:right;"><%-- div for btn --%>

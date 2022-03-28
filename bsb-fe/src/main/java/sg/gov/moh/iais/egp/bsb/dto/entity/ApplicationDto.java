@@ -44,13 +44,7 @@ public class ApplicationDto extends BaseEntityDto {
 
     private LocalDate effectiveDate;
 
-    private ApprovalDto approval;
-
     private String stageId;
-
-    private String forMainActivity;
-
-    private ApplicationGroupDto appGroup;
 
     private String toBeSuspendReinstateAppId;
 
@@ -59,4 +53,8 @@ public class ApplicationDto extends BaseEntityDto {
     private String aoUserId;
 
     private String hmUserId;
+
+    private LocalDate prefInspectionStart;
+
+    private LocalDate prefInspectionEnd;
 }

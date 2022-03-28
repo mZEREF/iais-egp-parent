@@ -16,7 +16,12 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="What was Donated?" mandatory="false"/>
+                    <label class="col-xs-4 col-md-4 control-label">What was Donated?
+                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="${MessageUtil.getMessageDesc("DS_MSG013")}"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
                     </iais:value>
@@ -91,7 +96,8 @@
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.trainingNum}"/>
                         </iais:value>
                     </iais:row>
-
+                </div>
+                <div id="treatmentDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTreatment !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="No. Donated For Treatment" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">

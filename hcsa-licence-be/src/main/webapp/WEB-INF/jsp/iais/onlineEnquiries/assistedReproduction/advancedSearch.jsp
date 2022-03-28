@@ -51,7 +51,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text"  id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
+                                        <input type="text" maxlength="66" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -63,17 +63,17 @@
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                        <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient's Age as of This Cycle"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberFrom"  name="patientAgeNumberFrom" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberFrom}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="patientAgeNumberFrom"  name="patientAgeNumberFrom" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberFrom}" >
                                     </iais:value>
                                     <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -86,7 +86,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Submission ID"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
+                                        <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
                                     </iais:value>
                                 </iais:row>
 
@@ -111,7 +111,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Husband Name"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="husbandName"  name="husbandName" value="${assistedReproductionEnquiryFilterDto.husbandName}" >
+                                        <input type="text" maxlength="66" id="husbandName"  name="husbandName" value="${assistedReproductionEnquiryFilterDto.husbandName}" >
                                     </iais:value>
                                 </iais:row>
 
@@ -124,7 +124,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Husband ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="husbandIdNumber"  name="husbandIdNumber" value="${assistedReproductionEnquiryFilterDto.husbandIdNumber}" >
+                                        <input type="text" maxlength="20" id="husbandIdNumber"  name="husbandIdNumber" value="${assistedReproductionEnquiryFilterDto.husbandIdNumber}" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -144,13 +144,13 @@
                                 <iais:row>
                                     <iais:field width="4" value="Embryologist"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="embryologist"  name="embryologist" value="${assistedReproductionEnquiryFilterDto.embryologist}" >
+                                        <input type="text" maxlength="66" id="embryologist"  name="embryologist" value="${assistedReproductionEnquiryFilterDto.embryologist}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="AR Practitioner"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="arPractitioner"  name="arPractitioner" value="${assistedReproductionEnquiryFilterDto.arPractitioner}" >
+                                        <input type="text" maxlength="66" id="arPractitioner"  name="arPractitioner" value="${assistedReproductionEnquiryFilterDto.arPractitioner}" >
                                     </iais:value>
                                 </iais:row>
 
@@ -273,11 +273,11 @@
                                 <iais:row>
                                     <iais:field width="4" value="No. of Fresh cycle(s) previously undergone by patient"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;"  id="freshCycleNumFrom"  name="freshCycleNumFrom" value="${assistedReproductionEnquiryFilterDto.freshCycleNumFrom}" >
                                     </iais:value>
                                     <label class="col-xs-1 col-md-1 control-label">To&nbsp;</label>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="freshCycleNumTo"  name="freshCycleNumTo" value="${assistedReproductionEnquiryFilterDto.freshCycleNumTo}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;"  id="freshCycleNumTo"  name="freshCycleNumTo" value="${assistedReproductionEnquiryFilterDto.freshCycleNumTo}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -346,7 +346,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Donor's Name"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text"  id="donorName"  name="donorName" value="${assistedReproductionEnquiryFilterDto.donorName}" >
+                                        <input type="text" maxlength="66" id="donorName"  name="donorName" value="${assistedReproductionEnquiryFilterDto.donorName}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -358,7 +358,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID No."/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${assistedReproductionEnquiryFilterDto.donorIdNumber}" >
+                                        <input type="text" maxlength="20" id="donorIdNumber"  name="donorIdNumber" value="${assistedReproductionEnquiryFilterDto.donorIdNumber}" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -371,7 +371,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="No. Removed from Storage"/>
                                     <iais:value width="7" cssClass="col-md-7" >
-                                        <input type="text"  id="removedFromStorage"  name="removedFromStorage" value="${assistedReproductionEnquiryFilterDto.removedFromStorage}" >
+                                        <input type="text" maxlength="66" id="removedFromStorage"  name="removedFromStorage" value="${assistedReproductionEnquiryFilterDto.removedFromStorage}" >
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -951,7 +951,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Total No. Disposed Of"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
-                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
+                                        <input type="number" onkeypress="var keyCode = event.keyCode; event.returnValue = keyCode >= 48 && keyCode <= 57;" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
                                     </iais:value>
                                 </iais:row>
 

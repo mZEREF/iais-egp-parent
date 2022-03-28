@@ -110,7 +110,7 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}')">
+                                                   name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${inboxDataSubmissionQuery.type}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
@@ -121,6 +121,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
+                                        <input type="hidden" value="${inboxDataSubmissionQuery.type}" id="typeValue${submissionNo}" name="typeValue${submissionNo}">
                                        <iais:code code="${inboxDataSubmissionQuery.type}"/>
                                     </td>
                                     <td>
@@ -152,9 +153,11 @@
                         <div class="col-md-12 text-right">
                             <c:set var="disabledCssNoOnlyOne" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
                             <c:set var="disabledCssOnlyOne" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
+                            <c:set var="disabledCssForWithDraw" value="${disabledCssNoOnlyOne == 'disabled' ? disabledCssNoOnlyOne : (StringUtil.stringContain( selectAllTypeSub,',') ? 'disabled' : '')}"/>
+                            <c:set var="disabledCssForRFC" value="${disabledCssOnlyOne == 'disabled' ? disabledCssOnlyOne : (StringUtil.stringContain( selectAllTypeSub,'VSS') ? 'disabled' : '')}"/>
                             <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
-                            <a class="btn btn-primary ${disabledCssOnlyOne}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                            <a class="btn btn-primary ${disabledCssForRFC}" href="javascript:void(0);" id="ds-amend">Amend</a>
+                            <a class="btn btn-primary ${disabledCssForWithDraw}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
                             <a class="btn btn-primary ${disabledCssNoOnlyOne}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>
@@ -163,6 +166,7 @@
         </div>
     </div>
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
+        <input type="hidden" value="${empty selectAllTypeSub ? '' : selectAllTypeSub}" id="selectAllTypeSub" name="selectAllTypeSub">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
         <iais:confirm msg="${empty showPopFailMsg ? 'DS_ERR014' : showPopFailMsg}" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
@@ -196,17 +200,56 @@
     function doSearch(){
         doSubmitForDataSubmission("search");
     }
-    function doCheckBoxSelect(actionNo){
+    function doCheckBoxSelect(actionNo,type){
         let size = $("#needValidatorSize").val()
+        var selectAllTypeSub = $("#selectAllTypeSub").val();
         if($("#dataSubmission"+actionNo).is(':checked')){
+            if(selectAllTypeSub == ''){
+                selectAllTypeSub = type;
+            }else if (selectAllTypeSub.indexOf(type) < 0) {
+                selectAllTypeSub += ','+type;
+            }
             size++;
         }else {
+            if(selectAllTypeSub == type){
+                selectAllTypeSub = '';
+            }else if(selectAllTypeSub.indexOf(type) >= 0){
+                var arr = selectAllTypeSub.split(',');
+                selectAllTypeSub = '';
+                for(let i=0; i< arr.length;i++){
+                    if(arr[i] != type && arr[i] != '' && arr[i] != null){
+                        selectAllTypeSub += arr[i] + ',';
+                    }
+                }
+                selectAllTypeSub = selectAllTypeSub.substr(0,selectAllTypeSub.length-1);
+            }
+
+            let containType = false;
+            $.each($("[name='submissionNo']:checked"),function(){
+                if(!containType){
+                    if($('#typeValue'+ $(this).val()).val() == type){
+                        containType = true;
+                    }
+                }
+            });
+            if(containType){
+                if(selectAllTypeSub == ''){
+                    selectAllTypeSub = type;
+                }else {
+                    selectAllTypeSub += ',' + type;
+                }
+            }
             size--;
         }
+        $("#selectAllTypeSub").val(selectAllTypeSub);
         $("#needValidatorSize").val(size);
         if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
-            $('#ds-amend').removeClass("disabled");
+            if(selectAllTypeSub.indexOf('DSCL_012') < 0){
+                $('#ds-amend').removeClass("disabled");
+            }else {
+                $('#ds-amend').addClass("disabled");
+            }
             $('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
         }else if (size <= 0) {
@@ -216,6 +259,11 @@
             $('#ds-unlock').addClass("disabled");
         }else if(size>1){
             $('#ds-amend').addClass("disabled");
+            if(selectAllTypeSub.indexOf(',') > 0){
+                $('#ds-withdraw').addClass("disabled");
+            }else {
+                $('#ds-withdraw').removeClass("disabled");
+            }
         }
     }
 

@@ -28,6 +28,8 @@ public final class MessageTag extends DivTagSupport {
     private String propertiesKey;
     private String replaceName;
 
+    private String paramKeys;
+    private String paramValues;
 
     public MessageTag() {
         super();
@@ -43,6 +45,8 @@ public final class MessageTag extends DivTagSupport {
         setEscape(true);
         setPropertiesKey(null);
         setReplaceName(null);
+        setParamKeys(null);
+        setParamValues(null);
     }
 
     // Releases any resources we may have (or inherit)
@@ -61,6 +65,15 @@ public final class MessageTag extends DivTagSupport {
                 paramMap = new HashMap<>();
                 Objects.requireNonNull(replaceName);
                 paramMap.put(replaceName, SystemParamHelper.getConfigValueByKey(propertiesKey));
+            } else if (!StringUtil.isEmpty(paramKeys) && !StringUtil.isEmpty(paramValues)) {
+                String[] keys = paramKeys.split("\\s*,\\s*");
+                String[] values = paramValues.split("\\s*,\\s*");
+                if (keys.length == values.length) {
+                    paramMap = new HashMap<>();
+                    for (int i = 0; i < keys.length; i++) {
+                        paramMap.put(keys[i], values[i]);
+                    }
+                }
             }
 
             String message = null;
@@ -109,4 +122,13 @@ public final class MessageTag extends DivTagSupport {
     public void setPropertiesKey(String propertiesKey) {
         this.propertiesKey = propertiesKey;
     }
+
+    public void setParamKeys(String paramKeys) {
+        this.paramKeys = paramKeys;
+    }
+
+    public void setParamValues(String paramValues) {
+        this.paramValues = paramValues;
+    }
+
 }

@@ -323,7 +323,7 @@ public class FeEicGatewayClient {
     public FeignResponseEntity<LdtSuperDataSubmissionDto> saveBeLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/ldt-sync", HttpMethod.POST,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/data-submission-ldt-sync", HttpMethod.POST,
                 ldtSuperDataSubmissionDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), LdtSuperDataSubmissionDto.class);

@@ -16,6 +16,8 @@ public class FacilityAdmin extends BaseEntity {
 
     private Facility facility;
 
+    private String salutation;
+
     private String name;
 
     private String type;

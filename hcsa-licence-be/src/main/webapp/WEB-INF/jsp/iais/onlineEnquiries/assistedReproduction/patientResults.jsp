@@ -77,7 +77,7 @@
                                     <iais:row>
                                         <iais:field width="4" value="Patient Name"/>
                                         <iais:value width="4" cssClass="col-md-4" >
-                                            <input type="text"  id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
+                                            <input type="text" maxlength="66" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -89,7 +89,7 @@
                                     <iais:row>
                                         <iais:field width="4" value="Patient ID No."/>
                                         <iais:value width="4" cssClass="col-md-4"  >
-                                            <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                            <input type="text" maxlength="20" id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
                                         </iais:value>
                                     </iais:row>
 
@@ -101,7 +101,7 @@
                                     <iais:row>
                                         <iais:field width="4" value="Submission ID"/>
                                         <iais:value width="4" cssClass="col-md-4" display="true" >
-                                            <input type="text"  id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
+                                            <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>

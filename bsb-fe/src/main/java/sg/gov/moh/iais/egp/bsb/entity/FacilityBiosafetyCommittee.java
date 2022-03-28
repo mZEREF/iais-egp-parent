@@ -16,6 +16,8 @@ public class FacilityBiosafetyCommittee extends BaseEntity {
 
   private Facility facility;
 
+  private String salutation;
+
   private String name;
 
   private String idType;

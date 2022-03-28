@@ -204,7 +204,7 @@ public class ArCycleStagesManualDelegator {
         if (StringUtil.isEmpty(actionValue)) {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                    orgId, hciCode);
+                    orgId, hciCode, true);
             if (dataSubmissionDraft != null/* && !Objects.equals(currentArDataSubmission.getDraftNo(),
                     dataSubmissionDraft.getDraftNo())*/) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
@@ -269,7 +269,7 @@ public class ArCycleStagesManualDelegator {
             throw new IaisRuntimeException(msg);
         }
         String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode());
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode(), currentSuper.getSvcName());
         if (arCurrentInventoryDto == null) {
             arCurrentInventoryDto = new ArCurrentInventoryDto();
             arCurrentInventoryDto.setHciCode(hciCode);

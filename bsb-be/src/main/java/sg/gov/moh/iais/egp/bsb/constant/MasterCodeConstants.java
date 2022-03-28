@@ -267,4 +267,17 @@ public class MasterCodeConstants {
     public static final String KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY = "DATTYPE008";
     public static final String KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER = "DATTYPE009";
     public static final String KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER = "DATTYPE010";
+
+    //Mode of Procurement
+    public static final String PROCUREMENT_MODE_LOCAL_TRANSFER = "BMOP001";
+    public static final String PROCUREMENT_MODE_IMPORT = "BMOP002";
+    public static final String PROCUREMENT_MODE_ALREADY_IN_POSSESSION = "BMOP003";
+
+    //Type of work that will be carried out involving the biological agent/toxin
+    public static final String WORK_TYPE_CULTURING_ISOLATION_BAT = "BSBWT001";
+    public static final String WORK_TYPE_SEROLOGICAL_TEST = "BSBWT002";
+    public static final String WORK_TYPE_MOLECULAR_TEST = "BSBWT003";
+    public static final String WORK_TYPE_ANIMAL_STUDIES = "BSBWT004";
+    public static final String WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT = "BSBWT005";
+    public static final String WORK_TYPE_OTHERS = "BSBWT006";
 }

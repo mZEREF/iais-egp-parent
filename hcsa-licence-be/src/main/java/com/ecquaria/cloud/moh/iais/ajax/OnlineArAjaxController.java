@@ -115,6 +115,9 @@ public class OnlineArAjaxController {
             searchParam.setPageNo(0);
             searchParam.setSort("CREATED_DT", SearchParam.ASCENDING);
             //set filter
+            SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
+            searchParam.setFilters(searchParamFather.getFilters());
+            searchParam.setParams(searchParamFather.getParams());
             searchParam.addFilter("patientCode", patientCode, true);
             //search
             QueryHelp.setMainSql("onlineEnquiry", "searchPatientAjaxByAssistedReproduction", searchParam);

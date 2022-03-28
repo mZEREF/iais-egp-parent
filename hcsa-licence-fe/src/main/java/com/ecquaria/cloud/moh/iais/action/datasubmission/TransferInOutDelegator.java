@@ -213,7 +213,6 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
 
         String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-        String hciCode = DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode();
         if ("in".equals(transferInOutStageDto.getTransferType())) {
             String selectKey = ParamUtil.getString(request, "transInFromHciCode");
             if (StringUtil.isNotEmpty(selectKey) && !"Others".equals(selectKey)) {
@@ -224,8 +223,6 @@ public class TransferInOutDelegator extends CommonDelegator {
                 transferInOutStageDto.setTransInFromHciCode(selectKey);
                 transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
             }
-            transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
-            transferInOutStageDto.setTransOutToHciCode(hciCode);
         } else if ("out".equals(transferInOutStageDto.getTransferType())) {
             String selectKey = ParamUtil.getString(request, "transOutToHciCode");
             if (StringUtil.isNotEmpty(selectKey) && !"Others".equals(selectKey)) {
@@ -236,8 +233,6 @@ public class TransferInOutDelegator extends CommonDelegator {
                 transferInOutStageDto.setTransOutToHciCode(selectKey);
                 transferInOutStageDto.setTransOutToLicenseeId(licenseeId);
             }
-            transferInOutStageDto.setTransInFromLicenseeId(licenseeId);
-            transferInOutStageDto.setTransInFromHciCode(hciCode);
         }
     }
 
@@ -325,7 +320,7 @@ public class TransferInOutDelegator extends CommonDelegator {
             arSuper.setPatientInfoDto(newDto.getPatientInfoDto());
         }
 
-        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode);
+        ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, patientCode, svcName);
         if (arCurrentInventoryDto == null) {
             arCurrentInventoryDto = new ArCurrentInventoryDto();
             arCurrentInventoryDto.setHciCode(hciCode);

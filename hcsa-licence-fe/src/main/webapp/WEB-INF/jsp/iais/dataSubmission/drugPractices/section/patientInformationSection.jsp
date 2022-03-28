@@ -11,8 +11,9 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="patientDto" value="${dpSuperDataSubmissionDto.patientDto}"/>
+                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
                 <iais:row>
-                    <iais:field width="5" value="ID No." mandatory="true"/>
+                    <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:select name="idType" onchange ="toggleSelect(this, 'AR_IT_004', 'nationalityStar')" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                      value="${patientDto.idType}" cssClass="idTypeSel"/>
@@ -139,11 +140,11 @@
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group" id="ethnicGroupLabel" mandatory="${patientDto.nationality eq 'NAT0001' ? true : false}"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
-                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ETHG005', 'ethnicOthers')" />
+                        <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="VSS_ETHNIC_GROUP"
+                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOthers')" />
                     </iais:value>
                 </iais:row>
-                <iais:row id="ethnicOthers" style="${patientDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
+                <iais:row id="ethnicOthers" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
                     <iais:field value="Ethnic Group (Others)" width="5"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="20" type="text" name="ethnicGroupOther" id="ethnicGroupOther" value="${patientDto.ethnicGroupOther}"/>

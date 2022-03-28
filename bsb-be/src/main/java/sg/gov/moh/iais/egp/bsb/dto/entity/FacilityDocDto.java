@@ -14,7 +14,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JGlobalMap(excluded = {"facilityId"})
+@JGlobalMap(excluded = {"facilityId", "applicationId"})
 public class FacilityDocDto extends BaseEntityDto {
     private String id;
 
@@ -32,4 +32,7 @@ public class FacilityDocDto extends BaseEntityDto {
     private String submitBy;
 
     private String docType;
+
+    @JMap(value = "${application.id}")
+    private String applicationId;
 }

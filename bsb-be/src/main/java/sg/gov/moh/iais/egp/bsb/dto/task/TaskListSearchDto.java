@@ -20,6 +20,7 @@ public class TaskListSearchDto extends PagingAndSortingDto {
     private String searchAppNo;
     private String searchAppType;
     private String searchAppStatus;
+    private String searchSubmissionType;
     private String userId;
     private Set<String> roleIds;
 }

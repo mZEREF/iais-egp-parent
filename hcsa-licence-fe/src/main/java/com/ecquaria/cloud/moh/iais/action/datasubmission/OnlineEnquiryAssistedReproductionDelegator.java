@@ -672,10 +672,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getPatientART()!=null){
-                if("1".equals(arDto.getPatientART())){
+                if("0".equals(arDto.getPatientART())){
                     filter.put("patientArtYes",1);
                 }
-                if("0".equals(arDto.getPatientART())){
+                if("1".equals(arDto.getPatientART())){
                     filter.put("patientArtNo",1);
                 }
             }
@@ -689,11 +689,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(arDto.getPatientPGT()!=null){
-                if("1".equals(arDto.getPatientPGT())){
+                if("0".equals(arDto.getPatientPGT())){
                     filter.put("patientPgtYes",1);
 
                 }
-                if("0".equals(arDto.getPatientPGT())){
+                if("1".equals(arDto.getPatientPGT())){
                     filter.put("patientPgtNo",1);
                 }
             }
@@ -789,12 +789,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(arDto.getPGT()!=null){
                 if("1".equals(arDto.getPGT())){
-                    filter.put("pgtNo", 1);
-
+                    filter.put("pgtYes", 1);
                 }
                 if("0".equals(arDto.getPGT())){
-                    filter.put("pgtYes", 1);
-
+                    filter.put("pgtNo", 1);
                 }
             }
 
@@ -1198,6 +1196,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                             SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
                     filter.put("submission_to_date", submissionDateTo);
                 }
+                if(arDto.getSubmissionDateFrom()==null&&arDto.getSubmissionDateTo()==null){
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.YEAR, -1);
+                    Date y = c.getTime();
+                    String submissionDateFrom = Formatter.formatDateTime(y,
+                            SystemAdminBaseConstants.DATE_FORMAT);
+                    filter.put("submission_start_date", submissionDateFrom);
+                }
                 if(arDto.getIncludeTransfers()!=null) {
                     filter.put("transfers", 1);
                 }
@@ -1363,7 +1370,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String cycleId = ParamUtil.getString(request,"crud_action_value");
         String submissionNo = ParamUtil.getString(request,"crud_action_additional");
         String oldId = ParamUtil.getString(request,"crud_type");
-
+        String arSuperVisSubmissionNo = ParamUtil.getString(request,"arSuperVisSubmissionNo");
+        if("${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}".equals(submissionNo)){
+            submissionNo=arSuperVisSubmissionNo;
+        }
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
             cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmissionNo));
@@ -1406,6 +1416,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                             arSuperOld=arSdOld;
                             break;
                         }
+                    }
+                    if(StringUtil.isEmpty(oldId)){
+                        mohDsActionDelegator.initDataForView(arSuperOld, bpc.request);
+                        initDataForView(arSuperOld, bpc.request);
+                        arSuperOld.setDonorSampleDto(mohDsActionDelegator.setflagMsg(arSuperOld.getDonorSampleDto()));
                     }
                     ParamUtil.setRequestAttr(bpc.request,"versionOptions",versionOptions);
                     ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDtoVersion",arSuperOld);
