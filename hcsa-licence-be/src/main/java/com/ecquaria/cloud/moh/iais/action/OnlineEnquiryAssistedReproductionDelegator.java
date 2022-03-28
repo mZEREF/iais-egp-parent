@@ -496,7 +496,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getCycleStagesStatus()!=null){
-                filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
+                if(arDto.getCycleStagesStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)){
+                    filter.put("cycleStagesFinalStatus",arDto.getCycleStagesStatus());
+
+                }else {
+                    filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
+                }
             }
             if(arDto.getCycleStagesDateFrom()!=null){
                 String cycleStagesDateFrom = Formatter.formatDateTime(arDto.getCycleStagesDateFrom(),
