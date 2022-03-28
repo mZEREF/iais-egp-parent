@@ -101,6 +101,14 @@
                                                 </div>
                                             </iais:row>
                                         </c:when>
+                                        <c:otherwise>
+                                            <iais:row>
+                                                <iais:field value="Assigned Roles" width="5" required="false" />
+                                                <iais:value width="7" cssClass="col-md-7" display="true">
+                                                    <c:out value="${feNoAdminRolesShow}" escapeXml="false"/>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:otherwise>
                                     </c:choose>
                                     <iais:row>
                                         <div class="col-xs-12 col-md-4 control-label">

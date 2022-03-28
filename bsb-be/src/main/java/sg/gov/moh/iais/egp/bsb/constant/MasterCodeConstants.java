@@ -125,16 +125,16 @@ public class MasterCodeConstants {
     public static final String FAC_CLASSIFICATION_LSPF = "FACCLA004";
     public static final String FAC_CLASSIFICATION_RF = "FACCLA005";
 
-    public static final String ACTIVI_FIRST_SECOND_SCHEDULE_BA = "ACTVITY001";
-    public static final String ACTIVI_FIRST_SCHEDULE_BA = "ACTVITY002";
-    public static final String ACTIVI_FIFTH_SCHEDULE_TOXIN = "ACTVITY003";
-    public static final String ACTIVI_PV_MATERIALS = "ACTVITY004";
-    public static final String ACTIVI_LSP_FIRST_SCHEDULE = "ACTVITY005";
-    public static final String ACTIVI_LSP_THIRD_SCHEDULE = "ACTVITY006";
-    public static final String ACTIVI_HANDLE_FIFTH_SCHEDULE_TOXIN = "ACTVITY007";
-    public static final String ACTIVI_EXEMPTED_HANDLE_FIFTH_SCHEDULE_TOXIN = "ACTVITY008";
-    public static final String ACTIVI_HANDLE_PV_MATERIAL = "ACTVITY009";
-    public static final String ACTIVI_HANDLE_PV_POTENTIAL_MATERIAL = "ACTVITY010";
+    public static final String ACTIVITY_POSSESS_FIRST_SCHEDULE = "ACTVITY001";
+    public static final String ACTIVITY_POSSESS_SECOND_SCHEDULE = "ACTVITY002";
+    public static final String ACTIVITY_POSSESS_THIRD_SCHEDULE = "ACTVITY003";
+    public static final String ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE = "ACTVITY004";
+    public static final String ACTIVITY_POSSESS_FIFTH_SCHEDULE = "ACTVITY005";
+    public static final String ACTIVITY_LSP_FIRST_SCHEDULE = "ACTVITY011";
+    public static final String ACTIVITY_LSP_THIRD_SCHEDULE = "ACTVITY012";
+    public static final String ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED = "ACTVITY021";
+    public static final String ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV = "ACTVITY022";
+    public static final String ACTIVITY_SP_HANDLE_PV_POTENTIAL = "ACTVITY023";
 
     public static final Set<String> VALID_BLS3_ACTIVITIES;
     public static final Set<String> VALID_BLS4_ACTIVITIES;
@@ -143,34 +143,26 @@ public class MasterCodeConstants {
     public static final Set<String> VALID_RF_ACTIVITIES;
 
     static {
-        Set<String> bls3Set = Sets.newHashSetWithExpectedSize(4);
-        bls3Set.add(ACTIVI_FIRST_SECOND_SCHEDULE_BA);
-        bls3Set.add(ACTIVI_LSP_FIRST_SCHEDULE);
-        bls3Set.add(ACTIVI_HANDLE_FIFTH_SCHEDULE_TOXIN);
-        bls3Set.add(ACTIVI_HANDLE_PV_MATERIAL);
-        VALID_BLS3_ACTIVITIES = Collections.unmodifiableSet(bls3Set);
+        Set<String> bls3And4Set = Sets.newHashSetWithExpectedSize(5);
+        bls3And4Set.add(ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE);
+        bls3And4Set.add(ACTIVITY_LSP_FIRST_SCHEDULE);
+        bls3And4Set.add(ACTIVITY_LSP_THIRD_SCHEDULE);
+        bls3And4Set.add(ACTIVITY_POSSESS_FIFTH_SCHEDULE);
+        bls3And4Set.add(ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV);
+        VALID_BLS3_ACTIVITIES = Collections.unmodifiableSet(bls3And4Set);
+        VALID_BLS4_ACTIVITIES = Collections.unmodifiableSet(bls3And4Set);
 
-        Set<String> bls4Set = Sets.newHashSetWithExpectedSize(4);
-        bls4Set.add(ACTIVI_FIRST_SECOND_SCHEDULE_BA);
-        bls4Set.add(ACTIVI_LSP_FIRST_SCHEDULE);
-        bls4Set.add(ACTIVI_FIFTH_SCHEDULE_TOXIN);
-        bls4Set.add(ACTIVI_PV_MATERIALS);
-        VALID_BLS4_ACTIVITIES = Collections.unmodifiableSet(bls4Set);
-
-        Set<String> ufSet = Sets.newHashSetWithExpectedSize(3);
-        ufSet.add(ACTIVI_FIRST_SCHEDULE_BA);
-        ufSet.add(ACTIVI_LSP_THIRD_SCHEDULE);
-        ufSet.add(ACTIVI_FIFTH_SCHEDULE_TOXIN);
-        VALID_UF_ACTIVITIES = Collections.unmodifiableSet(ufSet);
-
-        Set<String> lspfSet = Sets.newHashSetWithExpectedSize(2);
-        lspfSet.add(ACTIVI_LSP_FIRST_SCHEDULE);
-        lspfSet.add(ACTIVI_LSP_THIRD_SCHEDULE);
-        VALID_LSPF_ACTIVITIES = Collections.unmodifiableSet(lspfSet);
+        Set<String> ufAndLspfSet = Sets.newHashSetWithExpectedSize(3);
+        ufAndLspfSet.add(ACTIVITY_POSSESS_FIRST_SCHEDULE);
+        ufAndLspfSet.add(ACTIVITY_LSP_FIRST_SCHEDULE);
+        ufAndLspfSet.add(ACTIVITY_LSP_THIRD_SCHEDULE);
+        ufAndLspfSet.add(ACTIVITY_POSSESS_FIFTH_SCHEDULE);
+        VALID_UF_ACTIVITIES = Collections.unmodifiableSet(ufAndLspfSet);
+        VALID_LSPF_ACTIVITIES = Collections.unmodifiableSet(ufAndLspfSet);
 
         Set<String> rfSet = Sets.newHashSetWithExpectedSize(2);
-        rfSet.add(ACTIVI_EXEMPTED_HANDLE_FIFTH_SCHEDULE_TOXIN);
-        rfSet.add(ACTIVI_HANDLE_PV_POTENTIAL_MATERIAL);
+        rfSet.add(ACTIVITY_SP_HANDLE_PV_POTENTIAL);
+        rfSet.add(ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED);
         VALID_RF_ACTIVITIES = Collections.unmodifiableSet(rfSet);
     }
 

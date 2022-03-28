@@ -17,6 +17,7 @@ import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.AppConstants;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SaveAppointmentDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -193,7 +194,9 @@ public class ApptInspectionDateService {
         for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
             String apptRefNo = inspDateMap.getKey();
             InspectionAppointmentDto inspectionAppointmentDto = new InspectionAppointmentDto();
-            inspectionAppointmentDto.setApplicationId(applicationId);
+            ApplicationDto applicationDto = new ApplicationDto();
+            applicationDto.setId(applicationId);
+            inspectionAppointmentDto.setApplication(applicationDto);
             inspectionAppointmentDto.setApptRefNo(apptRefNo);
             inspectionAppointmentDto.setSpecInsDate(null);
             inspectionAppointmentDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -243,7 +246,9 @@ public class ApptInspectionDateService {
 //        for(String appPremCorrId : appPremCorrIds) {
 
         InspectionAppointmentDto inspectionAppointmentDto = new InspectionAppointmentDto();
-        inspectionAppointmentDto.setApplicationId(applicationId);
+        ApplicationDto applicationDto = new ApplicationDto();
+        applicationDto.setId(applicationId);
+        inspectionAppointmentDto.setApplication(applicationDto);
         inspectionAppointmentDto.setApptRefNo(apptRefNo);
         inspectionAppointmentDto.setSpecInsDate(null);
         inspectionAppointmentDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

@@ -1,5 +1,5 @@
-<c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
-<c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}" />
+<c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
+<c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
@@ -9,13 +9,12 @@
                          value="${familyPlanDto.contraHistory}" cssClass="contraHistory"/>
         </iais:value>
     </iais:row>
-    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek!='TOPCH001'}">style="display: none"</c:if> >
+    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.contraHistory!='TOPCH001'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Most Recent Contraceptive Methods Used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="mostRecentContraMethod" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_METHODS"
                              value="${familyPlanDto.mostRecentContraMethod}" cssClass="mostRecentContraMethod"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mostRecentContraMethod"></span>
             </iais:value>
         </iais:row>
     </div>
@@ -66,7 +65,7 @@
             </div>
         </iais:value>
     </iais:row>
-    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if> >
+    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -79,16 +78,15 @@
     <iais:row>
         <iais:field width="5" value="Main Reason for Request to Terminate Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="mainTopReason" firstOption="Please Select" codeCategory="TOP_REASONS_TERMINATION_PREGNANCY"
+            <iais:select  id = "mainTopReason" name="mainTopReason" firstOption="Please Select" codeCategory="TOP_REASONS_TERMINATION_PREGNANCY"
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
-    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if> >
+    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topRiskCondition" value="${familyPlanDto.topRiskCondition}" />
-                <span class="error-msg" name="iaisErrorMsg" id="error_topRiskCondition"></span>
+                <iais:input maxLength="66" type="text" name="topRiskCondition"/>
             </iais:value>
         </iais:row>
     </div>
@@ -96,27 +94,24 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}" />
-                <span class="error-msg" name="iaisErrorMsg" id="error_topMedCondition"></span>
+                <iais:input maxLength="66" type="text" name="topMedCondition"/>
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherMainTopReason" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP008'}">style="display: none"</c:if> >
+    <div id="otherMainTopReason" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP008'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Main Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}" />
-                <span class="error-msg" name="iaisErrorMsg" id="error_otherMainTopReason"></span>
+                <iais:input maxLength="66" type="text" name="otherMainTopReason" value="${familyPlanDto.otherMainTopReason}"/>
             </iais:value>
         </iais:row>
     </div>
-    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if> >
+    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="subRopReason" firstOption="Please Select" codeCategory="TOP_SUB_CAUSES_TERMINATION_PREGNANCY"
                              value="${familyPlanDto.subRopReason}" cssClass="subRopReason"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_subRopReason"></span>
             </iais:value>
         </iais:row>
     </div>
@@ -124,7 +119,7 @@
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}" />
+                <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_otherSubTopReason"></span>
             </iais:value>
         </iais:row>
@@ -132,39 +127,54 @@
 </div>
 <script>
     $(document).ready(function() {
+        $('#subRopReason').change(function () {
+            subRopReason();
+        });
         subRopReason();
-       mainTopReason();
-        mainTopReason();
+        otherMainTopReason();
+        topRiskConditions();
+        topMedConditions();
+        subRopReasons();
         gestAgeBaseOnUltrWeek();
         contraHistory();
     });
     function subRopReason() {
-        $('#subRopReason').change(function () {
-
-            var subRopReason= $('#subRopReason option:selected').val();
-
-            if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
-                $('#otherSubTopReason').attr("style","display: block");
-            }else {
-                $('#otherSubTopReason').attr("style","display: none");
-            }
-        });
+        var subRopReason= $('#subRopReason').val();
+        if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
+            $('#otherSubTopReason').show();
+        }else {
+            $('#otherSubTopReason').hide();
+        }
     }
-    function mainTopReason() {
+    function otherMainTopReason() {
         $('#mainTopReason').change(function () {
 
-            var mainTopReason= $('#mainTopReason option:selected').val();
+            var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP008"){
                 $('#otherMainTopReason').attr("style","display: block");
             }else {
                 $('#otherMainTopReason').attr("style","display: none");
             }
+        });
+    }
+    function topRiskConditions() {
+        $('#mainTopReason').change(function () {
+
+            var mainTopReason= $('#mainTopReason option:selected').val();
+
             if(mainTopReason == "TOPRTP005"){
                 $('#topRiskConditions').attr("style","display: block");
             }else {
                 $('#topRiskConditions').attr("style","display: none");
             }
+        });
+    }
+    function topMedConditions() {
+        $('#mainTopReason').change(function () {
+
+            var mainTopReason= $('#mainTopReason option:selected').val();
+
             if(mainTopReason == "TOPRTP002"){
                 $('#topMedConditions').attr("style","display: block");
             }else {
@@ -172,7 +182,8 @@
             }
         });
     }
-    function mainTopReason(){
+
+    function subRopReasons(){
         $('#mainTopReason').change(function () {
 
             var mainTopReason= $('#mainTopReason option:selected').val();

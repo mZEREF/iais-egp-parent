@@ -5,8 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfP
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -25,35 +27,35 @@ public class FamilyPlanValidator implements CustomizeValidator {
             familyPlanDto = new FamilyPlanDto();
         }
 
-        if("TOPCH001".equals(familyPlanDto.getContraHistory()) && StringUtil.isEmpty(familyPlanDto.getMostRecentContraMethod())){
-            errorMap.put("mostRecentContraMethod", "GENERAL_ERR0006");
+        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"mostRecentContraMethod");
+            errorMap.putAll(result.retrieveAll());
         }
 
-        if("TOPRTP008".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getOtherMainTopReason())){
-            errorMap.put("otherMainTopReason", "GENERAL_ERR0006");
+        if("TOPRTP008".equals(familyPlanDto.getMainTopReason())){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
+            errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getTopRiskCondition())){
-            errorMap.put("topRiskCondition", "GENERAL_ERR0006");
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason())){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
+            errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getTopMedCondition())){
-            errorMap.put("topMedCondition", "GENERAL_ERR0006");
+        if("TOPRTP002".equals(familyPlanDto.getMainTopReason())){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
+            errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP004".equals(familyPlanDto.getMainTopReason()) && StringUtil.isEmpty(familyPlanDto.getSubRopReason())){
-            errorMap.put("subRopReason", "GENERAL_ERR0006");
+        if("TOPRTP004".equals(familyPlanDto.getMainTopReason())){
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"subRopReason");
+            errorMap.putAll(result.retrieveAll());
         }
         if("TOPSCTP003".equals(familyPlanDto.getSubRopReason()) || "TOPSCTP006".equals(familyPlanDto.getSubRopReason())){
-            if(StringUtil.isEmpty(familyPlanDto.getOtherSubTopReason())){
-                errorMap.put("otherSubTopReason", "GENERAL_ERR0006");
-            }
+            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"mostRecentContraMethod");
+            errorMap.putAll(result.retrieveAll());
         }
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
             if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=15 && StringUtil.isEmpty(familyPlanDto.getAbortChdMoreWksGender())){
                 errorMap.put("abortChdMoreWksGender", "GENERAL_ERR0006");
             }
-        }
-
-        if(StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-            errorMap.put("gestAgeBaseOnUltrWeek", "GENERAL_ERR0006");
         }
         return errorMap;
     }

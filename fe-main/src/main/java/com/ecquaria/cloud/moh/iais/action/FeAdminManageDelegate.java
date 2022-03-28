@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -32,7 +33,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * FeAdminManageDelegate
@@ -47,6 +50,8 @@ public class FeAdminManageDelegate {
     private OrgUserManageService orgUserManageService;
     @Autowired
     private MyInfoAjax myInfoAjax;
+
+    public static final String FE_NO_ADMIN_ROLES_SHOW                 = "feNoAdminRolesShow";
     /**
      * StartStep: doStart
      *
@@ -56,7 +61,7 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
-        ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES);
+        ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES,FE_NO_ADMIN_ROLES_SHOW);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
     }
 
@@ -126,6 +131,15 @@ public class FeAdminManageDelegate {
             isAdmin = "0";
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
+
+        if(IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())){
+            StringBuilder stringBuilder = new StringBuilder();
+            List<String> roleNames = feUserDto.getOrgUserRoleDtos().stream().map(OrgUserRoleDto::getRoleName).collect(Collectors.toList());
+            roleNames.sort(String::compareTo);
+            roleNames.stream().forEach( roleName -> stringBuilder.append(IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(roleName).getText()).append("<br>"));
+            ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,stringBuilder.substring(0,stringBuilder.length()-4));
+        }
+
         ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(bpc.request,UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);

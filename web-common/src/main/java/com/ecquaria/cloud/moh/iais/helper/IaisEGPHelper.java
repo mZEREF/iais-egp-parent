@@ -147,7 +147,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
 
     private static  Map<String,List<String>> SVC_ROLE_MAP = getSvcRoleMap();
-    private static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
+    public static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
     private static  Map<String,String> CENTER_TYPE_ROLE_MAP = getCenterTypeRoleMap();
 
     /**

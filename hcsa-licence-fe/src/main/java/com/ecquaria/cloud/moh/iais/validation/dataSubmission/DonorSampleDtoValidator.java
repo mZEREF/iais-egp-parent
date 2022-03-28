@@ -49,7 +49,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                      donorSampleDto.getIdType()
                     ,donorSampleDto.getIdNumber()
                      ,donorSampleCodeType
-                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber());
+                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber(),null,null);
 
         }else{
             List<DonorSampleDto> donorSampleDtos =  arDataSubmissionService.getDonorSampleDtoBySampleKey(sampleKey);
