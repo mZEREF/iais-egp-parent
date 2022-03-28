@@ -44,7 +44,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div style="${treatmentDto.sterilizationReason =='VSSRFS002' ? '' : 'display: none'}">
+                <div style="${treatmentDto.sterilizationReason =='VSSRFS005' ? '' : 'display: none'}">
                     <iais:row style="border-bottom: 1px solid #BABABA; ">
                         <iais:value width="6" display="true" cssClass="col-md-6">
                             <strong class="app-font-size-22 premHeader">Particulars of Court Order</strong>

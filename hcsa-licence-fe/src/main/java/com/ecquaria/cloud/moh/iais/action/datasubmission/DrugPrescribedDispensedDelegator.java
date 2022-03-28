@@ -2,19 +2,23 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +35,9 @@ import java.util.Map;
 @Delegator("drugPrescribedDispensedDelegator")
 @Slf4j
 public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
+
+    @Autowired
+    private PatientService patientService;
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -82,12 +89,27 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
         drugPrescribedDispensed.setDrugSubmission(drugSubmission);
         List<DrugMedicationDto> drugMedicationDtos = genDrugMedication(bpc.request);
         drugPrescribedDispensed.setDrugMedicationDtos(drugMedicationDtos);
-
+        if(currentDpDataSubmission.getPatientDto() ==null){
+            PatientDto patient = patientService.getDpPatientDto(drugSubmission.getIdType(), drugSubmission.getIdNumber(),
+                    drugSubmission.getNationality(), currentDpDataSubmission.getOrgId());
+            if(patient!=null){
+                currentDpDataSubmission.setPatientDto(patient);
+            }
+        }
         currentDpDataSubmission.setDrugPrescribedDispensedDto(drugPrescribedDispensed);
         String profile ="DRP";
-        validatePageData(bpc.request, drugPrescribedDispensed, profile, ACTION_TYPE_CONFIRM);
-        if(DpCommonDelegator.ACTION_TYPE_CONFIRM.equals(ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE))){
-            valRFC(request,drugPrescribedDispensed);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        if ("confirm".equals(crud_action_type)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(drugPrescribedDispensed, profile);
+            errorMap = validationResult.retrieveAll();
+            verifyRfcCommon(request, errorMap);
+            valRFC(request, drugPrescribedDispensed);
+        }
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
     }

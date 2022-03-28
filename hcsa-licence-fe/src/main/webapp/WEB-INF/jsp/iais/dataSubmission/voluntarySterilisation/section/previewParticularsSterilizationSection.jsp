@@ -32,7 +32,13 @@
                 <iais:row>
                     <iais:field width="6" value="Method of Sterilization" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${sexualSterilizationDto.sterilizationMethod}"/>
+                        <iais:code code="${sexualSterilizationDto.sterilizationMethod}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row  style="${sexualSterilizationDto.sterilizationMethod eq 'VSMOS006' ? '' : 'display: none'}">
+                    <iais:field width="6" value="Other Method of Sterilization" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${sexualSterilizationDto.otherSterilizationMethod}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

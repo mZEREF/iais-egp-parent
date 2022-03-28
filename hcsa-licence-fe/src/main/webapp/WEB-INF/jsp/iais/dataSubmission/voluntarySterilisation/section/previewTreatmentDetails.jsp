@@ -41,7 +41,7 @@
                         <iais:code code="${treatmentDto.residenceStatus}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
+                <iais:row style="${treatmentDto.residenceStatus eq 'VSSRS003' ? '' : 'display: none'}">
                     <iais:field value="Other Residence Status" width="6"/>
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${treatmentDto.otherResidenceStatus}"/>
@@ -53,7 +53,7 @@
                         <iais:code code="${treatmentDto.ethnicGroup}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
+                <iais:row style="${treatmentDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
                     <iais:field value="Other Ethnic Group" width="6"/>
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${treatmentDto.otherEthnicGroup}"/>
@@ -77,10 +77,22 @@
                         <iais:code code="${treatmentDto.occupation}"/>
                     </iais:value>
                 </iais:row>
+                <iais:row style="${treatmentDto.occupation eq 'VSSOP011' ? '' : 'display: none'}" >
+                    <iais:field width="6" value="Other Occupation" />
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${treatmentDto.otherOccupation}"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Main Reason for Sterilization" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <iais:code code="${treatmentDto.sterilizationReason}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row  style="${treatmentDto.sterilizationReason eq 'VSSRFS009' ? '' : 'display: none'}">
+                    <iais:field width="6" value="Other Main Reason for Sterilization"/>
+                    <iais:value width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${treatmentDto.otherSterilizationReason}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
