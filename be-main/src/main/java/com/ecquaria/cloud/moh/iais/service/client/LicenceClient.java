@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,4 +53,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/get-premise-hciCodeName-be",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getPremiseDtoByHciCodeOrName(@RequestParam("hciCodeName") String hciCodeName);
+
+    @PostMapping(value = "/lic-common/licenceList", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, LicenceDto>> getLicenceList(@RequestBody List<String> licIds);
 }

@@ -18,6 +18,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDt
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * ApplicationClient
@@ -110,4 +109,10 @@ public interface ApplicationMainClient {
 
     @GetMapping(value = "/opera-unit-floor/premises-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesOperationalUnitDto>> getUnitNoAndFloorByPremisesId(@RequestParam("premisesId") String premisesId);
+
+    @PostMapping(value = "/hcsa-app-common/appGrpList",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> getGroupsByNos(@RequestBody List<String> appGrpNums);
+
+    @PostMapping(value = "/iais-application-be/prem-corr-list")
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupIds(@RequestBody List<String> appGroupIds);
 }
