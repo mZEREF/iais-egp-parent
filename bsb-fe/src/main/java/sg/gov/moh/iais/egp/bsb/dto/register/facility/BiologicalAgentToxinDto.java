@@ -30,10 +30,26 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
         @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.sample.addOrDelete")
         private List<String> sampleType;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.sample.other")
-        private String otherSampleType;
-        /* The key is the sample type, the value is the entity ID related to it */
-        private Map<String, String> sampleEntityIdMap;
+        private List<String> workType;
+
+        private String sampleWorkDetail;
+
+        private String procurementMode;
+
+        private String postalCode;
+        private String addressType;
+        private String blockNo;
+        private String floorNo;
+        private String unitNo;
+        private String streetName;
+        private String buildingName;
+
+        private String contactPersonName;
+        private String emailAddress;
+        private String contactNo;
+        private String expectedDate;
+        private String courierServiceProviderName;
+        private String remarks;
     }
 
     private String activityEntityId;
@@ -42,24 +58,6 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.addOrDelete")
     private List<BATInfo> batInfos;
 
-    private List<String> workType;
-    private String sampleWorkDetail;
-    private String procurementMode;
-
-    private String facName;
-    private String facBlkNo;
-    private String facFloor;
-    private String facUnit;
-    private String facStreet;
-    private String facPostalCode;
-
-    private String contactPersonName;
-    private String contactPersonEmail;
-    private String contactPersonContactNo;
-
-    private String expectedTransferDate;
-    private String courierServiceProviderName;
-    private String remark;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -69,9 +67,8 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
         batInfos = new ArrayList<>();
         BATInfo batInfo = new BATInfo();
         batInfo.sampleType = new ArrayList<>();
-        batInfo.sampleEntityIdMap  = new HashMap<>();
+        batInfo.workType = new ArrayList<>();
         batInfos.add(batInfo);
-        workType = new ArrayList<>();
     }
 
     public BiologicalAgentToxinDto(String activityType) {
@@ -133,143 +130,31 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
         this.batInfos = new ArrayList<>(batInfos);
     }
 
-    public String getProcurementMode() {
-        return procurementMode;
-    }
-
-    public void setProcurementMode(String procurementMode) {
-        this.procurementMode = procurementMode;
-    }
-
-    public String getContactPersonEmail() {
-        return contactPersonEmail;
-    }
-
-    public void setContactPersonEmail(String contactPersonEmail) {
-        this.contactPersonEmail = contactPersonEmail;
-    }
-
-    public List<String> getWorkType() {
-        return new ArrayList<>(workType);
-    }
-
-    public void setWorkType(List<String> workType) {
-        this.workType = new ArrayList<>(workType);
-    }
-
-    public String getSampleWorkDetail() {
-        return sampleWorkDetail;
-    }
-
-    public void setSampleWorkDetail(String sampleWorkDetail) {
-        this.sampleWorkDetail = sampleWorkDetail;
-    }
-
-    public String getFacName() {
-        return facName;
-    }
-
-    public void setFacName(String facName) {
-        this.facName = facName;
-    }
-
-    public String getFacBlkNo() {
-        return facBlkNo;
-    }
-
-    public void setFacBlkNo(String facBlkNo) {
-        this.facBlkNo = facBlkNo;
-    }
-
-    public String getFacFloor() {
-        return facFloor;
-    }
-
-    public void setFacFloor(String facFloor) {
-        this.facFloor = facFloor;
-    }
-
-    public String getFacUnit() {
-        return facUnit;
-    }
-
-    public void setFacUnit(String facUnit) {
-        this.facUnit = facUnit;
-    }
-
-    public String getFacStreet() {
-        return facStreet;
-    }
-
-    public void setFacStreet(String facStreet) {
-        this.facStreet = facStreet;
-    }
-
-    public String getFacPostalCode() {
-        return facPostalCode;
-    }
-
-    public void setFacPostalCode(String facPostalCode) {
-        this.facPostalCode = facPostalCode;
-    }
-
-    public String getContactPersonName() {
-        return contactPersonName;
-    }
-
-    public void setContactPersonName(String contactPersonName) {
-        this.contactPersonName = contactPersonName;
-    }
-
-    public String getContactPersonContactNo() {
-        return contactPersonContactNo;
-    }
-
-    public void setContactPersonContactNo(String contactPersonContactNo) {
-        this.contactPersonContactNo = contactPersonContactNo;
-    }
-
-    public String getExpectedTransferDate() {
-        return expectedTransferDate;
-    }
-
-    public void setExpectedTransferDate(String expectedTransferDate) {
-        this.expectedTransferDate = expectedTransferDate;
-    }
-
-    public String getCourierServiceProviderName() {
-        return courierServiceProviderName;
-    }
-
-    public void setCourierServiceProviderName(String courierServiceProviderName) {
-        this.courierServiceProviderName = courierServiceProviderName;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public ValidationResultDto getValidationResultDto() {
-        return validationResultDto;
-    }
-
-    public void setValidationResultDto(ValidationResultDto validationResultDto) {
-        this.validationResultDto = validationResultDto;
-    }
 
 
 //    ---------------------------- request -> object ----------------------------------------------
 
-    private static final String SEPARATOR = "--v--";
-    private static final String KEY_SECTION_IDXES = "sectionIdx";
-    private static final String KEY_PREFIX_SHCEDULE = "schedule";
-    private static final String KEY_PREFIX_BAT_NAME = "batName";
-    private static final String KEY_PREFIX_SAMPLE_TYPE = "sampleType";
-    private static final String KEY_PREFIX_OTHER_SAMPLE_TYPE = "otherSampleType";
+    private static final String SEPARATOR                                     = "--v--";
+    private static final String KEY_SECTION_IDXES                             = "sectionIdx";
+    private static final String KEY_PREFIX_SHCEDULE                           = "schedule";
+    private static final String KEY_PREFIX_BAT_NAME                           = "batName";
+    private static final String KEY_PREFIX_SAMPLE_TYPE                        = "sampleType";
+    private static final String KEY_PREFIX_WORK_TYPE                          = "workType";
+    private static final String KEY_PREFIX_SAMPLE_WORK_DETAIL                 = "sampleWorkDetail";
+    private static final String KEY_PREFIX_PROCUREMENT_MODE                   = "procurementMode";
+    private static final String KEY_PREFIX_POSTAL_CODE                        = "postalCode";
+    private static final String KEY_PREFIX_ADDRESS_TYPE                       = "addressType";
+    private static final String KEY_PREFIX_BLOCK_NO                           = "blockNo";
+    private static final String KEY_PREFIX_FLOOR_NO                           = "floorNo";
+    private static final String KEY_PREFIX_UNIT_NO                            = "unitNo";
+    private static final String KEY_PREFIX_STREET_NAME                        = "streetName";
+    private static final String KEY_PREFIX_BUILDING_NAME                      = "buildingName";
+    private static final String KEY_PREFIX_CONTACT_PERSON_NAME                = "contactPersonName";
+    private static final String KEY_PREFIX_EMAIL_ADDRESS                      = "emailAddress";
+    private static final String KEY_PREFIX_CONTACT_NO                         = "contactNo";
+    private static final String KEY_PREFIX_EXPECTED_DATE                      = "expectedDate";
+    private static final String KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME      = "courierServiceProviderName";
+    private static final String KEY_PREFIX_REMARKS                            = "remarks";
 
     public void reqObjMapping(HttpServletRequest request) {
         clearBatInfos();
@@ -285,9 +170,30 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
             } else {
                 info.setSampleType(new ArrayList<>(0));
             }
-            if (info.getSampleType().contains(MasterCodeConstants.SAMPLE_NATURE_OTHER)) {
-                info.setOtherSampleType(ParamUtil.getString(request, KEY_PREFIX_OTHER_SAMPLE_TYPE + SEPARATOR +idx));
+            String[] workTypes = ParamUtil.getStrings(request, KEY_PREFIX_WORK_TYPE + SEPARATOR +idx);
+            if (workTypes != null && workTypes.length > 0) {
+                info.setWorkType(new ArrayList<>(Arrays.asList(workTypes)));
+            } else {
+                info.setWorkType(new ArrayList<>(0));
             }
+            if (info.getSampleType().contains(MasterCodeConstants.SAMPLE_NATURE_OTHER) ||
+                    info.getWorkType().contains(MasterCodeConstants.WORK_TYPE_OTHERS)) {
+                info.setSampleWorkDetail(ParamUtil.getString(request, KEY_PREFIX_SAMPLE_WORK_DETAIL + SEPARATOR +idx));
+            }
+            info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +idx));
+            info.setPostalCode(ParamUtil.getString(request, KEY_PREFIX_POSTAL_CODE + SEPARATOR +idx));
+            info.setAddressType(ParamUtil.getString(request, KEY_PREFIX_ADDRESS_TYPE + SEPARATOR +idx));
+            info.setBlockNo(ParamUtil.getString(request, KEY_PREFIX_BLOCK_NO + SEPARATOR +idx));
+            info.setFloorNo(ParamUtil.getString(request, KEY_PREFIX_FLOOR_NO + SEPARATOR +idx));
+            info.setUnitNo(ParamUtil.getString(request, KEY_PREFIX_UNIT_NO + SEPARATOR +idx));
+            info.setStreetName(ParamUtil.getString(request, KEY_PREFIX_STREET_NAME + SEPARATOR +idx));
+            info.setBuildingName(ParamUtil.getString(request, KEY_PREFIX_BUILDING_NAME + SEPARATOR +idx));
+            info.setContactPersonName(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_NAME + SEPARATOR +idx));
+            info.setEmailAddress(ParamUtil.getString(request, KEY_PREFIX_EMAIL_ADDRESS + SEPARATOR +idx));
+            info.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR +idx));
+            info.setExpectedDate(ParamUtil.getString(request, KEY_PREFIX_EXPECTED_DATE + SEPARATOR +idx));
+            info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +idx));
+            info.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS + SEPARATOR +idx));
             addBatInfo(info);
         }
     }

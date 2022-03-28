@@ -104,8 +104,7 @@ public class RenewalFacilityRegistrationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
         NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
@@ -144,11 +143,7 @@ public class RenewalFacilityRegistrationDelegator {
     }
 
     public void preFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacAdmin(bpc);
-    }
-
-    public void preFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacOfficer(bpc);
+        facilityRegistrationService.preFacAdminOfficer(bpc);
     }
 
     public void preFacInfoCommittee(BaseProcessClass bpc) {
@@ -345,9 +340,9 @@ public class RenewalFacilityRegistrationDelegator {
     public void handleFacAdmin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER;
         SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
+        FacilityAdminAndOfficerDto facAdminDto = (FacilityAdminAndOfficerDto) facAdminNode.getValue();
         facAdminDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
@@ -364,27 +359,6 @@ public class RenewalFacilityRegistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void handleFacOfficer(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
-        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
-        facOfficerDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (NODE_NAME_REVIEW.equals(actionType)){
-            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facOfficerNode);
-        } else if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOfficerNode);
-        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
-            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
-    }
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;

@@ -12,6 +12,7 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 
+
 <%@include file="dashboard.jsp"%>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

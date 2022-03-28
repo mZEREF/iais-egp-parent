@@ -347,13 +347,23 @@ public class NodeGroup extends Node {
         this.nodes.putAll(tmpMap);
     }
 
+
+    /**
+     * The same as the another method, except for set the active Node to the first node.
+     * @see #reorganizeNodes(Node[], String)
+     */
+    public void reorganizeNodes(Node[] nodes) {
+        reorganizeNodes(nodes, null);
+    }
+
     /**
      * Replace members in this group to specific list.
      * Keep the existing nodes if the given node contain the node with same name.
      * This method totally change the node list but keep the old data.
      * @param nodes to replace current members
+     * @param activeNodeKey active node key after re-organization
      */
-    public void reorganizeNodes(Node[] nodes) {
+    public void reorganizeNodes(Node[] nodes, String activeNodeKey) {
         Assert.notEmpty(nodes, ERR_MSG_NODE_GROUP_NOT_EMPTY);
         LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(nodes.length);
         for (Node n : nodes) {
@@ -361,12 +371,42 @@ public class NodeGroup extends Node {
             if (existsNode != null) {
                 tmpMap.put(n.getName(), existsNode);
             } else {
-                tmpMap.put(n.getName(), n);
+                tmpMap.put(n.getName(), suitNode(tmpMap, n));
             }
         }
         this.nodes.clear();
         this.nodes.putAll(tmpMap);
-        this.activeNodeKey = getFirstNodeKey();
+        if (activeNodeKey != null) {
+            Assert.notNull(this.nodes.get(activeNodeKey), ERR_MSG_INVALID_ACTIVE_NODE);
+            this.activeNodeKey = activeNodeKey;
+        } else {
+            this.activeNodeKey = getFirstNodeKey();
+        }
+    }
+
+    /**
+     * When we want to replace a Node in group, the dependency usually keep the old relation.
+     * However, old nodes and new nodes have a total different node group, after we mix them together,
+     * the dependency is a chaos. We use this method to let the Node suitable to the existing nodes by
+     * replacing the dependent nodes.
+     * @param nodes new node group nodes map
+     * @param node will be suitable to the new node group
+     * @return the changed node
+     * @throws IllegalStateException if the declared dependent node can not be found in the new nodes map
+     */
+    private Node suitNode(Map<String, Node> nodes, Node node) {
+        Node[] rawDependentNodes = node.getDependNodes();
+        Node[] newDependentNodes = new Node[rawDependentNodes.length];
+        for (int i = 0; i < rawDependentNodes.length; i++) {
+            Node oldDepend = rawDependentNodes[i];
+            Node newDepend = nodes.get(oldDepend.getName());
+            if (newDepend == null) {
+                throw new IllegalStateException();
+            }
+            newDependentNodes[i] = newDepend;
+        }
+        node.setDependNodes(newDependentNodes);
+        return node;
     }
 
 

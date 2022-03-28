@@ -12,7 +12,7 @@
 </div>
 
 <div class="form-group">
-    <div class="col-sm-12 control-label">
+    <div class="col-sm-12 control-label" style="font-size: 14px">
         Note: The Facility Operator is the person who has overall control and oversight of the management of the facility such as the Chief Executive Officer of the company or a person of equivalent level.
     </div>
 </div>
@@ -31,9 +31,9 @@
     </div>
     <div class="col-sm-6 col-md-7">
         <select name="salutation" id="salutation">
-            <option value="" <c:if test="${facOperator.salutation eq '' || facOperator.salutation eq null}">selected = 'selected'</c:if>>Please Select</option>
+            <option value="">Please Select</option>
             <c:forEach var="item" items="${salutationOps}">
-            <option value="${item.value}" <c:if test="${facOperator.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
+            <option value="${item.value}" <c:if test="${facOperator.salutation eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>
         </select>
         <span data-err-ind="salutation" class="error-msg"></span>
@@ -74,6 +74,7 @@
     </div>
     <div class="col-sm-6 col-md-7">
         <select name="nationality" id="nationality">
+            <option value="">Please Select</option>
             <c:forEach items="${nationalityOps}" var="na">
                 <option value="${na.value}" <c:if test="${facOperator.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
             </c:forEach>

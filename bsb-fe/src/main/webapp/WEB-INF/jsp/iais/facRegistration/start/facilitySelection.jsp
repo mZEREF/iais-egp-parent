@@ -5,7 +5,6 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -15,7 +14,7 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -54,14 +53,14 @@
                 <div class="col-xs-12 col-md-10">
                     <%--@elvariable id="serviceSelection" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto"--%>
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
-                        <%@include file="../mainAppCommon/facRegistration/facilitySelection.jsp"%>
+                        <%@include file="../../mainAppCommon/facRegistration/facilitySelection.jsp"%>
                     </div>
                 </div>
             </div>
-            <div class="application-tab-footer" style="margin-left:0px;margin-right:0px">
+            <div class="application-tab-footer" style="margin-left:0;margin-right:0">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 ">
-                        <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
+                        <a class="back" id="previous" href="#"><em class="fa fa-angle-left"></em> Previous</a>
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <div class="button-group">

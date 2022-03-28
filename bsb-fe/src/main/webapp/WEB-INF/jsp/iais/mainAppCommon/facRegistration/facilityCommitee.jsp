@@ -61,7 +61,6 @@
                 </c:if>
                 <div><a class="btn file-upload btn-secondary" data-upload-data-file="committeeData" href="javascript:void(0);">Upload</a></div>
                 <input type="file" id="committeeData" name="committeeData" data-data-file-input="committeeData" style="display: none">
-                <input type="hidden" id="deleteDataFile" name="deleteDataFile" value="">
             </div>
         </div>
     </div>

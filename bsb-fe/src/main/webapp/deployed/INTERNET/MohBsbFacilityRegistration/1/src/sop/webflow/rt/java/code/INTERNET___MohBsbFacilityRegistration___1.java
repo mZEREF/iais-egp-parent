@@ -25,6 +25,10 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
+	public void handleBeforeBegin_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleBeforeBegin", this);
+	}
+
 	public void preCompInfo_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preCompInfo", this);
 	}
@@ -57,28 +61,12 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 		EngineHelper.delegate(DELEGATOR, "handleFacOperator", this);
 	}
 
-	public void preFacInfoAuthoriser_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preFacInfoAuthoriser", this);
-	}
-
-	public void handleFacInfoAuthoriser_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "handleFacInfoAuthoriser", this);
-	}
-
 	public void preFacAdmin_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preFacAdmin", this);
+		EngineHelper.delegate(DELEGATOR, "preFacAdminOfficer", this);
 	}
 
 	public void handleFacAdmin_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "handleFacAdmin", this);
-	}
-
-	public void preFacOfficer_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preFacOfficer", this);
-	}
-
-	public void handleFacOfficer_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "handleFacOfficer", this);
+		EngineHelper.delegate(DELEGATOR, "handleFacAdminOfficer", this);
 	}
 
 	public void preFacInfoCommittee_OnStepProcess_0() throws Exception {
@@ -87,6 +75,14 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 
 	public void handleFacInfoCommittee_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "handleFacInfoCommittee", this);
+	}
+
+	public void preFacInfoAuthoriser_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preFacInfoAuthoriser", this);
+	}
+
+	public void handleFacInfoAuthoriser_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleFacInfoAuthoriser", this);
 	}
 
 	public void preBAToxin_OnStepProcess_0() throws Exception {
@@ -143,5 +139,21 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 
 	public void handleFacCommitteePreview_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "handleCommitteePreview", this);
+	}
+
+	public void preFacAuthoriserPreview_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preAuthoriserPreview", this);
+	}
+
+	public void handleFacAuthoriserPreview_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleAuthoriserPreview", this);
+	}
+
+	public void preAfc_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preApprovedFacilityCertifier", this);
+	}
+
+	public void handleAfc_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleApprovedFacilityCertifier", this);
 	}
 }

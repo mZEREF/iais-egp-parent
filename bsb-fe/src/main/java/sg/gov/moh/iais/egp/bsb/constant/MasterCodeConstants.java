@@ -132,8 +132,20 @@ public class MasterCodeConstants {
     public static final String FAC_CLASSIFICATION_LSPF = "FACCLA004";
     public static final String FAC_CLASSIFICATION_RF = "FACCLA005";
     public static final Set<String> VALID_FAC_CLASSIFICATION;
+    public static final Set<String> CERTIFIED_CLASSIFICATION;
+    public static final Set<String> UNCERTIFIED_CLASSIFICATION;
 
     static {
+        Set<String> certifiedClassification = Sets.newHashSetWithExpectedSize(2);
+        certifiedClassification.add(FAC_CLASSIFICATION_BSL3);
+        certifiedClassification.add(FAC_CLASSIFICATION_BSL4);
+        CERTIFIED_CLASSIFICATION = Collections.unmodifiableSet(certifiedClassification);
+
+        Set<String> uncertifiedClassification = Sets.newHashSetWithExpectedSize(2);
+        uncertifiedClassification.add(FAC_CLASSIFICATION_UF);
+        uncertifiedClassification.add(FAC_CLASSIFICATION_LSPF);
+        UNCERTIFIED_CLASSIFICATION = Collections.unmodifiableSet(uncertifiedClassification);
+
         Set<String> facClassification = Sets.newHashSetWithExpectedSize(5);
         facClassification.add(FAC_CLASSIFICATION_BSL3);
         facClassification.add(FAC_CLASSIFICATION_BSL4);

@@ -26,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
@@ -48,6 +49,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSU
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
@@ -160,6 +162,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/facReg/committee/repo/{id}")
     public void downloadFacCommitteeSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCommitteeSavedFile);
+    }
+
+    @GetMapping("/facReg/authoriser/new/{id}")
+    public void downloadFacAuthoriserNewFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegAuthoriserNewFile);
+    }
+
+    @GetMapping("/facReg/authoriser/repo/{id}")
+    public void downloadFacAuthoriserSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegAuthoriserSavedFile);
     }
 
 
@@ -366,6 +378,30 @@ public class DocDownloadAjaxController {
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
     }
+
+    /** Facility registration get new uploaded data file for authoriser */
+    private MultipartFile facRegAuthoriserNewFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+        NewDocInfo newDocInfo = authDto.getNewFile();
+        if (!newDocInfo.getTmpId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        return newDocInfo.getMultipartFile();
+    }
+
+    /** Facility registration get saved data file for authoriser */
+    private MultipartFile facRegAuthoriserSavedFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        FacilityCommitteeDto authDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+        DocRecordInfo docRecordInfo = authDto.getSavedFile();
+        if (!docRecordInfo.getRepoId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
+    }
+
 
     /**
      * Approval app get the new doc file object

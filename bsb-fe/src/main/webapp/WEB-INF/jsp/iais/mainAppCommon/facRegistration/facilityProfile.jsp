@@ -1,6 +1,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
 <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
+<%--@elvariable id="organizationAddress" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo"--%>
 
 <div class="form-group ">
     <div class="col-sm-5 control-label">
@@ -22,11 +23,9 @@
     <div class="col-sm-6 col-md-7">
         <select name="facType" id="facType">
             <option value="">Please Select</option>
-            <option value="FACTYPE001">Academic</option>
-            <option value="FACTYPE002">Clinical Research</option>
-            <option value="FACTYPE003">Commercial</option>
-            <option value="FACTYPE004">Government/Stat Board</option>
-            <option value="FACTYPE005">Others</option>
+            <c:forEach var="type" items="${facTypeOps}">
+            <option value="${type.value}" <c:if test="${type.value eq facProfile.facType}">selected="selected"</c:if> >${type.text}</option>
+            </c:forEach>
         </select>
         <span data-err-ind="facType" class="error-msg"></span>
     </div>
@@ -58,7 +57,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="postalCodeY">882911</label>
+                <label id="postalCodeY">${organizationAddress.postalCode}</label>
             </div>
         </div>
 
@@ -68,7 +67,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="addressTypeY">Apt Blk</label>
+                <label id="addressTypeY"><iais:code code="${organizationAddress.addressType}"/></label>
             </div>
         </div>
 
@@ -78,7 +77,7 @@
                 <label for="blockY">Block / House No.</label>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="blockY">10</label>
+                <label id="blockY">${organizationAddress.blockNo}</label>
             </div>
         </div>
 
@@ -87,7 +86,7 @@
                 <label for="floorY">Floor and Unit No.</label>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="floorY">03 - 01</label>
+                <label id="floorY">${organizationAddress.floor} - ${organizationAddress.unitNo}</label>
             </div>
         </div>
 
@@ -97,7 +96,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="streetNameY">Toa Payoh Lorong 2</label>
+                <label id="streetNameY">${organizationAddress.street}</label>
             </div>
         </div>
 
@@ -107,7 +106,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <label id="buildingNameY">-</label>
+                <label id="buildingNameY">${organizationAddress.building}</label>
             </div>
         </div>
     </div>
@@ -134,8 +133,9 @@
             <div class="col-sm-6 col-md-7">
                 <select name="addressType" id="addressType">
                     <option value="">Please Select</option>
-                    <option value="ADDTY001">Apt Blk</option>
-                    <option value="ADDTY002">Without Apt Blk</option>
+                    <c:forEach var="type" items="${addressTypeOps}">
+                        <option value="${type.value}" <c:if test="${type.value eq facProfile.addressType}">selected="selected"</c:if> >${type.text}</option>
+                    </c:forEach>
                 </select>
                 <span data-err-ind="addressType" class="error-msg"></span>
             </div>
@@ -186,7 +186,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <input maxLength="32" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.buildingName}"/>'/>
+                <input maxLength="32" type="text" autocomplete="off" name="buildingName" id="buildingNameN" value='<c:out value="${facProfile.building}"/>'/>
                 <span data-err-ind="buildingName" class="error-msg"></span>
             </div>
         </div>

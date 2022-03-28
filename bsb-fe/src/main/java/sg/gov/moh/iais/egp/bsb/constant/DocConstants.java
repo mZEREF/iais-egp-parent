@@ -9,6 +9,7 @@ public class DocConstants {
     public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
 
     public static final String DOC_TYPE_DATA_COMMITTEE = "committeeData";
+    public static final String DOC_TYPE_DATA_AUTHORISER = "authoriserData";
 
     public static final String DOC_TYPE_GAZETTE_ORDER = "gazetteOrder";
     public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "bsfCoordinatorCert";

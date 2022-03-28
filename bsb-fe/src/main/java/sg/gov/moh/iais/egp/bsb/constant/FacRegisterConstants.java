@@ -7,24 +7,33 @@ public class FacRegisterConstants {
     public static final String MODULE_NAME_RFC             = "Rfc Facility Registration";
     public static final String MODULE_NAME_RENEWAL         = "Renewal Facility Registration";
 
+    public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
+
+    public static final String NODE_NAME_BEFORE_BEGIN      = "beforeBegin";
     public static final String NODE_NAME_COMPANY_INFO      = "compInfo";
     public static final String NODE_NAME_FAC_SELECTION     = "serviceSelection";
     public static final String NODE_NAME_FAC_INFO          = "facInfo";
     public static final String NODE_NAME_FAC_BAT_INFO      = "batInfo";
     public static final String NODE_NAME_OTHER_INFO        = "otherInfo";
     public static final String NODE_NAME_PRIMARY_DOC       = "primaryDocs";
+    public static final String NODE_NAME_AFC               = "afc";
     public static final String NODE_NAME_PREVIEW_SUBMIT    = "previewSubmit";
     public static final String NODE_NAME_FAC_PROFILE       = "facProfile";
     public static final String NODE_NAME_FAC_OPERATOR      = "facOperator";
     public static final String NODE_NAME_FAC_AUTH          = "facAuth";
-    public static final String NODE_NAME_FAC_ADMIN         = "facAdmin";
-    public static final String NODE_NAME_FAC_OFFICER       = "facOfficer";
+    public static final String NODE_NAME_FAC_ADMIN_OFFICER = "facAdminOfficer";
     public static final String NODE_NAME_FAC_COMMITTEE     = "facCommittee";
-    public static final String NODE_NAME_APPROVED_FACILITY_CERTIFIER = "facCertifier";
 
-    public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
+    public static final String NODE_PATH_FAC_PROFILE       = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_PROFILE;
+    public static final String NODE_PATH_FAC_OPERATOR      = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_OPERATOR;
+    public static final String NODE_PATH_FAC_ADMIN_OFFICER = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_ADMIN_OFFICER;
+    public static final String NODE_PATH_FAC_COMMITTEE     = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_COMMITTEE;
+    public static final String NODE_PATH_FAC_AUTH          = NODE_NAME_FAC_INFO + "_" + NODE_NAME_FAC_AUTH;
 
     public static final String STEP_NAME_COMMITTEE_PREVIEW = "committeePreview";
+    public static final String STEP_NAME_AUTHORISER_PREVIEW= "authoriserPreview";
+
+    public static final String KEY_IS_CF                   = "isCertifiedFacility";
 
     public static final String KEY_EDIT_APP_ID             = "editId";
     public static final String KEY_ACTION_TYPE             = "action_type";
@@ -38,9 +47,10 @@ public class FacRegisterConstants {
     public static final String KEY_SOURCE_NODE_PATH        = "srcNodePath";
 
     public static final String KEY_NAV_NEXT                = "next";
-    public static final String KEY_NAV_BACK                = "back";
+    public static final String KEY_NAV_PREVIOUS            = "previous";
 
     public static final String KEY_ACTION_LOAD_DATA_FILE   = "loadDataFile";
+    public static final String KEY_ACTION_DELETE_DATA_FILE = "deleteDataFile";
     public static final String KEY_ACTION_EXPAND_FILE      = "expandFile";
     public static final String KEY_ACTION_SUBMIT           = "submit";
     public static final String KEY_ACTION_JUMP             = "jump";
@@ -50,7 +60,16 @@ public class FacRegisterConstants {
 
     public static final String KEY_SHOW_ERROR_SWITCH       = "needShowValidationError";
 
-    public static final String KEY_NATIONALITY_OPTIONS     = "nationalityOps";
+    public static final String KEY_SELECTED_CLASSIFICATION = "SELECTED_CLASSIFICATION";
+    public static final String KEY_SELECTED_ACTIVITIES     = "SELECTED_ACTIVITIES";
+
+    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
+
+    public static final String KEY_OPTIONS_NATIONALITY     = "nationalityOps";
+    public static final String KEY_OPTION_SALUTATION       = "salutationOps";
+    public static final String KEY_OPTIONS_FAC_TYPE        = "facTypeOps";
+    public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
+    public static final String KEY_OPTIONS_AFC             = "afcOps";
 
     public static final String ERR_MSG_BAT_NOT_NULL        = "Biological Agent/Toxin node group must not be null!";
     public static final String ERR_MSG_NULL_GROUP          = "Node group must not be null!";
@@ -75,5 +94,4 @@ public class FacRegisterConstants {
     public static final String KEY_INSTRUCTION_INFO                      = "instructionInfo";
     //renewal special action value 'reviewEdit'
     public static final String KEY_ACTION_REVIEW_EDIT                    = "reviewEdit";
-    public static final String KEY_OPTION_SALUTATION                     = "salutationOps";
 }

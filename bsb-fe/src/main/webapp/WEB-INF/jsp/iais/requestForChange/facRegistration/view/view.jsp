@@ -20,7 +20,7 @@
 <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 <%--@elvariable id="facOperator" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto"--%>
 <%--@elvariable id="facAuth" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto"--%>
-<%--@elvariable id="facAdmin" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto"--%>
+<%--@elvariable id="facAdmin" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto"--%>
 <%--@elvariable id="facOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto"--%>
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
 <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
@@ -41,7 +41,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdmin="${facAdmin}" facOfficer="${facOfficer}" facCommittee="${facCommittee}" batList="${batList}"
+                                    <%--<fac:preview facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdmin="${facAdmin}" facOfficer="${facOfficer}" facCommittee="${facCommittee}" batList="${batList}"
                                                  profileEditJudge="true" batListEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohRfcFacilityRegistration?editId=${maskedEditId}&processType=<iais:mask name='processType' value='${processType}'/>&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
@@ -64,7 +64,7 @@
                                                 </c:if>
                                             </c:forEach>
                                         </jsp:attribute>
-                                    </fac:preview>
+                                    </fac:preview>--%>
                                 </div>
                             </div>
                         </div>

@@ -57,6 +57,14 @@ public class Node implements Serializable {
         return validated;
     }
 
+    public Node[] getDependNodes() {
+        return dependNodes.clone();
+    }
+
+    public void setDependNodes(Node[] dependNodes) {
+        this.dependNodes = dependNodes == null ? new Node[0] : dependNodes.clone();
+    }
+
     public void passValidation() {
         this.validated = true;
     }
