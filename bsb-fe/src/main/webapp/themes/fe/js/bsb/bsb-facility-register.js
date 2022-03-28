@@ -188,8 +188,14 @@ $(function () {
             firstOp.trigger('click'); firstOp.trigger('click');
         });
 
-        /* Reset all checkbox to unchecked */
-        newSectionDivJqObj.find(":checkbox:checked").prop("checked", false);
-        $("#batOtherSampleTypeDiv" + meta.separator +  nextIdx).hide();
+        /* Reset all radio button and checkbox to unchecked */
+        resetRadio(newSectionDivJqObj);
+        resetCheckbox(newSectionDivJqObj);
+
+        /* Set date picker */
+        setupAllDatePickers(newSectionDivJqObj);
+
+
+        $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
     });
 });
