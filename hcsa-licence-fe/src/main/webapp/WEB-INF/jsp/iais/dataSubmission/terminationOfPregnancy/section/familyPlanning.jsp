@@ -78,7 +78,7 @@
     <iais:row>
         <iais:field width="5" value="Main Reason for Request to Terminate Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="mainTopReason" firstOption="Please Select" codeCategory="TOP_REASONS_TERMINATION_PREGNANCY"
+            <iais:select  id = "mainTopReason" name="mainTopReason" firstOption="Please Select" codeCategory="TOP_REASONS_TERMINATION_PREGNANCY"
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
@@ -127,6 +127,9 @@
 </div>
 <script>
     $(document).ready(function() {
+        $('#subRopReason').change(function () {
+            subRopReason();
+        });
         subRopReason();
         otherMainTopReason();
         topRiskConditions();
@@ -136,21 +139,17 @@
         contraHistory();
     });
     function subRopReason() {
-        $('#subRopReason').change(function () {
-
-            var subRopReason= $('#subRopReason option:selected').val();
-
-            if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
-                $('#otherSubTopReason').attr("style","display: block");
-            }else {
-                $('#otherSubTopReason').attr("style","display: none");
-            }
-        });
+        var subRopReason= $('#subRopReason').val();
+        if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
+            $('#otherSubTopReason').show();
+        }else {
+            $('#otherSubTopReason').hide();
+        }
     }
     function otherMainTopReason() {
         $('#mainTopReason').change(function () {
 
-            var mainTopReason= $('#mainTopReason option:selected').val();
+            var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP008"){
                 $('#otherMainTopReason').attr("style","display: block");
