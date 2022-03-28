@@ -828,7 +828,7 @@
                                                    type="radio"
                                                    name="patientPGT" id="patientPGTYes"
                                                    value="0"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='0 '}">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientPGTYes"><span

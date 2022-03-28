@@ -16,10 +16,9 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="What was Donated?" mandatory="true"/>
                     <label class="col-xs-4 col-md-4 control-label">What was Donated? <span class="mandatory">*</span>
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="${DSACK002Message}"
+                           title="${MessageUtil.getMessageDesc("DS_MSG013")}"
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
