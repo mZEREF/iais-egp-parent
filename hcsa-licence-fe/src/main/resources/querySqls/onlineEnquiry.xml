@@ -132,6 +132,7 @@
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
@@ -243,6 +244,7 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
@@ -355,6 +357,7 @@
                 <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
                 <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
                 <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
                 <#if husbandName??> AND charindex(:husbandName, dh.NAME) >0 </#if>
                 <#if husband_id_types??> AND  ${husband_id_types}</#if>
@@ -513,6 +516,7 @@
                 <#if ptt??> AND  dps.IS_PTT = :ptt </#if>
                 <#if pgtOthers??> AND  dps.IS_OTHER_PGT = :pgtOthers </#if>
                 <#if PGT_M_DSLD??> AND  dps.IS_PGT_M_DSLD = :PGT_M_DSLD </#if>
+                <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
             ) ajax
             where 1=1
