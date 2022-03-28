@@ -102,8 +102,13 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMapVal));
                 return;
             }
-            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.isDirectedDonation(),arDonorDto.getIdType(),arDonorDto.getIdNumber(),arDonorDto.getIdType(),
-                    arDonorDto.getDonorSampleCode());
+            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.isDirectedDonation(),
+                    arDonorDto.getIdType(),
+                    arDonorDto.getIdNumber(),
+                    arDonorDto.getIdType(),
+                    arDonorDto.getDonorSampleCode(),
+                    DataSubmissionHelper.getCurrentArDataSubmission(request).getLicenseeId(),
+                    DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode());
             if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;

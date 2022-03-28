@@ -428,11 +428,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public DonorSampleDto getDonorSampleDto(boolean directedDonation, String idType, String idNumber, String donorSampleCodeType,
-            String donorSampleCode) {
+            String donorSampleCode,String liceId,String hciCode) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
                 (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(
                         donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
-                idType, idNumber, donorSampleCodeType, donorSampleCode).getEntity();
+                idType, idNumber, donorSampleCodeType,donorSampleCode,liceId,hciCode).getEntity();
     }
 
     @Override
@@ -445,7 +445,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 , donorSampleDto.getIdNumber()
                 , donorSampleCodeType
                 , DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(
-                        donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber());
+                        donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber(),null,null);
     }
 
     @Override

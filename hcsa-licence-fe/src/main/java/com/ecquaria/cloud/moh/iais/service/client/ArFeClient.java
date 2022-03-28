@@ -144,7 +144,9 @@ public interface ArFeClient {
                                                           @RequestParam(value = "idType",required = false) String idType,
                                                           @RequestParam(value = "idNumber",required = false) String idNumber,
                                                           @RequestParam(value = "donorSampleCodeType",required = false) String donorSampleCodeType,
-                                                          @RequestParam(value = "donorSampleCode",required = false) String donorSampleCode);
+                                                          @RequestParam(value = "donorSampleCode",required = false) String donorSampleCode,
+                                                          @RequestParam(value = "liceId",required = false) String liceId,
+                                                          @RequestParam(value = "hciCode",required = false) String hciCode);
 
     @GetMapping(value = "/ar-common/arTreatmentSubsidiesStageDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStagesByPatientInfo(@RequestParam(name = "patientCode") String patientCode,
