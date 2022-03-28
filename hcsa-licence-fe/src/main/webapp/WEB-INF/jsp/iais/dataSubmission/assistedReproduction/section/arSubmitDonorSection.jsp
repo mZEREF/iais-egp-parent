@@ -46,7 +46,8 @@
                     </iais:row>
                     <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
                         <iais:row id="idNoRow" >
-                            <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
+                            <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="donor" escape="false"/></c:set>
+                            <iais:field width="5" value="Donor's ID Type" mandatory="true" info="${toolMsg}"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
                                              cssClass="idTypeSel"/>
