@@ -139,23 +139,5 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${org.codehaus.mojo.version}</version>
-                <configuration>
-                    <timestampFormat>yyyyMMddHHmm</timestampFormat>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>create-timestamp</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <inherited>false</inherited>
-            </plugin>
-        </plugins>
     </build>
 </project>
