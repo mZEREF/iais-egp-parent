@@ -17,7 +17,7 @@ public class InspectionAppointmentDto extends BaseEntityDto {
 
 	private String id;
 
-	private String applicationId;
+	private ApplicationDto application;
 
 	private String apptRefNo;
 
