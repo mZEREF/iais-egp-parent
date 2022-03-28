@@ -47,6 +47,8 @@ public class FeAdminManageDelegate {
     private OrgUserManageService orgUserManageService;
     @Autowired
     private MyInfoAjax myInfoAjax;
+
+    public static final String FE_NO_ADMIN_ROLES_SHOW                 = "feNoAdminRolesShow";
     /**
      * StartStep: doStart
      *
@@ -56,7 +58,7 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
-        ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES);
+        ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES,FE_NO_ADMIN_ROLES_SHOW);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
     }
 
@@ -126,6 +128,7 @@ public class FeAdminManageDelegate {
             isAdmin = "0";
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
+        ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,StringUtil.isEmpty(feUserDto.getRoles()) ? feUserDto.getRoles() : feUserDto.getRoles().replace("#"," "));
         ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(bpc.request,UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
