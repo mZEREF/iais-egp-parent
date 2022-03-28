@@ -1106,10 +1106,10 @@ public class LicenceViewServiceDelegator {
                                     appSvcDisciplineAllocationDto.setChkLstName(chkName);
                                 }
                                 //set selCgoName
-                                String idNo = allocation.getIdNo();
-                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)) {
+                                String cgoPerson = allocation.getCgoPerson();
+                                if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(cgoPerson)) {
                                     for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
-                                        if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                                        if (Objects.equals(cgoPerson, ApplicationHelper.getPersonKey(appSvcCgoDto))) {
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
                                             break;
