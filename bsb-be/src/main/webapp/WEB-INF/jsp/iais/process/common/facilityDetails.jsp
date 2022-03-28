@@ -47,7 +47,7 @@
                                 <c:forEach var="approvalFacilityActivity" items="${approvalFacilityActivityDtoList}" varStatus="status">
                                     <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
                                         <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
-                                        <div class="col-md-8"><c:out value="${approvalFacilityActivity.activityName}"/></div>
+                                        <div class="col-md-8"><iais:code code="${approvalFacilityActivity.activityName}"/></div>
                                         <div class="col-md-3">
                                             <div class="row">
                                                 <input type="radio" name="${approvalFacilityActivity.id}" data-radio-type="facilityActivityYes" <c:if test="${approvalFacilityActivity.approval eq 'yes'}">checked="checked"</c:if> value="yes"/>
