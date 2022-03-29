@@ -167,7 +167,7 @@ public class MohDsActionDelegator {
                 arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(), arSuper.getPatientInfoDto(),
                         arSuper.getPremisesDto().getHciCode());
                 arCycleStageDelegator.setEnhancedCounsellingTipShow(request, arSuper.getArCycleStageDto(), true);
-                arCycleStageDelegator.setNumberOfCyclesUndergoneLocally(arSuper.getArCycleStageDto(),arSuper.getSelectionDto());
+                arCycleStageDelegator.setNumberOfCyclesUndergoneLocally(arSuper.getArCycleStageDto(),arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuper.getPatientInfoDto().getPatient().getPatientCode(),null,null));
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
