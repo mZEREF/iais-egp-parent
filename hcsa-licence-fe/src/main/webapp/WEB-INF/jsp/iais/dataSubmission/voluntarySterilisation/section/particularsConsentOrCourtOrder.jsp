@@ -22,7 +22,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Name Of Person" mandatory="true"/>
+        <iais:field width="5" value="Name of Person" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="guardianName" value="${guardianAppliedPartDto.guardianName}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_guardianName"></span>
@@ -64,7 +64,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Name Of Person" mandatory="true"/>
+        <iais:field width="5" value="Name of Person" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="66" type="text" name="appliedPartName" value="${guardianAppliedPartDto.appliedPartName}" />
             <span class="error-msg" name="iaisErrorMsg" id="error_appliedPartName"></span>
