@@ -873,12 +873,14 @@ public class MasterCodeDelegator {
                     && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
         }
         if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
-            if (masterCodeDto.getEffectiveFrom().before(new Date())){
-                validationResult.setHasErrors(true);
+            if (masterCodeDto.getEffectiveFrom() != null) {
+                if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                    validationResult.setHasErrors(true);
+                }
             }
         }
         if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-            if (masterCodeDto.getEffectiveFrom() != null){
+            if (masterCodeDto.getEffectiveTo() != null){
                 if (masterCodeDto.getEffectiveTo().before(new Date())){
                     validationResult.setHasErrors(true);
                 }
@@ -906,15 +908,17 @@ public class MasterCodeDelegator {
                 }
             }
             if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveFrom().before(new Date())){
-                    validationResult.setHasErrors(true);
-                    String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
-                    //The effective date of inactive data must be a future time
-                    errorMap.put("effectiveFrom", errMsg);
+                if (masterCodeDto.getEffectiveFrom() != null){
+                    if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                        validationResult.setHasErrors(true);
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                        //The effective date of inactive data must be a future time
+                        errorMap.put("effectiveFrom", errMsg);
+                    }
                 }
             }
             if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveFrom() != null){
+                if (masterCodeDto.getEffectiveTo() != null){
                     if (masterCodeDto.getEffectiveTo().before(new Date())){
                         validationResult.setHasErrors(true);
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
