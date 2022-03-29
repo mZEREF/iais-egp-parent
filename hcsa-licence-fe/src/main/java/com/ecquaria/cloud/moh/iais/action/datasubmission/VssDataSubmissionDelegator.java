@@ -128,13 +128,7 @@ public class VssDataSubmissionDelegator {
         log.info(" -----PrepareStepData ------ ");
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
         if(vssSuperDataSubmissionDto == null){
-            vssSuperDataSubmissionDto = initVssSuperDataSubmissionDto(bpc.request);
-        }
-        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
-        String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
-        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
-        if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
-            pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
+            vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
         if (StringUtil.isEmpty(crud_action_type)){
@@ -151,6 +145,15 @@ public class VssDataSubmissionDelegator {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
         } else if (crud_action_type.equals("delete")) {
             vssDataSubmissionService.deleteVssSuperDataSubmissionDtoDraftByConds(vssSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.VSS_TYPE_SBT_VSS);
+            vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
+        }
+        initVssSuperDataSubmissionDto(bpc.request,vssSuperDataSubmissionDto);
+
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
+        String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
+        if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
+            pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
@@ -167,8 +170,7 @@ public class VssDataSubmissionDelegator {
         }
     }
 
-    private VssSuperDataSubmissionDto initVssSuperDataSubmissionDto(HttpServletRequest request) {
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = new VssSuperDataSubmissionDto();
+    private void initVssSuperDataSubmissionDto(HttpServletRequest request ,VssSuperDataSubmissionDto vssSuperDataSubmissionDto) {
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
@@ -181,8 +183,6 @@ public class VssDataSubmissionDelegator {
         vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto,
                 DataSubmissionHelper.getLicenseeId(request),false));
         vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto, false));
-
-        return vssSuperDataSubmissionDto;
     }
 
     /**
@@ -454,12 +454,24 @@ public class VssDataSubmissionDelegator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
+        DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
+        String[] declaration = ParamUtil.getStrings(request, "declaration");
+        if(declaration != null && declaration.length >0){
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        }else{
+            dataSubmissionDto.setDeclaration(null);
+        }
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType) || DataSubmissionHelper.isToNextAction(request)){
             ValidationResult treatmentDtoResult = WebValidationHelper.validateProperty(treatmentDto,"VSS");
             ValidationResult gapResult = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
             ValidationResult ssResult = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
+
+            if(declaration == null || declaration.length == 0){
+                errMap.put("declaration", "GENERAL_ERR0006");
+            }
             if(treatmentDtoResult !=null){
                 errMap.putAll(treatmentDtoResult.retrieveAll());
             }
@@ -471,6 +483,7 @@ public class VssDataSubmissionDelegator {
             }
         }
         if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }
         return 2;

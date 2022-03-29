@@ -55,6 +55,7 @@
                                             <%@ include file="section/previewTreatmentDetails.jsp" %>
                                             <%@ include file="section/previewParticularsConsentOrCourtOrder.jsp" %>
                                             <%@ include file="section/previewParticularsSterilizationSection.jsp" %>
+                                            <%@ include file="common/vssDeclaration.jsp" %>
                                         </div>
                                     </c:when>
                                 </c:choose>
