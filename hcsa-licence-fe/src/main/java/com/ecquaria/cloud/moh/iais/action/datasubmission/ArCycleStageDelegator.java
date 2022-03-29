@@ -108,7 +108,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
             if(isRfc(request)){
                 arCycleStageDto.setOldDonorDtos(IaisCommonUtils.isNotEmpty(arDonorDtos) ? (List<DonorDto>) CopyUtil.copyMutableObjectList(arDonorDtos) : null);
             }
-            setNumberOfCyclesUndergoneLocally(arCycleStageDto,arSuperDataSubmissionDto.getSelectionDto());
+            setNumberOfCyclesUndergoneLocally(arCycleStageDto,arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode(),null,null));
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
             initOldDonorSelectSession(request,1);
         }
