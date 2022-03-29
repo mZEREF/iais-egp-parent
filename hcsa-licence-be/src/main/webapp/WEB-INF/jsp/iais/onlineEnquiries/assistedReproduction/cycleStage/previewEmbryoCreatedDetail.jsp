@@ -22,25 +22,25 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="false"/>
+                    <iais:field width="5" value="No. of Transferrable embryos created from fresh oocyte(s)" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed created from fresh oocyte(s)" mandatory="false"/>
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from fresh oocyte(s)" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="false"/>
+                    <iais:field width="5" value="No. of Transferrable embryos created from thawed oocyte(s)" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed created from thawed oocyte(s)" mandatory="false"/>
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from thawed oocyte(s)" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
                     </iais:value>
