@@ -22,7 +22,7 @@ function delDraftMsgYesBtn() {
 
 $(function () {
     $("#clearBtn").click(function () {
-        resetNiceSelect("#searchPanel");
+        resetNiceSelect($("#searchPanel"));
     });
 
     $("#searchMsgType").change(function () {

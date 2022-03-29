@@ -15,7 +15,8 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -23,13 +24,14 @@
 <%@include file="dashboard.jsp"%>
 
 
+<%--@elvariable id="organizationAddress" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo"--%>
 <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 <%--@elvariable id="facOperator" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto"--%>
 <%--@elvariable id="facAuth" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto"--%>
-<%--@elvariable id="facAdmin" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto"--%>
-<%--@elvariable id="facOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto"--%>
+<%--@elvariable id="facAdminOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto"--%>
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
 <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
+<%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.ApprovedFacilityCertifierDto"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>"--%>
@@ -48,8 +50,8 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdmin="${facAdmin}" facOfficer="${facOfficer}" facCommittee="${facCommittee}" batList="${batList}"
-                                                 profileEditJudge="true" batListEditJudge="true" docEditJudge="true">
+                                    <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}" batList="${batList}"
+                                                 afc="${afc}" profileEditJudge="true" batListEditJudge="true" docEditJudge="true" otherAppInfoEditJudge="true" afcEditJudge="true" containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
@@ -63,29 +65,6 @@
                                             <div class="col-sm-6 col-md-7">
                                                 <textarea maxLength="1000" class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
                                                 <span data-err-ind="remarks" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="approvedFacCertifier">Select Approved Facility Certifier</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7" style="z-index: 20">
-                                                <select name="approvedFacCertifier" id="approvedFacCertifier">
-                                                    <c:forEach items="${approvedFacCertifierOps}" var="certifier">
-                                                        <option value="${certifier.value}" <c:if test="${previewSubmit.approvedFacCertifier eq certifier.value}">selected="selected"</c:if>>${certifier.text}</option>
-                                                    </c:forEach>
-                                                </select>
-                                                <span data-err-ind="approvedFacCertifier" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="reason">Reasons to Choose This AFC</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <textarea maxLength="500" class="col-xs-12" name="reason" id="reason" rows="2"><c:out value="${previewSubmit.reason}"/></textarea>
-                                                <span data-err-ind="reason" class="error-msg"></span>
                                             </div>
                                         </div>
                                         <div class="form-group " style="z-index: 10">
@@ -103,7 +82,7 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 ">
-                                            <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
+                                            <a class="back" id="previous" href="#"><em class="fa fa-angle-left"></em> Previous</a>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">

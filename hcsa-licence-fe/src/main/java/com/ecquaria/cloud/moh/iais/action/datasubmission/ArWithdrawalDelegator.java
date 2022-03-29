@@ -191,7 +191,7 @@ public class ArWithdrawalDelegator {
 
     public void saveDate(BaseProcessClass bpc)  {
         List<DsWithdrawCorrelationDto> list=IaisCommonUtils.genNewArrayList();
-        String dsType = (String) ParamUtil.getSessionAttr(bpc.request, "dsType");
+        String dsType = (String) ParamUtil.getSessionAttr(bpc.request, "wdDsType");
 
 
         switch (dsType){

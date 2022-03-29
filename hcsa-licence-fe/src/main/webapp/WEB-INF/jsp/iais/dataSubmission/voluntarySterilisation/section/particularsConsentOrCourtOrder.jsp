@@ -148,6 +148,13 @@
 <%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
 <script>
 
+/*
+    $(document).ready(function () {
+        $('#_needReUpload').val(0);
+        $('#_fileType').val("ZIP, PDF, DOC*, XLS*");
+    });
+*/
+
     function doUserRecUploadConfirmFile(event) {
         uploadFileValidate();
     }

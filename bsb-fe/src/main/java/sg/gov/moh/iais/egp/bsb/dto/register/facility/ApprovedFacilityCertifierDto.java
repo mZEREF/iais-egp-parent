@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovedFacilityCertifierDto extends ValidatableNodeValue {
-    private String hasAppointedCertifier;
-    private String certifierSelection;
-    private String afcSelectedReason;
+    private String appointed;
+    private String afc;
+    private String selectReason;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -39,36 +39,36 @@ public class ApprovedFacilityCertifierDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public String getHasAppointedCertifier() {
-        return hasAppointedCertifier;
+    public String getAppointed() {
+        return appointed;
     }
 
-    public void setHasAppointedCertifier(String hasAppointedCertifier) {
-        this.hasAppointedCertifier = hasAppointedCertifier;
+    public void setAppointed(String appointed) {
+        this.appointed = appointed;
     }
 
-    public String getCertifierSelection() {
-        return certifierSelection;
+    public String getAfc() {
+        return afc;
     }
 
-    public void setCertifierSelection(String certifierSelection) {
-        this.certifierSelection = certifierSelection;
+    public void setAfc(String afc) {
+        this.afc = afc;
     }
 
-    public String getAfcSelectedReason() {
-        return afcSelectedReason;
+    public String getSelectReason() {
+        return selectReason;
     }
 
-    public void setAfcSelectedReason(String afcSelectedReason) {
-        this.afcSelectedReason = afcSelectedReason;
+    public void setSelectReason(String selectReason) {
+        this.selectReason = selectReason;
     }
 
-    private static final String KEY_HAS_FACILITY_APPOINTED_AN_APPROVED_FACILITY_CERTIFIER = "isAppointedCertifier";
-    private static final String KEY_APPROVED_FACILITY_CERTIFIER_SELECTION = "certifierSelection";
-    private static final String KEY_REASON_FOR_SELECT_THIS_AFC = "afcSelectedReason";
+    private static final String KEY_HAS_FACILITY_APPOINTED_AN_APPROVED_FACILITY_CERTIFIER = "appointed";
+    private static final String KEY_APPROVED_FACILITY_CERTIFIER_SELECTION = "afc";
+    private static final String KEY_REASON_FOR_SELECT_THIS_AFC = "selectReason";
     public void reqObjectMapping(HttpServletRequest request){
-        setHasAppointedCertifier(ParamUtil.getString(request,KEY_HAS_FACILITY_APPOINTED_AN_APPROVED_FACILITY_CERTIFIER));
-        setCertifierSelection(ParamUtil.getString(request,KEY_APPROVED_FACILITY_CERTIFIER_SELECTION));
-        setAfcSelectedReason(ParamUtil.getString(request,KEY_REASON_FOR_SELECT_THIS_AFC));
+        setAppointed(ParamUtil.getString(request,KEY_HAS_FACILITY_APPOINTED_AN_APPROVED_FACILITY_CERTIFIER));
+        setAfc(ParamUtil.getString(request,KEY_APPROVED_FACILITY_CERTIFIER_SELECTION));
+        setSelectReason(ParamUtil.getString(request,KEY_REASON_FOR_SELECT_THIS_AFC));
     }
 }

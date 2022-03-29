@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PreviewSubmitDto extends ValidatableNodeValue {
     private String remarks;
-    private String approvedFacCertifier;
-    private String reason;
     private String declare;
 
     @JsonIgnore
@@ -50,22 +48,6 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
         this.remarks = remarks;
     }
 
-    public String getApprovedFacCertifier() {
-        return approvedFacCertifier;
-    }
-
-    public void setApprovedFacCertifier(String approvedFacCertifier) {
-        this.approvedFacCertifier = approvedFacCertifier;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
     public String getDeclare() {
         return declare;
     }
@@ -75,16 +57,11 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
     }
 
 //    ---------------------------- request -> object ----------------------------------------------
-
     private static final String KEY_REMARKS = "remarks";
-    private static final String KEY_APROOVED_CERTIFIER = "approvedFacCertifier";
-    private static final String KEY_REASON = "reason";
     private static final String KEY_DECLARE = "declare";
 
     public void reqObjMapping(HttpServletRequest request) {
         setRemarks(ParamUtil.getString(request, KEY_REMARKS));
-        setApprovedFacCertifier(ParamUtil.getString(request, KEY_APROOVED_CERTIFIER));
-        setReason(ParamUtil.getString(request, KEY_REASON));
         String[] declareCheckBoxValues = ParamUtil.getStrings(request, KEY_DECLARE);
         if (declareCheckBoxValues != null && declareCheckBoxValues.length > 0) {
             setDeclare("Y");

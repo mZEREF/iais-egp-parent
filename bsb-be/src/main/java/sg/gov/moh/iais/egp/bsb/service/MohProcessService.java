@@ -8,6 +8,8 @@ import sg.gov.moh.iais.egp.bsb.dto.process.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
 
 /**
@@ -21,14 +23,6 @@ public class MohProcessService {
 
     public MohProcessService(ProcessClient processClient) {
         this.processClient = processClient;
-    }
-
-    public DOScreeningDto getDOScreeningDto(HttpServletRequest request, String applicationId){
-        DOScreeningDto dto = (DOScreeningDto) ParamUtil.getSessionAttr(request, KEY_DO_SCREENING_DTO);
-        if (dto == null){
-            dto = processClient.getDOScreeningDataByAppId(applicationId).getEntity();
-        }
-        return dto;
     }
 
     public AOScreeningDto getAOScreeningDto(HttpServletRequest request, String applicationId){
@@ -63,18 +57,30 @@ public class MohProcessService {
         return dto;
     }
 
-    public void getAndSetDOScreeningDto(HttpServletRequest request, DOScreeningDto doScreeningDto) {
-        doScreeningDto.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
-        doScreeningDto.setRiskLevel(ParamUtil.getString(request, KEY_RISK_LEVEL));
-        doScreeningDto.setRiskLevelComments(ParamUtil.getString(request, KEY_RISK_LEVEL_COMMENTS));
-        doScreeningDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
-        doScreeningDto.setErpReportDate(ParamUtil.getString(request, KEY_ERP_REPORT_DATE));
-        doScreeningDto.setRedTeamingReportDate(ParamUtil.getString(request, KEY_RED_TEAMING_REPORT_DATE));
-        doScreeningDto.setLentivirusReportDate(ParamUtil.getString(request, KEY_LENTIVIRUS_REPORT_DATE));
-        doScreeningDto.setInternalInspectionReportDate(ParamUtil.getString(request, KEY_INTERAL_INSPECTION_REPORT));
-        doScreeningDto.setSelectedAfc(ParamUtil.getString(request, KEY_SELECTED_AFC));
-        doScreeningDto.setValidityStartDate(ParamUtil.getString(request, KEY_VALIDITY_START_DATE));
-        doScreeningDto.setValidityEndDate(ParamUtil.getString(request, KEY_VALIDITY_END_DATE));
+    public MohProcessDto getMohProcessDto(HttpServletRequest request, String applicationId){
+        MohProcessDto dto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
+        if (dto == null){
+            dto = processClient.getMohProcessDtoByAppId(applicationId).getEntity();
+            dto.setModuleName("doScreening");
+        }
+        return dto;
+    }
+
+    public void getAndSetMohProcessDto(HttpServletRequest request, MohProcessDto mohProcessDto) {
+        mohProcessDto.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
+        mohProcessDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
+        mohProcessDto.setInspectionRequired(ParamUtil.getString(request, KEY_INSPECTION_REQUIRED));
+        List<ApprovalFacilityActivityDto> approvalFacilityActivityDtoList = mohProcessDto.getApprovalFacilityActivityDtoList();
+        for (ApprovalFacilityActivityDto approvalFacilityActivityDto : approvalFacilityActivityDtoList) {
+            String checked = ParamUtil.getString(request, approvalFacilityActivityDto.getId());
+            approvalFacilityActivityDto.setApproval(checked);
+        }
+        List<ApprovalFacilityBatDto> approvalFacilityBatDtoList = mohProcessDto.getApprovalFacilityBatDtoList();
+        for (ApprovalFacilityBatDto approvalFacilityBatDto : approvalFacilityBatDtoList) {
+            String checked = ParamUtil.getString(request, approvalFacilityBatDto.getId());
+            approvalFacilityBatDto.setApproval(checked);
+        }
+        ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
     }
 
     public void getAndSetAOScreeningDto(HttpServletRequest request, AOScreeningDto aoScreeningDto) {

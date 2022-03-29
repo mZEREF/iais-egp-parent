@@ -17,28 +17,28 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="true"/>
+                    <iais:field width="5" value="No. of Transferrable embryos created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="2" type="text" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNumStr==null?arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum:arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed created from fresh oocyte(s)" mandatory="true"/>
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="2" type="text" id="poorDevFreshOccNum" name="poorDevFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNumStr==null?arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum:arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="true"/>
+                    <iais:field width="5" value="No. of Transferrable embryos created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="2" type="text" id="transEmbrThawOccNum" name="transEmbrThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNumStr==null?arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum:arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrThawOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed created from thawed oocyte(s)" mandatory="true"/>
+                    <iais:field width="5" value="No. of Poor Quality / Unhealthy / Abnormally Developed embryos created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" >
                         <iais:input maxLength="2" type="text" id="poorDevThawOccNum" name="poorDevThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNumStr==null?arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum:arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNumStr}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevThawOccNum"></span>

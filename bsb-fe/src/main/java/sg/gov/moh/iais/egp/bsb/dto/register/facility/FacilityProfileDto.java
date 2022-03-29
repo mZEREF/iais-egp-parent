@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.googlecode.jmapper.JMapper;
+import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -30,12 +33,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
+
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityProfileDto extends ValidatableNodeValue {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JGlobalMap(excluded = {"metaList"})
     public static class FacilityProfileValidateDto {
         private String facName;
         private String facType;
@@ -46,7 +52,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         private String floor;
         private String unitNo;
         private String postalCode;
-        private String buildingName;
+        private String building;
         private String facilityProtected;
         private List<DocMeta> metaList;
     }
@@ -78,7 +84,7 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.postalCode")
     private String postalCode;
 
-    private String buildingName;
+    private String building;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.isProtected")
     private String facilityProtected;
@@ -118,15 +124,8 @@ public class FacilityProfileDto extends ValidatableNodeValue {
     }
 
     public FacilityProfileValidateDto toValidateDto() {
-        FacilityProfileValidateDto validateDto = new FacilityProfileValidateDto();
-        validateDto.setFacName(this.facName);
-        validateDto.setSameAddress(this.sameAddress);
-        validateDto.setBlock(this.block);
-        validateDto.setStreetName(this.streetName);
-        validateDto.setFloor(this.floor);
-        validateDto.setUnitNo(this.unitNo);
-        validateDto.setPostalCode(this.postalCode);
-        validateDto.setFacilityProtected(this.facilityProtected);
+        JMapper<FacilityProfileValidateDto, FacilityProfileDto> jMapper = new JMapper<>(FacilityProfileValidateDto.class, FacilityProfileDto.class);
+        FacilityProfileValidateDto validateDto = jMapper.getDestinationWithoutControl(this);
         validateDto.setMetaList(getAllFilesMeta());
         return validateDto;
     }
@@ -284,12 +283,12 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         this.addressType = addressType;
     }
 
-    public String getBuildingName() {
-        return buildingName;
+    public String getBuilding() {
+        return building;
     }
 
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
+    public void setBuilding(String building) {
+        this.building = building;
     }
 
     //    ---------------------------- request -> object ----------------------------------------------
@@ -315,16 +314,33 @@ public class FacilityProfileDto extends ValidatableNodeValue {
 
         this.setFacName(ParamUtil.getString(mulReq, KEY_FAC_NAME));
         this.setFacType(ParamUtil.getString(mulReq,KEY_FACILITY_TYPE));
-        this.setSameAddress(ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY));
-        this.setBlock(ParamUtil.getString(mulReq, KEY_BLOCK));
-        this.setAddressType(ParamUtil.getString(mulReq,KEY_ADDRESS_TYPE));
-        this.setStreetName(ParamUtil.getString(mulReq, KEY_STREET_NAME));
-        this.setFloor(ParamUtil.getString(mulReq, KEY_FLOOR));
-        this.setUnitNo(ParamUtil.getString(mulReq, KEY_UNIT_NO));
-        this.setPostalCode(ParamUtil.getString(mulReq, KEY_POSTAL_CODE));
-        this.setBuildingName(ParamUtil.getString(mulReq,KEY_BUILDING_NAME));
-        this.setFacilityProtected(ParamUtil.getString(mulReq, KEY_IS_PROTECTED_PLACE));
 
+        String sameAddressAsCompany = ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY);
+        if (MasterCodeConstants.YES.equals(sameAddressAsCompany)) {
+            if (!sameAddressAsCompany.equals(this.sameAddress)) {
+                // load company address and set to this DTO
+                OrgAddressInfo orgAddressInfo = (OrgAddressInfo) request.getSession().getAttribute(KEY_ORG_ADDRESS);
+                this.setPostalCode(orgAddressInfo.getPostalCode());
+                this.setAddressType(orgAddressInfo.getAddressType());
+                this.setBlock(orgAddressInfo.getBlockNo());
+                this.setFloor(orgAddressInfo.getFloor());
+                this.setUnitNo(orgAddressInfo.getUnitNo());
+                this.setStreetName(orgAddressInfo.getStreet());
+                this.setBuilding(orgAddressInfo.getBuilding());
+            }
+            // do nothing, if current address is already the same as company
+        } else if (MasterCodeConstants.NO.equals(sameAddressAsCompany)) {
+            this.setAddressType(ParamUtil.getString(mulReq,KEY_ADDRESS_TYPE));
+            this.setBlock(ParamUtil.getString(mulReq, KEY_BLOCK));
+            this.setStreetName(ParamUtil.getString(mulReq, KEY_STREET_NAME));
+            this.setFloor(ParamUtil.getString(mulReq, KEY_FLOOR));
+            this.setUnitNo(ParamUtil.getString(mulReq, KEY_UNIT_NO));
+            this.setPostalCode(ParamUtil.getString(mulReq, KEY_POSTAL_CODE));
+            this.setBuilding(ParamUtil.getString(mulReq,KEY_BUILDING_NAME));
+        }
+        this.setSameAddress(sameAddressAsCompany);
+
+        this.setFacilityProtected(ParamUtil.getString(mulReq, KEY_IS_PROTECTED_PLACE));
 
         String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);

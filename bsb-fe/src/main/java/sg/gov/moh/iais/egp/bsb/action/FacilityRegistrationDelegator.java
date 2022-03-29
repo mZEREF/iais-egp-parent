@@ -18,12 +18,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -87,6 +83,13 @@ public class FacilityRegistrationDelegator {
                         Nodes.passValidation(facRegRoot, committeeNodePath);
                     }
 
+                    String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
+                    SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(authoriserNodePath);
+                    FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
+                    if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
+                        Nodes.passValidation(facRegRoot, authoriserNodePath);
+                    }
+
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                 }
             }
@@ -98,6 +101,24 @@ public class FacilityRegistrationDelegator {
         if (newFacReg) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityRegistrationService.getFacilityRegisterRoot(request));
         }
+
+
+        // TODO retrieve company address, and set in session
+        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
+        orgAddressInfo.setUen("185412420D");
+        orgAddressInfo.setCompName("DBO Laboratories");
+        orgAddressInfo.setPostalCode("980335");
+        orgAddressInfo.setAddressType("ADDTY001");
+        orgAddressInfo.setBlockNo("10");
+        orgAddressInfo.setFloor("03");
+        orgAddressInfo.setUnitNo("01");
+        orgAddressInfo.setStreet("Toa Payoh Lorong 2");
+        orgAddressInfo.setBuilding("-");
+        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+    }
+
+    public void handleBeforeBegin(BaseProcessClass bpc) {
+        facilityRegistrationService.handleBeforeBegin(bpc);
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
@@ -132,28 +153,12 @@ public class FacilityRegistrationDelegator {
         facilityRegistrationService.handleFacOperator(bpc);
     }
 
-    public void preFacInfoAuthoriser(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacInfoAuthoriser(bpc);
+    public void preFacAdminOfficer(BaseProcessClass bpc) {
+        facilityRegistrationService.preFacAdminOfficer(bpc);
     }
 
-    public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacInfoAuthoriser(bpc);
-    }
-
-    public void preFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacAdmin(bpc);
-    }
-
-    public void handleFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacAdmin(bpc);
-    }
-
-    public void preFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacOfficer(bpc);
-    }
-
-    public void handleFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacOfficer(bpc);
+    public void handleFacAdminOfficer(BaseProcessClass bpc) {
+        facilityRegistrationService.handleFacAdminOfficer(bpc);
     }
 
     public void preFacInfoCommittee(BaseProcessClass bpc) {
@@ -165,11 +170,27 @@ public class FacilityRegistrationDelegator {
     }
 
     public void preCommitteePreview(BaseProcessClass bpc) {
-        facilityRegistrationService.preCommitteePreview(bpc);
+        facilityRegistrationService.prePreview(bpc);
     }
 
     public void handleCommitteePreview(BaseProcessClass bpc) {
-        facilityRegistrationService.handleCommitteePreview(bpc);
+        facilityRegistrationService.handlePreview(bpc);
+    }
+
+    public void preFacInfoAuthoriser(BaseProcessClass bpc) {
+        facilityRegistrationService.preFacInfoAuthoriser(bpc);
+    }
+
+    public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
+        facilityRegistrationService.handleFacInfoAuthoriser(bpc);
+    }
+
+    public void preAuthoriserPreview(BaseProcessClass bpc) {
+        facilityRegistrationService.prePreview(bpc);
+    }
+
+    public void handleAuthoriserPreview(BaseProcessClass bpc) {
+        facilityRegistrationService.handlePreview(bpc);
     }
 
     public void preBAToxin(BaseProcessClass bpc) {
@@ -226,11 +247,16 @@ public class FacilityRegistrationDelegator {
                     List<NewFileSyncDto> profileNewFiles = facilityRegistrationService.saveProfileNewUploadedDoc(profileDto);
                     FacilityCommitteeDto committeeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
                     NewFileSyncDto committeeNewFile = facilityRegistrationService.saveCommitteeNewDataFile(committeeDto);
-                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 1);
+                    FacilityAuthoriserDto authDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+                    NewFileSyncDto authoriserNewFile = facilityRegistrationService.saveAuthoriserNewDataFile(authDto);
+                    List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocNewFiles.size() + profileNewFiles.size() + 2);
                     newFilesToSync.addAll(primaryDocNewFiles);
                     newFilesToSync.addAll(profileNewFiles);
                     if (committeeNewFile != null) {
                         newFilesToSync.add(committeeNewFile);
+                    }
+                    if (authoriserNewFile != null) {
+                        newFilesToSync.add(authoriserNewFile);
                     }
 
 
@@ -245,13 +271,20 @@ public class FacilityRegistrationDelegator {
                         log.info("Delete already saved documents in file-repo");
                         List<String> primaryToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(primaryDocDto.getToBeDeletedRepoIds());
                         List<String> profileToBeDeletedRepoIds = facilityRegistrationService.deleteUnwantedDoc(profileDto.getToBeDeletedRepoIds());
-                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 1);
+                        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryToBeDeletedRepoIds.size() + profileToBeDeletedRepoIds.size() + 2);
                         if (committeeDto.getToBeDeletedRepoId() != null) {
                             FileRepoDto committeeDeleteDto = new FileRepoDto();
                             committeeDeleteDto.setId(committeeDto.getToBeDeletedRepoId());
                             fileRepoClient.removeFileById(committeeDeleteDto);
                             toBeDeletedRepoIds.add(committeeDto.getToBeDeletedRepoId());
                             committeeDto.setToBeDeletedRepoId(null);
+                        }
+                        if (authDto.getToBeDeletedRepoId() != null) {
+                            FileRepoDto authoriserDeleteDto = new FileRepoDto();
+                            authoriserDeleteDto.setId(authDto.getToBeDeletedRepoId());
+                            fileRepoClient.removeFileById(authoriserDeleteDto);
+                            toBeDeletedRepoIds.add(authDto.getToBeDeletedRepoId());
+                            authDto.setToBeDeletedRepoId(null);
                         }
                         toBeDeletedRepoIds.addAll(primaryToBeDeletedRepoIds);
                         toBeDeletedRepoIds.addAll(profileToBeDeletedRepoIds);
@@ -273,6 +306,21 @@ public class FacilityRegistrationDelegator {
         } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
+        } else if (KEY_ACTION_EXPAND_FILE.equals(actionType)) {
+            if ("bsbCommittee".equals(actionValue)) {
+                FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue();
+                List<FacilityCommitteeFileDto> dataList = facCommitteeDto.getDataListForDisplay();
+                ParamUtil.setRequestAttr(request, KEY_DATA_LIST, dataList);
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, STEP_NAME_COMMITTEE_PREVIEW);
+            } else if ("facAuth".equals(actionValue)) {
+                FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue();
+                List<FacilityAuthoriserFileDto> dataList = facAuthDto.getDataListForDisplay();
+                ParamUtil.setRequestAttr(request, KEY_DATA_LIST, dataList);
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, STEP_NAME_AUTHORISER_PREVIEW);
+            } else {
+                throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+            }
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }

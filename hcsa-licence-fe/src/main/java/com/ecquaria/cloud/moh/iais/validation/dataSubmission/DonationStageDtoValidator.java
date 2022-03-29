@@ -115,6 +115,8 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("trainingNum", errMsgErr008);
                 }
             }
+        }
+        if(donationStageDto.getDonatedForTreatment()==1){
             if(donationStageDto.getTreatNum()!=null){
                 if(donationStageDto.getTreatNum()>99||donationStageDto.getTreatNum()<0){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();

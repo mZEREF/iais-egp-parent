@@ -12,8 +12,6 @@ public class ProcessContants {
 
     public static final String MOH_PROCESS_PAGE_VALIDATION          = "mohProcessPageValidation";
 
-    public static final String ERR_MSG_FAIL_LOAD_SUBMIT_DETAILS     = "Fail to load submitDetails";
-
     public static final String MODULE_NAME                          = "Moh Process";
     public static final String FUNCTION_NAME_DO_SCREENING           = "DO Screening";
     public static final String FUNCTION_NAME_AO_SCREENING           = "AO Screening";
@@ -29,10 +27,17 @@ public class ProcessContants {
     public static final String KEY_AO_PROCESSING_DTO                = "aoProcessingDto";
     public static final String KEY_SUBMIT_DETAILS_DTO               = "submitDetailsDto";
 
-    public static final String KEY_REMARKS                          = "remarks";
+    public static final String KEY_MOH_PROCESS_DTO                          = "mohProcessDto";
+    public static final String KEY_APPROVAL_FACILITY_ACTIVITY_DTO_LIST      = "approvalFacilityActivityDtoList";
+    public static final String KEY_APPROVAL_FACILITY_BAT_DTO_LIST           = "approvalFacilityBatDtoList";
+    public static final String KEY_INFO_DTO                                 = "infoDto";
+
+    public static final String KEY_REMARKS                                  = "remarks";
+    public static final String KEY_PROCESSING_DECISION                      = "processingDecision";
+    public static final String KEY_INSPECTION_REQUIRED                      = "inspectionRequired";
+
     public static final String KEY_RISK_LEVEL                       = "riskLevel";
     public static final String KEY_RISK_LEVEL_COMMENTS              = "riskLevelComments";
-    public static final String KEY_PROCESSING_DECISION              = "processingDecision";
     public static final String KEY_ERP_REPORT_DATE                  = "erpReportDate";
     public static final String KEY_RED_TEAMING_REPORT_DATE          = "redTeamingReportDate";
     public static final String KEY_LENTIVIRUS_REPORT_DATE           = "lentivirusReportDate";

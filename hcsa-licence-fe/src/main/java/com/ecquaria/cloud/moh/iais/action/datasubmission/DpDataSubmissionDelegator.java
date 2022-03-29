@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -169,6 +170,7 @@ public class DpDataSubmissionDelegator {
                 }
             } else if ("delete".equals(actionValue)) {
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
             }
             dpSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             dpSuperDataSubmissionDto.setOrgId(orgId);

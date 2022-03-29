@@ -121,19 +121,11 @@ public class RfcFacilityRegistrationDelegator {
     }
 
     public void preFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacAdmin(bpc);
+        facilityRegistrationService.preFacAdminOfficer(bpc);
     }
 
     public void handleFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacAdmin(bpc);
-    }
-
-    public void preFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.preFacOfficer(bpc);
-    }
-
-    public void handleFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacOfficer(bpc);
+        facilityRegistrationService.handleFacAdminOfficer(bpc);
     }
 
     public void preFacInfoCommittee(BaseProcessClass bpc) {

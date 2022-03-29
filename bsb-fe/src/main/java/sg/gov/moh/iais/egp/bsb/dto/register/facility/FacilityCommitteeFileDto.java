@@ -83,13 +83,15 @@ public class FacilityCommitteeFileDto implements Serializable {
 
 
     public void value2MasterCode() {
-        this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
+        this.salutation = MasterCodeHolder.SALUTATION.value2Code(this.salutation);
         this.nationality = MasterCodeHolder.NATIONALITY.value2Code(this.nationality);
+        this.idType = MasterCodeHolder.ID_TYPE.value2Code(this.idType);
     }
 
     public void code2Value() {
-        this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
+        this.salutation = MasterCodeHolder.SALUTATION.code2Value(this.salutation);
         this.nationality = MasterCodeHolder.NATIONALITY.code2Value(this.nationality);
+        this.idType = MasterCodeHolder.ID_TYPE.code2Value(this.idType);
     }
 
 

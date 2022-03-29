@@ -14,7 +14,7 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -35,8 +35,6 @@
             <div class="tab-content">
               <div class="tab-pane fade in active">
                 <div id="facInfoPanel" role="tabpanel">
-                  <%@include file="../mainAppCommon/facRegistration/subStepNavTab.jsp"%>
-
                   <div class="form-horizontal">
                     <%@ include file="../mainAppCommon/facRegistration/approvedFacilityCertifier.jsp" %>
                   </div>

@@ -1,3 +1,4 @@
+<input type="hidden" name="pgtCount" id="pgtCount" value="${count}"/>
 
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">

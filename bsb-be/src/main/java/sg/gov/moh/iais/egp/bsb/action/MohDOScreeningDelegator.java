@@ -4,13 +4,15 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.dto.process.InfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.process.DOScreeningDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
 import sg.gov.moh.iais.egp.bsb.service.MohProcessService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
@@ -61,33 +63,38 @@ public class MohDOScreeningDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
-        DOScreeningDto doScreeningDto = mohProcessService.getDOScreeningDto(request, appId);
-        ParamUtil.setSessionAttr(request, KEY_DO_SCREENING_DTO, doScreeningDto);
-        ParamUtil.setRequestAttr(request, KEY_SUBMIT_DETAILS_DTO, doScreeningDto.getSubmitDetailsDto());
+        // TODO: data will get from dataBase
+        MohProcessDto mohProcessDto = mohProcessService.getMohProcessDto(request, appId);
+        InfoDto infoDto = mohProcessDto.getInfoDto();
+        ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
+        ParamUtil.setRequestAttr(request, KEY_INFO_DTO, infoDto);
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_FACILITY_ACTIVITY_DTO_LIST, mohProcessDto.getApprovalFacilityActivityDtoList());
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_FACILITY_BAT_DTO_LIST, mohProcessDto.getApprovalFacilityBatDtoList());
         // view application need appId and moduleType
-        String moduleType = AppViewService.judgeProcessAppModuleType(doScreeningDto.getSubmitDetailsDto().getProcessType(), doScreeningDto.getSubmitDetailsDto().getAppType());
+        String moduleType = AppViewService.judgeProcessAppModuleType(infoDto.getSubmissionType(), infoDto.getApplicationType());
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
-        //show routingHistory list
-        processHistoryService.getAndSetHistoryInRequest(doScreeningDto.getSubmitDetailsDto().getApplicationNo(), request);
-        //show internal doc
-        List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
-        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
-        //show applicant submit doc
+        // show applicant submit doc
+        //TODO: maybe update in the future
         List<DocDisplayDto> supportDocDisplayDto = processClient.getDifferentModuleDoc(appId);
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, supportDocDisplayDto);
         //provide for download support doc
         Map<String, String> repoIdDocNameMap = DocDisplayDtoUtil.getRepoIdDocNameMap(supportDocDisplayDto);
         ParamUtil.setSessionAttr(request, "docDisplayDtoRepoIdNameMap", (Serializable) repoIdDocNameMap);
+        // show internal doc
+        List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
+        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
+        // show routingHistory list
+        processHistoryService.getAndSetHistoryInRequest(infoDto.getReferenceNo(), request);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        DOScreeningDto doScreeningDto = (DOScreeningDto) ParamUtil.getSessionAttr(request, KEY_DO_SCREENING_DTO);
-        mohProcessService.getAndSetDOScreeningDto(request, doScreeningDto);
-        ParamUtil.setSessionAttr(request, KEY_DO_SCREENING_DTO, doScreeningDto);
+        MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
+        mohProcessService.getAndSetMohProcessDto(request, mohProcessDto);
+        ParamUtil.setSessionAttr(request, KEY_DO_SCREENING_DTO, mohProcessDto);
         //validation
-        ValidationResultDto validationResultDto = processClient.validateDOScreeningDto(doScreeningDto);
+        ValidationResultDto validationResultDto = processClient.validateMohProcessDto(mohProcessDto);
         String crudActionType;
         if (!validationResultDto.isPass()){
             ParamUtil.setRequestAttr(request, MOH_PROCESS_PAGE_VALIDATION, YES);
@@ -103,11 +110,22 @@ public class MohDOScreeningDelegator {
         HttpServletRequest request = bpc.request;
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
-        DOScreeningDto doScreeningDto = (DOScreeningDto) ParamUtil.getSessionAttr(request, KEY_DO_SCREENING_DTO);
-        doScreeningDto.setTaskId(taskId);
-        doScreeningDto.setApplicationId(appId);
-        //decision: SCREENED_BY_DO, REQUEST_FOR_INFORMATION, REJECT
-        processClient.saveDOScreening(doScreeningDto);
-        //If the processDecision is reject and the application is saved normally, send the notification to applicant
+        MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
+        String processingDecision = mohProcessDto.getProcessingDecision();
+        // decision: SCREENED_BY_DO, REQUEST_FOR_INFORMATION, REJECT
+        switch (processingDecision) {
+            case MOH_PROCESSING_DECISION_SCREENED_BY_DO:
+                processClient.saveMohProcessDtoScreenedByDO(appId, taskId, mohProcessDto);
+                break;
+            case MOH_PROCESSING_DECISION_REQUEST_FOR_INFO:
+                processClient.saveMohProcessDtoRequestForInformation(appId, taskId, mohProcessDto);
+                break;
+            case MOH_PROCESSING_DECISION_REJECT:
+                processClient.saveMohProcessDtoDoReject(appId, taskId, mohProcessDto);
+                break;
+            default:
+                log.info("don't have such processingDecision {}", StringUtils.normalizeSpace(processingDecision));
+                break;
+        }
     }
 }

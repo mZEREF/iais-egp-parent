@@ -19,13 +19,10 @@ $(function () {
 
 
 function delete1DataFile(id) {
-    // delete file div
-    var fileDiv = document.getElementById(id + "FileDiv");
-    fileDiv.parentNode.removeChild(fileDiv);
-
-    // add it to delete hidden input
-    var inputEl = document.getElementById("deleteDataFile");
-    appendCSInputVal(inputEl, id);
+    showWaiting();
+    $("[name='action_type']").val("deleteDataFile");
+    $("[name='action_value']").val(id);
+    $("#mainForm").submit();
 }
 
 

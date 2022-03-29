@@ -1,27 +1,4 @@
 $(function () {
-    $("#next").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("jump");
-        $("input[name='action_value']").val("next");
-        $("#mainForm").submit();
-    });
-
-    $("#back").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("jump");
-        $("input[name='action_value']").val("back");
-        $("#mainForm").submit();
-    });
-
-    $("#saveDraft").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("draft");
-        $("#mainForm").submit();
-    });
-
-    $("a[data-step-key]").click(jumpToStep);
-    $("li.tracker-item[data-step-key]").click(jumpToStep);
-
     $("#submit").click(function () {
         if ($("#declare").is(':checked')) {
             showWaiting();
@@ -44,7 +21,7 @@ $(function () {
     $("#bsl3Radio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
-        $("input[value='ACTVITY001']").attr("checked", true);
+        $("input[value='ACTVITY004']").attr("checked", true);
         bsl3ActivityTypesDiv.show();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
@@ -54,7 +31,7 @@ $(function () {
     $("#bsl4Radio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
-        $("input[value='ACTVITY001']").attr("checked", true);
+        $("input[value='ACTVITY004']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.show();
         ufActivityTypesDiv.hide();
@@ -64,7 +41,6 @@ $(function () {
     $("#ufRadio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
-        $("input[value='ACTVITY002']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.show();
@@ -74,7 +50,6 @@ $(function () {
     $("#lspfRadio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
-        $("input[value='ACTVITY005']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
@@ -84,7 +59,6 @@ $(function () {
     $("#rfRadio").change(function () {
         activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
-        $("input[value='ACTVITY008']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
@@ -115,7 +89,7 @@ $(function () {
         }
     })
 
-    $("input[name=hasAppointedCertifier ]").change(function (){
+    $("input[name=appointed]").change(function (){
         var id = $(this).attr("id");
         if(id === 'hasAppointedCertifier'){
             $("#appointedCertifierSection").show();
@@ -140,9 +114,22 @@ $(function () {
         var id = $(this).attr("id");
         var idx = id.substring('sampleOthers'.length, id.length);
         if ($(this).is(":checked")) {
-            $("#batOtherSampleTypeDiv" + idx).show();
+            $("#sampleWorkDetailDiv" + idx).show();
         } else {
-            $("#batOtherSampleTypeDiv" + idx).hide();
+            if(!$("#workOthers" + idx).is(":checked")) {
+                $("#sampleWorkDetailDiv" + idx).hide();
+            }
+        }
+    });
+    $("input[data-custom-ind=batOthersWorkType]").change(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('workOthers'.length, id.length);
+        if ($(this).is(":checked")) {
+            $("#sampleWorkDetailDiv" + idx).show();
+        } else {
+            if(!$("#sampleOthers" + idx).is(":checked")) {
+                $("#sampleWorkDetailDiv" + idx).hide();
+            }
         }
     });
 
@@ -154,7 +141,20 @@ $(function () {
     });
 
 
-    $(".removeBtn").click(removeBtnEventHandler);
+    $(".removeBtn").click(function () {
+        var idx = $(this).attr("data-current-idx");
+        var meta = readSectionRepeatMetaData();
+        if (meta) {
+            var idxInput = $("input[name=" + meta.idxInputName +"]");
+            var curIdxes = idxInput.val();
+            var idxArr = curIdxes.trim().split(/ +/);
+
+            idxArr = removeIdx(idxArr, idx);
+            deleteSection(meta.sectionIdPrefix, meta.separator, idx);
+            // set the input after the deletion of DOM to make sure the consistent between view and value.
+            idxInput.val(idxArr.join(" "));
+        }
+    });
 
 
     $("#addNewBatSection").click(function () {
@@ -188,8 +188,14 @@ $(function () {
             firstOp.trigger('click'); firstOp.trigger('click');
         });
 
-        /* Reset all checkbox to unchecked */
-        newSectionDivJqObj.find(":checkbox:checked").prop("checked", false);
-        $("#batOtherSampleTypeDiv" + meta.separator +  nextIdx).hide();
+        /* Reset all radio button and checkbox to unchecked */
+        resetRadio(newSectionDivJqObj);
+        resetCheckbox(newSectionDivJqObj);
+
+        /* Set date picker */
+        setupAllDatePickers(newSectionDivJqObj);
+
+
+        $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
     });
 });

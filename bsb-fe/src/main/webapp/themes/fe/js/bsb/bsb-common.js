@@ -1,3 +1,4 @@
+//region pagination & sorting --------------------------------------------------------
 function paginationOperation(actionValue) {
     showWaiting();
     $("[name='action_type']").val("page");
@@ -18,18 +19,40 @@ function sortRecords(field, sortType) {
     $("#mainForm").submit();
 }
 
-
 $(function () {
     $('#pageJumpNoPageSize').change(function () {
         paginationOperation('changeSize');
     })
+});
+//endregion --------------------------------------------------------
+
+
+
+//region Save Draft --------------------------------------------------------
+function cancelJumpAfterDraft() {
+    $('#afterSaveDraft').modal('hide');
+}
+function jumpAfterDraft() {
+    window.location.href = "/bsb-fe/eservice/INTERNET/MohBSBInboxApp";
+}
+
+
+$(function () {
+    $("#saveDraft").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("draft");
+        $("#mainForm").submit();
+    });
 
     if ($("#afterSaveAsDraft").val() === 'true') {
         $('#afterSaveDraft').modal('show');
     }
 });
+//endregion --------------------------------------------------------
 
 
+
+//region Validation & Error Message --------------------------------------------------------
 function parseAndShowErrorMsg(data) {
     if (data && data !== '' && data !== '{}') {
         $("#iaisErrorFlag").val("BLOCK");
@@ -52,28 +75,32 @@ function clearAllErrMsg() {
         $(this).html("");
     });
 }
+//endregion --------------------------------------------------------
 
 
 
-function resetNiceSelect(selector) {
-    $(selector).find("div.nice-select").each(function () {
+//region input reset --------------------------------------------------------
+/* Below parentEl are all jQuery objects */
+function resetNiceSelect(parentEl) {
+    parentEl.find("div.nice-select").each(function () {
         var firstOp = $(this).find("ul.list > li:first");
         // we need to click twice to set the value
         firstOp.trigger('click'); firstOp.trigger('click');
     });
 }
 
-
-/* function for save as draft */
-function cancelJumpAfterDraft() {
-    $('#afterSaveDraft').modal('hide');
-}
-function jumpAfterDraft() {
-    window.location.href = "/bsb-fe/eservice/INTERNET/MohBSBInboxApp";
+function resetRadio(parentEl) {
+    parentEl.find(":radio:checked").prop("checked", false);
 }
 
+function resetCheckbox(parentEl) {
+    parentEl.find(":checkbox:checked").prop("checked", false);
+}
+//endregion --------------------------------------------------------
 
 
+
+//region input value append --------------------------------------------------------
 /* append comma separated input value */
 function appendCSInputVal(input, value) {
     appendInputVal(input, value, ",");
@@ -92,6 +119,10 @@ function appendInputVal(input, value, separator) {
         input.value = value;
     }
 }
+//endregion --------------------------------------------------------
+
+
+
 
 function printPage(param, addt) {
     showWaiting();

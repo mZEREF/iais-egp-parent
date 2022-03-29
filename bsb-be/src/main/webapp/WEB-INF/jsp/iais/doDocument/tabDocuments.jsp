@@ -98,10 +98,10 @@
                 <c:choose>
                     <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
                     <c:when test="${goBackUrl ne null}">
-                        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em>Back</a>
+                        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                     </c:when>
                     <c:otherwise>
-                        <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em>Back</a>
+                        <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                     </c:otherwise>
                 </c:choose>
 

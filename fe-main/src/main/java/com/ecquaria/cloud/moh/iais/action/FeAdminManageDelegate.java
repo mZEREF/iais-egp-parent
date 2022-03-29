@@ -134,9 +134,9 @@ public class FeAdminManageDelegate {
 
         if(IaisCommonUtils.isNotEmpty(feUserDto.getOrgUserRoleDtos())){
             StringBuilder stringBuilder = new StringBuilder();
-            List<String> roleNames = feUserDto.getOrgUserRoleDtos().stream().map(OrgUserRoleDto::getRoleName).collect(Collectors.toList());
-            roleNames.sort(String::compareTo);
-            roleNames.stream().forEach( roleName -> stringBuilder.append(IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(roleName).getText()).append("<br>"));
+            List<String> roleShows = feUserDto.getOrgUserRoleDtos().stream().map(role -> IaisEGPHelper.ROLE_ROLE_ROLE_NAME_MAP.get(role.getRoleName()).getText()).collect(Collectors.toList());
+            roleShows.sort(String::compareTo);
+            roleShows.stream().forEach( roleShow -> stringBuilder.append(roleShow).append("<br>"));
             ParamUtil.setSessionAttr(bpc.request,FE_NO_ADMIN_ROLES_SHOW,stringBuilder.substring(0,stringBuilder.length()-4));
         }
 

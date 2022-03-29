@@ -114,7 +114,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         if (!this.validationResultDto.isPass()) {
             this.newFile = null;
         }
-        this.dataErrorExists = !this.validationResultDto.isPass();
+        this.dataErrorExists = this.validationResultDto.getDataErrorMap() != null && !this.validationResultDto.getDataErrorMap().isEmpty();
         return validationResultDto.isPass();
     }
 
@@ -186,6 +186,15 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
         }
     }
 
+    /** Delete data file action lead to delete all data here */
+    public void deleteDataFile() {
+        if (this.savedFile != null) {
+            this.toBeDeletedRepoId = this.savedFile.getRepoId();
+            this.savedFile = null;
+        }
+        this.newFile = null;
+        clearCommitteePersonnel();
+    }
 
     /** Get a list of committee data for display.
      * All fields are not master codes */
@@ -268,32 +277,13 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
     }
 
     //    ---------------------------- request -> object ----------------------------------------------
-    private static final String KEY_DELETED_FILE = "deleteFile";
-
-
     public void reqObjMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
-        String deleteFileString = ParamUtil.getString(mulReq, KEY_DELETED_FILE);
-        if (log.isInfoEnabled()) {
-            log.info("deleteFileString: {}", LogUtil.escapeCrlf(deleteFileString));
-        }
-
         MultipartFile file = mulReq.getFile(DocConstants.DOC_TYPE_DATA_COMMITTEE);
-        if (file == null || file.isEmpty()) {
-            if (StringUtils.hasText(deleteFileString)) {
-                // delete all exists files
-                if (this.savedFile != null) {
-                    this.toBeDeletedRepoId = this.savedFile.getRepoId();
-                    this.savedFile = null;
-                }
-                this.newFile = null;
-                clearCommitteePersonnel();
-            }
-            // if no deleteFileString specified, user doesn't delete any files or upload any file, so we do nothing
-        } else {
+        if (file != null && !file.isEmpty()) {
             // add new file
-            LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             NewDocInfo newDocInfo = new NewDocInfo();
             String tmpId = DocConstants.DOC_TYPE_DATA_COMMITTEE + file.getSize() + System.nanoTime();
             newDocInfo.setTmpId(tmpId);
