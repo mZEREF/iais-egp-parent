@@ -72,7 +72,7 @@
                                   <div class="col-sm-8 text-right">
                                     <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                       <div class="">
-                                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em></h4>
+<%--                                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em></h4>--%>
                                       </div>
                                     </c:if>
                                     <div class="hidden">
@@ -344,7 +344,7 @@
                                       <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
                                         <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
@@ -433,7 +433,6 @@
 
         doEdit();
 
-        initNationality('div.cgo-content', 'select[name="idType"]', '.nationalityDiv');
 
         $('#control--runtime--0').children().remove("hr")
 
@@ -443,6 +442,9 @@
         $('input[type="text"]').css('border-color','#ededed');
         $('input[type="text"]').css('color','#999');
         $(".assignContent div.nice-select").addClass('disabled');
+
+        initNationality('div.cgo-content', 'select[name="idType"]', '.nationalityDiv');
+
     });
 
     var disabledAll = function () {

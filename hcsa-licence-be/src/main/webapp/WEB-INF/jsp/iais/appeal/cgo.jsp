@@ -186,7 +186,7 @@
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
                                     </div>
                                   </div>
@@ -284,7 +284,7 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
                                         <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
@@ -363,7 +363,7 @@
                                       <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
                                         <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
