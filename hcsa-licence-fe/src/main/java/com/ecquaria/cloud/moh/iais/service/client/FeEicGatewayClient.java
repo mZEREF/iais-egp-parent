@@ -80,14 +80,6 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
-    public FeignResponseEntity<List> getEmailByCorrelationIdAndStatusAndRole(String corrDataJson,
-                                                                String date, String authorization, String dateSec,
-                                                                String authorizationSec) {
-        Map<String, Object> param = IaisCommonUtils.genNewHashMap(1);
-        param.put("corrData", corrDataJson);
-        return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/hcsa-app-officer", HttpMethod.GET, param,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
-    }
     public FeignResponseEntity<List> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto,
                                                            String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
@@ -118,20 +110,6 @@ public class FeEicGatewayClient {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/self-decl-bridge", HttpMethod.POST, selfDeclSyncDataDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, IaisApiResult.class);
     }
-
-
-    /**
-     * @author: yichen
-     * @description: route to BE db
-     * @param:
-     * @return:
-     */
-    public FeignResponseEntity<String> inactiveLastVersionRecord(List<String> lastVersionId,
-                                                String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-self-desc-status-sync", HttpMethod.POST, lastVersionId,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
-    }
-
 
     /**
      *@Author :weilu on 2020/1/15 12:35
