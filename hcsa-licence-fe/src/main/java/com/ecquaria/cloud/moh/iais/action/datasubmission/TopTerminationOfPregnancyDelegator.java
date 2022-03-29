@@ -91,11 +91,11 @@ public class TopTerminationOfPregnancyDelegator {
             patientInformationDto = new PatientInformationDto();
         }
         ControllerHelper.get(bpc.request, patientInformationDto);
-        if (!errorMap.isEmpty()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
-        }
+//        if (!errorMap.isEmpty()) {
+//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
+//        }
         String name = ParamUtil.getString(bpc.request, "name");
         currentSuper.setPatientInformationDto(patientInformationDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(currentSuper, bpc.request);
@@ -131,12 +131,12 @@ public class TopTerminationOfPregnancyDelegator {
             smallTitle = config.getText();
         }
         /*String name=patientInformationDto.getPatientName();*/
-        if(actionType.equals("return")){
-            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
-        }
-        if(actionType.equals("back")){
-            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "return");
-        }
+//        if(actionType.equals("return")){
+//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
+//        }
+//        if(actionType.equals("back")){
+//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "return");
+//        }
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
     }
 
