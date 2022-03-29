@@ -22,7 +22,7 @@
                             <tr>
                                 <th scope="col" style="display: none"></th>
                                 <iais:sortableHeader needSort="false" field="SN" value="SN" style="width:1%" />
-                                <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
+                                <iais:sortableHeader needSort="true" field="description" value="Master Code Category" style="width:15%" />
                                 <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
