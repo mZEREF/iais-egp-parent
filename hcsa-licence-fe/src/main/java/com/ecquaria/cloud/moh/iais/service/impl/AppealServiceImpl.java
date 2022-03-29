@@ -295,7 +295,7 @@ public class AppealServiceImpl implements AppealService {
             req.getSession().removeAttribute("filename");
         }
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = reAppSvcCgo(request);
-        ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
+        ParamUtil.setSessionAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
         String groupId = (String) request.getAttribute("groupId");
         appealPageDto.setOtherReason(othersReason);
@@ -1615,7 +1615,7 @@ public class AppealServiceImpl implements AppealService {
                     for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos){
                         appSvcCgoDto.setAssignSelect("newOfficer");
                     }
-                    ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
+                    ParamUtil.setSessionAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
                 }
                 List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
                 SelectOption sp0 = new SelectOption("-1", "Select Personnel");
