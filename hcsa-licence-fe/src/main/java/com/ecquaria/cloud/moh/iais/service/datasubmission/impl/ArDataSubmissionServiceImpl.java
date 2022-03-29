@@ -114,7 +114,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String patientCode, String hciCode, String cycleId) {
         log.info(StringUtil.changeForLog("CycleStageSelectionDto - " + patientCode + " : " + hciCode + " : " + cycleId));
-        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(hciCode)) {
+        if (StringUtil.isEmpty(patientCode)) {
             return null;
         }
         return arFeClient.getCycleStageSelectionDtoByConds(patientCode, hciCode, cycleId).getEntity();
