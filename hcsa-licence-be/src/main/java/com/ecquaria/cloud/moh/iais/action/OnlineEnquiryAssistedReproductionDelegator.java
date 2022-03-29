@@ -1437,7 +1437,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         initDataForView(arSdOld, bpc.request);
                         arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                         arSuperOld=arSdOld;
-                        break;
                     }
                 }
                 if(StringUtil.isEmpty(oldId)){
