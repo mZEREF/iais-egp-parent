@@ -10,9 +10,9 @@
     <div class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <iais:row>
+               <%-- <iais:row>
                     <iais:value width="6" cssClass="col-md-6">
-                        <%--<strong class="app-font-size-22 premHeader">title</strong>--%>
+                        &lt;%&ndash;<strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
                     </iais:value>
                     <iais:value width="6" cssClass="col-md-6 text-right editDiv">
                         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
@@ -20,7 +20,7 @@
                             <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
                         </p>
                     </iais:value>
-                </iais:row>
+                </iais:row>--%>
                 <div class="cleanpage">
                     <iais:row>
                         <iais:field width="5" value="Name of Patient" mandatory="true"/>
@@ -72,7 +72,7 @@
                         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="ethnicGroup" name="ethnicGroup" firstOption="Please Select"
-                                         codeCategory="CATE_ID_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
+                                         codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
                         </iais:value>
                     </iais:row>
                     <div id="otherEthnicGroup"
@@ -138,13 +138,6 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <iais:row>
-                        <iais:field width="5" value="gender" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="20" type="text" name="gender" value="${patientInformationDto.gender}"/>
-                        </iais:value>
-                    </iais:row>
-
                     <iais:row>
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" cssClass="col-md-7">

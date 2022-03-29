@@ -130,8 +130,9 @@
         $('#subRopReason').change(function () {
             subRopReason();
         });
-        subRopReason();
+        $('#mainTopReason').change(function () {
         otherMainTopReason();
+        });
         topRiskConditions();
         topMedConditions();
         subRopReasons();
@@ -147,38 +148,35 @@
         }
     }
     function otherMainTopReason() {
-        $('#mainTopReason').change(function () {
-
             var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP008"){
-                $('#otherMainTopReason').attr("style","display: block");
+                $('#otherMainTopReason').show();
             }else {
-                $('#otherMainTopReason').attr("style","display: none");
+                $('#otherMainTopReason').hide();
             }
-        });
     }
     function topRiskConditions() {
         $('#mainTopReason').change(function () {
 
-            var mainTopReason= $('#mainTopReason option:selected').val();
+            var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP005"){
-                $('#topRiskConditions').attr("style","display: block");
+                $('#topRiskConditions').show();
             }else {
-                $('#topRiskConditions').attr("style","display: none");
+                $('#topRiskConditions').hide();
             }
         });
     }
     function topMedConditions() {
         $('#mainTopReason').change(function () {
 
-            var mainTopReason= $('#mainTopReason option:selected').val();
+            var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP002"){
-                $('#topMedConditions').attr("style","display: block");
+                $('#topMedConditions').show();
             }else {
-                $('#topMedConditions').attr("style","display: none");
+                $('#topMedConditions').hide();
             }
         });
     }
@@ -186,12 +184,12 @@
     function subRopReasons(){
         $('#mainTopReason').change(function () {
 
-            var mainTopReason= $('#mainTopReason option:selected').val();
+            var mainTopReason= $('#mainTopReason').val();
 
             if(mainTopReason == "TOPRTP004"){
-                $('#subRopReasons').attr("style","display: block");
+                $('#subRopReasons').show();
             }else {
-                $('#subRopReasons').attr("style","display: none");
+                $('#subRopReasons').hide();
             }
         });
     }
@@ -201,9 +199,9 @@
             var gestAgeBaseOnUltrWeek= $('[name=gestAgeBaseOnUltrWeek]').val();
 
             if(gestAgeBaseOnUltrWeek >="15"){
-                $('#abortChdMoreWksGenders').attr("style","display: block");
+                $('#abortChdMoreWksGenders').show();
             }else {
-                $('#abortChdMoreWksGenders').attr("style","display: none");
+                $('#abortChdMoreWksGenders').hide();
             }
         });
     }
@@ -213,9 +211,9 @@
             var contraHistory= $('#contraHistory option:selected').val();
 
             if(contraHistory == "TOPCH001"){
-                $('#mostRecentContraMethods').attr("style","display: block");
+                $('#mostRecentContraMethods').show();
             }else {
-                $('#mostRecentContraMethods').attr("style","display: none");
+                $('#mostRecentContraMethods').hide();
             }
         });
     }

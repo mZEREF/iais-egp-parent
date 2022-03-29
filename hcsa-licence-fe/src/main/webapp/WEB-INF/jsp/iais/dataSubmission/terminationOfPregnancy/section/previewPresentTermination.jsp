@@ -18,9 +18,56 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
+                    <iais:field width="5" value="Type of Surgical Procedure"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <iais:code code="${terminationDto.spType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Type of Surgical Procedure - others"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.otherSpType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Type of Anaesthesia"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <iais:code code="${terminationDto.anType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Other Type of Anaesthesia"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.otherAnType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Type of Drug"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${terminationDto.drugType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Type of Drug (Others)"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.otherDrugType}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Result of Termination of Pregnancy – Any Complications"/>
+                    <iais:value width="6" display="true">
+                        <c:if test="${terminationDto.ariseOperationComplication == true }">
+                            Yes
+                        </c:if>
+                        <c:if test="${terminationDto.ariseOperationComplication == false }">
+                            No
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Complications Arising From Operation"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.complicationForOperRslt}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

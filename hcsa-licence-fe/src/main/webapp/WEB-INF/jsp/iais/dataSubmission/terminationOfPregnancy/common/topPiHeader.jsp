@@ -77,9 +77,10 @@
         document.location = url;
     }
 
-    function submit(action) {
+    function submit(action,value) {
         console.log("3")
-        $("[name='crud_action_type']").val(action);
+        $("[name='crud_type']").val(action);
+        $("[name='crud_action_value']").val(value);
         var mainForm = document.getElementById('mainForm');
         showWaiting();
         mainForm.submit();

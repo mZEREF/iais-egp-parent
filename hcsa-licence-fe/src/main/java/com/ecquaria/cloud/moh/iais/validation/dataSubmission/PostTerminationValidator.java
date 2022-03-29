@@ -19,9 +19,6 @@ public class PostTerminationValidator implements CustomizeValidator {
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PostTerminationDto postTerminationDto=terminationOfPregnancyDto.getPostTerminationDto();
         if (!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling()) && postTerminationDto.getGivenPostCounselling()==true) {
-            if(StringUtil.isEmpty(postTerminationDto.getCounsellingRslt())){
-                errorMap.put("counsellingRslt", "GENERAL_ERR0006");
-            }
             if(StringUtil.isEmpty(postTerminationDto.getCounsellorIdType())){
                 errorMap.put("counsellorIdType", "GENERAL_ERR0006");
             }
@@ -34,10 +31,21 @@ public class PostTerminationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(postTerminationDto.getCounsellingDate())){
                 errorMap.put("counsellingDate", "GENERAL_ERR0006");
             }
+            if(StringUtil.isEmpty(postTerminationDto.getCounsellingPlace())){
+                errorMap.put("counsellingPlace", "GENERAL_ERR0006");
+            }
         }
         if (!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling()) && postTerminationDto.getGivenPostCounselling()==false) {
             if(StringUtil.isEmpty(postTerminationDto.getIfCounsellingNotGiven())){
                 errorMap.put("ifCounsellingNotGiven", "GENERAL_ERR0006");
+            }
+        }
+
+        if(!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling())){
+            if(postTerminationDto.getGivenPostCounselling()==true && "TOPCR007".equals(postTerminationDto.getCounsellingRslt())){
+                if(StringUtil.isEmpty(postTerminationDto.getOtherCounsellingRslt())){
+                    errorMap.put("otherCounsellingRslt", "GENERAL_ERR0006");
+                }
             }
         }
 
