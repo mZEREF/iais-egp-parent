@@ -69,7 +69,7 @@
     <iais:row>
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
         <iais:field width="5" id="counsellorIdTypeLabel" value="Post-Termination Counsellor ID Type"
-                    mandatory="${postTerminationDto.givenPostCounselling}" info="${toolMsg}"/>
+                    mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${postTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
