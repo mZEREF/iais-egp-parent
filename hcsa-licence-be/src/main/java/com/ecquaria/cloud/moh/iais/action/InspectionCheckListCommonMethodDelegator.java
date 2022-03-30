@@ -225,8 +225,7 @@ public class InspectionCheckListCommonMethodDelegator {
                         }
                         index++;
                     }
-                    String deconflict = ParamUtil.getString(request,prefix +"Deconflict");
-                    fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,deconflict);
+                    fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
                 }
             }
         }
@@ -260,8 +259,7 @@ public class InspectionCheckListCommonMethodDelegator {
                     }
                     index++;
                 }
-                String deconflict = ParamUtil.getString(request,prefix +"adhocDeconflict");
-                fillupChklistService.setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(temp,adhocAnswerForDifDtos,deconflict);
+                fillupChklistService.setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(temp,adhocAnswerForDifDtos,ParamUtil.getString(request,prefix +"adhocDeconflict"));
             }
         }
     }
@@ -472,17 +470,6 @@ public class InspectionCheckListCommonMethodDelegator {
 
     public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        /*if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        getServiceData(temp,fdto,request);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }*/
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
