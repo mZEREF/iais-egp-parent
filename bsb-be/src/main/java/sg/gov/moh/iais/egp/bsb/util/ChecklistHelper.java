@@ -25,7 +25,7 @@ public class ChecklistHelper {
      * @param classification facility classification
      * @return an enum instance of ChecklistSvcCode; or null if the data is not covered by the logic here.
      */
-    public static ChecklistSvcCode getSvcCodeByClass(String classification) {
+    public static ChecklistSvcCode getSvcCodeByClassification(String classification) {
         Assert.hasLength(classification, "Classification should not be empty");
         ChecklistSvcCode svcCode = null;
         switch (classification) {
