@@ -24,6 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +46,15 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     /* docs already saved in DB, key is repoId */
     private Map<String, DocRecordInfo> savedDocMap;
+    private Map<String,CertTeamSavedDoc> certTeamSavedDocMap;
     /* docs new uploaded, key is tmpId */
+    private final Map<String,CertTeamNewDoc> certTeamNewDocMap;
     private final Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
+    private final Set<String> certTeamToBeDeletedRepoIds;
+
+
 
 
 
@@ -58,28 +64,38 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     public PrimaryDocDto() {
         savedDocMap = new LinkedHashMap<>();
+        certTeamSavedDocMap = new LinkedHashMap<>();
         newDocMap = new LinkedHashMap<>();
+        certTeamNewDocMap = new LinkedHashMap<>();
         toBeDeletedRepoIds = new HashSet<>();
+        certTeamToBeDeletedRepoIds = new HashSet<>();
     }
 
     @Override
     public boolean doValidation() {
-//        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
-//        this.savedDocMap.values().forEach(i -> {
-//            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
-//            metaDtoList.add(docMeta);
-//        });
-//        this.newDocMap.values().forEach(i -> {
-//            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
-//            metaDtoList.add(docMeta);
-//        });
-//
-//        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
-//        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
-//
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
-//        return validationResultDto.isPass();
-        return true;
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size()+this.certTeamNewDocMap.size()+this.certTeamSavedDocMap.size());
+        this.savedDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
+            metaDtoList.add(docMeta);
+        });
+        this.newDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
+            metaDtoList.add(docMeta);
+        });
+        this.certTeamNewDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(),i.getMemberDocKey().split(KEY_HYPHEN)[1], i.getFilename(), i.getSize());
+            metaDtoList.add(docMeta);
+        });
+        this.certTeamSavedDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(),i.getDocType(), i.getFilename(), i.getSize());
+            metaDtoList.add(docMeta);
+        });
+
+
+        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
+        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
+        return validationResultDto.isPass();
     }
 
     @Override
@@ -105,6 +121,14 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), DocRecordInfo::getDocType);
     }
 
+    public Map<String,CertTeamSavedDoc> getExistCertTeamKeyMap(){
+        Map<String,CertTeamSavedDoc> certTeamSavedKeyMap = new HashMap<>(this.certTeamSavedDocMap.size());
+        for (CertTeamSavedDoc doc : this.certTeamSavedDocMap.values()) {
+            certTeamSavedKeyMap.put(doc.getMemberIdNo()+KEY_HYPHEN+doc.getDocType(),doc);
+        }
+        return certTeamSavedKeyMap;
+    }
+
     /**
      * get a structure used to display new selected docs
      * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
@@ -112,6 +136,11 @@ public class PrimaryDocDto extends ValidatableNodeValue {
      */
     public Map<String, List<NewDocInfo>> getNewDocTypeMap() {
         return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), NewDocInfo::getDocType);
+    }
+
+
+    public Map<String,CertTeamNewDoc> getNewCertTeamKeyMap(){
+        return CollectionUtils.uniqueIndexMap(this.certTeamNewDocMap.values(),CertTeamNewDoc::getMemberDocKey);
     }
 
 
@@ -181,6 +210,34 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         return newFileSyncDtoList;
     }
 
+    public List<NewFileSyncDto> newCertTeamFileSaved(List<String> repoIds) {
+        Iterator<String> repoIdIt = repoIds.iterator();
+        Iterator<CertTeamNewDoc> newDocIt = certTeamNewDocMap.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
+        while (repoIdIt.hasNext() && newDocIt.hasNext()) {
+            String repoId = repoIdIt.next();
+            CertTeamNewDoc certTeamNewDoc = newDocIt.next();
+            CertTeamSavedDoc certTeamSavedDoc = new CertTeamSavedDoc();
+            String[] keys = certTeamNewDoc.getMemberDocKey().split(KEY_HYPHEN);
+            certTeamSavedDoc.setDocType(keys[1]);
+            certTeamSavedDoc.setSize(certTeamNewDoc.getSize());
+            certTeamSavedDoc.setFilename(certTeamNewDoc.getFilename());
+            certTeamSavedDoc.setMemberIdNo(keys[0]);
+            certTeamSavedDoc.setSubmitBy(certTeamNewDoc.getSubmitBy());
+            certTeamSavedDoc.setSubmitDate(certTeamNewDoc.getSubmitDate());
+            certTeamSavedDoc.setRepoId(repoId);
+            certTeamSavedDoc.setSize(certTeamNewDoc.getSize());
+            certTeamSavedDocMap.put(repoId, certTeamSavedDoc);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(certTeamNewDoc.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
+        }
+        return newFileSyncDtoList;
+    }
+
     public Map<String, DocRecordInfo> getSavedDocMap() {
         return savedDocMap;
     }
@@ -197,19 +254,102 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         return toBeDeletedRepoIds;
     }
 
+    public Map<String, CertTeamSavedDoc> getCertTeamSavedDocMap() {
+        return certTeamSavedDocMap;
+    }
 
+    public void setCertTeamSavedDocMap(Map<String, CertTeamSavedDoc> certTeamSavedDocMap) {
+        this.certTeamSavedDocMap = certTeamSavedDocMap;
+    }
 
+    public Map<String, CertTeamNewDoc> getCertTeamNewDocMap() {
+        return certTeamNewDocMap;
+    }
 
-//    ---------------------------- request -> object ----------------------------------------------
+    public Set<String> getCertTeamToBeDeletedRepoIds() {
+        return certTeamToBeDeletedRepoIds;
+    }
 
+    //    ---------------------------- request -> object ----------------------------------------------
+
+    public static final String KEY_HYPHEN = "--v--";
     private static final String MASK_PARAM = "file";
+    public static final String SUFFIX_TESTIMONIAL = "Testimonial";
+    public static final String SUFFIX_CURRICULUM_VITAE = "CurriculumVitae";
 
     private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
     private static final String KEY_DELETED_NEW_FILES = "deleteNewFiles";
+    private static final String KEY_DELETED_SAVED_CERTIFY_TEAM_FILES = "deleteExistCertTeamFiles";
+    private static final String KEY_DELETED_NEW_CERTIFY_TEAM_FILES = "deleteNewCertTeamFiles";
 
     public void reqObjMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
+        doCommonFileDelete(mulReq);
+        doCertifyTeamFileDelete(mulReq);
+
+        // read new uploaded files
+        Iterator<String> inputNameIt = mulReq.getFileNames();
+        Date currentDate = new Date();
+        LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        while (inputNameIt.hasNext()) {
+            String inputName = inputNameIt.next();
+            String itemKey = MaskUtil.unMaskValue(MASK_PARAM, inputName);
+            if (itemKey != null && !itemKey.equals(inputName)) {
+                List<MultipartFile> files = mulReq.getFiles(inputName);
+                for (MultipartFile f : files) {
+
+                    if (log.isInfoEnabled()) {
+                        log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+                    }
+                    if (f.isEmpty()) {
+                        log.warn("File is empty, ignore it");
+                    } else {
+                        if(itemKey.contains(SUFFIX_TESTIMONIAL) || itemKey.contains(SUFFIX_CURRICULUM_VITAE)){
+                            CertTeamNewDoc certTeamNewDoc = new CertTeamNewDoc();
+                            String tmpId = inputName + f.getSize() + System.nanoTime();
+                            certTeamNewDoc.setTmpId(tmpId);
+                            certTeamNewDoc.setFilename(f.getOriginalFilename());
+                            certTeamNewDoc.setMemberDocKey(itemKey);
+                            certTeamNewDoc.setSize(f.getSize());
+                            certTeamNewDoc.setSubmitDate(currentDate);
+                            certTeamNewDoc.setSubmitBy(loginContext.getUserId());
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = f.getBytes();
+                            } catch (IOException e) {
+                                log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
+                            }
+                            ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+                            certTeamNewDoc.setMultipartFile(multipartFile);
+                            this.certTeamNewDocMap.put(tmpId, certTeamNewDoc);
+                        }else{
+                            NewDocInfo newDocInfo = new NewDocInfo();
+                            String tmpId = inputName + f.getSize() + System.nanoTime();
+                            newDocInfo.setTmpId(tmpId);
+                            newDocInfo.setDocType(itemKey);
+                            newDocInfo.setFilename(f.getOriginalFilename());
+                            newDocInfo.setSize(f.getSize());
+                            newDocInfo.setSubmitDate(currentDate);
+                            newDocInfo.setSubmitBy(loginContext.getUserId());
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = f.getBytes();
+                            } catch (IOException e) {
+                                log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
+                            }
+                            ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+                            newDocInfo.setMultipartFile(multipartFile);
+                            this.newDocMap.put(tmpId, newDocInfo);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void doCommonFileDelete(MultipartHttpServletRequest mulReq){
         String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
         if (log.isInfoEnabled()) {
             log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
@@ -231,44 +371,29 @@ public class PrimaryDocDto extends ValidatableNodeValue {
                     .collect(Collectors.toList());
             deleteFileTmpIds.forEach(this.newDocMap::remove);
         }
+    }
 
+    private void doCertifyTeamFileDelete(MultipartHttpServletRequest mulReq){
+        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_CERTIFY_TEAM_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
+        }
+        if (StringUtils.hasLength(deleteSavedFilesString)) {
+            List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                    .collect(Collectors.toList());
+            deleteFileRepoIds.forEach(it -> {this.certTeamSavedDocMap.remove(it); certTeamToBeDeletedRepoIds.add(it);});
+        }
 
-        // read new uploaded files
-        Iterator<String> inputNameIt = mulReq.getFileNames();
-        Date currentDate = new Date();
-        LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        while (inputNameIt.hasNext()) {
-            String inputName = inputNameIt.next();
-            String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
-            if (docType != null && !docType.equals(inputName)) {
-                List<MultipartFile> files = mulReq.getFiles(inputName);
-                for (MultipartFile f : files) {
-                    if (log.isInfoEnabled()) {
-                        log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
-                    }
-                    if (f.isEmpty()) {
-                        log.warn("File is empty, ignore it");
-                    } else {
-                        NewDocInfo newDocInfo = new NewDocInfo();
-                        String tmpId = inputName + f.getSize() + System.nanoTime();
-                        newDocInfo.setTmpId(tmpId);
-                        newDocInfo.setDocType(docType);
-                        newDocInfo.setFilename(f.getOriginalFilename());
-                        newDocInfo.setSize(f.getSize());
-                        newDocInfo.setSubmitDate(currentDate);
-                        newDocInfo.setSubmitBy(loginContext.getUserId());
-                        byte[] bytes = new byte[0];
-                        try {
-                            bytes = f.getBytes();
-                        } catch (IOException e) {
-                            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                        }
-                        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                        newDocInfo.setMultipartFile(multipartFile);
-                        this.newDocMap.put(tmpId, newDocInfo);
-                    }
-                }
-            }
+        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_CERTIFY_TEAM_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
+        }
+        if (StringUtils.hasLength(deleteNewFilesString)) {
+            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                    .collect(Collectors.toList());
+            deleteFileTmpIds.forEach(this.certTeamNewDocMap::remove);
         }
     }
 }

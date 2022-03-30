@@ -1,69 +1,53 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
-import com.ecquaria.sz.commons.util.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.Serializable;
 
 /**
  *@author YiMing
  * @version 2021/10/15 14:16
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class AdministratorDto extends ValidatableNodeValue {
-    @Data
-    @NoArgsConstructor
-    public static class FacilityAdministratorInfo implements Serializable {
-        private String adminEntityId;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.name")
-        private String adminName;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.nationality")
-        private String nationality;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.idType")
-        private String idType;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.idNo")
-        private String idNo;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.designation")
-        private String designation;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.contactNo")
-        private String contactNo;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.email")
-        private String email;
-
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.employmentStartDate")
-        private String employmentStartDate;
-    }
 
     @RfcAttributeDesc
-    private FacilityAdministratorInfo mainAdmin;
+    private final EmployeeInfo mainAdmin;
 
     @RfcAttributeDesc
-    private FacilityAdministratorInfo alternativeAdmin;
+    private final EmployeeInfo alternativeAdmin;
 
 
     private ValidationResultDto validationResultDto;
 
+    public AdministratorDto() {
+        mainAdmin = new EmployeeInfo();
+        alternativeAdmin = new EmployeeInfo();
+
+        // set default main admin info
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AuditTrailDto auditTrailDto = (AuditTrailDto) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        OrgUserDto orgUserDto = (OrgUserDto) SpringReflectionUtils.invokeBeanMethod("orgFeignClient", "retrieveOrgUserAccountById", new Object[]{auditTrailDto.getMohUserGuid()});
+        mainAdmin.setName(orgUserDto.getDisplayName());
+        mainAdmin.setIdType(orgUserDto.getIdType());
+        mainAdmin.setIdNumber(orgUserDto.getIdNumber());
+    }
+
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
-//        return validationResultDto.isPass();
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override
@@ -74,54 +58,56 @@ public class AdministratorDto extends ValidatableNodeValue {
         return this.validationResultDto.toErrorMsg();
     }
 
-    public FacilityAdministratorInfo getMainAdmin() {
+    @Override
+    public void clearValidationResult() {
+        this.validationResultDto = null;
+    }
+
+    public EmployeeInfo getMainAdmin() {
         return mainAdmin;
     }
 
-    public void setMainAdmin(FacilityAdministratorInfo mainAdmin) {
-        this.mainAdmin = mainAdmin;
-    }
-
-    public FacilityAdministratorInfo getAlternativeAdmin() {
+    public EmployeeInfo getAlternativeAdmin() {
         return alternativeAdmin;
     }
 
-    public void setAlternativeAdmin(FacilityAdministratorInfo alternativeAdmin) {
-        this.alternativeAdmin = alternativeAdmin;
+    public ValidationResultDto getValidationResultDto() {
+        return validationResultDto;
     }
     //    ---------------------------- request -> object ----------------------------------------------
 
-    private static final String KEY_PREFIX_ADMIN_NAME = "adminName";
+    private static final String KEY_PREFIX_SALUTATION = "salutation";
+    private static final String KEY_PREFIX_ADMIN_NAME = "employeeName";
     private static final String KEY_PREFIX_NATIONALITY = "nationality";
     private static final String KEY_PREFIX_ID_TYPE = "idType";
-    private static final String KEY_PREFIX_ID_NUMBER = "idNo";
+    private static final String KEY_PREFIX_ID_NUMBER = "idNumber";
     private static final String KEY_PREFIX_DESIGNATION = "designation";
     private static final String KEY_PREFIX_CONTACT_NO = "contactNo";
     private static final String KEY_PREFIX_EMAIL = "email";
-    private static final String KEY_PREFIX_EMP_START_DATE = "employmentStartDate";
+    private static final String KEY_PREFIX_EMP_START_DATE = "employmentStartDt";
 
     private static final String KEY_SUFFIX_MAIN_ADMIN = "M";
     private static final String KEY_SUFFIX_ALTERNATIVE_ADMIN = "A";
 
     public void reqObjMapping(HttpServletRequest request) {
-        FacilityAdministratorInfo mainAdminInfo = getAdminInfo(request, KEY_SUFFIX_MAIN_ADMIN);
-        FacilityAdministratorInfo alternativeAdminInfo = getAdminInfo(request, KEY_SUFFIX_ALTERNATIVE_ADMIN);
-        setMainAdmin(mainAdminInfo);
-        setAlternativeAdmin(alternativeAdminInfo);
+        readEmployeeInfo(request,KEY_SUFFIX_MAIN_ADMIN,mainAdmin);
+        readEmployeeInfo(request,KEY_SUFFIX_ALTERNATIVE_ADMIN,alternativeAdmin);
+
     }
 
-
-    private FacilityAdministratorInfo getAdminInfo(HttpServletRequest request, String suffix) {
-        FacilityAdministratorInfo adminInfo = new FacilityAdministratorInfo();
-        adminInfo.setAdminName(ParamUtil.getString(request, KEY_PREFIX_ADMIN_NAME + suffix));
-        adminInfo.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + suffix));
-        adminInfo.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + suffix));
-        adminInfo.setIdNo(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + suffix));
-        adminInfo.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + suffix));
-        adminInfo.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + suffix));
-        adminInfo.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + suffix));
-        adminInfo.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DATE + suffix));
-        return adminInfo;
+    /** Will not read name, ID type and ID number  */
+    private void readEmployeeInfo(HttpServletRequest request,String suffix, EmployeeInfo info) {
+        info.setSalutation(ParamUtil.getString(request,KEY_PREFIX_SALUTATION + suffix));
+        info.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + suffix));
+        if(KEY_SUFFIX_ALTERNATIVE_ADMIN.equals(suffix)){
+            info.setName(ParamUtil.getString(request, KEY_PREFIX_ADMIN_NAME + suffix));
+            info.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + suffix));
+            info.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + suffix));
+        }
+        info.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + suffix));
+        info.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + suffix));
+        info.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + suffix));
+        info.setEmploymentStartDt(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DATE + suffix));
     }
 
 }

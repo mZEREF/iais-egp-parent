@@ -27,21 +27,44 @@ $(function () {
     })
 
     // facility classification radio button changes
-    var overseasVal = $("#overseasCon");
-    $("#typeLocal").change(function () {
-        overseasVal.hide();
-    });
-    $("#typeOverseas").change(function () {
-        overseasVal.show();
-    });
+   $("input[name=sameAddress]").change(function (){
+       var id = $(this).attr("id");
+       if(id === 'sameAddressY'){
+           $("#sameAddressSection").show();
+           $("#notSameAddressSection").hide();
+           $("#registeredLocal").attr("checked","checked");
+           $("#registeredOverseas").removeAttr("checked").attr("disabled",true);
+       }else if(id === 'sameAddressN'){
+           $("#sameAddressSection").hide();
+           $("#notSameAddressSection").show();
+           $("#registeredOverseas").removeAttr("disabled");
+       }
+   })
+
+    $("input[name=registered]").change(function (){
+        var id = $(this).attr("id");
+        if(id === 'registeredLocal'){
+            $("#localRegistered").show();
+            $("#overseasRegistered").hide();
+        }else if(id === 'registeredOverseas'){
+            $("#localRegistered").hide();
+            $("#overseasRegistered").show();
+        }
+    })
 
 
-    $("#addNewSection").click(function () {
-        var meta = readSectionRepeatMetaData();
-        addSection(meta.idxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
-    });
+    $("#addressType").change(function (){
+        var addressType = $(this).val();
+        if(addressType === 'ADDTY001'){
+            $(".aptBlk").each(function (){
+                $(this).show();
+            })
+        }else if(addressType === 'ADDTY002' || addressType === ''){
+            $(".aptBlk").each(function (){
+                $(this).hide();
+            })
+        }
+    })
 
-
-    $(".removeBtn").click(removeBtnEventHandler);
 
 });

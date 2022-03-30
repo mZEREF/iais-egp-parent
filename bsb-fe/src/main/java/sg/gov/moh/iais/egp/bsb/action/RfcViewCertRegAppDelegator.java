@@ -83,13 +83,13 @@ public class RfcViewCertRegAppDelegator {
         // retrieve app data of facility registration
         ResponseDto<FacilityCertifierRegisterDto> resultDto = certifierRegisterClient.getCertifierRegistrationAppDataByApprovalId(appId);
         if (resultDto.ok()) {
-            NodeGroup facRegRoot = resultDto.getEntity().toFacilityCertRegister(KEY_ROOT_NODE_GROUP);
-            ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
-            ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM)).getValue());
-            ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR)).getValue());
+            NodeGroup facRegRoot = resultDto.getEntity().toFacilityCertRegisterGroup(KEY_ROOT_NODE_GROUP);
+            ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
+            ParamUtil.setRequestAttr(request, NODE_NAME_CERTIFYING_TEAM_DETAIL, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue());
+            ParamUtil.setRequestAttr(request, NODE_NAME_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ADMINISTRATOR)).getValue());
 
             ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
-            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
+            PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_SUPPORTING_DOCUMENT)).getValue();
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
             ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         } else {

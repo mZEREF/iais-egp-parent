@@ -30,7 +30,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview orgProfile="${orgProfile}" orgCerTeam="${orgCerTeam}" orgAdmin="${orgAdmin}"
+                                    <fac:preview companyProfile="${orgProfile}" companyCerTeam="${orgCerTeam}" companyAdmin="${orgAdmin}"
                                                  profileEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">

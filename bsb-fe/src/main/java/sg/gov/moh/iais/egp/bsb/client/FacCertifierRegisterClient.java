@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
@@ -20,7 +21,7 @@ public interface FacCertifierRegisterClient {
     ValidationResultDto validateOrganisationProfile(@RequestBody CompanyProfileDto dto);
 
     @PostMapping(path = "/register/facility-certifier/form-validation/certifying-team", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateCertifierTeam(@RequestBody CertifyingTeamDto dto);
+    FileDataValidationResultDto<CertifyingTeamFileDto> validateCertifierTeam(@RequestBody CertifyingTeamDto dto);
 
     @PostMapping(path = "/register/facility-certifier/form-validation/admin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityAdmin(@RequestBody AdministratorDto dto);

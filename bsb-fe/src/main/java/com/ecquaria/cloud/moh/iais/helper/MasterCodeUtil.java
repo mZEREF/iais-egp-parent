@@ -184,6 +184,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_SALUTATION                                   = "1C5A02C3-2D1C-449B-9A24-63BD568CE1AE";
     public static final String CATE_ID_APPROVED_FACILITY_CERTIFIER_SELECTION            = "9934209F-CB20-47C4-9FC3-E920B13B8923";
 
+    public static final String CATE_ID_BSB_IS_THE_COMPANY_REGISTERED_IN_LOCAL_OR_OVERSEAS = "82C27D1E-9C5A-44EC-8A91-F07F8D7FC462";
+    public static final String CATE_ID_BSB_ROLE                                           = "C5446D8E-A31F-4174-9E55-BD616F5B5FB8";
+
 
 
     /**

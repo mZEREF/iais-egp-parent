@@ -13,11 +13,12 @@
 <webui:setLayout name="iais-internet"/>
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
-<link rel="stylesheet" href="<%=WEB_ROOT%>/css/bsb/bsb-facility-certifer-register.css">
+<link rel="stylesheet" href="<%=WEB_ROOT%>/css/bsb/bsb-facility-certifier-register.css">
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-certify-team-file.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -30,8 +31,12 @@
     <input type="hidden" name="action_additional" value="">
     <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
     <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <input type="hidden" id="deleteExistCertTeamFiles" name="deleteExistCertTeamFiles" value="">
+    <input type="hidden" id="deleteNewCertTeamFiles" name="deleteNewCertTeamFiles" value="">
+    <input type="hidden" id="isUploadCertFile" value="${IS_CERT_FILE}">
     <input id="multiUploadTrigger" type="file" multiple="multiple" style="display: none"/>
     <input id="echoReloadTrigger" type="file" style="display: none"/>
+    <input id="singleUploadTrigger" type="file" style="display: none"/>
     <div id="fileUploadInputDiv" style="display: none"></div>
     <div class="main-content">
         <div class="container">

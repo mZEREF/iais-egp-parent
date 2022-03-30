@@ -12,7 +12,9 @@
 <webui:setLayout name="iais-internet"/>
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
+<link rel="stylesheet" href="<%=WEB_ROOT%>/css/bsb/bsb-facility-certifier-register.css">
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
@@ -34,11 +36,11 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
-                                    <fac:preview companyProfile="${orgProfile}" companyCerTeam="${orgCerTeam}" companyAdmin="${orgAdmin}"
+                                    <fac:preview companyProfile="${companyProfile}" companyCerTeam="${certTeam}" companyAdmin="${companyAdmin}"
                                                  profileEditJudge="true" docEditJudge="true">
                                         <jsp:attribute name="editFrag"><a href="#" data-step-key="REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></jsp:attribute>
                                         <jsp:attribute name="docFrag">
-                                            <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>
+                                            <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}" certTeamDto="${certTeam}" certTeamNewFiles="${certTeamNewFiles}" certTeamSavedFiles="${certTeamSavedFiles}"/>
                                         </jsp:attribute>
                                     </fac:preview>
                                     <div class="form-horizontal" style="padding: 30px 20px 10px;">

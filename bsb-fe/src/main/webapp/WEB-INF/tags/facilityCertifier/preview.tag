@@ -10,7 +10,7 @@
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
 <%@attribute name="profileEditJudge" type="java.lang.Boolean" %>
-<%@attribute name="certeamEditJudge" type="java.lang.Boolean" %>
+<%@attribute name="certTeamEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="adminEditJudge" type="java.lang.Boolean" %>
 <%@attribute name="docEditJudge" type="java.lang.Boolean" %>
 
@@ -23,174 +23,179 @@
                 <div class="panel panel-default">
                     <div class="panel-heading completed">
                         <h4 class="panel-title">
-                            <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Facility Informations</a>
+                            <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Application Information</a>
                         </h4>
                     </div>
                     <div id="previewFacInfo" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgProfile")}</div></c:if>
+                            <c:if test="${profileEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_companyProfile")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
-                                    <div class="col-10"><strong>Facility Profile</strong></div>
+                                    <div class="col-10"><strong>Company Profile</strong></div>
                                     <div class="clear"></div>
                                 </div>
                                 <div>
                                     <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.orgName}</p></div>
+                                        <label class="col-xs-5 col-md-4 control-label">Company Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.name}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.streetName} ${companyProfile.building} ${companyProfile.floor} - ${companyProfile.unitNo} ${companyProfile.postalCode}</p></div>
+                                        <label class="col-xs-5 col-md-4 control-label">Year of Establishment</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.yearEstablished}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                        <label class="col-xs-5 col-md-4 control-label">UEN</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>185412420D</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Is the mailing address the same as the company address?</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>
+                                            <c:choose>
+                                                <c:when test="${companyProfile.sameAddress eq 'Y'}">Yes</c:when>
+                                                <c:otherwise>No</c:otherwise>
+                                            </c:choose></p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Is the company registered in Singapore or overseas?</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.registered}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Postal Code</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.postalCode}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Address Type</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.addressType}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Block / House No</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.block}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Street Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.streetName}</p></div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-5 col-md-4 control-label">Building Name</label>
+                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyProfile.building}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                 </div>
                             </div>
-                            <c:if test="${certeamEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgCerTeam")}</div></c:if>
+
+                            <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "appInfo_companyAdmin")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
-                                    <div class="col-10"><strong>Facility Certifier Team Member</strong></div>
+                                    <div class="col-10"><strong>Main Administrator</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <c:forEach var="tMember" items="${companyCerTeam.certifierTeamMemberList}" varStatus="status">
-                                    <div>
-                                        <c:if test="${companyCerTeam.certifierTeamMemberList.size() > 1}">
-                                            <div class="form-group">
-                                                <label class="col-xs-5 col-md-4 control-label">Team Member ${status.index + 1}</label>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </c:if>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.memberName}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.idType}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Date of Birth</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.birthDate}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Sex</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.sex}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.nationality}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Job Designation</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.jobDesignation}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-xs-5 col-md-4 control-label">Contact No.</label>
-                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.telNo}</p></div>
-                                            <div class="clear"></div>
-                                        </div>
-                                    </div>
-                                </c:forEach>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Salutation</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.salutation}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.name}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.nationality}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">ID No.</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.idNumber}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.designation}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Contact No.</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.contactNo}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.email}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.employmentStartDt}</p></div>
+                                    <div class="clear"></div>
+                                </div>
                             </div>
-                            <c:if test="${adminEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "orgInfo_orgAdmin")}</div></c:if>
+
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
-                                    <div class="col-10"><strong>Facility Administrator</strong></div>
+                                    <div class="col-10"><strong>Alternate Administrator</strong></div>
                                     <div class="clear"></div>
                                 </div>
-                                <div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Main Administrator</label>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.adminName}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.idNo}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.nationality}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.designation}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.contactNo}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.email}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.mainAdmin.employmentStartDate}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Salutation</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.salutation}</p></div>
+                                    <div class="clear"></div>
                                 </div>
-                                <div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Alternative Administrator</label>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.adminName}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.idNo}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.nationality}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.designation}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.contactNo}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.email}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                        <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.employmentStartDate}</p></div>
-                                        <div class="clear"></div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Name</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.name}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Nationality</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.nationality}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">ID No.</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.idNumber}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Designation</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.designation}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Contact No.</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.contactNo}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Email Address</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.email}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
+                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${companyAdmin.alternativeAdmin.employmentStartDt}</p></div>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10"><strong>Details of Certifying Team</strong></div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-5 col-md-4 control-label">
+                                        <a href="javascript:void(0)" onclick="expandFile('previewSubmit','bsbPreviewSubmit')">View Certifying Team Details</a></label>
+                                    <div class="clear"></div>
                                 </div>
                             </div>
                         </div>
