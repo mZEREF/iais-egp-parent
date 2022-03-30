@@ -7,9 +7,13 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<%--@elvariable id="mohProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto"--%>
+<%--@elvariable id="mohProcessPageValidation" type="java.lang.String"--%>
+<%--@elvariable id="appBasicInfo" type="sg.gov.moh.iais.egp.bsb.dto.info.common.AppBasicInfo"--%>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
@@ -53,20 +57,18 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/applicationInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/appBasicInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabFacilityDetails" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/facilityDetails.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing Status Update</h4>
-                                                    </strong>
+                                                    <h4>Processing Status Update</h4>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
@@ -75,7 +77,50 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${infoDto.applicationStatus}"/></p>
+                                                                        <p><iais:code code="${appBasicInfo.status}"/></p>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Will MOH conduct on-site inspection? <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                        <div class="input-group">
+                                                                            <label>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'yes'}">checked="checked"</c:if> value="yes"/>
+                                                                            </label>
+                                                                            <span class="check-circle">Yes</span>
+                                                                            <label>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'no'}">checked="checked"</c:if> value="no"/>
+                                                                            </label>
+                                                                            <span class="check-circle">No</span>
+                                                                            <span data-err-ind="inspectionRequired" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision / Recommendation <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="processingDecision" id="processingDecision">
+                                                                                <option value="">Please Select</option>
+                                                                                <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="MOHPRO002" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
+                                                                                <option value="MOHPRO003" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                            </select>
+                                                                            <span data-err-ind="processingDecision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group" id="selectAODiv">
+                                                                    <label for="selectAO" class="col-xs-12 col-md-4 control-label">Select Approving Officer <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="selectAO" id="selectAO">
+                                                                                <option value="">Please Select</option>
+                                                                            </select>
+                                                                            <span data-err-ind="selectAO" class="error-msg" ></span>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -83,39 +128,11 @@
                                                                     <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${processDto.remarks}"/></textarea>
+                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${mohProcessDto.remarks}"/></textarea>
                                                                             <span data-err-ind="remark" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>
-                                                                </div>
-                                                                <span data-err-ind="error_message" class="error-msg"></span>
-                                                                <div class="form-group">
-                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <div class="input-group">
-                                                                            <select name="processingDecision" id="processingDecision">
-                                                                                <option value="">Please Select</option>
-                                                                                <option value="MOHPRO001" <c:if test="${processDto.processingDecision eq 'MOHPRO001'}">selected="selected"</c:if>>Screened by DO</option>
-                                                                                <option value="MOHPRO002" <c:if test="${processDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
-                                                                                <option value="MOHPRO003" <c:if test="${processDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
-                                                                            </select>
-                                                                            <span data-err-ind="processingDecision" class="error-msg" ></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Is Inspection required by MOH? <span style="color: red">*</span></label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
-                                                                        <div class="input-group">
-                                                                            <input type="radio" name="inspectionRequired" <c:if test="${processDto.inspectionRequired eq 'yes'}">checked="checked"</c:if> value="yes"/>
-                                                                            <label><span class="check-circle"></span>Yes</label>
-                                                                            <input type="radio" name="inspectionRequired" <c:if test="${processDto.inspectionRequired eq 'no'}">checked="checked"</c:if> value="no"/>
-                                                                            <label><span class="check-circle"></span>No</label>
-                                                                            <span data-err-ind="inspectionRequired" class="error-msg" ></span>
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div style="text-align: right">

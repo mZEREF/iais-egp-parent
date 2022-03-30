@@ -28,13 +28,12 @@ public class ProcessContants {
     public static final String KEY_SUBMIT_DETAILS_DTO               = "submitDetailsDto";
 
     public static final String KEY_MOH_PROCESS_DTO                          = "mohProcessDto";
-    public static final String KEY_APPROVAL_FACILITY_ACTIVITY_DTO_LIST      = "approvalFacilityActivityDtoList";
-    public static final String KEY_APPROVAL_FACILITY_BAT_DTO_LIST           = "approvalFacilityBatDtoList";
     public static final String KEY_INFO_DTO                                 = "infoDto";
 
     public static final String KEY_REMARKS                                  = "remarks";
     public static final String KEY_PROCESSING_DECISION                      = "processingDecision";
     public static final String KEY_INSPECTION_REQUIRED                      = "inspectionRequired";
+    public static final String KEY_SELECT_APPROVING_OFFICER                 = "selectAO";
 
     public static final String KEY_RISK_LEVEL                       = "riskLevel";
     public static final String KEY_RISK_LEVEL_COMMENTS              = "riskLevelComments";
