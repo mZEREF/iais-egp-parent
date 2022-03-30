@@ -23,8 +23,8 @@
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
-                    <div class="col-md-7">
-                        <iais:value width="6" cssClass="col-md-6">
+                    <div class="col-md-7" style="padding-right: 0;padding-left: 0;">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
@@ -38,7 +38,7 @@
                                         class="check-circle"></span><iais:code code="DONTY001"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                        name="donatedType" value="DONTY002" id="donatedType2"
@@ -49,7 +49,7 @@
                                         class="check-circle"></span><iais:code code="DONTY002"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
@@ -63,7 +63,7 @@
                                         class="check-circle"></span><iais:code code="DONTY003"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                        name="donatedType" value="DONTY004" id="donatedType4"
@@ -109,8 +109,8 @@
 
                 <iais:row>
                     <iais:field width="5" value="Donated For" mandatory="true"/>
-                    <div class="col-md-6">
-                        <iais:value width="12" cssClass="col-md-12">
+                    <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                        <iais:value width="12" cssClass="col-md-12" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -123,7 +123,7 @@
                                         class="check-square"></span>Research</label>
                             </div>
                         </iais:value>
-                        <iais:value width="12" cssClass="col-md-12">
+                        <iais:value width="12" cssClass="col-md-12" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        name="donatedForTraining" id="donatedForTraining"
@@ -134,7 +134,7 @@
                                         class="check-square"></span>Training</label>
                             </div>
                         </iais:value>
-                        <iais:value width="12" cssClass="col-md-12">
+                        <iais:value width="12" cssClass="col-md-12" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -170,7 +170,7 @@
 
                     <iais:row>
                         <iais:field width="5" value="Type of Research for Which Donated" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
