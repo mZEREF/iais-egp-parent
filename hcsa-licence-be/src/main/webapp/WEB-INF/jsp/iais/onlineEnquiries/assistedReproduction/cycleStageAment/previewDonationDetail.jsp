@@ -27,8 +27,7 @@
                 <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">What was Donated?
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title=<iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                           style="z-index: 10"
+                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>" style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
                     <iais:value width="4" cssClass="col-md-4" display="true">
