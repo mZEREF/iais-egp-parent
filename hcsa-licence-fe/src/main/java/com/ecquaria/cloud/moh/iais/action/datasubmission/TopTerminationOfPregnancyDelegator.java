@@ -103,7 +103,9 @@ public class TopTerminationOfPregnancyDelegator {
         ControllerHelper.get(bpc.request, patientInformationDto);
         String name = ParamUtil.getString(bpc.request, "name");
         String age = ParamUtil.getString(bpc.request, "age");
-        patientInformationDto.setPatientAge(Integer.parseInt(age));
+        if(!StringUtil.isEmpty(age)){
+            patientInformationDto.setPatientAge(Integer.parseInt(age));
+        }
         currentSuper.setPatientInformationDto(patientInformationDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(currentSuper, bpc.request);
         ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto, "ART");
@@ -118,8 +120,10 @@ public class TopTerminationOfPregnancyDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "page");
         }
-        ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "page");
+
     }
 
     /**
