@@ -187,7 +187,7 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
         </iais:value>
     </iais:row>
-    <div id="patientAppointment" style="${familyPlanDto.subRopReason ==null || preTerminationDto.counsellingGiven == true && !preTerminationDto.counsellingResults eq 'TOPPCR001' ? 'display: none' : ''}" >
+    <div id="patientAppointments" style="${familyPlanDto.subRopReason ==null || preTerminationDto.counsellingGiven == true && !preTerminationDto.counsellingResults eq 'TOPPCR001' ? 'display: none' : ''}" >
         <iais:row>
             <%--<label class="col-xs-5 col-md-4 control-label">Did Patient Make Appointment for Additional Pre-Counselling Sessions?
                 <span id="patientAppointment" class="mandatory">
@@ -323,10 +323,10 @@
     function counsellingResult() {
         var counsellingResults = $('[name=counsellingResult] option:selected').val();
         var counsellingNo = $('#counsellingNo').val();
-        if (counsellingResults == "TOPPCR001" && counsellingNo == true) {
-            $('#patientAppointment').show();
+        if (counsellingResults == "TOPPCR001" || counsellingNo == true) {
+            $('#patientAppointments').show();
         } else {
-            $('#patientAppointment').hide();
+            $('#patientAppointments').hide();
         }
     }
 </script>

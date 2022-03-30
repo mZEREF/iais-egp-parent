@@ -102,6 +102,8 @@ public class TopTerminationOfPregnancyDelegator {
         }
         ControllerHelper.get(bpc.request, patientInformationDto);
         String name = ParamUtil.getString(bpc.request, "name");
+        String age = ParamUtil.getString(bpc.request, "age");
+        patientInformationDto.setPatientAge(Integer.parseInt(age));
         currentSuper.setPatientInformationDto(patientInformationDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(currentSuper, bpc.request);
         ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto, "ART");
@@ -135,9 +137,11 @@ public class TopTerminationOfPregnancyDelegator {
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
         DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
-
+        TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        PatientInformationDto patientInformationDto = currentSuper.getPatientInformationDto() == null ? new PatientInformationDto():currentSuper.getPatientInformationDto();
+        if(patientInformationDto.getPatientAge()<16){
+            selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+        }
         return selectOptions;
     }
 
