@@ -169,6 +169,10 @@ public class DonationStageDelegator extends CommonDelegator{
                         isInt=false;
                 donationStageDto.setTrainingNum(null);
             }
+        }
+        String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
+        if("on".equals(donatedForTreatment)){
+            donationStageDto.setDonatedForTreatment(1);
             Integer treatNum = null;
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
@@ -182,13 +186,9 @@ public class DonationStageDelegator extends CommonDelegator{
                 }
             }catch (Exception e){
                 log.error("no int");
-                        isInt=false;
+                isInt=false;
                 donationStageDto.setTreatNum(null);
             }
-        }
-        String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
-        if("on".equals(donatedForTreatment)){
-            donationStageDto.setDonatedForTreatment(1);
         }
         if(isInt){
             donationStageDto.setTotalNum(totalNum);
