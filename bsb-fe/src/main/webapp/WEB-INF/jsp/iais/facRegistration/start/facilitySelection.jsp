@@ -33,9 +33,7 @@
                 <div class="col-xs-12 col-md-1">
                 </div>
                 <div class="col-xs-12 col-md-10">
-                    <h3>
-                        Select the Facility & Activity Type(s) for which you wish to make this application
-                    </h3>
+                    <h3>Select the Facility Classification and the corresponding Facility Activity Type</h3>
                 </div>
             </div>
             <div class="row">

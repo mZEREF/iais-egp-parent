@@ -570,7 +570,7 @@ public class FacilityRegistrationService {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         SimpleNode facCertifierNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_AFC);
-        ApprovedFacilityCertifierDto facilityCertifierDto = (ApprovedFacilityCertifierDto) facCertifierNode.getValue();
+        FacilityAfcDto facilityCertifierDto = (FacilityAfcDto) facCertifierNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facilityCertifierDto.retrieveValidationResult());
@@ -584,7 +584,7 @@ public class FacilityRegistrationService {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         SimpleNode facCertifierNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_AFC);
-        ApprovedFacilityCertifierDto facilityCertifierDto = (ApprovedFacilityCertifierDto) facCertifierNode.getValue();
+        FacilityAfcDto facilityCertifierDto = (FacilityAfcDto) facCertifierNode.getValue();
         facilityCertifierDto.reqObjectMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
@@ -967,7 +967,7 @@ public class FacilityRegistrationService {
         NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
         SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
         SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
-        SimpleNode afcNode = new SimpleNode(new ApprovedFacilityCertifierDto(), NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
+        SimpleNode afcNode = new SimpleNode(new FacilityAfcDto(), NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
         SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode, afcNode});
 
         return new NodeGroup.Builder().name(name)

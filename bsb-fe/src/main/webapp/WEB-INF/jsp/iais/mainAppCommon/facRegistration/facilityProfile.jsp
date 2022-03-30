@@ -199,13 +199,13 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-                <label for="isAProtectedPlace">Yes</label>
-                <input type="radio" name="protectedPlace" id="isAProtectedPlace" value="Y" <c:if test="${facProfile.facilityProtected eq 'Y'}">checked="checked"</c:if> />
+            <div class="form-check col-sm-4 col-md-2" style="margin-top: 8px">
+                <input type="radio" class="form-check-input" name="protectedPlace" id="isAProtectedPlace" value="Y" <c:if test="${facProfile.facilityProtected eq 'Y'}">checked="checked"</c:if> />
+                <label for="isAProtectedPlace" class="form-check-label">Yes<span class="check-circle"></span></label>
             </div>
-            <div class="col-sm-4 col-md-2" style="margin-top: 8px">
-                <label for="notAProtectedPlace">No</label>
-                <input type="radio" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.facilityProtected eq 'N'}">checked="checked"</c:if> />
+            <div class="form-check col-sm-4 col-md-2" style="margin-top: 8px">
+                <input type="radio" class="form-check-input" name="protectedPlace" id="notAProtectedPlace" value="N" <c:if test="${facProfile.facilityProtected eq 'N'}">checked="checked"</c:if> />
+                <label for="notAProtectedPlace" class="form-check-label">No<span class="check-circle"></span></label>
             </div>
             <span data-err-ind="facilityProtected" class="error-msg"></span>
         </div>
@@ -237,6 +237,23 @@
             </c:forEach>
             <a class="btn file-upload btn-secondary" data-upload-file="gazetteOrder" href="javascript:void(0);">Upload</a>
             <span data-err-ind="gazetteOrder" class="error-msg"></span>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="notGazetteModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12"><span>Please note that the facility has to be a Protected Place in order to get an Approval to Possess First Schedule Part II, Second Schedule biological agent and/or Fifth Schedule toxin unless otherwise informed by MOH</span></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center">
+                <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal">OK</button>
+            </div>
         </div>
     </div>
 </div>

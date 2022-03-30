@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
@@ -30,7 +31,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateFacilityAdmin(@RequestBody FacilityAdminAndOfficerDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/approved-facility-certifier", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateApprovedFacilityCertifier(@RequestBody ApprovedFacilityCertifierDto dto);
+    ValidationResultDto validateFacilityAfc(@RequestBody FacilityAfcDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/committee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FileDataValidationResultDto<FacilityCommitteeFileDto> validateFacilityCommittee(@RequestBody FacilityCommitteeDto dto);
@@ -57,7 +58,7 @@ public interface FacilityRegisterClient {
     String saveNewFacilityDraft(@RequestBody FacilityRegisterDto dto);
 
     @PostMapping(path = "/register/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
+    ResponseDto<AppMainInfo> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
 
     @GetMapping(path = "/register/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApplicationId(@PathVariable("appId") String appId);

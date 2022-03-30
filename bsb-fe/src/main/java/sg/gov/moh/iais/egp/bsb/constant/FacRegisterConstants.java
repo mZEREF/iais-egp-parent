@@ -58,6 +58,9 @@ public class FacRegisterConstants {
     public static final String KEY_JUMP_DEST_NODE          = "destNode";
     public static final String KEY_DEST_NODE_ROUTE         = "nodeRoute";
 
+    public static final String KEY_APP_NO                  = "appNo";
+    public static final String KEY_APP_DT                  = "appDt";
+
     public static final String KEY_SHOW_ERROR_SWITCH       = "needShowValidationError";
 
     public static final String KEY_SELECTED_CLASSIFICATION = "SELECTED_CLASSIFICATION";

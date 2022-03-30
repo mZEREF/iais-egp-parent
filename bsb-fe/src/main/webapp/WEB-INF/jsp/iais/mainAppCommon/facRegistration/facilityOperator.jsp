@@ -2,16 +2,13 @@
 <%--@elvariable id="facOperator" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto"--%>
 <div class="form-group ">
     <div class="col-sm-5 control-label">
-        <label for="operatorDesc">Designation of Facility Operator</label>
+        <label for="facOperator">Designation of Facility Operator</label>
         <span class="mandatory otherQualificationSpan">*</span>
     </div>
     <div class="col-sm-6 col-md-7">
-        <input maxLength="60" type="text" autocomplete="off" name="operatorDesc" id="operatorDesc" value='<c:out value="${facOperator.operatorDesc}"/>'/>
-        <span data-err-ind="operatorDesc" class="error-msg"></span>
+        <input maxLength="60" type="text" autocomplete="off" name="facOperator" id="facOperator" value='<c:out value="${facOperator.facOperator}"/>'/>
+        <span data-err-ind="facOperator" class="error-msg"></span>
     </div>
-</div>
-
-<div class="form-group">
     <div class="col-sm-12 control-label" style="font-size: 14px">
         Note: The Facility Operator is the person who has overall control and oversight of the management of the facility such as the Chief Executive Officer of the company or a person of equivalent level.
     </div>

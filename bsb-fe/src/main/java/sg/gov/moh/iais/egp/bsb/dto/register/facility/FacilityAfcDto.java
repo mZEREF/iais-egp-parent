@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApprovedFacilityCertifierDto extends ValidatableNodeValue {
+public class FacilityAfcDto extends ValidatableNodeValue {
     private String appointed;
     private String afc;
     private String selectReason;
@@ -22,7 +22,7 @@ public class ApprovedFacilityCertifierDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateApprovedFacilityCertifier", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityAfc", new Object[]{this});
         return validationResultDto.isPass();
     }
 
