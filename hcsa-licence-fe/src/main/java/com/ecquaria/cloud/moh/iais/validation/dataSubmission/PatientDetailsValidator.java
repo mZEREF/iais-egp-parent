@@ -3,21 +3,22 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopPatientSelectService;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PatientDetailsValidator implements CustomizeValidator {
@@ -38,7 +39,16 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if (patientInformation != null && (StringUtil.isEmpty(patientInformationDto.getId()) || !Objects.equals(patientInformationDto.getId(), patientInformationDto.getId()))) {
             errorMap.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
         }
-
+        String birthDate = patientInformationDto.getBirthData();
+        if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
+            try {
+                if (Formatter.compareDateByDay(birthDate) > 0) {
+                    errorMap.put("birthData", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
+                }
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
+            }
+        }
         if("AR_IT_004".equals(patientInformationDto.getIdType()) && StringUtil.isEmpty(patientInformationDto.getNationality())){
             errorMap.put("nationality", "GENERAL_ERR0006");
         }
