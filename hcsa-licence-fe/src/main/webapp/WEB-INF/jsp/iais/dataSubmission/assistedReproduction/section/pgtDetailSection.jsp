@@ -18,8 +18,8 @@
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Types of Preimplantation Genetic Testing" mandatory="true"/>
-                    <div class="col-md-6">
-                        <iais:value width="6" cssClass="col-md-6">
+                    <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -32,7 +32,7 @@
                                         class="check-square"></span><iais:code code="PGTTP001"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        name="isPgtMRare" id="isPgtMRare"
@@ -43,7 +43,7 @@
                                         class="check-square"></span><iais:code code="PGTTP002"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -56,7 +56,7 @@
                                         class="check-square"></span><iais:code code="PGTTP003"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        name="isPgtSr" id="isPgtSr"
@@ -67,7 +67,7 @@
                                         class="check-square"></span><iais:code code="PGTTP004"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -80,7 +80,7 @@
                                         class="check-square"></span><iais:code code="PGTTP005"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        name="isPtt" id="isPtt"
@@ -91,7 +91,7 @@
                                         class="check-square"></span><iais:code code="PGTTP006"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -126,7 +126,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="PGT-M Performed" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -201,7 +201,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="PGT-A Performed Because of" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -240,8 +240,8 @@
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="What was the Result of the PGT-A Test?" mandatory="true"/>
-                        <div class="col-md-6">
-                            <iais:value width="6" cssClass="col-md-6">
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input"
                                            type="radio"
@@ -255,7 +255,7 @@
                                             class="check-circle"></span>Normal</label>
                                 </div>
                             </iais:value>
-                            <iais:value width="6" cssClass="col-md-6">
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="pgtAResult" value="Abnormal" id="radioAbnormal"
@@ -297,8 +297,8 @@
 
                 <iais:row>
                     <iais:field width="5" value="Please indicate Preimplantation Genetic Testing Co-funding?" mandatory="true"/>
-                    <div class="col-md-6">
-                        <iais:value width="3" cssClass="col-md-3">
+                    <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
@@ -312,7 +312,7 @@
                                         class="check-circle"></span>Yes</label>
                             </div>
                         </iais:value>
-                        <iais:value width="3" cssClass="col-md-3">
+                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                        name="isPgtCoFunding" value="0" id="radioNo"
@@ -329,8 +329,8 @@
                 <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Is there an Appeal?" mandatory="true"/>
-                        <div class="col-md-6">
-                            <iais:value width="3" cssClass="col-md-3">
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input"
                                            type="radio"
@@ -344,7 +344,7 @@
                                             class="check-circle"></span>Yes</label>
                                 </div>
                             </iais:value>
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio"
                                            name="isThereAppeal" value="0" id="appealNo"
