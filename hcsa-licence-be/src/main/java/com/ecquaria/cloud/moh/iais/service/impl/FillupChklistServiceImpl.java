@@ -848,18 +848,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return applicationClient.updateApplication(applicationDto).getEntity();
     }
 
-  /*  private void removeOtherTask(List<TaskDto> dtos, String taskId) {
-        if(!IaisCommonUtils.isEmpty(dtos)){
-            for(TaskDto temp:dtos){
-                if(removeOtherTaskLogic(temp,taskId)){
-                    temp.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-                    temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    taskService.updateTask(temp);
-                }
-            }
-        }
-    }*/
-
     public boolean removeOtherTaskLogic(TaskDto temp,String taskId){
         if(!taskId.equals(temp.getId())&&TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY.equals(temp.getProcessUrl())&&!temp.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
             return true;
@@ -1222,16 +1210,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(AdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
             totalNum++;
             if(!StringUtil.isEmpty(aditem.getAdAnswer())){
-                if( !"Yes".equalsIgnoreCase(aditem.getAdAnswer())){
-                    if(!StringUtil.isEmpty(aditem.getRemark())){
-                        doNum++;
-                        if("No".equals(aditem.getAdAnswer())){
-                            ncNum++;
-                        }
+                if( "No".equalsIgnoreCase(aditem.getAdAnswer())){
+                    if(StringUtil.isNotEmpty(aditem.getRemark()) && StringUtil.isNotEmpty(aditem.getNcs())){
+                        ncNum++;
                     }
-                }else {
-                    doNum++;
                 }
+                doNum++;
             }
         }
         serListDto.setAdhocTotal(totalNum);
@@ -1257,16 +1241,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
             totalNum++;
             if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                if( !"Yes".equalsIgnoreCase(cqDto.getChkanswer())){
-                    if(!StringUtil.isEmpty(cqDto.getRemark())){
-                        doNum++;
-                        if("No".equals(cqDto.getChkanswer())){
+                if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                    if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
                             ncNum++;
-                        }
                     }
-                }else {
-                    doNum++;
                 }
+                doNum++;
             }
         }
         serListDto.setGeneralTotal(totalNum);
@@ -1284,17 +1264,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
                     totalNum++;
                     if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                        if( !"Yes".equalsIgnoreCase(cqDto.getChkanswer())){
-                            if(!StringUtil.isEmpty(cqDto.getRemark())){
-                                doNum++;
-                                if("No".equals(cqDto.getChkanswer())){
-                                    ncNum++;
-                                }
+                        if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                            if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
+                                ncNum++;
                             }
-                        }else {
-                            doNum++;
                         }
-
+                        doNum++;
                     }
                 }
             }
@@ -1305,48 +1280,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
 
-
-
-
-    private List<InspectionFillCheckListDto> getOtherVersionCommList(List<AppPremisesPreInspectChklDto> chkList,InspectionFillCheckListDto maxVersionChkl, String appPremCorrId) {
-        List<InspectionFillCheckListDto> otherVersionChkList = IaisCommonUtils.genNewArrayList();
-
-        if(!IaisCommonUtils.isEmpty(chkList)){
-            String maxVersion = chkList.get(0).getVersion();
-            String comFigId = maxVersionChkl.getConfigId();
-            try {
-                int versionNum = Integer.parseInt(maxVersion);
-                for(int i = versionNum-2;i>0;i--){
-                    List<AppPremisesPreInspectChklDto> versionCkList =  fillUpCheckListGetAppClient.getPremInsChklListByPremIdAndVersion(appPremCorrId,versionNum+"").getEntity();
-                    List<InspectionFillCheckListDto> otherverList = getOtherVersionChkList(versionCkList,comFigId);
-                    if(!IaisCommonUtils.isEmpty(otherverList)){
-                        otherVersionChkList.add(otherverList.get(0));
-                    }
-                }
-            }catch (Exception e){
-                log.info("Integer formatter error");
-            }
-        }
-        return otherVersionChkList;
-    }
-
-    private List<InspectionFillCheckListDto> getOtherVersionChkList(List<AppPremisesPreInspectChklDto> versionCkList, String comConfigId) {
-        InspectionFillCheckListDto comDto;
-        AppPremInsDraftDto draftDto;
-        List<InspectionFillCheckListDto> comDtoList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(versionCkList)){
-            for(AppPremisesPreInspectChklDto temp:versionCkList){
-                if(temp.getChkLstConfId().equals(comConfigId)){
-                    draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
-                    if(draftDto!=null && !StringUtil.isEmpty(draftDto.getAnswer())){
-                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
-                        comDtoList.add(comDto);
-                    }
-                }
-            }
-        }
-        return comDtoList;
-    }
 
     @Override
     public  InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList){
@@ -1831,7 +1764,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return answerForSame;
     }
     private Boolean isSameByStrings(String s1,String s2,String answer){
-        if(!"Yes".equalsIgnoreCase(answer)){
+        if("No".equalsIgnoreCase(answer)){
             if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
                 return Boolean.FALSE;
             }

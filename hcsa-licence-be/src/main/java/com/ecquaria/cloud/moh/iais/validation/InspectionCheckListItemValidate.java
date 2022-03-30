@@ -109,7 +109,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                 for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
                     if(!fillServiceVad(request,fDto,errMap)){
                         flagNum++;
-                    };
+                    }
                 }
             }
             if(flagNum>0){
@@ -220,7 +220,7 @@ public class InspectionCheckListItemValidate extends CheckListCommonValidate imp
                          }
                      }
                  }
-                    isError=   verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+draftTag+"adhoc",errMap,moreIns);
+                    isError=  verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+draftTag+"adhoc",errMap,moreIns);
                 }
                 if(!isError){
                     ParamUtil.setSessionAttr(request,"errorTab","ServiceInfo");
