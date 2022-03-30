@@ -88,11 +88,13 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientDto, "DRP");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, patientDto);
+            if (errorMap.isEmpty()) {
+                valRFC(request,patientDto);
+            }
         }
-
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
