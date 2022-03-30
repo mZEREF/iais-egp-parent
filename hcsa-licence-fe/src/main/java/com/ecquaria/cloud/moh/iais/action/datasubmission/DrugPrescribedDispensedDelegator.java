@@ -104,7 +104,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(drugPrescribedDispensed, profile);
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, drugPrescribedDispensed);
+            if (errorMap.isEmpty()) {
+                valRFC(request,drugPrescribedDispensed);
+            }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
