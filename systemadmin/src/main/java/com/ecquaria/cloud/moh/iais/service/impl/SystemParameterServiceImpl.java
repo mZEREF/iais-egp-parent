@@ -104,30 +104,34 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();
         if (postUpdate != null){
             log.debug(StringUtil.changeForLog("go to update fe param =========>>>>>>>>>>>>>>>>>" + JsonUtil.parseToJson(postUpdate)));
+            // 1) Create and save the tracking record into DB before everything
             EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
                     "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
                     SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
-
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                    EicRequestTrackingDto entity = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+            // 1.5) Get the tracking record from DB (This one can be skipped)
+            FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+                EicRequestTrackingDto entity = fetchResult.getEntity();
+                //2) Before executing the EIC function set the running data
+                entity.setProcessNum(1);
+                Date now = new Date();
+                entity.setFirstActionAt(now);
+                entity.setLastActionAt(now);
+                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    try {
+                        // 3) Call the EIC in a try catch
                         callEicCreateSystemParameter(postUpdate);
-                        entity.setProcessNum(1);
-                        Date now = new Date();
-                        entity.setFirstActionAt(now);
-                        entity.setLastActionAt(now);
+                        // 4a) If success then update the tracking status to complete
                         entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                        trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
+                        // 4b) If failed, still needs to update the running data to DB.
                         trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
                     }
                 }
-
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
             }
         }
-
 
         log.info("save system parameter end....");
     }
