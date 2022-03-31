@@ -147,7 +147,10 @@ public class MasterCodeServiceImpl implements MasterCodeService {
         if (IaisCommonUtils.isEmpty(masterCodeDtos)) {
             return;
         }
-        // 1) Create and save the tracking record into DB before everything
+
+        eicGatewayClient.callEicWithTrack(masterCodeDtos, "syncMasterCodeFe", this.getClass(),"syncMasterCodeFeFromTrack");
+
+       /* // 1) Create and save the tracking record into DB before everything
         EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT,
                 MasterCodeService.class.getName(), "syncMasterCodeFeFromTrack", currentApp + "-" + currentDomain,
                 String.class.getName(), JsonUtil.parseToJson(masterCodeDtos));
@@ -168,7 +171,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
             log.error(e.getMessage(), e);
         }
         // 5) save track
-        requestTrackingHelper.saveEicTrack(EicClientConstant.SYSTEM_ADMIN_CLIENT, track);
+        requestTrackingHelper.saveEicTrack(EicClientConstant.SYSTEM_ADMIN_CLIENT, track);*/
     }
 
     private void syncMasterCodeFeWithoutTrack(List<MasterCodeDto> masterCodeDtos) {
