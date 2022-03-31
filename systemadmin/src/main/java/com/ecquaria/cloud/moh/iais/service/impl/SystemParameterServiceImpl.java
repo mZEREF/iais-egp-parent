@@ -104,7 +104,8 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();
         if (postUpdate != null){
             log.debug(StringUtil.changeForLog("go to update fe param =========>>>>>>>>>>>>>>>>>" + JsonUtil.parseToJson(postUpdate)));
-            // 1) Create and save the tracking record into DB before everything
+            eicGatewayClient.callEicWithTrack(postUpdate, "saveSystemParameterFe");
+            /* // 1) Create and save the tracking record into DB before everything
             EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, SystemParameterServiceImpl.class.getName(),
                     "callEicCreateSystemParameter", currentApp + "-" + currentDomain,
                     SystemParameterDto.class.getName(), JsonUtil.parseToJson(postUpdate));
@@ -130,19 +131,19 @@ public class SystemParameterServiceImpl implements SystemParameterService {
                         trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
                     }
                 }
-            }
+            }*/
         }
 
         log.info("save system parameter end....");
     }
 
-    public void callEicCreateSystemParameter(SystemParameterDto systemParameterDto){
+    /*public void callEicCreateSystemParameter(SystemParameterDto systemParameterDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         systemParameterDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         eicGatewayClient.saveSystemParameterFe(systemParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-    }
+    }*/
 
 
     @Override
