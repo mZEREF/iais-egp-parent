@@ -1,5 +1,5 @@
 <c:if test="${empty declaration}">
-    <c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
+    <c:set var="declaration" value="${dpSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 </c:if>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -15,7 +15,7 @@
                 <iais:row>
                     <div class="form-check">
                         <input class="form-check-input" id="declaration" type="checkbox" name="declaration" aria-invalid="false" value="1"
-                        <c:if test="${!empty arSuperDataSubmissionDto.dataSubmissionDto.declaration}">
+                        <c:if test="${!empty dpSuperDataSubmissionDto.dataSubmissionDto.declaration}">
                                checked="checked"
                         </c:if>
                                <c:if test="${formPriview == 1}">disabled="disabled"</c:if>

@@ -295,6 +295,18 @@ public abstract class DpCommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_CONFIRM);
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
+        // declaration
+        DpSuperDataSubmissionDto dpSuperDataSubmission = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = dpSuperDataSubmission.getDataSubmissionDto();
+        if(dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO)){
+            String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+            if(declaration != null && declaration.length >0){
+                dataSubmissionDto.setDeclaration(declaration[0]);
+            }else{
+                dataSubmissionDto.setDeclaration(null);
+            }
+        }
+        DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmission, bpc.request);
         // others
         pageConfirmAction(bpc);
     }
@@ -305,7 +317,25 @@ public abstract class DpCommonDelegator {
      * @param bpc
      * @throws
      */
-    public void pageConfirmAction(BaseProcessClass bpc) {}
+    public void pageConfirmAction(BaseProcessClass bpc) {
+        DpSuperDataSubmissionDto dpSuperDataSubmission = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = dpSuperDataSubmission.getDataSubmissionDto();
+        if(dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO)){
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+            //for declaration
+            String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+            if("submission".equals(crud_action_type)){
+                String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+                if(declaration == null || declaration.length == 0){
+                    errorMap.put("declaration", "GENERAL_ERR0006");
+                }
+            }
+            if (!errorMap.isEmpty()) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
+        }
+    }
 
 
 
