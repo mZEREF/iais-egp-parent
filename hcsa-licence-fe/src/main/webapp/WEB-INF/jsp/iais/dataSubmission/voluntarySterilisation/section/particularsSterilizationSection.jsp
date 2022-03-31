@@ -86,10 +86,23 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Date of HEC Review" />
+        <iais:field width="5" id="hecReviewDateLabel" value="Date of HEC Review" mandatory="${sexualSterilizationDto.reviewedByHec ==true ? true : false}" />
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker id="hecReviewDate" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_hecReviewDate"></span>
         </iais:value>
     </iais:row>
 </div>
+<script>
+    $(document).ready(function() {
+        $('input[name=reviewedByHec]').change(function () {
+            if($('#genderMale').is(':checked')){
+                $('#hecReviewDateLabel').append('<span class="mandatory">&nbsp;*</span>');
+            }
+            if($('#genderFemale').is(':checked')){
+                $('#hecReviewDateLabel').find('.mandatory').remove();
+
+            }
+        });
+    });
+</script>
