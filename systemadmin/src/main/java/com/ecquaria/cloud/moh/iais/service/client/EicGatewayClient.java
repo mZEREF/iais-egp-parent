@@ -76,7 +76,7 @@ public class EicGatewayClient {
 		FeignResponseEntity<R> invoke = null;
 		try {
 			Method method = this.getClass().getMethod(clientMethod, obj.getClass());
-			invoke = (FeignResponseEntity<R>) method.invoke(obj, this);
+			invoke = (FeignResponseEntity<R>) method.invoke(this, obj);
 			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
 		} catch (Exception e) {
 			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
@@ -101,7 +101,7 @@ public class EicGatewayClient {
 		FeignResponseEntity<R> invoke = null;
 		try {
 			Method method = this.getClass().getMethod(clientMethod, List.class);
-			invoke = (FeignResponseEntity<R>) method.invoke(objs, this);
+			invoke = (FeignResponseEntity<R>) method.invoke(this, objs);
 			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
 		} catch (Exception e) {
 			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
