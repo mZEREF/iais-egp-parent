@@ -109,6 +109,9 @@
                                                             <c:when test="${msg.status == 'MSGRS001' || msg.status == 'MSGRS002'}">
                                                                 <tr style="font-weight:bold">
                                                             </c:when>
+                                                            <c:when test="${msg.status == 'MSGRS004'}">
+                                                                <tr style="font-weight: bolder">
+                                                            </c:when>
                                                             <c:otherwise>
                                                                 <tr>
                                                             </c:otherwise>
@@ -126,7 +129,7 @@
                                                         <%--                                </C:if>--%>
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                                            <p><a href="#" onclick="bsbInboxViewMsg('<iais:mask name="action_value" value="${msg.id}"/>')">${msg.subject}</a>
+                                                            <p><a href="#" onclick="bsbInboxViewMsg('<iais:mask name="action_value" value="${msg.id}"/>')" >${msg.subject}</a>
                                                             </p>
                                                         </td>
                                                         <td>

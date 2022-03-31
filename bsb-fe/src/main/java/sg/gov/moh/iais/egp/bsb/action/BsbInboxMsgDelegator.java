@@ -4,16 +4,21 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
+import sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgContentDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.entity.MsgMaskParam;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +44,7 @@ public class BsbInboxMsgDelegator {
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+    private static final String KEY_SIGN_EQUAL = "=";
 
     private final BsbInboxClient inboxClient;
 
@@ -139,6 +145,29 @@ public class BsbInboxMsgDelegator {
                 break;
         }
         ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
+    }
+
+    public void viewMsg(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        //get mask msg id
+        String maskedMsgId = ParamUtil.getString(request,KEY_ACTION_VALUE);
+        //unMasked msg id
+        if(StringUtils.hasLength(maskedMsgId)){
+           String msgId = MaskUtil.unMaskValue(KEY_ACTION_VALUE,maskedMsgId);
+           InboxMsgContentDto msgContentDto = inboxClient.searchInboxContentByMsgId(msgId).getEntity();
+           String finalContent = msgContentDto.getContent();
+           List<MsgMaskParam> msgMaskParams = msgContentDto.getInboxMaskParamDtoList();
+           if(msgMaskParams != null && !msgMaskParams.isEmpty()){
+               for (MsgMaskParam maskParam : msgMaskParams) {
+                   finalContent = finalContent.replaceAll(KEY_SIGN_EQUAL+maskParam.getParamValue(),
+                           KEY_SIGN_EQUAL+MaskUtil.maskValue(maskParam.getParamName(),maskParam.getParamValue()));
+               }
+           }
+            //get msg content
+            //set content into request
+            ParamUtil.setRequestAttr(request, FeInboxConstants.KEY_BSB_FE_MSG_CONTENT,finalContent);
+           inboxClient.updateInboxMsgStatusRead(msgId);
+        }
     }
 
 

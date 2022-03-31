@@ -9,4 +9,6 @@ public class FeInboxConstants {
 
 
     public static final String KEY_ACTION_AVAILABLE = "actionAvailable";
+
+    public static final String KEY_BSB_FE_MSG_CONTENT = "MSG_CONTENT";
 }
