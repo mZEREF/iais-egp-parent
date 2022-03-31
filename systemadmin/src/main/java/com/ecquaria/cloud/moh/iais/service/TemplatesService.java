@@ -18,4 +18,6 @@ public interface TemplatesService {
     MsgTemplateDto getMsgTemplate(String id);
     MsgTemplateDto updateMsgTemplate(MsgTemplateDto msgTemplateDto);
     List<String> suggestTemplateCodeDescription(String code);
+
+    void syncTemplateFe(MsgTemplateDto msgTemplateDto);
 }

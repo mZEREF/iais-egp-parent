@@ -163,8 +163,15 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             ert.setFirstActionAt(now);
         }
         try {
-            Class dtoCls = MiscUtil.getClassFromName(ert.getDtoClsName());
-            Object obj = JsonUtil.parseToObject(ert.getDtoObject(), dtoCls);
+            Class dtoCls;
+            Object obj;
+            if (String.class.getName().equals(ert.getDtoClsName())) {
+                dtoCls = String.class;
+                obj = ert.getDtoObject();
+            } else {
+                dtoCls = MiscUtil.getClassFromName(ert.getDtoClsName());
+                obj = JsonUtil.parseToObject(ert.getDtoObject(), dtoCls);
+            }
             Class actCls = MiscUtil.getClassFromName(ert.getActionClsName());
             Object actObj = SpringContextHelper.getContext().getBean(actCls);
             Method method = actCls.getMethod(ert.getActionMethod(), dtoCls);
