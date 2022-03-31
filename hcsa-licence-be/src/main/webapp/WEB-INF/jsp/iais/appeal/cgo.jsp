@@ -1,6 +1,6 @@
 
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
-  <div id="wizard-page-title">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
+  <div id="wizard-page-title" style="font-size: 2rem;">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
@@ -51,64 +51,31 @@
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
-                        <c:choose>
-                          <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
-                            <div id="control--runtime--2" class="control control-caption-horizontal">
-                              <c:if test="${currentCgo != null}">
-                                <div class="form-group form-horizontal formgap">
-                                  <div class="col-sm-4 control-label formtext control">
-                                    <div class="cgo-header">
-                                      <strong>Clinical Governance Officer </strong>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-8 text-right">
-
-                                    <div class="hidden">
-                                      <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-10">
-                                    <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo} (<iais:code code="${currentCgo.idType}"/>)</label>
-                                  </div>
-                                  <div class="col-sm-2" style="margin-top:3%;">
-                                    <div class="edit-content">
-                                      <c:if test="${'true' == canEdit}">
-                                        <p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
-                                      </c:if>
-                                    </div>
-                                  </div>
-                                </div>
-                              </c:if>
-                            </div>
-                          </c:when>
-                          <c:otherwise>
-                            <div id="control--runtime--" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
-                                <div class="col-sm-4 control-label formtext control">
-                                  <div class="cgo-header">
-                                    <strong>Clinical Governance Officer </strong>
-                                  </div>
-                                </div>
-                                <div class="col-sm-8 text-right">
-                                </div>
+                        <div id="control--runtime--" class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
+                            <div class="col-sm-4 control-label formtext control">
+                              <div class="cgo-header">
+                                <strong>Clinical Governance Officer </strong>
                               </div>
                             </div>
-                            <div id="control--runtime--2" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-5 control-label formtext ">
-                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" style="display: block;">Add/Assign a Clinical Governance Officer</label>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
-                                  <div >
-                                    <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
-                                    <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
-                                  </div>
-                                </div>
+                            <div class="col-sm-8 text-right">
+                            </div>
+                          </div>
+                        </div>
+                        <div id="control--runtime--2" class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-5 control-label formtext ">
+                              <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" style="display: block;">Add/Assign a Clinical Governance Officer</label>
+                              <span class="upload_controls"></span>
+                            </div>
+                            <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
+                              <div >
+                                <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
                               </div>
                             </div>
-                          </c:otherwise>
-                        </c:choose>
+                          </div>
+                        </div>
                         <div class="profile-info-gp hidden"></div>
                         <div id="newOfficer" class="new-officer-form hidden">
                           <table aria-describedby="" class="control-grid" >
@@ -126,7 +93,7 @@
                                       <label  class="control-label control-set-font control-font-label">
                                         Name
                                       </label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="salutation${suffix}">
@@ -151,7 +118,7 @@
                                       <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
                                         ID No.
                                       </label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
@@ -191,7 +158,7 @@
                                     <div class="form-group form-horizontal formgap">
                                       <div class="col-sm-4 control-label formtext">
                                         <label class="control-label control-set-font control-font-label">Country of issuance</label>
-                                        <span class="mandatory">*</span>
+                                        
                                         <span class="upload_controls"></span>
                                       </div>
                                       <div class="col-sm-5 col-md-7" id="nationality${suffix}">
@@ -213,7 +180,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label class="control-label control-set-font control-font-label">Designation</label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="designation${suffix}">
@@ -251,7 +218,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label  class="control-label control-set-font control-font-label">Professional Type</label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
@@ -272,7 +239,7 @@
                                       <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
@@ -351,7 +318,7 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
+                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
@@ -370,7 +337,7 @@
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
                                       <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
-                                      <span class="mandatory">*</span>
+                                      
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-4 col-md-7">
