@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -33,17 +34,18 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -56,7 +58,7 @@ public class FeUserManagement {
     @Autowired
     IntranetUserService intranetUserService;
     @Autowired
-    EicRequestTrackingHelper requestTrackingHelper;
+    private EicRequestTrackingHelper requestTrackingHelper;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -159,7 +161,7 @@ public class FeUserManagement {
                             .findAny();
                     user.ifPresent(i -> {
                         i.setStatus(AppConsts.COMMON_STATUS_DELETED);
-                        eicGatewayClient.syncFeUser(i);
+                        syncFeUserWithTrack(i);
                         intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
                     });
 
@@ -340,21 +342,8 @@ public class FeUserManagement {
                         userAttr.setId(orgUserDto.getId());
                         intranetUserService.assignRole(orgUserRoleDtoList);
                     }
-                    EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT,
-                            FeUserManagement.class.getName(), "syncFeUser", currentApp + "-" + currentDomain,
-                            FeUserDto.class.getName(), JsonUtil.parseToJson(userAttr));
                     //sync fe db
-                    try {
-                        syncFeUser(userAttr);
-                        track.setProcessNum(track.getProcessNum() + 1);
-                        track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
-                    } catch (Throwable e){
-                        track.setProcessNum(track.getProcessNum() + 1);
-                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
-                        log.error(e.getMessage(), e);
-                    }
-
+                    syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
                 }else {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr("identityNo", "USER_ERR002"));
@@ -363,6 +352,31 @@ public class FeUserManagement {
                 }
             }
         }
+    }
+
+    public void syncFeUserWithTrack(FeUserDto userAttr) {
+        // 1) Create and save the tracking record into DB before everything
+        EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT,
+                FeUserManagement.class.getName(), "syncFeUserWithEic", currentApp + "-" + currentDomain,
+                FeUserDto.class.getName(), JsonUtil.parseToJson(userAttr));
+        //2) Before executing the EIC function set the running data
+        track.setProcessNum(track.getProcessNum() + 1);
+        Date now = new Date();
+        if (track.getFirstActionAt() == null) {
+            track.setFirstActionAt(now);
+        }
+        track.setLastActionAt(now);
+        try {
+            // 3) Call the EIC in a try catch
+            syncFeUser(userAttr);
+            // 4a) If success then update the tracking status to complete
+            track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        } catch (Exception e) {
+            // 4b) If failed, still needs to update the running data to DB.
+            track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+            log.error(e.getMessage(), e);
+        }
+        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
     }
 
     public void syncFeUser(FeUserDto userAttr) {
