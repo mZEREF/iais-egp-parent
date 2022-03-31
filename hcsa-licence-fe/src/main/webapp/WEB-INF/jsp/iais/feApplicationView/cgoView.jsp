@@ -1,15 +1,4 @@
 
-
-
-
-<style>
-  table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
-    margin-bottom: 15px;margin-top: 25px;
-
-
-  }
-
-</style>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;margin-left: 2%">
   <div id="wizard-page-title">A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -70,11 +59,7 @@
                                     </div>
                                   </div>
                                   <div class="col-sm-8 text-right">
-                                    <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
-                                      <div class="">
-<%--                                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em></h4>--%>
-                                      </div>
-                                    </c:if>
+
                                     <div class="hidden">
                                       <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     </div>
