@@ -82,7 +82,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
                 String propertyKey = value.value();
                 if (StringUtil.isNotEmpty(propertyKey)){
                     propertyKey = propertyKey.replace("${", "").replace("}", "");
-                    log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
+                    // log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
                     propertiesBitIndex.put(propertyKey, index++);
                 }
             }

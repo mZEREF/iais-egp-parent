@@ -30,4 +30,6 @@ public interface MasterCodeService {
     MasterCodeDto getMaxVersionMsDto(String masterCodeKey);
     List<MasterCodeDto> inactiveMsterCode(String masterCodeKey);
     void syncMasterCodeFe(List<MasterCodeDto> masterCodeDtos);
+
+    void syncMasterCodeFeFromTrack(String jsonList);
 }
