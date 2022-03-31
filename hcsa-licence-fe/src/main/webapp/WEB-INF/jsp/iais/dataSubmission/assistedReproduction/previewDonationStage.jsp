@@ -9,7 +9,6 @@
 <webui:setLayout name="iais-internet"/>
 
 <%@ include file="common/arHeader.jsp" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 
 <c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

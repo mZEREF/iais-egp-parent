@@ -19,59 +19,33 @@ public class ChecklistHelper {
     private static final String ERR_MSG_CONFIG_DTO_NULL = "Config DTO should not be null";
 
 
-    /** Find the suitable service code for checklist according facility type
+    /**
+     * Find the suitable service code for checklist according facility type
+     *
      * @param classification facility classification
-     * @param activityType facility activity
      * @return an enum instance of ChecklistSvcCode; or null if the data is not covered by the logic here.
      */
-    public static ChecklistSvcCode getSvcCodeByActivity(String classification, String activityType) {
-        // TODO, the logic will change, will determine svc code by classification only (maybe)
-//        Assert.hasLength(classification, "Classification should not be empty");
-//        Assert.hasLength(activityType, "Activity type should not be empty");
-//        ChecklistSvcCode svcCode = null;
-//        if (classification.equals(MasterCodeConstants.FAC_CLASSIFICATION_BSL3)) {
-//            if (activityType.equals(MasterCodeConstants.ACTIVI_FIRST_SECOND_SCHEDULE_BA)) {
-//                svcCode = ChecklistSvcCode.BCD;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_LSP_FIRST_SCHEDULE)) {
-//                svcCode = ChecklistSvcCode.BCL;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_HANDLE_FIFTH_SCHEDULE_TOXIN)) {
-//                svcCode = ChecklistSvcCode.BCF;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_HANDLE_PV_MATERIAL)) {
-//                svcCode = ChecklistSvcCode.BCP;
-//            }
-//        } else if (classification.equals(MasterCodeConstants.FAC_CLASSIFICATION_BSL4)) {
-//            if (activityType.equals(MasterCodeConstants.ACTIVI_FIRST_SECOND_SCHEDULE_BA)) {
-//                svcCode = ChecklistSvcCode.BDF;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_LSP_FIRST_SCHEDULE)) {
-//                svcCode = ChecklistSvcCode.BDL;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_FIFTH_SCHEDULE_TOXIN)) {
-//                svcCode = ChecklistSvcCode.BDF;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_PV_MATERIALS)) {
-//                svcCode = ChecklistSvcCode.BDP;
-//            }
-//        } else if (classification.equals(MasterCodeConstants.FAC_CLASSIFICATION_UF)) {
-//            if (activityType.equals(MasterCodeConstants.ACTIVI_FIRST_SCHEDULE_BA)) {
-//                svcCode = ChecklistSvcCode.UFD;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_LSP_THIRD_SCHEDULE)) {
-//                svcCode = ChecklistSvcCode.UFL;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_FIFTH_SCHEDULE_TOXIN)) {
-//                svcCode = ChecklistSvcCode.UFF;
-//            }
-//        } else if (classification.equals(MasterCodeConstants.FAC_CLASSIFICATION_LSPF)) {
-//            if (activityType.equals(MasterCodeConstants.ACTIVI_LSP_FIRST_SCHEDULE)) {
-//                svcCode = ChecklistSvcCode.LSF;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_LSP_THIRD_SCHEDULE)) {
-//                svcCode = ChecklistSvcCode.LST;
-//            }
-//        } else if (classification.equals(MasterCodeConstants.FAC_CLASSIFICATION_RF)) {
-//            if (activityType.equals(MasterCodeConstants.ACTIVI_EXEMPTED_HANDLE_FIFTH_SCHEDULE_TOXIN)) {
-//                svcCode = ChecklistSvcCode.RFF;
-//            } else if (activityType.equals(MasterCodeConstants.ACTIVI_HANDLE_PV_POTENTIAL_MATERIAL)) {
-//                svcCode = ChecklistSvcCode.RFP;
-//            }
-//        }
-//        return svcCode;
-        return null;
+    public static ChecklistSvcCode getSvcCodeByClassification(String classification) {
+        Assert.hasLength(classification, "Classification should not be empty");
+        ChecklistSvcCode svcCode = null;
+        switch (classification) {
+            case MasterCodeConstants.FAC_CLASSIFICATION_BSL3:
+                svcCode = ChecklistSvcCode.CHC;
+                break;
+            case MasterCodeConstants.FAC_CLASSIFICATION_BSL4:
+                svcCode = ChecklistSvcCode.CMC;
+                break;
+            case MasterCodeConstants.FAC_CLASSIFICATION_UF:
+                svcCode = ChecklistSvcCode.UFT;
+                break;
+            case MasterCodeConstants.FAC_CLASSIFICATION_LSPF:
+                svcCode = ChecklistSvcCode.LSP;
+                break;
+            case MasterCodeConstants.FAC_CLASSIFICATION_RF:
+                svcCode = ChecklistSvcCode.RFT;
+                break;
+        }
+        return svcCode;
     }
 
 

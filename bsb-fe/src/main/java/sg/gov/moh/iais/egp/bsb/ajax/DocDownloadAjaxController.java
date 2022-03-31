@@ -26,6 +26,8 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamSavedDoc;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
@@ -49,6 +51,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSU
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_APPLICATION_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_INFO;
@@ -164,6 +168,16 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCommitteeSavedFile);
     }
 
+    @GetMapping("/facCertReg/certTeamDto/new/{id}")
+    public void downloadFacCertTeamDtoNewFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facCertRegCertTeamDtoNewFile);
+    }
+
+    @GetMapping("/facCertReg/certTeamDto/repo/{id}")
+    public void downloadFacCertTeamDtoSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facCertRegCertTeamDtoSavedFile);
+    }
+
     @GetMapping("/facReg/authoriser/new/{id}")
     public void downloadFacAuthoriserNewFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegAuthoriserNewFile);
@@ -174,6 +188,15 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegAuthoriserSavedFile);
     }
 
+    @GetMapping("/facCertifierReg/certTeam/new/{id}")
+    public void downloadCertNotSavedTeamFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegCertTeamGetNewFile);
+    }
+
+    @GetMapping("/facCertifierReg/certTeam/repo/{id}")
+    public void downloadCertSavedTeamFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCertTeamGetSavedFile);
+    }
 
     @GetMapping("/facCertifierReg/new/{id}")
     public void downloadCertNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
@@ -367,6 +390,30 @@ public class DocDownloadAjaxController {
         return newDocInfo.getMultipartFile();
     }
 
+
+    /** Facility registration get new uploaded data file for committee */
+    private MultipartFile facCertRegCertTeamDtoNewFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
+        CertifyingTeamDto  certifyingTeamDto = (CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue();
+        NewDocInfo newDocInfo = certifyingTeamDto.getNewFile();
+        if (!newDocInfo.getTmpId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        return newDocInfo.getMultipartFile();
+    }
+
+    /** Facility registration get saved data file for committee */
+    private MultipartFile facCertRegCertTeamDtoSavedFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
+        CertifyingTeamDto  certifyingTeamDto = (CertifyingTeamDto) ((SimpleNode) facRegRoot.at( NODE_NAME_APPLICATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue();
+        DocRecordInfo docRecordInfo = certifyingTeamDto.getSavedFile();
+        if (!docRecordInfo.getRepoId().equals(id)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ID);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, docRecordInfo.getFilename(), null, content);
+    }
+
     /** Facility registration get saved data file for committee */
     private MultipartFile facRegCommitteeSavedFile(HttpServletRequest request, String id) {
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
@@ -403,6 +450,7 @@ public class DocDownloadAjaxController {
     }
 
 
+
     /**
      * Approval app get the new doc file object
      * @param id key of the newDocMap in the PrimaryDocDto
@@ -435,10 +483,18 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetNewFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
     }
+    private MultipartFile facRegCertTeamGetNewFile(HttpServletRequest request, String id) {
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
+        sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
+        return primaryDocDto.getCertTeamNewDocMap().get(id).getMultipartFile();
+    }
+
+
+
 
     private MultipartFile dataSubGetNewFile(HttpServletRequest request, String id) {
         TransferNotificationDto transferNotificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,"transferNotDto");
@@ -499,9 +555,20 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetSavedFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile facRegCertTeamGetSavedFile(HttpServletRequest request, String id) {
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_SUPPORTING_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
+        sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
+        CertTeamSavedDoc info = primaryDocDto.getCertTeamSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }

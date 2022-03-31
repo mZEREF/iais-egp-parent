@@ -31,7 +31,7 @@
 <%--@elvariable id="facAdminOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto"--%>
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
 <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
-<%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.ApprovedFacilityCertifierDto"--%>
+<%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>"--%>
@@ -59,21 +59,30 @@
                                     </fac:preview>
                                     <div class="form-horizontal" style="padding: 30px 20px 10px;">
                                         <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
+                                            <div class="col-xs-4 control-label">
                                                 <label for="remarks">Remarks</label>
                                             </div>
-                                            <div class="col-sm-6 col-md-7">
+                                            <div class="col-xs-7 col-md-8">
                                                 <textarea maxLength="1000" class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
                                                 <span data-err-ind="remarks" class="error-msg"></span>
                                             </div>
                                         </div>
                                         <div class="form-group " style="z-index: 10">
-                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="declare" id="declare" value="Y" <c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if> />
+                                            <div class="col-xs-1" style="padding: 20px 0 20px 30px;">
+                                                <input type="checkbox" name="regulationDeclare" id="regulationDeclare" value="Y" <c:if test="${previewSubmit.regulationDeclare eq 'Y'}">checked="checked"</c:if> />
                                             </div>
                                             <div class="col-xs-10 control-label">
-                                                <label for="declare">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
-                                                <span data-err-ind="declare" class="error-msg"></span>
+                                                <label for="regulationDeclare">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                                                <span data-err-ind="regulationDeclare" class="error-msg"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group " style="z-index: 10">
+                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                                                <input type="checkbox" name="accuracyDeclare" id="accuracyDeclare" value="Y" <c:if test="${previewSubmit.accuracyDeclare eq 'Y'}">checked="checked"</c:if> />
+                                            </div>
+                                            <div class="col-xs-10 control-label">
+                                                <label for="accuracyDeclare">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
+                                                <span data-err-ind="accuracyDeclare" class="error-msg"></span>
                                             </div>
                                         </div>
                                     </div>

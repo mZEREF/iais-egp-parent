@@ -60,6 +60,7 @@ $(function () {
 function readFileUploadMetaData() {
     return {
         multiUploadInputId: 'multiUploadTrigger',
+        singleUploadInputId: 'singleUploadTrigger',
         uploadFileTypeInputNameAttr: 'data-file-ind',
         fileInputDivId: 'fileUploadInputDiv',
         echoReloadInputId: 'echoReloadTrigger',

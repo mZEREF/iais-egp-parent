@@ -11,7 +11,7 @@
 <%@attribute name="facAdminOfficer" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto" %>
 <%@attribute name="facCommittee" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto" %>
 <%@attribute name="batList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>" %>
-<%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.ApprovedFacilityCertifierDto" %>
+<%@attribute name="afc" required="false" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto" %>
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
 <%@attribute name="containsBatListJudge" type="java.lang.Boolean" %>
@@ -64,7 +64,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Address Type</label>
-                                        <div class="col-xs-6"><p>${compProfile.addressType}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${compProfile.addressType}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -162,12 +162,12 @@
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Facility Operator Designee</label>
+                                        <label class="col-xs-6 control-label" style="font-weight: bold">Facility Operator Designee</label>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Salutation</label>
-                                        <div class="col-xs-6"><p>${facOperator.salutation}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facOperator.salutation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -182,7 +182,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Nationality</label>
-                                        <div class="col-xs-6"><p>${facOperator.nationality}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facOperator.nationality}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -220,7 +220,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Salutation</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.salutation}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facAdminOfficer.mainAdmin.salutation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -230,7 +230,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Nationality</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.mainAdmin.nationality}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facAdminOfficer.mainAdmin.nationality}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -266,7 +266,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Salutation</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.salutation}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facAdminOfficer.alternativeAdmin.salutation}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -276,7 +276,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Nationality</label>
-                                        <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.nationality}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facAdminOfficer.alternativeAdmin.nationality}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -316,7 +316,7 @@
                                     <c:forEach var="facOfficer" items="${facAdminOfficer.officerList}">
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Salutation</label>
-                                            <div class="col-xs-6"><p>${facOfficer.salutation}</p></div>
+                                            <div class="col-xs-6"><p><iais:code code="${facOfficer.salutation}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
@@ -326,7 +326,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="col-xs-6 control-label">Nationality</label>
-                                            <div class="col-xs-6"><p>${facOfficer.nationality}</p></div>
+                                            <div class="col-xs-6"><p><iais:code code="${facOfficer.nationality}"/></p></div>
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
@@ -511,7 +511,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label">Select Approved Facility Certifier</label>
-                                    <div class="col-xs-6"><p>${afc.afc}</p></div>
+                                    <div class="col-xs-6"><p><iais:code code="${afc.afc}"/></p></div>
                                     <div class="clear"></div>
                                 </div>
                                 <div class="form-group">

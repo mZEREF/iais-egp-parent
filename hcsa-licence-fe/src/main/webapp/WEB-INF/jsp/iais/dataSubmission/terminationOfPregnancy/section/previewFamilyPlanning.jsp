@@ -98,6 +98,18 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${familyPlanDto.topRiskCondition}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy”"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${familyPlanDto.topMedCondition}"/>
+                    </iais:value>
+                </iais:row>
                 <div <c:if test="${empty familyPlanDto.subRopReason}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Sub Reason for Request to Terminate Pregnancy" />

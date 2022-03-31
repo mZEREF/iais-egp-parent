@@ -73,6 +73,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG                         = "printflag";
     public static String PRINT_FLAG_PTART                   = "PTART";
     public static String PRINT_FLAG_PTDRP                   = "PTDRP";
+    public static String PRINT_FLAG_PTVSS                   = "PTVSS";
     public static String PRINT_FLAG_ART                     = "ART";
     public static String PRINT_FLAG_DRP                     = "DRP";
     public static String PRINT_FLAG_LDT                     = "LDT";

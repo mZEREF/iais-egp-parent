@@ -79,6 +79,7 @@
 
     function submit(action) {
         console.log("3")
+        $("[name='crud_type']").val(action);
         $("[name='crud_action_type']").val(action);
         var mainForm = document.getElementById('mainForm');
         showWaiting();

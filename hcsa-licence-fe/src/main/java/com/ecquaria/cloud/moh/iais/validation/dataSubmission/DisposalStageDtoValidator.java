@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -77,6 +78,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             if(disposalStageDto.getImmature()>maxSamplesNum){
                 errorMap.put("immature", "Cannot be greater than number of samples under patient");
             }
+            if(disposalStageDto.getImmatureString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("immature", general_err0041);
+            }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getImmatureString())){
                 errorMap.put("immature", errMsgErr002);
@@ -95,6 +100,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             if(disposalStageDto.getAbnormallyFertilised()>maxSamplesNum){
                 errorMap.put("abnormallyFertilised", "Cannot be greater than number of samples under patient");
             }
+            if(disposalStageDto.getAbnormallyFertilisedString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("abnormallyFertilised", general_err0041);
+            }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getAbnormallyFertilisedString())){
                 errorMap.put("abnormallyFertilised", errMsgErr002);
@@ -112,6 +121,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             }
             if(disposalStageDto.getUnfertilised()>maxSamplesNum){
                 errorMap.put("unfertilised", "Cannot be greater than number of samples under patient");
+            }
+            if(disposalStageDto.getUnfertilisedString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("unfertilised", general_err0041);
             }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getUnfertilisedString())){
@@ -132,6 +145,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             if(disposalStageDto.getAtretic()>maxSamplesNum){
                 errorMap.put("atretic", "Cannot be greater than number of samples under patient");
             }
+            if(disposalStageDto.getAtreticString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("atretic", general_err0041);
+            }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getAtreticString())){
                 errorMap.put("atretic", errMsgErr002);
@@ -149,6 +166,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             }
             if(disposalStageDto.getDamaged()>maxSamplesNum){
                 errorMap.put("damaged", "Cannot be greater than number of samples under patient");
+            }
+            if(disposalStageDto.getDamagedString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("damaged", general_err0041);
             }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getDamagedString())){
@@ -168,6 +189,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             if(disposalStageDto.getLysedOrDegenerated()>maxSamplesNum){
                 errorMap.put("lysedOrDegenerated", "Cannot be greater than number of samples under patient");
             }
+            if(disposalStageDto.getLysedOrDegeneratedString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("lysedOrDegenerated", general_err0041);
+            }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getLysedOrDegeneratedString())){
                 errorMap.put("lysedOrDegenerated", errMsgErr002);
@@ -185,6 +210,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
             }
             if(disposalStageDto.getUnhealthyNum()>maxSamplesNum){
                 errorMap.put("unhealthyNum", "Cannot be greater than number of samples under patient");
+            }
+            if(disposalStageDto.getUnhealthyNumString().length()>2){
+                String general_err0041= NewApplicationHelper.repLength("This field","2");
+                errorMap.put("unhealthyNum", general_err0041);
             }
         }else {
             if(StringUtil.isNotEmpty(disposalStageDto.getUnhealthyNumString())){
@@ -215,7 +244,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                     errorMap.put("otherDiscardedReason", errMsg);
                 }
-
+                if(disposalStageDto.getOtherDiscardedNumString().length()>2){
+                    String general_err0041= NewApplicationHelper.repLength("This field","2");
+                    errorMap.put("otherDiscardedNum", general_err0041);
+                }
             }
         }else {
             if(disposalStageDto.getDisposedType()!=null&&disposalStageDto.getDisposedType().equals(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM)){

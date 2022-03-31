@@ -51,6 +51,7 @@
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
+            <c:set var="formPriview" value="1"/>
             <c:choose>
             <c:when test="${printflag == 'ACKART'}">
                 <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckAR.jsp" %>

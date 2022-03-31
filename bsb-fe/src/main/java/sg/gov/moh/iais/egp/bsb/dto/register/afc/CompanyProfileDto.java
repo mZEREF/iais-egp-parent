@@ -4,24 +4,29 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_ORG_ADDRESS;
 
 /**
  *@author YiMing
  * @version 2021/10/15 14:16
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
+@JsonIgnoreProperties({"available", "validated", "dependNodes", "validationResultDto"})
 public class CompanyProfileDto extends ValidatableNodeValue {
     private String draftAppNo;
 
     private String facCertEntityId;
 
     @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.name")
-    private String orgName;
+    private String name;
 
     private String sameAddress;
 
@@ -64,9 +69,8 @@ public class CompanyProfileDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateOrganisationProfile", new Object[]{this});
-//        return validationResultDto.isPass();
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateOrganisationProfile", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override
@@ -93,12 +97,12 @@ public class CompanyProfileDto extends ValidatableNodeValue {
         this.sameAddress = sameAddress;
     }
 
-    public String getOrgName() {
-        return orgName;
+    public String getName() {
+        return name;
     }
 
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAddressType() {
@@ -206,36 +210,47 @@ public class CompanyProfileDto extends ValidatableNodeValue {
     }
 
     //    ---------------------------- request -> object ----------------------------------------------
-    private static final String KEY_ORG_NAME = "orgName";
     private static final String KEY_ADDRESS_TYPE = "addressType";
+    private static final String KEY_SAME_ADDRESS = "sameAddress";
+    private static final String KEY_REGISTERED  = "registered";
+    private static final String KEY_BLOCK       = "block";
     private static final String KEY_STREET_NAME = "streetName";
     private static final String KEY_FLOOR = "floor";
     private static final String KEY_UNIT_NO = "unitNo";
     private static final String KEY_BUILDING = "building";
     private static final String KEY_POSTAL_CODE = "postalCode";
-    private static final String KEY_ADDRESS1 = "address1";
-    private static final String KEY_ADDRESS2 = "address2";
-    private static final String KEY_ADDRESS3= "address3";
     private static final String KEY_CITY = "city";
     private static final String KEY_STATE = "state";
     private static final String KEY_COUNTRY= "country";
     private static final String KEY_YEAR_ESTABLISHED = "yearEstablished";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_CONTACT_NO = "contactNo";
-    private static final String KEY_CONTACT_PERSON = "contactPerson";
 
 
     public void reqObjMapping(HttpServletRequest request) {
-        this.setOrgName(ParamUtil.getString(request,KEY_ORG_NAME));
-        this.setAddressType(ParamUtil.getString(request,KEY_ADDRESS_TYPE));
-        this.setStreetName(ParamUtil.getString(request,KEY_STREET_NAME));
-        this.setFloor(ParamUtil.getString(request,KEY_FLOOR));
-        this.setUnitNo(ParamUtil.getString(request,KEY_UNIT_NO));
-        this.setBuilding(ParamUtil.getString(request,KEY_BUILDING));
-        this.setPostalCode(ParamUtil.getString(request,KEY_POSTAL_CODE));
+        OrgAddressInfo orgAddressInfo = (OrgAddressInfo) ParamUtil.getSessionAttr(request,KEY_ORG_ADDRESS);
+        this.setName(orgAddressInfo.getCompName());
+        String sameAddressCompany = ParamUtil.getString(request,KEY_SAME_ADDRESS);
+        if(MasterCodeConstants.YES.equals(sameAddressCompany)){
+            this.setPostalCode(orgAddressInfo.getPostalCode());
+            this.setAddressType(orgAddressInfo.getAddressType());
+            this.setBlock(orgAddressInfo.getBlockNo());
+            this.setFloor(orgAddressInfo.getFloor());
+            this.setUnitNo(orgAddressInfo.getUnitNo());
+            this.setStreetName(orgAddressInfo.getStreet());
+            this.setBuilding(orgAddressInfo.getBuilding());
+        }else{
+            this.setBlock(ParamUtil.getString(request,KEY_BLOCK));
+            this.setAddressType(ParamUtil.getString(request,KEY_ADDRESS_TYPE));
+            this.setStreetName(ParamUtil.getString(request,KEY_STREET_NAME));
+            this.setFloor(ParamUtil.getString(request,KEY_FLOOR));
+            this.setUnitNo(ParamUtil.getString(request,KEY_UNIT_NO));
+            this.setBuilding(ParamUtil.getString(request,KEY_BUILDING));
+            this.setPostalCode(ParamUtil.getString(request,KEY_POSTAL_CODE));
+        }
         this.setCity(ParamUtil.getString(request,KEY_CITY));
         this.setState(ParamUtil.getString(request,KEY_STATE));
         this.setCountry(ParamUtil.getString(request,KEY_COUNTRY));
+        this.setSameAddress(sameAddressCompany);
+        this.setRegistered(ParamUtil.getString(request,KEY_REGISTERED));
         this.setYearEstablished(ParamUtil.getString(request,KEY_YEAR_ESTABLISHED));
     }
 }

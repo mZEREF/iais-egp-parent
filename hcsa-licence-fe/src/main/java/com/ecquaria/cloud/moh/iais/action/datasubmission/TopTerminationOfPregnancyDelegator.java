@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -27,7 +28,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,6 +47,8 @@ public class TopTerminationOfPregnancyDelegator {
     public static final String ACTION_TYPE_CONFIRM = "confim";
     public static final String ACTION_TYPE_BACK = "back";
     private static final String PREMISES = "premises";
+    protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
+    private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
     /**
@@ -81,6 +86,11 @@ public class TopTerminationOfPregnancyDelegator {
     public void patientValidator(BaseProcessClass bpc) {
         log.info(" -----TopDataSubmissionDelegator patientValidator ------ ");
         //validate the Patient
+        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (StringUtil.isIn(crudype, new String[]{"back", "return","previous"})) {
+            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "return");
+            return;
+        }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if(currentSuper==null){
@@ -91,12 +101,11 @@ public class TopTerminationOfPregnancyDelegator {
             patientInformationDto = new PatientInformationDto();
         }
         ControllerHelper.get(bpc.request, patientInformationDto);
-//        if (!errorMap.isEmpty()) {
-//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
-//        }
         String name = ParamUtil.getString(bpc.request, "name");
+        String age = ParamUtil.getString(bpc.request, "age");
+        if(!StringUtil.isEmpty(age)){
+            patientInformationDto.setPatientAge(Integer.parseInt(age));
+        }
         currentSuper.setPatientInformationDto(patientInformationDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(currentSuper, bpc.request);
         ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto, "ART");
@@ -111,7 +120,10 @@ public class TopTerminationOfPregnancyDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "page");
         }
+
     }
 
     /**
@@ -121,32 +133,20 @@ public class TopTerminationOfPregnancyDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(" ----- PrepareSwitch ------ ");
-        String actionType = getActionType(bpc.request);
-        log.info(StringUtil.changeForLog("Action Type: " + actionType));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, actionType);
-        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
-        DsConfig config = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_TOP, bpc.request);
-        String smallTitle = "";
-        if (config != null) {
-            smallTitle = config.getText();
-        }
-        /*String name=patientInformationDto.getPatientName();*/
-//        if(actionType.equals("return")){
-//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "back");
-//        }
-//        if(actionType.equals("back")){
-//            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_TOP, "return");
-//        }
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
+        ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
     }
 
-
-    private String getActionType(HttpServletRequest request) {
-        String actionType = (String) ParamUtil.getRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
-        if (StringUtil.isEmpty(actionType)) {
-            actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_TOP, DsConfigHelper.TOP_STEP_PLANNING, request);
+    //TODO from ar center
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
+        PatientInformationDto patientInformationDto = currentSuper.getPatientInformationDto() == null ? new PatientInformationDto():currentSuper.getPatientInformationDto();
+        if(patientInformationDto.getPatientAge()<16){
+            selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
         }
-        return actionType;
+        return selectOptions;
     }
 
 
@@ -524,7 +524,7 @@ public class TopTerminationOfPregnancyDelegator {
                 DsConfigHelper.setActiveConfig(actionType, bpc.request);
             }
         } else if ("previous".equals(crudType)) {//back
-            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_TOP, bpc.request);
+            actionType = "back";
         } else if ("page".equals(crudType) || "preview".equals(crudType)) {
             actionType = crudType;
         } else {

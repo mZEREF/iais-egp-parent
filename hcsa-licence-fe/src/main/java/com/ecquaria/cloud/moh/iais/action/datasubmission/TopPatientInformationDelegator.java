@@ -192,10 +192,10 @@ public class TopPatientInformationDelegator {
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
             patientInformationDto.setOrgId(topSuperDataSubmissionDto.getOrgId());
         }
-        String crud_action_type = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_type = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_TYPE);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
 
-        if (crud_action_type.equals(ACTION_TYPE_CONFIRM)) {
+        if (ACTION_TYPE_CONFIRM.equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientInformationDto, "TOP");
             errorMap = validationResult.retrieveAll();
             if (isRfc(request)) {

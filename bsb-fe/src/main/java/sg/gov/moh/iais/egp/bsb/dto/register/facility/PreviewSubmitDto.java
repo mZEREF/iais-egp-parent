@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PreviewSubmitDto extends ValidatableNodeValue {
     private String remarks;
-    private String declare;
+    private String regulationDeclare;
+    private String accuracyDeclare;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -48,25 +49,40 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
         this.remarks = remarks;
     }
 
-    public String getDeclare() {
-        return declare;
+    public String getRegulationDeclare() {
+        return regulationDeclare;
     }
 
-    public void setDeclare(String declare) {
-        this.declare = declare;
+    public void setRegulationDeclare(String regulationDeclare) {
+        this.regulationDeclare = regulationDeclare;
     }
 
-//    ---------------------------- request -> object ----------------------------------------------
+    public String getAccuracyDeclare() {
+        return accuracyDeclare;
+    }
+
+    public void setAccuracyDeclare(String accuracyDeclare) {
+        this.accuracyDeclare = accuracyDeclare;
+    }
+
+    //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_REMARKS = "remarks";
-    private static final String KEY_DECLARE = "declare";
+    private static final String KEY_REGULATION_DECLARE = "regulationDeclare";
+    private static final String KEY_ACCURACY_DECLARE = "accuracyDeclare";
 
     public void reqObjMapping(HttpServletRequest request) {
         setRemarks(ParamUtil.getString(request, KEY_REMARKS));
-        String[] declareCheckBoxValues = ParamUtil.getStrings(request, KEY_DECLARE);
-        if (declareCheckBoxValues != null && declareCheckBoxValues.length > 0) {
-            setDeclare("Y");
+        String[] regulationDeclareCheckBoxValues = ParamUtil.getStrings(request, KEY_REGULATION_DECLARE);
+        if (regulationDeclareCheckBoxValues != null && regulationDeclareCheckBoxValues.length > 0) {
+            setRegulationDeclare("Y");
         } else {
-            setDeclare("");
+            setRegulationDeclare("");
+        }
+        String[] accuracyDeclareCheckBoxValues = ParamUtil.getStrings(request, KEY_ACCURACY_DECLARE);
+        if (accuracyDeclareCheckBoxValues != null && accuracyDeclareCheckBoxValues.length > 0) {
+            setAccuracyDeclare("Y");
+        } else {
+            setAccuracyDeclare("");
         }
     }
 }

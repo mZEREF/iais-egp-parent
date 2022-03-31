@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.FacilityBiologicalAgentInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityActivityInfo;
 import sg.gov.moh.iais.egp.bsb.dto.process.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,11 +59,10 @@ public class MohProcessService {
         return dto;
     }
 
-    public MohProcessDto getMohProcessDto(HttpServletRequest request, String applicationId){
+    public MohProcessDto getMohProcessDto(HttpServletRequest request, String applicationId, String routeToRole){
         MohProcessDto dto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         if (dto == null){
-            dto = processClient.getMohProcessDtoByAppId(applicationId).getEntity();
-            dto.setModuleName("doScreening");
+            dto = processClient.getMohProcessDtoByAppId(applicationId, routeToRole).getEntity();
         }
         return dto;
     }
@@ -70,15 +71,16 @@ public class MohProcessService {
         mohProcessDto.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
         mohProcessDto.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
         mohProcessDto.setInspectionRequired(ParamUtil.getString(request, KEY_INSPECTION_REQUIRED));
-        List<ApprovalFacilityActivityDto> approvalFacilityActivityDtoList = mohProcessDto.getApprovalFacilityActivityDtoList();
-        for (ApprovalFacilityActivityDto approvalFacilityActivityDto : approvalFacilityActivityDtoList) {
-            String checked = ParamUtil.getString(request, approvalFacilityActivityDto.getId());
-            approvalFacilityActivityDto.setApproval(checked);
+        mohProcessDto.setSelectAO(ParamUtil.getString(request, KEY_SELECT_APPROVING_OFFICER));
+        List<FacilityActivityInfo> facilityActivityInfoList = mohProcessDto.getFacilityDetailsInfo().getFacilityActivityInfoList();
+        for (FacilityActivityInfo facilityActivityInfo : facilityActivityInfoList) {
+            String checked = ParamUtil.getString(request, facilityActivityInfo.getId());
+            facilityActivityInfo.setStatus(checked);
         }
-        List<ApprovalFacilityBatDto> approvalFacilityBatDtoList = mohProcessDto.getApprovalFacilityBatDtoList();
-        for (ApprovalFacilityBatDto approvalFacilityBatDto : approvalFacilityBatDtoList) {
-            String checked = ParamUtil.getString(request, approvalFacilityBatDto.getId());
-            approvalFacilityBatDto.setApproval(checked);
+        List<FacilityBiologicalAgentInfo> facilityBiologicalAgentInfoList = mohProcessDto.getFacilityDetailsInfo().getFacilityBiologicalAgentInfoList();
+        for (FacilityBiologicalAgentInfo facilityBiologicalAgentInfo : facilityBiologicalAgentInfoList) {
+            String checked = ParamUtil.getString(request, facilityBiologicalAgentInfo.getFacilityBiologicalAgentId());
+            facilityBiologicalAgentInfo.setStatus(checked);
         }
         ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
     }

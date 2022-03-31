@@ -124,8 +124,8 @@
         $('[name="name"]').val('1');
         $('#patientNameHidden').val(data.selection.patientName);
         $('#age').find('p').text(data.selection.patientAge);
-        $('[name="age"]').val('1');
-        $('#birthDataHidden').val(data.selection.patientAge);
+        $('[name="age"]').val('');
+        $('#patientAgeHidden').val(data.selection.patientAge);
         $('#data').find('p').text(data.selection.birthData);
         $('[name="data"]').val('1');
         $('#birthDataHidden').val(data.selection.birthData);

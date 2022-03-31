@@ -2,10 +2,8 @@ package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -25,8 +23,11 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 /**
@@ -58,20 +60,55 @@ public class FacilityCertifierRegistrationService {
         this.docSettingService = docSettingService;
     }
 
-    public void preCompInfo(BaseProcessClass bpc){
+    public void preBeginFacilityCertifier(BaseProcessClass bpc){
         // do nothing now, need to prepare company info in the future
     }
 
-    public void doCompInfo(BaseProcessClass bpc){
+    public void handleBeginFacilityCertifier(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        Node compInfoNode = facRegRoot.getNode(NODE_NAME_COMPANY_INFO);
+        Node beginFacCertNode = facRegRoot.getNode(NODE_NAME_BEGIN_FACILITY_CERTIFIER);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
+            jumpHandler(request, facRegRoot, NODE_NAME_BEGIN_FACILITY_CERTIFIER, beginFacCertNode);
         }else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_BEGIN_FACILITY_CERTIFIER);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
+
+    public void preCompanyProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE;
+        SimpleNode companyProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        CompanyProfileDto companyProfileDto = (CompanyProfileDto) companyProfileNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, companyProfileDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(facRegRoot,currentNodePath);
+        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, companyProfileDto);
+    }
+
+    public void handleCompanyProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE;
+        SimpleNode companyProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        CompanyProfileDto companyProfileDto = (CompanyProfileDto) companyProfileNode.getValue();
+        companyProfileDto.reqObjMapping(request);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, facRegRoot, currentNodePath, companyProfileNode);
+        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -81,7 +118,7 @@ public class FacilityCertifierRegistrationService {
     public void preAdministrator(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR;
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ADMINISTRATOR;
         SimpleNode administratorNode = (SimpleNode) facRegRoot.at(currentNodePath);
         AdministratorDto administratorDto = (AdministratorDto) administratorNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
@@ -89,14 +126,15 @@ public class FacilityCertifierRegistrationService {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, administratorDto.retrieveValidationResult());
         }
         Nodes.needValidation(facRegRoot,currentNodePath);
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_FAC_ADMINISTRATOR, administratorDto);
+        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, MasterCodeHolder.NATIONALITY.allOptions());
+        ParamUtil.setRequestAttr(request,KEY_SALUTATION_OPTIONS,MasterCodeHolder.SALUTATION.allOptions());
+        ParamUtil.setRequestAttr(request, NODE_NAME_ADMINISTRATOR, administratorDto);
     }
 
-    public void doAdministrator(BaseProcessClass bpc){
+    public void handleAdministrator(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facCertifierRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facCertifierRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR;
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facCertifierRegRoot.getPathSeparator() + NODE_NAME_ADMINISTRATOR;
         SimpleNode administratorNode = (SimpleNode) facCertifierRegRoot.at(currentNodePath);
         AdministratorDto administratorDto = (AdministratorDto) administratorNode.getValue();
         administratorDto.reqObjMapping(request);
@@ -115,28 +153,72 @@ public class FacilityCertifierRegistrationService {
     public void preCertifyingTeam(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM;
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL;
         SimpleNode certifyingTeamNode = (SimpleNode) facRegRoot.at(currentNodePath);
         CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) certifyingTeamNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, certifyingTeamDto.retrieveValidationResult());
+        if (certifyingTeamNode.isValidated()) {
+            ParamUtil.setRequestAttr(request, KEY_VALID_DATA_FILE, Boolean.TRUE);
         }
+        /* If DTO contains data error, we don't convert error msg to JSON. Or rather, we retrieve the error map,
+         * and then render a table. */
+        if (certifyingTeamDto.isDataErrorExists()) {
+            List<ValidationListResultUnit> resultUnitList = ValidationListResultUnit.fromDateErrorMap(certifyingTeamDto.getValidationResultDto());
+            ParamUtil.setRequestAttr(request, KEY_DATA_ERRORS, resultUnitList);
+            ParamUtil.setRequestAttr(request, KEY_ERROR_IN_DATA_FILE, Boolean.TRUE);
+        } else {
+            Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+            if (needShowError == Boolean.TRUE) {
+                ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, certifyingTeamDto.retrieveValidationResult());
+            }
+        }
+        ParamUtil.setRequestAttr(request, NODE_NAME_CERTIFYING_TEAM_DETAIL, certifyingTeamDto);
         ParamUtil.setRequestAttr(request, KEY_POSITION_OPTIONS, tmpPositionOps());
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
-        Nodes.needValidation(facRegRoot,currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_CERTIFYING_TEAM, certifyingTeamDto);
+        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, MasterCodeHolder.NATIONALITY.allOptions());
     }
 
-    public void doCertifyingTeam(BaseProcessClass bpc){
+    public void handleCertifyingTeam(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM;
+        String currentNodePath = NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL;
         SimpleNode certifyingTeamNode = (SimpleNode) facRegRoot.at(currentNodePath);
         CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) certifyingTeamNode.getValue();
-        certifyingTeamDto.reqObjMapping(request);
+
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
+        if (KEY_ACTION_LOAD_DATA_FILE.equals(actionType)) {
+            /* Do not change validated to false when jump to this node, because user can not change data in current
+             * form except for upload a new file.
+             * When user upload a file, we immediately clear data in the DTO, and make the node need validation. */
+            Nodes.needValidation(facRegRoot, currentNodePath);
+            /* We do many things in the 'if' condition expression:
+             * 1, we call validation of the file type, size etc. metadata info.
+             * 2, if pass, we convert dat in the file to DTO list.
+             * 3, if success, we call validation of the DTOs.
+             * If any step fails, it will set the ValidationResultDto properly, so in the 'pre' step, this error msg
+             * will be supplied to applicant.
+             */
+            certifyingTeamDto.reqObjMapping(request);
+            if (!certifyingTeamDto.validateDataFile() || !certifyingTeamDto.loadFileData() || !certifyingTeamDto.doValidation()) {
+                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+            } else {
+                // data are valid
+                Nodes.passValidation(facRegRoot, currentNodePath);
+            }
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        }else if (KEY_ACTION_DELETE_DATA_FILE.equals(actionType)) {
+            certifyingTeamDto.deleteDataFile();
+            Nodes.needValidation(facRegRoot, currentNodePath);
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+        } else if (KEY_ACTION_EXPAND_FILE.equals(actionType)) {
+            if (!certifyingTeamNode.isValidated()) {
+                throw new IllegalStateException("Invalid, can not expand");
+            }
+            List<CertifyingTeamFileDto> dataList = certifyingTeamDto.getDataListForDisplay();
+            ParamUtil.setRequestAttr(request, KEY_DATA_LIST, dataList);
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, STEP_NAME_FACILITY_CERTIFIER_PREVIEW);
+        }else if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, certifyingTeamNode);
         } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
@@ -147,70 +229,65 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void preCompanyProfile(BaseProcessClass bpc){
+    public void preCertifyingTeamPreview(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE;
-        SimpleNode orgProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        CompanyProfileDto orgProfileDto = (CompanyProfileDto) orgProfileNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, orgProfileDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot,currentNodePath);
-        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, orgProfileDto);
+        String srcPath = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
+        ParamUtil.setRequestAttr(request, KEY_SOURCE_NODE_PATH, srcPath);
     }
 
-    public void doCompanyProfile(BaseProcessClass bpc){
+    public void handleCertifyingTeamPreview(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE;
-        SimpleNode orgProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        CompanyProfileDto orgProfile = (CompanyProfileDto) orgProfileNode.getValue();
-        orgProfile.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, orgProfileNode);
-        } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
-            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+            jumpHandler(request, facRegRoot, null, null);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void prepareDocuments(BaseProcessClass bpc){
+
+    public void preSupportingDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_SUPPORTING_DOCUMENT);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        SimpleNode certifyingTeamNode = (SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO+facRegRoot.getPathSeparator()+NODE_NAME_CERTIFYING_TEAM_DETAIL);
+        CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) certifyingTeamNode.getValue();
+        ParamUtil.setRequestAttr(request,KEY_CERTIFIER_TEAM_LIST,certifyingTeamDto.getCertifierTeamMemberList());
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        Nodes.needValidation(facRegRoot,NODE_NAME_FAC_PRIMARY_DOCUMENT);
+        Nodes.needValidation(facRegRoot,NODE_NAME_SUPPORTING_DOCUMENT);
 
         ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, CertTeamSavedDoc> certTeamSavedFiles = primaryDocDto.getExistCertTeamKeyMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        Map<String, CertTeamNewDoc> certTeamNewFiles = primaryDocDto.getNewCertTeamKeyMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        ParamUtil.setRequestAttr(request,"certTeamSavedFiles",certTeamSavedFiles);
+        ParamUtil.setRequestAttr(request,"certTeamNewFiles",certTeamNewFiles);
     }
 
-    public void doDocument(BaseProcessClass bpc){
+    public void handleSupportingDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_PRIMARY_DOCUMENT;
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        String currentNodePath = NODE_NAME_SUPPORTING_DOCUMENT;
+        SimpleNode supportingDocNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) supportingDocNode.getValue();
         primaryDocDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, primaryDocNode);
+            jumpHandler(request, facRegRoot, currentNodePath, supportingDocNode);
+        } else if(KEY_NAV_LOAD_CERTIFY_TEAM_FILE.equals(actionType)){
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
+            ParamUtil.setSessionAttr(request,KEY_IS_CERTIFY_TEAM_FILE,"Y");
         } else if (KEY_NAV_SAVE_DRAFT.equals(actionType)) {
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_NAV_SAVE_DRAFT);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentNodePath);
@@ -220,36 +297,40 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void preparePreview(BaseProcessClass bpc){
+    public void preparePreviewSubmit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
-        SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_CER_PREVIEW_SUBMIT);
+        SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
         }
-        Nodes.needValidation(facRegRoot,NODE_NAME_CER_PREVIEW_SUBMIT);
-        ParamUtil.setRequestAttr(request, NODE_NAME_CER_PREVIEW_SUBMIT, previewSubmitDto);
+        Nodes.needValidation(facRegRoot,NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT);
+        ParamUtil.setRequestAttr(request, NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT, previewSubmitDto);
 
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_CERTIFYING_TEAM)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_FAC_ADMINISTRATOR)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_COMPANY_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_CERTIFYING_TEAM_DETAIL, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ADMINISTRATOR)).getValue());
         ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacCerRegDocSettings());
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_SUPPORTING_DOCUMENT)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+
+        //new certify team file
+        ParamUtil.setRequestAttr(request,"certTeamNewFiles",primaryDocDto.getNewCertTeamKeyMap());
+        ParamUtil.setRequestAttr(request,"certTeamSavedFiles",primaryDocDto.getExistCertTeamKeyMap());
     }
 
-    public void prepare(BaseProcessClass bpc){
+    public void jumpFilter(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String destNode = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
 
-    public void controlSwitch(BaseProcessClass bpc, String appType){
+    public void actionFilter(BaseProcessClass bpc, String appType){
         HttpServletRequest request = bpc.request;
         String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
         if (!StringUtils.hasLength(actionType)) {
@@ -343,28 +424,29 @@ public class FacilityCertifierRegistrationService {
         return root;
     }
     public static NodeGroup newFacCertifierRegisterRoot (String name){
-        Node companyInfoDto = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
-        NodeGroup orgInfoNodeGroup = newOrgInfoNodeGroup(new Node[0]);
-        SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_FAC_PRIMARY_DOCUMENT,new Node[]{orgInfoNodeGroup});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(),NODE_NAME_CER_PREVIEW_SUBMIT,new Node[]{orgInfoNodeGroup,primaryDocNode});
+        Node beginFacCertNode = new Node(NODE_NAME_BEGIN_FACILITY_CERTIFIER, new Node[0]);
+        NodeGroup appInfoNodeGroup = newAppInfoNodeGroup(new Node[0]);
+        SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_SUPPORTING_DOCUMENT,new Node[]{appInfoNodeGroup});
+        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(),NODE_NAME_FACILITY_CERTIFIER_PREVIEW_SUBMIT,new Node[]{appInfoNodeGroup,supportingDocNode});
         return new NodeGroup.Builder().name(name)
-                .addNode(companyInfoDto)
-                .addNode(orgInfoNodeGroup)
-                .addNode(primaryDocNode)
+                .addNode(beginFacCertNode)
+                .addNode(appInfoNodeGroup)
+                .addNode(supportingDocNode)
                 .addNode(previewSubmitNode)
                 .build();
     }
 
-    public static NodeGroup newOrgInfoNodeGroup(Node[] dependNodes) {
-        SimpleNode orgProfileNode = new SimpleNode(new CompanyProfileDto(),NODE_NAME_COMPANY_PROFILE,new Node[0]);
-        SimpleNode certTeamNode = new SimpleNode(new CertifyingTeamDto(),NODE_NAME_COMPANY_CERTIFYING_TEAM,new Node[]{orgProfileNode});
-        SimpleNode administratorNode = new SimpleNode(new AdministratorDto(),NODE_NAME_COMPANY_FAC_ADMINISTRATOR,new Node[]{orgProfileNode,certTeamNode});
+    public static NodeGroup newAppInfoNodeGroup(Node[] dependNodes) {
+        SimpleNode companyProfileNode = new SimpleNode(new CompanyProfileDto(),NODE_NAME_COMPANY_PROFILE,new Node[0]);
+        SimpleNode administratorNode = new SimpleNode(new AdministratorDto(),NODE_NAME_ADMINISTRATOR,new Node[]{companyProfileNode});
+        SimpleNode certTeamNode = new SimpleNode(new CertifyingTeamDto(),NODE_NAME_CERTIFYING_TEAM_DETAIL,new Node[]{companyProfileNode,administratorNode});
 
-        return new NodeGroup.Builder().name(NODE_NAME_ORGANISATION_INFO)
+
+        return new NodeGroup.Builder().name(NODE_NAME_APPLICATION_INFO)
                 .dependNodes(dependNodes)
-                .addNode(orgProfileNode)
-                .addNode(certTeamNode)
+                .addNode(companyProfileNode)
                 .addNode(administratorNode)
+                .addNode(certTeamNode)
                 .build();
     }
 
@@ -443,18 +525,6 @@ public class FacilityCertifierRegistrationService {
         return classname;
     }
 
-    /* Will be removed in future, will get this from master code */
-    private static List<SelectOption> tmpNationalityOps() {
-        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
-        List<SelectOption> ops = new ArrayList<>(views.size());
-        if(!CollectionUtils.isEmpty(views)){
-            for (MasterCodeView view : views) {
-                ops.add(new SelectOption(view.getCode(), view.getCodeValue()));
-            }
-        }
-        return ops;
-    }
-
     private static List<SelectOption> tmpCountryOps() {
         return Arrays.asList(new SelectOption(null, TEXT_VALUE_PLEASE_SELECT),new SelectOption(TEXT_VALUE_SINGAPORE, TEXT_VALUE_SINGAPORE), new SelectOption(TEXT_VALUE_CHINA, TEXT_VALUE_CHINA),new SelectOption(TEXT_VALUE_MALAYSIA,TEXT_VALUE_MALAYSIA),new SelectOption("USA","USA"),new SelectOption("UK","UK"));
     }
@@ -486,7 +556,7 @@ public class FacilityCertifierRegistrationService {
         List<DiffContent> diffContentList = new ArrayList<>();
         CompareTwoObject.diff(oldFacilityCertifierRegisterDto.getProfileDto(), newFacilityCertifierRegisterDto.getProfileDto(), diffContentList);
         CompareTwoObject.diff(oldFacilityCertifierRegisterDto.getCertifyingTeamDto(), newFacilityCertifierRegisterDto.getCertifyingTeamDto(), diffContentList, CertifyingTeamDto.CertifierTeamMember.class);
-        CompareTwoObject.diff(oldFacilityCertifierRegisterDto.getAdministratorDto(), newFacilityCertifierRegisterDto.getAdministratorDto(), diffContentList, AdministratorDto.FacilityAdministratorInfo.class);
+        CompareTwoObject.diff(oldFacilityCertifierRegisterDto.getAdministratorDto(), newFacilityCertifierRegisterDto.getAdministratorDto(), diffContentList, EmployeeInfo.class);
         //docRecordInfos don't process
         return diffContentList;
     }
@@ -524,13 +594,28 @@ public class FacilityCertifierRegistrationService {
      * @return a list of DTOs can be used to sync to BE
      */
     public List<NewFileSyncDto> saveNewUploadedDoc(PrimaryDocDto primaryDocDto) {
-        List<NewFileSyncDto> newFilesToSync = null;
+        List<NewFileSyncDto> newFilesToSync = new ArrayList<>();
         if (!primaryDocDto.getNewDocMap().isEmpty()) {
             MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-            newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+            newFilesToSync.addAll(primaryDocDto.newFileSaved(repoIds));
+        }
+        if(!primaryDocDto.getCertTeamNewDocMap().isEmpty()){
+            MultipartFile[] files = primaryDocDto.getCertTeamNewDocMap().values().stream().map(CertTeamNewDoc::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            newFilesToSync.addAll(primaryDocDto.newCertTeamFileSaved(repoIds));
         }
         return newFilesToSync;
+    }
+
+    public NewFileSyncDto saveCertifyTeamNewDataFile(CertifyingTeamDto certifyingTeamDto) {
+        if (certifyingTeamDto.getNewFile() != null) {
+            MultipartFile file = certifyingTeamDto.getNewFile().getMultipartFile();
+            String repoId = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity().get(0);
+            return certifyingTeamDto.newFileSaved(repoId);
+        } else {
+            return null;
+        }
     }
 
     /** Delete unwanted documents in FE file repo.
@@ -541,7 +626,9 @@ public class FacilityCertifierRegistrationService {
     public List<String> deleteUnwantedDoc(PrimaryDocDto primaryDocDto) {
         /* Ignore the failure when try to delete FE files because this is not a big issue.
          * The not deleted file won't be retrieved, so it's just a waste of disk space */
-        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds());
+        List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds().size()+primaryDocDto.getCertTeamToBeDeletedRepoIds().size());
+        toBeDeletedRepoIds.addAll(primaryDocDto.getToBeDeletedRepoIds());
+        toBeDeletedRepoIds.addAll(primaryDocDto.getCertTeamToBeDeletedRepoIds());
         for (String id: toBeDeletedRepoIds) {
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setId(id);
@@ -571,9 +658,12 @@ public class FacilityCertifierRegistrationService {
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
 
         // save docs
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_SUPPORTING_DOCUMENT);
+        CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_CERTIFYING_TEAM_DETAIL)).getValue();
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        List<NewFileSyncDto> newFilesToSync = saveNewUploadedDoc(primaryDocDto);
+        List<NewFileSyncDto> newFilesToSync = new ArrayList<>(primaryDocDto.getCertTeamNewDocMap().size() + primaryDocDto.getNewDocMap().size() + 2);
+        newFilesToSync.addAll(saveNewUploadedDoc(primaryDocDto));
+        newFilesToSync.add(saveCertifyTeamNewDataFile(certifyingTeamDto));
 
         // save data
         FacilityCertifierRegisterDto finalAllDataDto = null;
@@ -587,13 +677,21 @@ public class FacilityCertifierRegistrationService {
         }
         String draftAppNo = facCertifierRegisterClient.saveFacCertifierDraft(finalAllDataDto);
         // set draft app No. into the NodeGroup
-        CompanyProfileDto profileDto = (CompanyProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue();
+        CompanyProfileDto profileDto = (CompanyProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_APPLICATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_COMPANY_PROFILE)).getValue();
         profileDto.setDraftAppNo(draftAppNo);
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
 
         try {
             // delete docs
-            List<String> toBeDeletedRepoIds = deleteUnwantedDoc(primaryDocDto);
+            List<String> toBeDeletedRepoIds = new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds().size() + primaryDocDto.getCertTeamToBeDeletedRepoIds().size() + 2);
+            toBeDeletedRepoIds.addAll(deleteUnwantedDoc(primaryDocDto));
+            if(certifyingTeamDto.getToBeDeletedRepoId() != null){
+                FileRepoDto certTeamDeleteDto = new FileRepoDto();
+                certTeamDeleteDto.setId(certifyingTeamDto.getToBeDeletedRepoId());
+                fileRepoClient.removeFileById(certTeamDeleteDto);
+                toBeDeletedRepoIds.add(certifyingTeamDto.getToBeDeletedRepoId());
+                certifyingTeamDto.setToBeDeletedRepoId(null);
+            }
             // sync docs
             syncNewDocsAndDeleteFiles(newFilesToSync, toBeDeletedRepoIds);
         } catch (Exception e) {

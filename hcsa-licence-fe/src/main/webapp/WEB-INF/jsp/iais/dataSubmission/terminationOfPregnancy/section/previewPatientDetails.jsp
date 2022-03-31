@@ -11,7 +11,7 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Name Of Patient"/>
+                    <iais:field width="5" value="Name of Patient"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${patientInformationDto.patientName}"/>
                     </iais:value>

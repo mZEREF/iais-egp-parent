@@ -38,7 +38,7 @@ public class FacilityRegisterDto implements Serializable{
     private FacilityAuthoriserDto facilityAuthoriserDto;
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
     private Collection<DocRecordInfo> docRecordInfos;
-    private ApprovedFacilityCertifierDto afcDto;
+    private FacilityAfcDto afcDto;
     private PreviewSubmitDto previewSubmitDto;
 
     //renewal special dto
@@ -69,7 +69,7 @@ public class FacilityRegisterDto implements Serializable{
         dto.setDocRecordInfos(docRecordInfos);
 
         if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(dto.getFacilitySelectionDto().getFacClassification())) {
-            dto.setAfcDto((ApprovedFacilityCertifierDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
+            dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
         } else {
             NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);

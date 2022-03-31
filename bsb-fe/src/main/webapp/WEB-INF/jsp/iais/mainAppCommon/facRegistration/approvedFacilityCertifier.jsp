@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.ApprovedFacilityCertifierDto"--%>
+<%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto"--%>
 <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Approved Facility Certifier</h3>
 <div class="form-group ">
     <div class="col-sm-5 control-label">

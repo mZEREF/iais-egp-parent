@@ -42,7 +42,7 @@
 
 <div class="application-tab-footer">
     <div class="row">
-        <div class="col-xs-12 col-sm-6 ">
+        <div class="col-xs-12 col-sm-6">
             <a class="back" href="javascript:void(0)" data-step-key="${srcNodePath}"><em class="fa fa-angle-left"></em> Previous</a>
         </div>
     </div>

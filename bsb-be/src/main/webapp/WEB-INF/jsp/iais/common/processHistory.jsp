@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%--@elvariable id="routingHistoryList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto>"--%>
 <div class="alert alert-info" role="alert">
     <strong>
         <h4>Processing History</h4>

@@ -5,6 +5,9 @@
 <%@attribute name="docSettings" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>" %>
 <%@attribute name="savedFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>" %>
 <%@attribute name="newFiles" required="true" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo>>" %>
+<%@attribute name="certTeamNewFiles" required="true" type="java.util.Map<java.lang.String,sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamNewDoc>" %>
+<%@attribute name="certTeamSavedFiles" required="true" type="java.util.Map<java.lang.String,sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamSavedDoc>" %>
+<%@attribute name="certTeamDto" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto" %>
 
 <c:forEach var="doc" items="${docSettings}">
     <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
@@ -45,12 +48,39 @@
             <th id="testimonialsUpload" style="width: 20%">Testimonials Upload</th>
             <th id="curriculumVitaeUpload" style="width: 20%">Curriculum Vitae Upload</th>
         </tr>
-        <tr>
-            <td>1</td>
-            <td>Kim</td>
-            <td>S9992887K</td>
-            <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
-            <td><button type="button" class="btn btn-default btn-sm" >Upload</button></td>
-        </tr>
+        <c:forEach var="item" items="${certTeamDto.certifierTeamMemberList}" varStatus="status">
+            <c:set var="itemKeyT" value="${item.idNumber}--v--Testimonial"/>
+            <c:set var="itemKeyCV" value="${item.idNumber}--v--CurriculumVitae"/>
+            <c:set var="newFileT"  value="${certTeamNewFiles.get(itemKeyT)}"/>
+            <c:set var="savedFileT"  value="${certTeamSavedFiles.get(itemKeyT)}"/>
+            <c:set var="newFileCV"  value="${certTeamNewFiles.get(itemKeyCV)}"/>
+            <c:set var="savedFileCV"  value="${certTeamSavedFiles.get(itemKeyCV)}"/>
+            <tr style="text-align: center">
+                <td>${status.index+1}</td>
+                <td>${item.name}</td>
+                <td>${item.idNumber}</td>
+                <td>
+                    <c:if test="${newFileT ne null}">
+                        <c:set var="repoId"><iais:mask name="file" value="${newFileT.tmpId}"/></c:set>
+                        <a href="/bsb-fe/ajax/doc/download/facCertifierReg/certTeam/new/${repoId}">${newFileT.filename}</a>
+                    </c:if>
+                    <c:if test="${savedFileT ne null}">
+                        <c:set var="repoId"><iais:mask name="file" value="${savedFileT.repoId}"/></c:set>
+                        <a href="/bsb-fe/ajax/doc/download/facCertifierReg/certTeam/repo/${repoId}">${savedFileT.filename}</a>
+                    </c:if>
+                </td>
+                <td>
+                    <c:if test="${newFileCV ne null}">
+                        <c:set var="repoId"><iais:mask name="file" value="${newFileCV.tmpId}"/></c:set>
+                        <a href="/bsb-fe/ajax/doc/download/facCertifierReg/certTeam/new/${repoId}">${newFileCV.filename}</a>
+                    </c:if>
+                    <c:if test="${savedFileCV ne null}">
+                        <c:set var="repoId"><iais:mask name="file" value="${savedFileCV.repoId}"/></c:set>
+                        <a href="/bsb-fe/ajax/doc/download/facCertifierReg/certTeam/repo/${repoId}">${savedFileCV.filename}</a>
+                    </c:if>
+                </td>
+            </tr>
+        </c:forEach>
+
     </table>
 </div>

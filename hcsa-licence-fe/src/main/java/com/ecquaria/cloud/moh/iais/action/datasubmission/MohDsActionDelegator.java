@@ -167,7 +167,7 @@ public class MohDsActionDelegator {
                 arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(), arSuper.getPatientInfoDto(),
                         arSuper.getPremisesDto().getHciCode());
                 arCycleStageDelegator.setEnhancedCounsellingTipShow(request, arSuper.getArCycleStageDto(), true);
-                arCycleStageDelegator.setNumberOfCyclesUndergoneLocally(arSuper.getArCycleStageDto(),arSuper.getSelectionDto());
+                arCycleStageDelegator.setNumberOfCyclesUndergoneLocally(arSuper.getArCycleStageDto(),arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuper.getPatientInfoDto().getPatient().getPatientCode(),null,null));
             } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
@@ -241,6 +241,14 @@ public class MohDsActionDelegator {
             dpSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            DataSubmissionDto dataSubmissionDto = dpSuper.getDataSubmissionDto();
+            if(dataSubmissionDto ==null){
+                new DataSubmissionDto();
+            }
+            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+                dataSubmissionDto.setAmendReason(null);
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, request);
         return uri;

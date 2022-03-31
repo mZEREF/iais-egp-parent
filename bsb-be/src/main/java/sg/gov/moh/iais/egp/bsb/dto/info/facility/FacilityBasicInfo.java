@@ -10,6 +10,4 @@ public class FacilityBasicInfo implements Serializable {
     private String id;
 
     private String name;
-
-    private String classification;
 }

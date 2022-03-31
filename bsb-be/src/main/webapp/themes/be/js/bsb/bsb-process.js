@@ -1,30 +1,25 @@
 $(function () {
     validate();
-    var riskLevelObj = $("#riskLevel");
-    var riskLevel = riskLevelObj.val();
-    if (riskLevel === "RLOTBA001" || riskLevel === "RLOTBA003"){
-        $("#commentFalse").hide();
-        $("#commentTrue").show();
-    }else{
-        $("#commentFalse").show();
-        $("#commentTrue").hide();
+    var processingDecisionObj = $("#processingDecision");
+    var processingDecisionVal =  processingDecisionObj.val();
+    if (processingDecisionVal === "MOHPRO007") {
+        $("#selectAODiv").show();
+    } else {
+        $("#selectAODiv").hide();
     }
-    riskLevelObj.change(function () {
+    processingDecisionObj.change(function () {
         var selectValue = $(this).val();
-        if(selectValue === "RLOTBA001" || selectValue === "RLOTBA003") {
-            $("#commentFalse").hide();
-            $("#commentTrue").show();
-        }else{
-            $("#commentFalse").show();
-            $("#commentTrue").hide();
+        if (selectValue === "MOHPRO007") {
+            $("#selectAODiv").show();
+        } else {
+            $("#selectAODiv").hide();
         }
     })
-    $("#submitButton").click(function () {
+    $("#submitBtn").click(function () {
         showWaiting();
         $("input[type='radio']").removeAttr("disabled");
         $('#mainForm').submit();
     })
-
     var facilityActivityNoRadioObj = $("input[data-radio-type='facilityActivityNo']");
     var activityRadioNoList = facilityActivityNoRadioObj.valueOf();
     $.each(activityRadioNoList, function (n, value){

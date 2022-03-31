@@ -36,6 +36,7 @@
                     </c:if>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <c:set var="formPriview" value="1"/>
                     <c:choose>
                         <c:when test="${dsType == 'ART'}">
                             <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/preview/previewAR.jsp" />

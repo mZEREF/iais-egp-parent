@@ -6,3 +6,4 @@
 <%@include file="../voluntarySterilisation/section/previewTreatmentDetails.jsp" %>
 <%@include file="../voluntarySterilisation/section/previewParticularsConsentOrCourtOrder.jsp" %>
 <%@include file="../voluntarySterilisation/section/previewParticularsSterilizationSection.jsp" %>
+<%@include file="../voluntarySterilisation/common/vssDeclaration.jsp" %>

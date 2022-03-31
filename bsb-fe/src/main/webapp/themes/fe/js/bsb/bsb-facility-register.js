@@ -1,13 +1,19 @@
 $(function () {
     $("#submit").click(function () {
-        if ($("#declare").is(':checked')) {
-            showWaiting();
-            $("input[name='action_type']").val("jump");
-            $("input[name='action_value']").val("next");
-            $("#mainForm").submit();
-        } else {
-            $("#submitDeclareModal").modal('show');
-        }
+        showWaiting();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val("next");
+        $("#mainForm").submit();
+
+        /* Follow code will use JS check and popup a modal */
+        // if ($("#regulationDeclare").is(':checked') && $("#accuracyDeclare").is(':checked')) {
+        //     showWaiting();
+        //     $("input[name='action_type']").val("jump");
+        //     $("input[name='action_value']").val("next");
+        //     $("#mainForm").submit();
+        // } else {
+        //     $("#submitDeclareModal").modal('show');
+        // }
     });
 
 
@@ -73,6 +79,7 @@ $(function () {
             $("#docUploadDiv").show();
         } else if (id === 'notAProtectedPlace') {
             $("#docUploadDiv").hide();
+            $("#notGazetteModal").modal('show');
         }
     })
 

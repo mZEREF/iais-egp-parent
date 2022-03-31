@@ -8,16 +8,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInvent
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -25,6 +27,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * DonationStageDelegator
@@ -36,7 +39,7 @@ import java.util.Map;
 @Slf4j
 public class DonationStageDelegator extends CommonDelegator{
     @Autowired
-    private ArFeClient arFeClient;
+    DsLicenceService dsLicenceService;
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Donation");
@@ -60,10 +63,15 @@ public class DonationStageDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                .map(LoginContext::getOrgId).orElse("");
+        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremiseList(orgId);
+        List<SelectOption> premisesSel = IaisCommonUtils.genNewArrayList();
+        for (PremisesDto premisesDto : premisesDtos) {
+            premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
+        }
 
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
-
-        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",selectOptions);
+        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",premisesSel);
     }
 
 
@@ -169,6 +177,10 @@ public class DonationStageDelegator extends CommonDelegator{
                         isInt=false;
                 donationStageDto.setTrainingNum(null);
             }
+        }
+        String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
+        if("on".equals(donatedForTreatment)){
+            donationStageDto.setDonatedForTreatment(1);
             Integer treatNum = null;
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
@@ -182,13 +194,9 @@ public class DonationStageDelegator extends CommonDelegator{
                 }
             }catch (Exception e){
                 log.error("no int");
-                        isInt=false;
+                isInt=false;
                 donationStageDto.setTreatNum(null);
             }
-        }
-        String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
-        if("on".equals(donatedForTreatment)){
-            donationStageDto.setDonatedForTreatment(1);
         }
         if(isInt){
             donationStageDto.setTotalNum(totalNum);
@@ -235,12 +243,17 @@ public class DonationStageDelegator extends CommonDelegator{
                 break;
             default:
         }
-
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
-        String hciCode=donationStageDto.getDonatedCentre();
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                .map(LoginContext::getOrgId).orElse("");
+        List<PremisesDto> premisesDtos = dsLicenceService.getArCenterPremiseList(orgId);
+        List<SelectOption> premisesSel = IaisCommonUtils.genNewArrayList();
+        for (PremisesDto premisesDto : premisesDtos) {
+            premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
+        }
+        String arCenter=donationStageDto.getDonatedCentre();
         String value=donationStageDto.getDonatedCentre();
-        for (SelectOption so:selectOptions) {
-            if(so.getValue().equals(hciCode)){
+        for (SelectOption so:premisesSel) {
+            if(so.getValue().equals(arCenter)){
                 value=so.getText();break;
             }
         }

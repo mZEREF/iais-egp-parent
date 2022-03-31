@@ -10,6 +10,7 @@ public class DocConstants {
 
     public static final String DOC_TYPE_DATA_COMMITTEE = "committeeData";
     public static final String DOC_TYPE_DATA_AUTHORISER = "authoriserData";
+    public static final String DOC_TYPE_DATA_CERTIFYING_TEAM = "certifyingTeamData";
 
     public static final String DOC_TYPE_GAZETTE_ORDER = "gazetteOrder";
     public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "bsfCoordinatorCert";
@@ -63,7 +64,7 @@ public class DocConstants {
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_CERTIFIER_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_COMPANY_INFORMATION,DOC_TYPE_SOP_FOR_CERTIFICATION,DOC_TYPE_TESTIMONIALS,DOC_TYPE_CURRICULUM_VITAE, DOC_TYPE_OTHERS));
+            DOC_TYPE_COMPANY_INFORMATION,DOC_TYPE_SOP_FOR_CERTIFICATION,DOC_TYPE_OTHERS));
 
     public static final List<String> DATA_SUBMISSION_REPORT_AND_INVENTORY = Collections.unmodifiableList(Arrays.asList(
             DOC_RED_TEAMING_REPORT,DOC_PNEF_INVENTORY_REPORT,DOC_BI_ANNUAL_TOXIN_REPORT,DOC_PEF_INVENTORY_REPORT,

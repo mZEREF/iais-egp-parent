@@ -16,8 +16,9 @@
                     <div class="form-check">
                         <input class="form-check-input" id="declaration" type="checkbox" name="declaration" aria-invalid="false" value="1"
                             <c:if test="${!empty arSuperDataSubmissionDto.dataSubmissionDto.declaration}">
-                               checked="checked" disabled="disabled"
+                               checked="checked"
                             </c:if>
+                               <c:if test="${formPriview == 1}">disabled="disabled"</c:if>
                         >
                         <label class="form-check-label" for="declaration"><span class="check-square"></span><iais:message key="DS_DEC001" escape="false" /></label>
                         <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_declaration"></span>

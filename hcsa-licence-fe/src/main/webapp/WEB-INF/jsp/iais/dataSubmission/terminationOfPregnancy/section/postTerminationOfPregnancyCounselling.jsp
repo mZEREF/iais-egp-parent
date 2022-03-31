@@ -34,30 +34,26 @@
             </div>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Post-Counselling Result
-            <span id="counsellingRslts" class="mandatory">
-                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
-            </span>
-        </label>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="counsellingRslt" firstOption="Please Select" codeCategory="TOP_POST_COUNSELLING_RESULT"
-                         value="${postTerminationDto.counsellingRslt}" cssClass="counsellingRslt"/>
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellingRslt"></span>
-        </iais:value>
-    </iais:row>
-    <div id="otherCounsellingRslt" <c:if test="${postTerminationDto.counsellingRslt!='TOPCR007'}">style="display: none"</c:if>>
+    <div id="counsellingRslts" <c:if test="${postTerminationDto.givenPostCounselling == false}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Post-Counselling Result - Others"/>
+            <iais:field width="5" value="Post-Counselling Result"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" name="otherCounsellingRslt" value="${postTerminationDto.otherCounsellingRslt}" />
+                <iais:select name="counsellingRslt" firstOption="Please Select" codeCategory="TOP_POST_COUNSELLING_RESULT"
+                             value="${postTerminationDto.counsellingRslt}" cssClass="counsellingRslt" onchange="checkMantory(this, '#otherCounsellorIdTypeLabel', 'TOPCR007')"/>
             </iais:value>
         </iais:row>
     </div>
     <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">If post-counselling was not given
+        <iais:field width="5" id="otherCounsellorIdTypeLabel" value="Post-Counselling Result - Others" mandatory="${postTerminationDto.counsellingRslt eq 'TOPCR007' ? true : false}"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" name="otherCounsellingRslt" value="${postTerminationDto.otherCounsellingRslt}" />
+            <span class="error-msg" name="iaisErrorMsg" id="error_otherCounsellingRslt"></span>
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <label class="col-xs-5 col-md-4 control-label">Reason If post-counselling was not given
             <span id="ifCounsellingNotGiven" class="mandatory">
-                <c:if test="${postTerminationDto.givenPostCounselling == true}">*</c:if>
+                <c:if test="${postTerminationDto.givenPostCounselling == false}">*</c:if>
             </span>
         </label>
         <iais:value width="7" cssClass="col-md-7">
@@ -69,7 +65,7 @@
     <iais:row>
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
         <iais:field width="5" id="counsellorIdTypeLabel" value="Post-Termination Counsellor ID Type"
-                    mandatory="${postTerminationDto.givenPostCounselling}" info="${toolMsg}"/>
+                    mandatory="${preTerminationDto.counsellingGiven != true ? false : preTerminationDto.counsellingGiven }" info="${toolMsg}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="counsellorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="${postTerminationDto.counsellorIdType}" cssClass="counsellorIdType"/>
@@ -123,10 +119,13 @@
     </iais:row>
 </div>
 <script>
+    $(document).ready(function() {
+        counsellingRslt();
+        otherCounsellingRslt();
+    });
     $(document).ready(function () {
         $('input[name=givenPostCounselling]').change(function () {
             if($('#radioYes').prop('checked')) {
-                $('#counsellingRslts').text('*');
                 $('#ifCounsellingNotGiven').text('');
                 $('#counsellorIdNo').text('*');
                 $('#counsellorName').text('*');
@@ -134,7 +133,6 @@
                 $('#counsellingPlace').text('*');
             }
             if($('#radioNo').prop('checked')) {
-                $('#counsellingRslts').text('');
                 $('#ifCounsellingNotGiven').text('*');
                 $('#counsellorIdNo').text('');
                 $('#counsellorName').text('');
@@ -144,8 +142,8 @@
             checkMantory('#radioYes', "#counsellorIdTypeLabel");
         });
     });
-    $(document).ready(function () {
-        $('#counsellingRslt').change(function () {
+    function otherCounsellingRslt(){
+        /*$('#counsellingRslt').change(function () {
 
             var counsellingRslt = $('#counsellingRslt option:selected').val();
 
@@ -154,6 +152,18 @@
             } else {
                 $('#otherCounsellingRslt').attr("style", "display: none");
             }
+        });*/
+        $('input[name=counsellingRslt]').change(function () {
+            checkMantory('#counsellingRslt', "#otherCounsellorIdTypeLabel");
         });
-    });
+    }
+    function counsellingRslt(){
+        $('input[name=givenPostCounselling]').change(function () {
+            if($('#radioYes').prop('checked')) {
+                $('#counsellingRslts').show();
+            } else {
+                $('#counsellingRslts').hide();
+            }
+        });
+    }
 </script>

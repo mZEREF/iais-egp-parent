@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityOperatorDto extends ValidatableNodeValue {
 
-    private String operatorDesc;
-
     @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.name")
     private String facOperator;
 
@@ -67,13 +65,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public String getOperatorDesc() {
-        return operatorDesc;
-    }
-
-    public void setOperatorDesc(String operatorDesc) {
-        this.operatorDesc = operatorDesc;
-    }
 
     public String getSalutation() {
         return salutation;
@@ -156,7 +147,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     }
 
     //    ---------------------------- request -> object ----------------------------------------------
-    private static final String KEY_FACILITY_OPERATOR_DESIGNATION = "operatorDesc";
     private static final String KEY_FAC_OPERATOR = "facOperator";
     private static final String KEY_SALUTATION = "salutation";
     private static final String KEY_OP_NAME = "operatorName";
@@ -169,7 +159,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     private static final String KEY_EMP_START_DATE = "employmentStartDt";
 
     public void reqObjMapping(HttpServletRequest request) {
-        setOperatorDesc(ParamUtil.getString(request,KEY_FACILITY_OPERATOR_DESIGNATION));
         setFacOperator(ParamUtil.getString(request, KEY_FAC_OPERATOR));
         setSalutation(ParamUtil.getString(request,KEY_SALUTATION));
         setDesigneeName(ParamUtil.getString(request, KEY_OP_NAME));

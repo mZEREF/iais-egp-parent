@@ -35,93 +35,82 @@
             </div>
         </iais:value>
     </iais:row>
-    <%--<div id="noCounsReason" <c:if test="${preTerminationDto.counsellingGiven != false}">style="display: none"</c:if> >--%>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Reason for No Counselling
-            <span id="noCounsReason" class="mandatory">
-                <c:if test="${preTerminationDto.counsellingGiven ==false}">*</c:if>
-            </span>
-        </label>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="100" type="text" name="noCounsReason" value="${preTerminationDto.noCounsReason}" />
-            <span class="error-msg" name="iaisErrorMsg" id="error_noCounsReason"></span>
-        </iais:value>
-    </iais:row>
-    <%--    </div>--%>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Given Counselling On Mid-Trimester Pregnancy Termination
-            <span id="counsellingGivenOnMin" class="mandatory">
-                <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek>=13 && familyPlanDto.gestAgeBaseOnUltrWeek<=24}">*</c:if>
-            </span>
-        </label>
-        <%--<iais:field width="5" value="Given Counselling On Mid-Trimester Pregnancy Termination"/>--%>
-        <iais:value width="3" cssClass="col-md-3">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="counsellingGivenOnMin"
-                       value="1"
-                       id="pregnancyYes"
-                       <c:if test="${preTerminationDto.counsellingGivenOnMin== true}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="pregnancyYes"><span
-                        class="check-circle"></span>Yes</label>
-            </div>
-            <span class="error-msg" name="iaisErrorMsg" id="error_counsellingGivenOnMin"></span>
-        </iais:value>
-        <iais:value width="4" cssClass="col-md-4">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="counsellingGivenOnMin"
-                       value="0"
-                       id="pregnancyNo"
-                       <c:if test="${preTerminationDto.counsellingGivenOnMin == false}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="pregnancyNo"><span
-                        class="check-circle"></span>No</label>
-            </div>
-        </iais:value>
-    </iais:row>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination
-            <span id="patientSign" class="mandatory">
-                <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek>=13 && familyPlanDto.gestAgeBaseOnUltrWeek<=24}">*</c:if>
-            </span>
-        </label>
-        <%--<iais:field width="5" value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"/>--%>
-        <iais:value width="3" cssClass="col-md-3">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="patientSign"
-                       value="1"
-                       id="acknowledgementYes"
-                       <c:if test="${preTerminationDto.patientSign == true}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="acknowledgementYes"><span
-                        class="check-circle"></span>Yes</label>
-            </div>
-            <span class="error-msg" name="iaisErrorMsg" id="error_patientSign"></span>
-        </iais:value>
-        <iais:value width="4" cssClass="col-md-4">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="patientSign"
-                       value="0"
-                       id="acknowledgementNo"
-                       <c:if test="${preTerminationDto.patientSign == false}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="acknowledgementNo"><span
-                        class="check-circle"></span>No</label>
-            </div>
-        </iais:value>
-    </iais:row>
+    <div id="noCounsReason" <c:if test="${preTerminationDto.counsellingGiven != false}">style="display: none"</c:if> >
+        <iais:row>
+            <iais:field width="5" value="Reason for No Counselling" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="100" type="text" name="noCounsReason" value="${preTerminationDto.noCounsReason}" />
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="noCounsReason" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 && familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if> >
+        <iais:row>
+            <iais:field width="5" value="Given Counselling On Mid-Trimester Pregnancy Termination" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="counsellingGivenOnMin"
+                           value="1"
+                           id="pregnancyYes"
+                           <c:if test="${preTerminationDto.counsellingGivenOnMin== true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="pregnancyYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+                <span class="error-msg" name="iaisErrorMsg" id="error_counsellingGivenOnMin"></span>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="counsellingGivenOnMin"
+                           value="0"
+                           id="pregnancyNo"
+                           <c:if test="${preTerminationDto.counsellingGivenOnMin == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="pregnancyNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="noCounsReason" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 && familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="patientSign"
+                           value="1"
+                           id="acknowledgementYes"
+                           <c:if test="${preTerminationDto.patientSign == true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="acknowledgementYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+                <span class="error-msg" name="iaisErrorMsg" id="error_patientSign"></span>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="patientSign"
+                           value="0"
+                           id="acknowledgementNo"
+                           <c:if test="${preTerminationDto.patientSign == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="acknowledgementNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
     <iais:row>
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
         <iais:field width="5" id="counsellorIdTypeLabel" value="Pre-Termination Counsellor ID Type"
@@ -173,8 +162,10 @@
             </span>
         </label>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
-                         value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>
+            <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
+                         value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
+            <iais:select name="counsellingPlace" options="CounsellingPlace"  value="${preTerminationDto.counsellingPlace}"
+                         cssClass="counsellingPlace"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
         </iais:value>
     </iais:row>
@@ -185,7 +176,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Pre-Counselling Result
+        <label class="col-xs-5 col-md-4 control-label">First Pre-Counselling Result
             <span id="counsellingResult" class="mandatory">
                 <c:if test="${preTerminationDto.counsellingGiven ==true}">*</c:if>
             </span>
@@ -196,43 +187,45 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Did Patient Make Appointment for Additional Pre-Counselling Sessions?
-            <span id="patientAppointment" class="mandatory">
-                <c:if test="${preTerminationDto.counsellingResult =='TOPPCR001'}">*</c:if>
-            </span>
-        </label>
-        <%--<iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"/>--%>
-        <iais:value width="3" cssClass="col-md-3">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="patientAppointment"
-                       value="1"
-                       id="patientAppointmentYes"
-                       <c:if test="${preTerminationDto.patientAppointment== true}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="patientAppointmentYes"><span
-                        class="check-circle"></span>Yes</label>
-            </div>
-            <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
-        </iais:value>
-        <iais:value width="4" cssClass="col-md-4">
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="radio"
-                       name="patientAppointment"
-                       value="0"
-                       id="patientAppointmentNo"
-                       <c:if test="${preTerminationDto.patientAppointment == false}">checked</c:if>
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="patientAppointmentNo"><span
-                        class="check-circle"></span>No</label>
-            </div>
-        </iais:value>
-    </iais:row>
+    <div id="patientAppointments" style="${familyPlanDto.subRopReason ==null || preTerminationDto.counsellingGiven == true && !preTerminationDto.counsellingResults eq 'TOPPCR001' ? 'display: none' : ''}" >
+        <iais:row>
+            <%--<label class="col-xs-5 col-md-4 control-label">Did Patient Make Appointment for Additional Pre-Counselling Sessions?
+                <span id="patientAppointment" class="mandatory">
+                    <c:if test="${preTerminationDto.counsellingResult =='TOPPCR001'}">*</c:if>
+                </span>
+            </label>--%>
+            <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="patientAppointment"
+                           value="1"
+                           id="patientAppointmentYes"
+                           <c:if test="${preTerminationDto.patientAppointment== true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="patientAppointmentYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+                <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="patientAppointment"
+                           value="0"
+                           id="patientAppointmentNo"
+                           <c:if test="${preTerminationDto.patientAppointment == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="patientAppointmentNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
     <iais:row>
         <label class="col-xs-5 col-md-4 control-label">Date of Second or Final Pre-Counselling
             <span id="secCounsellingDate" class="mandatory">
@@ -258,6 +251,24 @@
     </iais:row>
 </div>
 <script>
+    $(document).ready(function() {
+        $('#counsellingNo').change(function () {
+            counsellingNo();
+        });
+        $('[name=counsellingResult]').change(function () {
+            counsellingResult();
+        });
+    });
+
+    function counsellingNo() {
+        var counsellingNo= $('#counsellingNo').val();
+
+        if(counsellingNo == false){
+            $('#noCounsReason').show();
+        }else {
+            $('#noCounsReason').hide();
+        }
+    }
     $(document).ready(function () {
         $('input[name=counsellingGiven]').change(function () {
             if($('#counsellingYes').prop('checked')) {
@@ -277,7 +288,7 @@
             checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
         });
     });
-    $(document).ready(function () {
+    /*$(document).ready(function () {
         $('input[name=counsellingGiven]').change(function () {
             if($('#counsellingNo').prop('checked')) {
                 $('#noCounsReason').text('*');
@@ -286,7 +297,7 @@
                 $('#noCounsReason').text('');
             }
         });
-    });
+    });*/
     $(document).ready(function () {
         $('input[name=patientAppointment]').change(function () {
             if($('#patientAppointmentYes').prop('checked')) {
@@ -302,22 +313,20 @@
     $(document).ready(function () {
         $('input[name=counsellingGiven]').change(function () {
             if($('#counsellingYes').prop('checked')) {
-                $('#noCounsReason').attr("style","display: none");
+                $('#noCounsReason').show();
             }
             if($('#counsellingNo').prop('checked')) {
-                $('#noCounsReason').attr("style","display: block");
+                $('#noCounsReason').hide();
             }
         });
     });
-    $(document).ready(function () {
-        $('[name=counsellingResult]').change(function () {
-            var counsellingResults= $('[name=counsellingResult] option:selected').val();
-
-            if(counsellingResults == "TOPPCR001"){
-                $('#patientAppointment').text('*');
-            }else {
-                $('#patientAppointment').text('');
-            }
-        });
-    });
+    function counsellingResult() {
+        var counsellingResults = $('[name=counsellingResult] option:selected').val();
+        var counsellingNo = $('#counsellingNo').val();
+        if (counsellingResults == "TOPPCR001" || counsellingNo == true) {
+            $('#patientAppointments').show();
+        } else {
+            $('#patientAppointments').hide();
+        }
+    }
 </script>

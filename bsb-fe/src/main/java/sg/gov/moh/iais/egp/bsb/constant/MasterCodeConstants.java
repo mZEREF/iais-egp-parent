@@ -290,4 +290,8 @@ public class MasterCodeConstants {
     public static final String WORK_TYPE_ANIMAL_STUDIES = "BSBWT004";
     public static final String WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT = "BSBWT005";
     public static final String WORK_TYPE_OTHERS = "BSBWT006";
+
+    // Bsb moh processing approval status
+    public static final String PROCESSING_STATUS_APPROVAL = "BSBMPAS001";
+    public static final String PROCESSING_STATUS_REJECT = "BSBMPAS002";
 }

@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.*;
 
 import java.util.List;
@@ -53,11 +53,8 @@ public interface ProcessClient {
     @PostMapping(path = "/bsb-moh-officer/saveAOProcessing",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAOProcessing(@RequestBody AOProcessingDto aoProcessingDto);
 
-    @GetMapping(path = "/bsb-moh-officer/getDifferentModuleDoc/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<DocDisplayDto> getDifferentModuleDoc(@PathVariable("applicationId") String applicationId);
-
-    @GetMapping(path = "/bsb-moh-officer/mohProcessDto/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<MohProcessDto> getMohProcessDtoByAppId(@PathVariable("applicationId") String applicationId);
+    @GetMapping(path = "/bsb-moh-officer/moh-process-dto", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<MohProcessDto> getMohProcessDtoByAppId(@RequestParam("applicationId") String applicationId, @RequestParam("routeToRole") String routeToRole);
 
     @PostMapping(path = "/bsb-moh-officer/validate/mohProcessDto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateMohProcessDto(@RequestBody MohProcessDto mohProcessDto);
@@ -97,4 +94,8 @@ public interface ProcessClient {
 
     @PostMapping(value = "/bsb-moh-officer/mohProcessDto/hmReject", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveMohProcessDtoHmReject(@RequestParam("appId") String appId, @RequestParam("taskId") String taskId, @RequestBody MohProcessDto mohProcessDto);
+
+    //todo: delete
+    @GetMapping(path = "/bsb-moh-officer/getDifferentModuleDoc/{applicationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<DocDisplayDto> getDifferentModuleDoc(@PathVariable("applicationId") String applicationId);
 }

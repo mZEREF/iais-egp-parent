@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -263,8 +264,11 @@ public class FacilityRegistrationDelegator {
                     // save data
                     log.info("Save facility registration data");
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
-                    ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
+                    ResponseDto<AppMainInfo> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
+                    AppMainInfo appMainInfo = responseDto.getEntity();
+                    ParamUtil.setRequestAttr(request, KEY_APP_NO, appMainInfo.getAppNo());
+                    ParamUtil.setRequestAttr(request, KEY_APP_DT, appMainInfo.getDate());
 
                     try {
                         // delete docs
@@ -341,11 +345,7 @@ public class FacilityRegistrationDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-        List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
-        ParamUtil.setRequestAttr(request, "batList", batList);
+        // do nothing now, all data are set by previous page (select & save)
     }
 
     public void print(BaseProcessClass bpc) {
