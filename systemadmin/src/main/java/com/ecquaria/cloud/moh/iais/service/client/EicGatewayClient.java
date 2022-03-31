@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import java.util.List;
  * @date time:2/25/2020 1:08 PM
  * @description:
  */
+@Slf4j
 @Component
 public class EicGatewayClient {
 	@Value("${iais.intra.gateway.url}")
@@ -78,12 +80,15 @@ public class EicGatewayClient {
 			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
 		} catch (Exception e) {
 			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+			log.error(StringUtil.changeForLog(e.getMessage()), e);
 		}
+		log.info(StringUtil.changeForLog("callEicWithTrack: " + client));
+		log.info(StringUtil.changeForLog(JsonUtil.parseToJson(track)));
 		requestTrackingHelper.saveEicTrack(client, track);
 		return invoke;
 	}
 
-	public <T, R> FeignResponseEntity<R> callEicWithTrack(List<T> objs, String actionMethod, Class<?> jsonClass, String jsonMethod) {
+	public <T, R> FeignResponseEntity<R> callEicWithTrack(List<T> objs, String clientMethod, Class<?> jsonClass, String jsonMethod) {
 		int client = EicClientConstant.SYSTEM_ADMIN_CLIENT;
 		EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(client,
 				jsonClass.getName(), jsonMethod, currentApp + "-" + currentDomain,
@@ -95,11 +100,12 @@ public class EicGatewayClient {
 
 		FeignResponseEntity<R> invoke = null;
 		try {
-			Method method = this.getClass().getMethod(actionMethod, List.class);
+			Method method = this.getClass().getMethod(clientMethod, List.class);
 			invoke = (FeignResponseEntity<R>) method.invoke(objs, this);
 			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
 		} catch (Exception e) {
 			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+			log.error(StringUtil.changeForLog(e.getMessage()), e);
 		}
 		requestTrackingHelper.saveEicTrack(client, track);
 		return invoke;
