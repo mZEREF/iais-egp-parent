@@ -76,6 +76,12 @@ public final class EicRequestTrackingHelper {
         return this.appEicClient;
     }
 
+    public <T> void callEicWithTrack(T obj, Consumer<T> consumer, String actionClass, String actionMethod, String currentApp,
+            String currentDomain, int client) {
+        callEicWithTrack(obj, (object) -> { consumer.accept(object); return null;}, actionClass, actionMethod,
+                currentApp, currentDomain, client);
+    }
+
     public <T, R> R callEicWithTrack(T obj, Function<T, R> function, String actionClass, String actionMethod, String currentApp,
             String currentDomain, int client) {
         // 1) Create and save the tracking record into DB before everything
@@ -103,33 +109,6 @@ public final class EicRequestTrackingHelper {
         // 5) Update tracking
         this.saveEicTrack(client, track);
         return invoke;
-    }
-
-    public <T> void callEicWithTrack(T obj, Consumer<T> consumer, String actionClass, String actionMethod, String currentApp,
-            String currentDomain, int client) {
-        // 1) Create and save the tracking record into DB before everything
-        EicRequestTrackingDto track = this.clientSaveEicRequestTracking(client, actionClass, actionMethod,
-                currentApp + "-" + currentDomain, obj.getClass().getName(), JsonUtil.parseToJson(obj));
-        //2) Before executing the EIC function set the running data
-        track.setProcessNum(track.getProcessNum() + 1);
-        Date now = new Date();
-        track.setFirstActionAt(now);
-        track.setLastActionAt(now);
-
-        try {
-            // 3) Call the EIC in a try catch
-            consumer.accept(obj);
-            // 4a) If success then update the tracking status to complete
-            track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        } catch (Exception e) {
-            // 4b) If failed, still needs to update the running data to DB.
-            track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
-        }
-        log.info(StringUtil.changeForLog("Call Eic With Track: " + client + " - " + track.getModuleName()));
-        log.info(StringUtil.changeForLog(actionClass + " - " + actionMethod));
-        // 5) Update tracking
-        this.saveEicTrack(client, track);
     }
 
     public EicRequestTrackingDto clientSaveEicRequestTracking(int client, String actionClsName,
