@@ -477,8 +477,8 @@
                                 <hr>
                                 <iais:row>
                                     <iais:field width="4" value="No. of Embryos Transferred" />
-                                    <div class="col-md-6 row">
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                    <div class="col-md-8 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -490,7 +490,7 @@
                                                         class="check-square"></span>0</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum1"  id="embryosTransferredNum1"
@@ -501,7 +501,7 @@
                                                         class="check-square"></span>1</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum2"  id="embryosTransferredNum2"
@@ -512,7 +512,7 @@
                                                         class="check-square"></span>2</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum3" id="embryosTransferredNum3"
@@ -523,7 +523,7 @@
                                                         class="check-square"></span>3</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNumMax" id="embryosTransferredNumMax"
@@ -531,7 +531,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNumMax"><span
-                                                        class="check-square"></span>> 3</label>
+                                                        class="check-square"></span>>3</label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -679,8 +679,8 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="No. of Live Birth Events (Total)" />
-                                    <div class="col-md-6 row">
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                    <div class="col-md-8 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
@@ -692,7 +692,7 @@
                                                         class="check-square"></span>0</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal1" id="birthEventsTotal1"
@@ -703,7 +703,7 @@
                                                         class="check-square"></span>1</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal2" id="birthEventsTotal2"
@@ -714,7 +714,7 @@
                                                         class="check-square"></span>2</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal3" id="birthEventsTotal3"
@@ -725,7 +725,7 @@
                                                         class="check-square"></span>3</label>
                                             </div>
                                         </iais:value>
-                                        <iais:value width="2" cssClass="col-md-2 row">
+                                        <iais:value width="2" cssClass="col-md-2 " style="padding-right: 0;padding-left: 0;">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotalMax" id="birthEventsTotalMax"
