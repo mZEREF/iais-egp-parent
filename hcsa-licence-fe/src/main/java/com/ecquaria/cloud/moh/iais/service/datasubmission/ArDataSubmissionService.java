@@ -129,4 +129,6 @@ public interface ArDataSubmissionService {
     ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
 
     DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto);
+
+    void remindAndDeleteDraftSubJob();
 }

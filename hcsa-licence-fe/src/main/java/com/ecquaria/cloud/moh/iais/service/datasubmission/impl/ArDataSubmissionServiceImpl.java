@@ -6,21 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EicArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -827,4 +813,16 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arFeClient.getArCurrentInventoryDtoBySubmissionNo(submissionNo, hasAfter).getEntity();
     }
 
+    @Override
+    public void remindAndDeleteDraftSubJob() {
+        int overDueDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DS_C_001"));
+        int remindDays =  overDueDays-Integer.parseInt(MasterCodeUtil.getCodeDesc("DS_C_002"));
+        List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,remindDays).getEntity();
+        if(IaisCommonUtils.isNotEmpty(dataSubmissionDraftDtos)){
+            dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
+                //Todo send email
+            });
+        }
+        arFeClient.doUpdateDraftStatusMoreThanDays(DataSubmissionConsts.DS_STATUS_INACTIVE,DataSubmissionConsts.DS_STATUS_DRAFT, overDueDays);
+    }
 }
