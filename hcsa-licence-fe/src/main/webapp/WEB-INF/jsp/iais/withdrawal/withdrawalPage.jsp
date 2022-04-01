@@ -432,7 +432,7 @@
         var appNoStr = appNo.substr(0, 2);
         console.log(appNoStr);
         if ('AA' == appNoStr) {
-            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohAppealApplication?appNo=' + appMaskNo ;
+            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=ar";
         } else {
             url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=an";
         }
