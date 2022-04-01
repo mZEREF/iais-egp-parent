@@ -88,7 +88,9 @@
                     <th scope="col" width="10%">Size</th>
                     <th scope="col" width="20%">Submitted By</th>
                     <th scope="col" width="10%">Date Submitted</th>
-                    <th scope="col" width="10%">Action</th>
+                    <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                        <th scope="col" width="10%">Action</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
@@ -134,6 +136,7 @@
                                     <td width="10%">
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
+                                <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
                                     <td width="10%">
                                         <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
                                             <button type="button" class="btn btn-secondary-del btn-sm"
@@ -142,6 +145,7 @@
                                                 Delete</button>
                                         </c:if>
                                     </td>
+                                </c:if>
                                 </tr>
                                 </c:if>
                             </c:forEach>
