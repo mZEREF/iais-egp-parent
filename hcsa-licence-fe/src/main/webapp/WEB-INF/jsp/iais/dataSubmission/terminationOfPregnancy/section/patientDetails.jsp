@@ -216,14 +216,13 @@
             var value = $(this).val();
             $("#genders").empty();
             for (var i = 0; i < value; i++) {
-                var input = "<div class=\"col-sm-7 col-md-5 col-xs-7 col-md-12\">\n" +
-                    "<select name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" class=\"livingChildrenGenders\" style=\"display: none;\">\n" +
+                var input = "<div class=\"col-sm-7 col-md-5 col-xs-7 col-md-12\" style=\"padding-left: 0px;padding-right: 0px;\">\n" +
+                    "<select name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" style=\"display: none;\">\n" +
                     "     <option value=\"\">Please Select</option>\n" +
                     "     <option value=\"TOPGAW001\">Male</option>\n" +
                     "     <option value=\"TOPGAW002\">Female</option>\n" +
                     "     </select>\n" +
-                    "</div>\n" +
-                    "   <div class=\"nice-select livingChildrenGenders\" name=\"livingChildrenGenders\" tabindex=\"0"+ i +"\">\n" +
+                    "   <div class=\"nice-select livingChildrenGenders\" name=\"living\" tabindex=\"0"+ i +"\">\n" +
                     "       <span class=\"current\">Please Select</span>\n" +
                     "           <ul class=\"list\">\n" +
                     "               <li data-value=\"\" class=\"option selected\">Please Select</li>\n" +
@@ -231,7 +230,8 @@
                     "               <li data-value=\"TOPGAW002\" class=\"option\">Female</li>\n" +
                     "           </ul>" +
                     "       <span id=\"error_livingChildrenGenders\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
-                    "   </div>\n";
+                    "   </div>\n"+
+                    "</div>\n";
                 $("#genders").append(input);
             }
         });
