@@ -301,7 +301,6 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Other Qualification</label>
-                                      <span class="mandatory otherQualificationSpan">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">

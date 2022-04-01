@@ -88,7 +88,7 @@
                                       <label  class="control-label control-set-font control-font-label">
                                         Name
                                       </label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="salutation${suffix}">
@@ -113,7 +113,7 @@
                                       <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
                                         ID No.
                                       </label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
@@ -152,7 +152,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label class="control-label control-set-font control-font-label">Country of issuance</label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="nationality${suffix}">
@@ -173,7 +173,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label class="control-label control-set-font control-font-label">Designation</label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="designation${suffix}">
@@ -208,7 +208,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
                                       <label  class="control-label control-set-font control-font-label">Professional Type</label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
@@ -293,7 +293,7 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Other Qualification</label>
-                                      <span class="mandatory otherQualificationSpan">*</span>
+
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
@@ -311,7 +311,8 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
+                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
@@ -330,7 +331,7 @@
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
                                       <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
-                                      <span class="mandatory">*</span>
+
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-4 col-md-7">
