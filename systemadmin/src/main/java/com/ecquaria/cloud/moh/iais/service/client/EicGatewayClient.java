@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
@@ -9,23 +7,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author: yichen
@@ -59,56 +54,14 @@ public class EicGatewayClient {
 	@Value("${iais.current.domain}")
 	private String currentDomain;
 
-	public <T, R> FeignResponseEntity<R> callEicWithTrack(T obj, String clientMethod) {
-		int client = EicClientConstant.SYSTEM_ADMIN_CLIENT;
-		return callEicWithTrack(obj, clientMethod, client);
+	public <T, R> R callEicWithTrack(T obj, Function<T, R> function, Class<?> actionClass, String actionMethod) {
+		return requestTrackingHelper.callEicWithTrack(obj, function, actionClass.getName(), actionMethod, currentApp, currentDomain,
+				EicClientConstant.SYSTEM_ADMIN_CLIENT);
 	}
 
-	public <T, R> FeignResponseEntity<R> callEicWithTrack(T obj, String clientMethod, int client) {
-		EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(client,
-				this.getClass().getName(), clientMethod, currentApp + "-" + currentDomain,
-				obj.getClass().getName(), JsonUtil.parseToJson(obj));
-		track.setProcessNum(track.getProcessNum() + 1);
-		Date now = new Date();
-		track.setFirstActionAt(now);
-		track.setLastActionAt(now);
-
-		FeignResponseEntity<R> invoke = null;
-		try {
-			Method method = this.getClass().getMethod(clientMethod, obj.getClass());
-			invoke = (FeignResponseEntity<R>) method.invoke(this, obj);
-			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-		} catch (Exception e) {
-			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-			log.error(StringUtil.changeForLog(e.getMessage()), e);
-		}
-		log.info(StringUtil.changeForLog("callEicWithTrack: " + client));
-		log.info(StringUtil.changeForLog(JsonUtil.parseToJson(track)));
-		requestTrackingHelper.saveEicTrack(client, track);
-		return invoke;
-	}
-
-	public <T, R> FeignResponseEntity<R> callEicWithTrack(List<T> objs, String clientMethod, Class<?> jsonClass, String jsonMethod) {
-		int client = EicClientConstant.SYSTEM_ADMIN_CLIENT;
-		EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(client,
-				jsonClass.getName(), jsonMethod, currentApp + "-" + currentDomain,
-				String.class.getName(), JsonUtil.parseToJson(objs));
-		track.setProcessNum(track.getProcessNum() + 1);
-		Date now = new Date();
-		track.setFirstActionAt(now);
-		track.setLastActionAt(now);
-
-		FeignResponseEntity<R> invoke = null;
-		try {
-			Method method = this.getClass().getMethod(clientMethod, List.class);
-			invoke = (FeignResponseEntity<R>) method.invoke(this, objs);
-			track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-		} catch (Exception e) {
-			track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-			log.error(StringUtil.changeForLog(e.getMessage()), e);
-		}
-		requestTrackingHelper.saveEicTrack(client, track);
-		return invoke;
+	public <T> void callEicWithTrack(T obj, Consumer<T> consumer, Class<?> actionClass, String actionMethod) {
+		requestTrackingHelper.callEicWithTrack(obj, consumer, actionClass.getName(), actionMethod, currentApp, currentDomain,
+				EicClientConstant.SYSTEM_ADMIN_CLIENT);
 	}
 
 	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto) {
@@ -119,11 +72,12 @@ public class EicGatewayClient {
 				signature2.date(), signature2.authorization(), String.class);
 	}
 
-	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
-												  String dateSec, String authorizationSec) {
+	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
-				MediaType.APPLICATION_JSON, date, authorization,
-				dateSec, authorizationSec, MessageDto.class);
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), MessageDto.class);
 	}
 
 	public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
