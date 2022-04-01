@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -62,7 +63,6 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
                 arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
-        ControllerHelper.get(request,embryoTransferredOutcomeStageDto);
         String transferedOutcome = ParamUtil.getRequestString(request, "transferedOutcome");
         embryoTransferredOutcomeStageDto.setTransferedOutcome(transferedOutcome);
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
@@ -73,22 +73,25 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, embryoTransferredOutcomeStageDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, embryoTransferredOutcomeStageDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
     }
     protected void valRFC(HttpServletRequest request, EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto){
-        if(isRfc(request)){
+        if (isRfc(request)) {
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto()!= null && embryoTransferredOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto())){
+            if (arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() != null && embryoTransferredOutcomeStageDto.equals(arOldSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto())) {
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }
         }
     }
