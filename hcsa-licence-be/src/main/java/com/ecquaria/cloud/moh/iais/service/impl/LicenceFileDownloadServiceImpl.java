@@ -1073,16 +1073,41 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
                 onSubmitTaskList=tempList;
             }
-            broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
-            broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-            eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
-                    EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
-                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
-                    broadcastOrganizationDto.getEventRefNo(), null);
-            eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
-                    EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
-                    broadcastApplicationDto.getEventRefNo(), null);
+            boolean hasTask=false;
+            for (TaskDto task:onSubmitTaskList
+                 ) {
+                List<TaskDto> currTasks=organizationClient.getTasksByRefNo(task.getRefNo()).getEntity();
+                if(IaisCommonUtils.isNotEmpty(currTasks)){
+                    hasTask=true;
+                }
+            }
+            if(hasTask&&applicationNewAndRequstDto!=null){
+                String zipFileName = applicationNewAndRequstDto.getZipFileName();
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
+                String inFolder = inSharedPath;
+                if (!inFolder.endsWith(File.separator)) {
+                    inFolder += File.separator;
+                }
+                File file =MiscUtil.generateFile(inFolder + zipFileName);
+                log.info("start remove file start");
+                moveFile(file);
+                log.info("update file track start");
+                ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
+                processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
+                applicationClient.updateProcessFileTrack(processFileTrackDto);
+            }else {
+                broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
+                broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
+                        EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                        EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                        broadcastOrganizationDto.getEventRefNo(), null);
+                eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
+                        EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                        EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                        broadcastApplicationDto.getEventRefNo(), null);
+            }
+
             //update fe application stauts
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
