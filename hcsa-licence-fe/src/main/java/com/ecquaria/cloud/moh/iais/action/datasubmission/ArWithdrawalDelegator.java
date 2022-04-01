@@ -241,6 +241,7 @@ public class ArWithdrawalDelegator {
                     dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
                     list.add(dsWithdrawCorrelationDto);
                     if(cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
+                        arSuperDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                         arSuperDataSubmission.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     }
 
@@ -259,6 +260,7 @@ public class ArWithdrawalDelegator {
                 dsWithdrawCorrelationDto1.setRelatedSubmissionId(topSuper.getDataSubmissionDto().getId());
                 list.add(dsWithdrawCorrelationDto1);
                 topSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                 topSuper = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuper);
                 try {
                     topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuper);
@@ -272,6 +274,7 @@ public class ArWithdrawalDelegator {
                 DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
                 dsWithdrawCorrelationDto2.setRelatedSubmissionId(dpSuper.getDataSubmissionDto().getId());
                 list.add(dsWithdrawCorrelationDto2);
+                dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                 dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                 dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
                 try {
@@ -287,6 +290,7 @@ public class ArWithdrawalDelegator {
                 dsWithdrawCorrelationDto3.setRelatedSubmissionId(vssSuper.getDataSubmissionDto().getId());
                 list.add(dsWithdrawCorrelationDto3);
                 vssSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                vssSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                 vssSuper =vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuper);
                 try {
                      vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuper);
@@ -301,6 +305,7 @@ public class ArWithdrawalDelegator {
                 dsWithdrawCorrelationDto4.setRelatedSubmissionId(ldtSuper.getDataSubmissionDto().getId());
                 list.add(dsWithdrawCorrelationDto4);
                 ldtSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                ldtSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                 ldtSuper=ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuper);
                 try {
                     ldtDataSubmissionService.saveLdtSuperDataSubmissionDtoToBE(ldtSuper);
