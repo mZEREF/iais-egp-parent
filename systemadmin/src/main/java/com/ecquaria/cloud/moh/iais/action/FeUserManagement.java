@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -16,12 +15,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -357,28 +354,7 @@ public class FeUserManagement {
     }
 
     public void syncFeUserWithTrack(FeUserDto userAttr) {
-        // 1) Create and save the tracking record into DB before everything
-        EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT,
-                FeUserManagement.class.getName(), "syncFeUserWithEic", currentApp + "-" + currentDomain,
-                FeUserDto.class.getName(), JsonUtil.parseToJson(userAttr));
-        //2) Before executing the EIC function set the running data
-        track.setProcessNum(track.getProcessNum() + 1);
-        Date now = new Date();
-        if (track.getFirstActionAt() == null) {
-            track.setFirstActionAt(now);
-        }
-        track.setLastActionAt(now);
-        try {
-            // 3) Call the EIC in a try catch
-            syncFeUser(userAttr);
-            // 4a) If success then update the tracking status to complete
-            track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        } catch (Exception e) {
-            // 4b) If failed, still needs to update the running data to DB.
-            track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-            log.error(e.getMessage(), e);
-        }
-        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
+        eicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser");
     }
 
     public void syncFeUser(FeUserDto userAttr) {
