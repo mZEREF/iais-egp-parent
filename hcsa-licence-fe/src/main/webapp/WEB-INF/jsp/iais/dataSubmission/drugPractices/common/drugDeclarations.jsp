@@ -5,7 +5,7 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#ar-declaration">
-                Declaration
+                Declarations
             </a>
         </h4>
     </div>
