@@ -71,10 +71,9 @@ public class FacilityRegistrationDelegator {
                     failRetrieveEditData = false;
                     NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
 
-                    // check data uploaded by file
+                    // check data uploaded by committee data file
                     String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-                    SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(committeeNodePath);
-                    FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
+                    FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
                     /* If there is no committee data, we don't need to show error message.
                      * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
                      * so the error table should be displayed. This situation means user click save as draft when user
@@ -83,10 +82,9 @@ public class FacilityRegistrationDelegator {
                     if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
                         Nodes.passValidation(facRegRoot, committeeNodePath);
                     }
-
+                    // check data uploaded by authoriser data file
                     String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-                    SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(authoriserNodePath);
-                    FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
+                    FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
                     if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
                         Nodes.passValidation(facRegRoot, authoriserNodePath);
                     }

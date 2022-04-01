@@ -25,6 +25,8 @@
 <%--@elvariable id="facAdminOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto"--%>
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
 <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
+<%--@elvariable id="configList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo>"--%>
+<%--@elvariable id="answerMap" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="afc" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto"--%>
 <%--@elvariable id="previewSubmit" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto"--%>
 <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
@@ -44,7 +46,8 @@
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
                                     <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}" batList="${batList}"
-                                                 afc="${afc}" profileEditJudge="true" batListEditJudge="true" docEditJudge="true" otherAppInfoEditJudge="true" afcEditJudge="true" containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
+                                                 afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
+                                                 profileEditJudge="true" batListEditJudge="true" docEditJudge="true" otherAppInfoEditJudge="true" afcEditJudge="true" containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
                                         <jsp:attribute name="editFrag"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}&step=REPLACE-STEP-KEY"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></jsp:attribute>
                                         <jsp:attribute name="docFrag">
                                             <c:forEach var="doc" items="${docSettings}">

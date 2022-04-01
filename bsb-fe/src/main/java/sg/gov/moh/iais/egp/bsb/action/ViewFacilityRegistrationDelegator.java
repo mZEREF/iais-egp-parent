@@ -13,11 +13,13 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -109,6 +111,13 @@ public class ViewFacilityRegistrationDelegator {
                 List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
                 ParamUtil.setRequestAttr(request, "batList", batList);
             }
+
+            OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
+            // TODO after we save the declaration data into app misc, remove the hardcode
+            List<DeclarationItemMainInfo> config = facRegClient.getDeclarationConfigInfoById("B95B8F95-62B1-EC11-BE76-000C298D317C");
+            otherAppInfoDto.setDeclarationConfig(config);
+            ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
+            ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
             ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
             PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();

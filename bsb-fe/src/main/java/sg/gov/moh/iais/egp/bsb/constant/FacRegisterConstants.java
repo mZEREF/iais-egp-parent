@@ -7,6 +7,9 @@ public class FacRegisterConstants {
     public static final String MODULE_NAME_RFC             = "Rfc Facility Registration";
     public static final String MODULE_NAME_RENEWAL         = "Renewal Facility Registration";
 
+    public static final String DECLARATION_TYPE            = "Facility Registration";
+    public static final String DECLARATION_SUB_TYPE        = "New";
+
     public static final String KEY_ROOT_NODE_GROUP         = "facRegRoot";
 
     public static final String NODE_NAME_BEFORE_BEGIN      = "beforeBegin";
@@ -73,6 +76,10 @@ public class FacRegisterConstants {
     public static final String KEY_OPTIONS_FAC_TYPE        = "facTypeOps";
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
     public static final String KEY_OPTIONS_AFC             = "afcOps";
+
+    public static final String KEY_DECLARATION_CONFIG      = "configList";
+    public static final String KEY_DECLARATION_ANSWER_MAP  = "answerMap";
+    public static final String KEY_DECLARATION_ERROR_MAP   = "answerErrorMap";
 
     public static final String ERR_MSG_BAT_NOT_NULL        = "Biological Agent/Toxin node group must not be null!";
     public static final String ERR_MSG_NULL_GROUP          = "Node group must not be null!";

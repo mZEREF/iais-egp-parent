@@ -10,7 +10,7 @@
                 <div class="center-content">
                     <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}"
                                  facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
-                                 batList="${batList}" afc="${afc}"
+                                 batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
                                  containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
                         <jsp:attribute name="editFrag"/>
                         <jsp:attribute name="docFrag">

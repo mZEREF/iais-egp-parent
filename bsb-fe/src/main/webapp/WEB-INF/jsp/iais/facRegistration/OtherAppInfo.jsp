@@ -35,17 +35,28 @@
                         <%@ include file="../mainAppCommon/facRegistration/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
-                                <div id="otherInfoPanel" role="tabpanel">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab">
-                                            <h4 class="panel-title">Declaration</h4>
+                                <div id="otherAppInfoPanel">
+                                    <div id="declarationPanel" role="tabpanel">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab">
+                                                <h4 class="panel-title" style="font-weight: bold">Declaration</h4>
+                                            </div>
+                                            <div class="panel-collapse">
+                                                <%@ include file="../mainAppCommon/facRegistration/OtherAppInfoDeclaration.jsp" %>
+                                            </div>
                                         </div>
-                                        <div class="panel-collapse">
-                                            <%@ include file="../mainAppCommon/facRegistration/OtherAppInfo.jsp" %>
+                                    </div>
+                                    <div id="otherInfoPanel" role="tabpanel">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab">
+                                                <h4 class="panel-title" style="font-weight: bold">Other Information</h4>
+                                            </div>
+                                            <div class="panel-collapse">
+                                                <%@ include file="../mainAppCommon/facRegistration/OtherAppInformation.jsp" %>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <%@ include file="InnerFooter.jsp" %>
                             </div>
                         </div>

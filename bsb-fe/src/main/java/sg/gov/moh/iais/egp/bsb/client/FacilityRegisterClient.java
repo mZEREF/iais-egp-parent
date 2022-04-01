@@ -7,17 +7,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
 
+import java.util.List;
+
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
 public interface FacilityRegisterClient {
+    @GetMapping(value = "/declaration/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<DeclarationItemMainInfo> getDeclarationConfigInfoById(@PathVariable("id") String id);
+
+    @GetMapping(value = "/declaration/config", produces = MediaType.APPLICATION_JSON_VALUE)
+    DeclarationConfigInfo getDeclarationConfigBySpecificType(@RequestParam("type") String type,
+                                                             @RequestParam("sub-type") String subType);
+
     @PostMapping(path = "/register/facility/form-validation/selection", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilitySelection(@RequestBody FacilitySelectionDto dto);
 
@@ -46,7 +59,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/other-app-info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityOtherAppInfo(@RequestBody OtherApplicationInfoDto dto);
+    ValidationResultDto validateFacilityOtherAppInfo(@RequestBody DeclarationAnswerDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/primary-docs", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);

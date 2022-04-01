@@ -67,3 +67,7 @@ label {
         margin-bottom: 50px;
     }
 }
+
+ol.no-margin-list, ul.no-margin-list > li {
+    margin: 0;
+}

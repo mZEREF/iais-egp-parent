@@ -25,6 +25,8 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
@@ -501,12 +503,30 @@ public class FacilityRegistrationService {
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
+        // load declaration
+        if (otherAppInfoDto.isConfigNotLoaded()) {
+            if (StringUtils.hasLength(otherAppInfoDto.getDeclarationId())) {
+                List<DeclarationItemMainInfo> declarationConfig = facRegClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
+                otherAppInfoDto.setDeclarationConfig(declarationConfig);
+            } else {
+                DeclarationConfigInfo configInfo = facRegClient.getDeclarationConfigBySpecificType(DECLARATION_TYPE, DECLARATION_SUB_TYPE);
+                otherAppInfoDto.setDeclarationId(configInfo.getId());
+                otherAppInfoDto.setDeclarationConfig(configInfo.getConfig());
+            }
+        }
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, otherAppInfoDto.retrieveValidationResult());
+            Map<String, String> errorMap = otherAppInfoDto.getValidationResultDto().getErrorMap();
+            if (errorMap.containsKey("ID") || errorMap.containsKey("DTO")) {
+                throw new IllegalStateException();
+            } else {
+                ParamUtil.setRequestAttr(request, KEY_DECLARATION_ERROR_MAP, errorMap);
+            }
         }
         Nodes.needValidation(facRegRoot, NODE_NAME_OTHER_INFO);
-        ParamUtil.setRequestAttr(request, NODE_NAME_OTHER_INFO, otherAppInfoDto);
+
+        ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
+        ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
     }
 
     public void handleOtherAppInfo(BaseProcessClass bpc) {
@@ -633,6 +653,10 @@ public class FacilityRegistrationService {
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
         }
+
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
+        ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
+        ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
         ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
