@@ -266,7 +266,7 @@
             </iais:row>
         </div>
     </div>
-    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace=='Others'}">style="display: none"</c:if>>
+    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace!='Others'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Drug for Termination of Pregnancy taken at other places. "/>
             <iais:value width="7" cssClass="col-md-7">
