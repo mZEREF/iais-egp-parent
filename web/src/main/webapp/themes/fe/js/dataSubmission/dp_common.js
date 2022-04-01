@@ -124,17 +124,11 @@ function getDataForPrinting() {
     if (isEmpty(printflag)) {
         printflag = '';
     }
-    return {declaration: declaration, printflag: printflag};
-
     var remarks = $('textarea[name="remarks"]').val();
     if (isEmpty(remarks)) {
-        return null;
+        return '';
     }
-    var printflag = $('#printflag').val();
-    if (isEmpty(printflag)) {
-        printflag = '';
-    }
-    return {remarks: remarks, printflag: printflag};
+    return {declaration: declaration,remarks: remarks, printflag: printflag};
 }
 function showPopCommon(controlId,showPopId,val){
     if($(controlId).length == 0){

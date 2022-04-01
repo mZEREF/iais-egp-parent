@@ -11,12 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Process: MohDsPrint
@@ -78,7 +79,7 @@ public class MohDsPrintDelegator {
                 }
             }else if((dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED))){
                 String declaration = ParamUtil.getString(request, "declaration");
-                String remarks=ParamUtil.getRequestString(request, "remarks");
+                String remarks=ParamUtil.getString(request, "remarks");
                 dataSubmissionDto.setDeclaration(declaration);
                 dataSubmissionDto.setRemarks(remarks);
             }

@@ -116,7 +116,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
 
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)){
             try {
-                if(Formatter.compareDateByDay(endDate,startDate)<=0){
+                if(Formatter.compareDateByDay(endDate,startDate)<0){
                     errorMap.put("endDate", "Must be later than Date of startDate");
                 }
             }catch (Exception e){
