@@ -815,8 +815,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public void remindAndDeleteDraftSubJob() {
-        int overDueDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DS_C_001"));
-        int remindDays =  overDueDays-Integer.parseInt(MasterCodeUtil.getCodeDesc("DS_C_002"));
+        int overDueDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_002"));
+        int remindDays =  overDueDays-Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_003"));
         List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,remindDays).getEntity();
         if(IaisCommonUtils.isNotEmpty(dataSubmissionDraftDtos)){
             dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
