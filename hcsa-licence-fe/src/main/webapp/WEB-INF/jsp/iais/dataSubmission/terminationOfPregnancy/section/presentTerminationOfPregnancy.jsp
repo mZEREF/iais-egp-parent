@@ -251,7 +251,7 @@
             <iais:row cssClass="topDrugPlace">
                 <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
                 <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
-                    ${topDrugPlace}
+                    ${'unknown'}
                 </iais:value>
             </iais:row>
         </div>
@@ -259,14 +259,14 @@
             <iais:row>
                 <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${'unknown'}"
+                    <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.TopDrugPlace}"
                                  cssClass="topDrugPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topDrugPlace"></span>
             </iais:row>
         </div>
     </div>
-    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace!=null}">style="display: none"</c:if>>
+    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace=='Others'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Drug for Termination of Pregnancy taken at other places. "/>
             <iais:value width="7" cssClass="col-md-7">
