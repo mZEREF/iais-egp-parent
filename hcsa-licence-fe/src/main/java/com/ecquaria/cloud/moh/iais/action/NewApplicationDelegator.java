@@ -1734,6 +1734,8 @@ public class NewApplicationDelegator {
                  */
 
                 if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                    String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+                    ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
                     AppCessLicDto appCessLicDto = new AppCessLicDto();
                     String originLicenceId = applicationDto.getOriginLicenceId();
                     LicenceDto licenceDto = licenceClient.getLicDtoById(originLicenceId).getEntity();
