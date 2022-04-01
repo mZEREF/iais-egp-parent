@@ -2,9 +2,10 @@ package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.AppBasicInfo;
-import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,17 +16,21 @@ import java.util.List;
  */
 @Data
 public class MohProcessDto implements Serializable {
-    private String moduleName;
-
-    private AppBasicInfo appBasicInfo;
+    private SubmissionDetailsInfo submissionDetailsInfo;
     private FacilityDetailsInfo facilityDetailsInfo;
 
+    private List<DocDisplayDto> supportDocDisplayDtoList;
+    private List<DocDisplayDto> internalDocDisplayDtoList;
     private List<SelectOption> selectRouteToMoh;
-    private List<DocDisplayDto> docDisplayDtoList;
+    private List<ProcessHistoryDto> processHistoryDtoList;
 
     // process data
     private String remarks;
     private String processingDecision;
     private String inspectionRequired;
-    private String selectAO;
+    private String certificationRequired;
+    private String selectMohUser;
+
+    private String lastRecommendation;
+    private String lastRemarks;
 }

@@ -13,12 +13,14 @@ import java.util.Map;
 @Slf4j
 @NoArgsConstructor
 public class FacilityRegisterDto {
+    private FacilitySelectionDto facilitySelectionDto;
     private FacilityProfileDto facilityProfileDto;
     private FacilityOperatorDto facilityOperatorDto;
-    private FacilityAuthoriserDto facilityAuthoriserDto;
-    private FacilityAdminDto facilityAdministratorDto;
-    private FacilityOfficerDto facilityOfficerDto;
+    private FacilityAdminAndOfficerDto facilityAdminAndOfficerDto;
     private FacilityCommitteeDto facilityCommitteeDto;
+    private FacilityAuthoriserDto facilityAuthoriserDto;
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
+    private OtherApplicationInfoDto otherAppInfoDto;
     private Collection<DocRecordInfo> docRecordInfos;
+    private FacilityAfcDto afcDto;
 }

@@ -124,6 +124,29 @@ public class MasterCodeConstants {
     public static final String FAC_CLASSIFICATION_UF = "FACCLA003";
     public static final String FAC_CLASSIFICATION_LSPF = "FACCLA004";
     public static final String FAC_CLASSIFICATION_RF = "FACCLA005";
+    public static final Set<String> VALID_FAC_CLASSIFICATION;
+    public static final Set<String> CERTIFIED_CLASSIFICATION;
+    public static final Set<String> UNCERTIFIED_CLASSIFICATION;
+
+    static {
+        Set<String> certifiedClassification = Sets.newHashSetWithExpectedSize(2);
+        certifiedClassification.add(FAC_CLASSIFICATION_BSL3);
+        certifiedClassification.add(FAC_CLASSIFICATION_BSL4);
+        CERTIFIED_CLASSIFICATION = Collections.unmodifiableSet(certifiedClassification);
+
+        Set<String> uncertifiedClassification = Sets.newHashSetWithExpectedSize(2);
+        uncertifiedClassification.add(FAC_CLASSIFICATION_UF);
+        uncertifiedClassification.add(FAC_CLASSIFICATION_LSPF);
+        UNCERTIFIED_CLASSIFICATION = Collections.unmodifiableSet(uncertifiedClassification);
+
+        Set<String> facClassification = Sets.newHashSetWithExpectedSize(5);
+        facClassification.add(FAC_CLASSIFICATION_BSL3);
+        facClassification.add(FAC_CLASSIFICATION_BSL4);
+        facClassification.add(FAC_CLASSIFICATION_UF);
+        facClassification.add(FAC_CLASSIFICATION_LSPF);
+        facClassification.add(FAC_CLASSIFICATION_RF);
+        VALID_FAC_CLASSIFICATION = Collections.unmodifiableSet(facClassification);
+    }
 
     public static final String ACTIVITY_POSSESS_FIRST_SCHEDULE = "ACTVITY001";
     public static final String ACTIVITY_POSSESS_SECOND_SCHEDULE = "ACTVITY002";

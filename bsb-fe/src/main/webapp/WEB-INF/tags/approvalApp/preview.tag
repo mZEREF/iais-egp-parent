@@ -4,7 +4,13 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 
-<%@attribute name="approvalProfileList" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalProfileDto>" %>
+<%@attribute name="facProfileDto" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto>" %>
+<%@attribute name="approvalToPossessDto" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToPossessDto>" %>
+<%@attribute name="approvalToLargeDto" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToLargeDto>" %>
+<%@attribute name="approvalToSpecialDto" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto>" %>
+<%@attribute name="approvalToActivityDto" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToActivityDto>" %>
+<%@attribute name="facAuthorisedDto" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto>" %>
+
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
 <%@attribute name="approvalProfileListEditJudge" type="java.lang.Boolean" %>

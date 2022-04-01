@@ -1,18 +1,19 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process-ao-screening.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <%--@elvariable id="mohProcessPageValidation" type="java.lang.String"--%>
         <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
         <div class="main-content">
             <div class="row">
@@ -29,8 +30,8 @@
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
-                                            <li id="dynamicContent" role="presentation">
-                                                <a href="#tabDynamicContent" id="doContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
+                                            <li id="facilityDetails" role="presentation">
+                                                <a href="#tabFacilityDetails" id="doFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
                                             </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -45,7 +46,7 @@
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabDynamicContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
+                                                    <a href="#tabFacilityDetails" aria-controls="tabFacilityDetails" role="tab" data-toggle="tab">Facility Details</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -54,165 +55,127 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/applicationInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
-                                            <div class="tab-pane" id="tabDynamicContent" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/dynamicContent.jsp" %>
+                                            <div class="tab-pane" id="tabFacilityDetails" role="tabpanel">
+                                                <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing Status Update</h4>
-                                                    </strong>
+                                                    <h4>Processing Status Update</h4>
                                                 </div>
-                                                <form method="post" action=<%=process.runtime.continueURL()%>>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="table-gp" id="beInboxFilter">
-                                                                <iais:section title="">
-                                                                    <div>&nbsp</div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="DO Remarks" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${aoScreeningDto.doRemarks}</p></iais:value>
-                                                                        </iais:row>
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div class="table-gp">
+                                                            <div class="form-horizontal">
+                                                                <%--@elvariable id="mohProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto"--%>
+                                                                <%--@elvariable id="selectRouteToMoh" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                                                <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Current Status</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${aoScreeningDto.riskLevel}"></iais:code></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${aoScreeningDto.riskLevelComments}</p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="DO Processing Decision" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><iais:code code="${aoScreeningDto.doProcessingDecision}"></iais:code></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Remarks" required="false" width="12"/>
-                                                                            <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
-                                                                                        <textarea name="aoRemarks" cols="70" rows="7" maxlength="500"><c:out value="${aoScreeningDto.aoRemarks}"></c:out></textarea>
-                                                                                        <span data-err-ind="aoRemarks" class="error-msg"></span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Reviewing Decision" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <select name="reviewingDecision" id="reviewingDecision">
-                                                                                    <option value="">Please Select</option>
-                                                                                    <option value="MOHPRO006" <c:if test="${aoScreeningDto.reviewingDecision eq 'MOHPRO006'}">selected="selected"</c:if>>Approve for Inspection</option>
-                                                                                    <option value="MOHPRO007" <c:if test="${aoScreeningDto.reviewingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
-                                                                                    <option value="MOHPRO008" <c:if test="${aoScreeningDto.reviewingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>Route Back to Duty Officer</option>
-                                                                                    <option value="MOHPRO009" <c:if test="${aoScreeningDto.reviewingDecision eq 'MOHPRO009'}">selected="selected"</c:if>>Route to Higher Management</option>
-                                                                                </select>
-                                                                                <span data-err-ind="reviewingDecision" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="ERP Report" required="true"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="erpReportDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.erpReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="erpReportDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Red Teaming Report" required="true"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="redTeamingReportDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.redTeamingReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="redTeamingReportDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Lentivirus Report" required="false"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="lentivirusReportDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.lentivirusReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="lentivirusReportDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Internal Inspection Report" required="true"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="internalInspectionReportDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.internalInspectionReportDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="internalInspectionReportDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedAfc" codeCategory="CATE_ID_BSB_SELECTED_APPROVED_FACILITY_CERTIFER" firstOption="Please Select" value="${aoScreeningDto.selectedAfc}"></iais:select>
-                                                                                <span data-err-ind="selectedAfc" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Validity Start Date" required="true"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="validityStartDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.validityStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="validityStartDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Validity End Date" required="true"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <input type="text" autocomplete="off" name="validityEndDate" data-date-start-date="01/01/1900" value="<c:out value="${aoScreeningDto.validityEndDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                                                <span data-err-ind="validityEndDate" class="error-msg" ></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Final Remarks" required="false"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${aoScreeningDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
-                                                                                    <label for="finalRemarksYes" class="form-check-label"><span class="check-square"></span>Yes</label>
-                                                                                </div>
-                                                                                <div class="form-check">
-                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${aoScreeningDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
-                                                                                    <label for="finalRemarksNo" class="form-check-label"><span class="check-square"></span>No</label>
-                                                                                </div>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                </iais:section>
-                                                                <div style="text-align: right">
-                                                                    <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
+                                                                    <div class="clear"></div>
                                                                 </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Will MOH conduct on-site inspection?</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                        <div class="input-group">
+                                                                            <label>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                            </label>
+                                                                            <span class="check-circle">Yes</span>
+                                                                            <label>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                            </label>
+                                                                            <span class="check-circle">No</span>
+                                                                            <span data-err-ind="inspectionRequired" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Will MOH-AFC conduct the certification?</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                        <div class="input-group">
+                                                                            <label>
+                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                            </label>
+                                                                            <span class="check-circle">Yes</span>
+                                                                            <label>
+                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                            </label>
+                                                                            <span class="check-circle">No</span>
+                                                                            <span data-err-ind="certificationRequired" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">DO Remarks</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <p><c:out value="${mohProcessDto.lastRemarks}"/></p>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Processing Decision/Recommendation by DO</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <p><iais:code code="${mohProcessDto.lastRecommendation}"/></p>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="processingDecision" id="processingDecision">
+                                                                                <option value="">Please Select</option>
+                                                                                <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="MOHPRO003" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                                <option value="MOHPRO008" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to DO</option>
+                                                                                <option value="MOHPRO009" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO009'}">selected="selected"</c:if>>Route to HM</option>
+                                                                            </select>
+                                                                            <span data-err-ind="processingDecision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group" id="selectMohUserDiv">
+                                                                    <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select HM <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="selectMohUser" id="selectMohUser">
+                                                                                <option value="">Please Select</option>
+                                                                                <c:forEach var="selection" items="${selectRouteToMoh}">
+                                                                                    <option value="${selection.value}" <c:if test="${mohProcessDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                            <span data-err-ind="selectMohUser" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${mohProcessDto.remarks}"/></textarea>
+                                                                            <span data-err-ind="remark" class="error-msg"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div style="text-align: right">
+                                                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                                 <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                             </div>
                                         </div>

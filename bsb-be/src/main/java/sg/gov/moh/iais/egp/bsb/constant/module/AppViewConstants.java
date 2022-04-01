@@ -11,13 +11,26 @@ public class AppViewConstants {
     public static final String MODULE_NAME                                  = "MohBeAppView";
     public static final String FUNCTION_NAME                                = "MohBeAppView";
 
-    public static final String NODE_NAME_FAC_PROFILE                        = "facProfile";
-    public static final String NODE_NAME_FAC_OPERATOR                       = "facOperator";
-    public static final String NODE_NAME_FAC_AUTH                           = "facAuth";
-    public static final String NODE_NAME_FAC_ADMIN                          = "facAdmin";
-    public static final String NODE_NAME_FAC_OFFICER                        = "facOfficer";
-    public static final String NODE_NAME_FAC_COMMITTEE                      = "facCommittee";
+
+    public static final String NODE_NAME_BEFORE_BEGIN      = "beforeBegin";
+    public static final String NODE_NAME_COMPANY_INFO      = "compInfo";
+    public static final String NODE_NAME_FAC_SELECTION     = "serviceSelection";
+    public static final String NODE_NAME_FAC_INFO          = "facInfo";
+    public static final String NODE_NAME_FAC_BAT_INFO      = "batInfo";
+    public static final String NODE_NAME_OTHER_INFO        = "otherInfo";
+    public static final String NODE_NAME_PRIMARY_DOC       = "primaryDocs";
+    public static final String NODE_NAME_AFC               = "afc";
+    public static final String NODE_NAME_PREVIEW_SUBMIT    = "previewSubmit";
+    public static final String NODE_NAME_FAC_PROFILE       = "facProfile";
+    public static final String NODE_NAME_FAC_OPERATOR      = "facOperator";
+    public static final String NODE_NAME_FAC_AUTH          = "facAuth";
+    public static final String NODE_NAME_FAC_ADMIN_OFFICER = "facAdminOfficer";
+    public static final String NODE_NAME_FAC_COMMITTEE     = "facCommittee";
+    public static final String KEY_ORG_ADDRESS             = "organizationAddress";
     public static final String KEY_BAT_LIST                                 = "batList";
+    public static final String KEY_IS_CF                   = "isCertifiedFacility";
+    public static final String KEY_DECLARATION_CONFIG      = "configList";
+    public static final String KEY_DECLARATION_ANSWER_MAP  = "answerMap";
 
     public static final String KEY_APPROVAL_PROFILE_LIST                    = "approvalProfileList";
 

@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ResponseConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
@@ -15,12 +16,12 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.appview.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
@@ -39,9 +40,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_PRIMA
 public class AppViewService {
     private static final String DOC_TYPE_OF_OTHERS = "Others";
     private final AppViewClient appViewClient;
+    private final DocSettingService docSettingService;
 
-    public AppViewService(AppViewClient appViewClient) {
+    public AppViewService(AppViewClient appViewClient, DocSettingService docSettingService) {
         this.appViewClient = appViewClient;
+        this.docSettingService = docSettingService;
     }
 
     /**
@@ -86,26 +89,52 @@ public class AppViewService {
      * retrieve new facility registration view data
      */
     public void retrieveFacReg(HttpServletRequest request, String applicationId) {
+        // retrieve app data of facility registration
         ResponseDto<FacilityRegisterDto> resultDto = appViewClient.getFacRegDtoByAppId(applicationId);
-        if (resultDto.ok()){
+        if (resultDto.ok()) {
             FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
-
+            // TODO retrieve company address
+            OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
+            orgAddressInfo.setUen("185412420D");
+            orgAddressInfo.setCompName("DBO Laboratories");
+            orgAddressInfo.setPostalCode("980335");
+            orgAddressInfo.setAddressType("ADDTY001");
+            orgAddressInfo.setBlockNo("10");
+            orgAddressInfo.setFloor("03");
+            orgAddressInfo.setUnitNo("01");
+            orgAddressInfo.setStreet("Toa Payoh Lorong 2");
+            orgAddressInfo.setBuilding("-");
+            ParamUtil.setRequestAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facilityRegisterDto.getFacilityProfileDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facilityRegisterDto.getFacilityOperatorDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facilityRegisterDto.getFacilityAuthoriserDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facilityRegisterDto.getFacilityAdministratorDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facilityRegisterDto.getFacilityOfficerDto());
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facilityRegisterDto);
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, facilityRegisterDto.getFacilityAdminAndOfficerDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facilityRegisterDto.getFacilityCommitteeDto());
 
-            List<BiologicalAgentToxinDto> batList = new ArrayList<>(facilityRegisterDto.getBiologicalAgentToxinMap().values());
-            ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
+            FacilitySelectionDto selectionDto = facilityRegisterDto.getFacilitySelectionDto();
+            if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
+                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.TRUE);
 
-            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getFacRegDocSettings());
+                ParamUtil.setRequestAttr(request, NODE_NAME_AFC, facilityRegisterDto.getAfcDto());
+            } else {
+                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.FALSE);
+
+                List<BiologicalAgentToxinDto> batList = new ArrayList<>(facilityRegisterDto.getBiologicalAgentToxinMap().values());
+                ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
+            }
+
+            OtherApplicationInfoDto otherAppInfoDto = facilityRegisterDto.getOtherAppInfoDto();
+            // TODO after we save the declaration data into app misc, remove the hardcode
+            List<DeclarationItemMainInfo> config = appViewClient.getDeclarationConfigInfoById("B95B8F95-62B1-EC11-BE76-000C298D317C");
+            otherAppInfoDto.setDeclarationConfig(config);
+            ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
+            ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, docSettingService.getFacRegDocSettings());
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
             primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(facilityRegisterDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
-            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
-            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
+            Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, savedFiles);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
@@ -244,21 +273,6 @@ public class AppViewService {
         }else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
-    }
-
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(9);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, DOC_TYPE_OF_OTHERS, false));
-        return docSettings;
     }
 
     /* Will be removed in future, will get this from config mechanism */

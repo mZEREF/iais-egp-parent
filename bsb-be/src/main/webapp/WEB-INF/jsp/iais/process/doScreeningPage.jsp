@@ -9,13 +9,11 @@
 <webui:setLayout name="iais-intranet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process-do-screening.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
-<%--@elvariable id="mohProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto"--%>
-<%--@elvariable id="mohProcessPageValidation" type="java.lang.String"--%>
-<%--@elvariable id="appBasicInfo" type="sg.gov.moh.iais.egp.bsb.dto.info.common.AppBasicInfo"--%>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <%--@elvariable id="mohProcessPageValidation" type="java.lang.String"--%>
         <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcessPageValidation}">
         <div class="main-content">
             <div class="row">
@@ -57,7 +55,7 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/common/appBasicInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
@@ -74,10 +72,13 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <div class="form-horizontal">
+                                                                <%--@elvariable id="mohProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto"--%>
+                                                                <%--@elvariable id="selectRouteToMoh" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                                                <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${appBasicInfo.status}"/></p>
+                                                                        <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -86,14 +87,30 @@
                                                                     <div class="col-sm-7 col-md-5 col-xs-10 control-label">
                                                                         <div class="input-group">
                                                                             <label>
-                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'yes'}">checked="checked"</c:if> value="yes"/>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
                                                                             </label>
                                                                             <span class="check-circle">Yes</span>
                                                                             <label>
-                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'no'}">checked="checked"</c:if> value="no"/>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'N'}">checked="checked"</c:if> value="N"/>
                                                                             </label>
                                                                             <span class="check-circle">No</span>
                                                                             <span data-err-ind="inspectionRequired" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-12 col-md-4 control-label">Will MOH-AFC conduct the certification? <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                        <div class="input-group">
+                                                                            <label>
+                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                            </label>
+                                                                            <span class="check-circle">Yes</span>
+                                                                            <label>
+                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                            </label>
+                                                                            <span class="check-circle">No</span>
+                                                                            <span data-err-ind="certificationRequired" class="error-msg" ></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -103,7 +120,7 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="MOHPRO001" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO001'}">selected="selected"</c:if>>Screened by Duty Officer. Proceed to next stage.</option>
                                                                                 <option value="MOHPRO002" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
                                                                                 <option value="MOHPRO003" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
                                                                             </select>
@@ -112,14 +129,17 @@
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
-                                                                <div class="form-group" id="selectAODiv">
-                                                                    <label for="selectAO" class="col-xs-12 col-md-4 control-label">Select Approving Officer <span style="color: red">*</span></label>
+                                                                <div class="form-group" id="selectMohUserDiv">
+                                                                    <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select Approving Officer <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="selectAO" id="selectAO">
+                                                                            <select name="selectMohUser" id="selectMohUser">
                                                                                 <option value="">Please Select</option>
+                                                                                <c:forEach var="selection" items="${selectRouteToMoh}">
+                                                                                    <option value="${selection.value}" <c:if test="${mohProcessDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
+                                                                                </c:forEach>
                                                                             </select>
-                                                                            <span data-err-ind="selectAO" class="error-msg" ></span>
+                                                                            <span data-err-ind="selectMohUser" class="error-msg" ></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>

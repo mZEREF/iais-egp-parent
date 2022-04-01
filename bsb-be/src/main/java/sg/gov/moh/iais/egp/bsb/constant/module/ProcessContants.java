@@ -20,6 +20,13 @@ public class ProcessContants {
     public static final String FUNCTION_NAME_AO_PROCESSING          = "AO Processing";
     public static final String FUNCTION_NAME_HM_PROCESSING          = "HM Processing";
 
+    public static final String MODULE_NAME_DO_SCREENING             = "doScreening";
+    public static final String MODULE_NAME_AO_SCREENING             = "aoScreening";
+    public static final String MODULE_NAME_HM_SCREENING             = "hmScreening";
+    public static final String MODULE_NAME_DO_PROCESSING            = "doProcessing";
+    public static final String MODULE_NAME_AO_PROCESSING            = "doProcessing";
+    public static final String MODULE_NAME_HM_PROCESSING            = "doProcessing";
+
     public static final String KEY_DO_SCREENING_DTO                 = "doScreeningDto";
     public static final String KEY_AO_SCREENING_DTO                 = "aoScreeningDto";
     public static final String KEY_HM_SCREENING_DTO                 = "hmScreeningDto";
@@ -33,7 +40,8 @@ public class ProcessContants {
     public static final String KEY_REMARKS                                  = "remarks";
     public static final String KEY_PROCESSING_DECISION                      = "processingDecision";
     public static final String KEY_INSPECTION_REQUIRED                      = "inspectionRequired";
-    public static final String KEY_SELECT_APPROVING_OFFICER                 = "selectAO";
+    public static final String KEY_CERTIFICATION_REQUIRED                   = "certificationRequired";
+    public static final String KEY_SELECT_MOH_USER                          = "selectMohUser";
 
     public static final String KEY_RISK_LEVEL                       = "riskLevel";
     public static final String KEY_RISK_LEVEL_COMMENTS              = "riskLevelComments";

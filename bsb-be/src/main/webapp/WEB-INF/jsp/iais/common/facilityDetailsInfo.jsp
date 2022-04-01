@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%--@elvariable id="facilityDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityDetailsInfo"--%>
+<%--@elvariable id="facilityDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo"--%>
 <div class="panel panel-default">
-    <div class="panel-heading"><strong>Facility Details</strong></div>
+    <div class="panel-heading" style="text-align: center"><strong>Facility Details</strong></div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -12,16 +12,17 @@
                         <th scope="col" style="display: none"></th>
                     </tr>
                     <tr>
-                        <td class="col-xs-6" style="text-align: right">Facility Name</td>
+                        <td class="col-xs-6" style="font-weight: bold; text-align: right">Facility Name</td>
                         <td class="col-xs-6" style="padding-left : 20px"><c:out value="${facilityDetailsInfo.name}"/></td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Facility Classification</td>
+                        <td style="font-weight: bold; text-align: right">Facility Classification</td>
                         <td style="padding-left: 20px"><iais:code code="${facilityDetailsInfo.classification}"/></td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Existing Facility Activity Type Approval</td>
+                        <td style="font-weight: bold; text-align: right">Existing Facility Activity Type Approval</td>
                         <td style="padding-left: 20px">
+                            <c:if test="${facilityDetailsInfo.existingFacilityActivityTypeApprovalList eq null || facilityDetailsInfo.existingFacilityActivityTypeApprovalList.size() == 0}">-</c:if>
                             <ul>
                             <c:forEach var="existingFacilityActivityTypeApproval" items="${facilityDetailsInfo.existingFacilityActivityTypeApprovalList}">
                                 <li><iais:code code="${existingFacilityActivityTypeApproval}"/></li>
@@ -39,7 +40,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
-                <c:if test="${facilityDetailsInfo.facilityActivityInfoList ne null}">
+                <c:if test="${facilityDetailsInfo.facilityActivityInfoList ne null && facilityDetailsInfo.facilityActivityInfoList.size() > 0}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -75,7 +76,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${facilityDetailsInfo.facilityBiologicalAgentInfoList ne null}">
+                <c:if test="${facilityDetailsInfo.facilityBiologicalAgentInfoList ne null && facilityDetailsInfo.facilityBiologicalAgentInfoList.size() > 0}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -94,15 +95,15 @@
                                     <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
                                         <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
                                         <div class="col-md-3"><iais:code code="${facilityBiologicalAgentInfo.schedule}"/></div>
-                                        <div class="col-md-5"><c:out value="${facilityBiologicalAgentInfo.name}"/></div>
+                                        <div class="col-md-5"><c:out value="${facilityBiologicalAgentInfo.batName}"/></div>
                                         <div class="col-md-3">
                                             <div class="row">
                                                 <label>
-                                                    <input type="radio" name="${facilityBiologicalAgentInfo.facilityBiologicalAgentId}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
+                                                    <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
                                                 </label>
                                                 <span class="check-circle">Yes</span>
                                                 <label>
-                                                    <input type="radio" name="${facilityBiologicalAgentInfo.facilityBiologicalAgentId}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
+                                                    <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
                                                 </label>
                                                 <span class="check-circle">No</span>
                                             </div>

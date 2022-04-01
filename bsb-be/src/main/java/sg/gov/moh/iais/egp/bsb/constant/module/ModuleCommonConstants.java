@@ -32,5 +32,11 @@ public class ModuleCommonConstants {
     public static final String KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST    = "supportDocDisplayDtoList";
     public static final String KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST   = "internalDocDisplayDtoList";
 
+
+    // processing show data constants
+    public static final String KEY_SUBMISSION_DETAILS_INFO          = "submissionDetailsInfo";
+    public static final String KEY_FACILITY_DETAILS_INFO            = "facilityDetailsInfo";
+    public static final String KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP = "docDisplayDtoRepoIdNameMap";
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
+    public static final String KEY_SELECT_ROUTE_TO_MOH              = "selectRouteToMoh";
 }
