@@ -221,11 +221,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        String crudActionType = setActionRequestFroMulReq(request,mulReq);
         InspectionFDtosDto serListDto;
         String viewChkFlag = ParamUtil.getString(mulReq,"viewchk");
         if(!StringUtil.isEmpty(viewChkFlag)){
@@ -293,6 +289,14 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
 
     }
 
+    public String setActionRequestFroMulReq(HttpServletRequest request,MultipartHttpServletRequest mulReq){
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        return crudActionType;
+    }
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CheckListVadlidateDto dto = new CheckListVadlidateDto();
@@ -387,10 +391,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{
         log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        setActionRequestFroMulReq(bpc.request,mulReq);
         getOtherInfo(mulReq);
 
     }
@@ -523,8 +524,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                     }
                  index++;
                 }
-                String deconflict = ParamUtil.getString(request,prefix +"Deconflict");
-                fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,deconflict);
+                fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
             }
             ParamUtil.setSessionAttr(request,COMMONDTO,comDto);
         }
