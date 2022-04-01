@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -29,17 +30,15 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -816,13 +815,47 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public void remindAndDeleteDraftSubJob() {
         int overDueDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_002"));
-        int remindDays =  overDueDays-Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_003"));
-        List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,remindDays).getEntity();
+        sendRemindEmailForDraftOverDueDayNear(overDueDays,Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_003")));
+        arFeClient.doUpdateDraftStatusMoreThanDays(DataSubmissionConsts.DS_STATUS_INACTIVE,DataSubmissionConsts.DS_STATUS_DRAFT, overDueDays);
+    }
+
+    private void sendRemindEmailForDraftOverDueDayNear(int overDueDays,int distanceExpirationDays){
+        List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,overDueDays-distanceExpirationDays).getEntity();
         if(IaisCommonUtils.isNotEmpty(dataSubmissionDraftDtos)){
+            Calendar calendarStart = Calendar.getInstance();
+            calendarStart.setTime(new Date());
+            calendarStart.add(Calendar.DATE,distanceExpirationDays);
+            String expDateString = Formatter.formatDate(calendarStart.getTime());
+            MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG).getEntity();
             dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
-                //Todo send email
+                 if( StringUtil.isNotEmpty( dataSubmissionDraftDto.getLicenseeId())){
+                     Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("draftNumber","date"),Arrays.asList(dataSubmissionDraftDto.getDraftNo(),expDateString));
+                     try {
+                         EmailParam emailParam = new EmailParam();
+                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG);
+                         emailParam.setTemplateContent(map);
+                         emailParam.setQueryCode(dataSubmissionDraftDto.getDraftNo());
+                         emailParam.setReqRefNum(dataSubmissionDraftDto.getDraftNo());
+                         emailParam.setServiceTypes(dataSubmissionDraftDto.getDsType());
+                         emailParam.setRefId(dataSubmissionDraftDto.getLicenseeId());
+                         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                         emailParam.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map));
+                         notificationHelper.sendNotification(emailParam);
+                         log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send msg end ----------"));
+                         EmailParam emailParamEmail = MiscUtil.transferEntityDto(emailParam,EmailParam.class);
+                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL);
+                         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+                         notificationHelper.sendNotification(emailParamEmail);
+                         log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send email end ----------"));
+                     } catch (IOException e) {
+                         log.error(e.getMessage(),e);
+                     } catch (TemplateException e) {
+                         log.error(e.getMessage(),e);
+                     }
+                 }else {
+                     log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  no licenseeId ----------"));
+                 }
             });
         }
-        arFeClient.doUpdateDraftStatusMoreThanDays(DataSubmissionConsts.DS_STATUS_INACTIVE,DataSubmissionConsts.DS_STATUS_DRAFT, overDueDays);
     }
 }
