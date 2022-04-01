@@ -47,21 +47,28 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.put("patientSign", "GENERAL_ERR0006");
             }
         }
-        if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-            if (preTerminationDto.getCounsellingGiven()==true && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
-                if(StringUtil.isEmpty(preTerminationDto.getPatientAppointment())){
-                    errorMap.put("patientAppointment", "GENERAL_ERR0006");
-                }
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
+            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
+                if (preTerminationDto.getCounsellingGiven()==true && "TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
+                    if(StringUtil.isEmpty(preTerminationDto.getPatientAppointment())){
+                        errorMap.put("patientAppointment", "GENERAL_ERR0006");
+                    }
 
+                }
             }
         }
-
-        if (!StringUtil.isEmpty(preTerminationDto.getPatientAppointment()) && preTerminationDto.getPatientAppointment()==true) {
-            if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
-                errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
-            }
-            if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingResult())){
-                errorMap.put("secCounsellingResult", "GENERAL_ERR0006");
+        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
+            if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
+                if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) || preTerminationDto.getCounsellingGiven() == true){
+                    if (!StringUtil.isEmpty(preTerminationDto.getPatientAppointment()) && preTerminationDto.getPatientAppointment()==true) {
+                        if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
+                            errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
+                        }
+                        if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingResult())){
+                            errorMap.put("secCounsellingResult", "GENERAL_ERR0006");
+                        }
+                    }
+                }
             }
         }
         if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==false) {

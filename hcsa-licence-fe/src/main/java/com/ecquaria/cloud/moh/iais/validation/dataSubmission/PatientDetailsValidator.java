@@ -52,11 +52,13 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if("AR_IT_004".equals(patientInformationDto.getIdType()) && StringUtil.isEmpty(patientInformationDto.getNationality())){
             errorMap.put("nationality", "GENERAL_ERR0006");
         }
-        if("NAT0001".equals(patientInformationDto.getNationality()) && StringUtil.isEmpty(patientInformationDto.getCommResidenceInSgDate())){
-            errorMap.put("commResidenceInSgDate", "GENERAL_ERR0006");
-        }
-        if("NAT0001".equals(patientInformationDto.getNationality()) && StringUtil.isEmpty(patientInformationDto.getResidenceStatus())){
-            errorMap.put("residenceStatus", "GENERAL_ERR0006");
+        if(!StringUtil.isEmpty(patientInformationDto.getNationality())){
+            if(!"NAT0001".equals(patientInformationDto.getNationality()) && StringUtil.isEmpty(patientInformationDto.getCommResidenceInSgDate())){
+                errorMap.put("commResidenceInSgDate", "GENERAL_ERR0006");
+            }
+            if(!"NAT0001".equals(patientInformationDto.getNationality()) && StringUtil.isEmpty(patientInformationDto.getResidenceStatus())){
+                errorMap.put("residenceStatus", "GENERAL_ERR0006");
+            }
         }
         if("ETHG005".equals(patientInformationDto.getEthnicGroup()) && StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
             errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
@@ -67,15 +69,12 @@ public class PatientDetailsValidator implements CustomizeValidator {
         String livingChildrenNo = ParamUtil.getRequestString(request, "livingChildrenNo");
         if (StringUtil.isEmpty(livingChildrenNo)) {
             errorMap.put("livingChildrenNo","GENERAL_ERR0006");
-        }else if (livingChildrenNo.length() > 2) {
-            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-            repMap.put("maxlength", "2");
-            repMap.put("field", "No. of Living Children");
-            String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
-            errorMap.put("livingChildrenNo", errMsg);
-
         }
-
+        if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
+            if (Integer.valueOf(livingChildrenNo) > 10) {
+                errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
+            }
+        }
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
             errorMap.put("otherOccupation", "GENERAL_ERR0006");
         }

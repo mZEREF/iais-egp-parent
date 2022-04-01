@@ -48,13 +48,17 @@
                     <iais:row>
                         <iais:field width="5" value="Nationality" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
+                            <iais:select name="nationality" firstOption="Please Select" id="nationality" codeCategory="CATE_ID_NATIONALITY"
                                          value="${patientInformationDto.nationality}" cssClass="nationality"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Date Commenced Residence In Singapore"/>
+                        <label class="col-xs-5 col-md-4 control-label">Date Commenced Residence In Singapore
+                            <span id="commResidenceInSgDate" class="mandatory">
+                                <c:if test="${patientInformationDto.nationality !='NAT0001'}">*</c:if>
+                            </span>
+                        </label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:datePicker name="commResidenceInSgDate" value="${patientInformationDto.commResidenceInSgDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_commResidenceInSgDate"></span>
@@ -71,11 +75,11 @@
                     <iais:row>
                         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" firstOption="Please Select"
+                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroup" firstOption="Please Select"
                                          codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
                         </iais:value>
                     </iais:row>
-                    <div id="otherEthnicGroup"
+                    <div id="otherEthnicGroups"
                          <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Other Ethnic Group" mandatory="true"/>
@@ -142,16 +146,14 @@
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <div id="genders">
-                                <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
+                               <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
                                            varStatus="idxStatus">
                                     <iais:row>
-                                        <iais:value width="7" cssClass="col-md-7">
-                                            <div class="form-group" id="genders" style="width:1100px">
-                                                <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                                                    <iais:input maxLength="2" type="text" name="livingChildrenGenders${idxStatus.index}"
-                                                                value="${livingChildrenGenders}"/>
+                                        <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
+                                            <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
+                                                    <iais:select name="livingChildrenGenders${idxStatus.index}" firstOption="Please Select" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders"/>
                                                     <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                                </div>
                                             </div>
                                         </iais:value>
                                     </iais:row>
@@ -176,12 +178,12 @@
     $(document).ready(function () {
         $('#ethnicGroup').change(function () {
 
-            var ethnicGroup = $('#ethnicGroup option:selected').val();
+            var ethnicGroup = $('#ethnicGroup').val();
 
             if (ethnicGroup == "ETHG005") {
-                $('#otherEthnicGroup').attr("style", "display: block");
+                $('#otherEthnicGroups').show();
             } else {
-                $('#otherEthnicGroup').attr("style", "display: none");
+                $('#otherEthnicGroups').hide();
             }
         });
     });
@@ -214,14 +216,36 @@
             var value = $(this).val();
             $("#genders").empty();
             for (var i = 0; i < value; i++) {
-                var input = /*"<input type='text'" + i + " />"*/"<div class=\"form-group\" id =\"genders" + i +
-                    "\">\n" +
-                    "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
-                    "                                <input type=\"text\" name=\"livingChildrenGenders" +
-                    "\" maxlength=\"2\" autocomplete=\"off\" style=\"width: 612px\">\n" +
-                    "                                <span id=\"error_livingChildrenGenders\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
-                    "                            </div>\n";
+                var input = "<div class=\"col-sm-7 col-md-5 col-xs-7 col-md-12\">\n" +
+                    "<select name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" class=\"livingChildrenGenders\" style=\"display: none;\">\n" +
+                    "     <option value=\"\">Please Select</option>\n" +
+                    "     <option value=\"TOPGAW001\">Male</option>\n" +
+                    "     <option value=\"TOPGAW002\">Female</option>\n" +
+                    "     </select>\n" +
+                    "</div>\n" +
+                    "   <div class=\"nice-select livingChildrenGenders\" name=\"livingChildrenGenders\" tabindex=\"0"+ i +"\">\n" +
+                    "       <span class=\"current\">Please Select</span>\n" +
+                    "           <ul class=\"list\">\n" +
+                    "               <li data-value=\"\" class=\"option selected\">Please Select</li>\n" +
+                    "               <li data-value=\"TOPGAW001\" class=\"option\">Male</li>\n" +
+                    "               <li data-value=\"TOPGAW002\" class=\"option\">Female</li>\n" +
+                    "           </ul>" +
+                    "       <span id=\"error_livingChildrenGenders\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
+                    "   </div>\n";
                 $("#genders").append(input);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#nationality').change(function () {
+
+            var nationality = $('#nationality').val();
+            if (nationality != "NAT0001") {
+                if(nationality!=null){
+                    $('#commResidenceInSgDate').text('*');
+                }
+            } else {
+                $('#commResidenceInSgDate').text('');
             }
         });
     });

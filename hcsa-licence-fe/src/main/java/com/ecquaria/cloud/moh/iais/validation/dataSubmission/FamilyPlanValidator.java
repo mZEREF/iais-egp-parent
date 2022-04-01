@@ -48,15 +48,25 @@ public class FamilyPlanValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"subRopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPSCTP003".equals(familyPlanDto.getSubRopReason()) || "TOPSCTP006".equals(familyPlanDto.getSubRopReason())){
-            ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"mostRecentContraMethod");
-            errorMap.putAll(result.retrieveAll());
-        }
-        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-            if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=15 && StringUtil.isEmpty(familyPlanDto.getAbortChdMoreWksGender())){
-                errorMap.put("abortChdMoreWksGender", "GENERAL_ERR0006");
+        if("TOPRTP004".equals(familyPlanDto.getMainTopReason())){
+            if("TOPSCTP003".equals(familyPlanDto.getSubRopReason()) || "TOPSCTP006".equals(familyPlanDto.getSubRopReason())){
+                ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherSubTopReason");
+                errorMap.putAll(result.retrieveAll());
             }
         }
+        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+            if(!StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+                errorMap.put("gestAgeBaseOnUltrWeek", "GENERAL_ERR0002");
+            }
+        }
+        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+            if(StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+                if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=15 && StringUtil.isEmpty(familyPlanDto.getAbortChdMoreWksGender())){
+                    errorMap.put("abortChdMoreWksGender", "GENERAL_ERR0006");
+                }
+            }
+        }
+
         return errorMap;
     }
 }

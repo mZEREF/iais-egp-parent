@@ -9,7 +9,7 @@
                          value="${terminationDto.topType}" cssClass="topType"/>
         </iais:value>
     </iais:row>
-    <div id="spTypes" style="${terminationDto.topType ==null || !terminationDto.topType eq'TOPTTP003' ? 'display: none' : ''}" >
+    <div id="spTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Surgical Procedure "/>
             <iais:value width="7" cssClass="col-md-7">
@@ -26,7 +26,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="anTypes" style="${terminationDto.topType ==null || !terminationDto.topType eq'TOPTTP001' || !terminationDto.topType eq 'TOPTTP002' ? 'display: none' : ''}" >
+    <div id="anTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Anaesthesia"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -43,7 +43,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="drugTypes" style="${terminationDto.topType == null || !terminationDto.topType eq'TOPTTP002' ? 'display: none' : ''}" >
+    <div id="drugTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP001'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Drug" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -52,7 +52,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherDrugType" <c:if test="${terminationDto.drugType!='TOPTOD004'}">style="display: none"</c:if>>
+    <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD004'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Drug (Others)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -69,7 +69,7 @@
                        name="complicationForOperRslt"
                        value="1"
                        id="complicationForOperRsltYes"
-                       <c:if test="${preTerminationDto.complicationForOperRslt== true}">checked</c:if>
+                       <c:if test="${terminationDto.complicationForOperRslt== true}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="complicationForOperRsltYes"><span
@@ -83,7 +83,7 @@
                        name="complicationForOperRslt"
                        value="0"
                        id="complicationForOperRsltYesNo"
-                       <c:if test="${preTerminationDto.complicationForOperRslt == false}">checked</c:if>
+                       <c:if test="${terminationDto.complicationForOperRslt == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="complicationForOperRsltYesNo"><span
@@ -91,7 +91,7 @@
             </div>
         </iais:value>
     </iais:row>
-    <div id="ariseOperationComplication" <c:if test="${preTerminationDto.complicationForOperRslt == false}">style="display: none"</c:if>>
+    <div id="ariseOperationComplication" <c:if test="${terminationDto.complicationForOperRslt == false}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Complications Arising From Operation" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -106,12 +106,174 @@
             <iais:datePicker name="topDate" value="${terminationDto.topDate}"/>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Place of Termination of Pregnancy" mandatory="true"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" name="topPlace" value="${terminationDto.topPlace}" />
-        </iais:value>
-    </iais:row>
+    <div id="performedOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Is Termination of Pregnancy by Surgery performed inown premises?" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="performedOwn"
+                           value="1"
+                           id="performedOwnYes"
+                           <c:if test="${terminationDto.performedOwn == true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="performedOwnYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="performedOwn"
+                           value="0"
+                           id="performedOwnNo"
+                           <c:if test="${terminationDto.performedOwn == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="performedOwnNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="topPlace" <c:if test="${terminationDto.performedOwn == false}">style="display: none"</c:if>>
+        <iais:row cssClass="topPlace">
+            <iais:field width="5" value="Place of Termination of Pregnancy by Surgery"/>
+            <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
+                ${'unknown'}
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="topPlaces" <c:if test="${terminationDto.performedOwn == null || terminationDto.pregnancyOwn == true}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Place of Termination of Pregnancy by Surgery" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:select name="topPlace" options="TopPlace"  value="${terminationDto.topPlace}" cssClass="topPlace"/>
+            </iais:value>
+            <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
+        </iais:row>
+    </div>
+    <div id="pregnancyOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Is Drug prescribed for Termination of Pregnancy in own premises?" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="pregnancyOwn"
+                           value="1"
+                           id="pregnancyOwnYes"
+                           <c:if test="${terminationDto.pregnancyOwn == true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="pregnancyOwnYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="pregnancyOwn"
+                           value="0"
+                           id="pregnancyOwnNo"
+                           <c:if test="${terminationDto.pregnancyOwn == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="pregnancyOwnNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="prescribeTopPlaceLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+        <div id="prescribeTopPlace" <c:if test="${terminationDto.pregnancyOwn == false}">style="display: none"</c:if>>
+            <iais:row cssClass="topPlace">
+                <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
+                    ${'unknown'}
+                </iais:value>
+            </iais:row>
+        </div>
+        <div id="prescribeTopPlaces" <c:if test="${terminationDto.pregnancyOwn == null || terminationDto.pregnancyOwn == true}">style="display: none"</c:if>>
+            <iais:row>
+                <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:select name="prescribeTopPlace" options="TopPlace"  value="${terminationDto.prescribeTopPlace}"
+                                 cssClass="prescribeTopPlace"/>
+                </iais:value>
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_prescribeTopPlace"></span>
+            </iais:row>
+        </div>
+    </div>
+
+
+
+
+    <div id="takenOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Is Termination of Pregnancy Drug taken in own premises?" mandatory="true"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="takenOwn"
+                           value="1"
+                           id="takenOwnYes"
+                           <c:if test="${terminationDto.takenOwn == true}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="takenOwnYes"><span
+                            class="check-circle"></span>Yes</label>
+                </div>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="takenOwn"
+                           value="0"
+                           id="takenOwnNo"
+                           <c:if test="${terminationDto.takenOwn == false}">checked</c:if>
+                           aria-invalid="false">
+                    <label class="form-check-label"
+                           for="takenOwnNo"><span
+                            class="check-circle"></span>No</label>
+                </div>
+            </iais:value>
+        </iais:row>
+    </div>
+    <div id="takenOwnLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+        <div id="topDrugPlace" <c:if test="${terminationDto.takenOwn == false}">style="display: none"</c:if>>
+            <iais:row cssClass="topDrugPlace">
+                <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
+                <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
+                    ${topDrugPlace}
+                </iais:value>
+            </iais:row>
+        </div>
+        <div id="topDrugPlaces" <c:if test="${terminationDto.takenOwn == null || terminationDto.takenOwn == true}">style="display: none"</c:if>>
+            <iais:row>
+                <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${'unknown'}"
+                                 cssClass="topDrugPlace"/>
+                </iais:value>
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topDrugPlace"></span>
+            </iais:row>
+        </div>
+    </div>
+    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace!=null}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Drug for Termination of Pregnancy taken at other places. "/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="66" type="text" name="otherTopDrugPlace" value="${terminationDto.otherTopDrugPlace}"/>
+            </iais:value>
+        </iais:row>
+    </div>
     <iais:row>
         <iais:field width="5" value="Doctor Professional Regn No." mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
@@ -135,6 +297,21 @@
             spTypes();
         });
         $('#topType').change(function () {
+            performedOwns();
+        });
+        $('#topType').change(function () {
+            pregnancyOwns();
+        });
+        $('#topType').change(function () {
+            prescribeTopPlaceLabel();
+        });
+        $('#topType').change(function () {
+            takenOwns();
+        });
+        $('#topType').change(function () {
+            takenOwnLabel();
+        });
+        $('#topType').change(function () {
             anTypes();
         });
         $('#anType').change(function () {
@@ -149,6 +326,18 @@
         $('input[name=complicationForOperRslt]').change(function () {
             complicationForOperRslt();
         });
+        $('input[name=performedOwn]').change(function () {
+            performedOwn();
+        });
+        $('input[name=pregnancyOwn]').change(function () {
+            pregnancyOwn();
+        });
+        $('input[name=takenOwn]').change(function () {
+            takenOwn();
+        });
+        $('#otherTopDrugPlace').change(function () {
+            otherTopDrugPlace();
+        });
     });
     function spTypes() {
         var topType= $('#topType').val();
@@ -156,6 +345,46 @@
             $('#spTypes').show();
         }else {
             $('#spTypes').hide();
+        }
+    }
+    function performedOwns() {
+        var topType= $('#topType').val();
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+            $('#performedOwns').show();
+        }else {
+            $('#performedOwns').hide();
+        }
+    }
+    function pregnancyOwns() {
+        var topType= $('#topType').val();
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+            $('#pregnancyOwns').show();
+        }else {
+            $('#pregnancyOwns').hide();
+        }
+    }
+    function prescribeTopPlaceLabel() {
+        var topType= $('#topType').val();
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+            $('#prescribeTopPlaceLabel').show();
+        }else {
+            $('#prescribeTopPlaceLabel').hide();
+        }
+    }
+    function takenOwns() {
+        var topType= $('#topType').val();
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+            $('#takenOwns').show();
+        }else {
+            $('#takenOwns').hide();
+        }
+    }
+    function takenOwnLabel() {
+        var topType= $('#topType').val();
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+            $('#takenOwnLabel').show();
+        }else {
+            $('#takenOwnLabel').hide();
         }
     }
     function anType() {
@@ -193,9 +422,9 @@
     function drugType() {
         var drugType= $('#drugType').val();
         if(drugType == "TOPTOD004"){
-            $('#otherDrugType').show();
+            $('#otherDrugTypes').show();
         }else {
-            $('#otherDrugType').hide();
+            $('#otherDrugTypes').hide();
         }
     }
     function complicationForOperRslt() {
@@ -204,6 +433,46 @@
         }
         if($('#complicationForOperRsltNo').prop('checked')) {
             $('#ariseOperationComplication').hide();
+        }
+    }
+    function performedOwn() {
+        if($('#performedOwnYes').prop('checked')) {
+            $('#topPlace').show();
+        }else {
+            $('#topPlace').hide();
+        }
+        if($('#performedOwnNo').prop('checked')) {
+            $('#topPlaces').show();
+        }else {
+            $('#topPlaces').hide();
+        }
+    }
+    function pregnancyOwn() {
+        if($('#pregnancyOwnYes').prop('checked')) {
+            $('#prescribeTopPlace').show();
+            $('#prescribeTopPlaces').hide();
+        }
+        if($('#pregnancyOwnNo').prop('checked')) {
+            $('#prescribeTopPlaces').show();
+            $('#prescribeTopPlace').hide();
+        }
+    }
+    function takenOwn() {
+        if($('#takenOwnYes').prop('checked')) {
+            $('#topDrugPlace').show();
+            $('#topDrugPlaces').hide();
+        }
+        if($('#takenOwnNo').prop('checked')) {
+            $('#topDrugPlaces').show();
+            $('#topDrugPlace').hide();
+        }
+    }
+    function otherTopDrugPlace() {
+        var otherTopDrugPlace= $('#otherTopDrugPlace').val();
+        if(otherTopDrugPlace == "Others"){
+            $('#otherTopDrugPlaces').show();
+        }else {
+            $('#otherTopDrugPlaces').hide();
         }
     }
 </script>

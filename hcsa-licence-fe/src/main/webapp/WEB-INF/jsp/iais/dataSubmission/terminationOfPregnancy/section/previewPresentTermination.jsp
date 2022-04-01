@@ -77,9 +77,54 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
+                    <iais:field width="6" value="Is Termination of Pregnancy by Surgery performed inown premises?"/>
+                    <iais:value width="6" display="true">
+                        <c:if test="${terminationDto.performedOwn == true }">
+                            Yes
+                        </c:if>
+                        <c:if test="${terminationDto.performedOwn == false }">
+                            No
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Place of Termination of Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <c:out value="${terminationDto.topPlace}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Is Drug prescribed for Termination of Pregnancy in own premises?"/>
+                    <iais:value width="6" display="true">
+                        <c:if test="${terminationDto.pregnancyOwn == true }">
+                            Yes
+                        </c:if>
+                        <c:if test="${terminationDto.pregnancyOwn == false }">
+                            No
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.prescribeTopPlace}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Is Termination of Pregnancy Drug taken in own premises?"/>
+                    <iais:value width="6" display="true">
+                        <c:if test="${terminationDto.takenOwn == true }">
+                            Yes
+                        </c:if>
+                        <c:if test="${terminationDto.takenOwn == false }">
+                            No
+                        </c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.topDrugPlace}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
