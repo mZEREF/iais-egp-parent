@@ -100,6 +100,8 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto= dpDataSubmissionService.getDpSuperDataSubmissionDto(drugSubmission.getPrescriptionSubmissionId());
             if (dpSuperDataSubmissionDto != null && (StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId()) || dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo().equals(drugSubmission.getPrescriptionSubmissionId()))) {
                 log.info(StringUtil.changeForLog("Query succeeded!"));
+            }else if(StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId())){
+                errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0006");
             }else {
                 errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
             }
