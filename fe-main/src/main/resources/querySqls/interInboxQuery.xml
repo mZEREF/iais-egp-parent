@@ -8,6 +8,11 @@
                 inbox.subject,
                 inbox.message_type,
                 inbox.ref_no,
+                CASE  when inbox.service_codes is null or inbox.service_codes = '' then 'N/A'
+                when   CHARINDEX( 'TSB',inbox.service_codes) >0
+                then REPLACE(inbox.service_codes,'TSB','Cord Blood Banking Service')
+                else
+                    inbox.service_codes end sort_service_codes,
                 inbox.service_codes,
                 inbox.msg_content,
                 inbox.status,
