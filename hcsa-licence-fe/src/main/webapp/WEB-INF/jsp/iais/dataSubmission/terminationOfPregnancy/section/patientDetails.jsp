@@ -56,7 +56,7 @@
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label">Date Commenced Residence In Singapore
                             <span id="commResidenceInSgDate" class="mandatory">
-                                <c:if test="${patientInformationDto.nationality !='NAT0001'}">*</c:if>
+                                <c:if test="${patientInformationDto.nationality!=null && patientInformationDto.nationality !='NAT0001'}">*</c:if>
                             </span>
                         </label>
                         <iais:value width="7" cssClass="col-md-7">
@@ -65,7 +65,11 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Residence Status"/>
+                        <label class="col-xs-5 col-md-4 control-label">Residence Status
+                            <span id="residenceStatus" class="mandatory">
+                                <c:if test="${patientInformationDto.nationality!=null && patientInformationDto.nationality !='NAT0001'}">*</c:if>
+                            </span>
+                        </label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="residenceStatus" name="residenceStatus" firstOption="Please Select"
                                          codeCategory="TOP_RESIDENCE_STATUS" value="${patientInformationDto.residenceStatus}"/>
@@ -241,11 +245,18 @@
 
             var nationality = $('#nationality').val();
             if (nationality != "NAT0001") {
-                if(nationality!=null){
-                    $('#commResidenceInSgDate').text('*');
-                }
-            } else {
+                $('#commResidenceInSgDate').text('*');
+            } else if(nationality==null || nationality == "NAT0001"){
                 $('#commResidenceInSgDate').text('');
+            }
+        });
+        $('#nationality').change(function () {
+
+            var nationality = $('#nationality').val();
+            if (nationality != "NAT0001") {
+                $('#residenceStatus').text('*');
+            } else if(nationality==null || nationality == "NAT0001"){
+                $('#residenceStatus').text('');
             }
         });
     });
