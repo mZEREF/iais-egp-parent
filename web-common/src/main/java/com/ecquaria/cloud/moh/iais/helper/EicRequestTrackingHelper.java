@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -85,8 +86,12 @@ public final class EicRequestTrackingHelper {
     public <T, R> R callEicWithTrack(T obj, Function<T, R> function, String actionClass, String actionMethod, String currentApp,
             String currentDomain, int client) {
         // 1) Create and save the tracking record into DB before everything
+        String dtoClsName = obj.getClass().getName();
+        if (List.class.isAssignableFrom(obj.getClass())) {
+            dtoClsName = String.class.getName();
+        }
         EicRequestTrackingDto track = this.clientSaveEicRequestTracking(client, actionClass, actionMethod,
-                currentApp + "-" + currentDomain, obj.getClass().getName(), JsonUtil.parseToJson(obj));
+                currentApp + "-" + currentDomain, dtoClsName, JsonUtil.parseToJson(obj));
         //2) Before executing the EIC function set the running data
         track.setProcessNum(track.getProcessNum() + 1);
         Date now = new Date();
