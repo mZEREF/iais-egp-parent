@@ -54,4 +54,7 @@ public interface SystemClient {
     @RequestMapping(path = "/message-id",method = RequestMethod.GET)
     FeignResponseEntity<String> messageID();
 
+    @GetMapping(path = "/iais-message/module-type", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> listModuleTypes();
+
 }
