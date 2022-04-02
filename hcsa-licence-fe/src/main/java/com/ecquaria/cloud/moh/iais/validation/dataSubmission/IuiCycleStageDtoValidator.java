@@ -30,7 +30,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 Date iuiCycleStartDate = iuiCycleStageDto.getStartDate();
                 if(iuiCycleStartDate != null) {
                     if(iuiCycleStartDate.after(new Date())) {
-                        errMap.put("startDate", MessageUtil.replaceMessage("DS_ERR010", "Date Started", "field"));
+                        errMap.put("startDate", MessageUtil.replaceMessage("DS_ERR001", "Date Started", "field"));
                     }
                 }
                 //check box

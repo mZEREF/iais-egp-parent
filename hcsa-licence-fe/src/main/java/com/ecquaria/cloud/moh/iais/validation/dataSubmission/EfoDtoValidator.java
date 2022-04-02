@@ -41,7 +41,7 @@ public class EfoDtoValidator implements CustomizeValidator {
                 sDate = new Date();
             }
             if( sDate.after(today)) {
-                errorMap.put("startDate", MessageUtil.replaceMessage("DS_ERR010","Date Started", "field"));
+                errorMap.put("startDate", MessageUtil.replaceMessage("DS_ERR001","Date Started", "field"));
             }
         }
 
