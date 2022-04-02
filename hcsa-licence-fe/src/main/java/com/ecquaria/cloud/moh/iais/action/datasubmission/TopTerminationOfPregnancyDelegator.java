@@ -107,9 +107,12 @@ public class TopTerminationOfPregnancyDelegator {
         ControllerHelper.get(bpc.request, patientInformationDto);
         String name = ParamUtil.getString(bpc.request, "name");
         String age = ParamUtil.getString(bpc.request, "age");
+        String data = ParamUtil.getString(bpc.request, "data");
         if(!StringUtil.isEmpty(age)){
-            patientInformationDto.setPatientAge(Integer.parseInt(age));
+            patientInformationDto.setPatientAge(Integer.valueOf(age));
         }
+        patientInformationDto.setPatientName(name);
+        patientInformationDto.setBirthData(data);
         currentSuper.setPatientInformationDto(patientInformationDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(currentSuper, bpc.request);
         ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto, "ART");
@@ -140,6 +143,7 @@ public class TopTerminationOfPregnancyDelegator {
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) getSourseLists(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) getSourseListsDrug(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
         PatientInformationDto patientInformationDto=topSuperDataSubmissionDto.getPatientInformationDto();
@@ -151,6 +155,7 @@ public class TopTerminationOfPregnancyDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "showPatientAgePT", AppConsts.YES);
             }
         }
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + "Termination Of Pregnancy" + "</strong>");
     }
 
     //TODO from ar center
@@ -160,8 +165,10 @@ public class TopTerminationOfPregnancyDelegator {
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         TopSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         PatientInformationDto patientInformationDto = currentSuper.getPatientInformationDto() == null ? new PatientInformationDto():currentSuper.getPatientInformationDto();
-        if(patientInformationDto.getPatientAge()<16){
-            selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+        if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
+            if(patientInformationDto.getPatientAge()<16){
+                selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+            }
         }
         return selectOptions;
     }
