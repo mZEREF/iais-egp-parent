@@ -59,19 +59,11 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
-        String[] option = getMsgModuleType();
+        List<String> option = messageService.listModuleTypes();
         for (String i : option){
             moduleList.add(new SelectOption(i, i));
         }
         ParamUtil.setSessionAttr(request, "moduleTypeSelect", (Serializable) moduleList);
-    }
-
-    private static String[] getMsgModuleType(){
-        return new String[]{"Common", "New", "Renewal", "Request For Change", "Withdrawal",
-                "Cessation", "Inspection", "Checklist Management", "Email SMS Blast", "User Management", "Online Appointment",
-                "Audit", "Audit Trail", "Service Configurator", "Load Levelling", "System Parameter Management", "Risk Score Management",
-                "Master Code Management","Performance Management", "Request For Information", "Alert, Notifications and Letter Template Mgt",
-                "Suspension", "Revocation", "Reinstatement", "Appeal", "Online Enquiry", "Self-Assessment", "Inbox", "Retrigger GIRO Payment Management"};
     }
 
     /**

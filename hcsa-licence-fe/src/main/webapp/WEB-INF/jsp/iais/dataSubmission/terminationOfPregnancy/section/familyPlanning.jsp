@@ -1,5 +1,6 @@
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
+<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
@@ -30,6 +31,13 @@
             <iais:datePicker name="firstDayOfLastMenstPer" value="${familyPlanDto.firstDayOfLastMenstPer}"/>
         </iais:value>
     </iais:row>
+    <iais:row>
+        <iais:field width="5" value="Patient Age(Years)"/>
+        <iais:value width="7" cssClass="col-md-7" display="true" id="age">
+            ${patientInformationDto.patientAge}
+        </iais:value>
+    </iais:row>
+
     <iais:row>
         <iais:field width="5" value="Gestation Age based on Ultrasound"/>
         <iais:value width="7" cssClass="col-md-7">
@@ -65,7 +73,7 @@
             </div>
         </iais:value>
     </iais:row>
-    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
+    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek==null || familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -110,19 +118,38 @@
         <iais:row>
             <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select name="subRopReason" firstOption="Please Select" codeCategory="TOP_SUB_CAUSES_TERMINATION_PREGNANCY"
+                <iais:select name="subRopReason" firstOption="Please Select" id="subRopReason" codeCategory="TOP_SUB_CAUSES_TERMINATION_PREGNANCY"
                              value="${familyPlanDto.subRopReason}" cssClass="subRopReason"/>
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReason" style="${familyPlanDto.subRopReason ==null || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
+    <div id="otherSubTopReason" style="${familyPlanDto.subRopReason ==null || familyPlanDto.mainTopReason!='TOPRTP004' || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_otherSubTopReason"></span>
             </iais:value>
         </iais:row>
+    </div>
+</div>
+<input type="hidden" value="${showPatientAgePT}" id="showPatientAgePts" >
+<div class="modal fade" id="showPatientAgePT" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+            <span style="font-size: 2rem;" id="prsErrorMsg">
+              <%--<iais:message key="GENERAL_ERR0057" escape="false" />--%>
+                <p>The patient age to the date of counselling is within the range of <=16 or >=65. Please check that the details have been accurately entered.</p>
+            </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -217,4 +244,10 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        if ("1" == $('#showPatientAgePts').val()) {
+            $('#showPatientAgePT').modal('show');
+        }
+    });
 </script>

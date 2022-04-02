@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -25,6 +26,8 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.Date;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +115,11 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageDto getMessageById(String id) {
         return systemClient.getMessageByRowguid(id).getEntity();
+    }
+
+    @Override
+    public List<String> listModuleTypes() {
+        return IaisCommonUtils.getList(systemClient.listModuleTypes().getEntity());
     }
 
 }

@@ -37,6 +37,7 @@ public class FacilityRegisterDto implements Serializable{
     private FacilityCommitteeDto facilityCommitteeDto;
     private FacilityAuthoriserDto facilityAuthoriserDto;
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
+    private OtherApplicationInfoDto otherAppInfoDto;
     private Collection<DocRecordInfo> docRecordInfos;
     private FacilityAfcDto afcDto;
     private PreviewSubmitDto previewSubmitDto;
@@ -54,6 +55,7 @@ public class FacilityRegisterDto implements Serializable{
         dto.setFacilityAdminAndOfficerDto((FacilityAdminAndOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN_OFFICER)).getValue());
         dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
         dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
+        dto.setOtherAppInfoDto((OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT)).getValue());
 
@@ -141,7 +143,7 @@ public class FacilityRegisterDto implements Serializable{
 
         boolean certifiedFacility = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facilitySelectionDto.getFacClassification());
         if (certifiedFacility) {
-            SimpleNode otherAppInfoNode = new SimpleNode(OtherApplicationInfoDto.getAllCheckedInstance(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
+            SimpleNode otherAppInfoNode = new SimpleNode(otherAppInfoDto, NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
             SimpleNode supportingDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
             SimpleNode afcNode = new SimpleNode(this.afcDto, NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
             SimpleNode previewSubmitNode = new SimpleNode(this.previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode, afcNode});
@@ -164,7 +166,7 @@ public class FacilityRegisterDto implements Serializable{
             }
             NodeGroup batInfoNodeGroup = batInfoNodeGroupBuilder.build();
 
-            SimpleNode otherAppInfoNode = new SimpleNode(OtherApplicationInfoDto.getAllCheckedInstance(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup});
+            SimpleNode otherAppInfoNode = new SimpleNode(otherAppInfoDto, NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup});
             SimpleNode supportingDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode});
             SimpleNode previewSubmitNode = new SimpleNode(this.previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode, supportingDocNode});
 

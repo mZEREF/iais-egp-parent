@@ -40,6 +40,11 @@ public class INTERNET___MohBSBInboxMsg___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "page", this);
 	}
 
+	public void viewMsg_OnStepProcess_0() throws Exception {
+		// 		ViewMsg->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "viewMsg", this);
+	}
+
 
 	public void bindAction_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "bindAction", this);

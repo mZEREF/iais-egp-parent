@@ -97,7 +97,9 @@ public class FertilisationDelegator extends CommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
             errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
-            valRFC(request, fertilisationDto);
+            if(errorMap.isEmpty()){
+                valRFC(request, fertilisationDto);
+            }
         }
 
         if (!errorMap.isEmpty()) {

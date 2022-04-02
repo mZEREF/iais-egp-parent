@@ -17,7 +17,7 @@
     </li>
     <%}%>
     <li role="presentation" class="<%=FacilityRegistrationService.computeTabClassnameForJsp(facRegRoot, NODE_NAME_OTHER_INFO)%>">
-        <a data-step-key="otherInfo" role="tab" aria-controls="otherInfoPanel" aria-selected="<%=FacilityRegistrationService.ifNodeSelectedForJsp(facRegRoot, NODE_NAME_OTHER_INFO)%>">Other Application Information</a>
+        <a data-step-key="otherInfo" role="tab" aria-controls="otherAppInfoPanel" aria-selected="<%=FacilityRegistrationService.ifNodeSelectedForJsp(facRegRoot, NODE_NAME_OTHER_INFO)%>">Other Application Information</a>
     </li>
     <li role="presentation" class="<%=FacilityRegistrationService.computeTabClassnameForJsp(facRegRoot, NODE_NAME_PRIMARY_DOC)%>">
         <a data-step-key="primaryDocs" role="tab" aria-controls="PrimaryDocsPanel" aria-selected="<%=FacilityRegistrationService.ifNodeSelectedForJsp(facRegRoot, NODE_NAME_PRIMARY_DOC)%>">Supporting Documents</a>

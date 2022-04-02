@@ -18,6 +18,8 @@
 <c:set var="canEdit" value="${TOP_CURRENT_STEP.showEdit}" scope="request"/>
 <c:set var="headingSign" value="completed"/>
 
+<c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
+<c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}"/>
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <div class="main-content">
@@ -38,10 +40,14 @@
                                         <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
-                                        <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                            <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
+                                        </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
-                                        <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                            <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
+                                        </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
                                         <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
@@ -77,3 +83,4 @@
             cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
             cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
 </c:if>
+<input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>

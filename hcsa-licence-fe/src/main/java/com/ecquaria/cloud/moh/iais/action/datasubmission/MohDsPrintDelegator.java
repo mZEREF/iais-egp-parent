@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
@@ -10,12 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Process: MohDsPrint
@@ -66,14 +68,24 @@ public class MohDsPrintDelegator {
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, request);
         }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTDRP,
                 DataSubmissionConstant.PRINT_FLAG_DRP})){
-            String declaration = ParamUtil.getString(request, "declaration");
-            String remarks=ParamUtil.getRequestString(request, "remarks");
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
-            dataSubmissionDto.setDeclaration(declaration);
-            dataSubmissionDto.setRemarks(remarks);
+            if(dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO)){
+                String[] declarations = ParamUtil.getStrings(request, "declaration");
+                if(declarations != null && declarations.length >0){
+                    dataSubmissionDto.setDeclaration(declarations[0]);
+                }else{
+                    dataSubmissionDto.setDeclaration(null);
+                }
+            }else if((dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED))){
+                String declaration = ParamUtil.getString(request, "declaration");
+                String remarks=ParamUtil.getString(request, "remarks");
+                dataSubmissionDto.setDeclaration(declaration);
+                dataSubmissionDto.setRemarks(remarks);
+            }
             dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
+
         }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTVSS,DataSubmissionConstant.PRINT_FLAG_VSS})){
             VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();

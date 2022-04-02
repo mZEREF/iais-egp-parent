@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.*;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +65,9 @@ public class MohDsActionDelegator {
     @Autowired
     private DpFeClient dpFeClient;
 
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
     /**
      * Step: Start
      *
@@ -110,6 +115,13 @@ public class MohDsActionDelegator {
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
+            if("DP_TP002".equals(dpSuper.getSubmissionType())){
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
+                if(professionalResponseDto==null){
+                    professionalResponseDto=new ProfessionalResponseDto();
+                }
+                dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
+            }
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuper, bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
@@ -232,6 +244,11 @@ public class MohDsActionDelegator {
             if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PreparePatientInfo";
             } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuper.getSubmissionType())) {
+                ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().getDoctorReignNo());
+                    if(professionalResponseDto==null){
+                        professionalResponseDto=new ProfessionalResponseDto();
+                    }
+                    dpSuper.getDrugPrescribedDispensedDto().getDrugSubmission().setDoctorName(professionalResponseDto.getName());
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareDrugPrecribed";
             } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PrepareSovenorInventory";

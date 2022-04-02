@@ -105,28 +105,60 @@ public class ArWithdrawalDelegator {
                 break;
             case DataSubmissionConsts.DS_DRP:
                 List<DpSuperDataSubmissionDto> addDrWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
-                DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNos.get(0));
-                addDrWithdrawnDtoList.add(dpSuper);
+                Map<String, DpSuperDataSubmissionDto> dpDataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+                for (String submissionNo:submissionNos
+                ) {
+                    DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
+                    dpDataSubmissionDtoMap.put(dpSuper.getDataSubmissionDto().getSubmissionNo(),dpSuper);
+                }
+                for (Map.Entry<String, DpSuperDataSubmissionDto> dataSubmissionDtoEntry:dpDataSubmissionDtoMap.entrySet()
+                ) {
+                    addDrWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
+                }
                 ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addDrWithdrawnDtoList);
 
                 break;
             case DataSubmissionConsts.DS_TOP:
                 List<TopSuperDataSubmissionDto> addTopWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
-                TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNos.get(0));
-                addTopWithdrawnDtoList.add(topSuperDataSubmissionDto);
+                Map<String, TopSuperDataSubmissionDto> topDataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+                for (String submissionNo:submissionNos
+                ) {
+                    TopSuperDataSubmissionDto topSuper = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
+                    topDataSubmissionDtoMap.put(topSuper.getDataSubmissionDto().getSubmissionNo(),topSuper);
+                }
+                for (Map.Entry<String, TopSuperDataSubmissionDto> dataSubmissionDtoEntry:topDataSubmissionDtoMap.entrySet()
+                ) {
+                    addTopWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
+                }
                 ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addTopWithdrawnDtoList);
                 break;
             case DataSubmissionConsts.DS_VSS:
                 List<VssSuperDataSubmissionDto> addVssWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
-                VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNos.get(0));
-                addVssWithdrawnDtoList.add(vssSuperDataSubmissionDto);
+                Map<String, VssSuperDataSubmissionDto> vssDataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+                for (String submissionNo:submissionNos
+                ) {
+                    VssSuperDataSubmissionDto vssSuper = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
+                    vssDataSubmissionDtoMap.put(vssSuper.getDataSubmissionDto().getSubmissionNo(),vssSuper);
+                }
+                for (Map.Entry<String, VssSuperDataSubmissionDto> dataSubmissionDtoEntry:vssDataSubmissionDtoMap.entrySet()
+                ) {
+                    addVssWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
+                }
                 ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addVssWithdrawnDtoList);
                 break;
             case DataSubmissionConsts.DS_LDT:
                 List<LdtSuperDataSubmissionDto> addLdtWithdrawnDtoList= IaisCommonUtils.genNewArrayList();
-                LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNos.get(0));
-                ldtSuperDataSubmissionDto.setAppType(ldtSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
-                addLdtWithdrawnDtoList.add(ldtSuperDataSubmissionDto);
+
+                Map<String, LdtSuperDataSubmissionDto> ldtDataSubmissionDtoMap=IaisCommonUtils.genNewHashMap();
+                for (String submissionNo:submissionNos
+                ) {
+                    LdtSuperDataSubmissionDto ldtSuper = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(submissionNo);
+                    ldtDataSubmissionDtoMap.put(ldtSuper.getDataSubmissionDto().getSubmissionNo(),ldtSuper);
+                }
+                for (Map.Entry<String, LdtSuperDataSubmissionDto> dataSubmissionDtoEntry:ldtDataSubmissionDtoMap.entrySet()
+                ) {
+                    addLdtWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
+                }
                 ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList", (Serializable) addLdtWithdrawnDtoList);
                 break;
             default:break;
@@ -241,6 +273,7 @@ public class ArWithdrawalDelegator {
                     dsWithdrawCorrelationDto.setRelatedSubmissionId(arSuperDataSubmission.getDataSubmissionDto().getId());
                     list.add(dsWithdrawCorrelationDto);
                     if(cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
+                        arSuperDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                         arSuperDataSubmission.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     }
 
@@ -254,58 +287,70 @@ public class ArWithdrawalDelegator {
                 break;
             case DataSubmissionConsts.DS_TOP:
                 List<TopSuperDataSubmissionDto> addTopWithdrawnDtoList= (List<TopSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-                TopSuperDataSubmissionDto topSuper=addTopWithdrawnDtoList.get(0);
-                DsWithdrawCorrelationDto dsWithdrawCorrelationDto1=new DsWithdrawCorrelationDto();
-                dsWithdrawCorrelationDto1.setRelatedSubmissionId(topSuper.getDataSubmissionDto().getId());
-                list.add(dsWithdrawCorrelationDto1);
-                topSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-                topSuper = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuper);
-                try {
-                    topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuper);
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                for (TopSuperDataSubmissionDto topSuper:addTopWithdrawnDtoList
+                     ) {
+                    DsWithdrawCorrelationDto dsWithdrawCorrelationDto1=new DsWithdrawCorrelationDto();
+                    dsWithdrawCorrelationDto1.setRelatedSubmissionId(topSuper.getDataSubmissionDto().getId());
+                    list.add(dsWithdrawCorrelationDto1);
+                    topSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                    topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
+                    topSuper = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuper);
+                    try {
+                        topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuper);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("The Eic saveTOPSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                    }
                 }
                 break;
             case DataSubmissionConsts.DS_DRP:
                 List<DpSuperDataSubmissionDto> addDpWithdrawnDtoList= (List<DpSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-                DpSuperDataSubmissionDto dpSuper=addDpWithdrawnDtoList.get(0);
-                DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
-                dsWithdrawCorrelationDto2.setRelatedSubmissionId(dpSuper.getDataSubmissionDto().getId());
-                list.add(dsWithdrawCorrelationDto2);
-                dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-                dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
-                try {
-                     dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuper);
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                for (DpSuperDataSubmissionDto dpSuper:addDpWithdrawnDtoList
+                     ) {
+                    DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
+                    dsWithdrawCorrelationDto2.setRelatedSubmissionId(dpSuper.getDataSubmissionDto().getId());
+                    list.add(dsWithdrawCorrelationDto2);
+                    dpSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
+                    dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                    dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
+                    try {
+                        dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuper);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                    }
                 }
                 break;
             case DataSubmissionConsts.DS_VSS:
                 List<VssSuperDataSubmissionDto> addVssWithdrawnDtoList= (List<VssSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-                VssSuperDataSubmissionDto vssSuper=addVssWithdrawnDtoList.get(0);
-                DsWithdrawCorrelationDto dsWithdrawCorrelationDto3=new DsWithdrawCorrelationDto();
-                dsWithdrawCorrelationDto3.setRelatedSubmissionId(vssSuper.getDataSubmissionDto().getId());
-                list.add(dsWithdrawCorrelationDto3);
-                vssSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-                vssSuper =vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuper);
-                try {
-                     vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuper);
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                for (VssSuperDataSubmissionDto vssSuper:addVssWithdrawnDtoList
+                     ) {
+                    DsWithdrawCorrelationDto dsWithdrawCorrelationDto3=new DsWithdrawCorrelationDto();
+                    dsWithdrawCorrelationDto3.setRelatedSubmissionId(vssSuper.getDataSubmissionDto().getId());
+                    list.add(dsWithdrawCorrelationDto3);
+                    vssSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                    vssSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
+                    vssSuper =vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuper);
+                    try {
+                        vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuper);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                    }
                 }
                 break;
             case DataSubmissionConsts.DS_LDT:
                 List<LdtSuperDataSubmissionDto> addLdtWithdrawnDtoList= (List<LdtSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
-                LdtSuperDataSubmissionDto ldtSuper=addLdtWithdrawnDtoList.get(0);
-                DsWithdrawCorrelationDto dsWithdrawCorrelationDto4=new DsWithdrawCorrelationDto();
-                dsWithdrawCorrelationDto4.setRelatedSubmissionId(ldtSuper.getDataSubmissionDto().getId());
-                list.add(dsWithdrawCorrelationDto4);
-                ldtSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-                ldtSuper=ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuper);
-                try {
-                    ldtDataSubmissionService.saveLdtSuperDataSubmissionDtoToBE(ldtSuper);
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("The Eic saveLdtSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                for (LdtSuperDataSubmissionDto ldtSuper:addLdtWithdrawnDtoList
+                     ) {
+                    DsWithdrawCorrelationDto dsWithdrawCorrelationDto4=new DsWithdrawCorrelationDto();
+                    dsWithdrawCorrelationDto4.setRelatedSubmissionId(ldtSuper.getDataSubmissionDto().getId());
+                    list.add(dsWithdrawCorrelationDto4);
+                    ldtSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                    ldtSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
+                    ldtSuper=ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuper);
+                    try {
+                        ldtDataSubmissionService.saveLdtSuperDataSubmissionDtoToBE(ldtSuper);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("The Eic saveLdtSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+                    }
                 }
                 break;
             default:

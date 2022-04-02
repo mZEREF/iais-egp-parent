@@ -125,7 +125,7 @@ function printData() {
 function getDataForPrinting() {
     var declaration = $('input[name="declaration"]:checked').val();
     if (isEmpty(declaration)) {
-        return null;
+        declaration = '';
     }
     var printflag = $('#printflag').val();
     if (isEmpty(printflag)) {

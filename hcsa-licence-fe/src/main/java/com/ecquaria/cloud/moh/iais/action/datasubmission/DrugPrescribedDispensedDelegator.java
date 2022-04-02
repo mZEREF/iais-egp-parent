@@ -131,11 +131,17 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             if (drugSubmission == null) {
                 drugSubmission = new DrugSubmissionDto();
             }
+            String declaration=ParamUtil.getRequestString(request, "declaration");
+            String remarks=ParamUtil.getRequestString(request, "remarks");
             if(!StringUtil.isEmpty(drugSubmission.getPrescriptionDate())){
                 try {
                     if(CommonValidator.isDate(drugSubmission.getPrescriptionDate()) && Formatter.compareDateByDay(drugSubmission.getPrescriptionDate()) <-2){
-                        errorMap.put("declaration", "GENERAL_ERR0006");
-                        errorMap.put("remarks", "GENERAL_ERR0006");
+                        if(declaration==null){
+                            errorMap.put("declaration", "GENERAL_ERR0006");
+                        }
+                        if(remarks==null){
+                            errorMap.put("remarks", "GENERAL_ERR0006");
+                        }
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
@@ -144,8 +150,12 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             if(!StringUtil.isEmpty(drugSubmission.getDispensingDate())){
                 try {
                     if(CommonValidator.isDate(drugSubmission.getDispensingDate()) && Formatter.compareDateByDay(drugSubmission.getDispensingDate()) <-2){
-                        errorMap.put("declaration", "GENERAL_ERR0006");
-                        errorMap.put("remarks", "GENERAL_ERR0006");
+                        if(declaration==null){
+                            errorMap.put("declaration", "GENERAL_ERR0006");
+                        }
+                        if(remarks==null){
+                            errorMap.put("remarks", "GENERAL_ERR0006");
+                        }
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
@@ -159,8 +169,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             if(dataSubmissionDto == null) {
                 dataSubmissionDto = new DataSubmissionDto();
             }
-            String declaration=ParamUtil.getRequestString(request, "declaration");
-            String remarks=ParamUtil.getRequestString(request, "remarks");
+
             if(remarks!=null){
                 if (remarks.length() > 500) {
                     Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
@@ -176,7 +185,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             }
             dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-            if (!errorMap.isEmpty() && StringUtil.isEmpty(declaration) || StringUtil.isEmpty(remarks)){
+            if (!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }

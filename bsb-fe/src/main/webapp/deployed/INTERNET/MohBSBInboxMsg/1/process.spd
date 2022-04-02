@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohBSBInboxMsg" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBSBInboxMsg" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
@@ -52,11 +52,19 @@
   <AutomaticStep defClass="" executor="" icon="" name="ViewMsg" x="590" y="480">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="viewMsg_OnStepProcess_0" name="viewMsg_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxMsgListPage" stageIndicator="" x="380" y="230">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxViewMsgPage" stageIndicator="" x="420" y="480">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -103,6 +111,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(610,370)(790,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InboxViewMsgPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ViewMsg" style="rectanular">
+   <position>{(610,500)(440,500)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />

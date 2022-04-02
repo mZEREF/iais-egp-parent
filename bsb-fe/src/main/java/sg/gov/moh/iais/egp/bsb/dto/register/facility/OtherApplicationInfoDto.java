@@ -1,38 +1,43 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationAnswerDto;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OtherApplicationInfoDto extends ValidatableNodeValue {
-    private String facOpDeInformedResponsibilities;
-    private String facCommitteeInformedResponsibilities;
-    private String bioRiskManagementDeclare;
-    private String infoAuthenticatedDeclare;
+    private String declarationId;
+
+    @JsonIgnore
+    private List<DeclarationItemMainInfo> declarationConfig;
+
+    /* The key is item ID */
+    private final Map<String, String> answerMap;
+
+    public OtherApplicationInfoDto() {
+        answerMap = new HashMap<>();
+    }
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public static OtherApplicationInfoDto getAllCheckedInstance() {
-        OtherApplicationInfoDto dto = new OtherApplicationInfoDto();
-        dto.setFacOpDeInformedResponsibilities(MasterCodeConstants.YES);
-        dto.setFacCommitteeInformedResponsibilities(MasterCodeConstants.YES);
-        dto.setBioRiskManagementDeclare(MasterCodeConstants.YES);
-        dto.setInfoAuthenticatedDeclare(MasterCodeConstants.YES);
-        return dto;
-    }
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityOtherAppInfo", new Object[]{this});
+        DeclarationAnswerDto answerDto = new DeclarationAnswerDto(this.declarationId, this.answerMap);
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityOtherAppInfo", new Object[]{answerDto});
         return validationResultDto.isPass();
     }
 
@@ -49,50 +54,60 @@ public class OtherApplicationInfoDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public String getFacOpDeInformedResponsibilities() {
-        return facOpDeInformedResponsibilities;
+    public ValidationResultDto getValidationResultDto() {
+        return validationResultDto;
     }
 
-    public void setFacOpDeInformedResponsibilities(String facOpDeInformedResponsibilities) {
-        this.facOpDeInformedResponsibilities = facOpDeInformedResponsibilities;
+    public String getDeclarationId() {
+        return declarationId;
     }
 
-    public String getFacCommitteeInformedResponsibilities() {
-        return facCommitteeInformedResponsibilities;
+    public void setDeclarationId(String declarationId) {
+        this.declarationId = declarationId;
     }
 
-    public void setFacCommitteeInformedResponsibilities(String facCommitteeInformedResponsibilities) {
-        this.facCommitteeInformedResponsibilities = facCommitteeInformedResponsibilities;
+    public List<DeclarationItemMainInfo> getDeclarationConfig() {
+        return declarationConfig;
     }
 
-    public String getBioRiskManagementDeclare() {
-        return bioRiskManagementDeclare;
+    public void setDeclarationConfig(List<DeclarationItemMainInfo> declarationConfig) {
+        this.declarationConfig = declarationConfig;
     }
 
-    public void setBioRiskManagementDeclare(String bioRiskManagementDeclare) {
-        this.bioRiskManagementDeclare = bioRiskManagementDeclare;
+    public boolean isConfigNotLoaded() {
+        return declarationConfig == null;
     }
 
-    public String getInfoAuthenticatedDeclare() {
-        return infoAuthenticatedDeclare;
+    public Map<String, String> getAnswerMap() {
+        return answerMap;
     }
 
-    public void setInfoAuthenticatedDeclare(String infoAuthenticatedDeclare) {
-        this.infoAuthenticatedDeclare = infoAuthenticatedDeclare;
+    public void setAnswerMap(Map<String, String> answerMap) {
+        this.answerMap.clear();
+        if (answerMap != null) {
+            this.answerMap.putAll(answerMap);
+        }
     }
 
+    public void addAnswerItem(String id, String value) {
+        this.answerMap.put(id, value);
+    }
 
-//    ---------------------------- request -> object ----------------------------------------------
+    public void clearAnswerMap() {
+        this.answerMap.clear();
+    }
 
-    private static final String KEY_INFORM_OPERATOR = "facOpDeInformedResponsibilities";
-    private static final String KEY_INFORM_COMMITTEE = "facCommitteeInformedResponsibilities";
-    private static final String KEY_DECLARE_RISK_MANAGEMENT = "bioRiskManagementDeclare";
-    private static final String KEY_DECLARE_TRUE = "infoAuthenticatedDeclare";
-
+    //    ---------------------------- request -> object ----------------------------------------------
     public void reqObjMapping(HttpServletRequest request) {
-        setFacOpDeInformedResponsibilities(ParamUtil.getString(request, KEY_INFORM_OPERATOR));
-        setFacCommitteeInformedResponsibilities(ParamUtil.getString(request, KEY_INFORM_COMMITTEE));
-        setBioRiskManagementDeclare(ParamUtil.getString(request, KEY_DECLARE_RISK_MANAGEMENT));
-        setInfoAuthenticatedDeclare(ParamUtil.getString(request, KEY_DECLARE_TRUE));
+        clearAnswerMap();
+        Enumeration<String> nameIterator =  request.getParameterNames();
+        while (nameIterator.hasMoreElements()) {
+            String paramName = nameIterator.nextElement();
+            if (paramName.startsWith("MID")) {
+                String maskedId = paramName.substring(3);
+                String id = MaskUtil.unMaskValue("declaration", maskedId);
+                addAnswerItem(id, request.getParameter(paramName));
+            }
+        }
     }
 }

@@ -5,9 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.*;
 
@@ -20,7 +18,7 @@ public interface BsbInboxClient {
     void deleteDraftApplication(@PathVariable("appId") String appId);
 
     @GetMapping(value = "/fe-inbox/msg", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<InboxMsgSearchResultDto> getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
+    ResponseDto<InboxMsgSearchResultDto>    getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
 
     @GetMapping(value = "/fe-inbox/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxAppSearchResultDto> getInboxApplication(@SpringQueryMap InboxAppSearchDto dto);
@@ -39,4 +37,10 @@ public interface BsbInboxClient {
 
     @GetMapping(value = "/fe-inbox/incident", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxRepResultDto> searchInboxReportableEvent(@SpringQueryMap InboxRepSearchDto dto);
+
+    @GetMapping(value = "/fe-inbox/msg-content/{msgId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<InboxMsgContentDto> searchInboxContentByMsgId(@PathVariable("msgId") String msgId);
+
+    @PostMapping(value = "/fe-inbox/status/read", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> updateInboxMsgStatusRead(@RequestParam("msgId") String msgId);
 }

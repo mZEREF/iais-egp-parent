@@ -536,5 +536,16 @@ public final class MasterCodeUtil {
         return codeValue;
     }
 
+    // keys.size = values.size
+    public static <K,V> Map<K,V> listKeyAndValueMap(List<K> keys,List<V> values){
+        Map<K,V> kvMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(keys) && IaisCommonUtils.isNotEmpty(values)){
+            for (int i = 0; i < keys.size(); i++) {
+                kvMap.put(keys.get(i),values.get(i));
+            }
+        }
+        return kvMap;
+    }
+
     private MasterCodeUtil() {throw new IllegalStateException("Util class");}
 }
