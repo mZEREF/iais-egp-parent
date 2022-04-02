@@ -101,13 +101,13 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             if (dpSuperDataSubmissionDto != null && (StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId()) || dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo().equals(drugSubmission.getPrescriptionSubmissionId()))) {
                 log.info(StringUtil.changeForLog("Query succeeded!"));
             }else {
-                errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID");
+                errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
             }
         }
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(prescriptionDate)){
             try {
                 if(Formatter.compareDateByDay(prescriptionDate,startDate)>=0){
-                    errorMap.put("startDate", "Must be later than Date of Prescription");
+                    errorMap.put("startDate", "Must be later than Date of Prescription.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
@@ -117,7 +117,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         if(!StringUtil.isEmpty(startDate) && !StringUtil.isEmpty(endDate)){
             try {
                 if(Formatter.compareDateByDay(endDate,startDate)<0){
-                    errorMap.put("endDate", "Must be later than Date of startDate");
+                    errorMap.put("endDate", "Must be later than Date of startDate.");
                 }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
@@ -146,7 +146,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             if(StringUtil.isNotEmpty(drugMedicationDto.getStrength()) && StringUtil.isNumber(drugMedicationDto.getStrength())){
                 int f=Integer.valueOf(drugMedicationDto.getStrength());
                 if(f<m){
-                    errorMap.put("strength"+i, "Negative numbers are not allowed on this field");
+                    errorMap.put("strength"+i, "Negative numbers are not allowed on this field.");
                 }
             }
             if(StringUtil.isEmpty(drugMedicationDto.getQuantity())){
@@ -158,7 +158,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             if(StringUtil.isNotEmpty(drugMedicationDto.getQuantity()) && StringUtil.isNumber(drugMedicationDto.getQuantity())){
                 int b=Integer.valueOf(drugMedicationDto.getQuantity());
                 if(b<m){
-                    errorMap.put("quantity"+i, "Negative numbers are not allowed on this field");
+                    errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
                 }
             }
             if(StringUtil.isEmpty(drugMedicationDto.getFrequency())){
