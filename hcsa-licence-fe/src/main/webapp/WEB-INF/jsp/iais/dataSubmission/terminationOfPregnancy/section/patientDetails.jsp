@@ -3,7 +3,7 @@
     <div class="panel-heading" style="padding-left: 95px";>
         <h4 class="panel-title">
             <strong>
-                Submission Details
+                Patient Information
             </strong>
         </h4>
     </div>

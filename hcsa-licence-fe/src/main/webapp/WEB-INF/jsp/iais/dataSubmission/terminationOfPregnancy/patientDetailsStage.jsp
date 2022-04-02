@@ -18,7 +18,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please key in patient information</h3>
+                <h3>Please key in patient information.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     <%@include file="section/patientDetails.jsp" %>
