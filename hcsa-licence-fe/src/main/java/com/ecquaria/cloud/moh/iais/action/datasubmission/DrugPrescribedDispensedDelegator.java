@@ -178,8 +178,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                     errorMap.put("remarks", errMsg);
                 }
-                dataSubmissionDto.setRemarks(remarks);
+
             }
+            dataSubmissionDto.setRemarks(remarks);
             if(declaration!=null){
                 dataSubmissionDto.setDeclaration(declaration);
             }
