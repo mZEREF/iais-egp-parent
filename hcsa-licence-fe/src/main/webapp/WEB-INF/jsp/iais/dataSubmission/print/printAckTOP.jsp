@@ -34,9 +34,9 @@
             </thead>
             <tbody>
             <tr>
-                <td>${TopSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
+                <td>${topSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
                 <td>${submittedBy}</td>
-                <td><fmt:formatDate value="${TopSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                <td><fmt:formatDate value="${topSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
             </tr>
             </tbody>
         </table>
