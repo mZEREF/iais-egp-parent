@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.EventBusClient;
+import com.ecquaria.cloud.submission.client.model.GetSubmissionStatusResp;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
@@ -66,11 +67,12 @@ public class EventbusCallBackDelegate {
             }
 
             log.info(StringUtil.changeForLog("Event bus operation ===========> {}"+ operation));
-            Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
-                    AppConsts.REST_PROTOCOL_TYPE
-                            + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
-            log.info("The status map size: ===========> {}", map.size());
-            if (map.size() >= 1) {
+            GetSubmissionStatusResp statusResp = eventBusClient.getSubmissionStatus(submissionId, operation).getEntity();
+            Map<String, List<ServiceStatus>> map = null;
+            if (statusResp != null) {
+                map = statusResp.getSubmissionStatusMap();
+            }
+            if (map != null && map.size() >= 1) {
                 boolean success = true;
                 boolean pending = false;
                 for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
