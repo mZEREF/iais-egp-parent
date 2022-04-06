@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.system.EventCallbackTrackDto;
+import com.ecquaria.cloud.submission.client.model.GetSubmissionStatusResp;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -32,4 +33,7 @@ public interface EventBusClient {
 
     @PutMapping(value = "/callbackTracking")
     FeignResponseEntity<Void> updateCallbackTracking(@RequestBody EventCallbackTrackDto dto);
+
+    @GetMapping(value = "/submission/submissionstatus/{submissionId}/{operation}")
+    FeignResponseEntity<GetSubmissionStatusResp> getSubmissionStatus(@PathVariable("submissionId") String submissionId, @PathVariable("operation") String operation);
 }
