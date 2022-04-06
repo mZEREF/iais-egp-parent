@@ -82,16 +82,16 @@
                        type="radio"
                        name="complicationForOperRslt"
                        value="0"
-                       id="complicationForOperRsltYesNo"
+                       id="complicationForOperRsltNo"
                        <c:if test="${terminationDto.complicationForOperRslt == false}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
-                       for="complicationForOperRsltYesNo"><span
+                       for="complicationForOperRsltNo"><span
                         class="check-circle"></span>No</label>
             </div>
         </iais:value>
     </iais:row>
-    <div id="ariseOperationComplication" <c:if test="${terminationDto.complicationForOperRslt == false}">style="display: none"</c:if>>
+    <div id="ariseOperationComplications" <c:if test="${terminationDto.complicationForOperRslt != true}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Complications Arising From Operation" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -259,7 +259,7 @@
             <iais:row>
                 <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.TopDrugPlace}"
+                    <iais:select name="topDrugPlace" options="TopDrugPlace"  id="otherTopDrugPlace" value="${terminationDto.topDrugPlace}"
                                  cssClass="topDrugPlace"/>
                 </iais:value>
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topDrugPlace"></span>
@@ -429,10 +429,10 @@
     }
     function complicationForOperRslt() {
         if($('#complicationForOperRsltYes').prop('checked')) {
-            $('#ariseOperationComplication').show();
+            $('#ariseOperationComplications').show();
         }
         if($('#complicationForOperRsltNo').prop('checked')) {
-            $('#ariseOperationComplication').hide();
+            $('#ariseOperationComplications').hide();
         }
     }
     function performedOwn() {

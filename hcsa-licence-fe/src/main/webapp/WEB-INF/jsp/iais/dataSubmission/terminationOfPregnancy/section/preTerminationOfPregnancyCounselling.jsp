@@ -13,7 +13,7 @@
                name="counsellingGiven"
                value="1"
                id="counsellingYes"
-               <c:if test="${preTerminationDto.counsellingGiven == true}">checked</c:if>
+               <c:if test="${preTerminationDto.counsellingGiven}">checked</c:if>
                aria-invalid="false">
         <label class="form-check-label"
                for="counsellingYes"><span
@@ -46,8 +46,8 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="noCounsReason"
-         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 && familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if> >
+    <div id="counsellingGivenOnMin"
+         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 || familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if> >
         <iais:row>
             <iais:field width="5" value="Given Counselling On Mid-Trimester Pregnancy Termination" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -81,8 +81,8 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="noCounsReason"
-         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 && familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if>>
+    <div id="patientSign"
+         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 || familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5"
                         value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"
@@ -204,7 +204,7 @@
     </iais:row>
     <div id="firstHide" <c:if test="${preTerminationDto.counsellingResult =='TOPPCR003'}">style="display: none"</c:if>>
         <div id="patientAppointments"
-             style="${preTerminationDto.counsellingGiven != true || !preTerminationDto.counsellingResults eq 'TOPPCR001' ? 'display: none' : ''}">
+             style="${preTerminationDto.counsellingGiven != true || !preTerminationDto.counsellingResult eq 'TOPPCR001' ? 'display: none' : ''}">
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"
                             mandatory="true"/>
@@ -312,16 +312,6 @@
                 checkMantory('#counsellingYes', "#counsellorIdTypeLabel");
             });
         });
-        /*$(document).ready(function () {
-            $('input[name=counsellingGiven]').change(function () {
-                if($('#counsellingNo').prop('checked')) {
-                    $('#noCounsReason').text('*');
-                }
-                if($('#counsellingYes').prop('checked')) {
-                    $('#noCounsReason').text('');
-                }
-            });
-        });*/
         $(document).ready(function () {
             $('input[name=patientAppointment]').change(function () {
                 checkMantory('#patientAppointmentYes', "#secCounsellingResultLabel");
