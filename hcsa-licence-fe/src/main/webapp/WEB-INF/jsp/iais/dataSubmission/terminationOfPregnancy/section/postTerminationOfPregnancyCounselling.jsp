@@ -50,18 +50,15 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_otherCounsellingRslt"></span>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <label class="col-xs-5 col-md-4 control-label">Reason If post-counselling was not given
-            <span id="ifCounsellingNotGiven" class="mandatory">
-                <c:if test="${postTerminationDto.givenPostCounselling == false}">*</c:if>
-            </span>
-        </label>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="ifCounsellingNotGiven" firstOption="Please Select" codeCategory=""
-                         value="${postTerminationDto.ifCounsellingNotGiven}" cssClass="ifCounsellingNotGiven"/>
-            <span class="error-msg" name="iaisErrorMsg" id="error_ifCounsellingNotGiven"></span>
-        </iais:value>
-    </iais:row>
+
+    <div id="ifCounsellingNotGivens" <c:if test="${postTerminationDto.givenPostCounselling !=false}">style="display: none"</c:if>>
+        <iais:row>
+            <iais:field width="5" value="Reason If post-counselling was not given"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="100" type="text" name="ifCounsellingNotGiven" value="${postTerminationDto.ifCounsellingNotGiven}" />
+            </iais:value>
+        </iais:row>
+    </div>
     <iais:row>
         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
         <iais:field width="5" id="counsellorIdTypeLabel" value="Post-Termination Counsellor ID Type"
@@ -122,18 +119,17 @@
     $(document).ready(function() {
         counsellingRslt();
         otherCounsellingRslt();
+        ifCounsellingNotGiven();
     });
     $(document).ready(function () {
         $('input[name=givenPostCounselling]').change(function () {
             if($('#radioYes').prop('checked')) {
-                $('#ifCounsellingNotGiven').text('');
                 $('#counsellorIdNo').text('*');
                 $('#counsellorName').text('*');
                 $('#counsellingDate').text('*');
                 $('#counsellingPlace').text('*');
             }
             if($('#radioNo').prop('checked')) {
-                $('#ifCounsellingNotGiven').text('*');
                 $('#counsellorIdNo').text('');
                 $('#counsellorName').text('');
                 $('#counsellingDate').text('');
@@ -163,6 +159,16 @@
                 $('#counsellingRslts').show();
             } else {
                 $('#counsellingRslts').hide();
+            }
+        });
+    }
+    function ifCounsellingNotGiven(){
+        $('input[name=givenPostCounselling]').change(function () {
+            var givenPostCounselling= $('input[name=givenPostCounselling]').val();
+            if($('#radioNo').prop('checked')) {
+                $('#ifCounsellingNotGivens').show();
+            } else if($('#radioYes').prop('checked') || givenPostCounselling == null){
+                $('#ifCounsellingNotGivens').hide();
             }
         });
     }

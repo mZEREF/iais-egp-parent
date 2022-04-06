@@ -35,11 +35,11 @@ public class PostTerminationValidator implements CustomizeValidator {
                 errorMap.put("counsellingPlace", "GENERAL_ERR0006");
             }
         }
-        if (!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling()) && postTerminationDto.getGivenPostCounselling()==false) {
+        /*if (!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling()) && postTerminationDto.getGivenPostCounselling()==false) {
             if(StringUtil.isEmpty(postTerminationDto.getIfCounsellingNotGiven())){
                 errorMap.put("ifCounsellingNotGiven", "GENERAL_ERR0006");
             }
-        }
+        }*/
 
         if(!StringUtil.isEmpty(postTerminationDto.getGivenPostCounselling())){
             if(postTerminationDto.getGivenPostCounselling()==true && "TOPCR007".equals(postTerminationDto.getCounsellingRslt())){
