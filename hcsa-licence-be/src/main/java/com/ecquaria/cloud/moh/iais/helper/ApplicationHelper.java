@@ -53,7 +53,7 @@ public final class ApplicationHelper {
             if ("1".equals(dupForPrem)) {
                 title.append(ApplicationConsts.TITLE_MODE_OF_SVCDLVY).append(" 1: ");
             }
-            title.append(getDupForPersonName(dupForPerson));
+            title.append(IaisCommonUtils.getPersonNameFromDup(dupForPerson, false));
             if (num != null) {
                 title.append(' ').append(num);
             }
