@@ -641,18 +641,21 @@ header .container .sg-gov-logo a img {
     box-shadow: none;
     border: 0;
     width: 480px;
-    background-color: #025B87 !important;
-    border-radius: 0 0 14px 14px;
+    background-color: #025B87 !important;/*#003a5d #025B87*/
+    border-radius: 0 14px 14px 14px;
     overflow: hidden;
-    padding: 15px 0;
+    padding: 5px 0;
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown .dropdown-menu li {
-    background-color: #025B87 !important;
+    /*background-color: transparent !important; */
     padding: 0;
     border-bottom: 0 !important;
     width: 49%;
     display: inline-block;
     margin-bottom: 0;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown .dropdown-menu li a {
     padding: 7px 23px;
@@ -751,6 +754,45 @@ header .container .sg-gov-logo a img {
 }
 .navigation .nav.nav-tabs.nav-menu a.dropdown-toggle + .dropdown-menu li a {
     color: #fff;
+    /*background: #003a5d;
+    border-radius: 8px;*/
+}
+.dropdown-menu li {
+    padding: 3px 0px;
+    background-color: #003a5d !important;
+    color: white;
+    border-bottom: 1px solid #1448a7 !important;
+}
+.subtab-nav {
+    border-bottom: none !important;
+}
+.subtab-nav li.active a {
+    /*  background: #025B87 !important;*/
+    border-radius: 10px 10px 0 0;
+}
+
+.dropdown-menu ul.subtab-nav li.active {
+    background: #025B87 !important;
+    font-weight: 600;
+}
+
+.subnav-list {
+    background: #025B87;
+    border-radius: 0 0 14px 14px;
+    padding: 5px 3px;
+}
+.subnav-list li  {
+    padding: 8px 0 !important;
+    background-color: #025B87 !important;
+}
+.subnav-list li a {
+    padding: 7px 23px !important;
+    font-size: 1.6rem !important;
+    font-weight: 400 !important;
+    line-height: 22px !important;
+}
+.subnav-list hr {
+    margin-bottom: 0;
 }
 @media only screen and (max-width : 1200px) {
     .navigation {
@@ -3674,8 +3716,12 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     }
 }
 
-.dashboard-gp .dashboard-tile-item {
+/*.dashboard-gp .dashboard-tile-item {
     width: calc((100% - 90px) / 4);
+    float: left;
+}*/
+.dashboard-gp .dashboard-tile-item {
+    width: calc((100% - 90px) / 5);
     float: left;
 }
 .dashboard-gp .dashboard-tile-item .dashboard-tile {
@@ -3695,10 +3741,10 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.16);
     border-radius: 14px;
     height: 125px;
-    margin-bottom: 35px;
+    margin-bottom: 20px;/*35px*/
 }
 .dashboard-gp .dashboard-tile-item .dashboard-tile a {
-    padding: 35px 35px 32px 20px;
+    padding: 15px 20px 20px;
     display: block;
     width: 100%;
     height: 100%;
@@ -3713,10 +3759,12 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     color: #333333;
 }
 .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
-    font-size: 1.9rem;
+    /* font-size: 1.9rem;*/
+    font-size: 1.7rem;
     color: #333333;
     margin-bottom: 0;
-    width: calc(100% - 70px);
+    /*  width: calc(100% - 55px);*/
+    width: calc(100% - 0px);
     display: inline-block;
     vertical-align: middle;
 }
@@ -3744,11 +3792,11 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
     color: white;
     width: 100%;
-    line-height: 53px;
+    line-height: 88px; /*53px*/
     font-weight: 600;
 }
 .dashboard-gp .dashboard-tile-item:not(:last-child) {
-    margin-right: 30px;
+    margin-right: 20px;
 }
 .dashboard-gp:before, .dashboard-gp:after {
     display: table;
@@ -5791,6 +5839,14 @@ ul.v-numberlist li::before {
     margin-left: -43%;
 }
 
+/************** Dashboard box 2 Feb/2021 *************/
+
+.dashboard-help {
+    text-align: left;
+}
+.dashboard-help p {
+    font-size: 18px;
+}
 
 /************** DSS mobile fix**********/
 
