@@ -19,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFac
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
