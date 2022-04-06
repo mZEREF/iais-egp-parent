@@ -63,6 +63,7 @@ public class DataSubmissionConstant {
 
     public static String DS_TITLE_ART                       = "Assisted Reproduction";
     public static String DS_TITLE_DRP                       = "Drug Practices";
+    public static String DS_TITLE_LDT                       = "Laboratory Developed Test";
     public static String DS_TITLE_PATIENT                   = "Patient Information";
     public static String DS_TITLE_DONOR_SAMPLE              = "Donor Sample";
     public static String DS_TITLE_CYCEL_STAGE               = "Cycle Stages";

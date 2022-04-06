@@ -798,6 +798,9 @@ public final class DataSubmissionHelper {
             case DataSubmissionConsts.DS_DRP:
                 title.append(DataSubmissionConstant.DS_TITLE_DRP);
                 break;
+            case DataSubmissionConsts.DS_LDT:
+                title.append(DataSubmissionConstant.DS_TITLE_LDT);
+                break;
         }
         title.append("</strong>");
         return title.toString();
