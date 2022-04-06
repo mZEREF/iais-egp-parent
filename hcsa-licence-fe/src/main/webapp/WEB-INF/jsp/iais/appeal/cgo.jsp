@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="col-sm-3 col-md-4" id="name${suffix}">
                                       <div class="">
-                                        <iais:input maxLength="110" type="text" name="name" value="${currentCgo.name}"></iais:input>
+                                        <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                       </div>
                                     </div>

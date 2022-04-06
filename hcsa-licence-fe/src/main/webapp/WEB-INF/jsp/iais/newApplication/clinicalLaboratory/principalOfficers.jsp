@@ -138,7 +138,7 @@
                                                         </div>
 
                                                         <div class="col-sm-4 col-md-4 col-xs-12">
-                                                            <input autocomplete="off" name="name" maxlength="110" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                                                            <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                                                             <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                                         </div>
                                                     </div>
@@ -475,7 +475,7 @@
                                                             <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
                                                         </div>
                                                         <div class="col-sm-4 col-xs-12">
-                                                            <input autocomplete="off" name="deputyName" maxlength="110" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                                                            <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                                                             <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                                                         </div>
                                                     </div>

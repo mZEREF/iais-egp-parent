@@ -58,7 +58,7 @@
                                                     </div>
                                                     <div class="col-xs-12 col-sm-6 col-md-4">
                                                         <div class="">
-                                                            <input class="field-name" type="text" name="name" value="" maxlength="110"
+                                                            <input class="field-name" type="text" name="name" value="" maxlength="66"
                                                                    autocomplete="off">
                                                         </div>
                                                     </div>

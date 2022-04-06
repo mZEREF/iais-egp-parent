@@ -152,7 +152,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}" />
-                                      <iais:input maxLength="110" type="text" name="name"  value="${appSvcPersonnelDto.name}"/>
+                                      <iais:input maxLength="66" type="text" name="name"  value="${appSvcPersonnelDto.name}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                     </div>
                                   </div>

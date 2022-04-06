@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="name" maxLength="110" type="text" name="name${index}" value="${AppSvcKeyAppointmentHolderDto.name}"></iais:input>
+                                    <iais:input cssClass="name" maxLength="66" type="text" name="name${index}" value="${AppSvcKeyAppointmentHolderDto.name}"></iais:input>
                                 </div>
                             </div>
                         </div>

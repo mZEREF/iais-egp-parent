@@ -13,7 +13,7 @@
         <label><c:out value="${inter_user_attr.displayName}"/></label>
       </c:when>
       <c:otherwise>
-        <iais:input type="text" name="name" id="name" maxLength="110" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
+        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
         <span class="error-msg" name="errorMsg" id="error_displayName"></span>
       </c:otherwise>
     </c:choose>
