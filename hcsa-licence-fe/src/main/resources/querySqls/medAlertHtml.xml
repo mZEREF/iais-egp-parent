@@ -55,7 +55,7 @@
                             </div>
 
                             <div class="col-sm-4 col-xs-12">
-                                <input name="name" maxlength="110" id="cr-po-name" type="text" class="form-control control-input control-set-font control-font-normal" value="" autocomplete="off">
+                                <input name="name" maxlength="66" id="cr-po-name" type="text" class="form-control control-input control-set-font control-font-normal" value="" autocomplete="off">
                             </div>
                         </div>
                     </div>

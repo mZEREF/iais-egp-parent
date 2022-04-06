@@ -28,7 +28,7 @@
   <iais:row>
     <iais:field value="Licensee Name" mandatory="true" width="5"/>
     <iais:value width="7" cssClass="col-md-7">
-      <iais:input maxLength="110" type="text" name="licenseeName" id="licenseeName" value="${dto.licenseeName}"/>
+      <iais:input maxLength="66" type="text" name="licenseeName" id="licenseeName" value="${dto.licenseeName}"/>
     </iais:value>
   </iais:row>
 

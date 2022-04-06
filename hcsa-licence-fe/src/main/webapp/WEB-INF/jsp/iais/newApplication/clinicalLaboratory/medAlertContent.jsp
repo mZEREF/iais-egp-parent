@@ -135,7 +135,7 @@
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input maxLength="110" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
+                                    <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                                     <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>

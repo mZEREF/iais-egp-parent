@@ -26,7 +26,7 @@
                   <span id="error_salutation${index}" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
                 <div class="col-sm-4 col-md-4 col-xs-4">
-                  <input class="name" type="text" id="name${index}" name="name${index}" maxlength="110" autocomplete="off">
+                  <input class="name" type="text" id="name${index}" name="name${index}" maxlength="66" autocomplete="off">
                   <span id="error_name${index}" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
                 <div class="clear"></div>
