@@ -22,7 +22,8 @@
     <iais:row>
         <iais:field width="5" value="No. of Previous Termination of Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="2" type="text" name="previousTopNumber" value="${familyPlanDto.previousTopNumber}" />
+            <iais:input maxLength="2" type="text" name="previousTopNumber" value="${familyPlanDto.previousTopNumber}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_previousTopNumber"></span>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -52,6 +53,7 @@
                 <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days</strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
                     <input maxLength="2" type="text" name="gestAgeBaseOnUltrDay" value="${familyPlanDto.gestAgeBaseOnUltrDay}"/>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseOnUltrDay"></span>
                 </div>
             </div>
         </iais:value>
@@ -63,21 +65,23 @@
                 <label class="col-xs-5 col-md-4 control-label"><strong>(1)Weeks<%--<span class="mandatory">*</span>--%></strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
                     <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrWeek" value="${familyPlanDto.gestAgeBaseNotOnUltrWeek}"/>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseNotOnUltrWeek"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-5 col-md-4 control-label"><strong>(2)Days</strong></label>
                 <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
                     <input maxLength="2" type="text" name="gestAgeBaseNotOnUltrDay" value="${familyPlanDto.gestAgeBaseNotOnUltrDay}" />
+                    <span class="error-msg" name="iaisErrorMsg" id="error_gestAgeBaseNotOnUltrDay"></span>
                 </div>
             </div>
         </iais:value>
     </iais:row>
-    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek==null || familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
+    <div id="abortChdMoreWksGenders" <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek==null || !(familyPlanDto.gestAgeBaseOnUltrWeek).matches('[0-9]+') || familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select name="abortChdMoreWksGender" firstOption="Please Select" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                <iais:select name="abortChdMoreWksGender" firstOption="Please Select" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN_UN"
                              value="${familyPlanDto.abortChdMoreWksGender}" cssClass="abortChdMoreWksGender"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_abortChdMoreWksGender"></span>
             </iais:value>
@@ -170,7 +174,10 @@
         var subRopReason= $('#subRopReason').val();
         if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
             $('#otherSubTopReason').show();
-        }else {
+        }else{
+            $('#otherSubTopReason').hide();
+        }
+        if(familyPlanDto.mainTopReason!='TOPRTP004'){
             $('#otherSubTopReason').hide();
         }
     }
@@ -225,7 +232,7 @@
             console.log("1");
             var gestAgeBaseOnUltrWeek= $('[name=gestAgeBaseOnUltrWeek]').val();
 
-            if(gestAgeBaseOnUltrWeek >="15"){
+            if(gestAgeBaseOnUltrWeek >="15" && !isNaN(gestAgeBaseOnUltrWeek)){
                 $('#abortChdMoreWksGenders').show();
             }else {
                 $('#abortChdMoreWksGenders').hide();
