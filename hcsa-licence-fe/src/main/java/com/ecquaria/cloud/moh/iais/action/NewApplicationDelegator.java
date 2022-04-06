@@ -468,10 +468,12 @@ public class NewApplicationDelegator {
             if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
                 if (old != null) {
+                    // RFC/Renew can't edit these fields
                     dto.setIdType(old.getIdType());
                     dto.setIdNumber(StringUtil.toUpperCase(old.getIdNumber()));
                     dto.setLicenseeName(old.getLicenseeName());
                     dto.setLicenseeType(old.getLicenseeType());
+                    dto.setNationality(old.getNationality());
                 }
                 if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(dto.getLicenseeType())) {
                     dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getNationality(), dto.getIdType(), dto.getIdNumber()));
