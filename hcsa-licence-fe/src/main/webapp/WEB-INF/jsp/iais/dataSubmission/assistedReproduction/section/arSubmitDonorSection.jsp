@@ -201,11 +201,11 @@
         </div>
     </div>
 </div>
-<iais:confirm msg="Donor\'s age when sperm(s) are collected is outside the range of 21 to 40 yrs old."
+<iais:confirm msg="DS_ERR044"
               callBack="$('#ageMsgDiv1').hide();" popupOrder="ageMsgDiv1" needCancel="false"
               yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
               needFungDuoJi="false" />
-<iais:confirm msg="Donor\'s age when oocyte(s) or embryo(s) are collected is outside the range of 21 to 35 yrs old."
+<iais:confirm msg="DS_ERR045"
               callBack="$('#ageMsgDiv2').hide();" popupOrder="ageMsgDiv2" needCancel="false"
               yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
               needFungDuoJi="false" />

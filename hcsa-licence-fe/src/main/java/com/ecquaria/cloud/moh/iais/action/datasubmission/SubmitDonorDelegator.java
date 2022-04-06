@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -10,12 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import java.io.Serializable;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -56,13 +59,19 @@ public class SubmitDonorDelegator extends CommonDelegator {
         if(donorSampleDto == null){
             donorSampleDto =  new DonorSampleDto();
         }
+        List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType())){
            String[] ages =  bpc.request.getParameterValues("ages");
             donorSampleDto.setAges(ages);
             String[] ageCheckName =  bpc.request.getParameterValues("ageCheckName");
-            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
+            if(IaisCommonUtils.isEmpty(donorSampleDto.getOldDonorSampleAgeDtos())){
+                List<DonorSampleAgeDto> cloneDonorSampleAgeDtos = IaisCommonUtils.genNewArrayList();
+                CopyUtil.copyMutableObjectList(donorSampleAgeDtos, cloneDonorSampleAgeDtos);
+                donorSampleDto.setOldDonorSampleAgeDtos(cloneDonorSampleAgeDtos);
+            }
             changeAvailable(donorSampleAgeDtos,ageCheckName);
             donorSampleDto.setDonorSampleAgeDtos(donorSampleAgeDtos);
+
         }else{
             donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
         }
@@ -87,6 +96,16 @@ public class SubmitDonorDelegator extends CommonDelegator {
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
+            if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) ){
+                if(donorSampleDto.getAges() ==  null
+                        && IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)
+                        && !donorSampleAgeDtos.retainAll(donorSampleDto.getOldDonorSampleAgeDtos())){
+                    ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
+                }else{
+                    log.info("submitDonorDelegator The pageAction had the change");
+                }
+            }
         }
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
