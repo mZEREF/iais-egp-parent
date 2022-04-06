@@ -20,6 +20,9 @@ public class TerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+        if(StringUtil.isEmpty(terminationDto)){
+            terminationDto=new TerminationDto();
+        }
         if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"drugType");
             errorMap.putAll(result.retrieveAll());

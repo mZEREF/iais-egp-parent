@@ -283,6 +283,14 @@ public class TopTerminationOfPregnancyDelegator {
     private int doPreview(HttpServletRequest request) {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
+        String[] declaration = ParamUtil.getStrings(request, "declaration");
+        if(declaration != null && declaration.length >0){
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        }else{
+            dataSubmissionDto.setDeclaration(null);
+        }
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto = new TerminationOfPregnancyDto();
         }
@@ -303,6 +311,9 @@ public class TopTerminationOfPregnancyDelegator {
             postTerminationDto = new PostTerminationDto();
         }
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        if(declaration == null || declaration.length == 0){
+            errMap.put("declaration", "GENERAL_ERR0006");
+        }
 
         ValidationResult result2 = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
         if(result2 !=null){
