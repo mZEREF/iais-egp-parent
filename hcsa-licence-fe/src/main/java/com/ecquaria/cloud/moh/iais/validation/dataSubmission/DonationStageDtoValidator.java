@@ -29,6 +29,8 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String errMsgErr008 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
+        String errMsg023 = MessageUtil.getMessageDesc("DS_ERR023");
+
         int maxSamplesNum=100;
         if(arSuperDataSubmissionDto.getArCurrentInventoryDto()!=null){
             if(donationStageDto.getDonatedType()!=null){
@@ -63,7 +65,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForTreatNum", errMsg);
                 }
                 if(donationStageDto.getDonResForTreatNum()>maxSamplesNum){
-                    errorMap.put("donResForTreatNum", "Cannot be greater than number of samples under patient");
+                    errorMap.put("totalNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -86,7 +88,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForCurCenNotTreatNum", errMsg);
                 }
                 if(donationStageDto.getDonResForCurCenNotTreatNum()>maxSamplesNum){
-                    errorMap.put("donResForCurCenNotTreatNum", "Cannot be greater than number of samples under patient");
+                    errorMap.put("totalNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForCurCenNotTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -117,7 +119,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("trainingNum", errMsg);
                 }
                 if(donationStageDto.getTrainingNum()>maxSamplesNum){
-                    errorMap.put("trainingNum", "Cannot be greater than number of samples under patient");
+                    errorMap.put("totalNum", errMsg023);
                 }
                 if(donationStageDto.getTrainingNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -140,7 +142,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("treatNum", errMsg);
                 }
                 if(donationStageDto.getTreatNum()>maxSamplesNum){
-                    errorMap.put("treatNum", "Cannot be greater than number of samples under patient");
+                    errorMap.put("totalNum", errMsg023);
                 }
                 if(donationStageDto.getTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -193,7 +195,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             }
         }
         if(donationStageDto.getTotalNum()>maxSamplesNum){
-            errorMap.put("totalNum", "Cannot be greater than number of samples under patient");
+            errorMap.put("totalNum", errMsg023);
         }
         return errorMap;
     }
