@@ -4,14 +4,20 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EventCallbackTrackDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.client.EventBusClient;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * EventbusCallBackDelegate
@@ -38,6 +39,8 @@ import java.util.Map;
 public class EventbusCallBackDelegate {
     @Autowired
     private SubmissionClient submissionClient;
+    @Autowired
+    private EventBusClient eventBusClient;
 
     @GetMapping
     public ResponseEntity<String> callback(@RequestParam(name = "submissionId") String submissionId,
@@ -53,61 +56,75 @@ public class EventbusCallBackDelegate {
         log.info("<=========== Eventbus Callback Start ===========>");
         log.info(StringUtil.changeForLog("Submission Id ===========> " + submissionId));
         log.info(StringUtil.changeForLog("service name ===========> " + serviceName));
-        boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-        log.info(StringUtil.changeForLog("event Ref number ===========> {}"+ eventRefNum));
-        if (!isLeagal) {
-            throw new IaisRuntimeException("Visit without Token!!");
-        }
+        //handle callback tracking
+        EventCallbackTrackDto dto = eventBusClient.getCallbackTracking(submissionId, operation).getEntity();
+        try {
+            boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
+            log.info(StringUtil.changeForLog("event Ref number ===========> {}"+ eventRefNum));
+            if (!isLeagal) {
+                throw new IaisRuntimeException("Visit without Token!!");
+            }
 
-        log.info(StringUtil.changeForLog("Event bus operation ===========> {}"+ operation));
-        Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
-                AppConsts.REST_PROTOCOL_TYPE
-                        + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
-        log.info("The status map size: ===========> {}", map.size());
-        if (map.size() >= 1) {
-            boolean success = true;
-            boolean pending = false;
-            for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
-                for (ServiceStatus status : ent.getValue()) {
-                    log.info("Result status ===========> {}", status.getStatus());
-                    if (status.getStatus().contains(GlobalConstants.STATE_PENDING)) {
-                        pending = true;
-                    } else if (!status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
-                        success = false;
+            log.info(StringUtil.changeForLog("Event bus operation ===========> {}"+ operation));
+            Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
+                    AppConsts.REST_PROTOCOL_TYPE
+                            + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
+            log.info("The status map size: ===========> {}", map.size());
+            if (map.size() >= 1) {
+                boolean success = true;
+                boolean pending = false;
+                for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
+                    for (ServiceStatus status : ent.getValue()) {
+                        log.info("Result status ===========> {}", status.getStatus());
+                        if (status.getStatus().contains(GlobalConstants.STATE_PENDING)) {
+                            pending = true;
+                        } else if (!status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
+                            success = false;
+                        }
+                    }
+                }
+                if (!success && !pending) {
+                    submissionClient.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
+                            submissionId, operation, "");
+                    for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
+                        for (ServiceStatus status : ent.getValue()) {
+                            log.info("Come into Compensation ======>");
+                            submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
+                                            + RestApiUrlConsts.EVENT_BUS,
+                                    submissionId, status.getServiceName(), operation);
+                        }
+                    }
+                } else if (!pending) {
+                    RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+                    String flagKey = submissionId + "_" + operation + "_CallbackFlag";
+                    String setVal = UUID.randomUUID().toString();
+                    String flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
+                    if (StringUtil.isEmpty(flag)) {
+                        cacheHelper.set("IaisEventbusCbCount",
+                                flagKey, setVal, 60L * 60L * 24L);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            log.error(e.getMessage(),e);
+                            Thread.currentThread().interrupt();
+                        }
+                        flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
+                        if (setVal.equals(flag)) {
+                            log.info("<======= Do callback =======>");
+                            callbackMethod(submissionId, operation, eventRefNum);
+                            if (dto != null) {
+                                dto.setStatus("Completed");
+                                eventBusClient.updateCallbackTracking(dto);
+                            }
+                        }
                     }
                 }
             }
-            if (!success && !pending) {
-                submissionClient.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
-                        submissionId, operation, "");
-                for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
-                    for (ServiceStatus status : ent.getValue()) {
-                        log.info("Come into Compensation ======>");
-                        submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
-                                + RestApiUrlConsts.EVENT_BUS,
-                                submissionId, status.getServiceName(), operation);
-                    }
-                }
-            } else if (!pending) {
-                RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-                String flagKey = submissionId + "_" + operation + "_CallbackFlag";
-                String setVal = UUID.randomUUID().toString();
-                String flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
-                if (StringUtil.isEmpty(flag)) {
-                    cacheHelper.set("IaisEventbusCbCount",
-                            flagKey, setVal, 60L * 60L * 24L);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        log.error(e.getMessage(),e);
-                        Thread.currentThread().interrupt();
-                    }
-                    flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
-                    if (setVal.equals(flag)) {
-                        log.info("<======= Do callback =======>");
-                        callbackMethod(submissionId, operation, eventRefNum);
-                    }
-                }
+        } catch (Throwable th) {
+            log.error("Error when eventbus callback ==> ", th);
+            if (dto != null) {
+                dto.setStatus("Failed");
+                eventBusClient.updateCallbackTracking(dto);
             }
         }
         log.info("<=========== Eventbus Callback Finish ===========>");
@@ -147,7 +164,7 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
                     "createFESuperLicDto");
-        }else if(EventBusConsts.OPERATION_APPLICATION_UPDATE.equals(operation)){
+        } else if(EventBusConsts.OPERATION_APPLICATION_UPDATE.equals(operation)) {
             log.info("Application update start");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl",
@@ -156,27 +173,27 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
                     "updateFEAppealLicenceDto");
-        }else if(EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING.equals(operation)){
+        } else if(EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING.equals(operation)) {
             log.info("-------send task call back----");
             try {
                 invokeMethod(submissionId, eventRefNum,
                         "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
                         "removeFile");
-            }catch (ClassNotFoundException e){
-
+            } catch (ClassNotFoundException e){
+                log.error(e.getMessage(), e);
             }
 
-        }else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)){
+        } else if(EventBusConsts.OPERATION__AUDIT_TASK_CANCELED.equalsIgnoreCase(operation)) {
             log.info("-------cancel audit task call back ----");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
                     "releaseTimeForInsUserCallBack");
-        }else if(EventBusConsts.OPERATION_REQUEST_INFORMATION.equalsIgnoreCase(operation)){
+        } else if(EventBusConsts.OPERATION_REQUEST_INFORMATION.equalsIgnoreCase(operation)) {
             log.info("-------do request information  call back ----");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppSubmissionServiceImpl",
                     "updateInboxMsgStatus");
-        }else if(EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT.equals(operation)){
+        } else if(EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT.equals(operation)) {
             log.info("-------do rfc/renew request information call back ----");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppSubmissionServiceImpl",
