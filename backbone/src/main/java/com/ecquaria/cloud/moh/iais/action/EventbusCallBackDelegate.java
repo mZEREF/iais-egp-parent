@@ -61,12 +61,12 @@ public class EventbusCallBackDelegate {
         EventCallbackTrackDto dto = eventBusClient.getCallbackTracking(submissionId, operation).getEntity();
         try {
             boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-            log.info(StringUtil.changeForLog("event Ref number ===========> {}"+ eventRefNum));
+            log.info(StringUtil.changeForLog("event Ref number ===========> "+ eventRefNum));
             if (!isLeagal) {
                 throw new IaisRuntimeException("Visit without Token!!");
             }
 
-            log.info(StringUtil.changeForLog("Event bus operation ===========> {}"+ operation));
+            log.info(StringUtil.changeForLog("Event bus operation ===========> "+ operation));
             GetSubmissionStatusResp statusResp = eventBusClient.getSubmissionStatus(submissionId, operation).getEntity();
             Map<String, List<ServiceStatus>> map = null;
             if (statusResp != null) {
