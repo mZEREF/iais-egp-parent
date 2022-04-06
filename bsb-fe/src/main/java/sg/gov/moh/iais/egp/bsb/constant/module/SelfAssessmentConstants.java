@@ -13,9 +13,10 @@ public class SelfAssessmentConstants {
 
     public static final String KEY_SELF_ASSESSMENT_CHK_LST = "bsbSelfAssessmentCheckList";
     public static final String KEY_SELF_ASSESSMENT_CONFIG = "bsbSelfAssessmentConfig";
+    public static final String KEY_COMMON_SELF_ASSESSMENT_CONFIG = "bsbCommonSelfAssessmentConfig";
     public static final String KEY_SELF_ASSESSMENT_ANSWER_MAP = "bsbSelfAssessmentAnswerMap";
 
-    public static final String KEY_CHKL_CONFIG = "checklistConfigDto";
+    public static final String KEY_CHKL_CONFIGS = "checklistConfigDtos";
     public static final String KEY_ANSWER_MAP = "answerMap";
     public static final String KEY_EDITABLE = "editable";
 
@@ -23,8 +24,11 @@ public class SelfAssessmentConstants {
     public static final String ACTION_FILL = "Fill";
     public static final String ACTION_EDIT = "Edit";
     public static final String ACTION_VIEW = "View";
+    public static final String ACTION_DOWNLOAD = "Download";
+    public static final String ACTION_UPLOAD = "Upload";
     public static final String ACTION_PRINT = "Print";
 
     // key separator
     public static final String KEY_SEPARATOR = "--";
+    public static final String KEY_REMARKS = "-remarks";
 }

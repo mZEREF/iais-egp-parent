@@ -33,3 +33,8 @@ $(function () {
         $("#mainForm").submit();
     });
 })
+
+function switchNextStep(index) {
+    $('.config').hide();
+    $('#' + index).show();
+}
