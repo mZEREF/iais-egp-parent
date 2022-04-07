@@ -123,7 +123,7 @@
                 <iais:row>
                     <iais:field width="5" value="Transferred In From"/>
                     <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                        <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                        <c:set value="${outStageArDto.licenseeId.concat('/').concat(outStageArDto.hciCode)}"
                                var="selecctInValue"/>
                         <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
                             <c:if test="${premisesSelect.value eq selecctInValue}">
