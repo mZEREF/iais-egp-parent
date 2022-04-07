@@ -984,7 +984,7 @@ public class MasterCodeDelegator {
         String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
 
-    }
+    }}
 
     /**
      * AutoStep: prepareEdit
