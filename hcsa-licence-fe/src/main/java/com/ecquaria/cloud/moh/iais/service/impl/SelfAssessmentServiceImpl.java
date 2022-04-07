@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -45,6 +44,12 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,11 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @Author: yichen
@@ -87,16 +87,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private LicenceClient licenceClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -369,25 +359,19 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         notificationHelper.sendNotification(email_003);
     }
 
-
     public boolean callFeEicAppPremisesSelfDeclChkl(FeSelfAssessmentSyncDataDto data) {
-        //route to be
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
         data.setAuditTrail(IaisEGPHelper.getCurrentAuditTrailDto());
-        IaisApiResult apiResult = gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
-
-        if (apiResult == null){
+        IaisApiResult apiResult = gatewayClient.callEicWithTrack(data, gatewayClient::routeSelfAssessment,
+                "routeSelfAssessment").getEntity();
+        if (apiResult == null) {
             return false;
         }
 
         boolean hasError = apiResult.isHasError();
-        if (hasError){
+        if (hasError) {
             log.info(StringUtil.changeForLog("=========>>>>>>" + apiResult.getMessage()));
             return false;
-        }else {
+        } else {
             return true;
         }
     }

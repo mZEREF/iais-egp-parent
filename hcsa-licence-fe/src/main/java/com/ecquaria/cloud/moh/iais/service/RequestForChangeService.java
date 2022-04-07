@@ -91,8 +91,7 @@ public interface RequestForChangeService {
 
     List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);
 
-    String sendNotification(EmailDto email);
-
+    void sendNotification(EmailDto email);
 
     List<String> getAdminEmail(String orgId);
 

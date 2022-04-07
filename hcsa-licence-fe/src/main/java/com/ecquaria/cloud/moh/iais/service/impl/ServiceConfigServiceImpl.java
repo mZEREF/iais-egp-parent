@@ -85,22 +85,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
-    private AppEicClient appEicClient;
+
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
@@ -304,11 +289,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<SelectOption> getPubHolidaySelect() {
         List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
         List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         try {
-            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday().getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -1126,25 +1108,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
        }
         log.info(" sysnSaveGroupToBe end");
     }
+
+
     @Override
-    public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto){
+    public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto) {
         try {
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ServiceConfigServiceImpl.class.getName(),
-                    "saveAppGroupGiroSysnEic",currentApp + "-" + currentDomain
-                    , ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
-            String eicRefNo = eicRequestTrackingDto.getRefNo();
-            String saveSuccess = feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto).getEntity();
-            //get eic record
-            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-            //update eic record status
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-            eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            appEicClient.updateStatus(eicRequestTrackingDtos);
-            return saveSuccess;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+            return feEicGatewayClient.callEicWithTrack(applicationGroupDto, feEicGatewayClient::saveAppGroupSysnEic,
+                    "saveAppGroupSysnEic").getEntity();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return AppConsts.NO;
     }

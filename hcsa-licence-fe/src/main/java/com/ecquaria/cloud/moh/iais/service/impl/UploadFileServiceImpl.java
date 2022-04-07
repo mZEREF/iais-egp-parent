@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -38,22 +36,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,7 +60,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,16 +84,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Value("${iais.sharedfolder.application.out}")
     private String sharedOutPath;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
@@ -109,13 +91,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
 
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Override
     public String saveFile(ApplicationListFileDto applicationListFileDto ) {
 
@@ -310,7 +285,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                     if(b){
                         log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+s+".zip"));
                     }
-                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
+                    String string = saveFileName(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
                     /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
                     log.info(StringUtil.changeForLog("----"+string));
                     if(!string.equals("SUCCESS")){
@@ -327,38 +302,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         return flag;
     }
 
-    private String eicGateway(String fileName ,String filePath,String groupId){
-        ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        processFileTrackDto.setFileName(fileName);
-        processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setRefId(groupId);
-        AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
-        processFileTrackDto.setAuditTrailDto(intenet);
-        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, UploadFileServiceImpl.class.getName(),
-                "saveFileName", currentApp + "-" + currentDomain,
-                ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
-        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-        if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-            log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
-            EicRequestTrackingDto entity = fetchResult.getEntity();
-            if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                String string = saveFileName(fileName, filePath, groupId);
-                entity.setProcessNum(1);
-                Date now = new Date();
-                entity.setFirstActionAt(now);
-                entity.setLastActionAt(now);
-                entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                entity.setAuditTrailDto(intenet);
-                eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
-                return string;
-            }
-        } else {
-            log.info(StringUtil.changeForLog("------ null----"));
-        }
-        return "FAIL";
-    }
-
     private String saveFileName(String fileName ,String filePath,String groupId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -371,10 +314,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(processFileTrackDto)+"processFileTrackDto"));
         String s="FAIL";
         try {
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            s = eicGatewayClient.saveFileApplication(processFileTrackDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            s = eicGatewayClient.callEicWithTrack(processFileTrackDto, eicGatewayClient::saveFileApplication,
+                    "saveFileApplication").getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
             log.info(StringUtil.changeForLog("have error-------" +s));
