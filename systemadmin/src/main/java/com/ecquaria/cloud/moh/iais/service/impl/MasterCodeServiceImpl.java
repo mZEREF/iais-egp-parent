@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SaMasterCodeClient;
@@ -32,6 +34,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     private SaMasterCodeClient saMasterCodeClient;
     @Autowired
     private EicGatewayClient eicGatewayClient;
+
     @Override
     @SearchTrack(catalog = MasterCodeConstants.MSG_TEMPLATE_FILE, key = MasterCodeConstants.MSG_TEMPLATE_SQL)
     public SearchResult<MasterCodeQueryDto> doQuery(SearchParam param) {
@@ -129,8 +132,21 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public void syncMasterCodeFe(List<MasterCodeDto> masterCodeDtos) {
-        if(!IaisCommonUtils.isEmpty(masterCodeDtos)){
-            eicGatewayClient.syncMasterCodeFe(masterCodeDtos);
+        if (IaisCommonUtils.isEmpty(masterCodeDtos)) {
+            return;
         }
+
+        eicGatewayClient.callEicWithTrack(masterCodeDtos, eicGatewayClient::syncMasterCodeFe, this.getClass(),
+                "syncMasterCodeFeFromTrack");
     }
+
+    @Override
+    public void syncMasterCodeFeFromTrack(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<MasterCodeDto> masterCodeDtos = JsonUtil.parseToList(jsonList, MasterCodeDto.class);
+        eicGatewayClient.syncMasterCodeFe(masterCodeDtos);
+    }
+
 }

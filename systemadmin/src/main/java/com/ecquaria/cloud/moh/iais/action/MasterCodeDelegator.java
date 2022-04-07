@@ -899,7 +899,7 @@ public class MasterCodeDelegator {
             }
         }
         if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-            if (masterCodeDto.getEffectiveFrom() != null){
+            if (masterCodeDto.getEffectiveTo() != null){
                 if (masterCodeDto.getEffectiveTo().before(new Date())){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
@@ -931,15 +931,17 @@ public class MasterCodeDelegator {
                 }
             }
             if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveFrom().before(new Date())){
-                    validationResult.setHasErrors(true);
-                    String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
-                    //The effective date of inactive data must be a future time
-                    errorMap.put("effectiveFrom", errMsg);
+                if (masterCodeDto.getEffectiveFrom() != null){
+                    if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                        validationResult.setHasErrors(true);
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                        //The effective date of inactive data must be a future time
+                        errorMap.put("effectiveFrom", errMsg);
+                    }
                 }
             }
             if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveFrom() != null){
+                if (masterCodeDto.getEffectiveTo() != null){
                     if (masterCodeDto.getEffectiveTo().before(new Date())){
                         validationResult.setHasErrors(true);
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
@@ -960,15 +962,29 @@ public class MasterCodeDelegator {
                 errorMap.put("codeValue", errMsg);
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
-        if (IaisCommonUtils.isNotEmpty(errorMap)) {
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
-            ParamUtil.setRequestAttr(request, "codeCategory", ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY));
-            return;
-        }
-        log.info(StringUtil.changeForLog("isEffect:"+isEffect));
-        if(!isEffect){
-            masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            if (IaisCommonUtils.isNotEmpty(errorMap)) {
+                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+                ParamUtil.setRequestAttr(request, "codeCategory", ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY));
+                return;
+            }
+            log.info(StringUtil.changeForLog("isEffect:"+isEffect));
+            if(!isEffect){
+                masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            }
+            MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+            //eic
+            List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+            msDto.setUpdateAt(new Date());
+            syncMasterCodeList.add(msDto);
+            masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+            MasterCodeUtil.refreshCache();
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+            Date date = new Date();
+            String dateStr = Formatter.formatDateTime(date);
+            String dateReplace = dateStr.replace(" "," at ");
+            String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
+            ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
         }
         MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
         //eic
@@ -984,7 +1000,7 @@ public class MasterCodeDelegator {
         String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
 
-    }}
+    }
 
     /**
      * AutoStep: prepareEdit
