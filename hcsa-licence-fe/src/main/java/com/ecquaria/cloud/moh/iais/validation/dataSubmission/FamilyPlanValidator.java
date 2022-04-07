@@ -36,11 +36,11 @@ public class FamilyPlanValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP002".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP002".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
             errorMap.putAll(result.retrieveAll());
         }
@@ -108,6 +108,12 @@ public class FamilyPlanValidator implements CustomizeValidator {
             int f=Integer.valueOf(familyPlanDto.getGestAgeBaseNotOnUltrDay());
             if(f<m){
                 errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
+            }
+        }
+        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+            if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
+                ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
+                errorMap.putAll(result.retrieveAll());
             }
         }
         return errorMap;

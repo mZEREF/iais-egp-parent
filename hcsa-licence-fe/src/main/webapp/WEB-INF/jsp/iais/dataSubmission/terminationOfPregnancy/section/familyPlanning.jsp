@@ -15,10 +15,17 @@
             <iais:field width="5" value="Most Recent Contraceptive Methods Used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="mostRecentContraMethod" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_METHODS"
-                             value="${familyPlanDto.mostRecentContraMethod}" cssClass="mostRecentContraMethod"/>
+                             value="${familyPlanDto.mostRecentContraMethod}" id="ContraMethod" cssClass="mostRecentContraMethod" onchange="checkMantory(this, '#otherContraMethodLabel', 'TOPMRC007')"/>
             </iais:value>
         </iais:row>
     </div>
+        <iais:row>
+            <iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
+                        mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
+            </iais:value>
+        </iais:row>
     <iais:row>
         <iais:field width="5" value="No. of Previous Termination of Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
@@ -94,7 +101,7 @@
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
-    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if>>
+    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -102,7 +109,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP002'}">style="display: none"</c:if> >
+    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP002' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if> >
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -195,7 +202,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP005"){
+            if(mainTopReason == "TOPRTP005" || mainTopReason=="TOPRTP002"){
                 $('#topRiskConditions').show();
             }else {
                 $('#topRiskConditions').hide();
@@ -207,7 +214,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP002"){
+            if(mainTopReason == "TOPRTP002" || mainTopReason == "TOPRTP006"){
                 $('#topMedConditions').show();
             }else {
                 $('#topMedConditions').hide();
@@ -257,4 +264,5 @@
             $('#showPatientAgePT').modal('show');
         }
     });
+
 </script>
