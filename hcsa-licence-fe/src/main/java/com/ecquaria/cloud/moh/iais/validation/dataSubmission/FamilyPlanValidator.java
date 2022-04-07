@@ -110,6 +110,12 @@ public class FamilyPlanValidator implements CustomizeValidator {
                 errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
             }
         }
+        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+            if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
+                ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
+                errorMap.putAll(result.retrieveAll());
+            }
+        }
         return errorMap;
     }
 }
