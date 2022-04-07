@@ -13,29 +13,33 @@ import sg.gov.moh.iais.egp.bsb.dto.info.common.AddressInfo;
 @Service
 @Slf4j
 public class AddressRetrieveService {
+    private final AddressInfoClient addressInfoClient;
 
     @Autowired
-    private AddressInfoClient addressInfoClient;
+    public AddressRetrieveService(AddressInfoClient addressInfoClient) {
+        this.addressInfoClient = addressInfoClient;
+    }
 
+    /**
+     * Retrieve address by postal code, and return a good-looking JSON.
+     * @return address info if found; null if not found
+     */
     public AddressInfo getAddressByPostalCode(String postalCode) {
         Assert.hasLength(postalCode, "postalCode cannot be null");
-        AddressInfo addressInfo = new AddressInfo();
+        AddressInfo addressInfo = null;
         try {
             SingpostAddressDto addressDto = addressInfoClient.getAddressInfoByPostalCode(postalCode);
-            if(addressDto ==null){
-                addressDto = new SingpostAddressDto();
+            if (addressDto != null) {
+                addressInfo = new AddressInfo();
+                addressInfo.setPostalCode(addressDto.getPostalCode());
+                addressInfo.setBlockNo(addressDto.getBlkHseNo());
+                addressInfo.setBuilding(addressDto.getBuildingName());
+                addressInfo.setStreet(addressDto.getStreetName());
             }
-            addressInfo.setAddressType(addressDto.getAddressType());
-            addressInfo.setPostalCode(addressDto.getPostalCode());
-            addressInfo.setBlockNo(addressDto.getBlkHseNo());
-            addressInfo.setBuilding(addressDto.getBuildingName());
-            addressInfo.setStreet(addressDto.getStreetName());
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("addressInfoByPostalCode api exception"),e);
+            log.error(StringUtil.changeForLog("retrieve address by postal code API hit error"), e);
         }
         return addressInfo;
     }
-
-
 }
 

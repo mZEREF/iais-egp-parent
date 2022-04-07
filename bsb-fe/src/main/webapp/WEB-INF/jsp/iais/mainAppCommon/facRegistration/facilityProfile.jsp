@@ -121,7 +121,7 @@
                 <span data-err-ind="postalCode" class="error-msg"></span>
             </div>
             <div class="col-sm-2">
-                <a href="#">Retrieve your address</a>
+                <a id="retrieveAddressBtn" href="javascript:void(0)">Retrieve your address</a>
             </div>
         </div>
 
@@ -241,6 +241,21 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="invalidPostalCodeModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12"><span>The postal code is invalid</span></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center">
+                <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade" id="notGazetteModal" role="dialog">

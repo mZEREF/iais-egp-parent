@@ -2,7 +2,10 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
@@ -36,13 +40,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 public class FacilityRegistrationDelegator {
     private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
+    private final OrganizationInfoClient orgInfoClient;
     private final FacilityRegistrationService facilityRegistrationService;
 
     @Autowired
-    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient,
+    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient, OrganizationInfoClient orgInfoClient,
                                          FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
         this.fileRepoClient = fileRepoClient;
         this.facRegClient = facRegClient;
+        this.orgInfoClient = orgInfoClient;
         this.facilityRegistrationService = facilityRegistrationService;
     }
 
@@ -101,18 +107,19 @@ public class FacilityRegistrationDelegator {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityRegistrationService.getFacilityRegisterRoot(request));
         }
 
-
-        // TODO retrieve company address, and set in session
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        assert auditTrailDto != null;
+        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
         OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen("185412420D");
-        orgAddressInfo.setCompName("DBO Laboratories");
-        orgAddressInfo.setPostalCode("980335");
-        orgAddressInfo.setAddressType("ADDTY001");
-        orgAddressInfo.setBlockNo("10");
-        orgAddressInfo.setFloor("03");
-        orgAddressInfo.setUnitNo("01");
-        orgAddressInfo.setStreet("Toa Payoh Lorong 2");
-        orgAddressInfo.setBuilding("-");
+        orgAddressInfo.setUen(auditTrailDto.getUenId());
+        orgAddressInfo.setCompName(licenseeDto.getName());
+        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+        orgAddressInfo.setStreet(licenseeDto.getStreetName());
+        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
         ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
     }
 
