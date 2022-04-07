@@ -19,17 +19,17 @@
                     <iais:field width="5" value="Patient's ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${drugSubmission.idType}"
-                                     cssClass="idTypeSel"/>
+                                     cssClass="idTypeSel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-4">
-                        <iais:input maxLength="20" type="text" name="idNumber" value="${drugSubmission.idNumber}"/>
+                        <iais:input maxLength="20" type="text" name="idNumber" value="${drugSubmission.idNumber}" onchange="clearSelection()"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Nationality" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" style="width: 232px;">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
-                                     value="${drugSubmission.nationality}" cssClass="nationalitySel"/>
+                                     value="${drugSubmission.nationality}" cssClass="nationalitySel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="2" cssClass="col-md-3 patientData" display="true" style="width: 330px;">
                         <a class="retrieveIdentification" onclick="retrieveValidateDrug()">
