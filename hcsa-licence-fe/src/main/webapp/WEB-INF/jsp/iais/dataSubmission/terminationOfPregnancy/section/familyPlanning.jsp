@@ -134,7 +134,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReason" style="${familyPlanDto.subRopReason ==null || familyPlanDto.mainTopReason!='TOPRTP004' || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
+    <div id="otherSubTopReasons" style="${familyPlanDto.subRopReason ==null || familyPlanDto.mainTopReason!='TOPRTP004' || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -180,12 +180,9 @@
     function subRopReason() {
         var subRopReason= $('#subRopReason').val();
         if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
-            $('#otherSubTopReason').show();
+            $('#otherSubTopReasons').show();
         }else{
-            $('#otherSubTopReason').hide();
-        }
-        if(familyPlanDto.mainTopReason!='TOPRTP004'){
-            $('#otherSubTopReason').hide();
+            $('#otherSubTopReasons').hide();
         }
     }
     function otherMainTopReason() {
@@ -231,6 +228,7 @@
                 $('#subRopReasons').show();
             }else {
                 $('#subRopReasons').hide();
+                $('#otherSubTopReasons').hide();
             }
         });
     }
