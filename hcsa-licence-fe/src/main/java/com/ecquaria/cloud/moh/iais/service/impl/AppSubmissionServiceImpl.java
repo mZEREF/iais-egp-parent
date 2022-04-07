@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationCons
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
@@ -73,7 +72,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -102,7 +100,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
@@ -119,6 +116,15 @@ import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
+import sop.webflow.rt.api.Process;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -138,14 +144,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.webflow.rt.api.BaseProcessClass;
-import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmisionServiceImpl
@@ -167,8 +165,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private LicenceClient licenceClient;
     @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private AppEicClient appEicClient;
     @Autowired
     private ComFileRepoClient comFileRepoClient;
     @Autowired
@@ -431,12 +427,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String format = simpleDateFormat.format(new Date());
             professionalParameterDto.setTimestamp(format);
             professionalParameterDto.setSignature("2222");
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             try {
-                FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
-                        signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization());
+                FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto);
                 if (401 == entity.getStatusCode()) {
                     professionalResponseDto = new ProfessionalResponseDto();
                     professionalResponseDto.setStatusCode("401");
@@ -2004,54 +1996,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return msgTemplateDto;
     }
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Autowired
     private EicClient eicClient;
 
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
     @Override
     public void feSendEmail(EmailDto emailDto) {
-        String moduleName = currentApp + "-" + currentDomain;
-        String refNo = String.valueOf(System.currentTimeMillis());
-        EicRequestTrackingDto dto = new EicRequestTrackingDto();
-        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dto.setActionClsName(this.getClass().getName());
-        dto.setActionMethod("callEicSendEmail");
-        dto.setDtoClsName(emailDto.getClass().getName());
-        dto.setDtoObject(JsonUtil.parseToJson(emailDto));
-        dto.setRefNo(refNo);
-        dto.setModuleName(moduleName);
-        eicClient.saveEicTrack(dto);
-        callEicSendEmail(emailDto);
-        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-        Date now = new Date();
-        dto.setProcessNum(1);
-        dto.setFirstActionAt(now);
-        dto.setLastActionAt(now);
-        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
-        list.add(dto);
-        eicClient.updateStatus(list);
-    }
-
-    public void callEicSendEmail(EmailDto emailDto){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
     }
 
     @Override
@@ -3192,26 +3142,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
-    }
-
-    public void  updateInboxMsgStatus(String eventRefNum ,String submissionId){
-        log.debug("---updateInboxMsgStatus start---------------");
-        if( !StringUtil.isEmpty(eventRefNum)) {
-            log.debug(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum + " submissionId :" + submissionId + "--------------------"));
-            EicRequestTrackingDto eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            String jsonObj = eicRequestTrackingDto.getDtoObject();
-            if(!StringUtil.isEmpty(jsonObj)){
-                AppSubmissionDto appSubmissionDto = JsonUtil.parseToObject(jsonObj,AppSubmissionDto.class);
-                if(appSubmissionDto != null){
-                    String rfiMsgId = appSubmissionDto.getRfiMsgId();
-                    log.debug(StringUtil.changeForLog("rfiMsgId:"+rfiMsgId));
-                    feMessageClient.updateMsgStatus(rfiMsgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
-                }
-            }else{
-                log.debug(StringUtil.changeForLog("jsonObj is empty"));
-            }
-        }
-        log.debug("---updateInboxMsgStatus end---------------");
     }
 
     private static void doSvcDocument(Map<String, String> map, List<AppSvcDocDto> appSvcDocDtoLit, int uploadFileLimit, String sysFileType) {
