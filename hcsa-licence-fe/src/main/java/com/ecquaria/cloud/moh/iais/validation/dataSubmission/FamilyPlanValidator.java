@@ -36,11 +36,11 @@ public class FamilyPlanValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP002".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP002".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
             errorMap.putAll(result.retrieveAll());
         }
