@@ -42,6 +42,7 @@ public class MohDsPrintDelegator {
                     DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);
+        ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
     }
 
