@@ -2,10 +2,14 @@ package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.AppConstants;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.SaveAppointmentDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AppInspectorCorrelationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDto;
 
@@ -218,11 +223,15 @@ public class ApptInspectionDateService {
             appPremisesInspecApptDtoList.add(inspectionAppointmentDto);
             confirmRefNo.add(apptRefNo);
         }
-        //cancel or confirm appointment date
+        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        //create application and inspectors correlation data
+        List<AppInspectorCorrelationDto> appInspectorCorrelationDtos = fillAppInspectorCorrelationDtos(taskDtos);
+
         SaveAppointmentDataDto saveAppointmentDataDto = new SaveAppointmentDataDto();
         saveAppointmentDataDto.setAppointmentDtos(appPremisesInspecApptDtoList);
         saveAppointmentDataDto.setApptRefNos(confirmRefNo);
-        saveAppointmentDataDto.setTaskDtos(apptInspectionDateDto.getTaskDtos());
+        saveAppointmentDataDto.setTaskDtos(taskDtos);
+        saveAppointmentDataDto.setAppInspCorrelationDtos(appInspectorCorrelationDtos);
         bsbAppointmentClient.saveAppointment(saveAppointmentDataDto);
 
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
@@ -280,11 +289,15 @@ public class ApptInspectionDateService {
                 cancelRefNo.add(refNo);
             }
         }
+        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        //create application and inspectors correlation data
+        List<AppInspectorCorrelationDto> appInspectorCorrelationDtos = fillAppInspectorCorrelationDtos(taskDtos);
 
         SaveAppointmentDataDto saveAppointmentDataDto = new SaveAppointmentDataDto();
         saveAppointmentDataDto.setAppointmentDtos(appPremisesInspecApptDtoList);
         saveAppointmentDataDto.setApptRefNos(cancelRefNo);
-        saveAppointmentDataDto.setTaskDtos(apptInspectionDateDto.getTaskDtos());
+        saveAppointmentDataDto.setTaskDtos(taskDtos);
+        saveAppointmentDataDto.setAppInspCorrelationDtos(appInspectorCorrelationDtos);
         bsbAppointmentClient.saveAppointment(saveAppointmentDataDto);
 
         //cancel or confirm appointment date
@@ -294,5 +307,17 @@ public class ApptInspectionDateService {
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //todo email
+    }
+
+    public List<AppInspectorCorrelationDto> fillAppInspectorCorrelationDtos(List<TaskDto> taskDtos) {
+        List<AppInspectorCorrelationDto> appInspCorrelationDtos = new ArrayList<>(taskDtos.size());
+        for(TaskDto taskDto : taskDtos){
+            AppInspectorCorrelationDto appInspectorCorrelationDto = new AppInspectorCorrelationDto();
+            appInspectorCorrelationDto.setUserId(taskDto.getUserId());
+            appInspectorCorrelationDto.setApplicationNo(taskDto.getApplicationNo());
+            appInspectorCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appInspCorrelationDtos.add(appInspectorCorrelationDto);
+        }
+        return appInspCorrelationDtos;
     }
 }

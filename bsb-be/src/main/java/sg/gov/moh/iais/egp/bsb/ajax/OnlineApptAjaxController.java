@@ -70,7 +70,7 @@ public class OnlineApptAjaxController {
                 List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
                 AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
                 appointmentUserDto.setLoginUserId(loginContext.getLoginId());
-                appointmentUserDto.setWorkHours(6);
+                appointmentUserDto.setWorkHours(8);
                 //
                 appointmentUserDto.setWorkGrpName("BSB-Inspect");
                 appointmentUserDtos.add(appointmentUserDto);
