@@ -24,7 +24,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col" style="width: 15%">Regulation Clause Number</th>
+                            <th scope="col" style="width: 15%">Checklist Item Clause</th>
                             <th scope="col" style="width: 35%;">Item</th>
                             <th scope="col" style="width: 5%">Yes</th>
                             <th scope="col" style="width: 5%">No</th>
@@ -33,16 +33,14 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="item" items="${section.checklistItemDtos}">
+                        <c:forEach var="item" items="${section.checklistItemDtos}" varStatus="itemStatus">
                             <c:set var="itemKey" value="${checklistConfigDto1.id}--${section.id}--${item.itemId}"/>
                             <c:set var="answer" value="${answerMap.get(itemKey).answer}"/>
                             <c:set var="remarks" value="${answerMap.get(itemKey).remarks}"/>
                             <tr>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title"></p>
-                                    <p><a id="regOutsideWindow${status.index + 1}" data-toggle="modal"
-                                          data-target="#ShowRegClauseModal${status.index + 1}">${item.regulationClauseNo}</a>
-                                    </p>
+                                    <p>${status.index + 1}.${itemStatus.index + 1}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title"></p>

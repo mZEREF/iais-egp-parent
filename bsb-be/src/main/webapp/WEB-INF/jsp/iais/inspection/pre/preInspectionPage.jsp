@@ -32,34 +32,62 @@
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
-                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
+                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab"
+                                                   data-toggle="tab">Info</a>
                                             </li>
                                             <li id="documents" role="presentation">
-                                                <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
+                                                <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
+                                                   role="tab" data-toggle="tab">Documents</a>
+                                            </li>
+                                            <li id="facility" role="presentation">
+                                                <a href="#tabFacility" id="doFacility" aria-controls="tabFacility"
+                                                   role="tab" data-toggle="tab">Facility Details</a>
+                                            </li>
+                                            <li id="checklist" role="presentation">
+                                                <a href="#tabChecklist" id="doChecklist" aria-controls="tabChecklist"
+                                                   role="tab" data-toggle="tab">Checklist</a>
                                             </li>
                                             <li id="process" role="presentation">
-                                                <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
+                                                <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
+                                                   role="tab" data-toggle="tab">Processing</a>
                                             </li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
-                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
+                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                       data-toggle="tab">Info</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
+                                                    <a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+                                                       data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
+                                                    <a href="#tabFacility" aria-controls="tabFacility" role="tab"
+                                                       data-toggle="tab">Facility Details</a>
+                                                </div>
+                                                <div class="swiper-slide">
+                                                    <a href="#tabChecklist" aria-controls="tabChecklist" role="tab"
+                                                       data-toggle="tab">Checklist</a>
+                                                </div>
+                                                <div class="swiper-slide">
+                                                    <a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
+                                                       data-toggle="tab">Processing</a>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="facilityInfo.jsp" %>
+                                                <%@include file="preApplicationInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp" %>
+                                            </div>
+                                            <div class="tab-pane" id="tabFacility" role="tabpanel">
+                                                <%@include file="facilityInfo.jsp" %>
+                                            </div>
+                                            <div class="tab-pane" id="tabChecklist" role="tabpanel">
+                                                <%@include file="./checkListTab.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -108,6 +136,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
