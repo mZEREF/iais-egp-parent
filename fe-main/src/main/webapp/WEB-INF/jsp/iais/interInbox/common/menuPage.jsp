@@ -7,23 +7,6 @@
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
                 </menu:load>
-                <menu:iterate id="inbox-top-menus" var="item" varStatus="status" >
-                <c:choose>
-                    <c:when test="${!status.last and status.next.depth > 1}">
-                        <c:set var="nextDepth" value="${status.next.depth}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="nextDepth" value="1"/>
-                    </c:otherwise>
-                </c:choose>
-                <c:choose>
-                    <c:when test="${item.depth >= 1}">
-                        <c:set var="currDepth" value="${item.depth}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="currDepth" value="1"/>
-                    </c:otherwise>
-                </c:choose>
                 <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
                                                         aria-haspopup="true" aria-expanded="false"
                                                         href="javascript:;"><span>eServices</span></a>
@@ -55,6 +38,23 @@
                     <div id="lics" class="tab-pane fade in active">
                         <ul class="subnav-list">
                             </c:if>
+                <menu:iterate id="inbox-top-menus" var="item" varStatus="status" >
+                <c:choose>
+                    <c:when test="${!status.last and status.next.depth > 1}">
+                        <c:set var="nextDepth" value="${status.next.depth}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="nextDepth" value="1"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>
+                    <c:when test="${item.depth >= 1}">
+                        <c:set var="currDepth" value="${item.depth}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="currDepth" value="1"/>
+                    </c:otherwise>
+                </c:choose>
                 <c:if test="${item.depth > 0}">
                 <c:choose>
                 <c:when test="${item.depth > 1}">
