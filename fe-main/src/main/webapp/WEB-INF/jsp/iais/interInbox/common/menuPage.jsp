@@ -3,6 +3,7 @@
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li> <%--NOSONAR--%>
+                <c:set var="roleMeunForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
                 </menu:load>
@@ -25,6 +26,37 @@
                 </c:choose>
                 <c:if test="${item.depth > 0}">
                 <c:choose>
+                <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                                        aria-haspopup="true" aria-expanded="false"
+                                                        href="javascript:;"><span>eServices</span></a>
+                    <ul class="dropdown-menu">
+                        <ul class="nav nav-tabs subtab-nav">
+                            <c:if test="${appTab == 1}">
+                                <li class="active"><a data-toggle="tab" href="#lics">Licensing </a></li>
+                            </c:if>
+                            <c:if test="${dssTab == 1}">
+                                <li><a data-toggle="tab" href="#datasub">Data Submission</a></li>
+                            </c:if>
+                        </ul>
+                <c:if test="${roleMeunForEServices ==0}">
+                    <div class="tab-content">
+                        <c:if test="${dssTab == 1}">
+                            <div id="datasub" class="tab-pane fade">
+                                <ul class="subnav-list">
+                                    <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
+                                    <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
+                                </ul>
+                            </div>
+                        </c:if>
+                    </div>
+                </ul>
+                    </li>
+                </c:if>
+                    <c:if test="${roleMeunForEServices !=0}">
+                    <div class="tab-content">
+                        <div id="lics" class="tab-pane fade in active">
+                            <ul class="subnav-list">
+                    </c:if>
                 <c:when test="${item.depth > 1}">
                     <c:if test="${nextDepth == currDepth}">
                         <c:choose>
@@ -45,7 +77,7 @@
                             </c:otherwise>
                         </c:choose>
                     </c:if>
-                    <c:if test="${nextDepth < currDepth}">
+                    <c:if test="${nextDepth < currDepth && roleMeunForEServices != 0}">
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
                                 <li> <%--NOSONAR--%>
@@ -64,16 +96,29 @@
                             </c:otherwise>
                         </c:choose>
                         <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
-                        </ol>
+                        <c:if test="${roleMeunForEServices == 1}">
+                                   </ul>
+                                 </div>
+                              </div>
+                            </ul>
+                          </li>
+                        </c:if>
+                  <c:if test="${roleMeunForEServices == 2}">
+                     </ul>
+                     </div>
+                     <div id="datasub" class="tab-pane fade">
+                     <ul class="subnav-list">
+                    <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
+                    <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
+                     </ul>
+                    </div>
+                    </div>
+                     </ul>
+                     </li>
+                  </c:if>
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                <c:if test="${nextDepth > currDepth}">
-                <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false"
-                                        href="javascript:;"><span>${item.displayLabel}</span></a>
-                    <ol class="dropdown-menu">
-                        </c:if>
                         <c:if test="${nextDepth == currDepth}">
                         <li>
                             <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')">
@@ -86,7 +131,6 @@
                         </c:choose>
                         </c:if>
                         </menu:iterate>
-                            <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
             </ul>
         </div>
     </div>
