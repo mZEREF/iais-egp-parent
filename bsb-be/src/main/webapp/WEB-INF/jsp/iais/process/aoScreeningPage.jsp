@@ -66,19 +66,19 @@
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <h4>Processing Status Update</h4>
+                                                    <strong>
+                                                        <h4>Processing Status Update</h4>
+                                                    </strong>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <div class="form-horizontal">
                                                                 <%--@elvariable id="mohProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto"--%>
-                                                                <%--@elvariable id="selectRouteToMoh" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                                                <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
+                                                                        <p><iais:code code="${mohProcessDto.submissionDetailsInfo.applicationStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -98,22 +98,24 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Will MOH-AFC conduct the certification?</label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
-                                                                        <div class="input-group">
-                                                                            <label>
-                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
-                                                                            </label>
-                                                                            <span class="check-circle">Yes</span>
-                                                                            <label>
-                                                                                <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N"/>
-                                                                            </label>
-                                                                            <span class="check-circle">No</span>
-                                                                            <span data-err-ind="certificationRequired" class="error-msg" ></span>
+                                                                <c:if test="${mohProcessDto.facilityDetailsInfo.classification eq 'FACCLA001' or mohProcessDto.facilityDetailsInfo.classification eq 'FACCLA002'}">
+                                                                    <div class="form-group">
+                                                                        <label class="col-xs-12 col-md-4 control-label">Will MOH-AFC conduct the certification?</label>
+                                                                        <div class="col-sm-7 col-md-5 col-xs-10 control-label">
+                                                                            <div class="input-group">
+                                                                                <label>
+                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                                </label>
+                                                                                <span class="check-circle">Yes</span>
+                                                                                <label>
+                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                                </label>
+                                                                                <span class="check-circle">No</span>
+                                                                                <span data-err-ind="certificationRequired" class="error-msg" ></span>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                </c:if>
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">DO Remarks</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
@@ -150,7 +152,7 @@
                                                                         <div class="input-group">
                                                                             <select name="selectMohUser" id="selectMohUser">
                                                                                 <option value="">Please Select</option>
-                                                                                <c:forEach var="selection" items="${selectRouteToMoh}">
+                                                                                <c:forEach var="selection" items="${mohProcessDto.selectRouteToMoh}">
                                                                                     <option value="${selection.value}" <c:if test="${mohProcessDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
                                                                                 </c:forEach>
                                                                             </select>

@@ -41,76 +41,72 @@
         <div class="col-xs-12">
             <div class="panel-group" role="tablist" aria-multiselectable="true">
                 <c:if test="${facilityDetailsInfo.facilityActivityInfoList ne null && facilityDetailsInfo.facilityActivityInfoList.size() > 0}">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-toggle="collapse" href="#facilityActivityType">Recommendation for Approval for Facility Activity Type</a>
-                            </h4>
-                        </div>
-                        <div id="facilityActivityType" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="row" style="font-weight: 700;text-align: center">
-                                    <div class="col-md-1">S/N</div>
-                                    <div class="col-md-8">Facility Activity Type</div>
-                                    <div class="col-md-3">Approve</div>
-                                </div>
-                                <c:forEach var="facilityActivityInfo" items="${facilityDetailsInfo.facilityActivityInfoList}" varStatus="status">
-                                    <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
-                                        <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
-                                        <div class="col-md-8"><iais:code code="${facilityActivityInfo.activityType}"/></div>
-                                        <div class="col-md-3">
-                                            <div class="row">
-                                                <label>
-                                                    <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
-                                                </label>
-                                                <span class="check-circle">Yes</span>
-                                                <label>
-                                                    <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS002' or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
-                                                </label>
-                                                <span class="check-circle">No</span>
-                                            </div>
+                    <div class="alert alert-info" role="alert">
+                        <strong>
+                            <h4>Recommendation for Approval for Facility Activity Type</h4>
+                        </strong>
+                    </div>
+                    <div class="panel-collapse">
+                        <div class="panel-body">
+                            <div class="row" style="font-weight: 700;text-align: center">
+                                <div class="col-md-1">S/N</div>
+                                <div class="col-md-8">Facility Activity Type</div>
+                                <div class="col-md-3">Approve</div>
+                            </div>
+                            <c:forEach var="facilityActivityInfo" items="${facilityDetailsInfo.facilityActivityInfoList}" varStatus="status">
+                                <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
+                                    <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
+                                    <div class="col-md-8"><iais:code code="${facilityActivityInfo.activityType}"/></div>
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <label>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
+                                            </label>
+                                            <span class="check-circle">Yes</span>
+                                            <label>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS002' or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
+                                            </label>
+                                            <span class="check-circle">No</span>
                                         </div>
                                     </div>
-                                </c:forEach>
-                            </div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </c:if>
                 <c:if test="${facilityDetailsInfo.facilityBiologicalAgentInfoList ne null && facilityDetailsInfo.facilityBiologicalAgentInfoList.size() > 0}">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a class="collapsed" data-toggle="collapse" href="#facilityApprovals">Recommendation for Approval to Possess</a>
-                            </h4>
-                        </div>
-                        <div id="facilityApprovals" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="row" style="font-weight: 700;text-align: center">
-                                    <div class="col-md-1">S/N</div>
-                                    <div class="col-md-3">Schedule</div>
-                                    <div class="col-md-5">Name of Biological Agent/Toxin</div>
-                                    <div class="col-md-3">Approve</div>
-                                </div>
-                                <c:forEach var="facilityBiologicalAgentInfo" items="${facilityDetailsInfo.facilityBiologicalAgentInfoList}" varStatus="status">
-                                    <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
-                                        <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
-                                        <div class="col-md-3"><iais:code code="${facilityBiologicalAgentInfo.schedule}"/></div>
-                                        <div class="col-md-5"><c:out value="${facilityBiologicalAgentInfo.batName}"/></div>
-                                        <div class="col-md-3">
-                                            <div class="row">
-                                                <label>
-                                                    <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
-                                                </label>
-                                                <span class="check-circle">Yes</span>
-                                                <label>
-                                                    <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
-                                                </label>
-                                                <span class="check-circle">No</span>
-                                            </div>
+                    <div class="alert alert-info" role="alert">
+                        <strong>
+                            <h4>Recommendation for Approval to Possess</h4>
+                        </strong>
+                    </div>
+                    <div class="panel-collapse">
+                        <div class="panel-body">
+                            <div class="row" style="font-weight: 700;text-align: center">
+                                <div class="col-md-1">S/N</div>
+                                <div class="col-md-3">Schedule</div>
+                                <div class="col-md-5">Name of Biological Agent/Toxin</div>
+                                <div class="col-md-3">Approve</div>
+                            </div>
+                            <c:forEach var="facilityBiologicalAgentInfo" items="${facilityDetailsInfo.facilityBiologicalAgentInfoList}" varStatus="status">
+                                <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
+                                    <div class="col-md-1"><c:out value="${status.index + 1}"/></div>
+                                    <div class="col-md-3"><iais:code code="${facilityBiologicalAgentInfo.schedule}"/></div>
+                                    <div class="col-md-5"><c:out value="${facilityBiologicalAgentInfo.batName}"/></div>
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <label>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
+                                            </label>
+                                            <span class="check-circle">Yes</span>
+                                            <label>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
+                                            </label>
+                                            <span class="check-circle">No</span>
                                         </div>
                                     </div>
-                                </c:forEach>
-                            </div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </c:if>
