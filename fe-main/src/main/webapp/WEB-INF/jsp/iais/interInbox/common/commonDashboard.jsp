@@ -11,6 +11,9 @@
     .dashboard-gp .dashboard-tile-item .dashboard-tile {
         height: 150px;
     }
+    .dropdown-menu{
+        width:530px !important;
+    }
 </style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">

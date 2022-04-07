@@ -3,7 +3,7 @@
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li> <%--NOSONAR--%>
-                <c:set var="roleMeunForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
+                <c:set var="roleMenuForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
                 </menu:load>
@@ -11,15 +11,15 @@
                                                         aria-haspopup="true" aria-expanded="false"
                                                         href="javascript:;"><span>eServices</span></a>
                     <ul class="dropdown-menu">
-                        <ul class="nav nav-tabs subtab-nav">
+                        <ul class="nav nav-tabs subtab-nav" style = "${roleMenuForEServices != 2 ? 'display:none' : ''}">
                             <c:if test="${appTab == 1}">
-                                <li class="active"><a data-toggle="tab" href="#lics">Licensing </a></li>
+                                <li class="active"><a data-toggle="tab" href="#lics">Licensing</a></li>
                             </c:if>
                             <c:if test="${dssTab == 1}">
-                                <li><a data-toggle="tab" href="#datasub">Data Submission</a></li>
+                                <li class="${roleMenuForEServices == 0 ? 'active' : ''}"><a data-toggle="tab" href="#datasub">Data Submission</a></li>
                             </c:if>
                         </ul>
-                        <c:if test="${roleMeunForEServices ==0}">
+                        <c:if test="${roleMenuForEServices ==0}">
                         <div class="tab-content">
                             <c:if test="${dssTab == 1}">
                                 <div id="datasub" class="tab-pane fade">
@@ -33,7 +33,7 @@
                     </ul>
                 </li>
                 </c:if>
-                <c:if test="${roleMeunForEServices !=0}">
+                <c:if test="${roleMenuForEServices !=0}">
                 <div class="tab-content">
                     <div id="lics" class="tab-pane fade in active">
                         <ul class="subnav-list">
@@ -77,7 +77,7 @@
                             </c:otherwise>
                         </c:choose>
                     </c:if>
-                    <c:if test="${nextDepth < currDepth && roleMeunForEServices != 0}">
+                    <c:if test="${nextDepth < currDepth && roleMenuForEServices != 0}">
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
                                 <li> <%--NOSONAR--%>
@@ -96,14 +96,14 @@
                             </c:otherwise>
                         </c:choose>
                         <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
-                        <c:if test="${roleMeunForEServices == 1}">
+                        <c:if test="${roleMenuForEServices == 1}">
                                    </ul>
                                  </div>
                               </div>
                             </ul>
                           </li>
                         </c:if>
-                  <c:if test="${roleMeunForEServices == 2}">
+                  <c:if test="${roleMenuForEServices == 2}">
                      </ul>
                      </div>
                      <div id="datasub" class="tab-pane fade">
