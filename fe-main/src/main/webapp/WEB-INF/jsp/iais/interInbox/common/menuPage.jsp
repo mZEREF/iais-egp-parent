@@ -24,8 +24,6 @@
                         <c:set var="currDepth" value="1"/>
                     </c:otherwise>
                 </c:choose>
-                <c:if test="${item.depth > 0}">
-                <c:choose>
                 <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
                                                         aria-haspopup="true" aria-expanded="false"
                                                         href="javascript:;"><span>eServices</span></a>
@@ -38,25 +36,27 @@
                                 <li><a data-toggle="tab" href="#datasub">Data Submission</a></li>
                             </c:if>
                         </ul>
-                <c:if test="${roleMeunForEServices ==0}">
-                    <div class="tab-content">
-                        <c:if test="${dssTab == 1}">
-                            <div id="datasub" class="tab-pane fade">
-                                <ul class="subnav-list">
-                                    <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
-                                    <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
-                                </ul>
-                            </div>
-                        </c:if>
-                    </div>
-                </ul>
-                    </li>
+                        <c:if test="${roleMeunForEServices ==0}">
+                        <div class="tab-content">
+                            <c:if test="${dssTab == 1}">
+                                <div id="datasub" class="tab-pane fade">
+                                    <ul class="subnav-list">
+                                        <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
+                                        <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
+                                    </ul>
+                                </div>
+                            </c:if>
+                        </div>
+                    </ul>
+                </li>
                 </c:if>
-                    <c:if test="${roleMeunForEServices !=0}">
-                    <div class="tab-content">
-                        <div id="lics" class="tab-pane fade in active">
-                            <ul class="subnav-list">
-                    </c:if>
+                <c:if test="${roleMeunForEServices !=0}">
+                <div class="tab-content">
+                    <div id="lics" class="tab-pane fade in active">
+                        <ul class="subnav-list">
+                            </c:if>
+                <c:if test="${item.depth > 0}">
+                <c:choose>
                 <c:when test="${item.depth > 1}">
                     <c:if test="${nextDepth == currDepth}">
                         <c:choose>
