@@ -62,7 +62,7 @@ public class TopTerminationOfPregnancyDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info(" -----TopDataSubmissionDelegator Start ------ ");
-        DsConfigHelper.clearTopSession(bpc.request);
+        /*DsConfigHelper.clearTopSession(bpc.request);*/
         DsConfigHelper.initTopConfig(bpc.request);
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
@@ -610,7 +610,7 @@ public class TopTerminationOfPregnancyDelegator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         if (topSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(topSuperDataSubmissionDto.getAppType())) {
-            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission";
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/PrepareSubmission";
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)

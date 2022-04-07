@@ -61,7 +61,7 @@ public class TopDataSubmissionDelegator {
             log.info("----- Drug Practices Prepare Submission -----");
             // no title
             bpc.request.removeAttribute("title");
-            String crudype = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+            String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, crudype);
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "top-submission");
            /* Map<String, PremisesDto> premisesMap =
@@ -134,6 +134,9 @@ public class TopDataSubmissionDelegator {
             /*if (reNew(topSuperDataSubmissionDto, submissionType, premisesDto)) {
                 topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
             }*/
+            if(topSuperDataSubmissionDto==null){
+                topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+            }
             if (!map.isEmpty()) {
                 topSuperDataSubmissionDto.setSubmissionType(submissionType);
                 /*topSuperDataSubmissionDto.setPremisesDto(premisesDto);*/
