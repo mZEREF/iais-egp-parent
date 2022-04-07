@@ -3,14 +3,13 @@
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li> <%--NOSONAR--%>
-                <c:set var="roleMenuForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
                 </menu:load>
                 <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
                                                         aria-haspopup="true" aria-expanded="false"
                                                         href="javascript:;"><span>eServices</span></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu menuDropHeight">
                         <ul class="nav nav-tabs subtab-nav" style = "${roleMenuForEServices != 2 ? 'display:none' : ''}">
                             <c:if test="${appTab == 1}">
                                 <li class="active"><a data-toggle="tab" href="#lics">Licensing</a></li>
@@ -22,7 +21,7 @@
                         <c:if test="${roleMenuForEServices ==0}">
                         <div class="tab-content">
                             <c:if test="${dssTab == 1}">
-                                <div id="datasub" class="tab-pane fade">
+                                <div id="datasub" class="tab-pane fade in active">
                                     <ul class="subnav-list">
                                         <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
                                         <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>

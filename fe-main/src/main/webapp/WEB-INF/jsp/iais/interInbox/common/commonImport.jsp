@@ -31,5 +31,6 @@
         <c:set var="dssTab" value="1"/>
     </c:if>
 </c:forEach>
+<c:set var="roleMenuForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
 
 
