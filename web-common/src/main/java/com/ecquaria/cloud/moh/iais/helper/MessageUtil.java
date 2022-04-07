@@ -66,7 +66,7 @@ public class MessageUtil {
         return temp.format(msg);
     }
 
-    public static String getMessageDesc(String key, List<String> keys,List<String> values) {
+    public static String getMessageDesc(String key, List<String> keys,List values) {
         Map arguments = IaisCommonUtils.genNewHashMap();
         for (int i = 0; i < keys.size(); i++) {
             arguments.put(keys.get(i),values.get(i));

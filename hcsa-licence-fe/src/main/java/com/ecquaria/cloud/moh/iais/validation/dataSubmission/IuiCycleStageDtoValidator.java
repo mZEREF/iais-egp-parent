@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 errMap.put(msgName, "GENERAL_ERR0027");
             }
             if(number.toString().length() > length) {
-                errMap.put(msgName, MessageUtil.replaceMessage("DS_ERR009", fieldName, "field"));
+                errMap.put(msgName, MessageUtil.getMessageDesc("GENERAL_ERR0041", Arrays.asList("field", "maxlength"), Arrays.asList(fieldName,length)));
             }
         }
         return errMap;
