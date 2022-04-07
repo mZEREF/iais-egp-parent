@@ -5,25 +5,24 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,11 +37,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import static java.nio.file.Files.newOutputStream;
 
@@ -60,16 +54,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     @Value("${iais.sharedfolder.rectification.out}")
     private String sharedOutPath;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Autowired
     private ApplicationFeClient applicationFeClient;
 
@@ -78,12 +62,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Autowired
     private FileRepoClient fileRepoClient;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Autowired
-    private AppEicClient appEicClient;
 
     @PostConstruct
     private void init() {
@@ -318,21 +296,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         processFileTrackDto.setAuditTrailDto(internet);
         String s = AppConsts.FAIL;
         try {
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.FeToBeRecFileImpl", "saveFileName",
-                    "hcsa-licence-web-internet", ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
-            String eicRefNo = eicRequestTrackingDto.getRefNo();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            s = eicGatewayClient.saveFileApplication(processFileTrackDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-            //get eic record
-            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-            //update eic record status
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-            eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            appEicClient.updateStatus(eicRequestTrackingDtos);
+            s = eicGatewayClient.callEicWithTrack(processFileTrackDto, eicGatewayClient::saveFileApplication,
+                    "saveFileApplication").getEntity();
             if(AppConsts.SUCCESS.equals(s)) {
                 ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
                 applicationDto.setAuditTrailDto(internet);

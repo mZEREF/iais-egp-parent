@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,15 +94,6 @@ public class ClientReschedulingDelegator {
     @Autowired
     private HcsaConfigFeClient hcsaConfigClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     public void start(BaseProcessClass bpc)  {
         rescheduleParameter.setSortField("appt.RECOM_IN_DATE");
         rescheduleParameter.setPageNo(1);
@@ -140,8 +129,6 @@ public class ClientReschedulingDelegator {
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
         String repalceService = getRepalceService();
         rescheduleParam.setMainSql(rescheduleParam.getMainSql().replace("repalceService",repalceService));
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String [] keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         Set<String> keys=IaisCommonUtils.genNewHashSet() ;
         if(keyIds!=null){
@@ -163,8 +150,7 @@ public class ClientReschedulingDelegator {
         }
 
         try {
-            SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam).getEntity();
 
             List<ReschApptGrpPremsQueryDto> rows = result.getRows();
             if(rows!=null){
@@ -468,10 +454,7 @@ public class ClientReschedulingDelegator {
                     appointmentDto.setAppNoList(appNoList);
                     appointmentDto.setStartDate(Formatter.formatDateTime(inspStDate, "dd/MM/yyyy HH:mm:ss"));
                     appointmentDto.setEndDate(Formatter.formatDateTime(inspEndDate, "dd/MM/yyyy HH:mm:ss"));
-                    HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                    HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                    List<ApptRequestDto> result  = feEicGatewayClient.genInspApptRescheduleDate(appointmentDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
+                    List<ApptRequestDto> result  = feEicGatewayClient.genInspApptRescheduleDate(appointmentDto).getEntity();
                     if(result!=null&&result.size()!=0){
                         if(result.get(0).getUserClandars()!=null){
                             apptViewDtos.get(id).setInspNewDate(result.get(0).getUserClandars().get(0).getStartSlot().get(0));
