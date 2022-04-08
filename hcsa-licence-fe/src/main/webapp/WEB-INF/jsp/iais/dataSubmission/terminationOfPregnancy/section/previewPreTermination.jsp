@@ -114,12 +114,7 @@
                     <iais:row>
                         <iais:field width="6" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"/>
                         <iais:value width="6" display="true">
-                            <c:if test="${preTerminationDto.patientAppointment == true }">
-                                Yes
-                            </c:if>
-                            <c:if test="${preTerminationDto.patientAppointment == false }">
-                                No
-                            </c:if>
+                            <iais:code code="${preTerminationDto.patientAppointment}"/>
                         </iais:value>
                     </iais:row>
                 </div>
