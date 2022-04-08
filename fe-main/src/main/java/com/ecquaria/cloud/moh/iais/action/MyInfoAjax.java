@@ -222,21 +222,6 @@ public class MyInfoAjax {
 		return "";
 	}
 
-
-	/**
-	 * Retrieves Person data from MyInfo
-	 *
-	 * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
-	 * @throws Exception
-	 */
-	public  String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo,String myInfoPath) throws Exception {
-		ApplicationContext context = SpringContextHelper.getContext();
-		if (context == null){
-			return null;
-		}
-		String  encipheredData = eicGatewayFeMainClient.getMyInfoEic(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo, myInfoPath).getBody();
-		return MyinfoUtil.decodeEncipheredData(encipheredData);
-	}
 	private List<String> getAttrList() {
 		List<String> list = Arrays.asList(ss);
 		return list;

@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -64,16 +63,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String sharedPath;
     @Value("${iais.sharedfolder.auditTrail.out}")
     private String sharedOutPath;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Override
     public List<AuditTrailEntityDto> getAuditTrailsByMigrated1() {
@@ -316,13 +305,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     public String eicCallSyncAuditTrailProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        return eicGatewayClient.callEicWithTrackForApp(processFileTrackDto, eicGatewayClient::saveFile,
+                "saveFile").getEntity();
     }
-
-
 
     @Override
     public void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {

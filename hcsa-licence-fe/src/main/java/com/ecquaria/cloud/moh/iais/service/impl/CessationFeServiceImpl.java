@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -61,10 +60,6 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -106,17 +101,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Autowired
-    private Environment env;
-
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -591,10 +575,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Override
     public String getStageId(String serviceId, String appType) {
         String appStatus;
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType).getEntity();
         if (IaisCommonUtils.isEmpty(serviceConfig)) {
             return null;
         } else {
@@ -860,14 +841,9 @@ private RequestForChangeService requestForChangeService;
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         //status
         List<AppPremisesRoutingHistoryDto> hisList;
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
         Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
         params.put("appNo", applicationDto.getApplicationNo());
-        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
         if (hisList != null) {
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList) {
                 if (ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())

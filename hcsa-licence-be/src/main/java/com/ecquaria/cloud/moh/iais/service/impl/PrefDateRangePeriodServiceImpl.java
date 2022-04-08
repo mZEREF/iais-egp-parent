@@ -1,17 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.PrefDateRangePeriodService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -20,10 +14,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * @author: yichen
@@ -39,24 +30,6 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
 
     @Override
     @SearchTrack(catalog = "hcsaconfig", key = "getPrefInspPeriodList")
@@ -75,41 +48,16 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
         if (status == HttpStatus.SC_OK){
             HcsaServicePrefInspPeriodDto periodDto = result.getEntity();
             periodDto.setEicCall(true);
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.HCSA_CONFIG,
-                    PrefDateRangePeriodServiceImpl.class.getName(),
-                    "callFeInspPeriod", currentApp + "-" + currentDomain,
-                    HcsaServicePrefInspPeriodDto.class.getName(), JsonUtil.parseToJson(periodDto));
-
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  eicRequestTrackingHelper.getHcsaConfigClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callFeInspPeriod(periodDto);
-                        preEicRequest.setProcessNum(1);
-                        Date now = new Date();
-                        preEicRequest.setFirstActionAt(now);
-                        preEicRequest.setLastActionAt(now);
-                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getHcsaConfigClient().saveEicTrack(preEicRequest);
-                    }
-                }
-            }catch (Exception e){
-                log.debug(StringUtil.changeForLog("encounter failure when sync inspection period date to fe" + e.getMessage()));
-            }
-
+            callFeInspPeriod(periodDto);
             return Boolean.TRUE;
         }else {
             return Boolean.FALSE;
         }
     }
 
-    public void callFeInspPeriod(HcsaServicePrefInspPeriodDto periodDto){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-        beEicGatewayClient.syncInspPeriodToFe(periodDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+    public void callFeInspPeriod(HcsaServicePrefInspPeriodDto periodDto) {
+        beEicGatewayClient.callEicWithTrack(periodDto, beEicGatewayClient::syncInspPeriodToFe, beEicGatewayClient.getClass(),
+                "syncInspPeriodToFe", EicClientConstant.HCSA_CONFIG);
     }
 
     private Integer transformToDay(Integer week) {

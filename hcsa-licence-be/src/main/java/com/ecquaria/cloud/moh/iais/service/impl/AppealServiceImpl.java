@@ -54,20 +54,7 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    private LicenceService licenceService;
-    @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private LicEicClient licEicClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Override
     public List<AppealApproveGroupDto> getAppealApproveDtos() {
@@ -138,44 +125,17 @@ public class AppealServiceImpl implements AppealService {
     }
 
     @Override
-    public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum,String submissionId) {
-        log.info(StringUtil.changeForLog("The eventRefNum is -->:"+eventRefNum));
-        EicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
-        AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
-        if(appealLicenceDto!=null){
-            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            callFeEicAppealLicence(appealLicenceDto);
-            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            hcsaLicenceClient.updateEicTrackStatus(trackDto);
-        }else{
-            log.debug(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
-        }
-
-        return appealLicenceDto;
-    }
-
-    @Override
     public void updateAppPremiseMisc(List<AppPremiseMiscDto> appPremiseMiscDtoList) {
         List<String> corrIds=new ArrayList<>(appPremiseMiscDtoList.size());
         for(AppPremiseMiscDto appPremiseMiscDto : appPremiseMiscDtoList){
             corrIds.add(appPremiseMiscDto.getAppPremCorreId());
         }
         List<ApplicationDto> applicationDtos = applicationClient.getApplicationDtoByCorrIds(corrIds).getEntity();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         for(ApplicationDto applicationDto : applicationDtos){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             applicationClient.updateApplication(applicationDto);
-            beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
         }
-    }
-
-    public void callFeEicAppealLicence(AppealLicenceDto appealLicenceDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
     }
 
     private <T> T getObjectLic(EicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){

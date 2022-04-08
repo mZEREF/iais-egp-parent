@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
@@ -24,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -355,25 +353,9 @@ public class RequestForInformationDelegator {
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
-
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
         licPremisesReqForInfoDto1.setAction("create");
-        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
-        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
+        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
         try {
 
@@ -489,24 +471,9 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setStatus(status);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto.setAction("update");
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
+
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
     }
-
 
     public void preViewRfi(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preViewRfi>>>>>>>>>>>>>>>>requestForInformation");
@@ -584,21 +551,7 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setStatus(status);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto.setAction("update");
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
+
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
 
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);

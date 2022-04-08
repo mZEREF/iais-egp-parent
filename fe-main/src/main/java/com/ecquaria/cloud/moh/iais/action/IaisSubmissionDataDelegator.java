@@ -133,7 +133,8 @@ public class IaisSubmissionDataDelegator {
             }
             LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
             try {
-                eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
+                eicGatewayFeMainClient.callEicWithTrackForApp(entity, eicGatewayFeMainClient::syncLaboratoryDevelopTestFormFe,
+                        "syncLaboratoryDevelopTestFormFe");
                 laboratoryDevelopTestService.sendLDTTestEmailAndSMS(entity,orgId,licenceId);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

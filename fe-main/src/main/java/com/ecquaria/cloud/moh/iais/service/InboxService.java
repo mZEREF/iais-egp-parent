@@ -53,4 +53,6 @@ public interface InboxService {
     LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
     List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
     Map<String,Boolean> getMapCanInsp();
+
+    void recallAppTasksEic(String jsonData);
 }

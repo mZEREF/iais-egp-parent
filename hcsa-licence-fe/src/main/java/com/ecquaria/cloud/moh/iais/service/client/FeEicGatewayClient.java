@@ -266,14 +266,15 @@ public class FeEicGatewayClient {
                 ReschApptGrpPremsQueryDto.class);
     }
 
-    public FeignResponseEntity<List> getServiceConfig(String serviceId,String applicationType,
-                                                String date, String authorization, String dateSec,
-                                                String authorizationSec) {
+    public FeignResponseEntity<List> getServiceConfig(String serviceId,String applicationType) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, Object> param = IaisCommonUtils.genNewHashMap(2);
         param.put("service", serviceId);
         param.put("type", applicationType);
         return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/svc-routing-stage", HttpMethod.GET, param,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HcsaSvcRoutingStageDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                HcsaSvcRoutingStageDto.class);
     }
 
     public FeignResponseEntity<String> saveAppGroupSysnEic(ApplicationGroupDto applicationGroupDto) {
@@ -283,11 +284,12 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(), String.class);
     }
 
-    public FeignResponseEntity<RecallApplicationDto> withdrawAppChangeTask(RecallApplicationDto recallApplicationDto,
-                                                                         String date, String authorization, String dateSec,
-                                                                         String authorizationSec) {
+    public FeignResponseEntity<RecallApplicationDto> withdrawAppChangeTask(RecallApplicationDto recallApplicationDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                RecallApplicationDto.class);
     }
 
 
