@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -53,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -117,16 +115,6 @@ public class InspectionSendRecBatchjob {
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Autowired
     private InspectionSendRecBatchjob(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient){
         this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
@@ -156,8 +144,6 @@ public class InspectionSendRecBatchjob {
         if(IaisCommonUtils.isEmpty(mapApp)){
             return;
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppPremPreInspectionNcDto> appPremPreInspectionNcDtos = IaisCommonUtils.genNewArrayList();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
@@ -243,8 +229,8 @@ public class InspectionSendRecBatchjob {
         inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
         inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
         inspRectificationSaveDto.setAuditTrailDto(intranet);
-        beEicGatewayClient.beCreateNcData(inspRectificationSaveDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+
+        beEicGatewayClient.callEicWithTrack(inspRectificationSaveDto, beEicGatewayClient::beCreateNcData, "beCreateNcData");
     }
 
     private List<InspEmailFieldDto> getEmailFieldByAppId(String appId) {

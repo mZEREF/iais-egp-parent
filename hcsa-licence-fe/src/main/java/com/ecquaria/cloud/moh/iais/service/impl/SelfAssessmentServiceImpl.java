@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -25,13 +24,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -88,15 +84,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Autowired
     private LicenceClient licenceClient;
 
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
     @Value("${iais.email.sender}")
     private String mailSender;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentByGroupId(String groupId) {
@@ -385,30 +374,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             syncDataDto.setAppNoList(selfAssessmentList.stream().map(SelfAssessment::getApplicationNumber).collect(Collectors.toList()));
             syncDataDto.setFeSyncData(result.getEntity());
             syncDataDto.setAuditTrail(IaisEGPHelper.getCurrentAuditTrailDto());
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
-                    SelfAssessmentServiceImpl.class.getName(),
-                    "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
-                    FeSelfAssessmentSyncDataDto.class.getName(), JsonUtil.parseToJson(syncDataDto));
 
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        boolean success = callFeEicAppPremisesSelfDeclChkl(syncDataDto);
-                        if (success){
-                            preEicRequest.setProcessNum(1);
-                            Date now = new Date();
-                            preEicRequest.setFirstActionAt(now);
-                            preEicRequest.setLastActionAt(now);
-                            preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                            eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
-                        }
-                    }
-                }
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be"), e);
-            }
+            callFeEicAppPremisesSelfDeclChkl(syncDataDto);
         }
 
         try {

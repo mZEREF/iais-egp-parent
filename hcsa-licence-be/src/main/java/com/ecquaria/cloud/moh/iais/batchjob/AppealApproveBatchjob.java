@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportCo
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -46,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -111,26 +109,15 @@ public class AppealApproveBatchjob {
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
-    private AppEicClient appEicClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
+
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
     }
+
     public void jobExecute() throws Exception {
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
@@ -221,10 +208,8 @@ public class AppealApproveBatchjob {
 
                   if(IaisCommonUtils.isNotEmpty(licPremisesDto)){
                       licPremisesDto=hcsaLicenceClient.savePremises(licPremisesDto).getEntity();
-                      HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                      HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                      beEicGatewayClient.savePremises(licPremisesDto, signature.date(), signature.authorization(),
-                              signature2.date(), signature2.authorization()).getEntity();
+                      beEicGatewayClient.callEicWithTrack(licPremisesDto, beEicGatewayClient::savePremises,
+                              this.getClass(), "savePremises", EicClientConstant.LICENCE_CLIENT);
                   }
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
@@ -248,6 +233,19 @@ public class AppealApproveBatchjob {
             log.info(StringUtil.changeForLog("appealApproveGroupDtos is empty"));
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
+    }
+
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void savePremises(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<PremisesDto> premisesDtos = JsonUtil.parseToList(jsonList, PremisesDto.class);
+        beEicGatewayClient.savePremises(premisesDtos);
     }
 
     private void appealApplicaiton(List<AppPremiseMiscDto> appPremiseMiscDtoList, List<ApplicationDto> appealApplicaiton,
@@ -398,15 +396,13 @@ public class AppealApproveBatchjob {
         }else{
             log.debug(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        for(ApplicationDto applicationDto : appealApplicaiton){
-            beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+        for (ApplicationDto applicationDto : appealApplicaiton) {
+            beEicGatewayClient.updateApplication(applicationDto);
             applicationClient.updateApplication(applicationDto);
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
+
     private void applicationLateRenewFee(ApplicationDto application){
         log.debug(StringUtil.changeForLog("send applicationLateRenewFee email start"));
         // send return fee email
@@ -481,13 +477,24 @@ public class AppealApproveBatchjob {
             }
             appealApplicationGroupDtos.add(a);
         }
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.updateAppSvcKeyPersonnelDto(appealPersonnel,signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        beEicGatewayClient.callEicWithTrack(appealPersonnel, beEicGatewayClient::updateAppSvcKeyPersonnelDto,
+                this.getClass(), "updateAppSvcKeyPersonnelDto", EicClientConstant.LICENCE_CLIENT);
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
+
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void updateAppSvcKeyPersonnelDto(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<AppSvcKeyPersonnelDto> appealPersonnel = JsonUtil.parseToList(jsonList, AppSvcKeyPersonnelDto.class);
+        beEicGatewayClient.updateAppSvcKeyPersonnelDto(appealPersonnel);
+    }
+
     //sync hciName
     public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                          List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,List<PremisesDto> licPremisesDto,
@@ -542,22 +549,7 @@ public class AppealApproveBatchjob {
                         }
                     }
                 }
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                //save eic record
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.batchjob.AppealApproveBatchjob", "applicationChangeHciName",
-                        "hcsa-licence-web-intranet", List.class.getName(), JsonUtil.parseToJson(appealAppGrpPremisesDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                beEicGatewayClient.saveHciNameByDto(appealAppGrpPremisesDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization());
-                //get eic record
-                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                appEicClient.updateStatus(eicRequestTrackingDtos);
+                beEicGatewayClient.callEicWithTrack(appealAppGrpPremisesDto, beEicGatewayClient::saveHciNameByDto, "saveHciNameByDto");
             }
         }
         if (appealDto == null) {

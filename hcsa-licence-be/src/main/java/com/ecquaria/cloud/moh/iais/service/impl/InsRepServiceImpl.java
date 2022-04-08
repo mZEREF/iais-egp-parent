@@ -42,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -78,12 +77,15 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -140,15 +142,6 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
     private FillupChklistService fillupChklistService;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     //getInsRepDto and  when app status APST019 save ReportResultDto
     @Override
@@ -1221,10 +1214,9 @@ public class InsRepServiceImpl implements InsRepService {
         if (!IaisCommonUtils.isEmpty(applicationGroup)) {
             applicationGroup.get(0).setStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.saveFePostApplicationDtos(applicationListFileDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+
+        beEicGatewayClient.callEicWithTrack(applicationListFileDto, beEicGatewayClient::saveFePostApplicationDtos,
+                "saveFePostApplicationDtos");
         log.info(StringUtil.changeForLog("==================  create fe app End  ===================>>>>>"));
     }
 

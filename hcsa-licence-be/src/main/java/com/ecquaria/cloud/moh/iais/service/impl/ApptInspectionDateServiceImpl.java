@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -37,17 +36,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDt
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -59,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -99,9 +93,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private NotificationHelper notificationHelper;
-
-    @Autowired
-    private AppEicClient appEicClient;
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
@@ -146,20 +137,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private HcsaLicenceClient hcsaLicenceClient;
 
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Autowired
     private InspectionService inspectionService;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -1011,27 +989,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 apptDto.setAuditTrailDto(auditTrailDto);
             }
             //synchronize FE
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            //run eic api
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             apptFeConfirmDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoCreateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremInspApptDto1);
-            //save eic record
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "saveSpecificDateLast",
-                    "hcsa-licence-web-intranet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
-            String eicRefNo = eicRequestTrackingDto.getRefNo();
-            beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-            //get eic record
-            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-            //update eic record status
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-            eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            appEicClient.updateStatus(eicRequestTrackingDtos);
+            beEicGatewayClient.callEicWithTrack(apptFeConfirmDateDto, beEicGatewayClient::reSchedulingSaveFeDate, "" +
+                    "reSchedulingSaveFeDate");
         }
         Date saveDate = apptInspectionDateDto.getSpecificStartDate();
         //save Inspection date / status, save Application
@@ -1167,23 +1130,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = apptInspectionDateDto.getAppPremisesInspecApptCreateList();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "createFeAppPremisesInspecApptDto",
-                "hcsa-licence-web-intranet", AppPremisesInspecApptDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        beEicGatewayClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        beEicGatewayClient.callEicWithTrack(appPremisesInspecApptDtoList, beEicGatewayClient::createAppPremisesInspecApptDto,
+                "createFeAppPremisesInspecApptDto");
     }
+
 
     private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, TaskDto taskDto, Date saveDate, ApptInspectionDateDto apptInspectionDateDto) {
         for(TaskDto taskDto1 : taskDtos) {

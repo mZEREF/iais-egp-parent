@@ -152,16 +152,6 @@ public class LicenceApproveBatchjob {
     @Value("${iais.email.sender}")
     private String mailSender;
 
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
@@ -274,24 +264,21 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
 
-    private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos){
-          if(applicationDtos!=null){
-              List<String> appId=new ArrayList<>(applicationDtos.size());
-            for (ApplicationDto applicationDto : applicationDtos){
+    private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos) {
+        if (applicationDtos != null) {
+            List<String> appId = new ArrayList<>(applicationDtos.size());
+            for (ApplicationDto applicationDto : applicationDtos) {
                 appId.add(applicationDto.getId());
             }
-              List<ApplicationDto> applicationDtoList = applicationClient.getAppealApplicationByApplicationIds(appId).getEntity();
-              HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-              HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            for(ApplicationDto applicationDto : applicationDtoList){
-                if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+            List<ApplicationDto> applicationDtoList = applicationClient.getAppealApplicationByApplicationIds(appId).getEntity();
+            for (ApplicationDto applicationDto : applicationDtoList) {
+                if (ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())) {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
                     applicationClient.updateApplication(applicationDto);
-                    beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
-                    }
+                    beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
                 }
-          }
+            }
+        }
     }
     private void setOriginLicenceLicBaseSpecifiedCorrelationDtos(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is strat ..."));

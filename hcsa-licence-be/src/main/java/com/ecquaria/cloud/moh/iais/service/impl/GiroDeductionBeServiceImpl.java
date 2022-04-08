@@ -5,13 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -20,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -56,6 +61,14 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
     @Autowired
     private NotificationHelper notificationHelper;
 
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Override
+    public SearchResult<GiroDeductionDto> giroDeductionDtoSearchResult(SearchParam searchParam) {
+        return beEicGatewayClient.giroDeductionDtoSearchResult(searchParam).getEntity();
+    }
+
     @Override
     public  List<ApplicationGroupDto> sendMessageEmail(List<String> appGroupList) {
         List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
@@ -90,6 +103,44 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         }
         applicationClient.updateApplications(applicationGroupDtos);
         return applicationGroupDtos;
+    }
+
+    @Override
+    public List<GiroDeductionDto> syncDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> giroDeductionDtoList) {
+        return beEicGatewayClient.callEicWithTrack(giroDeductionDtoList, beEicGatewayClient::updateDeductionDtoSearchResultUseGroups,
+                this.getClass(), "syncDeductionDtoSearchResultUseGroups").getEntity();
+    }
+
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void syncDeductionDtoSearchResultUseGroups(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<GiroDeductionDto> giroDeductionDtos = JsonUtil.parseToList(jsonList, GiroDeductionDto.class);
+        beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtos);
+    }
+
+    @Override
+    public void syncFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
+        beEicGatewayClient.callEicWithTrack(applicationGroupDtos, beEicGatewayClient::updateFeApplicationGroupStatus,
+                this.getClass(), "syncFeApplicationGroupStatus");
+    }
+
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void syncFeApplicationGroupStatus(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<ApplicationGroupDto> applicationGroupDtos = JsonUtil.parseToList(jsonList, ApplicationGroupDto.class);
+        beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos);
     }
 
     private void sendMessageByAppGroup(Map<String, Object> map, String appTypeShow, List<ApplicationDto> applicationDtos, String appGroupNo) {

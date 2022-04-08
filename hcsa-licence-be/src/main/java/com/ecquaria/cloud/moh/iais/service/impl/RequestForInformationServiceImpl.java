@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -28,12 +27,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQue
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -51,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -113,8 +111,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     HcsaChklClient hcsaChklClient;
     @Autowired
-    private LicEicClient licEicClient;
-    @Autowired
     InspEmailService inspEmailService;
     @Autowired
     private NotificationHelper notificationHelper;
@@ -131,15 +127,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     OrganizationClient organizationClient;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     private BeEicGatewayClient gatewayClient;
     @Value("${iais.sharedfolder.requestForInfo.in}")
@@ -795,24 +782,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto1.setAction("update");
-
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
-        updateLicEicRequestTrackingDto(eicRequestTrackingDto);
         createFeRfiLicDto(licPremisesReqForInfoDto1);
-
     }
 
     private void getInfo() throws Exception{
@@ -891,33 +861,15 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public LicPremisesReqForInfoDto createFeRfiLicDto(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        EicRequestTrackingDto trackDto = getLicEicRequestTrackingDtoByRefNo(licPremisesReqForInfoDto.getEventRefNo());
-        eicCallFeRfiLic(licPremisesReqForInfoDto);
-        trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        updateLicEicRequestTrackingDto(trackDto);
-
+        gatewayClient.callEicWithTrack(licPremisesReqForInfoDto, this::eicCallFeRfiLic, this.getClass(),
+                "eicCallFeRfiLic", EicClientConstant.LICENCE_CLIENT);
         return licPremisesReqForInfoDto;
     }
 
-    public void eicCallFeRfiLic(LicPremisesReqForInfoDto licPremisesReqForInfoDto1) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        log.info(StringUtil.changeForLog("=======>>>>>"+licPremisesReqForInfoDto1.getAction()+" Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getId()));
-
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
-                signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
-    }
-
-
-
-    @Override
-    public void updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
-        licEicClient.saveEicTrack(licEicRequestTrackingDto);
-    }
-
-
-    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
-        return licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
+    public void eicCallFeRfiLic(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        log.info(StringUtil.changeForLog("=======>>>>>" + licPremisesReqForInfoDto.getAction()
+                + " Lic Request for Information reqInfoId " + licPremisesReqForInfoDto.getId()));
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto);
     }
 
 }

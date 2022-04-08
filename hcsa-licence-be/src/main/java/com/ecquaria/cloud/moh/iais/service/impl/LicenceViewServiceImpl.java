@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -38,14 +37,6 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Override
     public AppSubmissionDto getAppSubmissionByAppId(String appId) {
@@ -60,10 +51,8 @@ public class LicenceViewServiceImpl implements LicenceViewService {
 
     @Override
     public AppEditSelectDto saveAppEditSelectToFe(AppEditSelectDto appEditSelectDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.createAppEditSelectDto(appEditSelectDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        return beEicGatewayClient.callEicWithTrack(appEditSelectDto, beEicGatewayClient::createAppEditSelectDto,
+                "createAppEditSelectDto").getEntity();
     }
 
     @Override
