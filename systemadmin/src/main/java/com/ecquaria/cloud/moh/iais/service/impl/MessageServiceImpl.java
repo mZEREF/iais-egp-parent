@@ -41,25 +41,6 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private EicGatewayClient eicGatewayClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
-    @Autowired
-    private EicRequestTrackingHelper trackingHelper;
-
     @SearchTrack(catalog = "systemAdmin", key = "queryMessage")
     @Override
     public SearchResult<MessageQueryDto> doQuery(SearchParam searchParam) {
@@ -73,40 +54,10 @@ public class MessageServiceImpl implements MessageService {
         FeignResponseEntity<MessageDto> result = systemClient.saveMessage(messageDto);
         int statusCode = result.getStatusCode();
         if (statusCode == HttpStatus.SC_OK){
-
-            EicRequestTrackingDto postSaveTrack = trackingHelper.clientSaveEicRequestTracking(EicClientConstant.SYSTEM_ADMIN_CLIENT, MessageServiceImpl.class.getName(),
-                    "callEicCreateErrorMessage", currentApp + "-" + currentDomain,
-                    MessageDto.class.getName(), JsonUtil.parseToJson(result.getEntity()));
-
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                    EicRequestTrackingDto entity = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                        callEicCreateErrorMessage(result.getEntity());
-                        entity.setProcessNum(1);
-                        Date now = new Date();
-                        entity.setFirstActionAt(now);
-                        entity.setLastActionAt(now);
-                        entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        trackingHelper.getEicClient().saveEicTrack(entity);
-                    }
-                }
-
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()), e);
-            }
-
+            //eicGatewayClient.callEicCreateErrorMessage(result.getEntity());
+            eicGatewayClient.callEicWithTrack(result.getEntity(), eicGatewayClient::syncMessageToFe,
+                    eicGatewayClient.getClass(), "syncMessageToFe");
         }
-    }
-
-
-    public void callEicCreateErrorMessage(MessageDto msg){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        MessageDto postSaveMsg = msg;
-        eicGatewayClient.syncMessageToFe(postSaveMsg, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

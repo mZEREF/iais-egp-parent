@@ -7,20 +7,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author: yichen
  * @date time:2/25/2020 1:08 PM
  * @description:
  */
+@Slf4j
 @Component
 public class EicGatewayClient {
 	@Value("${iais.intra.gateway.url}")
@@ -38,18 +45,39 @@ public class EicGatewayClient {
 	@Value("${iais.hmac.second.secretKey}")
 	private String secSecretKey;
 
-	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date,
-	                                                      String authorization, String dateSec, String authorizationSec) {
-		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
-				MediaType.APPLICATION_JSON, date, authorization,
-				dateSec, authorizationSec, String.class);
+	@Autowired
+	private EicRequestTrackingHelper requestTrackingHelper;
+
+	@Value("${spring.application.name}")
+	private String currentApp;
+
+	@Value("${iais.current.domain}")
+	private String currentDomain;
+
+	public <T, R> R callEicWithTrack(T obj, Function<T, R> function, Class<?> actionClass, String actionMethod) {
+		return requestTrackingHelper.callEicWithTrack(obj, function, actionClass.getName(), actionMethod, currentApp, currentDomain,
+				EicClientConstant.SYSTEM_ADMIN_CLIENT);
 	}
 
-	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
-												  String dateSec, String authorizationSec) {
+	public <T> void callEicWithTrack(T obj, Consumer<T> consumer, Class<?> actionClass, String actionMethod) {
+		requestTrackingHelper.callEicWithTrack(obj, consumer, actionClass.getName(), actionMethod, currentApp, currentDomain,
+				EicClientConstant.SYSTEM_ADMIN_CLIENT);
+	}
+
+	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), String.class);
+	}
+
+	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
-				MediaType.APPLICATION_JSON, date, authorization,
-				dateSec, authorizationSec, MessageDto.class);
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), MessageDto.class);
 	}
 
 	public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,

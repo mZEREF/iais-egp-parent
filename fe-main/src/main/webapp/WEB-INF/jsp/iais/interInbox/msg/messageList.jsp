@@ -57,7 +57,7 @@
                         <iais:sortableHeader needSort="true" field="message_type_desc"
                                              value="Type" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No." isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="service_codes" value="Service" isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="sort_service_codes" value="Service" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date" isFE="true"/>
                     </tr>
                     </thead>
