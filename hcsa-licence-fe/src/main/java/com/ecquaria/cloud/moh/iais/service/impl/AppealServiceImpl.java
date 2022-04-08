@@ -279,9 +279,8 @@ public class AppealServiceImpl implements AppealService {
             req.getSession().removeAttribute("appPremisesSpecialDocDto");
             req.getSession().removeAttribute("filename");
         }
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = reAppSvcCgo(request);
-        ParamUtil.setSessionAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
-        ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
+        ParamUtil.setSessionAttr(req, "CgoMandatoryCount", appealPageDto.getAppSvcCgoDto().size());
+        ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appealPageDto.getAppSvcCgoDto());
         String groupId = (String) request.getAttribute("groupId");
         appealPageDto.setOtherReason(othersReason);
         String s = JsonUtil.parseToJson(appealPageDto);
@@ -824,8 +823,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    public List<AppSvcPrincipalOfficersDto> reAppSvcCgo(HttpServletRequest req) {
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+    public List<AppSvcPrincipalOfficersDto> reAppSvcCgo(HttpServletRequest request) {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto appSvcCgoDto ;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
@@ -1316,7 +1314,7 @@ public class AppealServiceImpl implements AppealService {
 
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
-            appSvcCgoDtos = reAppSvcCgo(request);
+            appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
         }
 
         SubLicenseeDto subLicenseeDto=licenceClient.getSubLicenseesById(licenceDto.getSubLicenseeId()).getEntity();
@@ -1423,7 +1421,7 @@ public class AppealServiceImpl implements AppealService {
 
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
-            appSvcCgoDtos = reAppSvcCgo(request);
+            appSvcCgoDtos = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request,"GovernanceOfficersList");
         }
 
         AppliSpecialDocDto appliSpecialDocDto = new AppliSpecialDocDto();

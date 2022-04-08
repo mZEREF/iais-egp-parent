@@ -9,18 +9,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -30,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -74,7 +77,8 @@ public class AppealDelegator {
     private LicFeInboxClient licFeInboxClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
-
+    @Autowired
+    private RequestForChangeService requestForChangeService;
     @Autowired
     private GenerateIdClient generateIdClient;
     public void preparetionData(BaseProcessClass bpc) throws Exception {
@@ -272,16 +276,15 @@ public class AppealDelegator {
 
     @RequestMapping(value = "/governance-officer", method = RequestMethod.GET)
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
-
-        List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        cgoSelectList.add(sp0);
-        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
-        cgoSelectList.add(sp1);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
+        ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+        List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
+        Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
+        Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
+        List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
         ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
-
-        String currentSvcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
-        List<SelectOption> specialtySelectList = genSpecialtySelectList(currentSvcCode);
 
         //reload
 
@@ -302,7 +305,8 @@ public class AppealDelegator {
         //Specialty
         String serviceName =(String)request.getSession().getAttribute("serviceName");
         HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-        specialtySelectList= genSpecialtySelectList(serviceByServiceName.getSvcCode());
+        ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE,serviceByServiceName.getSvcCode());
+        List<SelectOption> specialtySelectList= genSpecialtySelectList(serviceByServiceName.getSvcCode());
         ParamUtil.setSessionAttr(request, "SpecialtySelectList", (Serializable) specialtySelectList);
         sql = sql.replace("(6)", generateDropDownHtml(specialtySelectList, "specialty", null));
         // Nationality
