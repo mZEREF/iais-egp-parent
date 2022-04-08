@@ -491,7 +491,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getEmbryologist()!=null){
                 filter.put("embryologist",arDto.getEmbryologist());
             }
-            if(arDto.getEmbryologist()!=null){
+            if(arDto.getArPractitioner()!=null){
                 filter.put("arPractitioner",arDto.getArPractitioner());
             }
 
