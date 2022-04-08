@@ -51,26 +51,26 @@
                     <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                                var="appSupDocDto">
                         <tr>
-                            <td width="30%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.file}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td >
                                 <p>
                                     <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.document, StandardCharsets.UTF_8.toString())}"
                                        title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span> </a>
                                     <a href="javascript:void(0);" onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
                                 </p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.size}"></c:out></p>
                             </td>
-                            <td width="20%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.version}"></c:out></p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
                             </td>
-                            <td width="10%">
+                            <td >
                                 <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
                             </td>
                         </tr>
@@ -117,7 +117,7 @@
                                        varStatus="status">
                                 <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                                 <tr>
-                                    <td width="30%">
+                                    <td >
                                         <p>
                                             <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
                                                 Letter Written to Licensee
@@ -127,7 +127,7 @@
                                             </c:if>
                                         </p>
                                     </td>
-                                    <td width="20%">
+                                    <td >
                                         <p>
                                             <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
                                                title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
@@ -136,17 +136,17 @@
                                             </a>
                                         </p>
                                     </td>
-                                    <td width="10%">
+                                    <td >
                                         <p><c:out value="${interalFile.docSize}"></c:out></p>
                                     </td>
-                                    <td width="20%">
+                                    <td >
                                         <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                     </td>
-                                    <td width="10%">
+                                    <td >
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
                                 <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
-                                    <td width="10%">
+                                    <td >
                                         <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
                                             <button type="button" class="btn btn-secondary-del btn-sm"
                                                     onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
