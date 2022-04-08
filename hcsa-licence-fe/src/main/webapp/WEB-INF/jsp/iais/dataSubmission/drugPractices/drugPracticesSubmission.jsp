@@ -33,7 +33,7 @@
                   cancelBtnDesc="Continue" cancelFunc="submit('confirm', 'delete')" />
 </c:if>
 <c:if test="${hasDraft && dpSuperDataSubmissionDto.submissionType eq 'DP_TP002'}">
-    <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+    <iais:confirm msg="DS_MSG019" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('confirm', 'delete');" />
 </c:if>
