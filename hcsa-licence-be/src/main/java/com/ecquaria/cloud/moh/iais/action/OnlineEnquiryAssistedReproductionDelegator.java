@@ -1130,6 +1130,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             }
             if(patientInfoDto!=null){
+                handle(patientInfoDto);
                 ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
                 ParamUtil.setSessionAttr(request,"arViewFull",null);
 
@@ -1607,6 +1608,29 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             ParamUtil.setSessionAttr(request,"arViewFull",null);
         }
 
+    }
+
+    public PatientInfoDto handle(PatientInfoDto patientInfoDto) {
+        if (patientInfoDto == null) {
+            return patientInfoDto;
+        }
+        if (patientInfoDto.getPatient() != null) {
+            PatientDto patient = patientInfoDto.getPatient();
+            patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+        }
+        if (patientInfoDto.getPrevious() != null) {
+            PatientDto patient = patientInfoDto.getPrevious();
+            patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
+        }
+        if (patientInfoDto.getHusband() != null) {
+            HusbandDto husband = patientInfoDto.getHusband();
+            husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
+        }
+        if (patientInfoDto.getPreviousHusband() != null) {
+            HusbandDto husband = patientInfoDto.getPreviousHusband();
+            husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
+        }
+        return patientInfoDto;
     }
 
     public static String getAgeFlag(String birthDate, String person) {

@@ -53,7 +53,7 @@
                         </td>
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.husband.birthDate}"/>
-                            <c:if test="${patientInfoDto.husband.getAgeYear()<14 or patientInfoDto.husband.getAgeYear() >74}">
+                            <c:if test="${patientInfoDto.husband.getAgeFlag()!=''}">
                                 <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
@@ -72,7 +72,16 @@
                         <div class="modal-content">
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="col-md-12"><span style="font-size: 2rem">Husband's age does not fall within the range of 14 to 75.</span></div>
+                                    <div class="col-md-12"><span style="font-size: 2rem">
+                                        <c:choose>
+                                            <c:when test="${patientInfoDto.husband.getAgeFlag()!=''}">
+                                                ${patientInfoDto.husband.getAgeFlag()}
+                                            </c:when>
+                                            <c:otherwise >
+                                                ${patientInfoDto.previousHusband.getAgeFlag()}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span></div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -139,7 +148,7 @@
                         </td>
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.previousHusband.birthDate}"/>
-                            <c:if test="${patientInfoDto.previousHusband.getAgeYear()<14 or patientInfoDto.previousHusband.getAgeYear() >74}">
+                            <c:if test="${patientInfoDto.previousHusband.getAgeFlag()!=''}">
                                 <a  href="#errHusbandAge"  data-toggle="modal" data-target="#errHusbandAge"  style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</a>
                             </c:if>
                         </td>
