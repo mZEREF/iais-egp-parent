@@ -59,7 +59,7 @@ $(document).ready(function() {
     if ($('#nextBtn').length > 0) {
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
-        } else if ('confirm' == currPage) {
+        } else if ('confim' == currPage) {
             $('#nextBtn').html('Preview');
         } else if ('top-submission' == currPage){
             $('#nextBtn').html('Proceed');
