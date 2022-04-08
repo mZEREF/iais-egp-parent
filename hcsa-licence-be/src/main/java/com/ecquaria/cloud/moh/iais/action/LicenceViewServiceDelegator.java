@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
@@ -70,7 +69,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.csrfguard.util.Strings;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2680,20 +2678,20 @@ public class LicenceViewServiceDelegator {
     }
     private AppSvcPrincipalOfficersDto generateAppSvcClinicalDirectorDto(){
         AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto=new AppSvcPrincipalOfficersDto();
-        appSvcClinicalDirectorDto.setProfessionBoard(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setSalutation(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setName(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setIdType(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setIdNo(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setProfRegNo(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setDesignation(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setSpeciality(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setTypeOfRegister(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setTypeOfCurrRegi(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setRelevantExperience(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setHoldCerByEMS(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setEmailAddr(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setMobileNo(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setProfessionBoard("");
+        appSvcClinicalDirectorDto.setSalutation("");
+        appSvcClinicalDirectorDto.setName("");
+        appSvcClinicalDirectorDto.setIdType("");
+        appSvcClinicalDirectorDto.setIdNo("");
+        appSvcClinicalDirectorDto.setProfRegNo("");
+        appSvcClinicalDirectorDto.setDesignation("");
+        appSvcClinicalDirectorDto.setSpeciality("");
+        appSvcClinicalDirectorDto.setTypeOfRegister("");
+        appSvcClinicalDirectorDto.setTypeOfCurrRegi("");
+        appSvcClinicalDirectorDto.setRelevantExperience("");
+        appSvcClinicalDirectorDto.setHoldCerByEMS("");
+        appSvcClinicalDirectorDto.setEmailAddr("");
+        appSvcClinicalDirectorDto.setMobileNo("");
         return appSvcClinicalDirectorDto;
     }
 
