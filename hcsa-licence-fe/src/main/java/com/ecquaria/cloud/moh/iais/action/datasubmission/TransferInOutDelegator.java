@@ -354,6 +354,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         transferInOutStageDto.setTransOutToHciCode(null);
         transferInOutStageDto.setTransferType("in");
         transferInOutStageDto.setTransInFromHciCode(outArDto.getCycleDto().getHciCode());
+        transferInOutStageDto.setTransInFromLicenseeId(outArDto.getLicenseeId());
         transferInOutStageDto.setOutStageDsNo(outStageDsNo);
         arSuper.setTransferInOutStageDto(transferInOutStageDto);
 
