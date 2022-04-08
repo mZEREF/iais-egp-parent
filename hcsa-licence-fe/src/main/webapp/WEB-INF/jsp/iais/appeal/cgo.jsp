@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="col-sm-3 col-md-4" id="name${suffix}">
                                       <div class="">
-                                        <iais:input maxLength="110" type="text" name="name" value="${currentCgo.name}"></iais:input>
+                                        <iais:input maxLength="66" cssClass="field-name" type="text" name="name" value="${currentCgo.name}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                       </div>
                                     </div>
@@ -409,17 +409,7 @@
 
         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-3');
         $('.new-officer-form > table> tbody> tr:nth-child(5) > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-4');
-        //get from cpl_custom_form_script
-        $('select.assignSel').change(function () {
-            $parentEle = $(this).closest('td.first');
-            if ($(this).val() == "newOfficer") {
-                $parentEle.find('> .new-officer-form').removeClass('hidden');
-                $parentEle.find('> .profile-info-gp').addClass('hidden');
-            } else {
-                $parentEle.find('> .profile-info-gp').removeClass('hidden');
-                $parentEle.find('> .new-officer-form').addClass('hidden');
-            }
-        });
+
 
         reLoadChange();
 
@@ -429,6 +419,7 @@
 
 
         $('#control--runtime--0').children().remove("hr")
+        psnSelect();
         $('.assignSel').trigger('change');
         init = 1;
         if($('.designationSel').val()=='DES999'){
@@ -440,8 +431,76 @@
 
     });
 
-    var disabledAll = function () {
-        $('input[type="text"]').prop('disabled',true);
+
+
+    var psnSelect = function () {
+      $('select.assignSel').change(function () {
+        var $parentEle = $(this).closest('td.first');
+        var $CurrentPsnEle = $(this).closest('table.assignContent');
+        if(init == 1){
+          clearPrsInfo($CurrentPsnEle);
+        }
+        if ('newOfficer' == $(this).val()) {
+          $parentEle.find('> .new-officer-form').removeClass('hidden');
+          $parentEle.find('> .profile-info-gp').addClass('hidden');
+          unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+          if (1 == init) {
+            var emptyData = {};
+            $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
+            fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
+            showSpecialty();
+            $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+            $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+          }
+        } else if ('-1' == $(this).val()) {
+          $parentEle.find('> .profile-info-gp').removeClass('hidden');
+          $parentEle.find('> .new-officer-form').addClass('hidden');
+          if (1 == init) {
+            var emptyData = {};
+            $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
+            fillPsnForm($CurrentPsnEle, emptyData, 'CGO');
+            showSpecialty();
+            $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+            $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+          }
+        } else {
+          $parentEle.find('> .new-officer-form').removeClass('hidden');
+          $parentEle.find('> .profile-info-gp').addClass('hidden');
+          if (1 == init) {
+            var arr = $(this).val().split(',');
+            var nationality = arr[0];
+            var idType = arr[1];
+            var idNo = arr[2];
+            loadSelectPsn($CurrentPsnEle, nationality, idType, idNo, 'CGO');
+          }else {
+            var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
+            //add disabled not add input disabled style
+            personDisable($cgoPsnEle,'','Y');
+            $cgoPsnEle.find('div.designationSel').removeClass('disabled');
+            $cgoPsnEle.find('div.professionTypeSel').removeClass('disabled');
+            $cgoPsnEle.find('div.specialty').removeClass('disabled');
+
+            $cgoPsnEle.find('input[name="professionRegoNo"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="specialtyOther"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="qualification"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="description"]').prop('disabled',false);
+
+
+            //for disabled add style
+            $cgoPsnEle.find('input[type="text"]').each(function () {
+              if($(this).prop('disabled')){
+                $(this).css('border-color','#ededed');
+                $(this).css('color','#999');
+              }else{
+                $(this).css('border-color','');
+                $(this).css('color','');
+              }
+            });
+          }
+        }
+      });
     }
 
     var showSpecialty = function () {
@@ -487,17 +546,7 @@
                 }
                 $('.assignContent:last').after(data);
                 showSpecialty();
-
-                $('select.assignSel').change(function () {
-                    $parentEle = $(this).closest('td.first');
-                    if ($(this).val() == "newOfficer") {
-                        $parentEle.find('> .new-officer-form').removeClass('hidden');
-                        $parentEle.find('> .profile-info-gp').addClass('hidden');
-                    } else {
-                        $parentEle.find('> .profile-info-gp').removeClass('hidden');
-                        $parentEle.find('> .new-officer-form').addClass('hidden');
-                    }
-                });
+                psnSelect();
                 <!--change psn item -->
                 changePsnItem();
                 designationChange();
@@ -532,25 +581,7 @@
 
     }
 
-    function aaa(obj){
-        var val = $(obj).val();
-        $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (data) {
-            if (isEmpty(data)) {
-                console.log("The return data is null for PRS");
-            } else if('-1' == data.statusCode || '-2' == data.statusCode) {
-                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
-                $('#PRS_SERVICE_DOWN').modal('show');
-            } else if (data.hasException) {
-                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
-                $('#PRS_SERVICE_DOWN').modal('show');
-            } else if ('401' == data.statusCode) {
-                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
-                $('#PRS_SERVICE_DOWN').modal('show');
-            } else {
-                loadings(data,obj);
-            }
-        });
-    };
+
     const loadings = function (data,obj) {
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
@@ -621,47 +652,6 @@
             }
         });
     };
-    var prdLoading = function ($loadingContent,prgNo) {
-        console.log('loading prs info ...');
-        if(prgNo == "" || prgNo == null || prgNo == undefined){
-            clearPrsInfo($loadingContent);
-            return;
-        }
-        var jsonData = {
-            'prgNo': prgNo
-        };
-        $.ajax({
-            'url': '${pageContext.request.contextPath}/prg-input-info',
-            'dataType': 'json',
-            'data': jsonData,
-            'type': 'GET',
-            'success': function (data) {
-                if (isEmpty(data)) {
-                    console.log("The return data is null for PRS");
-                    clearPrsInfo($loadingContent);
-                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
-                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent);
-                } else if (data.hasException) {
-                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent);
-                } else if ('401' == data.statusCode) {
-                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent);
-                } else {
-                    loadingData(data,$loadingContent);
-                }
-                dismissWaiting();
-            },
-            'error': function () {
-                //
-                clearPrsInfo($loadingContent);
-            }
-        });
-    };
 
     var clearPrsInfo = function ($loadingContent) {
         $loadingContent.find('.specialty-label').html('');
@@ -670,33 +660,7 @@
         $loadingContent.find('span.otherQualificationSpan').html('*');
     };
 
-    var loadingData = function (data,$loadingContent) {
-        loading(data.specialty,$loadingContent,'specialty-label');
-        loading(data.subspecialty,$loadingContent,'sub-specialty-label');
-        loading(data.qualification,$loadingContent,'qualification-label');
 
-        addMandatoryForOtherQua(data.specialty,$loadingContent);
-    };
-
-    var addMandatoryForOtherQua = function (data,$loadingContent) {
-        if(data == null || data == undefined || data == ''){
-            $loadingContent.find('span.otherQualificationSpan').html('*');
-        }else{
-            $loadingContent.find('span.otherQualificationSpan').html('');
-        }
-    }
-
-    var loading = function (dataArr,$loadingContent,labelClass) {
-        var displayVal = "";
-        if(dataArr != null && dataArr != undefined && dataArr != ''){
-            $.each(dataArr,function (k,v) {
-                displayVal = displayVal + v + ',';
-            });
-            var endLength = displayVal.length-1;
-            displayVal = displayVal.substring(0,endLength);
-        }
-        $loadingContent.find('.'+labelClass).html(displayVal);
-    }
 
     function initNationality(parent, idTypeTag, nationalityDiv) {
       $(parent).find(idTypeTag).on('change', function () {
@@ -724,5 +688,250 @@
         $elem.addClass('hidden');
         clearFields($elem);
       }
+    }
+
+    function unDisabledPartPage($Ele){
+      $Ele.find('input[type="radio"]').prop('disabled',false);
+      $Ele.find('input[type="text"]').prop('disabled',false);
+      $Ele.find('input[type="file"]').prop('disabled',false);
+      $Ele.find('input[type="checkbox"]').prop('disabled',false);
+      $Ele.find('div.nice-select').removeClass('disabled');
+      $Ele.find('input[type="text"]').css('border-color','');
+      $Ele.find('input[type="text"]').css('color','');
+      <!--multi -->
+      $Ele.find('div.multi-select input').prop('disabled',false);
+    }
+
+    <!--cgo,medAlert -->
+    var fillPsnForm = function ($CurrentPsnEle,data,psnType) {
+      <!--salutation-->
+      var salutation  = data.salutation;
+      if( salutation == null || salutation =='undefined' || salutation == '' || salutation == '-'){
+        salutation = '';
+      }
+      $CurrentPsnEle.find('select[name="salutation"]').val(salutation);
+      var salutationVal = $CurrentPsnEle.find('option[value="' + salutation + '"]').html();
+      $CurrentPsnEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+      <!--name-->
+      $CurrentPsnEle.find('input[name="name"]').val(data.name);
+
+      <!-- idType-->
+      fillValue($CurrentPsnEle.find('select[name="idType"]'), data.idType);
+      <!-- idNo-->
+      $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
+      <!-- Nationality -->
+      fillValue($CurrentPsnEle.find('select[name="nationality"]'), data.nationality);
+      toggleIdType($CurrentPsnEle.find('select[name="idType"]'), $CurrentPsnEle.find('.nationalityDiv'));
+
+      $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
+      $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
+
+      <!--     ====================    -->
+      <!--       diff page column      -->
+      <!--     ====================    -->
+
+      <!-- officeTelNo-->
+      var officeTelNo = data.officeTelNo;
+      if(officeTelNo != null && officeTelNo != ''){
+        $CurrentPsnEle.find('input[name="officeTelNo"]').val(officeTelNo);
+      }else{
+        $CurrentPsnEle.find('input[name="officeTelNo"]').val('');
+      }
+      <!--Designation  -->
+      var designation = data.designation;
+      if(designation == null || designation == ''){
+        designation = '';
+      }
+      $CurrentPsnEle.find('select[name="designation"]').val(designation);
+      var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
+      $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+
+      if('DES999' == designation){
+        $CurrentPsnEle.find('div.otherDesignationDiv').removeClass('hidden');
+        $CurrentPsnEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
+      }else{
+        $CurrentPsnEle.find('div.otherDesignationDiv').addClass('hidden');
+      }
+
+      <!-- professionType-->
+      var professionType = data.professionType;
+      if(professionType == null || professionType =='undefined' || professionType == ''){
+        professionType = '';
+      }
+      $CurrentPsnEle.find('select[name="professionType"]').val(professionType);
+      var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
+      $CurrentPsnEle.find('select[name="professionType"]').next().find('.current').html(professionTypeVal);
+      <!-- professionRegoNo-->
+      var professionRegoNo = data.profRegNo;
+      if(professionRegoNo != null && professionRegoNo != ''){
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').val(professionRegoNo);
+      }else{
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
+      }
+      /*<!-- speciality-->
+      var speciality = data.speciality;
+      console.log('speciality'+speciality);
+      $CurrentPsnEle.find('.specialty-label').html(speciality);
+      <!--Subspeciality -->
+      var subSpeciality = data.subSpeciality;
+      $CurrentPsnEle.find('.sub-specialty-label').html(subSpeciality);
+      <!--qualification -->
+      var qualification = data.qualification;
+      $CurrentPsnEle.find('.qualification-label').html(qualification);*/
+      var otherQualification = data.otherQualification;
+      if(otherQualification != null && otherQualification !='undefined' && otherQualification != ''){
+        $CurrentPsnEle.find('input[name="otherQualification"]').val(otherQualification);
+      }else{
+        $CurrentPsnEle.find('input[name="otherQualification"]').val('');
+      }
+
+      <!--preferredMode -->
+      var description = data.description;
+      if(description != null && description !='undefined' && description != ''){
+        $CurrentPsnEle.find('input[name="description"]').val(data.description);
+      }else{
+        $CurrentPsnEle.find('input[name="description"]').val('');
+      }
+
+      var isLicPerson = data.licPerson;
+      if('1' == isLicPerson){
+        if('CGO' == psnType){
+          var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
+          //add disabled not add input disabled style
+          personDisable($cgoPsnEle,'','Y');
+          var psnEditDto = data.psnEditDto;
+          setPsnDisabled($cgoPsnEle,psnEditDto);
+        }
+        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
+      }else{
+        if('CGO' == psnType){
+          unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+        }
+        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+      }
+      //reload data by prs again
+      if('CGO' == psnType) {
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur', 'psnSelect');
+      }
+    };
+    <!--cgo,medAlert -->
+    var loadSelectPsn = function ($CurrentPsnEle, nationality, idType, idNo, psnType, callback) {
+      showWaiting();
+      var spcEle = $CurrentPsnEle.find('.specialty');
+      var jsonData = {
+        'nationality':nationality,
+        'idType':idType,
+        'idNo':idNo,
+        'psnType':psnType
+      };
+      $.ajax({
+        'url':'${pageContext.request.contextPath}/person-info/svc-code',
+        'dataType':'json',
+        'data':jsonData,
+        'type':'GET',
+        'success':function (data) {
+          if(data == null){
+            return;
+          }
+          if (typeof callback === 'function') {
+            callback($CurrentPsnEle, data, psnType);
+          } else {
+            fillPsnForm($CurrentPsnEle, data, psnType);
+          }
+          dismissWaiting();
+        },
+        'error':function () {
+          dismissWaiting();
+        }
+      });
+    };
+    function personDisable($Ele,inpDisStyle,disableDiv){
+      inputDisabled($Ele);
+      if(inpDisStyle == 'Y'){
+        $Ele.find('input[type="text"]').css('border-color','#ededed');
+        $Ele.find('input[type="text"]').css('color','#999');
+      }
+      if(disableDiv == 'Y'){
+        $Ele.find('div.nice-select').addClass('disabled');
+      }
+    }
+    var setPsnDisabled = function ($cgoPsnEle,psnEditDto) {
+      console.log("setPsnDisabled start...");
+      console.log(psnEditDto);
+      if(psnEditDto == 'undefined' || psnEditDto == '' || psnEditDto == null){
+        console.log('psnEditDto is empty or undefind');
+        return;
+      }
+      //dropdown
+      if(psnEditDto.salutation){
+        $cgoPsnEle.find('div.salutationSel').removeClass('disabled');
+      }
+      if(psnEditDto.idType){
+        $cgoPsnEle.find('div.idTypeSel').removeClass('disabled');
+      }
+      if(psnEditDto.nationality) {
+        $cgoPsnEle.find('div.nationality').removeClass('disabled');
+      }
+      if(psnEditDto.designation){
+        $cgoPsnEle.find('div.designationSel').removeClass('disabled');
+      }
+      if(psnEditDto.professionType){
+        $cgoPsnEle.find('div.professionTypeSel').removeClass('disabled');
+      }
+      if(psnEditDto.speciality){
+        $cgoPsnEle.find('div.specialty').removeClass('disabled');
+      }
+      //input text
+      if(psnEditDto.name){
+        $cgoPsnEle.find('input[name="name"]').prop('disabled',false);
+      }
+      if(psnEditDto.idNo){
+        $cgoPsnEle.find('input[name="idNo"]').prop('disabled',false);
+      }
+      if(psnEditDto.mobileNo){
+        $cgoPsnEle.find('input[name="mobileNo"]').prop('disabled',false);
+      }
+      if(psnEditDto.profRegNo){
+        $cgoPsnEle.find('input[name="professionRegoNo"]').prop('disabled',false);
+      }
+      if(psnEditDto.specialityOther){
+        $cgoPsnEle.find('input[name="specialtyOther"]').prop('disabled',false);
+      }
+      if(psnEditDto.subSpeciality){
+        $cgoPsnEle.find('input[name="qualification"]').prop('disabled',false);
+      }
+      if(psnEditDto.emailAddr){
+        $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
+      }
+      if(psnEditDto.otherQualification){
+        $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
+      }
+      if(psnEditDto.otherDesignation){
+        $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
+      }
+      //map->mode
+      if(psnEditDto.description){
+        $cgoPsnEle.find('input[name="description"]').prop('disabled',false);
+      }
+
+      //for disabled add style
+      $cgoPsnEle.find('input[type="text"]').each(function () {
+        if($(this).prop('disabled')){
+          $(this).css('border-color','#ededed');
+          $(this).css('color','#999');
+        }else{
+          $(this).css('border-color','');
+          $(this).css('color','');
+        }
+      });
+      console.log("setPsnDisabled end...");
+    }
+    function inputDisabled($Ele) {
+      $Ele.find('input[type="radio"]').prop('disabled',true);
+      $Ele.find('input[type="text"]').prop('disabled',true);
+      $Ele.find('input[type="file"]').prop('disabled',true);
+      $Ele.find('input[type="checkbox"]').prop('disabled',true);
     }
 </script>

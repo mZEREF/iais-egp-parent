@@ -97,15 +97,20 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="salutation${suffix}">
-                                      <iais:select cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
+                                      <label class="control-label control-set-font control-font-label"><iais:code code="${currentCgo.salutation}"/></label>
                                     </div>
-                                    <div class="col-sm-3 col-md-4" id="name${suffix}">
-                                      <div class="">
-                                        <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
-                                      </div>
+                                    <div class="col-sm-3 col-md-4 img-show" id="name${suffix}">
+                                      <label class="control-label control-set-font control-font-label"><c:out value="${currentCgo.name}"/></label>
+                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                                        <jsp:param name="profRegNo" value="${currentCgo.profRegNo}"/>
+                                        <jsp:param name="personName" value="${currentCgo.name}"/>
+                                        <jsp:param name="methodName" value="showThisNameTableNewService"/>
+                                      </jsp:include>
                                     </div>
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                                      <jsp:param name="profRegNo" value="${currentCgo.profRegNo}"/>
+                                      <jsp:param name="cssClass" value="new-img-show"/>
+                                    </jsp:include>
                                   </div>
                                 </div>
                               </td>
@@ -122,18 +127,19 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
-                                      <div class="">
-                                        <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
-                                      </div>
+                                      <label class="control-label control-set-font control-font-label"><iais:code code="${currentCgo.idType}"/></label>
                                     </div>
-                                    <div class="col-sm-5 col-md-4">
-                                      <div class="">
-                                        <iais:input maxLength="20" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
-                                        <span class="error-msg" name="iaisErrorMSg" id="error_idNo"></span>
-                                      </div>
+                                    <div class="col-sm-5 col-md-4 img-show">
+                                      <label class="control-label control-set-font control-font-label"><c:out value="${currentCgo.idNo}"/></label>
+                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${currentCgo.idNo}"/>
+                                        <jsp:param name="methodName" value="showThisTableNewService"/>
+                                      </jsp:include>
                                     </div>
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                                      <jsp:param name="idNo" value="${currentCgo.idNo}"/>
+                                      <jsp:param name="cssClass" value="new-img-show"/>
+                                    </jsp:include>
                                   </div>
                                 </div>
                               </td>
@@ -162,12 +168,7 @@
                                         <span class="upload_controls"></span>
                                       </div>
                                       <div class="col-sm-5 col-md-7" id="nationality${suffix}">
-                                        <div class="">
-                                          <iais:select firstOption="Please Select" name="nationality" codeCategory="CATE_ID_NATIONALITY"
-                                                       cssClass="nationality" value="${currentCgo.nationality}" needErrorSpan="false"/>
-                                          <span class="error-msg" name="iaisErrorMsg"
-                                                id="error_nationality${status.index}"></span>
-                                        </div>
+                                        <label class="control-label control-set-font control-font-label"><iais:code code="${currentCgo.nationality}"/></label>
                                       </div>
                                     </div>
                                   </div>
@@ -184,10 +185,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="designation${suffix}">
-                                      <div class="">
-                                        <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
-                                      </div>
+                                      <label class="control-label control-set-font control-font-label"><iais:code code="${currentCgo.designation}"/></label>
                                     </div>
                                   </div>
                                 </div>
@@ -201,10 +199,7 @@
                                       <div class="control-label formtext col-sm-5">
                                       </div>
                                       <div class="col-md-7 col-xs-5 col-sm-3">
-                                        <div class="">
-                                          <input type="text" name="otherDesignation" value="${currentCgo.otherDesignation}" class="otherDesignation" maxlength="100" autocomplete="off">
-                                          <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
-                                        </div>
+                                        <label class="control-label control-set-font control-font-label">${currentCgo.otherDesignation}</label>
                                       </div>
                                     </div>
                                   </div>
@@ -223,8 +218,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7" id="professionType${suffix}">
                                       <div class="professionRegoType">
-                                        <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
+                                        <label class="control-label control-set-font control-font-label"><iais:code code="${currentCgo.professionType}"/></label>
                                       </div>
                                     </div>
                                   </div>
@@ -242,12 +236,17 @@
                                       
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-md-7 col-xs-9 col-sm-5">
-                                      <div class="">
-                                        <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
-                                      </div>
+                                    <div class="col-md-7 col-xs-9 col-sm-5 img-show">
+                                      <label class="control-label control-set-font control-font-label"><c:out value="${currentCgo.profRegNo}"/></label>
+                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                        <jsp:param name="profRegNo" value="${currentCgo.profRegNo}"/>
+                                        <jsp:param name="methodName" value="showThisTableNewService"/>
+                                      </jsp:include>
                                     </div>
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                                      <jsp:param name="profRegNo" value="${currentCgo.profRegNo}"/>
+                                      <jsp:param name="cssClass" value="new-img-show"/>
+                                    </jsp:include>
                                   </div>
                                 </div>
                               </td>
@@ -304,8 +303,7 @@
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
-                                        <input type="text" name="otherQualification" value="${currentCgo.otherQualification}" class="otherQualification" maxlength="100" autocomplete="off">
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
+                                        <label class="control-label control-set-font control-font-label">${currentCgo.otherQualification}</label>
                                       </div>
                                     </div>
                                   </div>
@@ -321,10 +319,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
-                                      <div class="">
-                                        <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
-                                      </div>
+                                      <label class="control-label control-set-font control-font-label">${currentCgo.mobileNo}</label>
                                     </div>
                                   </div>
                                 </div>
@@ -340,10 +335,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-4 col-md-7">
-                                      <div class="">
-                                        <iais:input maxLength="320" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}"></span>
-                                      </div>
+                                      <label class="control-label control-set-font control-font-label">${currentCgo.emailAddr}</label>
                                     </div>
                                   </div>
                                 </div>
