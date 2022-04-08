@@ -1,10 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -20,25 +18,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: jiahao
@@ -55,23 +51,9 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
     FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     public static final Double DEFAULTSCORE = 1.25;
+
     public List<LicAppCorrelationDto> getLicDtoByLicId(String licId){
         return hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
     }
@@ -367,35 +349,14 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
 
     @Override
     public void feCreateRiskData(HcsaRiskFeSupportDto supportDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        beEicGatewayClient.feCreateRiskData(supportDto);
     }
 
     @Override
     public void sysnRiskSaveEic(int httpStatus, HcsaRiskFeSupportDto supportDto) {
         if (httpStatus == HttpStatus.SC_CREATED){
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.HCSA_CONFIG, HcsaRiskSupportBeServiceImpl.class.getName(),
-                    "feCreateRiskData", currentApp + "-" + currentDomain,
-                    HcsaRiskFeSupportDto.class.getName(), JsonUtil.parseToJson(supportDto));
-            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getHcsaConfigClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-            try{
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                    EicRequestTrackingDto entity = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                        feCreateRiskData(supportDto);
-                        entity.setProcessNum(1);
-                        Date now = new Date();
-                        entity.setFirstActionAt(now);
-                        entity.setLastActionAt(now);
-                        entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getHcsaConfigClient().saveEicTrack(entity);
-                    }
-                }
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog(e.getMessage()));
-            }
+            beEicGatewayClient.callEicWithTrack(supportDto, this::feCreateRiskData, this.getClass(),
+                    "feCreateRiskData");
         }
     }
 

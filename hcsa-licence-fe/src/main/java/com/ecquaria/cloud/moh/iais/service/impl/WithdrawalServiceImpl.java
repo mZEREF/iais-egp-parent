@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -23,10 +22,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -34,18 +31,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -59,8 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -99,13 +90,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private FeEicGatewayClient feEicGatewayClient;
 
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Autowired
     private Environment env;
-
-    @Autowired
-    private AppEicClient appEicClient;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -113,14 +98,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Value("${iais.email.sender}")
     private String mailSender;
 
@@ -193,27 +170,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }else{
                 recallApplicationDto.setNeedReturnFee(false);
             }
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            try {
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
-                        "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(recallApplicationDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                recallApplicationDto = feEicGatewayClient.withdrawAppChangeTask(recallApplicationDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                //get eic record
-                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                appEicClient.updateStatus(eicRequestTrackingDtos);
-                log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto result" + recallApplicationDto.getResult()));
-                log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto message" + recallApplicationDto.getMessage()));
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
+
+            feEicGatewayClient.callEicWithTrack(recallApplicationDto, feEicGatewayClient::withdrawAppChangeTask, "withdrawAppChangeTask");
+
             if (recallApplicationDto.getResult()){
                 for (ApplicationDto app:applicationDtoList
                      ) {
@@ -344,14 +303,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
         List<AppPremisesRoutingHistoryDto> hisList;
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
         Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
         params.put("appNo", applicationDto.getApplicationNo());
-        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
         if(hisList!=null){
             for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
                 if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
@@ -510,10 +464,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private String getAppStatus(String serviceId,String appType) {
         String appStatus;
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType).getEntity();
         if (IaisCommonUtils.isEmpty(serviceConfig)) {
             return null;
         } else {

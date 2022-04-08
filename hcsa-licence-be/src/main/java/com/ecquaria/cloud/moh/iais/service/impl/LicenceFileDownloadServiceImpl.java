@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -41,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -50,12 +48,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -131,14 +127,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Value("${iais.sharedfolder.application.in}")
     private String inSharedPath;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -188,14 +176,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-    @Value("${spring.application.name}")
-    private String currentApp;
+
     @Autowired
     private AppGroupMiscService appGroupMiscService;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
     @Override
     public boolean decompression() {
         log.info("-------------decompression start ---------");
@@ -960,14 +944,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return appPremisesRoutingHistoryDto;
     }
 
-        private void updateApplication(List<ApplicationDto> applicationDtos){
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, LicenceFileDownloadServiceImpl.class.getName(),
-                    "saveFileName", currentApp + "-" + currentDomain,
-                    ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(applicationDtos));
-
-        }
-
-        public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
+    public void sendTask(String eventRefNum, String submissionId) throws Exception {
         try {
            // appGroupMiscService.notificationApplicationUpdateBatchjob();
         }catch (Exception e){
@@ -1111,10 +1088,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             //update fe application stauts
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization());
+                beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
             }
             log.info("update request for info start");
             updateRfiTask(requestForInfList);

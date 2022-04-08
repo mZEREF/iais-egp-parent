@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -46,9 +45,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Autowired
     private LicFeInboxClient licFeInboxClient;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Autowired
     private InspectionFeClient inspectionFeClient;

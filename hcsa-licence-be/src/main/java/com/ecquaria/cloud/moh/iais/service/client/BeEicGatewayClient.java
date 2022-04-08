@@ -32,9 +32,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -44,6 +50,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * EicGatewayClient
@@ -53,8 +61,50 @@ import java.util.Map;
  */
 @Component
 public class BeEicGatewayClient {
+
     @Value("${iais.intra.gateway.url}")
     private String gateWayUrl;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Autowired
+    private EicRequestTrackingHelper requestTrackingHelper;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+
+    public <T, R> R callEicWithTrack(T obj, Function<T, R> function, String actionMethod) {
+        return requestTrackingHelper.callEicWithTrack(obj, function, this.getClass().getName(), actionMethod, currentApp, currentDomain,
+                EicClientConstant.APPLICATION_CLIENT);
+    }
+
+    public <T, R> R callEicWithTrack(T obj, Function<T, R> function, Class<?> actionClass, String actionMethod) {
+        return requestTrackingHelper.callEicWithTrack(obj, function, actionClass.getName(), actionMethod, currentApp, currentDomain,
+                EicClientConstant.APPLICATION_CLIENT);
+    }
+
+    public <T> void callEicWithTrack(T obj, Consumer<T> consumer, Class<?> actionClass, String actionMethod) {
+        requestTrackingHelper.callEicWithTrack(obj, consumer, actionClass.getName(), actionMethod, currentApp, currentDomain,
+                EicClientConstant.APPLICATION_CLIENT);
+    }
+
+    public <T> void callEicWithTrack(T obj, Consumer<T> consumer, Class<?> actionClass, String actionMethod, int clientId) {
+        requestTrackingHelper.callEicWithTrack(obj, consumer, actionClass.getName(), actionMethod, currentApp, currentDomain,
+                clientId);
+    }
 
     public FeignResponseEntity<EventBusLicenceGroupDtos> createLicence(EventBusLicenceGroupDtos eventBusLicenceGroupDtos,
                  String date, String authorization, String dateSec, String authorizationSec) {
@@ -74,34 +124,44 @@ public class BeEicGatewayClient {
 //                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, DisciplinaryRecordResponseDto.class);
 //    }
 
-    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto,
-                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-application", HttpMethod.PUT, applicationDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                ApplicationDto.class);
     }
 
-    public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
-              String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                InterMessageDto.class);
     }
 
-    public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto,
-            String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/rfi-fe-bridge", HttpMethod.POST, licPremisesReqForInfoDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicPremisesReqForInfoDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                LicPremisesReqForInfoDto.class);
     }
 
-    public FeignResponseEntity<Void> updateGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtoList,
-                                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<Void> updateGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtoList) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/giro-acct-sync", HttpMethod.POST, giroAccountInfoDtoList,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                Void.class);
     }
 
-    public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto  appEditSelectDto,
-                                             String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto  appEditSelectDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-req-for-info", HttpMethod.POST, appEditSelectDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppEditSelectDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppEditSelectDto.class);
     }
 
     public FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map,
@@ -110,43 +170,67 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 
-    public FeignResponseEntity<AppealLicenceDto> updateAppealLicence(AppealLicenceDto appealLicenceDto,
-                                                         String date, String authorization, String dateSec,
-                                                         String authorizationSec) {
+    public FeignResponseEntity<AppealLicenceDto> updateAppealLicence(AppealLicenceDto appealLicenceDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-licence-transport-appeal", HttpMethod.PUT, appealLicenceDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppealLicenceDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppealLicenceDto.class);
     }
 
-    public FeignResponseEntity<AppealApplicationDto> updateAppealApplication(@RequestBody AppealApplicationDto appealApplicationDto,
-                                                    String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<AppealApplicationDto> updateAppealApplication(@RequestBody AppealApplicationDto appealApplicationDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/appeal-beApplication", HttpMethod.PUT, appealApplicationDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppealApplicationDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppealApplicationDto.class);
     }
 
-    public FeignResponseEntity<List> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos,
-                                                                    String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/inspec-sync-rectification", HttpMethod.POST, appPremisesInspecApptDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppPremisesInspecApptDto.class);
+    public FeignResponseEntity<List> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/inspec-sync-rectification", HttpMethod.POST,
+                appPremisesInspecApptDtos,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppPremisesInspecApptDto.class);
     }
 
-    public FeignResponseEntity<ApptFeConfirmDateDto> reSchedulingSaveFeDate(@RequestBody ApptFeConfirmDateDto apptFeConfirmDateDto,
-                                                        String date, String authorization, String dateSec, String authorizationSec) {
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void createFeAppPremisesInspecApptDto(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = JsonUtil.parseToList(jsonList, AppPremisesInspecApptDto.class);
+        createAppPremisesInspecApptDto(appPremisesInspecApptDtos);
+    }
+
+    public FeignResponseEntity<ApptFeConfirmDateDto> reSchedulingSaveFeDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-app-insdate-down", HttpMethod.POST, apptFeConfirmDateDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptFeConfirmDateDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                ApptFeConfirmDateDto.class);
     }
 
-    public FeignResponseEntity<InspRectificationSaveDto> beCreateNcData(InspRectificationSaveDto inspRectificationSaveDto,
-                                                    String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<InspRectificationSaveDto> beCreateNcData(InspRectificationSaveDto inspRectificationSaveDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-inspect-nc-down", HttpMethod.POST, inspRectificationSaveDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InspRectificationSaveDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                InspRectificationSaveDto.class);
     }
 
-    public FeignResponseEntity<HcsaRiskFeSupportDto> feCreateRiskData(HcsaRiskFeSupportDto hcsaRiskFeSupportDto,
-                                                   String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<HcsaRiskFeSupportDto> feCreateRiskData(HcsaRiskFeSupportDto hcsaRiskFeSupportDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsal/riskscore-configs", HttpMethod.POST, hcsaRiskFeSupportDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HcsaRiskFeSupportDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                HcsaRiskFeSupportDto.class);
     }
-
 
     public FeignResponseEntity<List> compareFeData(BeSyncCompareDataRequest beSyncCompareDataRequest,
                                                String date, String authorization, String dateSec, String authorizationSec) {
@@ -160,65 +244,92 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 
-    public FeignResponseEntity<String> getAppNo(String applicationType,
-                                                                 String date, String authorization, String dateSec,
-                                                                 String authorizationSec) {
+    public FeignResponseEntity<String> getAppNo(String applicationType) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, Object> param = IaisCommonUtils.genNewHashMap(1);
         param.put("type", applicationType);
         return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/new-app-no", HttpMethod.GET, param,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                String.class);
     }
 
-    public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos,
-                                                                        String date, String authorization, String dateSec,
-                                                                        String authorizationSec) {
+    public FeignResponseEntity<List> doStripeRefunds(List<AppReturnFeeDto> appReturnFeeDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/stripe-refund", HttpMethod.POST, appReturnFeeDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, PaymentRequestDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                PaymentRequestDto.class);
     }
 
 
-    public FeignResponseEntity<Void> syncInspPeriodToFe(HcsaServicePrefInspPeriodDto period,
-                                         String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<Void> syncInspPeriodToFe(HcsaServicePrefInspPeriodDto period) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-insp-period-sync", HttpMethod.PUT, period,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                Void.class);
     }
 
-    public FeignResponseEntity<AppSubmissionForAuditDto> saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto,
-                                                                  String date, String authorization, String dateSec,
-                                                                  String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-audit-insp-app-sync", HttpMethod.POST, appSubmissionForAuditDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppSubmissionForAuditDto.class);
+    public FeignResponseEntity<AppSubmissionForAuditDto> saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-audit-insp-app-sync", HttpMethod.POST,
+                appSubmissionForAuditDto, MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(),
+                signature2.authorization(), AppSubmissionForAuditDto.class);
     }
 
-    public FeignResponseEntity<HttpStatus> syncAdhocItemData(AdhocCheckListConifgDto configDto,
-                                              String date, String authorization, String dateSec,
-                                              String authorizationSec) {
+    public FeignResponseEntity<HttpStatus> syncAdhocItemData(AdhocCheckListConifgDto configDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-adhoc-chkl-sync", HttpMethod.POST, configDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                HttpStatus.class);
     }
 
-    public FeignResponseEntity<List> updateFeLicDto(List<LicenceDto> licenceDtos, String date,
-                                                   String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<List> updateFeLicDto(List<LicenceDto> licenceDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-licence-status", HttpMethod.PUT, licenceDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicenceDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                LicenceDto.class);
     }
 
-    public FeignResponseEntity<HttpStatus> saveFeServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto,
-                                                        String date, String authorization, String dateSec, String authorizationSec) {
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void updateFeLicDto(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<LicenceDto> licenceDtos = JsonUtil.parseToList(jsonList, LicenceDto.class);
+        updateFeLicDto(licenceDtos);
+    }
+
+    public FeignResponseEntity<HttpStatus> saveFeServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-service-config-sync", HttpMethod.POST, hcsaServiceConfigDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                HttpStatus.class);
     }
 
-    public FeignResponseEntity<List> updateAppSvcKeyPersonnelDto(List<AppSvcKeyPersonnelDto> appealPersonnel,
-                                                               String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<List> updateAppSvcKeyPersonnelDto(List<AppSvcKeyPersonnelDto> appealPersonnel) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-svc-key-personel", HttpMethod.POST, appealPersonnel,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppSvcKeyPersonnelDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppSvcKeyPersonnelDto.class);
     }
 
-    public FeignResponseEntity<List> saveHciNameByDto(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
-                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<List> saveHciNameByDto(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-premises-sync", HttpMethod.PUT, appGrpPremisesEntityDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppGrpPremisesEntityDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                AppGrpPremisesEntityDto.class);
     }
 
     public FeignResponseEntity<List> deRegisterAcra(List<String> licenseeIds,
@@ -228,35 +339,44 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
-    public FeignResponseEntity<Void> saveFePostApplicationDtos(ApplicationListFileDto applicationListFileDto,
-                                                               String date, String authorization, String dateSec,
-                                                               String authorizationSec) {
+    public FeignResponseEntity<Void> saveFePostApplicationDtos(ApplicationListFileDto applicationListFileDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/post-inspection", HttpMethod.POST, applicationListFileDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
-    }
-    public FeignResponseEntity<SearchResult> giroDeductionDtoSearchResult(SearchParam searchParam,
-                                                                                            String date, String authorization, String dateSec,
-                                                                                            String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForSearchResult(gateWayUrl + "/v1/giro-payment-query", HttpMethod.POST, searchParam,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GiroDeductionDto.class);
-    }
-    public FeignResponseEntity<List> updateDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> groups,
-                                                                  String date, String authorization, String dateSec,
-                                                                  String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/giro-result-status", HttpMethod.PUT, groups,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GiroDeductionDto.class);
-    }
-    public FeignResponseEntity<List> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos,
-                                                                             String date, String authorization, String dateSec,
-                                                                             String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.PUT, applicationGroupDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationGroupDto.class);
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                Void.class);
     }
 
-    public FeignResponseEntity<List> savePremises(List<PremisesDto> premisesDtos,
-                                                                    String date, String authorization, String dateSec,
-                                                                    String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/appeal-change-premises", HttpMethod.POST, premisesDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, PremisesDto.class);
+    public FeignResponseEntity<SearchResult> giroDeductionDtoSearchResult(SearchParam searchParam) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForSearchResult(gateWayUrl + "/v1/giro-payment-query", HttpMethod.POST, searchParam,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(),
+                signature2.authorization(), GiroDeductionDto.class);
     }
+
+    public FeignResponseEntity<List> updateDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> groups) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/giro-result-status", HttpMethod.PUT, groups,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                GiroDeductionDto.class);
+    }
+
+    public FeignResponseEntity<List> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.PUT, applicationGroupDtos,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                ApplicationGroupDto.class);
+    }
+
+    public FeignResponseEntity<List> savePremises(List<PremisesDto> premisesDtos) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/appeal-change-premises", HttpMethod.POST, premisesDtos,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(), signature2.date(), signature2.authorization(),
+                PremisesDto.class);
+    }
+
 }

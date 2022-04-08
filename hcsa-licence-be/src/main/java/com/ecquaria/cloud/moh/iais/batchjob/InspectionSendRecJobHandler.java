@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -55,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -119,16 +117,6 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
@@ -138,8 +126,6 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             if(IaisCommonUtils.isEmpty(mapApp)){
                 return ReturnT.SUCCESS;
             }
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<AppPremPreInspectionNcDto> appPremPreInspectionNcDtos = IaisCommonUtils.genNewArrayList();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = IaisCommonUtils.genNewArrayList();
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
@@ -235,8 +221,8 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
             inspRectificationSaveDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
             inspRectificationSaveDto.setAuditTrailDto(intranet);
-            beEicGatewayClient.beCreateNcData(inspRectificationSaveDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+
+            beEicGatewayClient.callEicWithTrack(inspRectificationSaveDto, beEicGatewayClient::beCreateNcData, "beCreateNcData");
             return ReturnT.SUCCESS;
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

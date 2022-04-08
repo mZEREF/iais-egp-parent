@@ -4,10 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -15,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -32,11 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class SubmitInspectionDateImpl implements SubmitInspectionDate {
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -46,9 +37,6 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
     @Autowired
     private AppConfigClient appConfigClient;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
     public ApplicationGroupDto getApplicationGroupByGroupId(String groupId) {
@@ -110,8 +98,8 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         return c.getTime();
     }
 
-    public void savePrefStatDateAndEndDateToBe(ApplicationGroupDto applicationGroupDto){
-        feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto);
+    public void savePrefStatDateAndEndDateToBe(ApplicationGroupDto applicationGroupDto) {
+        feEicGatewayClient.callEicWithTrack(applicationGroupDto, feEicGatewayClient::saveAppGroupSysnEic, "saveAppGroupSysnEic");
     }
 
     @Override
@@ -126,10 +114,6 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
         try {
             savePrefStatDateAndEndDateToBe(applicationGroupDto);
-            eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
-                    SubmitInspectionDateImpl.class.getName(),
-                    "savePrefStatDateAndEndDateToBe", currentApp + "-" + currentDomain,
-                    ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
         }catch (Exception e){
             log.error(StringUtil.changeForLog("encounter failure when savePrefStatDateAndEndDateToBe"), e);
         }

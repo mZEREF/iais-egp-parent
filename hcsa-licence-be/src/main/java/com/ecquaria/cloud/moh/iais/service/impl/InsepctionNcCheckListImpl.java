@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
@@ -35,14 +34,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.RimRiskCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -55,11 +51,8 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -98,26 +91,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     private BeEicGatewayClient gatewayClient;
     @Autowired
     private OrganizationClient organizationClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
     public void saveLicPremisesAuditDtoByApplicationViewDto(ApplicationViewDto appViewDto) {
@@ -709,36 +682,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
-                    InsepctionNcCheckListImpl.class.getName(),
-                    "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
-                    AdhocCheckListConifgDto.class.getName(), JsonUtil.parseToJson(adhocConfig));
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callEicGatewaySaveItem(adhocConfig);
-                        preEicRequest.setProcessNum(1);
-                        Date now = new Date();
-                        preEicRequest.setFirstActionAt(now);
-                        preEicRequest.setLastActionAt(now);
-                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
-                    }
-                }
-            }catch (Exception e){
-                log.debug(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
-            }
+        gatewayClient.callEicWithTrack(adhocConfig, this::callEicGatewaySaveItem,
+                this.getClass(), "callEicGatewaySaveItem");
     }
 
     public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
         //route to fe
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-        gatewayClient.syncAdhocItemData(data, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        gatewayClient.syncAdhocItemData(data);
     }
 
     public void saveInspectionCheckListDto(InspectionFillCheckListDto dto,String appPremId) {

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -232,14 +233,16 @@ public class LicenceExpiredBatchJob {
         }
         try {
             hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            callEicUpdateFeLicDto(updateLicenceDtos);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         log.info(StringUtil.changeForLog("The updateLicenceStatus end ..."));
+    }
+
+    private void callEicUpdateFeLicDto(List<LicenceDto> licenceDtos){
+        gatewayClient.callEicWithTrack(licenceDtos, gatewayClient::updateFeLicDto, gatewayClient.getClass(),
+                "updateFeLicDto", EicClientConstant.LICENCE_CLIENT);
     }
 
     private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {
@@ -338,10 +341,7 @@ public class LicenceExpiredBatchJob {
         }
         try {
             hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            callEicUpdateFeLicDto(updateLicenceDtos);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -408,10 +408,7 @@ public class LicenceExpiredBatchJob {
         }
         try {
             hcsaLicenceClient.updateLicences(licenceDtos).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(licenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            callEicUpdateFeLicDto(licenceDtos);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
