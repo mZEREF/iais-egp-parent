@@ -9,7 +9,7 @@
                          value="${terminationDto.topType}" cssClass="topType"/>
         </iais:value>
     </iais:row>
-    <div id="spTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="spTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Surgical Procedure "/>
             <iais:value width="7" cssClass="col-md-7">
@@ -26,7 +26,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="anTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="anTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Anaesthesia"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -43,7 +43,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="drugTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP001'}">style="display: none"</c:if>>
+    <div id="drugTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Drug" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -61,7 +61,7 @@
         </iais:row>
     </div>
     <iais:row>
-        <iais:field width="5" value="Result of Termination of Pregnancy – Any Complications" mandatory="true"/>
+        <iais:field width="5" value="Result of Termination of Pregnancy - Any Complications" mandatory="true"/>
         <iais:value width="3" cssClass="col-md-3">
             <div class="form-check">
                 <input class="form-check-input"
@@ -69,12 +69,13 @@
                        name="complicationForOperRslt"
                        value="1"
                        id="complicationForOperRsltYes"
-                       <c:if test="${terminationDto.complicationForOperRslt== true}">checked</c:if>
+                       <c:if test="${terminationDto.complicationForOperRslt}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="complicationForOperRsltYes"><span
                         class="check-circle"></span>Yes</label>
             </div>
+            <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_complicationForOperRslt"></span>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
             <div class="form-check">
@@ -106,7 +107,7 @@
             <iais:datePicker name="topDate" value="${terminationDto.topDate}"/>
         </iais:value>
     </iais:row>
-    <div id="performedOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="performedOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Is Termination of Pregnancy by Surgery performed inown premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -156,7 +157,7 @@
             <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
         </iais:row>
     </div>
-    <div id="pregnancyOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="pregnancyOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Is Drug prescribed for Termination of Pregnancy in own premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -189,7 +190,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="prescribeTopPlaceLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="prescribeTopPlaceLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <div id="prescribeTopPlace" <c:if test="${terminationDto.pregnancyOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
@@ -213,7 +214,7 @@
 
 
 
-    <div id="takenOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="takenOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Is Termination of Pregnancy Drug taken in own premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -246,7 +247,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="takenOwnLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
+    <div id="takenOwnLabel" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <div id="topDrugPlace" <c:if test="${terminationDto.takenOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topDrugPlace">
                 <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
@@ -341,7 +342,7 @@
     });
     function spTypes() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#spTypes').show();
         }else {
             $('#spTypes').hide();
@@ -349,7 +350,7 @@
     }
     function performedOwns() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#performedOwns').show();
         }else {
             $('#performedOwns').hide();
@@ -357,7 +358,7 @@
     }
     function pregnancyOwns() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#pregnancyOwns').show();
         }else {
             $('#pregnancyOwns').hide();
@@ -365,7 +366,7 @@
     }
     function prescribeTopPlaceLabel() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#prescribeTopPlaceLabel').show();
         }else {
             $('#prescribeTopPlaceLabel').hide();
@@ -373,7 +374,7 @@
     }
     function takenOwns() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#takenOwns').show();
         }else {
             $('#takenOwns').hide();
@@ -381,7 +382,7 @@
     }
     function takenOwnLabel() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#takenOwnLabel').show();
         }else {
             $('#takenOwnLabel').hide();
@@ -405,7 +406,7 @@
     }
     function anTypes() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
             $('#anTypes').show();
         }else {
             $('#anTypes').hide();
@@ -413,7 +414,7 @@
     }
     function topType() {
         var topType= $('#topType').val();
-        if(topType == "TOPTTP001" || topType == "TOPTTP003" ){
+        if(topType == "TOPTTP001" || topType == "TOPTTP002" ){
             $('#drugTypes').show();
         }else {
             $('#drugTypes').hide();

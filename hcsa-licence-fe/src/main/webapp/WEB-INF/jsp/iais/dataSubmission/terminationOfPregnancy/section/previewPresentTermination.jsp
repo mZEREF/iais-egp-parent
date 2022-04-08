@@ -56,10 +56,10 @@
                 <iais:row>
                     <iais:field width="6" value="Result of Termination of Pregnancy – Any Complications"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${terminationDto.ariseOperationComplication == true }">
+                        <c:if test="${terminationDto.complicationForOperRslt == true }">
                             Yes
                         </c:if>
-                        <c:if test="${terminationDto.ariseOperationComplication == false }">
+                        <c:if test="${terminationDto.complicationForOperRslt == false }">
                             No
                         </c:if>
                     </iais:value>
@@ -67,7 +67,7 @@
                 <iais:row>
                     <iais:field width="5" value="Complications Arising From Operation"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${terminationDto.complicationForOperRslt}"/>
+                        <c:out value="${terminationDto.ariseOperationComplication}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

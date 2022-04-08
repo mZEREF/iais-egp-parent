@@ -62,7 +62,7 @@ public class TopTerminationOfPregnancyDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info(" -----TopDataSubmissionDelegator Start ------ ");
-        /*DsConfigHelper.clearTopSession(bpc.request);*/
+        DsConfigHelper.clearTopSession(bpc.request);
         DsConfigHelper.initTopConfig(bpc.request);
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
