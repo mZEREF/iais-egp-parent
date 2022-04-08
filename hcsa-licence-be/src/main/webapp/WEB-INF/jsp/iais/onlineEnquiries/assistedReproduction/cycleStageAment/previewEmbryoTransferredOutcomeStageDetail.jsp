@@ -28,10 +28,10 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="4" value="Outcome of Embryo Transferred"/>
-                    <iais:value width="4" cssClass="col-md-4"  label="true" style="padding-top: 13px;">
+                    <iais:value width="4" cssClass="col-md-4"  display="true">
                         <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4"  label="true" style="padding-top: 13px;">
+                    <iais:value width="4" cssClass="col-md-4"  display="true">
                         <iais:code code="${embryoTransferredOutcomeStageDtoVersion.transferedOutcome}"/>
                     </iais:value>
                 </iais:row>
