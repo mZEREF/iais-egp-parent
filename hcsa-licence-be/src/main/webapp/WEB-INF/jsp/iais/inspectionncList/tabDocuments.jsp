@@ -18,8 +18,14 @@
                     <th scope="col" width="30%">Document</th>
                     <th scope="col" width="20%">File</th>
                     <th scope="col" width="10%">Size</th>
-                    <th scope="col" width="20%">Version</th>
-                    <th scope="col" width="10%">Submitted By</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                    >Version</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                    >Submitted By</th>
                     <th scope="col" width="10%">Date Submitted</th>
                 </tr>
                 </thead>
@@ -85,7 +91,10 @@
                 <tr>
                     <th scope="col" width="30%">Document</th>
                     <th scope="col" width="20%">File</th>
-                    <th scope="col" width="10%">Size</th>
+                    <th scope="col"
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="10%"</c:if>
+                        <c:if test="${iais_Audit_Trail_dto_Attr.functionName == AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">width="20%"</c:if>
+                    >Size</th>
                     <th scope="col" width="20%">Submitted By</th>
                     <th scope="col" width="10%">Date Submitted</th>
                     <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
