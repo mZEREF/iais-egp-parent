@@ -3,12 +3,15 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -17,13 +20,12 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * DrugPrescribedDispensedDelegator
@@ -124,53 +126,19 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             HttpServletRequest request = bpc.request;
             DpSuperDataSubmissionDto currentDpDataSubmission= DataSubmissionHelper.getCurrentDpDataSubmission(request);
             DrugPrescribedDispensedDto drugPrescribedDispensed=currentDpDataSubmission.getDrugPrescribedDispensedDto();
-            if(drugPrescribedDispensed == null) {
-                drugPrescribedDispensed = new DrugPrescribedDispensedDto();
-            }
+            DataSubmissionDto dataSubmissionDto= currentDpDataSubmission.getDataSubmissionDto();
             DrugSubmissionDto drugSubmission = drugPrescribedDispensed.getDrugSubmission();
-            if (drugSubmission == null) {
-                drugSubmission = new DrugSubmissionDto();
-            }
-            String declaration=ParamUtil.getRequestString(request, "declaration");
+            String dpLateReasonRadio=ParamUtil.getRequestString(request, "dpLateReasonRadio");
             String remarks=ParamUtil.getRequestString(request, "remarks");
-            if(!StringUtil.isEmpty(drugSubmission.getPrescriptionDate())){
-                try {
-                    if(CommonValidator.isDate(drugSubmission.getPrescriptionDate()) && Formatter.compareDateByDay(drugSubmission.getPrescriptionDate()) <-2){
-                        if(declaration==null){
-                            errorMap.put("declaration", "GENERAL_ERR0006");
-                        }
-                        if(remarks==null){
-                            errorMap.put("remarks", "GENERAL_ERR0006");
-                        }
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
+            if(drugSubmission.getReasonMandatory()){
+                if(StringUtil.isEmpty(dpLateReasonRadio)){
+                    errorMap.put("dpLateReasonRadio", "GENERAL_ERR0006");
+                }
+                if(StringUtil.isEmpty(remarks)){
+                    errorMap.put("remarks", "GENERAL_ERR0006");
                 }
             }
-            if(!StringUtil.isEmpty(drugSubmission.getDispensingDate())){
-                try {
-                    if(CommonValidator.isDate(drugSubmission.getDispensingDate()) && Formatter.compareDateByDay(drugSubmission.getDispensingDate()) <-2){
-                        if(declaration==null){
-                            errorMap.put("declaration", "GENERAL_ERR0006");
-                        }
-                        if(remarks==null){
-                            errorMap.put("remarks", "GENERAL_ERR0006");
-                        }
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
-                }
-            }
-            DpSuperDataSubmissionDto dpSuperDataSubmissionDto= DataSubmissionHelper.getCurrentDpDataSubmission(request);
-            if(dpSuperDataSubmissionDto == null) {
-                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
-            }
-            DataSubmissionDto dataSubmissionDto= dpSuperDataSubmissionDto.getDataSubmissionDto();
-            if(dataSubmissionDto == null) {
-                dataSubmissionDto = new DataSubmissionDto();
-            }
-
-            if(remarks!=null){
+            if(StringUtil.isNotEmpty(remarks)){
                 if (remarks.length() > 500) {
                     Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
                     repMap.put("maxlength", "500");
@@ -180,12 +148,18 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                 }
 
             }
+            dataSubmissionDto.setDpLateReasonRadio(dpLateReasonRadio);
             dataSubmissionDto.setRemarks(remarks);
-            if(declaration!=null){
-                dataSubmissionDto.setDeclaration(declaration);
+            // declaration
+            String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+            if(declaration != null && declaration.length >0){
+                dataSubmissionDto.setDeclaration(declaration[0]);
+            }else{
+                dataSubmissionDto.setDeclaration(null);
+                errorMap.put("declaration", "GENERAL_ERR0006");
             }
-            dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+            currentDpDataSubmission.setDataSubmissionDto(dataSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, currentDpDataSubmission);
             if (!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
