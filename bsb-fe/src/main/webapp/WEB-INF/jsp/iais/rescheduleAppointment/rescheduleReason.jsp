@@ -67,8 +67,7 @@
                                             <td>
                                                 <fmt:formatDate value="${apptView.inspNewDate}" pattern="dd/MM/yyyy HH:mm:ss" />
                                                 <input type="hidden" name="newDate${apptView.maskedAppId}" id="newDate${apptView.maskedAppId}" value="${apptView.inspNewDate}"/>
-                                                <span data-err-ind="newDate${status.index}" class="error-msg"></span>
-<%--                                                <span style="float:left;" id="error_inspDate${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>--%>
+                                                <span data-err-ind="newDate${apptView.maskedAppId}" class="error-msg"></span>
                                             </td>
 
                                         </tr>

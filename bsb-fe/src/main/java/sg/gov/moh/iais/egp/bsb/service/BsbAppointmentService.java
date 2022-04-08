@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentViewDto;
 
 import java.text.ParseException;
@@ -20,6 +21,9 @@ import java.util.*;
 @Service
 @Slf4j
 public class BsbAppointmentService {
+    private static final String PARAM_NEW_DATE = "newDate";
+    private static final String ERROR_MSG_NO_DATE = "No suitable date available, please reschedule";
+
     private final BsbAppointmentClient bsbAppointmentClient;
 
     public BsbAppointmentService(BsbAppointmentClient bsbAppointmentClient) {
@@ -42,26 +46,34 @@ public class BsbAppointmentService {
                 appointmentDto.setStartDate(Formatter.formatDateTime(inspStDate, "dd/MM/yyyy HH:mm:ss"));
                 appointmentDto.setEndDate(Formatter.formatDateTime(inspEndDate, "dd/MM/yyyy HH:mm:ss"));
 
-                List<ApptRequestDto> apptRequestDtoList = bsbAppointmentClient.getRescheduleNewDateFromBE(appointmentDto).getEntity();
+                ResponseDto<List<ApptRequestDto>> responseDto = bsbAppointmentClient.getRescheduleNewDateFromBE(appointmentDto);
+                if (responseDto != null) {
+                    List<ApptRequestDto> apptRequestDtoList = responseDto.getEntity();
 
-                if (!CollectionUtils.isEmpty(apptRequestDtoList)) {
-                    ApptRequestDto apptRequestDto = apptRequestDtoList.get(0);
-                    ArrayList<ApptUserCalendarDto> userClandars = apptRequestDto.getUserClandars();
-                    if (userClandars != null) {
-                        appointmentViewDto.setInspNewDate(userClandars.get(0).getStartSlot().get(0));
-                        appointmentViewDto.setUserCalendarDtos(userClandars);
-                        appointmentViewDto.setApptRefNo(apptRequestDto.getApptRefNo());
+                    if (!CollectionUtils.isEmpty(apptRequestDtoList)) {
+                        ApptRequestDto apptRequestDto = apptRequestDtoList.get(0);
+                        ArrayList<ApptUserCalendarDto> userClandars = apptRequestDto.getUserClandars();
+                        if (userClandars != null) {
+                            appointmentViewDto.setInspNewDate(userClandars.get(0).getStartSlot().get(0));
+                            appointmentViewDto.setUserCalendarDtos(userClandars);
+                            appointmentViewDto.setApptRefNo(apptRequestDto.getApptRefNo());
+                        } else {
+                            appointmentViewDto.setInspNewDate(null);
+                            appointmentViewDto.setUserCalendarDtos(null);
+                            appointmentViewDto.setApptRefNo(null);
+                            errorMap.put(PARAM_NEW_DATE + appointmentViewDto.getMaskedAppId(), ERROR_MSG_NO_DATE);
+                        }
                     } else {
                         appointmentViewDto.setInspNewDate(null);
                         appointmentViewDto.setUserCalendarDtos(null);
                         appointmentViewDto.setApptRefNo(null);
-                        errorMap.put("newDate" + appointmentViewDto.getMaskedAppId(), "No suitable date available, please reschedule");
+                        errorMap.put(PARAM_NEW_DATE + appointmentViewDto.getMaskedAppId(), ERROR_MSG_NO_DATE);
                     }
                 } else {
                     appointmentViewDto.setInspNewDate(null);
                     appointmentViewDto.setUserCalendarDtos(null);
                     appointmentViewDto.setApptRefNo(null);
-                    errorMap.put("newDate" + appointmentViewDto.getMaskedAppId(), "No suitable date available, please reschedule");
+                    errorMap.put(PARAM_NEW_DATE + appointmentViewDto.getMaskedAppId(), ERROR_MSG_NO_DATE);
                 }
             }
         }
