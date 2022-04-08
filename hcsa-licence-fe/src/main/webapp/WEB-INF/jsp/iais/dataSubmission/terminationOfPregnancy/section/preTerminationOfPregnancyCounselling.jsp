@@ -200,31 +200,31 @@
     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
     </iais:value>
     </iais:row>
-        <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>">
+        <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="patientAppointment" firstOption="Please Select" id="patientAppointment" codeCategory="CATE_ID_BSB_GAZETTED_AREA"
-                         value="${preTerminationDto.patientAppointment}" cssClass="preTerminationDto.patientAppointment"/>
+                    <iais:select name="patientAppointment" firstOption="Please Select" id="secCounsellings" codeCategory="CATE_ID_BSB_GAZETTED_AREA"
+                         value="${preTerminationDto.patientAppointment}" cssClass="patientAppointment"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_patientAppointment"></span>
                 </iais:value>
             </iais:row>
         </div>
+    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingDateLabel" value="Date of Second or Final Pre-Counselling"
-                        mandatory="${preTerminationDto.patientAppointment != true ? false : preTerminationDto.patientAppointment }"
-                        info="${toolMsg}"/>
+                mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker name="secCounsellingDate" value="${preTerminationDto.secCounsellingDate}"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_secCounsellingDate"></span>
             </iais:value>
         </iais:row>
+    </div>
+    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
-            <iais:field width="5" id="secCounsellingResultLabel" value="Second or Final Pre-Counselling result"
-                        mandatory="${preTerminationDto.patientAppointment != true ? false : preTerminationDto.patientAppointment }"
-                        info="${toolMsg}"/>
+            <iais:field width="5" id="secCounsellingResultLabel" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="secCounsellingResult" firstOption="Please Select"
                              codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT"
@@ -244,6 +244,11 @@
             $('#counsellingResults').change(function () {
                 counsellingResults();
             });
+            $('#secCounsellings').change(function () {
+                secCounsellingDate();
+                secCounsellingResult();
+            });
+
         });
 
         function counsellingNo() {
@@ -285,13 +290,6 @@
             });
         });
         $(document).ready(function () {
-            $('input[name=patientAppointment]').change(function () {
-                checkMantory('#patientAppointmentYes', "#secCounsellingResultLabel");
-                checkMantory('#patientAppointmentYes', "#secCounsellingDateLabel");
-
-            });
-        });
-        $(document).ready(function () {
             $('input[name=counsellingGiven]').change(function () {
                 if ($('#counsellingNo').prop('checked')) {
                     $('#noCounsReason').show();
@@ -308,6 +306,24 @@
                 $('#patientAppointments').show();
             }else {
                 $('#patientAppointments').hide();
+                $('#secCounsellingDates').hide();
+                $('#secCounsellingResults').hide();
+            }
+        }
+        function secCounsellingDate(){
+            var patientAppointment = $('#secCounsellings').val();
+            if (patientAppointment =="GAZAREA001") {
+                $('#secCounsellingDates').show();
+            }else {
+                $('#secCounsellingDates').hide();
+            }
+        }
+        function secCounsellingResult(){
+            var patientAppointment = $('#secCounsellings').val();
+            if (patientAppointment =="GAZAREA001") {
+                $('#secCounsellingResults').show();
+            }else {
+                $('#secCounsellingResults').hide();
             }
         }
     </script>
