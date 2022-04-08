@@ -14,11 +14,14 @@ import java.util.List;
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class)
 public interface BsbInboxClient {
+    @GetMapping(value = "/fe-inbox/dashboard", produces = MediaType.APPLICATION_JSON_VALUE)
+    InboxDashboardDto retrieveDashboardData();
+
     @DeleteMapping(value = "/fe-inbox/app/{appId}")
     void deleteDraftApplication(@PathVariable("appId") String appId);
 
     @GetMapping(value = "/fe-inbox/msg", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<InboxMsgSearchResultDto>    getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
+    ResponseDto<InboxMsgSearchResultDto> getInboxMsg(@SpringQueryMap InboxMsgSearchDto dto);
 
     @GetMapping(value = "/fe-inbox/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InboxAppSearchResultDto> getInboxApplication(@SpringQueryMap InboxAppSearchDto dto);

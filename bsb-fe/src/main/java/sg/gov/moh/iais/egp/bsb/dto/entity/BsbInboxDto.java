@@ -12,9 +12,11 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BsbInboxDto extends BaseEntityDto {
     private String id;
+    private String uen;
     private String userId;
     private String subject;
     private String msgType;
+    private String facilityName;
     private String refNo;
     private String appType;
     private String msgContent;

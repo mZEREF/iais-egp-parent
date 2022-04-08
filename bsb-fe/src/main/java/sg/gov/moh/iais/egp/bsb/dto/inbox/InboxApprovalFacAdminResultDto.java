@@ -10,7 +10,6 @@ import java.util.List;
 public class InboxApprovalFacAdminResultDto {
     private PageInfo pageInfo;
     private List<ApprovalInfo> approvalInfos;
-    private long unreadMsgAmt;
 
     @Data
     public static class ApprovalInfo {

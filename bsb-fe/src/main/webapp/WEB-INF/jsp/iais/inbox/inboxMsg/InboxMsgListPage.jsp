@@ -30,7 +30,7 @@
                     <%@ include file="../InnerNavBar.jsp"%>
 
 
-                    <div class="tab-content">
+                    <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
                             <div class="tab-search">
 
@@ -45,13 +45,13 @@
                                     <div class="col-md-3">
                                         <label class="col-md-3 control-label" for="searchMsgType" style="margin-top:5%;">Type</label>
                                         <div class="col-md-8">
-                                            <iais:select name="searchMsgType" id="searchMsgType" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="All"/>
+                                            <iais:select name="searchMsgType" id="searchMsgType" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
                                         <label class="col-md-5 control-label" for="searchAppType" style="margin-top:3%;">Application Type</label>
                                         <div class="col-md-7">
-                                            <iais:select name="searchAppType" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="All"/>
+                                            <iais:select name="searchAppType" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -88,6 +88,7 @@
                                                 <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="msgType" value="Message Type" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="refNo" value="Ref. No." isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="createdAt" value="Date" isFE="true"/>
@@ -135,6 +136,10 @@
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">Message Type</p>
                                                             <p><iais:code code="${msg.msgType}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                            <p><iais:code code="${msg.facilityName}"/></p>
                                                         </td>
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">Ref. No.</p>

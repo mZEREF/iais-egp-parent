@@ -2,9 +2,24 @@
 <%
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
-<style type="text/css">
+<style>
     .nav {
         background: transparent;
+    }
+
+    .dashboard-gp .dashboard-tile-item {
+        width: calc((100% - 90px) / 4);
+        float: left;
+    }
+    .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
+        font-size: 1.9rem;
+        width: calc(100% - 70px);
+    }
+    .dashboard-gp .dashboard-tile-item .dashboard-tile a {
+        padding: 35px 35px 32px 20px;
+    }
+    .dashboard-gp .dashboard-tile-item:not(:last-child) {
+        margin-right: 30px;
     }
 </style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
@@ -18,31 +33,27 @@
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile"><a data-tab="#tabInbox" href="#" onclick="licToMsgPage()">
                             <p class="dashboard-txt">New Messages</p>
-                            <h1 class="dashboard-count">0</h1><%-- todo: use hard code here --%>
+                            <h1 class="dashboard-count">${unreadMsgAmt}</h1>
                         </a>
                         </div>
                     </div>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile"><a data-tab="#tabApp" href="#" onclick="licToAppPage()">
                             <p class="dashboard-txt">Application Drafts</p>
-                            <h1 class="dashboard-count">0</h1><%-- todo: use hard code here --%>
+                            <h1 class="dashboard-count">${draftAppAmt}</h1>
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile"><a data-tab="#tabLic" href="#">
-                            <p class="dashboard-txt">Active Licences</p>
-                            <h1 class="dashboard-count">0</h1><%-- todo: use hard code here --%>
+                            <p class="dashboard-txt">Active Facilities</p>
+                            <h1 class="dashboard-count">${activeFacilityAmt}</h1>
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile txt-only">
-                            <a href="/main-web/eservice/INTERNET/MohAccessmentGuide">
-                                <p class="dashboard-txt" style="line-height: 27px;">
-                                    Not sure what to do? Let us guide you
-                                    <em class="fa fa-angle-right"></em>
-                                </p>
-                            </a>
-                        </div>
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#">
+                            <p class="dashboard-txt">Active Approvals</p>
+                            <h1 class="dashboard-count">${activeApprovalAmt}</h1>
+                        </a></div>
                     </div>
                 </div>
             </div>
