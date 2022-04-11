@@ -14,43 +14,27 @@ import java.util.Date;
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JGlobalMap(excluded = {"certifierRegId"})
-public class FacilityCertifyMemberDto extends BaseEntityDto {
+public class ApprovedFacilityCertifierAdminDto extends BaseEntityDto {
     private String id;
 
     @JMap(value = "${certifierReg.id}")
     private String certifierRegId;
 
-    private String name;
+    private String adminName;
+
+    private String adminType;
 
     private String idType;
 
     private String idNumber;
 
-    private Date dob;
+    private String designation;
 
-    private String sex;
+    private String contactNo;
+
+    private String emailAddr;
+
+    private Date employmentStartDt;
 
     private String nationality;
-
-    private String telNo;
-
-    private String jobDesignation;
-
-    private String leadCertifier;
-
-    private String areaOfExpertise;
-
-    private String expInCertification;
-
-    private String expInCommission;
-
-    private String expInOthers;
-
-    private String educationBackground;
-
-    private String positionActivity;
-
-    private String relevatnCertificate;
-
-    private String facilityResearches;
 }

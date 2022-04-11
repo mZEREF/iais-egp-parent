@@ -1,15 +1,17 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import lombok.Data;
+
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 
 import java.util.List;
 
 
 @Data
-public class FacilityResultDto {
+public class AFCResultPageInfoDto {
+
     private PageInfo pageInfo;
 
-    private List<FacilityActivity> bsbFac;
+    private List<AFCSearchResultDto> bsbAFC;
+
 }

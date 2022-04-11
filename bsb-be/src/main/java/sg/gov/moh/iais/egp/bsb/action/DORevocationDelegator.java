@@ -83,15 +83,15 @@ public class DORevocationDelegator {
         EnquiryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
         // call API to get searched data
-        ResponseDto<ApprovalResultDto> searchResult = biosafetyEnquiryClient.getApproval(searchDto);
-        if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, searchResult.getEntity().getBsbApproval());
-        } else {
-            log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, new ArrayList<>());
-        }
+//        ResponseDto<ApprovalResultDto> searchResult = biosafetyEnquiryClient.getApproval(searchDto);
+//        if (searchResult.ok()) {
+//            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
+//            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, searchResult.getEntity().getBsbApproval());
+//        } else {
+//            log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
+//            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+//            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, new ArrayList<>());
+//        }
     }
 
     /**

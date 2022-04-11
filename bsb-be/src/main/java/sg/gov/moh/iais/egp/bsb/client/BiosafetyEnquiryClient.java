@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.client;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -30,16 +31,16 @@ public interface BiosafetyEnquiryClient {
     FeignResponseEntity<List<BatBasicInfo>> queryBiologicalBySchedule(@RequestParam(name = "schedule") String schedule);
 
     @GetMapping(value = "/online-enquiry/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApplicationResultDto> getApplication(@RequestBody  EnquiryDto dto);
+    ResponseDto<AppResultPageInfoDto> getApplication(@SpringQueryMap AppSearchDto dto);
 
     @GetMapping(value = "/online-enquiry/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilityResultDto> getFacility(@RequestBody  EnquiryDto dto);
+    ResponseDto<FacResultPageInfoDto> getFacility(@SpringQueryMap  FacSearchDto dto);
 
     @GetMapping(value = "/online-enquiry/approval", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalResultDto> getApproval(@RequestBody EnquiryDto dto);
+    ResponseDto<ApprovalResultDto> getApproval(@SpringQueryMap ApprovalSearchDto dto);
 
     @GetMapping(value = "/online-enquiry/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovedFacilityCerResultDto> getApprovedFacilityCertifier(@RequestBody  EnquiryDto dto);
+    ResponseDto<AFCResultPageInfoDto> getApprovedFacilityCertifier(@SpringQueryMap  AFCSearchDto dto);
 
     @GetMapping(path = "/bat-info/{id}")
     BiologicalDto getBiologicalById(@PathVariable(name = "id") String biologicalId);

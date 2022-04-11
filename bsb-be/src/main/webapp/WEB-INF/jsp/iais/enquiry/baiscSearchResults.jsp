@@ -63,7 +63,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty appInfoSearchResult}">
+                                            <c:when test="${empty appResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -71,7 +71,7 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
+                                                <c:forEach var="items" items="${appResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out value="${status.index+1}"/></td>
                                                         <td>
@@ -89,9 +89,8 @@
                                                         </td>
                                                         <td><iais:code code="${items.appType}"/></td>
                                                         <td><iais:code code="${items.appStatus}"/></td>
-                                                        <td><fmt:formatDate value='${items.applicationDt}'
-                                                                            pattern='dd/MM/yyyy'/></td>
-                                                        <td><iais-bsb:format-LocalDate localDate='${items.approvalDate}'/></td>
+                                                        <td><c:out value="${items.applicationEntityDt}"/></td>
+                                                        <td><c:out value="${items.approvalEntityDt}"/></td>
                                                         <td><iais:code
                                                                 code="${items.facilityClassification}"/></td>
                                                         <td><iais:code code="${items.facilityType}"/></td>
@@ -99,12 +98,9 @@
                                                         <td><c:out value="${items.bioName}"/></td>
                                                         <td><iais:code code="${items.riskLevel}"/></td>
                                                         <td><iais:code code="${items.processType}"/></td>
-                                                        <td><fmt:formatDate value='${items.doVerifiedDt}'
-                                                                            pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${items.aoVerifiedDt}'
-                                                                            pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${items.hmVerifiedDt}'
-                                                                            pattern='dd/MM/yyyy'/></td>
+                                                        <td><c:out value="${items.doVerifiedEntityDt}"/></td>
+                                                        <td><c:out value="${items.aoVerifiedEntityDt}"/></td>
+                                                        <td><c:out value="${items.hmVerifiedEntityDt}"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -112,7 +108,7 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${count=='fn'}">
+                                <c:if test="${count=='fac'}">
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
@@ -161,7 +157,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty facInfoSearchResult}">
+                                            <c:when test="${empty facResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -169,33 +165,33 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${facInfoSearchResult}" varStatus="status">
+                                                <c:forEach var="items" items="${facResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out value="${status.index + 1}"/></td>
-                                                        <td><c:out value="${items.facility.facilityName}"/></td>
-                                                        <td><c:out value="${items.facility.blkNo}"/> <c:out
-                                                                value="${items.facility.streetName}"/> <c:out
-                                                                value="${items.facility.floorNo}"/>-<c:out
-                                                                value="${items.facility.unitNo}"/> <c:out
-                                                                value="${items.facility.postalCode}"/></td>
+                                                        <td><c:out value="${items.facilityName}"/></td>
+                                                        <td><c:out value="${items.address}"/></td>
                                                         <td><iais:code
-                                                                code="${items.facility.facilityClassification}"></iais:code></td>
+                                                                code="${items.facilityClassification}"></iais:code></td>
                                                         <td><iais:code
-                                                                code="${items.activityType}"></iais:code></td>
-                                                        <td><c:out value="${items.bioName}"/></td>
+                                                                code="${items.facilityType}"></iais:code></td>
+                                                        <td><c:out value="${items.batName}"/></td>
                                                         <td><iais:code code="${items.riskLevel}"></iais:code></td>
-                                                        <td><fmt:formatDate value='${items.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><c:out value="${items.expiryDate}"/></td>
                                                         <td>
-                                                            <c:if test="${items.facility.isProtected == 'Y'}">
+                                                            <c:if test="${items.gazettedArea == 'Y'}">
                                                                 <c:out value="yes"/></c:if>
-                                                            <c:if test="${items.facility.isProtected =='N'}">
+                                                            <c:if test="${items.gazettedArea =='N'}">
                                                                 <c:out value="No"/></c:if>
                                                         </td>
-                                                        <td><c:out value="${items.facility.operator.facOperator}"/></td>
-                                                        <td><c:out value="${items.admin}"/></td>
+                                                        <td><c:out value="${items.operatorName}"/></td>
+                                                        <td>
+                                                            <c:forEach var="admin" items="${facilityAdmins}">
+                                                                <c:out value="${admin.type}"/> : <c:out value="${admin.name}"/>
+                                                            </c:forEach>
+                                                        </td>
                                                         <td><iais:code
-                                                                code="${items.approval.status}"></iais:code></td>
-                                                        <td><c:out value="approval01"/></td>
+                                                                code="${items.facilityStatus}"></iais:code></td>
+                                                        <td><c:out value="${items.afcName}"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -203,7 +199,7 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${count=='on'}"   >
+                                <c:if test="${count=='afc'}"   >
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
@@ -234,7 +230,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty approvedSearchResult}">
+                                            <c:when test="${empty afcResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -242,16 +238,17 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${approvedSearchResult}" varStatus="status">
+                                                <c:forEach var="items" items="${afcResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out value="${status.index + 1}"/></td>
                                                         <td><c:out value = "${items.orgName}"/></td>
-                                                        <td><c:out value = "${items.address}"/><</td>
-                                                        <td><iais:code code="${items.approval.status}"/></td>
-                                                        <td><c:out value="${items.adminName}"/></td>
-                                                        <td><fmt:formatDate value='${items.approval.approvalDate}'
-                                                                            pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${items.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><c:out value = "${items.orgAddress}"/><</td>
+                                                        <td><iais:code code="${items.afcStatus}"/></td>
+                                                        <td><c:forEach var="admin" items="${items.adminDtoList}">
+                                                            <c:out value="${admin.adminType}"/> : <c:out value="${admin.adminName}"/>
+                                                        </c:forEach></td>
+                                                        <td><c:out value="${items.approvedDt}"/></td>
+                                                        <td><c:out value="${items.expiryDt}"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -259,7 +256,7 @@
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${count=='an'}">
+                                <c:if test="${count=='approval'}">
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
@@ -305,7 +302,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty approvalSearchResult}">
+                                            <c:when test="${empty approvalResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -313,7 +310,7 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
+                                                <c:forEach var="items" items="${approvalResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out value="${status.index + 1}"/></td>
                                                         <td><iais:code code="${items.apprNo}"/></td>

@@ -13,14 +13,14 @@ import java.util.List;
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JGlobalMap
-public class FacilityCertifierRegDto extends BaseEntityDto {
+public class ApprovedFacilityCertifierDto extends BaseEntityDto {
     private String id;
 
-    private List<FacilityCertifierAdminDto> certifierAdmins;
+    private List<ApprovedFacilityCertifierAdminDto> certifierAdmins;
 
-    private List<FacilityCertifierDocDto> certDocs;
+    private List<ApprovedFacilityCertifierDocDto> certDocs;
 
-    private List<FacilityCertifyMemberDto> certifyMembers;
+    private List<ApprovedFacilityCertifyMemberDto> certifyMembers;
 
     private ApplicationDto application;
 

@@ -7,19 +7,28 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class BioSafetyEnquiryConstants {
     private BioSafetyEnquiryConstants() {}
 
-    public static final String PARAM_APPLICATION_INFO_SEARCH = "appInfoSearchParam";
-    public static final String PARAM_APPLICATION_INFO_RESULT = "appInfoSearchResult";
-    public static final String PARAM_FACILITY_INFO_SEARCH = "facInfoSearchParam";
-    public static final String PARAM_FACILITY_INFO_RESULT = "facInfoSearchResult";
-    public static final String PARAM_APPROVAL_INFO_SEARCH = "approvalSearchParam";
-    public static final String PARAM_APPROVAL_INFO_RESULT = "approvalSearchResult";
-    public static final String PARAM_APPROVED_CERTIFIER_INFO_SEARCH = "approvedSearchParam";
-    public static final String PARAM_APPROVED_CERTIFIER_INFO_RESULT = "approvedSearchResult";
+    public static final String PARAM_SEARCH_CHK = "searchChk";
+    public static final String PARAM_COUNT = "count";
+    public static final String PARAM_SEARCH_TEXT = "searchText";
+    public static final String PARAM_CHOICE_APPLICATION = "app";
+    public static final String PARAM_CHOICE_FACILITY = "fac";
+    public static final String PARAM_CHOICE_APPROVAL = "approval";
+    public static final String PARAM_CHOICE_APPROVED_FACILITY_CERTIFIER = "afc";
+
+    public static final String MESSAGE_END_DATE_EARLIER_THAN_START_DATE = "EndDate can not be earlier than startDate.";
+    public static final String KEY_APPLICATION_RESULT = "appResult";
+    public static final String KEY_FACILITY_RESULT = "facResult";
+    public static final String KEY_APPROVAL_RESULT = "approvalResult";
+    public static final String KEY_AFC_RESULT = "afcResult";
 
     //common
-    public static final String KEY_ENQUIRY_SEARCH_DTO = "enquiryDto";
+    public static final String KEY_SEARCH_DTO_APPLICATION = "appSearchDto";
+    public static final String KEY_SEARCH_DTO_FACILITY = "facSearchDto";
+    public static final String KEY_SEARCH_DTO_APPROVAL = "approvalSearchDto";
+    public static final String KEY_SEARCH_DTO_AFC = "afcSearchDto";
     public static final String KEY_PAGE_INFO = "pageInfo";
     public static final String KEY_DOWNLOAD = "download";
+    public static final String KEY_SEARCH_DTO_SUFFIX = "SearchDto";
 
     //url
     public static final String URL_BIO_SAFETY_INFO_FILE = "bioSafety-information-file";
@@ -29,41 +38,44 @@ public class BioSafetyEnquiryConstants {
     //PARAM
 
     public static final String PARAM_ID = "id";
-    public static final String PARAM_APPLICATION_NO = "applicationNo";
-    public static final String PARAM_APPLICATION_TYPE = "applicationType";
-    public static final String PARAM_APPLICATION_STATUS = "applicationStatus";
-    public static final String PARAM_APPLICATION_SUBMISSION_DATE_FROM = "applicationSubmissionDateFrom";
-    public static final String PARAM_APPLICATION_SUBMISSION_DATE_TO = "applicationSubmissionDateTo";
-    public static final String PARAM_APPROVAL_DATE_FROM = "approvalDateFrom";
-    public static final String PARAM_APPROVAL_DATE_TO = "approvalDateTo";
+    public static final String PARAM_APPLICATION_NO = "appNo";
+    public static final String PARAM_APPLICATION_TYPE = "appType";
+    public static final String PARAM_APPLICATION_STATUS = "appStatus";
+    public static final String PARAM_APPLICATION_SUBMISSION_DATE_FROM = "appSubmissionDtFrom";
+    public static final String PARAM_APPLICATION_SUBMISSION_DATE_TO = "appSubmissionDtTo";
+    public static final String PARAM_APPROVAL_DATE_FROM = "approvalDtFrom";
+    public static final String PARAM_APPROVAL_DATE_TO = "approvalDtTo";
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
-    public static final String PARAM_FACILITY_TYPE = "facilityType";
-    public static final String PARAM_FACILITY_NAME = "facilityName";
+    public static final String PARAM_FACILITY_TYPES = "facTypes";
+    public static final String PARAM_FACILITY_NAME = "facName";
     public static final String PARAM_SCHEDULE_TYPE = "scheduleType";
-    public static final String PARAM_BIOLOGICAL_AGENT = "biologicalAgent";
-    public static final String PARAM_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT = "riskLevelOfTheBiologicalAgent";
+    public static final String PARAM_NATURE_OF_SAMPLE = "sampleNature";
+    public static final String PARAM_BIOLOGICAL_AGENT = "batName";
+    public static final String PARAM_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT = "riskLevel";
     public static final String PARAM_PROCESS_TYPE = "processType";
-    public static final String PARAM_FACILITY_EXPIRY_DATE_FROM = "facilityExpiryDateFrom";
-    public static final String PARAM_FACILITY_EXPIRY_DATE_TO = "facilityExpiryDateTo";
+    public static final String PARAM_FACILITY_EXPIRY_DATE_FROM = "facExpiryDtFrom";
+    public static final String PARAM_FACILITY_EXPIRY_DATE_TO = "facExpiryDtTo";
     public static final String PARAM_GAZETTED_AREA = "gazettedArea";
-    public static final String PARAM_FACILITY_OPERATOR = "facilityOperator";
-    public static final String PARAM_FACILITY_ADMIN = "facilityAdmin";
-    public static final String PARAM_AUTHORISED_PERSONNEL_WORKING_IN_FACILITY = "authorisedPersonnelWorkingInFacility";
-    public static final String PARAM_BIOSAFETY_COMMITTEE_PERSONNEL = "biosafetyCommitteePersonnel";
-    public static final String PARAM_FACILITY_STATUS = "facilityStatus";
-    public static final String PARAM_APPROVED_FACILITY_CERTIFIER = "approvedFacilityCertifier";
+    public static final String PARAM_FACILITY_OPERATOR = "facOperator";
+    public static final String PARAM_FACILITY_ADMIN = "facAdmin";
+    public static final String PARAM_AUTHORISED_PERSONNEL = "facAuthorisedPerson";
+    public static final String PARAM_COMMITTEE_PERSONNEL = "facCommittee";
+    public static final String PARAM_FACILITY_STATUS = "facStatus";
+    public static final String PARAM_APPROVED_FACILITY_CERTIFIER = "afcName";
     public static final String PARAM_NATURE_OF_THE_SAMPLE = "natureOfTheSample";
     public static final String PARAM_APPROVAL_TYPE = "approvalType";
-    public static final String PARAM_APPROVAL_SUBMISSION_DATE_FROM = "approvalSubmissionDateFrom";
-    public static final String PARAM_APPROVAL_SUBMISSION_DATE_TO = "approvalSubmissionDateTo";
+    public static final String PARAM_APPROVAL_SUBMISSION_DATE_FROM = "approvalSubDtFrom";
+    public static final String PARAM_APPROVAL_SUBMISSION_DATE_TO = "approvalSubDtTo";
     public static final String PARAM_APPROVAL_STATUS = "approvalStatus";
-    public static final String PARAM_ORGANISATION_NAME = "organisationName";
-    public static final String PARAM_FACILITY_ADMINISTRATOR = "facilityAdministrator";
+    public static final String PARAM_ORGANISATION_NAME = "orgName";
+    public static final String PARAM_FACILITY_ADMINISTRATOR = "adminName";
     public static final String PARAM_AFC_STATUS = "afcStatus";
     public static final String PARAM_TEAM_MEMBER_NAME = "teamMemberName";
-    public static final String PARAM_TEAM_MEMBER_ID = "teamMemberID";
-    public static final String PARAM_APPROVED_DATE_FROM = "approvedDateFrom";
-    public static final String PARAM_APPROVED_DATE_TO = "approvedDateTo";
+    public static final String PARAM_TEAM_MEMBER_ID = "teamMemberId";
+    public static final String PARAM_APPROVED_DATE_FROM = "approvedDtFrom";
+    public static final String PARAM_APPROVED_DATE_TO = "approvedDtTo";
+    public static final String PARAM_APPROVED_AFC_DATE_FROM = "approvedAfcDtFrom";
+    public static final String PARAM_APPROVED_AFC_DATE_TO = "approvedAfcDtTo";
 
 
 }

@@ -1,5 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
@@ -58,18 +56,18 @@
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="fnChk" type="radio"
-                                           <c:if test="${count=='fn'}">checked</c:if>
+                                           <c:if test="${count=='fac'}">checked</c:if>
                                            name="searchChk"
                                            value="fn"/><label for="fnChk">&nbsp;Facility Name</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="anChk" type="radio"
-                                           <c:if test="${count=='an'}">checked</c:if> value="an"
+                                           <c:if test="${count=='approval'}">checked</c:if> value="an"
                                            name="searchChk"/><label for="anChk">&nbsp;Approval No</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="onChk" type="radio"
-                                           <c:if test="${count=='on'}">checked</c:if> value="on"
+                                           <c:if test="${count=='afc'}">checked</c:if> value="on"
                                            name="searchChk"/><label for="onChk">&nbsp;Organisation Name</label>
                                 </iais:value>
                             </iais:row>
