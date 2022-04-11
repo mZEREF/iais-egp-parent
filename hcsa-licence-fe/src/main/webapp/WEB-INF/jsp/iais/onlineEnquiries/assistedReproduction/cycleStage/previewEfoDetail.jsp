@@ -35,7 +35,7 @@
                 <iais:row>
                     <iais:field width="5" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
+                        <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getEfoCycleStageDto().getYearNum(), arSuperDsDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
