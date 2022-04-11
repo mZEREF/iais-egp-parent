@@ -306,8 +306,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_0010' then 'EFO'
-                when 'DSCL_0011' then '-'
+                when 'DSCL_010' then 'EFO'
+                when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
                 CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
@@ -419,8 +419,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_0010' then 'EFO'
-                when 'DSCL_0011' then '-'
+                when 'DSCL_010' then 'EFO'
+                when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
                 CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
