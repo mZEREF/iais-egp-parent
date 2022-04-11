@@ -11,6 +11,7 @@
         <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'TOP_TP001'}">
+        <h3>Preview & Submit</h3>
         <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
