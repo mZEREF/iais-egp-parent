@@ -20,9 +20,8 @@ import java.util.List;
  */
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "approvalBatAndActivity")
 public interface ApprovalBatAndActivityClient {
-    //TODO: update url, and complete this method
     @GetMapping(value = "/facility-info/approved-facility/basic", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<FacilityBasicInfo> getAllMainActivityApprovedFacility();
+    List<FacilityBasicInfo> getApprovedFacility();
 
     @GetMapping(path = "/register/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalBatAndActivityDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);

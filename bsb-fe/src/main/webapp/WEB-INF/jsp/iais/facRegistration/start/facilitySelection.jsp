@@ -49,7 +49,6 @@
                 <div class="col-xs-12 col-md-1">
                 </div>
                 <div class="col-xs-12 col-md-10">
-                    <%--@elvariable id="serviceSelection" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto"--%>
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <%@include file="../../mainAppCommon/facRegistration/facilitySelection.jsp"%>
                     </div>

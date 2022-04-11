@@ -4,7 +4,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
-
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -17,6 +17,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <%@include file="dashboard.jsp"%>
+<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToPossessDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -80,41 +81,37 @@
                                                                     </div>
                                                                     <div class="form-group ">
                                                                         <div class="col-sm-5 control-label">
-                                                                            <label>Type of sample that will be handled</label>
-                                                                            <span class="mandatory otherQualificationSpan">*</span>
+                                                                            <label>Type of sample that will be handled <span class="mandatory otherQualificationSpan">*</span></label>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 10;">
                                                                             <div class="self-assessment-checkbox-gp">
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleCultureIsolate--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS001')}">checked="checked"</c:if> value="BNOTS001"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleCultureIsolate--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_CULTURE_ISOLATE)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_CULTURE_ISOLATE}"/>
                                                                                     <label for="sampleCultureIsolate--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culture/isolate of biological agent(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="samplePureToxin--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS002')}">checked="checked"</c:if> value="BNOTS002"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="samplePureToxin--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_PURE_TOXIN)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_PURE_TOXIN}"/>
                                                                                     <label for="samplePureToxin--v--${status.index}" class="form-check-label"><span class="check-square"></span>Pure toxin(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleClinical--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS003')}">checked="checked"</c:if> value="BNOTS003"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleClinical--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_CLINICAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_CLINICAL}"/>
                                                                                     <label for="sampleClinical--v--${status.index}" class="form-check-label"><span class="check-square"></span>Clinical samples e.g. blood, serum, respiratory swab, containing biological agent(s) or toxin(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleAnimal--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS004')}">checked="checked"</c:if> value="BNOTS004"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleAnimal--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_ANIMAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_ANIMAL}"/>
                                                                                     <label for="sampleAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal samples containing biological agent(s) or toxin(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleEnv--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS005')}">checked="checked"</c:if> value="BNOTS005"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleEnv--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL}"/>
                                                                                     <label for="sampleEnv--v--${status.index}" class="form-check-label"><span class="check-square"></span>Environmental samples containing biological agent(s) or toxin(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleFood--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS006')}">checked="checked"</c:if> value="BNOTS006"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleFood--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_FOOD)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_FOOD}"/>
                                                                                     <label for="sampleFood--v--${status.index}" class="form-check-label"><span class="check-square"></span>Food samples containing biological agent(s) or toxin(s)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleOthers--v--${status.index}" data-custom-ind="batOthersSampleType" <c:if test="${info.sampleType.contains('BNOTS007')}">checked="checked"</c:if> value="BNOTS007"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleOthers--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_OTHER)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_OTHER}"/>
                                                                                     <label for="sampleOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details.</label>
-                                                                                </div>
-                                                                                <div class="form-check" id="batOtherSampleTypeDiv--v--${status.index}" <c:if test="${not info.sampleType.contains('BNOTS007')}">style="display: none;"</c:if>>
-                                                                                    <input type="text" autocomplete="off" name="otherSampleType--v--${status.index}" id="otherSampleType--v--${status.index}" value='<c:out value="${info.otherSampleType}"/>'/>
                                                                                 </div>
                                                                             </div>
                                                                             <span data-err-ind="sampleType--v--${status.index}" class="error-msg"></span>
@@ -122,37 +119,33 @@
                                                                     </div>
                                                                     <div class="form-group ">
                                                                         <div class="col-sm-5 control-label">
-                                                                            <label>Type of work that will be carried out involving the biological agent/toxin</label>
-                                                                            <span class="mandatory otherQualificationSpan">*</span>
+                                                                            <label>Type of work that will be carried out involving the biological agent/toxin <span class="mandatory otherQualificationSpan">*</span></label>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 10;">
                                                                             <div class="self-assessment-checkbox-gp">
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workCultureIsolation--v--${status.index}" <c:if test="${info.workType.contains('BNOTW001')}">checked="checked"</c:if> value="BNOTW001"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workCultureIsolation--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT}"/>
                                                                                     <label for="workCultureIsolation--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culturing/isolation of biological agent</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workSerological--v--${status.index}" <c:if test="${info.workType.contains('BNOTW002')}">checked="checked"</c:if> value="BNOTW002"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workSerological--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST}"/>
                                                                                     <label for="workSerological--v--${status.index}" class="form-check-label"><span class="check-square"></span>Serological test</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workMolecular--v--${status.index}" <c:if test="${info.workType.contains('BNOTW003')}">checked="checked"</c:if> value="BNOTW003"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workMolecular--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_MOLECULAR_TEST)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_MOLECULAR_TEST}"/>
                                                                                     <label for="workMolecular--v--${status.index}" class="form-check-label"><span class="check-square"></span>Molecular test</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" <c:if test="${info.workType.contains('BNOTW004')}">checked="checked"</c:if> value="BNOTW004"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_ANIMAL_STUDIES)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_ANIMAL_STUDIES}"/>
                                                                                     <label for="workAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal studies (specify the type of animal under details)</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" <c:if test="${info.workType.contains('BNOTW005')}">checked="checked"</c:if> value="BNOTW005"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT}"/>
                                                                                     <label for="workBiomanufacturing--v--${status.index}" class="form-check-label"><span class="check-square"></span>Biomanufacturing involving biological agent. Please specify expected maximum handling volume under details</label>
                                                                                 </div>
                                                                                 <div class="form-check">
-                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" data-custom-ind="batOthersWorkType" <c:if test="${info.workType.contains('BNOTW006')}">checked="checked"</c:if> value="BNOTW006"/>
+                                                                                    <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_OTHERS)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_OTHERS}"/>
                                                                                     <label for="workOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details.</label>
-                                                                                </div>
-                                                                                <div class="form-check" id="batOtherWorkTypeDiv--v--${status.index}" <c:if test="${not info.workType.contains('BNOTW006')}">style="display: none;"</c:if>>
-                                                                                    <input type="text" autocomplete="off" name="otherWorkType--v--${status.index}" id="otherWorkType--v--${status.index}" value='<c:out value="${info.otherWorkType}"/>'/>
                                                                                 </div>
                                                                             </div>
                                                                             <span data-err-ind="workType--v--${status.index}" class="error-msg"></span>
@@ -162,6 +155,17 @@
                                                                         <div class="col-sm-5 control-label">
                                                                             <label for="procurementMode--v--${status.index}">Mode of Procurement</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
+                                                                        </div>
+                                                                        <div class="col-sm-6">
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <label for="procurementModeLocalTransfer--v--${status.index}">Yes</label>
+                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" value="BMOP001" <c:if test="${info.procurementMode eq 'BMOP001'}">checked="checked"</c:if> />
+                                                                            </div>
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <label for="procurementModeImport--v--${status.index}">No</label>
+                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" value="BMOP002" <c:if test="${info.procurementMode eq 'BMOP002'}">checked="checked"</c:if> />
+                                                                            </div>
+                                                                            <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
@@ -46,6 +47,7 @@ public class ApprovalBatAndActivityDelegator {
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final DocSettingService docSettingService;
 
+    @Autowired
     public ApprovalBatAndActivityDelegator(ApprovalBatAndActivityService approvalBatAndActivityService, ApprovalBatAndActivityClient approvalBatAndActivityClient, DocSettingService docSettingService) {
         this.approvalBatAndActivityService = approvalBatAndActivityService;
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
@@ -98,7 +100,7 @@ public class ApprovalBatAndActivityDelegator {
     public void preApprovalSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         //TODO: The facility value will be obtained from another method, and the method will be deleted
-        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getAllMainActivityApprovedFacility();
+        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getApprovedFacility();
         List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
         if (!CollectionUtils.isEmpty(facilityBasicInfoList)) {
             for (FacilityBasicInfo fac : facilityBasicInfoList) {
