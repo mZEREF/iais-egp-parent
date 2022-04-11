@@ -27,7 +27,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
             familyPlanDto = new FamilyPlanDto();
         }
 
-        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+        if("TOPCH003".equals(familyPlanDto.getContraHistory())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"mostRecentContraMethod");
             errorMap.putAll(result.retrieveAll());
         }
@@ -110,7 +110,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
                 errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
             }
         }
-        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+        if("TOPCH003".equals(familyPlanDto.getContraHistory())){
             if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
                 errorMap.putAll(result.retrieveAll());
