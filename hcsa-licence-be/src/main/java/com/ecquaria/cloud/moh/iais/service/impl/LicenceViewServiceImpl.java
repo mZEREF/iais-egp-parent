@@ -36,7 +36,6 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-    @Value("${iais.hmac.keyId}")
 
     @Override
     public AppSubmissionDto getAppSubmissionByAppId(String appId) {
