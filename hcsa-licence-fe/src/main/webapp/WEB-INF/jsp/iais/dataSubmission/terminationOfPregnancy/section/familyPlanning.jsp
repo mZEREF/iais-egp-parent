@@ -130,7 +130,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
+    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -139,7 +139,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004' || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
+    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP002') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -242,7 +242,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP004"){
+            if(mainTopReason == "TOPRTP004" || mainTopReason == 'TOPRTP002'){
                 $('#subRopReasons').show();
             }else {
                 $('#subRopReasons').hide();
