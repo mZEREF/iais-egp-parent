@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
@@ -534,6 +535,16 @@ public class DataSubmissionInboxDelegator {
 					}
 					if("DONOR".equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
 						if(licenceInboxClient.hasDonorSampleUseCycleByDonorSampleId(arSuperDataSubmissionDto.getDonorSampleDto().getId()).getEntity()){
+							return 2;
+						}
+					}
+				}
+				if(inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_DRP)){
+					DpSuperDataSubmissionDto dpSuperDataSubmissionDto=licenceInboxClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+					if("PATIENT".equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage())){
+						PatientDto patientDto=dpSuperDataSubmissionDto.getPatientDto();
+						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
+						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
 							return 2;
 						}
 					}
