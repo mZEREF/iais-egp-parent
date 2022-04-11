@@ -104,7 +104,6 @@ public class MohDsPrintDelegator {
                 dataSubmissionDto.setDeclaration(null);
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
-            return AppConsts.YES;
         }
         return AppConsts.YES;
     }
