@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -28,12 +29,9 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(httpServletRequest);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        int totalThawedMax =100;
-        int totalFreshMax =100;
-        if(arSuperDataSubmissionDto.getArCurrentInventoryDto()!=null){
-            totalThawedMax=arSuperDataSubmissionDto.getArCurrentInventoryDto().getThawedOocyteNum();
-            totalFreshMax=arSuperDataSubmissionDto.getArCurrentInventoryDto().getFreshOocyteNum();
-        }
+        int totalThawedMax = (int) ParamUtil.getSessionAttr(httpServletRequest,"totalThawedMax");
+        int totalFreshMax =(int) ParamUtil.getSessionAttr(httpServletRequest,"totalFreshMax");
+
         int totalThawedNum =0;
         int totalFreshNum =0;
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
