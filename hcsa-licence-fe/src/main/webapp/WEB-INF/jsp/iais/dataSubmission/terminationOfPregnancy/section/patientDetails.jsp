@@ -77,7 +77,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Ethnic Group" mandatory="true"/>
+                        <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroup" firstOption="Please Select"
                                          codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
