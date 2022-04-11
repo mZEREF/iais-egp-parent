@@ -7,21 +7,26 @@
         <iais:field width="5" value="Contraceptive History" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="contraHistory" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_HISTORY"
-                         value="${familyPlanDto.contraHistory}" cssClass="contraHistory"/>
+                         value="${familyPlanDto.contraHistory}" id="contraHistorys" cssClass="contraHistory"/>
         </iais:value>
     </iais:row>
-    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.contraHistory!='TOPCH001'}">style="display: none"</c:if>>
+    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.contraHistory!='TOPCH003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Most Recent Contraceptive Methods Used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="mostRecentContraMethod" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_METHODS"
-                             value="${familyPlanDto.mostRecentContraMethod}" id="ContraMethod" cssClass="mostRecentContraMethod" onchange="checkMantory(this, '#otherContraMethodLabel', 'TOPMRC007')"/>
+                             value="${familyPlanDto.mostRecentContraMethod}" id="contraMethod" cssClass="mostRecentContraMethod"/>
             </iais:value>
         </iais:row>
     </div>
         <iais:row>
-            <iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
-                        mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>
+            <label class="col-xs-5 col-md-4 control-label">Other Contraceptive Method Used
+                <span id="otherContraMethod" class="mandatory">
+                    <c:if test="${familyPlanDto.contraHistory =='TOPCH003' && familyPlanDto.mostRecentContraMethod =='TOPMRC007'}">*</c:if>
+                </span>
+            </label>
+            <%--<iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
+                        mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>--%>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
@@ -165,6 +170,7 @@
 </div>
 <script>
     $(document).ready(function() {
+        otherContraMethod();
         $('#subRopReason').change(function () {
             subRopReason();
         });
@@ -177,6 +183,18 @@
         gestAgeBaseOnUltrWeek();
         contraHistory();
     });
+    function otherContraMethod(){
+        $('#contraMethod,#contraHistorys').change(function () {
+            var contraHistory = $('#contraHistorys').val();
+            var mostRecentContraMethod = $('#contraMethod').val();
+            if(mostRecentContraMethod == "TOPMRC007" && contraHistory == "TOPCH003"){
+                $('#otherContraMethod').text('*');
+            }else {
+                $('#otherContraMethod').text('');
+            }
+        });
+    }
+
     function subRopReason() {
         var subRopReason= $('#subRopReason').val();
         if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
@@ -245,11 +263,11 @@
         });
     }
     function contraHistory(){
-        $('#contraHistory').change(function () {
+        $('#contraHistorys').change(function () {
 
-            var contraHistory= $('#contraHistory option:selected').val();
+            var contraHistory= $('#contraHistorys').val();
 
-            if(contraHistory == "TOPCH001"){
+            if(contraHistory == "TOPCH003"){
                 $('#mostRecentContraMethods').show();
             }else {
                 $('#mostRecentContraMethods').hide();
