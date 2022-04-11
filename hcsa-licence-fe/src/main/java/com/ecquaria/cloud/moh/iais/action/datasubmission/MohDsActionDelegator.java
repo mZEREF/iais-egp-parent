@@ -4,7 +4,17 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -18,7 +28,11 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.*;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -193,16 +207,19 @@ public class MohDsActionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
-                            countNo+=pgt.getIsPgtCoFunding();
+                        if (pgt.getIsPgtMEbt() + pgt.getIsPgtMCom() + pgt.getIsPgtMRare() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
+                            countNo += pgt.getIsPgtCoFunding();
                         }
-                        if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
-                            countNo+=pgt.getIsPgtCoFunding();
+                        if (pgt.getIsPgtSr() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
+                            countNo += pgt.getIsPgtCoFunding();
                         }
 
                     }
                 }
-                ParamUtil.setSessionAttr(request, "count",countNo);
+                ParamUtil.setSessionAttr(request, "count", countNo);
+            } else if (arSuper.getEmbryoTransferStageDto() != null) {
+                ParamUtil.setRequestAttr(request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuper));
+                ParamUtil.setRequestAttr(request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuper));
             }
         }
     }
