@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDataSubResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDataSubSearchDto;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -22,16 +23,15 @@ import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 
 @Slf4j
 @Delegator("bsbInboxDataSubDelegator")
 public class BsbInboxDataSubDelegator {
     private static final String KEY_INBOX_DATA_SUB_SEARCH_DTO = "inboxDataSubmissionSearchDto";
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
-    private static final String KEY_INBOX_APP_DATA_LIST = "dataList";
-
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
@@ -57,15 +57,22 @@ public class BsbInboxDataSubDelegator {
         InboxDataSubSearchDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_INBOX_DATA_SUB_SEARCH_DTO, searchDto);
 
+        // call API to get dashboard data
+        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
+
         // call API to get searched data
         ResponseDto<InboxDataSubResultDto> resultDto = inboxClient.getInboxDataSubmission(searchDto);
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APP_DATA_LIST, resultDto.getEntity().getDataSubInfos());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getDataSubInfos());
         } else {
             log.warn("Search Inbox Data Submission Fail");
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_INBOX_APP_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
             }
@@ -88,7 +95,7 @@ public class BsbInboxDataSubDelegator {
         HttpServletRequest request = bpc.request;
         InboxDataSubSearchDto searchDto = getSearchDto(request);
         String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_INBOX_DATA_SUB_SEARCH_DTO, searchDto);
     }

@@ -199,6 +199,7 @@ public class SupervisorAssignmentPoolDelegator {
             dto.defaultPaging();
 
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            dto.setUserId(loginContext.getUserId());
             dto.setRoleIds(Collections.singleton(loginContext.getCurRoleId()));
         }
         return dto;
@@ -211,7 +212,10 @@ public class SupervisorAssignmentPoolDelegator {
         dto.setSearchSubmissionType(request.getParameter("searchSubmissionType"));
         /* This is because we share the search dto with task list module,
          * When user open the common pool and task list at the same time, we set these columns to avoid error */
-        dto.setUserId(null);
+        if (dto.getUserId() == null) {
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            dto.setUserId(loginContext.getUserId());
+        }
         return dto;
     }
 }

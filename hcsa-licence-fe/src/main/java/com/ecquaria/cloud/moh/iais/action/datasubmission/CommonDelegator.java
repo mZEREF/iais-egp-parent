@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -243,7 +244,13 @@ public abstract class CommonDelegator {
         String status = cycle.getStatus();
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
-                status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
+                EndCycleStageDto endCycleStageDto = arSuperDataSubmission.getEndCycleStageDto();
+                // 80441
+                if (endCycleStageDto.getCycleAbandoned() != null && endCycleStageDto.getCycleAbandoned()) {
+                    status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_WITH_ABANDONED;
+                } else {
+                    status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
+                }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(stage)) {
                 EmbryoTransferredOutcomeStageDto outcomeStageDto = arSuperDataSubmission.getEmbryoTransferredOutcomeStageDto();
                 String transferedOutcome = outcomeStageDto.getTransferedOutcome();

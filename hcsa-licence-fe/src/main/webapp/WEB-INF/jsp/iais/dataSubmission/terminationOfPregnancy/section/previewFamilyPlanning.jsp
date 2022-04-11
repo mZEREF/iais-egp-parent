@@ -24,6 +24,14 @@
                         <iais:code code="${familyPlanDto.mostRecentContraMethod}"/>
                     </iais:value>
                 </iais:row>
+                <div <c:if test="${empty familyPlanDto.otherContraMethod}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Other Contraceptive Method Used"/>
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <c:out value="${familyPlanDto.otherContraMethod}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="No. of Previous Termination of Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">

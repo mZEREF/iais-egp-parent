@@ -24,8 +24,8 @@
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
                     <iais:field width="5" value="Please indicate IUI Co-funding"/>
-                    <iais:value width="7" cssClass="col-xs-7 col-md-7 control-label">
-                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"><iais:code code="${iuiTreatmentSubsidiesDto.artCoFunding}"/></span>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <iais:code code="${iuiTreatmentSubsidiesDto.artCoFunding}"/>
                     </iais:value>
                 </iais:row>
             <c:if test="${isDisplayAppeal}">

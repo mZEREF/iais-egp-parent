@@ -28,11 +28,9 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <c:if test="${isRfc}">
-                            <h1 class="font-weight 0">Amendment</h1>
-                        </c:if>
-                        <c:if test="${!isRfc}">
-                            <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                        <h1>${title}</h1>
+                        <c:if test="${not empty smallTitle}">
+                            <p style="font-size: 25px;">${smallTitle}</p>
                         </c:if>
                     </div>
                 </div>

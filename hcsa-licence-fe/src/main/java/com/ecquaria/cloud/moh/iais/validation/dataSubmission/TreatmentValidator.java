@@ -49,7 +49,7 @@ public class TreatmentValidator implements CustomizeValidator {
         }
         String livingChildrenNo = treatmentDto.getLivingChildrenNo();
         if(StringUtil.isNotEmpty(livingChildrenNo) && StringUtil.isNumber(livingChildrenNo)){
-            if(Integer.parseInt(livingChildrenNo) >=1){
+            if(Integer.parseInt(livingChildrenNo) >0){
                 if(StringUtil.isEmpty(lastChildBirthday)){
                     errorMap.put("lastChildBirthday", "GENERAL_ERR0006");
                 }

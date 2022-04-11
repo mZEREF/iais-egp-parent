@@ -62,9 +62,13 @@ public class TopAjaxController {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientInformationDto top = topPatientSelectService.getTopPatientSelect(idType, idNo, nationality, orgId);
+            if(top.getPatientAge() ==null){
+                top.setPatientAge(0);
+            }
             if (top != null) {
                 patientInformation = top;
             }
+
             try {
                 int age= -Formatter.compareDateByDay(top.getBirthData());
                 patientInformation.setPatientAge(age/365);

@@ -65,19 +65,36 @@ public class OnlineApptAjaxController {
             String actionButtonFlag = apptInspectionDateDto.getActionButtonFlag();
             //get inspection date
             if (AppConsts.SUCCESS.equals(actionButtonFlag)) {
-                //todo get inspection start date and end date from application
                 AppointmentDto appointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getApplicationId()).getEntity();
+                String startDateStr = appointmentDto.getStartDate();
+                //Compares user specified time with the current time
+                if (StringUtils.hasLength(startDateStr)){
+                    Date today = new Date();
+                    String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+                    try {
+                        today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
+                        Date startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+                        if (startDate.before(today)) {
+                            appointmentDto.setStartDate(null);
+                            appointmentDto.setEndDate(null);
+                        }
+                    } catch (ParseException e) {
+                        log.info("AppointmentDto: start date conversion Error!!!!!");
+                        log.error(e.getMessage(), e);
+                    }
+                }
+
                 List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
                 AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
                 appointmentUserDto.setLoginUserId(loginContext.getLoginId());
-                appointmentUserDto.setWorkHours(6);
+                appointmentUserDto.setWorkHours(8);
                 //
                 appointmentUserDto.setWorkGrpName("BSB-Inspect");
                 appointmentUserDtos.add(appointmentUserDto);
                 //set system key
                 appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
                 //get Start date and End date when application no date
-                if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+                if (!StringUtils.hasLength(appointmentDto.getStartDate()) && !StringUtils.hasLength(appointmentDto.getEndDate())) {
                     //todo get startDate and endDate from service table,no table now,set time as below
                     Calendar startCal = Calendar.getInstance();
                     //todo the startCal is submitDt + date
@@ -371,6 +388,15 @@ public class OnlineApptAjaxController {
         boolean newInspDateFlag = true;
         if (!CollectionUtils.isEmpty(appPremInspApptDraftDtos)) {
             newInspDateFlag = false;
+            Date startDate = appPremInspApptDraftDtos.get(0).getStartDate();
+            Date today = new Date();
+            if (startDate == null) {
+                newInspDateFlag = true;
+            } else {
+                if (startDate.before(today)) {
+                    newInspDateFlag = true;
+                }
+            }
         }
         return newInspDateFlag;
     }

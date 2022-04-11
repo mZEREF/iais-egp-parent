@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -16,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @Author: yichen
@@ -71,6 +75,45 @@ public final class EicRequestTrackingHelper {
 
     public AppEicClient getAppEicClient() {
         return this.appEicClient;
+    }
+
+    public <T> void callEicWithTrack(T obj, Consumer<T> consumer, String actionClass, String actionMethod, String currentApp,
+            String currentDomain, int client) {
+        callEicWithTrack(obj, (object) -> { consumer.accept(object); return null;}, actionClass, actionMethod,
+                currentApp, currentDomain, client);
+    }
+
+    public <T, R> R callEicWithTrack(T obj, Function<T, R> function, String actionClass, String actionMethod, String currentApp,
+            String currentDomain, int client) {
+        // 1) Create and save the tracking record into DB before everything
+        String dtoClsName = obj.getClass().getName();
+        if (List.class.isAssignableFrom(obj.getClass())) {
+            dtoClsName = String.class.getName();
+        }
+        EicRequestTrackingDto track = this.clientSaveEicRequestTracking(client, actionClass, actionMethod,
+                currentApp + "-" + currentDomain, dtoClsName, JsonUtil.parseToJson(obj));
+        //2) Before executing the EIC function set the running data
+        track.setProcessNum(track.getProcessNum() + 1);
+        Date now = new Date();
+        track.setFirstActionAt(now);
+        track.setLastActionAt(now);
+
+        R invoke = null;
+        try {
+            // 3) Call the EIC in a try catch
+            invoke = function.apply(obj);
+            // 4a) If success then update the tracking status to complete
+            track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        } catch (Exception e) {
+            // 4b) If failed, still needs to update the running data to DB.
+            track.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
+        }
+        log.info(StringUtil.changeForLog("Call Eic With Track: " + client + " - " + track.getModuleName()));
+        log.info(StringUtil.changeForLog(actionClass + " - " + actionMethod));
+        // 5) Update tracking
+        this.saveEicTrack(client, track);
+        return invoke;
     }
 
     public EicRequestTrackingDto clientSaveEicRequestTracking(int client, String actionClsName,

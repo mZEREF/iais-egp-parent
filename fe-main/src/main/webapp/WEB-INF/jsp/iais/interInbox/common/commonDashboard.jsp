@@ -11,6 +11,14 @@
     .dashboard-gp .dashboard-tile-item .dashboard-tile {
         height: 150px;
     }
+    .menuDropHeight{
+        width:530px !important;
+    }
+    <c:if test="${roleMenuForEServices == 2}">
+    .dashboard {
+        height: 425px;
+    }
+    </c:if>
 </style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">

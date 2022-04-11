@@ -126,7 +126,7 @@ function getDataForPrinting() {
     }
     var remarks = $('textarea[name="remarks"]').val();
     if (isEmpty(remarks)) {
-        return '';
+        remarks= '';
     }
     return {declaration: declaration,remarks: remarks, printflag: printflag};
 }

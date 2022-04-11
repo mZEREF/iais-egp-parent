@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
+package sg.gov.moh.iais.egp.bsb.dto.declaration;
 
 import lombok.Data;
 

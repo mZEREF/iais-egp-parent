@@ -25,4 +25,14 @@ public class InspectionConstants {
     public static final String KEY_REASON_FOR_EXTENSION = "reasonForExtension";
     public static final String KEY_NEW_SAVED_DOCUMENT = "newSavedDoc";
     public static final String KEY_SAVED_DOCUMENT = "oldSavedDoc";
+
+    //Reschedule Appointment
+    public static final String MODULE_NAME = "Inbox";
+    public static final String KEY_APPOINTMENT_LIST_DATA_LIST = "dataList";
+    public static final String KEY_APPOINTMENT_PAGE_INFO = "pageInfo";
+
+    public static final String KEY_APPOINTMENT_SEARCH_DTO = "apptSearchDto";
+
+    public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
+    public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 }

@@ -30,6 +30,8 @@ public class ApplicationDto extends BaseEntityDto {
 
     private String status;
 
+    private String facilityNo;
+
     private Date applicationDt;
 
     private LocalDate approvalDate;

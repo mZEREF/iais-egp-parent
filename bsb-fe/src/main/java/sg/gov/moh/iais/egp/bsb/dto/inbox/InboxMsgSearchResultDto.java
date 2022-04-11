@@ -14,5 +14,4 @@ import java.util.List;
 public class InboxMsgSearchResultDto {
     private PageInfo pageInfo;
     private List<BsbInboxDto> bsbInboxes;
-    private long unreadMsgAmt;
 }

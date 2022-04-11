@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
-import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +43,6 @@ import java.util.Map;
 @Slf4j
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
-
-    @Autowired
-    private EicGatewayClient eicGatewayClient;
 
     private final TemplatesService templatesService;
 
@@ -247,9 +243,9 @@ public class TemplatesDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
             return;
-        }else {
+        } else {
             templatesService.updateMsgTemplate(msgTemplateDto);
-            eicGatewayClient.syncTemplateFe(msgTemplateDto);
+            templatesService.syncTemplateFe(msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
         }
     }

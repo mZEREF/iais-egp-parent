@@ -23,6 +23,8 @@ public class ApprovalDto extends BaseEntityDto {
 
     private String status;
 
+    private String facilityNo;
+
     private LocalDate approvalDate;
 
     private LocalDate approvalStartDate;

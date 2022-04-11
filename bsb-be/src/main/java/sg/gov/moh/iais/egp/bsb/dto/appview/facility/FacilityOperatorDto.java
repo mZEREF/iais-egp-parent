@@ -2,14 +2,13 @@ package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 
 @Data
-public class FacilityOperatorDto implements Serializable {
+public class FacilityOperatorDto {
     private String facOperator;
+    private String salutation;
     private String designeeName;
-    private String nationality;  // use custom validation, need to call DB to get the master code
+    private String nationality;
     private String idType;
     private String idNumber;
     private String designation;

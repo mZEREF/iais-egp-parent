@@ -141,10 +141,10 @@
                     <iais:field width="5" value="Ethnic Group" id="ethnicGroupLabel" mandatory="${patientDto.nationality eq 'NAT0001' ? true : false}"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="VSS_ETHNIC_GROUP"
-                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOthers')" />
+                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ECGP004', 'ethnicOtherss')" />
                     </iais:value>
                 </iais:row>
-                <iais:row id="ethnicOthers" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
+                <iais:row id="ethnicOtherss" style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
                     <iais:field value="Ethnic Group (Others)" width="5"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="20" type="text" name="ethnicGroupOther" id="ethnicGroupOther" value="${patientDto.ethnicGroupOther}"/>

@@ -205,4 +205,28 @@ $(function () {
 
         $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
     });
+
+
+    $("#retrieveAddressBtn").click(function retrieveAddress() {
+        var postalCode = $("#postalCodeN").val();
+        if (!postalCode) {
+            return false;
+        }
+        $.ajax({
+            type:"GET",
+            url:"/bsb-fe/address-info/" + postalCode,
+            dataType: 'json',
+            error:function(data){
+                $("#invalidPostalCodeModal").modal('show');
+            },
+            success:function(data) {
+                $("#addressType").val(data.address_type);
+                $("#blockN").val(data.block_no);
+                $("#floorN").val(data.floor);
+                $("#unitNoN").val(data.unit_no);
+                $("#streetNameN").val(data.street);
+                $("#buildingNameN").val(data.building);
+            }
+        });
+    });
 });

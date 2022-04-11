@@ -11,10 +11,10 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.CancellationApprovalDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationAFCDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.deregorcancellation.DeRegistrationFacilityDto;
-import sg.gov.moh.iais.egp.bsb.dto.appview.facility.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.inspection.RectifyFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.datasubmission.DataSubmissionInfo;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 
 import java.util.List;
 

@@ -44,10 +44,9 @@
                         <div id="searchCondition" class="collapse" aria-expanded="true" >
     <%--                            Details of Patient--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Patient" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Patient</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
                                     <iais:value width="7" cssClass="col-md-7" >
@@ -79,10 +78,9 @@
                             </div>
         <%--                            Details of Submission--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Submission" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Submission</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Submission ID"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
@@ -104,10 +102,9 @@
                             </div>
     <%--                            Details of Husband--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Husband" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Husband</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Husband Name"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
@@ -130,10 +127,9 @@
                             </div>
     <%--                            Details of AR Centre--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of AR Centre" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of AR Centre</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="AR Centre" />
                                     <iais:value width="7" cssClass="col-md-7">
@@ -157,10 +153,9 @@
                             </div>
     <%--                            Details of Cycle Stages--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Cycle Stages" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Cycle Stages</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Status"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
@@ -312,10 +307,9 @@
                             </div>
     <%--                            Details of Donor Sample--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Donor Sample" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Donor Sample</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Donor Gamete (i.e. Oocyte/Embryo/Sperm) Used" />
                                     <iais:value width="3" cssClass="col-md-3 row">
@@ -364,10 +358,9 @@
                             </div>
     <%--                            Details of Storage--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Storage" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Storage</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="No. Removed from Storage"/>
                                     <iais:value width="7" cssClass="col-md-7" >
@@ -405,10 +398,9 @@
                             </div>
     <%--                            Details of Fertilisation--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Fertilisation" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Fertilisation</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="Source of Semen"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
@@ -471,10 +463,9 @@
                             </div>
     <%--                            Details of Embryo Transfer & Outcome--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Embryo Transfer & Outcome" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Embryo Transfer & Outcome</h3>
+                                </div>
                                 <iais:row>
                                     <iais:field width="4" value="No. of Embryos Transferred" />
                                     <div class="col-md-8 row">
@@ -754,10 +745,9 @@
                             </div>
         <%--                            Details of Treatment Subsidies--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Treatment Subsidies" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Treatment Subsidies</h3>
+                                </div>
 
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on ART co-funding?" />
@@ -853,10 +843,9 @@
                             </div>
         <%--                            Details of Disposal--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Disposal" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Disposal</h3>
+                                </div>
 
                                 <iais:row>
                                     <iais:field width="4" value="Disposal of" />
@@ -969,10 +958,9 @@
                             </div>
         <%--                            Details of Transfer In & Out--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of Transfer In & Out" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of Transfer In & Out</h3>
+                                </div>
 
                                 <iais:row>
                                     <iais:field width="4" value="Is this a Transfer In or Out?" />
@@ -1074,10 +1062,9 @@
                             </div>
         <%--                            Details of PGT--%>
                             <div class="col-xs-10 col-md-10">
-                                <iais:row>
-                                    <iais:field width="4" value="Details of PGT" />
-                                </iais:row>
-                                <hr>
+                                <div class="bg-title col-xs-12 col-md-12">
+                                    <h3>Details of PGT</h3>
+                                </div>
 
                                 <iais:row>
                                     <iais:field width="4" value="PGT" />

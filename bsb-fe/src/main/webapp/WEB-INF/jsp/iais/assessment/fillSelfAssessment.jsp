@@ -17,21 +17,38 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-assessment.js"></script>
 
 
-<%@include file="dashboard.jsp"%>
+<%@include file="dashboard.jsp" %>
 
 
 <div class="main-content">
     <div class="container">
-        <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+        <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="action_type" value="">
             <input type="hidden" name="action_value" value="">
             <input type="hidden" name="action_additional" value="">
-
+            <span class="error-msg"><c:out value="${error_message}"/></span>
+            <div class="dashboard-gp" style="margin-top: 30px">
+                <c:forEach var="checklistConfigDto" items="${checklistConfigDtos}" varStatus="status">
+                    <div class="dashboard-tile-item">
+                        <div class="dashboard-tile" id="myBody">
+                            <a data-tab="#tabInbox"
+                               onclick="javascript:switchNextStep('config-${status.index}');">
+                                <c:choose>
+                                    <c:when test="${checklistConfigDto.common eq true}">
+                                        <p class="dashboard-txt">General Regulation</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="dashboard-txt">BSB Regulation</p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </a>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
             <div>
-                <span class="error-msg"><c:out value="${error_message}"/></span>
-
-                <%@include file="../chklst/checkListAnswer.jsp"%>
+                <%@include file="../chklst/checkListAnswer.jsp" %>
             </div>
 
             <div>

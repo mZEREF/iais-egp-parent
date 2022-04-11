@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApprovalBatAndActivity" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="-240" y="24">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="-168" y="24">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreBegin" x="-72" y="21">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preBegin_OnStepProcess_0" name="preBegin_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreApprovalSelection" x="-108" y="108">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preApprovalSelection_OnStepProcess_0" name="preApprovalSelection_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacProfile" x="-96" y="276">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacProfile_OnStepProcess_0" name="preFacProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrePossessBatDetails" x="-120" y="360">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePossessBatDetails_OnStepProcess_0" name="prePossessBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreLargeBatDetails" x="-120" y="468">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preLargeBatDetails_OnStepProcess_0" name="preLargeBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreSpecialBatDetails" x="-120" y="552">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preSpecialBatDetails_OnStepProcess_0" name="preSpecialBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFacAuthorised" x="-120" y="636">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacAuthorised_OnStepProcess_0" name="preFacAuthorised_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreActivityDetails" x="-108" y="720">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preActivityDetails_OnStepProcess_0" name="preActivityDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrePrimaryDoc" x="-96" y="792">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePrimaryDoc_OnStepProcess_0" name="prePrimaryDoc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrePreview" x="-96" y="888">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prePreview_OnStepProcess_0" name="prePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleBegin" x="264" y="36">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleBegin_OnStepProcess_0" name="handleBegin_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleApprovalSelection" x="224" y="119">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleApprovalSelection_OnStepProcess_0" name="handleApprovalSelection_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacProfile" x="252" y="276">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacProfile_OnStepProcess_0" name="handleFacProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePossessBatDetails" x="228" y="372">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePossessBatDetails_OnStepProcess_0" name="handlePossessBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleLargeBatDetails" x="228" y="468">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleLargeBatDetails_OnStepProcess_0" name="handleLargeBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleSpecialBatDetails" x="228" y="552">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleSpecialBatDetails_OnStepProcess_0" name="handleSpecialBatDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFacAuthorised" x="228" y="624">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFacAuthorised_OnStepProcess_0" name="handleFacAuthorised_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleActivityDetails" x="216" y="720">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleActivityDetails_OnStepProcess_0" name="handleActivityDetails_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePrimaryDoc" x="216" y="792">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePrimaryDoc_OnStepProcess_0" name="handlePrimaryDoc_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePreview" x="228" y="888">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePreview_OnStepProcess_0" name="handlePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="JumpFilter" x="-228" y="960">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpFilter_OnStepProcess_0" name="jumpFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ActionFilter" x="408" y="336">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="564" y="948">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Print" x="588" y="648">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="print_OnStepProcess_0" name="print_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreCompanyInfo" x="-96" y="192">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCompanyInfo_OnStepProcess_0" name="preCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleCompanyInfo" x="228" y="192">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleCompanyInfo_OnStepProcess_0" name="handleCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BeginPage" stageIndicator="" x="84" y="24">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ApprovalSelectionPage" stageIndicator="" x="48" y="108">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacProfilePage" stageIndicator="" x="72" y="276">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PossessBatDetailsPage" stageIndicator="" x="48" y="360">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="LargeBatDetailsPage" stageIndicator="" x="48" y="468">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SpecialBatDetailsPage" stageIndicator="" x="36" y="552">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacAuthorisedPage" stageIndicator="" x="48" y="636">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ActivityDetailsPage" stageIndicator="" x="48" y="720">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrimaryDocPage" stageIndicator="" x="48" y="792">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewPage" stageIndicator="" x="48" y="888">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowledgePage" stageIndicator="" x="552" y="840">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrintPage" stageIndicator="" x="576" y="564">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfoPage" stageIndicator="" x="60" y="192">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(-220,44)(-148,44)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBegin" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
+   <position>{(-148,44)(-52,41)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/BeginPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreBegin" style="oblique">
+   <position>{(-52,41)(104,44)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleBegin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BeginPage" style="oblique">
+   <position>{(104,44)(284,56)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreBegin" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-52,41)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreApprovalSelection" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-88,128)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ApprovalSelectionPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreApprovalSelection" style="oblique">
+   <position>{(-88,128)(68,128)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleApprovalSelection" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ApprovalSelectionPage" style="oblique">
+   <position>{(68,128)(244,139)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleBegin" style="oblique">
+   <position>{(284,56)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleApprovalSelection" style="oblique">
+   <position>{(244,139)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacProfile" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-76,296)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacProfilePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacProfile" style="oblique">
+   <position>{(-76,296)(92,296)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacProfile" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacProfilePage" style="oblique">
+   <position>{(92,296)(272,296)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacProfile" style="oblique">
+   <position>{(272,296)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePossessBatDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-100,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PossessBatDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrePossessBatDetails" style="oblique">
+   <position>{(-100,380)(68,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePossessBatDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PossessBatDetailsPage" style="oblique">
+   <position>{(68,380)(248,392)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePossessBatDetails" style="oblique">
+   <position>{(248,392)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreLargeBatDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-100,488)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/LargeBatDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreLargeBatDetails" style="oblique">
+   <position>{(-100,488)(68,488)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleLargeBatDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LargeBatDetailsPage" style="oblique">
+   <position>{(68,488)(248,488)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleLargeBatDetails" style="oblique">
+   <position>{(248,488)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreSpecialBatDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-100,572)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFacAuthorised" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-100,656)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreActivityDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-88,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePrimaryDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-76,812)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-76,908)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SpecialBatDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreSpecialBatDetails" style="oblique">
+   <position>{(-100,572)(56,572)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSpecialBatDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SpecialBatDetailsPage" style="oblique">
+   <position>{(56,572)(248,572)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacAuthorisedPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreFacAuthorised" style="oblique">
+   <position>{(-100,656)(68,656)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFacAuthorised" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FacAuthorisedPage" style="oblique">
+   <position>{(68,656)(248,644)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ActivityDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreActivityDetails" style="oblique">
+   <position>{(-88,740)(68,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleActivityDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ActivityDetailsPage" style="oblique">
+   <position>{(68,740)(236,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrimaryDocPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrePrimaryDoc" style="oblique">
+   <position>{(-76,812)(68,812)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePrimaryDoc" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PrimaryDocPage" style="oblique">
+   <position>{(68,812)(236,812)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreviewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrePreview" style="oblique">
+   <position>{(-76,908)(68,908)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewPage" style="oblique">
+   <position>{(68,908)(248,908)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleSpecialBatDetails" style="oblique">
+   <position>{(248,572)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleFacAuthorised" style="oblique">
+   <position>{(248,644)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleActivityDetails" style="oblique">
+   <position>{(236,740)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePrimaryDoc" style="oblique">
+   <position>{(236,812)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePreview" style="oblique">
+   <position>{(248,908)(428,356)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="oblique">
+   <position>{(428,356)(428,968)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(428,968)(584,968)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
+   <position>{(584,968)(572,860)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PostSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AcknowledgePage" style="oblique">
+   <position>{(572,860)(596,776)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Print" linkstyle="Direct" name="" sourceName="/Switches/Switch/PostSwitch" style="oblique">
+   <position>{(596,776)(608,668)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrintPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Print" style="oblique">
+   <position>{(608,668)(596,584)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/JumpFilter" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(428,968)(-208,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PageJumpSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/JumpFilter" style="oblique">
+   <position>{(-208,980)(-232,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompanyInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(-232,380)(-76,212)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CompanyInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreCompanyInfo" style="oblique">
+   <position>{(-76,212)(80,212)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleCompanyInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfoPage" style="oblique">
+   <position>{(80,212)(248,212)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleCompanyInfo" style="oblique">
+   <position>{(248,212)(428,356)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="PageJumpSwitch" x="-252" y="360">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreBegin" value="&quot;begin&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreApprovalSelection" value="&quot;approvalSelection&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacProfile" value="&quot;appInfo_facProfile&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrePossessBatDetails" value="&quot;appInfo_possessBat&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreLargeBatDetails" value="&quot;appInfo_largeBat&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreSpecialBatDetails" value="&quot;appInfo_specialBat&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreFacAuthorised" value="&quot;appInfo_facAuthorised&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreActivityDetails" value="&quot;appInfo_facActivity&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrePrimaryDoc" value="&quot;primaryDoc&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrePreview" value="&quot;preview&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreCompanyInfo" value="&quot;companyInfo&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="ActionSwitch" x="408" y="948">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/JumpFilter" value="&quot;jump&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="PostSwitch" x="576" y="756">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Print" value="&quot;print&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>

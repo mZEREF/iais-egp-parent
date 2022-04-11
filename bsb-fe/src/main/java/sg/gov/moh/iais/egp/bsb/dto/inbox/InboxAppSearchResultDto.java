@@ -10,5 +10,4 @@ import java.util.List;
 public class InboxAppSearchResultDto {
     private PageInfo pageInfo;
     private List<AppMainInfo> applications;
-    private long unreadMsgAmt;
 }

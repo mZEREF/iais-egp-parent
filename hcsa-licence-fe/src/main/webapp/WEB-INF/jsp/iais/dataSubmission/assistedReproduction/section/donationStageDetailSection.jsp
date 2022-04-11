@@ -74,7 +74,7 @@
                                         class="check-circle"></span><iais:code code="DONTY004"/></label>
                             </div>
                         </iais:value>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedType"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedType" style="padding-right: 15px;padding-left: 15px;"></span>
                     </div>
                 </iais:row>
                 <iais:row>
@@ -147,7 +147,7 @@
                                         class="check-square"></span>Treatment</label>
                             </div>
                         </iais:value>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedFor"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedFor" style="padding-right: 15px;padding-left: 15px;"></span>
                     </div>
 
                 </iais:row>
@@ -204,7 +204,7 @@
                                        for="donatedForResearchOther"><span
                                         class="check-square"></span>Other Type of Research</label>
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchBox"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchBox" style="padding-right: 15px;padding-left: 15px;"></span>
                         </iais:value>
                     </iais:row>
                     <div id="donatedForResearchOtherDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchOther !=1 }">style="display: none"</c:if>>

@@ -21,6 +21,8 @@ public class SelfAssessmtChklDto extends BaseEntityDto {
 
     private String rfiId;
 
+    private String commonChkLstConfigId;
+
     private String chkLstConfigId;
 
     private String answer;

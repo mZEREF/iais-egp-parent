@@ -28,9 +28,9 @@
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
                     <%@ include file="../InnerNavBar.jsp"%>
 
-                    <div class="tab-content">
+                    <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-                            <div id="searchPanel" class="tab-search">
+                            <div id="searchPanel" class="tab-search" style="padding: 0 90px">
 
                                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <input type="hidden" name="action_type" value="">
@@ -88,10 +88,10 @@
                                         <span data-err-ind="searchSubmissionDateTo" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="row text-right text-center-mobile">
-                                    <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
-                                    <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
-                                </div>
+                            </div>
+                            <div class="row text-right text-center-mobile">
+                                <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                             </div>
 
                             <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>

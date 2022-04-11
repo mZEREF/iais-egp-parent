@@ -67,16 +67,18 @@ function multiAssignCancel() {
     $('#multiAssignAlert').modal('hide');
 }
 
-function viewTaskDetail(id) {
+function viewTaskDetail(id,appId) {
     showWaiting();
     $("[name='action_type']").val("detail");
     $("[name='action_value']").val(id);
+    $("[name='appId']").val(appId);
     $("#mainForm").submit();
 }
 
-function reassignTask(id) {
+function reassignTask(id,appId) {
     showWaiting();
     $("[name='action_type']").val("reassign");
     $("[name='action_value']").val(id);
+    $("[name='appId']").val(appId);
     $("#mainForm").submit();
 }

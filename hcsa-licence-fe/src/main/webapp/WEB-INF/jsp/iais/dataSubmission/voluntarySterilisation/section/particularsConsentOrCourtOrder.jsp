@@ -138,7 +138,7 @@
                                                                                         class="btn btn-file-upload btn-secondary"
                                                                                         onclick="clearFlagValueFEFile()">Upload</a>
                             </div>
-                    <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_selectedVssFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
         </div>
@@ -148,12 +148,6 @@
 <%@ include file="../../../appeal/FeFileCallAjax.jsp" %>
 <script>
 
-/*
-    $(document).ready(function () {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("ZIP, PDF, DOC*, XLS*");
-    });
-*/
 
     function doUserRecUploadConfirmFile(event) {
         uploadFileValidate();

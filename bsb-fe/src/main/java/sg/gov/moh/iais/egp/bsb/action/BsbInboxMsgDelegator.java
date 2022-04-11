@@ -15,28 +15,27 @@ import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgContentDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.MsgMaskParam;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
+
 
 @Slf4j
 @Delegator("bsbInboxMsgDelegator")
 public class BsbInboxMsgDelegator {
-    private static final String KEY_INBOX_MSG_SEARCH_DTO = "inboxMsgSearchDto";
     private static final String KEY_INBOX_MSG_PAGE_INFO = "pageInfo";
-    private static final String KEY_INBOX_MSG_DATA_LIST = "dataList";
-    private static final String KEY_INBOX_MSG_UNREAD_AMT = "unreadMsgAmt";
-
-    private static final String KEY_ACTION_TYPE = "action_type";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
 
     private static final String KEY_SEARCH_MSG_TYPE = "searchMsgType";
     private static final String KEY_SEARCH_APP_TYPE = "searchAppType";
@@ -67,23 +66,27 @@ public class BsbInboxMsgDelegator {
         InboxMsgSearchDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
 
+        // call API to get dashboard data
+        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
+
         // call API to get searched data
         ResponseDto<InboxMsgSearchResultDto> resultDto = inboxClient.getInboxMsg(searchDto);
 
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_DATA_LIST, resultDto.getEntity().getBsbInboxes());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, resultDto.getEntity().getUnreadMsgAmt());
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getBsbInboxes());
         } else {
             log.warn("get inbox message API doesn't return ok, the response is {}", resultDto);
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_DATA_LIST, new ArrayList<>());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, 0);
+            ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
         }
 
         // get select options
-        List<SelectOption> inboxMsgTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INBOX_MESSAGE_TYPE);
-        ParamUtil.setRequestAttr(request, "msgTypeOps", inboxMsgTypeOps);
+        ParamUtil.setRequestAttr(request, "msgTypeOps", MasterCodeHolder.MSG_TYPE.allOptions());
         List<SelectOption> inboxAppTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
         ParamUtil.setRequestAttr(request, "msgAppTypeOps", inboxAppTypeOps);
     }
@@ -121,7 +124,7 @@ public class BsbInboxMsgDelegator {
         HttpServletRequest request = bpc.request;
         InboxMsgSearchDto searchDto = getSearchDto(request);
         String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
     }

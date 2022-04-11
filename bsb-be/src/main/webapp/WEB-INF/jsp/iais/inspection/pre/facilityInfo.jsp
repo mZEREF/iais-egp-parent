@@ -41,19 +41,12 @@
         </div>
     </div>
 </div>
-
-<c:set var="maskedAppId" value="${MaskUtil.maskValue('appId', appId)}"/>
-<c:set var="maskedAppViewModuleType" value="${MaskUtil.maskValue('appViewModuleType', appViewModuleType)}"/>
-<div style="text-align: center">
-    <a href="javascript:void(0);" onclick="viewApplication('${maskedAppId}', '${maskedAppViewModuleType}')">
-        <button type="button" class="btn btn-primary">
-            View Application
-        </button>
-    </a>
-
-    <c:if test="${selfAssessmentUnavailable == null || !selfAssessmentUnavailable}">
-    <button id="viewSelfAssessmt" type="button" class="btn btn-primary">
-        Self-Assessment Checklists
-    </button>
-    </c:if>
-</div>
+<c:choose>
+    <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
+    <c:when test="${goBackUrl ne null}">
+        <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+    </c:when>
+    <c:otherwise>
+        <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+    </c:otherwise>
+</c:choose>

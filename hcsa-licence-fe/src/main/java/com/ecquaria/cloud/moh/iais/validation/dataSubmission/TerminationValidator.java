@@ -20,7 +20,10 @@ public class TerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+        if(StringUtil.isEmpty(terminationDto)){
+            terminationDto=new TerminationDto();
+        }
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"drugType");
             errorMap.putAll(result.retrieveAll());
         }
@@ -34,7 +37,7 @@ public class TerminationValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
         }
-        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"performedOwn");
             errorMap.putAll(result.retrieveAll());
         }
@@ -45,7 +48,7 @@ public class TerminationValidator implements CustomizeValidator {
                 }
             }
         }
-        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
             if(!StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
                 if(terminationDto.getPregnancyOwn() == false){
                     if(StringUtil.isEmpty(terminationDto.getPrescribeTopPlace())){
@@ -54,7 +57,7 @@ public class TerminationValidator implements CustomizeValidator {
                 }
             }
         }
-        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
             if(!StringUtil.isEmpty(terminationDto.getTakenOwn())){
                 if(terminationDto.getTakenOwn() == false){
                     if(StringUtil.isEmpty(terminationDto.getTopDrugPlace())){
@@ -62,6 +65,9 @@ public class TerminationValidator implements CustomizeValidator {
                     }
                 }
             }
+        }
+        if(StringUtil.isEmpty(terminationDto.getComplicationForOperRslt())){
+            errorMap.put("complicationForOperRslt", "GENERAL_ERR0006");
         }
         return errorMap;
     }

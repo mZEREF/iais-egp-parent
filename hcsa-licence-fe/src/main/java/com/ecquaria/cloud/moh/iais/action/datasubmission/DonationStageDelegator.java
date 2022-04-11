@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,7 +71,8 @@ public class DonationStageDelegator extends CommonDelegator{
         for (PremisesDto premisesDto : premisesDtos) {
             premisesSel.add(new SelectOption( premisesDto.getId(), premisesDto.getPremiseLabel()));
         }
-
+        Collections.sort(premisesSel);
+        premisesSel.add(0, new SelectOption("", "Please Select"));
         ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",premisesSel);
     }
 

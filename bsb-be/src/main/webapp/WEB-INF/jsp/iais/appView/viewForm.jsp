@@ -11,6 +11,8 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-data-file.js"></script>
+<%--@elvariable id="appViewModuleType" type="java.lang.String"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <div class="main-content">
         <div class="container">

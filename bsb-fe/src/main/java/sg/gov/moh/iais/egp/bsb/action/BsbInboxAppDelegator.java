@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -31,7 +32,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbInboxAppDelegator")
 public class BsbInboxAppDelegator {
     private static final String KEY_INBOX_APP_PAGE_INFO = "pageInfo";
-    private static final String KEY_INBOX_MSG_UNREAD_AMT = "unreadMsgAmt";
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
@@ -57,17 +57,22 @@ public class BsbInboxAppDelegator {
         InboxAppSearchDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_INBOX_APP_SEARCH_DTO, searchDto);
 
+        // call API to get dashboard data
+        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
+        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
+
         // call API to get searched data
         ResponseDto<InboxAppSearchResultDto> resultDto = inboxClient.getInboxApplication(searchDto);
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getApplications());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, resultDto.getEntity().getUnreadMsgAmt());
         } else {
             log.warn("Search Inbox Application Fail");
             ParamUtil.setRequestAttr(request, KEY_INBOX_APP_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_UNREAD_AMT, 0);
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
             }

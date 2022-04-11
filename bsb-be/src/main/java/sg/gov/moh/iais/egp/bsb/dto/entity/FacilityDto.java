@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -56,6 +57,14 @@ public class FacilityDto extends BaseEntityDto {
     private String isProtected;
 
     private String facilityNo;
+
+    private String status;
+
+    private LocalDate effectiveStartDate;
+
+    private LocalDate effectiveEndDate;
+
+    private String useStatus;
 
     private Boolean blockFlag;
 }

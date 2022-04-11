@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -38,11 +37,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -482,7 +481,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getEmbryologist()!=null){
                 filter.put("embryologist",arDto.getEmbryologist());
             }
-            if(arDto.getEmbryologist()!=null){
+            if(arDto.getArPractitioner()!=null){
                 filter.put("arPractitioner",arDto.getArPractitioner());
             }
 
@@ -1106,6 +1105,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
             }
             if(patientInfoDto!=null){
+                DsRfcHelper.handle(patientInfoDto);
                 ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
                 ParamUtil.setSessionAttr(request,"arViewFull",null);
 
@@ -1459,18 +1459,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 .orElse(null);
         if (DataSubmissionConsts.DS_CYCLE_PATIENT_ART.equals(cycelType)) {
             PatientInfoDto patientInfoDto=arSuper.getPatientInfoDto();
-            if (patientInfoDto.getPatient() != null) {
-                PatientDto patient = patientInfoDto.getPatient();
-                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
-            }
-            if (patientInfoDto.getPrevious() != null) {
-                PatientDto patient = patientInfoDto.getPrevious();
-                patient.setAgeFlag(getAgeFlag(patient.getBirthDate(), "Patient"));
-            }
-            if (patientInfoDto.getHusband() != null) {
-                HusbandDto husband = patientInfoDto.getHusband();
-                husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), "Husband"));
-            }
+            DsRfcHelper.handle(patientInfoDto);
         }
 
         if (arSuper != null) {
@@ -1585,23 +1574,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
 
-    public static String getAgeFlag(String birthDate, String person) {
-        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate)) {
-            return "";
-        }
-        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
-        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
-        int age = Formatter.getAge(birthDate);
-        if (Integer.parseInt(age1) <= age && age <= Integer.parseInt(age2)) {
-            return "";
-        }
-        Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
-        repMap.put("0", age1);
-        repMap.put("1", age2);
-        repMap.put("2", person);
-        return MessageUtil.getMessageDesc("DS_MSG005", repMap);
-
-    }
 
 
 

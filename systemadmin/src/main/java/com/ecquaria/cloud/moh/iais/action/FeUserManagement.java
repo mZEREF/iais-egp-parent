@@ -25,13 +25,18 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.FeUserConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import java.io.Serializable;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +44,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -51,7 +64,7 @@ public class FeUserManagement {
     @Autowired
     IntranetUserService intranetUserService;
     @Autowired
-    EicRequestTrackingHelper requestTrackingHelper;
+    private EicRequestTrackingHelper requestTrackingHelper;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -76,7 +89,7 @@ public class FeUserManagement {
 
     public void search(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc.request,false);
-        String idNo = ParamUtil.getRequestString(bpc.request,FeUserConstants.ID_NUMBER);
+        String idNo = ParamUtil.getRequestString(bpc.request, FeUserConstants.ID_NUMBER);
         String designation = ParamUtil.getRequestString(bpc.request,FeUserConstants.DESIGNATION);
         String uenNo = ParamUtil.getRequestString(bpc.request,FeUserConstants.SESSION_USER_UEN_NAME);
         String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
@@ -133,7 +146,7 @@ public class FeUserManagement {
                             .findAny();
                     user.ifPresent(i -> {
                         i.setStatus(AppConsts.COMMON_STATUS_DELETED);
-                        eicGatewayClient.syncFeUser(i);
+                        syncFeUserWithTrack(i);
                         intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
                     });
 
@@ -339,6 +352,11 @@ public class FeUserManagement {
         orgUserRoleDto.setAuditTrailDto(att);
         orgUserRoleDtoList.add(orgUserRoleDto);
     }
+
+    public void syncFeUserWithTrack(FeUserDto userAttr) {
+        eicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser");
+    }
+
     public void syncFeUser(FeUserDto userAttr) {
         eicGatewayClient.syncFeUser(userAttr);
     }

@@ -36,11 +36,9 @@
                 <table aria-describedby="" class="table" border="1">
                     <thead>
                         <tr>
-                            <th scope="col" >No.</th>
+                            <th scope="col" >SN</th>
                             <th scope="col" >Facility Name</th>
-                            <th scope="col" >Address</th>
-                            <th scope="col" >Classification</th>
-                            <th scope="col" >Activity</th>
+                            <th scope="col" >Facility Classification</th>
                             <th scope="col" >Action</th>
                         </tr>
                     </thead>
@@ -48,9 +46,7 @@
                         <tr>
                             <td>1</td>
                             <td>${dataDto.facName}</td>
-                            <td>${TableDisplayUtil.getOneLineAddress(dataDto.blk, dataDto.street, dataDto.floor, dataDto.unit, dataDto.postalCode)}</td>
                             <td>${dataDto.classification}</td>
-                            <td>${dataDto.activity}</td>
                             <td>
                                 <c:forEach var="action" items="${actions}" varStatus="status">
                                     <c:choose>

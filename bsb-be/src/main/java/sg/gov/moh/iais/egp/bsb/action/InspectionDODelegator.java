@@ -228,7 +228,8 @@ public class InspectionDODelegator {
             List<ChklstItemAnswerDto> answerDtoList = new ArrayList<>(answerMap.size());
             for (Map.Entry<String, String> entry : answerMap.entrySet()) {
                 String[] keyParts = entry.getKey().split(KEY_SEPARATOR);
-                ChklstItemAnswerDto a = new ChklstItemAnswerDto(keyParts[0], keyParts[1], entry.getValue());
+                //TODO ChklstItemAnswerDto structure has been change
+                ChklstItemAnswerDto a = new ChklstItemAnswerDto(keyParts[0], keyParts[0], keyParts[1], entry.getValue(), "");
                 answerDtoList.add(a);
             }
             ObjectMapper mapper = new ObjectMapper();

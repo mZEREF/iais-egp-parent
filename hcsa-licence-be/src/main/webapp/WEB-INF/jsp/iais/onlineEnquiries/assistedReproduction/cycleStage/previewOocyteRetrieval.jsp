@@ -24,7 +24,7 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>

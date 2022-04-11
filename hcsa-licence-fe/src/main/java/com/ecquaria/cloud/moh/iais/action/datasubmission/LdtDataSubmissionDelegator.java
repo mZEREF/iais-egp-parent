@@ -324,10 +324,6 @@ public class LdtDataSubmissionDelegator {
      */
     public void prepareStepData(BaseProcessClass bpc) {
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
-        if (ldtSuperDataSubmissionDto == null) {
-            ldtSuperDataSubmissionDto = initLdtSuperDataSubmissionDto(bpc.request);
-        }
-
         DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
         if (dsLaboratoryDevelopTestDto == null) {
             dsLaboratoryDevelopTestDto = new DsLaboratoryDevelopTestDto();
@@ -374,6 +370,14 @@ public class LdtDataSubmissionDelegator {
         if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType) || DataSubmissionConstant.CRUD_TYPE_RFC.equals(crudType)) {
             setSelectOptions(bpc);
         }
+        LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
+        if (ldtSuperDataSubmissionDto == null) {
+            ldtSuperDataSubmissionDto = initLdtSuperDataSubmissionDto(bpc.request);
+            DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);
+        }
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(ldtSuperDataSubmissionDto.getAppType()));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_LDT,
+                ldtSuperDataSubmissionDto.getAppType(), ldtSuperDataSubmissionDto.getSubmissionType()));
     }
 
     private boolean isRfc(HttpServletRequest request) {

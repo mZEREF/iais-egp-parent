@@ -36,11 +36,11 @@ public class FamilyPlanValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP002".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP002".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
             errorMap.putAll(result.retrieveAll());
         }
@@ -54,9 +54,16 @@ public class FamilyPlanValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
         }
+        int m=0;
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
             if(!StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
                 errorMap.put("gestAgeBaseOnUltrWeek", "GENERAL_ERR0002");
+            }
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek());
+            if(f<m){
+                errorMap.put("gestAgeBaseOnUltrWeek", "Negative numbers are not allowed on this field.");
             }
         }
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
@@ -66,7 +73,49 @@ public class FamilyPlanValidator implements CustomizeValidator {
                 }
             }
         }
+        if(StringUtil.isNotEmpty(familyPlanDto.getPreviousTopNumber()) && !StringUtil.isNumber(familyPlanDto.getPreviousTopNumber())){
+            errorMap.put("previousTopNumber", "GENERAL_ERR0002");
+        }
 
+        if(StringUtil.isNotEmpty(familyPlanDto.getPreviousTopNumber()) && StringUtil.isNumber(familyPlanDto.getPreviousTopNumber())){
+            int f=Integer.valueOf(familyPlanDto.getPreviousTopNumber());
+            if(f<m){
+                errorMap.put("previousTopNumber", "Negative numbers are not allowed on this field.");
+            }
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseOnUltrDay()) && !StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrDay())){
+            errorMap.put("gestAgeBaseOnUltrDay", "GENERAL_ERR0002");
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseOnUltrDay()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseOnUltrDay())){
+            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrDay());
+            if(f<m){
+                errorMap.put("gestAgeBaseOnUltrDay", "Negative numbers are not allowed on this field.");
+            }
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrWeek()) && !StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrWeek())){
+            errorMap.put("gestAgeBaseNotOnUltrWeek", "GENERAL_ERR0002");
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrWeek()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrWeek())){
+            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseNotOnUltrWeek());
+            if(f<m){
+                errorMap.put("gestAgeBaseNotOnUltrWeek", "Negative numbers are not allowed on this field.");
+            }
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrDay()) && !StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrDay())){
+            errorMap.put("gestAgeBaseNotOnUltrDay", "GENERAL_ERR0002");
+        }
+        if(StringUtil.isNotEmpty(familyPlanDto.getGestAgeBaseNotOnUltrDay()) && StringUtil.isNumber(familyPlanDto.getGestAgeBaseNotOnUltrDay())){
+            int f=Integer.valueOf(familyPlanDto.getGestAgeBaseNotOnUltrDay());
+            if(f<m){
+                errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
+            }
+        }
+        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+            if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
+                ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
+                errorMap.putAll(result.retrieveAll());
+            }
+        }
         return errorMap;
     }
 }

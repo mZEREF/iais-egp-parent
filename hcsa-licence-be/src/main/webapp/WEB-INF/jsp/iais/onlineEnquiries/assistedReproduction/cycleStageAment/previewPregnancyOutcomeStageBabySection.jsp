@@ -28,7 +28,7 @@
              <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'Yes'}">style="display:none;"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Baby ${displayNum} Defect Type" />
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:value width="7" cssClass="col-md-7" display="true">
                     <c:forEach var="pregnancyOutcomeBabyDefectDto"
                                items="${pregnancyOutcomeBabyDto.pregnancyOutcomeBabyDefectDtos}"
                                varStatus="defectStatus">

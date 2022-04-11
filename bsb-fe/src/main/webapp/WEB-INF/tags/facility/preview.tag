@@ -193,7 +193,7 @@
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Contect No.</label>
+                                        <label class="col-xs-6 control-label">Contact No.</label>
                                         <div class="col-xs-6"><p>${facOperator.contactNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
@@ -292,7 +292,7 @@
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-6 control-label">Contect No.</label>
+                                        <label class="col-xs-6 control-label">Contact No.</label>
                                         <div class="col-xs-6"><p>${facAdminOfficer.alternativeAdmin.contactNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
@@ -342,7 +342,7 @@
                                             <div class="clear"></div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-xs-6 control-label">Contect No.</label>
+                                            <label class="col-xs-6 control-label">Contact No.</label>
                                             <div class="col-xs-6"><p>${facOfficer.contactNo}</p></div>
                                             <div class="clear"></div>
                                         </div>

@@ -159,6 +159,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_NATURE_OF_TTE_SAMPLE         = "0C3D0BC3-E2A5-4BAE-B0F5-8D5BC4231B17";
     public static final String CATE_ID_BSB_MODE_OF_PROCUREMENT          = "F68EC8C9-EA59-48A7-8F9F-88E927FDD3DA";
     public static final String CATE_ID_BSB_COUNTRY                      = "AF33EFBD-ED2E-41CD-97E1-400829723635";
+    public static final String CATE_ID_BSB_MSG_TYPE                     = "F2B06BE2-73EF-EB12-8B7D-000C293F0C51";
 
     //Audit
     public static final String CATE_ID_BSB_CHANGE_DATE_DO               = "FF506BE2-73EF-EB12-8B7D-000C293F0C92";

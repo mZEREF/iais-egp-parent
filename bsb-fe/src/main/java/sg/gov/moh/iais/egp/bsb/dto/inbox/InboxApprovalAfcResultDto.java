@@ -13,5 +13,4 @@ public class InboxApprovalAfcResultDto {
     /* Currently use Approval because we have not implemented the organization mechanism
     *  Need to change, add organization info in the future */
     private List<Approval> approvalInfos;
-    private long unreadMsgAmt;
 }

@@ -67,7 +67,7 @@
                 </div>
                 <div class="col-xs-12 col-md-10 margin-bottom-10">
                     <div class="text-right">
-                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohTOPDataSubmission">Start Another Submission</a>
+                        <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohNewTOPDataSubmission">Start Another Submission</a>
                         <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to DashBoard</a>
                     </div>
                 </div>

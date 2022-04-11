@@ -88,6 +88,10 @@ public final class DsRfcHelper {
             HusbandDto husband = patientInfoDto.getHusband();
             husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), DataSubmissionConstant.DS_SHOW_HUSBAND));
         }
+        if (patientInfoDto.getPreviousHusband() != null) {
+            HusbandDto husband = patientInfoDto.getPreviousHusband();
+            husband.setAgeFlag(getAgeFlag(husband.getBirthDate(), DataSubmissionConstant.DS_SHOW_HUSBAND));
+        }
         return patientInfoDto;
     }
 

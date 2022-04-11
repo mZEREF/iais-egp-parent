@@ -24,6 +24,7 @@
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
+        <input type="hidden" name="appId" value="">
 
         <div class="col-xs-12">
             <div class="center-content">
@@ -101,6 +102,7 @@
                             <c:otherwise>
                                 <c:forEach var="entity" items="${dataList}" varStatus="status">
                                     <c:set var="maskedTaskId" value='${MaskUtil.maskValue("id", entity.id)}'/>
+                                    <c:set var="maskedAppId" value='${MaskUtil.maskValue("appId", entity.application.id)}'/>
                                     <tr style="display: table-row;">
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">S/N</p>
@@ -132,8 +134,8 @@
                                         </td>
                                         <td style="width: 15%">
                                             <p class="visible-xs visible-sm table-row-title">Action</p>
-                                            <button type="button" class="btn btn-default btn-sm" onclick="reassignTask('${maskedTaskId}')">Reassign</button>
-                                            <button type="button" class="btn btn-default btn-sm" onclick="viewTaskDetail('${maskedTaskId}')">Detail</button>
+                                            <button type="button" class="btn btn-default btn-sm" onclick="reassignTask('${maskedTaskId}','${maskedAppId}')">Reassign</button>
+                                            <button type="button" class="btn btn-default btn-sm" onclick="viewTaskDetail('${maskedTaskId}','${maskedAppId}')">Detail</button>
                                         </td>
                                     </tr>
                                 </c:forEach>

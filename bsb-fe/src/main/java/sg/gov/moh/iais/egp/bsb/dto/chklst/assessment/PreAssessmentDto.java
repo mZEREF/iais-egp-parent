@@ -12,12 +12,6 @@ import sg.gov.moh.iais.egp.bsb.constant.AssessmentState;
 public class PreAssessmentDto {
     private String facName;
     private String classification;
-    private String blk;
-    private String street;
-    private String floor;
-    private String unit;
-    private String postalCode;
-    private String activity;
     private String appId;
     private AssessmentState assessmentState;
 }

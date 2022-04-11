@@ -1,33 +1,36 @@
 package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.List;
-
+import java.util.Date;
 
 @Data
 public class FacilityAuthoriserDto {
-    @Data
-    @NoArgsConstructor
-    public static class FacilityAuthorisedPersonnel implements Serializable {
-        private String authEntityId;
-        private String name;
-        private String nationality;
-        private String idType;
-        private String idNumber;
-        private String designation;
-        private String contactNo;
-        private String email;
-        private String employmentStartDt;
-        private String employmentPeriod;
-        private String workArea;
-        private String securityClearanceDt;
-        private String isProtectedPlace;
-    }
+    private String id;
 
-    private String inputMethod;
-    private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
-    private String isProtectedPlace;
+    private String facilityId;
+
+    private String salutation;
+
+    private String name;
+
+    private String idType;
+
+    private String idNumber;
+
+    private String nationality;
+
+    private String designation;
+
+    private String contactNo;
+
+    private String email;
+
+    private Date employmentStartDate;
+
+    private String employmentPeriod;
+
+    private String workArea;
+
+    private Date securityClearanceDate;
 }

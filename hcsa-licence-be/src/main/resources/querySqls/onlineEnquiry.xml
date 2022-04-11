@@ -235,9 +235,9 @@
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
-                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
-                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 )</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER )</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} )</#if>
                 <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
                 <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
@@ -339,9 +339,9 @@
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
-                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
-                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 )</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER )</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} )</#if>
                 <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
                 <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in (select ch_dacs.SUBMISSION_ID from ds_ar_donor ch_dad join ds_ar_cycle_stage ch_dacs on ch_dacs.ID= ch_dad.CYCLE_STAGE_ID ) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
@@ -443,16 +443,15 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
-                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
-                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
-                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorName??> AND  (charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  ( :donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND (  ${donor_id_types_iui})</#if>
                 <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>
@@ -545,16 +544,15 @@
                 <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
                 <#if cycleStagesFinalStatus??> AND  :cycleStagesFinalStatus = 'DS003' and dc.STATUS in ('DS003','DS004','DS005','DS006','DS007','DS008','DS009') </#if>
-                <#if indicationArCycleList??> AND  ${indicationArCycleList}</#if>
                 <#if cycleStagesDateFrom??> AND ( dics.START_DATE >= convert(date,:cycleStagesDateFrom) or defocs.START_DATE >= convert(date,:cycleStagesDateFrom))</#if>
                 <#if cycleStagesDateTo??> AND (  dics.START_DATE <= convert(datetime,:cycleStagesDateTo) or defocs.START_DATE <= convert(datetime,:cycleStagesDateTo))</#if>
                 <#if arOrIui??> AND :arOrIui = dc.CYCLE_TYPE </#if>
 
                 <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
 
-                <#if donorName??> AND  (charindex(:donorName, dad_donor.DONOR_NAME) >0 or charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
-                <#if donorIdNumber??> AND  (:donorIdNumber = dad_donor.ID_NUMBER or :donorIdNumber = did_donor.ID_NUMBER)</#if>
-                <#if donor_id_types_ar??> AND (  ${donor_id_types_ar} OR ${donor_id_types_iui})</#if>
+                <#if donorName??> AND  ( charindex(:donorName, did_donor.DONOR_NAME) >0)</#if>
+                <#if donorIdNumber??> AND  (:donorIdNumber = did_donor.ID_NUMBER)</#if>
+                <#if donor_id_types_ar??> AND ( ${donor_id_types_iui})</#if>
                 <#if donorUsedYes??> AND :donorUsedYes = 1 and dds.ID in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if donorUsedNo??> AND :donorUsedNo = 0 and dds.ID not in ( select ch_dics.SUBMISSION_ID from ds_iui_donor ch_did join ds_iui_cycle_stage ch_dics on ch_dics.ID= ch_did.IUI_CYCLE_STAGE_ID) </#if>
                 <#if FROM_DONOR??> AND  (:FROM_DONOR = dfs.IS_FROM_DONOR or :FROM_DONOR = dfs.IS_FROM_DONOR_TISSUE ) </#if>

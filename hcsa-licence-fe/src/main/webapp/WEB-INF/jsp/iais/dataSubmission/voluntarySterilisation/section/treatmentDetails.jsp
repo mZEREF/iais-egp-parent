@@ -121,14 +121,30 @@
     <iais:row>
         <iais:field value="No. of Living Children " width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="2" type="text" name="livingChildrenNo" value="${treatmentDto.livingChildrenNo}"/>
+            <iais:input maxLength="2" type="text" onchange=" controlMandatory()"  name="livingChildrenNo" value="${treatmentDto.livingChildrenNo}"/>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Date of Birth of Last Child"/>
+        <label class="col-xs-5 col-md-4 control-label">Date of Birth of Last Child
+            <span id="lastChildBirthdayLabel" class="mandatory">
+                <c:if test="${treatmentDto.livingChildrenNo >0}">*</c:if>
+            </span>
+        </label>
+        <%--<iais:field id = "lastChildBirthdayLabel" width="5" value="Date of Birth of Last Child"/>--%>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="lastChildBirthday" value="${treatmentDto.lastChildBirthday}"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_lastChildBirthday"></span>
         </iais:value>
     </iais:row>
 </div>
+<script>
+    function controlMandatory() {
+            var num = $("[name=livingChildrenNo]").val()
+            console.log(num)
+            if(num >0){
+                $('#lastChildBirthdayLabel').text("*")
+            }else {
+                $('#lastChildBirthdayLabel').text("")
+            }
+    }
+</script>

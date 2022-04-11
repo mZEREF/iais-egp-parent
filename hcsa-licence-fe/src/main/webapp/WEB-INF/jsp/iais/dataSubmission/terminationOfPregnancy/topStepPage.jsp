@@ -64,6 +64,7 @@
                                             <%@ include file="section/previewPreTermination.jsp" %>
                                             <%@ include file="section/previewPresentTermination.jsp" %>
                                             <%@ include file="section/previewPostTermination.jsp" %>
+                                            <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
                                     </c:when>
                                 </c:choose>

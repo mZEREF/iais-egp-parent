@@ -103,7 +103,7 @@
                                        for="isOtherPgt"><span
                                         class="check-square"></span><iais:code code="PGTTP007"/></label>
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type" style="padding-right: 15px;padding-left: 15px;"></span>
                         </iais:value>
                     </div>
 
@@ -160,7 +160,7 @@
                                        for="isPgtMNon"><span
                                         class="check-square"></span>None of the above</label>
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_performed"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_performed" style="padding-right: 15px;padding-left: 15px;"></span>
                         </iais:value>
                     </iais:row>
                     <div id="pgtMRefNoDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMDsld !=1 }">style="display: none"</c:if>>
@@ -235,7 +235,7 @@
                                        for="isPgtATomrpl"><span
                                         class="check-square"></span>Two Or More Repeated Pregnancy Losses</label>
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_PerformedBecause"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PerformedBecause" style="padding-right: 15px;padding-left: 15px;"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -266,7 +266,7 @@
                                             class="check-circle"></span>Abnormal</label>
                                 </div>
                             </iais:value>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_PGTAResult"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PGTAResult" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
 
                     </iais:row>
@@ -323,7 +323,7 @@
                                         class="check-circle"></span>No</label>
                             </div>
                         </iais:value>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
                     </div>
                 </iais:row>
                 <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
@@ -355,7 +355,7 @@
                                             class="check-circle"></span>No</label>
                                 </div>
                             </iais:value>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_isThereAppeal"></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isThereAppeal" style="padding-right: 15px;padding-left: 15px;"></span>
                         </div>
                     </iais:row>
                 </div>

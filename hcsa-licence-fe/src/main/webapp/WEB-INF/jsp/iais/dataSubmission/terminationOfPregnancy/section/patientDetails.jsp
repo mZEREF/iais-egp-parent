@@ -3,7 +3,7 @@
     <div class="panel-heading" style="padding-left: 95px";>
         <h4 class="panel-title">
             <strong>
-                Submission Details
+                Patient Information
             </strong>
         </h4>
     </div>
@@ -36,7 +36,7 @@
                                          value="${patientInformationDto.idType}" cssClass="idType"/>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4">
-                            <iais:input maxLength="15" type="text" name="idNumber" value="${patientInformationDto.idNumber}"/>
+                            <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>

@@ -37,7 +37,7 @@ public class DsLaboratoryDevelopTestValidator implements CustomizeValidator {
                 }
             }
             if ("0".equals(oldDsLaboratoryDevelopTestDto.getTestStatus()) && "1".equals(dsLaboratoryDevelopTestDto.getTestStatus())){
-                map.put("testStatus", "You can not change \"Status of Test\" from \"Active\" to \"Inactive\".");
+                map.put("testStatus", "DS_ERR062");
             }
         }
         return map;

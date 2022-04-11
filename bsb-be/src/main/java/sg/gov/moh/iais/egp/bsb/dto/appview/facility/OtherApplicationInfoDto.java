@@ -1,20 +1,17 @@
 package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-
 @Data
-public class OtherApplicationInfoDto implements Serializable {
+public class OtherApplicationInfoDto {
     private String declarationId;
 
-    @JsonIgnore
     private List<DeclarationItemMainInfo> declarationConfig;
 
     /* The key is item ID */
-    private final Map<String, String> answerMap;
+    private Map<String, String> answerMap;
 }
