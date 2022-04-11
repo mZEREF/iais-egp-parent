@@ -22,11 +22,11 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty preTerminationDto.counsellingGiven}">style="display: none"</c:if>>
+                <div <c:if test="${empty preTerminationDto.noCounsReason}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Reason for No Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${preTerminationDto.counsellingGiven}"/>
+                            <c:out value="${preTerminationDto.noCounsReason}"/>
                         </iais:value>
                     </iais:row>
                 </div>
