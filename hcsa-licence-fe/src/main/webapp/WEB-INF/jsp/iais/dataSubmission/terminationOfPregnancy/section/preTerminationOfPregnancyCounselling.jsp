@@ -213,7 +213,7 @@
     <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
-            <iais:field width="5" id="secCounsellingDateLabel" value="Date of Second or Final Pre-Counselling"
+            <iais:field width="5" id="secCounsellingDateLabel" style="padding-right: 50px;" value="Date of Second or Final Pre-Counselling"
                 mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker name="secCounsellingDate" value="${preTerminationDto.secCounsellingDate}"/>
@@ -224,7 +224,7 @@
     <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
-            <iais:field width="5" id="secCounsellingResultLabel" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
+            <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="secCounsellingResult" firstOption="Please Select"
                              codeCategory="TOP_FINAL_PRE_COUNSELLING_RESULT"
