@@ -61,11 +61,12 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             String[] eftStartDateStr = startDateStr.split("/");
             String[] eftEndDateStr = endDateStr.split("/");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date today = null;
+            Date today;
             try {
                 today = sdf.parse(Formatter.formatDate(new Date()));
             } catch (ParseException e) {
                 log.error(e.getMessage(),e);
+                today = new Date();
             }
             //get start Date By request
             Date sDate;

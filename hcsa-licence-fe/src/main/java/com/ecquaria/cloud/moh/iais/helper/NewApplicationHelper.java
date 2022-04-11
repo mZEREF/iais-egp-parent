@@ -543,9 +543,9 @@ public class NewApplicationHelper {
                 break;
             }
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
-            List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+            List<AppSvcChckListDto> listDtos = getList(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
             int count = 0;
-            if (listDtos == null || listDtos.isEmpty()) {
+            if (listDtos.isEmpty()) {
                 // 117084: This is a mandatory field. Please select one of the following options. (GENERAL_ERR0056)
                 map.put("checkError", "GENERAL_ERR0056");
             } else {
@@ -4836,9 +4836,9 @@ public class NewApplicationHelper {
             msg.append(NewApplicationConstant.TITLE_SVCINFO);
             String s = handleStepHames(errorList);
             if (!StringUtil.isEmpty(s)) {
-                msg.append(" (").append(s).append(")");
+                msg.append(' ').append('(').append(s).append(')');
             }
-            msg.append(", ");
+            msg.append(',').append(' ');
         }
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
