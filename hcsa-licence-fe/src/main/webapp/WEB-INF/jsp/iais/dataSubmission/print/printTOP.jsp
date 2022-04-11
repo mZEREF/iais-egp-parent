@@ -8,11 +8,12 @@
 <c:choose>
     <c:when test="${submissionType == 'TOP_TP002'}">
         <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
+        <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'TOP_TP001'}">
         <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
-        <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
+        <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
     </c:when>
