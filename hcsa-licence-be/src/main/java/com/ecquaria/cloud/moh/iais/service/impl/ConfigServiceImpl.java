@@ -1075,7 +1075,7 @@ public class ConfigServiceImpl implements ConfigService {
         personnelDto.setPageMaximumCount(mix);
         try {
             if (StringUtil.isDigit(man)) {
-                personnelDto.setMandatoryCount(Integer.parseInt(man));
+                personnelDto.setMandatoryCount(Integer.valueOf(man));
             } else {
                 personnelDto.setMandatoryCount(null);
             }
@@ -1083,7 +1083,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         try {
             if (StringUtil.isDigit(mix)) {
-                personnelDto.setMaximumCount(Integer.parseInt(mix));
+                personnelDto.setMaximumCount(Integer.valueOf(mix));
             } else {
                 personnelDto.setMaximumCount(null);
             }

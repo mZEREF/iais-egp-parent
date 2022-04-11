@@ -15,7 +15,7 @@ import lombok.Setter;
  */
 @Getter
 public class LoginContext implements Serializable {
-    private static final long serialVersionUID = -6517762602127840451L;
+    private static final long serialVersionUID = 1L;
 
     @Setter private String loginId;
     @Setter private String userId;

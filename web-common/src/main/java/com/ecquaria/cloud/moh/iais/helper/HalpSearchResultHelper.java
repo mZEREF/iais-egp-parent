@@ -96,4 +96,5 @@ public class HalpSearchResultHelper {
             searchParam.setPageSize(Integer.parseInt(pageSize));
         }
     }
+
 }
