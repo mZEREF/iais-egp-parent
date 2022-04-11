@@ -283,7 +283,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         return withdrawnDtoList;
     }
 
-    private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
+    private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);

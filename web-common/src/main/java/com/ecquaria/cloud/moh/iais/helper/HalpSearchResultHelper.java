@@ -99,10 +99,10 @@ public class HalpSearchResultHelper {
                 if(i>0){
                     sb.append(" or ");
                 }
-                sb.append(" CHARINDEX(").append(":").append(key).append(i).append(",").append(compareField).append(") >0");
+                sb.append(" CHARINDEX(").append(':').append(key).append(i).append(',').append(compareField).append(") >0");
                 searchParam.addFilter(key + i, values.get(i));
             }
-            sb.append(")");
+            sb.append(')');
             searchParam.addParam(key,sb.toString());
         }else {
             searchParam.addParam(key," 1 = 2 ");
@@ -143,7 +143,7 @@ public class HalpSearchResultHelper {
         if(IaisCommonUtils.isNotEmpty(values)){
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < values.size(); i++) {
-                sb.append(":").append(key)
+                sb.append(':').append(key)
                         .append(i)
                         .append(',');
                 searchParam.addFilter(key + i, values.get(i));

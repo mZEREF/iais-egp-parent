@@ -172,7 +172,7 @@ public class FECorppassLandingDelegator {
             scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
         }
 
-        if (StringUtil.isEmpty(identityNo)){
+        if (identityNo == null || "".equals(identityNo)) {
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
             if (!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(uen)) {
                 AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);

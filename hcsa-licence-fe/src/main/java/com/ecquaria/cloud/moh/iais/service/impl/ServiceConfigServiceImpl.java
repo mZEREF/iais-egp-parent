@@ -66,6 +66,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -627,7 +628,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
             GiroGroupDataDto giroGroupDataDto = JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(),GiroGroupDataDto.class);
             List<String> accountBicList = getGiroAccountAndBICByGroupNo(giroGroupDataDto.getAppGroupNo());
-            if(IaisCommonUtils.isNotEmpty(accountBicList) && StringUtil.isNotEmpty(accountBicList.get(1))){
+            if(accountBicList != null && accountBicList.size() >= 3 && StringUtil.isNotEmpty(accountBicList.get(1))){
                 String giroAccount = accountBicList.get(0);
                 InputDetailDto inputDetailDto = new InputDetailDto();
                 inputDetailDto.setAppGroupNo(giroGroupDataDto.getAppGroupNo());
@@ -760,7 +761,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             return "";
         }
         if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
-            List<String> licIds = Arrays.asList(applicationDto.getOriginLicenceId());
+            List<String> licIds = Collections.singletonList(applicationDto.getOriginLicenceId());
             List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
@@ -788,7 +789,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     private List<String> getGiroAccountAndBICByLicId(String licId){
         if(StringUtil.isNotEmpty(licId)){
-            List<String> licIds = Arrays.asList(licId);
+            List<String> licIds = Collections.singletonList(licId);
             List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){

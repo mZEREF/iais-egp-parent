@@ -822,7 +822,7 @@ private RequestForChangeService requestForChangeService;
     }
 
 
-    private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
+    private String transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
