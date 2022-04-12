@@ -37,10 +37,6 @@ public class TerminationValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
         }
-        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
-            ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"performedOwn");
-            errorMap.putAll(result.retrieveAll());
-        }
         if(!StringUtil.isEmpty(terminationDto.getPerformedOwn())){
             if(terminationDto.getPerformedOwn() == false){
                 if(StringUtil.isEmpty(terminationDto.getTopPlace())){
@@ -64,6 +60,19 @@ public class TerminationValidator implements CustomizeValidator {
                         errorMap.put("topDrugPlace", "GENERAL_ERR0006");
                     }
                 }
+            }
+        }
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+            if(StringUtil.isEmpty(terminationDto.getPerformedOwn())){
+                errorMap.put("performedOwn", "GENERAL_ERR0006");
+            }
+        }
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
+            if(StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
+                errorMap.put("pregnancyOwn", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
+                errorMap.put("takenOwn", "GENERAL_ERR0006");
             }
         }
         if(StringUtil.isEmpty(terminationDto.getComplicationForOperRslt())){

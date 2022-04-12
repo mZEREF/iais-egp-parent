@@ -76,10 +76,16 @@ public class MohDsPrintDelegator {
                     dataSubmissionDto.setDeclaration(null);
                 }
             }else if((dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED))){
-                String declaration = ParamUtil.getString(request, "declaration");
+                String dpLateReasonRadio = ParamUtil.getString(request, "dpLateReasonRadio");
                 String remarks=ParamUtil.getString(request, "remarks");
-                dataSubmissionDto.setDeclaration(declaration);
+                String[] declaration = ParamUtil.getStrings(request, "declaration");
+                dataSubmissionDto.setDpLateReasonRadio(dpLateReasonRadio);
                 dataSubmissionDto.setRemarks(remarks);
+                if(declaration != null && declaration.length >0){
+                    dataSubmissionDto.setDeclaration(declaration[0]);
+                }else{
+                    dataSubmissionDto.setDeclaration(null);
+                }
             }
             dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
