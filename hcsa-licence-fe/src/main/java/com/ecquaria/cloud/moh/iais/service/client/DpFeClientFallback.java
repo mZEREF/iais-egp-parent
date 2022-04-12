@@ -1,16 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-
-import java.util.Arrays;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Description DpFeClientFallback
@@ -75,5 +72,12 @@ public class DpFeClientFallback implements DpFeClient {
     public FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
         return getFeignResponseEntity(orgId, type, hciCode);
     }
-
+    @Override
+    public FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
+        return getFeignResponseEntity(submissionNo);
+    }
+    @Override
+    public FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo) {
+        return getFeignResponseEntity(submissionNo);
+    }
 }

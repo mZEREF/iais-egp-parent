@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -12,15 +13,14 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * @Description DpDataSubmissionServiceImpl
@@ -157,6 +157,24 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return null;
         }
         return dpFeClient.getDpSuperDataSubmissionDtoByDraftNo(draftNo).getEntity();
+    }
+
+    @Override
+    public List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
+        log.info(StringUtil.changeForLog("The getDrugMedicationDtoBySubmissionNo submissionNo is -->:"+submissionNo));
+        if (StringUtil.isEmpty(submissionNo) ) {
+            return null;
+        }
+        return dpFeClient.getDrugMedicationDtoBySubmissionNo(submissionNo).getEntity();
+    }
+
+    @Override
+    public List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo) {
+        log.info(StringUtil.changeForLog("The getDrugMedicationDtoBySubmissionNoForDispensed submissionNo is -->:"+submissionNo));
+        if (StringUtil.isEmpty(submissionNo) ) {
+            return null;
+        }
+        return dpFeClient.getDrugMedicationDtoBySubmissionNo(submissionNo).getEntity();
     }
 
 

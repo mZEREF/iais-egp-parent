@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
@@ -16,13 +17,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * DrugPrescribedDispensedValidator
@@ -126,7 +126,6 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             }
         }
 
-
         int i = 0;
         int m=0;
         //validate the Medication
@@ -134,6 +133,18 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         result = WebValidationHelper.validateProperty(drugMedicationDtos, profile);
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
+        }
+        //
+        Map<String,Integer> preDrugMedicationMap = null ;
+        Map<String,Integer> drugMedicationMap = null;
+        if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
+            List<DrugMedicationDto> preDrugMedicationDtos = dpDataSubmissionService.
+                    getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
+            List<DrugMedicationDto> oldDrugMedicationDtos =  dpDataSubmissionService.
+                    getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId());
+            preDrugMedicationMap = tidyDrugMedicationDto(null,preDrugMedicationDtos);
+            drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,oldDrugMedicationDtos);
+            drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
         }
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
             if(StringUtil.isEmpty(drugMedicationDto.getBatchNo())){
@@ -151,23 +162,49 @@ if(!StringUtil.isEmpty(doctorReignNo)){
                     errorMap.put("strength"+i, "Negative numbers are not allowed on this field.");
                 }
             }
+
             if(StringUtil.isEmpty(drugMedicationDto.getQuantity())){
                 errorMap.put("quantity"+i, "GENERAL_ERR0006");
-            }
-            if(StringUtil.isNotEmpty(drugMedicationDto.getQuantity()) && !StringUtil.isNumber(drugMedicationDto.getQuantity())){
+            } else if(!StringUtil.isNumber(drugMedicationDto.getQuantity())){
                 errorMap.put("quantity"+i, "GENERAL_ERR0002");
+            }else if(Integer.valueOf(drugMedicationDto.getQuantity())<m){
+                errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
+            }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType) && errorMap.isEmpty()){
+               if(preDrugMedicationMap != null && drugMedicationMap != null){
+                   Integer preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   Integer nowCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
+
+               }
             }
-            if(StringUtil.isNotEmpty(drugMedicationDto.getQuantity()) && StringUtil.isNumber(drugMedicationDto.getQuantity())){
-                int b=Integer.valueOf(drugMedicationDto.getQuantity());
-                if(b<m){
-                    errorMap.put("quantity"+i, "Negative numbers are not allowed on this field.");
-                }
-            }
+
             if(StringUtil.isEmpty(drugMedicationDto.getFrequency())){
                 errorMap.put("frequency"+i, "GENERAL_ERR0006");
             }
             i++;
         }
         return errorMap;
+    }
+
+    private Map<String,Integer> tidyDrugMedicationDto(Map<String,Integer> result ,List<DrugMedicationDto> preDrugMedicationDtos){
+        if(result == null){
+            result = IaisCommonUtils.genNewHashMap();
+        }
+        if(IaisCommonUtils.isNotEmpty(preDrugMedicationDtos)){
+          for(DrugMedicationDto drugMedicationDto : preDrugMedicationDtos){
+            String batchNo =  drugMedicationDto.getBatchNo();
+            String quantity = drugMedicationDto.getQuantity();
+            Integer quantityInt = result.get(batchNo);
+            if(quantityInt == null){
+                quantityInt = 0;
+            }
+            if(StringUtil.isNotEmpty(quantity) && StringUtil.isNumber(quantity)){
+                quantityInt = quantityInt + Integer.valueOf(quantity);
+            }
+            result.put(batchNo,quantityInt);
+          }
+        }else{
+            log.info(StringUtil.changeForLog("The preDrugMedicationDtos is null ..."));
+        }
+        return result;
     }
 }
