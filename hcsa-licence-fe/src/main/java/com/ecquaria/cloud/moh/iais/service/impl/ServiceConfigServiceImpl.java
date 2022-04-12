@@ -396,7 +396,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         //set giro account info
         List<String> accInfoList = getGiroAccountAndBICByLicId(appGrp.getLicenceId());
-        if(IaisCommonUtils.isNotEmpty(accInfoList)){
+        if (accInfoList != null && !accInfoList.isEmpty()) {
             for(int i =0; i< accInfoList.size();i++){
                 if(i==0){
                     giroPaymentXmlDto.setBankNo(accInfoList.get(i));

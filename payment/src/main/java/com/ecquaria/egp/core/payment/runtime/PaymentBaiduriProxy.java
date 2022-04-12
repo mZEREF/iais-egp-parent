@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -297,7 +298,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 	private String hashAllFields(Map<String, String> fields, String secureHashType) throws NoSuchAlgorithmException {
 		// create a list and sort it
-		List<String> fieldNames = new ArrayList<String>(fields.keySet());
+		List<String> fieldNames = IaisCommonUtils.genNewArrayList(fields.size());
+		fieldNames.addAll(fields.keySet());
 		Collections.sort(fieldNames);
 
 		// create a buffer for the md5 input and add the secure secret first
