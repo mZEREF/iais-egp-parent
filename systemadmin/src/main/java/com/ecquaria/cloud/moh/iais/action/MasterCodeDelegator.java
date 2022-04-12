@@ -859,8 +859,6 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
-        String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
 
         MasterCodeDto masterCodeDto = new MasterCodeDto();
         getValueFromPage(masterCodeDto, request);
@@ -929,6 +927,20 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
+        MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+        //eic
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+        msDto.setUpdateAt(new Date());
+        syncMasterCodeList.add(msDto);
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+        MasterCodeUtil.refreshCache();
+        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date);
+        String dateReplace = dateStr.replace(" "," at ");
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
+        ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
+
     }
 
     /**
