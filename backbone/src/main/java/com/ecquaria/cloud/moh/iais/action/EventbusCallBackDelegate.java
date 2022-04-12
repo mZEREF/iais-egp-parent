@@ -109,6 +109,7 @@ public class EventbusCallBackDelegate {
                         } catch (InterruptedException e) {
                             log.error(e.getMessage(),e);
                             Thread.currentThread().interrupt();
+                            throw new RuntimeException(e.getMessage(), e);
                         }
                         flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
                         if (setVal.equals(flag)) {
