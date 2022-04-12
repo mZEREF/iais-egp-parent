@@ -45,10 +45,10 @@ public class PreTerminationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingResult())){
                 errorMap.put("counsellingResult", "GENERAL_ERR0006");
             }
-            if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
-                errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
-                errorMap.put("patientSign", "GENERAL_ERR0006");
-            }
+        }
+        if(Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.valueOf(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
+            errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
+            errorMap.put("patientSign", "GENERAL_ERR0006");
         }
         if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
