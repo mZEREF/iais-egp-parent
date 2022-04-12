@@ -223,8 +223,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveFrom", errMsg);
-                }
-                if(isEffect){
+                }else if(isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
                 }
@@ -234,7 +233,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
-                }
+                }else
                 if(!isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -563,7 +562,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                             errItems.add(errMsg);
                             result = true;
-                        }
+                        }else
                         if(isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
@@ -575,7 +574,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                             errItems.add(errMsg);
                             result = true;
-                        }
+                        }else
                         if(!isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
@@ -889,7 +888,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveFrom", errMsg);
-                }
+                }else
                 if(isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -902,7 +901,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
-                }
+                }else
                 if(!isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -1007,7 +1006,7 @@ public class MasterCodeDelegator {
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
                 }
-            }
+            }else
             if(!newIsEffect){
                 String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                 errorMap.put("status", errMsg);
