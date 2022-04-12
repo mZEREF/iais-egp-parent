@@ -1008,6 +1008,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> aRorIUICycleOptions= IaisCommonUtils.genNewArrayList();
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
+        aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_EFO,"EFO"));
         ParamUtil.setRequestAttr(bpc.request,"aRorIUICycleOptions",aRorIUICycleOptions);
         List<SelectOption> cycleStagesStatusOptions= IaisCommonUtils.genNewArrayList();
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ACTIVE,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ACTIVE)));

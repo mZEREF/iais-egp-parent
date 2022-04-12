@@ -174,7 +174,7 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="AR / IUI Cycle"/>
+                                    <iais:field width="4" value="AR / IUI / EFO Cycle"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
