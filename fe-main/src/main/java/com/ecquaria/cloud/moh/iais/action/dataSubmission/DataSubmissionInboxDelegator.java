@@ -417,6 +417,9 @@ public class DataSubmissionInboxDelegator {
 								case 11:
 									//RFC.LOCKED
 									ParamUtil.setRequestAttr(request,"showPopFailMsg",MessageUtil.getMessageDesc("DS_ERR058", Arrays.asList("field1", "field2"),Arrays.asList("\"Locked\"", "amended")));break;
+								case 12:
+									////Withdraw.Patient Information (Dp)
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
 								default:
 							}
 							break;
@@ -545,7 +548,7 @@ public class DataSubmissionInboxDelegator {
 						PatientDto patientDto=dpSuperDataSubmissionDto.getPatientDto();
 						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
-							return 2;
+							return 12;
 						}
 					}
 				}
