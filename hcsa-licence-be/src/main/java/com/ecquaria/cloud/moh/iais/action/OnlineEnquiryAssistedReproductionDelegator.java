@@ -1307,86 +1307,38 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     cycleStageParam.setPageSize(searchParam.getPageSize());
                 }
                 CrudHelper.doPaging(cycleStageParam,bpc.request);
-
                 QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);
                 SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
-                List<ArEnquiryCycleStageDto> arEnquiryCycleStageDtoList=cycleStageResult.getRows();
-                List<ArEnquiryCycleStageDto> arEnquiryCycle=IaisCommonUtils.genNewArrayList();
-                List<ArEnquiryCycleStageDto> arEnquiryNonCycle=IaisCommonUtils.genNewArrayList();
 
-                if(IaisCommonUtils.isNotEmpty(arEnquiryCycleStageDtoList)){
-                    for (ArEnquiryCycleStageDto ar:arEnquiryCycleStageDtoList
-                         ) {
-                        switch (ar.getCycleType()){
-                            case DataSubmissionConsts.DS_CYCLE_NON:
-                                ar.setCycleType("-");
-                                arEnquiryNonCycle.add(ar);
-                                break;
-                            case DataSubmissionConsts.DS_CYCLE_AR:
-                                ar.setCycleType("AR");
-                                arEnquiryCycle.add(ar);break;
-                            case DataSubmissionConsts.DS_CYCLE_IUI:
-                                ar.setCycleType("IUI");
-                                arEnquiryCycle.add(ar);break;
-                            case DataSubmissionConsts.DS_CYCLE_EFO:
-                                ar.setCycleType("EFO");
-                                arEnquiryCycle.add(ar);break;
-                            default:
-                        }
-
-                    }
+                SearchParam nonCycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
+                if(searchParam!=null){
+                    nonCycleStageParam.setPageNo(searchParam.getPageNo());
+                    nonCycleStageParam.setPageSize(searchParam.getPageSize());
                 }
-                SearchResult<ArEnquiryCycleStageDto> cycleResult = new SearchResult<>();
-                cycleResult.setRows(arEnquiryCycle);
-                cycleResult.setRowCount(arEnquiryCycle.size());
-                ParamUtil.setRequestAttr(request,"cycleResult",cycleResult);
-                SearchResult<ArEnquiryCycleStageDto> noCycleResult = new SearchResult<>();
-                noCycleResult.setRows(arEnquiryNonCycle);
-                noCycleResult.setRowCount(arEnquiryNonCycle.size());
-                ParamUtil.setRequestAttr(request,"noCycleResult",noCycleResult);
+                CrudHelper.doPaging(nonCycleStageParam,bpc.request);
+                QueryHelp.setMainSql("onlineEnquiry","searchNonCycleStageByPatientCode",nonCycleStageParam);
+                SearchResult<ArEnquiryCycleStageDto> nonCycleStageResult = assistedReproductionService.searchCycleStageByParam(nonCycleStageParam);
+
+                if(nonCycleStageResult.getRowCount()>cycleStageResult.getRowCount()){
+                    cycleStageResult.setRowCount(nonCycleStageResult.getRowCount());
+                }
+                ParamUtil.setRequestAttr(request,"noCycleResult",nonCycleStageResult);
                 ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
                 ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
+                ParamUtil.setSessionAttr(request,"nonCycleStageParam",nonCycleStageParam);
             }
         }else {
             SearchParam cycleStageParam = (SearchParam) ParamUtil.getSessionAttr(request,"cycleStageParam");
             SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
-            List<ArEnquiryCycleStageDto> arEnquiryCycleStageDtoList=cycleStageResult.getRows();
-            List<ArEnquiryCycleStageDto> arEnquiryCycle=IaisCommonUtils.genNewArrayList();
-            List<ArEnquiryCycleStageDto> arEnquiryNonCycle=IaisCommonUtils.genNewArrayList();
-
-            if(IaisCommonUtils.isNotEmpty(arEnquiryCycleStageDtoList)){
-                for (ArEnquiryCycleStageDto ar:arEnquiryCycleStageDtoList
-                ) {
-                    switch (ar.getCycleType()){
-                        case DataSubmissionConsts.DS_CYCLE_NON:
-                            ar.setCycleNo("Non-cycle");
-                            ar.setCycleType("-");
-                            arEnquiryNonCycle.add(ar);
-                            break;
-                        case DataSubmissionConsts.DS_CYCLE_AR:
-                            ar.setCycleType("AR");
-                            arEnquiryCycle.add(ar);break;
-                        case DataSubmissionConsts.DS_CYCLE_IUI:
-                            ar.setCycleType("IUI");
-                            arEnquiryCycle.add(ar);break;
-                        case DataSubmissionConsts.DS_CYCLE_EFO:
-                            ar.setCycleType("EFO");
-                            arEnquiryCycle.add(ar);break;
-                        default:
-                    }
-
-                }
+            SearchParam nonCycleStageParam = (SearchParam) ParamUtil.getSessionAttr(request,"nonCycleStageParam");
+            SearchResult<ArEnquiryCycleStageDto> nonCycleStageResult = assistedReproductionService.searchCycleStageByParam(nonCycleStageParam);
+            if(nonCycleStageResult.getRowCount()>cycleStageResult.getRowCount()){
+                cycleStageResult.setRowCount(nonCycleStageResult.getRowCount());
             }
-            SearchResult<ArEnquiryCycleStageDto> cycleResult = new SearchResult<>();
-            cycleResult.setRows(arEnquiryCycle);
-            cycleResult.setRowCount(arEnquiryCycle.size());
-            ParamUtil.setRequestAttr(request,"cycleResult",cycleResult);
-            SearchResult<ArEnquiryCycleStageDto> noCycleResult = new SearchResult<>();
-            noCycleResult.setRows(arEnquiryNonCycle);
-            noCycleResult.setRowCount(arEnquiryNonCycle.size());
-            ParamUtil.setRequestAttr(request,"noCycleResult",noCycleResult);
+            ParamUtil.setRequestAttr(request,"noCycleResult",nonCycleStageResult);
             ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
             ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
+            ParamUtil.setSessionAttr(request,"nonCycleStageParam",nonCycleStageParam);
         }
 
 
