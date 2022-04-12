@@ -153,6 +153,9 @@ public class FacilityRegistrationService {
         if (KEY_ACTION_JUMP.equals(actionType)) {
             Nodes.passValidation(facRegRoot, NODE_NAME_COMPANY_INFO);
             jumpHandler(request, facRegRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
+        } else if (KEY_ACTION_SAVE_AS_DRAFT.equals(actionType)) {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SAVE_AS_DRAFT);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_COMPANY_INFO);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -498,12 +501,7 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-    public void preOtherAppInfo(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
-        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
-        // load declaration
+    public void tryLoadOtherAppDeclaration(OtherApplicationInfoDto otherAppInfoDto) {
         if (otherAppInfoDto.isConfigNotLoaded()) {
             if (StringUtils.hasLength(otherAppInfoDto.getDeclarationId())) {
                 List<DeclarationItemMainInfo> declarationConfig = facRegClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
@@ -514,6 +512,15 @@ public class FacilityRegistrationService {
                 otherAppInfoDto.setDeclarationConfig(configInfo.getConfig());
             }
         }
+    }
+
+    public void preOtherAppInfo(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
+        // load declaration
+        tryLoadOtherAppDeclaration(otherAppInfoDto);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             Map<String, String> errorMap = otherAppInfoDto.getValidationResultDto().getErrorMap();
@@ -655,6 +662,8 @@ public class FacilityRegistrationService {
         }
 
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
+        // load declaration
+        tryLoadOtherAppDeclaration(otherAppInfoDto);
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
