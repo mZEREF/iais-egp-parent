@@ -44,7 +44,7 @@
                                     <label>
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
-                                               name="searchNo" maxlength="100"/>
+                                               name="searchText" maxlength="100"/>
                                     </label>
                                 </iais:value>
                             </iais:row>

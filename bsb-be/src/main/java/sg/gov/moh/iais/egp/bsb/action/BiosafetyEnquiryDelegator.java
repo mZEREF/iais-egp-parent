@@ -68,7 +68,11 @@ public class BiosafetyEnquiryDelegator {
 
     public void prepareBasicSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String count = ParamUtil.getString(request, PARAM_SEARCH_CHK);
+        String count = "";
+        String searchChk = ParamUtil.getString(request, PARAM_SEARCH_CHK);
+        if(StringUtils.hasLength(searchChk)){
+            count = searchChk;
+        }
         String text = ParamUtil.getString(request, PARAM_SEARCH_TEXT);
         doBasicSearch(request,count,text);
         preSelectOption(request,null);
@@ -167,7 +171,6 @@ public class BiosafetyEnquiryDelegator {
     }
 
     public void doBasicSearch(HttpServletRequest request,String choice,String text){
-        Assert.hasLength(choice,"choice is null");
         switch (choice){
             case PARAM_CHOICE_APPLICATION:
                 doApplicationSearch(request,text);
