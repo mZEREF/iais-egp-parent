@@ -861,10 +861,8 @@ public class MasterCodeDelegator {
         String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
-        if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
-            return;
-        }
+        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+
         MasterCodeDto masterCodeDto = new MasterCodeDto();
         getValueFromPage(masterCodeDto, request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
