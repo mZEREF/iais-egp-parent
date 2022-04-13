@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -133,7 +134,8 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
 
     public void setNumberOfCyclesUndergoneLocally(ArCycleStageDto arCycleStageDto,CycleStageSelectionDto selectionDto){
         if(selectionDto != null && IaisCommonUtils.isNotEmpty(selectionDto.getCycleDtos())){
-            arCycleStageDto.setNumberOfCyclesUndergoneLocally((int)selectionDto.getCycleDtos().stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equalsIgnoreCase(cycleDto.getCycleType()) && !DataSubmissionConsts.DS_STATUS_COMPLETED_END_WITH_ABANDONED.equalsIgnoreCase(cycleDto.getStatus())).count());
+            arCycleStageDto.setNumberOfCyclesUndergoneLocally((int)selectionDto.getCycleDtos().stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equalsIgnoreCase(cycleDto.getCycleType()) &&
+                    !DataSubmissionConsts.DS_STATUS_COMPLETED_END_WITH_ABANDONED.equalsIgnoreCase(cycleDto.getStatus()) && DsHelper.isCycleFinalStatusWithSpec(cycleDto.getStatus())).count());
         }
     }
 
