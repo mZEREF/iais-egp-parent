@@ -33,7 +33,7 @@
                         <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
                     </p>
                 </div>
-                <label class="col-xs-12" style="font-size: 20px">Withdrawal successful</label>
+                <label class="col-xs-12" style="font-size: 20px">Withdrawal Successful</label>
                 <p class="col-xs-12 margin-btm"></p>
                 <div class="ack-font-16">
                     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
