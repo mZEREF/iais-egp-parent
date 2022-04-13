@@ -44,8 +44,8 @@ public interface SaMasterCodeClient {
     @PostMapping(value = "/iais-mastercode/masterCodes",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<MasterCodeToExcelDto>>  findAllMasterCode();
 
-    @DeleteMapping(path = "/iais-mastercode/{did}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> delMasterCode(@PathVariable("did")String did);
+    @DeleteMapping(path = "/iais-mastercode/{did}/{uCount}")
+    FeignResponseEntity<Void> delMasterCode(@PathVariable("did") String did, @PathVariable("uCount") int updateCount);
 
     @PutMapping(path = "/iais-mastercode",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MasterCodeDto> updateMasterCode(@RequestBody MasterCodeDto dto);
