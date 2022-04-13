@@ -272,9 +272,9 @@
             </iais:row>
         </div>
     </div>
-    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace!='Others'}">style="display: none"</c:if>>
+    <div id="otherTopDrugPlaces" <c:if test="${terminationDto.topDrugPlace!='AR_SC_001'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Drug for Termination of Pregnancy taken at other places. "/>
+            <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherTopDrugPlace" value="${terminationDto.otherTopDrugPlace}"/>
             </iais:value>
@@ -483,11 +483,12 @@
         if($('#takenOwnNo').prop('checked')) {
             $('#topDrugPlaces').show();
             $('#topDrugPlace').hide();
+            $('#otherTopDrugPlaces').hide();
         }
     }
     function otherTopDrugPlace() {
         var otherTopDrugPlace= $('#otherTopDrugPlace').val();
-        if(otherTopDrugPlace == "Others"){
+        if(otherTopDrugPlace == "AR_SC_001"){
             $('#otherTopDrugPlaces').show();
         }else {
             $('#otherTopDrugPlaces').hide();

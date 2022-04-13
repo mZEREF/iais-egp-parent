@@ -74,10 +74,16 @@ public class TerminationValidator implements CustomizeValidator {
             if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
                 errorMap.put("takenOwn", "GENERAL_ERR0006");
             }
+            if("AR_SC_001".equals(terminationDto.getTopDrugPlace())){
+                if(StringUtil.isEmpty(terminationDto.getOtherTopDrugPlace())){
+                    errorMap.put("otherTopDrugPlace", "GENERAL_ERR0006");
+                }
+            }
         }
         if(StringUtil.isEmpty(terminationDto.getComplicationForOperRslt())){
             errorMap.put("complicationForOperRslt", "GENERAL_ERR0006");
         }
+
         return errorMap;
     }
 }
