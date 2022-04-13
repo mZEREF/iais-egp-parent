@@ -1075,10 +1075,6 @@ public class MasterCodeDelegator {
                 List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
                 syncMasterCodeList.addAll(masterCodeDtos);
             }
-            String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
-            oldMasterCodeDto.setCodeCategory(codeCategory);
-            oldMasterCodeDto =  masterCodeService.updateMasterCode(oldMasterCodeDto);
-            syncMasterCodeList.add(oldMasterCodeDto);
             //create new
             masterCodeDto.setId(null);
             Double version =  masterCodeDto.getVersion();
