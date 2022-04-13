@@ -27,7 +27,7 @@ public class TerminationValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"drugType");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPTOD004".equals(terminationDto.getDrugType())){
+        if("TOPTOD005".equals(terminationDto.getDrugType())){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"otherDrugType");
             errorMap.putAll(result.retrieveAll());
         }

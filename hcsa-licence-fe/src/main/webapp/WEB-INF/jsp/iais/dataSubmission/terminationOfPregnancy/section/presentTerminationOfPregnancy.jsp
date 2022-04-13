@@ -52,7 +52,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD004'}">style="display: none"</c:if>>
+    <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD005'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Drug (Others)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -437,7 +437,7 @@
     }
     function drugType() {
         var drugType= $('#drugType').val();
-        if(drugType == "TOPTOD004"){
+        if(drugType == "TOPTOD005"){
             $('#otherDrugTypes').show();
         }else {
             $('#otherDrugTypes').hide();
