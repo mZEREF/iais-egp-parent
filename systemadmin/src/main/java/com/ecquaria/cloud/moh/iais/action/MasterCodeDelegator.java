@@ -455,7 +455,7 @@ public class MasterCodeDelegator {
             List<Map<String,Set<String>>> errResult = IaisCommonUtils.genNewArrayList();
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
                 if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
-                        StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                        StringUtil.isEmpty(masterCodeToExcelDto.getId())&&
                         StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
                         StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
                         StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
@@ -562,8 +562,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                             errItems.add(errMsg);
                             result = true;
-                        }else
-                        if(isEffect){
+                        }else if(isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
                             result = true;
@@ -574,8 +573,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                             errItems.add(errMsg);
                             result = true;
-                        }else
-                        if(!isEffect){
+                        }else if(!isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
                             result = true;
@@ -704,7 +702,7 @@ public class MasterCodeDelegator {
                 }
                 if (cartOptional.isPresent()) {
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
-                    masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
+                    masterCodeToExcelDto.setId(masterCodeToExcelDto1.getId());
                     masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
                 }
                 if (errItems.size()>0){
@@ -722,7 +720,7 @@ public class MasterCodeDelegator {
                 List<MasterCodeToExcelDto> masterCodeToExcelDtoSaveList=IaisCommonUtils.genNewArrayList();
                 for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
                     if(StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())&&
-                            StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeId())&&
+                            StringUtil.isEmpty(masterCodeToExcelDto.getId())&&
                             StringUtil.isEmpty(masterCodeToExcelDto.getMasterCodeKey())&&
                             StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())&&
                             StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())&&
@@ -821,7 +819,7 @@ public class MasterCodeDelegator {
                     masterCodeService.syncMasterCodeFe(syncMasterCodeList);
                     ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
                 } else {
-                    masterCodeService.deleteMasterCodeById(masterCodeId);
+                    masterCodeService.deleteMasterCodeById(masterCodeId, masterCodeDto.getUpdateCount());
                     List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
                     masterCodeDto.setUpdateAt(new Date());
                     masterCodeDto.setNeedDelete(true);
@@ -1081,7 +1079,7 @@ public class MasterCodeDelegator {
             oldMasterCodeDto =  masterCodeService.updateMasterCode(oldMasterCodeDto);
             syncMasterCodeList.add(oldMasterCodeDto);
             //create new
-            masterCodeDto.setMasterCodeId(null);
+            masterCodeDto.setId(null);
             Double version =  masterCodeDto.getVersion();
             if (StringUtil.isEmpty(version)){
                 masterCodeDto.setVersion(1d);
@@ -1183,7 +1181,7 @@ public class MasterCodeDelegator {
 
     private void getCategoryValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
         String codeCategorySequence = ParamUtil.getString(request, "codeCategorySequence");
-        masterCodeDto.setMasterCodeId(null);
+        masterCodeDto.setId(null);
         masterCodeDto.setCodeValue(ParamUtil.getString(request, "codeCategoryValue"));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, "codeCategoryDescription"));
         masterCodeDto.setStatus(ParamUtil.getString(request, "codeCategoryStatus"));

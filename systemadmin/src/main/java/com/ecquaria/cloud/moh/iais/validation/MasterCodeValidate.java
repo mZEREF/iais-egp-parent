@@ -18,7 +18,7 @@ public class MasterCodeValidate implements CustomizeValidator {
         if (dto == null ) {
             return errMap;
         }
-        if (!StringUtil.isEmpty(dto.getMasterCodeId())) {
+        if (!StringUtil.isEmpty(dto.getId())) {
             errMap.put("masterCodeId", "Duplicate MasterCode");
             return errMap;
         }
