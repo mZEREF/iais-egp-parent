@@ -156,7 +156,9 @@
           <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
             <div class="text-right text-center-mobile">
               <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
-              <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
+              <c:if test="${empty rfiApplication}">
+                <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
+              </c:if>
               <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>
             </div>
           </div>
