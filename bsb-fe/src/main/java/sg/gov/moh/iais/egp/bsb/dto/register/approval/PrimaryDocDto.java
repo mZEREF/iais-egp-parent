@@ -80,25 +80,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
         Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
         DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
-
-        switch (processType) {
-            case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
-                this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validateProcessBatPrimaryDocs", new Object[]{docsMetaDto});
-                break;
-            case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
-                this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validateLargeBatPrimaryDocs", new Object[]{docsMetaDto});
-                break;
-            case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
-                this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validateSpecialBatPrimaryDocs", new Object[]{docsMetaDto});
-                break;
-            case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
-                this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validateFacilityActivityPrimaryDocs", new Object[]{docsMetaDto});
-                break;
-            default:
-                log.info("no such processType {}", org.apache.commons.lang.StringUtils.normalizeSpace(processType));
-                break;
-        }
-
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod(ApprovalBatAndActivityConstants.FEIGN_CLIENT, "validatePrimaryDocs", new Object[]{docsMetaDto, processType});
         return validationResultDto.isPass();
     }
 

@@ -3,10 +3,7 @@ package sg.gov.moh.iais.egp.bsb.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
@@ -32,17 +29,8 @@ public interface ApprovalBatAndActivityClient {
     @PostMapping(path = "/register/bat-and-activity-approval/form-validation/approval-to-activity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateApprovalToActivityDto(@RequestBody ApprovalToActivityDto dto);
 
-    @PostMapping(path = "/register/bat-and-activity-approval/form-validation/primary-docs/possess-bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateProcessBatPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
-
-    @PostMapping(path = "/register/bat-and-activity-approval/form-validation/primary-docs/large-bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateLargeBatPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
-
-    @PostMapping(path = "/register/bat-and-activity-approval/form-validation/primary-docs/special-bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateSpecialBatPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
-
-    @PostMapping(path = "/register/bat-and-activity-approval/form-validation/primary-docs/facility-activity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityActivityPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
+    @PostMapping(path = "/register/bat-and-activity-approval/form-validation/primary-docs", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validatePrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto, @RequestParam("processType") String processType);
 
     @GetMapping(path = "/register/bat-and-activity-approval/facProfileDto/{facilityId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacProfileDto> getFacProfileDtoByFacilityId(@PathVariable("facilityId") String facilityId);
