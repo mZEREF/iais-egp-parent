@@ -21,7 +21,7 @@
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                <iais:select name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${facSearchDto.facilityClassification}"/>
+                                <iais:select name="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${facSearchDto.facClassification}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -131,7 +131,7 @@
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${approvalSearchDto.facilityClassification}"/>
+                            <iais:select name="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${approvalSearchDto.facClassification}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -268,7 +268,7 @@
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facilityClassification" id="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${appSearchDto.facilityClassification}"/>
+                            <iais:select name="facClassification" id="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${appSearchDto.facClassification}"/>
                         </div >
                     </iais:row>
                     <iais:row>
