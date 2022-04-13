@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -199,6 +200,13 @@ public class MohDsActionDelegator {
             }else if (arSuper.getTransferInOutStageDto() != null){
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuper, request);
                 transferInOutDelegator.initSelectOpts(request);
+                TransferInOutStageDto transferInOutStageDto = arSuper.getTransferInOutStageDto();
+                if (StringUtil.isNotEmpty(transferInOutStageDto.getBindSubmissionId())) {
+                    ArSuperDataSubmissionDto bindStageArSuperDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionId(transferInOutStageDto.getBindSubmissionId());
+                    if (bindStageArSuperDto != null) {
+                        TransferInOutDelegator.flagInAndOutDiscrepancy(request, transferInOutStageDto, bindStageArSuperDto);
+                    }
+                }
             }else if(arSuper.getPgtStageDto() != null){
                 String patientCode=arSuper.getPatientInfoDto().getPatient().getPatientCode();
 

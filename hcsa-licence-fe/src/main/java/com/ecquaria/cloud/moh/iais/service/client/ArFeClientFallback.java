@@ -65,6 +65,11 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoByDsId(String submissionId) {
+        return getFeignResponseEntity(submissionId);
+    }
+
+    @Override
     public FeignResponseEntity<ArCycleStageDto> getArCycleStageDtoById(String id) {
         return getFeignResponseEntity();
     }
@@ -107,7 +112,7 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber,
+    public FeignResponseEntity<List<ArSuperDataSubmissionDto>> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber,
             String nationality, String orgId, String hciCode, boolean onlyStage) {
         return getFeignResponseEntity(idType, idNumber, nationality, orgId, hciCode, onlyStage);
     }
@@ -215,6 +220,11 @@ public class ArFeClientFallback implements ArFeClient {
     @Override
     public FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(Integer day) {
         return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<String> getTransferConfirmationDsNo(String patientCode, String hciCode, String svcName, String submissionId) {
+        return getFeignResponseEntity(patientCode, hciCode, svcName, submissionId);
     }
 
     @Override

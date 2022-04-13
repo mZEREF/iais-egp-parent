@@ -11,7 +11,6 @@
     <div id="transferInOutDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <input type="hidden" name="outStageDsNo" value="${outStageDsNo}">
                 <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}"/>
                 <h3>
                     <label><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
@@ -120,25 +119,48 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row>
-                    <iais:field width="5" value="Transferred In From"/>
-                    <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                        <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
-                               var="selecctInValue"/>
-                        <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
-                            <c:if test="${premisesSelect.value eq selecctInValue}">
-                                <c:out value="${premisesSelect.text}"/>
-                            </c:if>
-                        </c:forEach>
-                    </iais:value>
-                </iais:row>
+                <c:if test="${transferInOutStageDto.transferType =='in'}">
+                    <iais:row>
+                        <iais:field width="5" value="Transferred In From"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:set value="${transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
+                                   var="selecctInValue"/>
+                            <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
+                                <c:if test="${premisesSelect.value eq selecctInValue}">
+                                    <c:out value="${premisesSelect.text}"/>
+                                </c:if>
+                            </c:forEach>
+                        </iais:value>
+                    </iais:row>
 
-                <iais:row style="${transferInOutStageDto.transInFromHciCode eq'Others' ? '' : 'display:none;'}">
-                    <iais:field width="5" value="Transferred In From (Others)"/>
-                    <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
-                        <c:out value="${transferInOutStageDto.transInFromOthers}"/>
-                    </iais:value>
-                </iais:row>
+                    <iais:row style="${transferInOutStageDto.transInFromHciCode eq'Others' ? '' : 'display:none;'}">
+                        <iais:field width="5" value="Transferred In From (Others)"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:out value="${transferInOutStageDto.transInFromOthers}"/>
+                        </iais:value>
+                    </iais:row>
+                </c:if>
+                <c:if test="${transferInOutStageDto.transferType =='out'}">
+                    <iais:row>
+                        <iais:field width="5" value="Transferred Out To"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:set value="${transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
+                                   var="selecctInValue"/>
+                            <c:forEach items="${transferOutInPremisesSelect}" var="premisesSelect" varStatus="s">
+                                <c:if test="${premisesSelect.value eq selecctInValue}">
+                                    <c:out value="${premisesSelect.text}"/>
+                                </c:if>
+                            </c:forEach>
+                        </iais:value>
+                    </iais:row>
+
+                    <iais:row style="${transferInOutStageDto.transOutToHciCode eq'Others' ? '' : 'display:none;'}">
+                        <iais:field width="5" value="Transferred Out To (Others)"/>
+                        <iais:value width="7" cssClass="col-md-7" label="true" style="padding-top: 13px;">
+                            <c:out value="${transferInOutStageDto.transOutToOthers}"/>
+                        </iais:value>
+                    </iais:row>
+                </c:if>
 
                 <iais:row>
                     <iais:field width="5" value="Date of Transfer"/>
@@ -151,3 +173,22 @@
         </div>
     </div>
 </div>
+<c:if test="${hasDraft}">
+    <iais:confirm
+            msg="DS_MSG002"
+            callBack="$('#_draftModal').modal('hide');submit('resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
+            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            cancelBtnDesc="Continue" cancelFunc="mySubmit('delete')"/>
+</c:if>
+<c:if test="${not empty bindStageIsRfc}">
+    <iais:confirm
+            msg="${bindStageIsRfc}"
+            callBack="#inactionModal').modal('hide');submit('return');" popupOrder="inactionModal" yesBtnDesc="Ok"
+            yesBtnCls="btn btn-secondary" needFungDuoJi="false"
+            needCancel="false"/>
+</c:if>
+<c:if test="${not empty hasConfirmationStage}">
+    <iais:confirm msg="${hasConfirmationStage}"
+                  callBack="#hasConfirmationModal').modal('hide');submit('return');" popupOrder="hasConfirmationModal" yesBtnDesc="Ok"
+                  yesBtnCls="btn btn-secondary" needFungDuoJi="true" needCancel="false"/>
+</c:if>

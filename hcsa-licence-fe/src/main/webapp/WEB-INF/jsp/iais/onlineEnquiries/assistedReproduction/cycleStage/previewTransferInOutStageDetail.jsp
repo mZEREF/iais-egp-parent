@@ -45,24 +45,45 @@
                 <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
                     <c:if test="${transferredObj =='AR_WWT_001'}">
                         <iais:row>
-                            <iais:field width="5" value="No. of Oocyte(s) Transferred"/>
-                            <iais:value width="7" cssClass="col-md-7" display="true">
+                            <label class="col-xs-5 col-md-4 control-label">No. of Oocyte(s) Transferred
+                                <c:if test="${diffOocyte}">
+                                    <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
+                                       data-toggle="tooltip"
+                                       data-html="true"
+                                       title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
+                                </c:if>
+                            </label>
+                            <iais:value width="7" display="true" cssClass="col-md-7">
                                 <c:out value="${transferInOutStageDto.oocyteNum}"/>
                             </iais:value>
                         </iais:row>
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_002'}">
                         <iais:row>
-                            <iais:field width="5" value="No. of Embryo(s) Transferred"/>
-                            <iais:value width="7" cssClass="col-md-7" display="true">
+                            <label class="col-xs-5 col-md-4 control-label">No. of Embryo(s) Transferred
+                                <c:if test="${diffEmbryo}">
+                                    <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
+                                       data-toggle="tooltip"
+                                       data-html="true"
+                                       title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
+                                </c:if>
+                            </label>
+                            <iais:value width="7" display="true" cssClass="col-md-7">
                                 <c:out value="${transferInOutStageDto.embryoNum}"/>
                             </iais:value>
                         </iais:row>
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_003'}">
                         <iais:row>
-                            <iais:field width="5" value="Vials of Sperm Transferred"/>
-                            <iais:value width="7" cssClass="col-md-7" display="true">
+                            <label class="col-xs-5 col-md-4 control-label">Vials of Sperm Transferred
+                                <c:if test="${diffSpermVial}">
+                                    <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
+                                       data-toggle="tooltip"
+                                       data-html="true"
+                                       title="&lt;p&gt;<iais:message key="DS_ERR056"/>&lt;/p&gt;">!</a>
+                                </c:if>
+                            </label>
+                            <iais:value width="7" display="true" cssClass="col-md-7">
                                 <c:out value="${transferInOutStageDto.spermVialsNum}"/>
                             </iais:value>
                         </iais:row>

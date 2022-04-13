@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -52,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
@@ -127,6 +129,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     @Autowired
     private MohDsActionDelegator mohDsActionDelegator;
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
 
 
     public void start(BaseProcessClass bpc){
@@ -1511,6 +1516,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
                     arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
+                }
+                TransferInOutStageDto transferInOutStageDto = arSuper.getTransferInOutStageDto();
+                if (StringUtil.isNotEmpty(transferInOutStageDto.getBindSubmissionId())) {
+                    ArSuperDataSubmissionDto bindStageArSuperDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionId(transferInOutStageDto.getBindSubmissionId());
+                    if (bindStageArSuperDto != null) {
+                        TransferInOutDelegator.flagInAndOutDiscrepancy(request, transferInOutStageDto, bindStageArSuperDto);
+                    }
                 }
             }
         }

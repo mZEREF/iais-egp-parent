@@ -19,6 +19,8 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo);
 
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionId(String submissionId);
+
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde, String cycleId);
 
     ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission);
@@ -37,7 +39,7 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
+    List<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode, boolean onlyStage);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
@@ -119,6 +121,8 @@ public interface ArDataSubmissionService {
     int embryoTransferCount(String cycleDtoId);
 
     boolean haveEmbryoTransferGreaterFiveDay(String cycleId);
+
+    String getTransferConfirmationDsNoByBaseDsId(String patientCode, String hciCode, String svcName, String submissionId);
 
     void sendIncompleteCycleNotificationPeriod();
 

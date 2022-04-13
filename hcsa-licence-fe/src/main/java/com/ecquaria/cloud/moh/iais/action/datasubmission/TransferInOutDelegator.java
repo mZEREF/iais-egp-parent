@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInven
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -55,6 +57,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TransferInOutDelegator extends CommonDelegator {
     public static final String WHAT_WAS_TRANSFERREDS = "transferreds";
+    public static final String TRANSFER_TYPE_IN = "in";
+    public static final String TRANSFER_TYPE_OUT = "out";
 
     @Autowired
     RequestForChangeService requestForChangeService;
@@ -82,9 +86,9 @@ public class TransferInOutDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
 
-        ArSuperDataSubmissionDto outStageArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
-        if (outStageArSuperDto != null) {
-            TransferInOutStageDto outStageDto = outStageArSuperDto.getTransferInOutStageDto();
+        ArSuperDataSubmissionDto bindStageArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
+        if (bindStageArSuperDto != null) {
+            TransferInOutStageDto outStageDto = bindStageArSuperDto.getTransferInOutStageDto();
             ParamUtil.setRequestAttr(request, "outStageOocyte", outStageDto.getOocyteNum());
             ParamUtil.setRequestAttr(request, "outStageEmbryo", outStageDto.getEmbryoNum());
             ParamUtil.setRequestAttr(request, "outStageSpermVial", outStageDto.getSpermVialsNum());
@@ -126,12 +130,17 @@ public class TransferInOutDelegator extends CommonDelegator {
     @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        // has draftAction
+        if (draftAction(request)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            return;
+        }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         arSuperDataSubmissionDto = arSuperDataSubmissionDto == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto() == null ? new TransferInOutStageDto() : arSuperDataSubmissionDto.getTransferInOutStageDto();
 
-        String outStageDsNo = ParamUtil.getString(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
-        if (StringUtil.isEmpty(outStageDsNo)) {
+        String bindStageDsId = (String) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID);
+        if (StringUtil.isEmpty(bindStageDsId)) {
             setDataFromPage(request, transferInOutStageDto);
         } else {
             String oocyteNum = ParamUtil.getString(request, "oocyteNum");
@@ -140,7 +149,8 @@ public class TransferInOutDelegator extends CommonDelegator {
             transferInOutStageDto.setOocyteNum(oocyteNum);
             transferInOutStageDto.setEmbryoNum(embryoNum);
             transferInOutStageDto.setSpermVialsNum(spermVialsNum);
-            flagInAndOutDiscrepancy(request, transferInOutStageDto);
+            ArSuperDataSubmissionDto bindArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
+            flagInAndOutDiscrepancy(request, transferInOutStageDto, bindArSuperDto);
         }
 
         arSuperDataSubmissionDto.setTransferInOutStageDto(transferInOutStageDto);
@@ -171,15 +181,12 @@ public class TransferInOutDelegator extends CommonDelegator {
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
 
         if (isNeedEmail(transferInOutStageDto)) {
-            LicenseeDto receiveLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(transferInOutStageDto.getTransOutToLicenseeId());
-            String receiveOrgId = receiveLicenseeDto.getOrganizationId();
-            PremisesDto receivePremises = dsLicenceService.getArPremisesDto(receiveOrgId, transferInOutStageDto.getTransOutToHciCode());
-            sendTransferOutNotification(transferInOutStageDto.getTransOutToLicenseeId(),
-                    arSuperDataSubmissionDto.getHciCode(),
-                    arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo(),
-                    receiveLicenseeDto.getName(),
-                    arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel(),
-                    receivePremises.getPremiseLabel());
+//            TODO fill email
+            if (TRANSFER_TYPE_OUT.equals(transferInOutStageDto.getTransferType())) {
+                sendTransferOutNotification(arSuperDataSubmissionDto);
+            } else {
+                sendTransferInNotification(arSuperDataSubmissionDto);
+            }
         }
     }
 
@@ -250,7 +257,17 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @SneakyThrows
-    private void sendTransferOutNotification(String licenseeId, String hciCode, String submissionNo, String submitterName, String transferCenter, String receivingCenter) {
+    private void sendTransferOutNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        LicenseeDto receiveLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(transferInOutStageDto.getTransOutToLicenseeId());
+        String receiveOrgId = receiveLicenseeDto.getOrganizationId();
+        PremisesDto receivePremises = dsLicenceService.getArPremisesDto(receiveOrgId, transferInOutStageDto.getTransOutToHciCode());
+        String licenseeId = transferInOutStageDto.getTransOutToLicenseeId();
+        String hciCode = arSuperDataSubmissionDto.getHciCode();
+        String submissionId = arSuperDataSubmissionDto.getDataSubmissionDto().getId();
+        String submitterName = receiveLicenseeDto.getName();
+        String transferCenter = arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel();
+        String receivingCenter = receivePremises.getPremiseLabel();
         String templateId = "67F85A8B-3E74-EC11-BE6B-000C29FAAE4D";
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(templateId).getEntity();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
@@ -259,7 +276,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         EmailParam msgParam = new EmailParam();
         msgParam.setTemplateId(templateId);
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?outStageDsNo=" + submissionNo;
+        String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
+                + submissionId;
         msgContentMap.put("submissionerName", submitterName);
         msgContentMap.put("transferringCenter", transferCenter);
         msgContentMap.put("receivingCenter", receivingCenter);
@@ -274,36 +292,82 @@ public class TransferInOutDelegator extends CommonDelegator {
         notificationHelper.sendNotification(msgParam);
     }
 
+    @SneakyThrows
+    private void sendTransferInNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        LicenseeDto transferringLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(transferInOutStageDto.getTransInFromLicenseeId());
+        String transferringOrgId = transferringLicenseeDto.getOrganizationId();
+        PremisesDto transferringPremises = dsLicenceService.getArPremisesDto(transferringOrgId, transferInOutStageDto.getTransInFromHciCode());
+        String licenseeId = transferInOutStageDto.getTransInFromLicenseeId();
+        String templateId = "67F85A8B-3E74-EC11-BE6B-000C29FAAE4D";
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(templateId).getEntity();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        msgSubjectMap.put("HciCode", arSuperDataSubmissionDto.getHciCode());
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(templateId);
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
+                + arSuperDataSubmissionDto.getDataSubmissionDto().getId();
+        msgContentMap.put("submissionerName", transferringLicenseeDto.getName());
+        msgContentMap.put("transferringCenter", transferringPremises.getPremiseLabel());
+        msgContentMap.put("receivingCenter", arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
+        msgContentMap.put("systemLink", uri);
+        msgContentMap.put("date", Formatter.formatDate(new Date()));
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setSubject(msgSubject);
+        msgParam.setQueryCode(licenseeId);
+        msgParam.setReqRefNum(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(licenseeId);
+        notificationHelper.sendNotification(msgParam);
+    }
+
     private boolean isNeedEmail(TransferInOutStageDto transferInOutStageDto) {
-        if (transferInOutStageDto != null && "out".equals(transferInOutStageDto.getTransferType()) && !"Others".equals(transferInOutStageDto.getTransOutToHciCode())) {
-            return true;
-        }
-        return false;
+        return transferInOutStageDto != null
+                && StringUtil.isEmpty(transferInOutStageDto.getBindSubmissionId())
+                && (
+                (TRANSFER_TYPE_OUT.equals(transferInOutStageDto.getTransferType()) && !"Others".equals(transferInOutStageDto.getTransOutToHciCode()))
+                        || (TRANSFER_TYPE_IN.equals(transferInOutStageDto.getTransferType()) && !"Others".equals(transferInOutStageDto.getTransInFromHciCode()))
+        );
     }
 
     private void initReceive(HttpServletRequest request) {
+        String bindStageDsId = ParamUtil.getRequestString(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID);
+        // from link
+        if (StringUtil.isNotEmpty(bindStageDsId)) {
+            DataSubmissionHelper.clearSession(request);
+        }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        String outStageDsNo = ParamUtil.getRequestString(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO);
-        if (arSuperDataSubmissionDto != null){
+        // resume in rfc or draft
+        if (arSuperDataSubmissionDto != null) {
             TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-            if (StringUtil.isEmpty(outStageDsNo)) {
-                if (transferInOutStageDto != null && StringUtil.isNotEmpty(transferInOutStageDto.getOutStageDsNo())){
-                    outStageDsNo = transferInOutStageDto.getOutStageDsNo();
+            if (StringUtil.isEmpty(bindStageDsId)) {
+                if (transferInOutStageDto != null && StringUtil.isNotEmpty(transferInOutStageDto.getBindSubmissionId())) {
+                    bindStageDsId = transferInOutStageDto.getBindSubmissionId();
                 }
             }
         }
-        if (StringUtil.isEmpty(outStageDsNo)) {
-            return;
+        if (StringUtil.isNotEmpty(bindStageDsId)) {
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID, bindStageDsId);
+            ArSuperDataSubmissionDto bindStageArSuperDto = initBindStageDto(request, bindStageDsId);
+            if (arSuperDataSubmissionDto == null) {
+                initArSuper(request, bindStageArSuperDto, bindStageDsId);
+                hasDraft(request);
+                bindStageIsInaction(request, bindStageArSuperDto);
+                hasConfirmationStage(request, bindStageDsId);
+            }
         }
-        DataSubmissionHelper.clearSession(request);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_NO, outStageDsNo);
-        ArSuperDataSubmissionDto outStageArSuperDto = initOutStageDto(request, outStageDsNo);
-        initArSuper(request, outStageArSuperDto, outStageDsNo);
     }
 
-    private ArSuperDataSubmissionDto initArSuper(HttpServletRequest request, ArSuperDataSubmissionDto outArDto, String outStageDsNo) {
-        TransferInOutStageDto outStageDto = outArDto.getTransferInOutStageDto();
-        String hciCode = outStageDto.getTransOutToHciCode();
+    private ArSuperDataSubmissionDto initArSuper(HttpServletRequest request, ArSuperDataSubmissionDto bindArDto, String bindStageDsId) {
+        TransferInOutStageDto bindStageDto = bindArDto.getTransferInOutStageDto();
+        String hciCode;
+        if (TRANSFER_TYPE_OUT.equals(bindStageDto.getTransferType())) {
+            hciCode = bindStageDto.getTransOutToHciCode();
+        } else {
+            hciCode = bindStageDto.getTransInFromHciCode();
+        }
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
         PremisesDto premisesDto = dsLicenceService.getArPremisesDto(orgId, hciCode);
@@ -321,7 +385,7 @@ public class TransferInOutDelegator extends CommonDelegator {
         arSuper.setLicenseeId(licenseeId);
         arSuper.setCycleDto(DataSubmissionHelper.initCycleDto(arSuper, false));
 
-        String patientCode = outArDto.getCycleDto().getPatientCode();
+        String patientCode = bindArDto.getCycleDto().getPatientCode();
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(patientCode,
                 hciCode, null);
 
@@ -348,29 +412,35 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
         arSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
 
-        TransferInOutStageDto transferInOutStageDto = (TransferInOutStageDto) CopyUtil.copyMutableObject(outStageDto);
+        TransferInOutStageDto transferInOutStageDto = (TransferInOutStageDto) CopyUtil.copyMutableObject(bindStageDto);
         transferInOutStageDto.setId(null);
         transferInOutStageDto.setSubmissionId(null);
-        transferInOutStageDto.setTransOutToHciCode(null);
-        transferInOutStageDto.setTransferType("in");
-        transferInOutStageDto.setTransInFromHciCode(outArDto.getCycleDto().getHciCode());
-        transferInOutStageDto.setTransInFromLicenseeId(outArDto.getLicenseeId());
-        transferInOutStageDto.setOutStageDsNo(outStageDsNo);
+        transferInOutStageDto.setBindSubmissionId(bindStageDsId);
+        if (TRANSFER_TYPE_OUT.equals(bindStageDto.getTransferType())) {
+            transferInOutStageDto.setTransferType(TRANSFER_TYPE_IN);
+            transferInOutStageDto.setTransInFromHciCode(bindArDto.getCycleDto().getHciCode());
+            transferInOutStageDto.setTransInFromLicenseeId(bindArDto.getLicenseeId());
+        } else {
+            transferInOutStageDto.setTransferType(TRANSFER_TYPE_OUT);
+            transferInOutStageDto.setTransOutToHciCode(bindArDto.getCycleDto().getHciCode());
+            transferInOutStageDto.setTransOutToLicenseeId(bindArDto.getLicenseeId());
+        }
+        transferInOutStageDto.setBindSubmissionId(bindStageDsId);
         arSuper.setTransferInOutStageDto(transferInOutStageDto);
 
         DataSubmissionHelper.setCurrentArDataSubmission(arSuper, request);
         return arSuper;
     }
 
-    private ArSuperDataSubmissionDto initOutStageDto(HttpServletRequest request, String outStageDsNo) {
-        ArSuperDataSubmissionDto outStageArSuperDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(outStageDsNo);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO, outStageArSuperDto);
-        return outStageArSuperDto;
+    private ArSuperDataSubmissionDto initBindStageDto(HttpServletRequest request, String bindStageDsId) {
+        ArSuperDataSubmissionDto bindStageArSuperDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionId(bindStageDsId);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO, bindStageArSuperDto);
+        return bindStageArSuperDto;
     }
 
     @Override
     public void returnStep(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto outArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
+        ArSuperDataSubmissionDto outArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
         // if is bind stage, back to inbox
         if (outArSuperDto != null) {
             ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -378,16 +448,15 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
     }
 
-    private void flagInAndOutDiscrepancy(HttpServletRequest request, TransferInOutStageDto transferInOutStageDto) {
-        ArSuperDataSubmissionDto outArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_STAGE_SUPER_DTO);
-        if (outArSuperDto != null) {
-            TransferInOutStageDto outStageDto = outArSuperDto.getTransferInOutStageDto();
-            String oocyteNum = outStageDto.getOocyteNum();
-            String embryoNum = outStageDto.getEmbryoNum();
-            String spermVialsNum = outStageDto.getSpermVialsNum();
-            boolean diffOocyte = !(oocyteNum == null || oocyteNum.equals(transferInOutStageDto.getOocyteNum()));
-            boolean diffEmbryo = !(embryoNum == null || embryoNum.equals(transferInOutStageDto.getEmbryoNum()));
-            boolean diffSpermVial = !(spermVialsNum == null || spermVialsNum.equals(transferInOutStageDto.getSpermVialsNum()));
+    public static void flagInAndOutDiscrepancy(HttpServletRequest request, TransferInOutStageDto currentTransferInOutStageDto, ArSuperDataSubmissionDto bindArSuperDto) {
+        if (bindArSuperDto != null) {
+            TransferInOutStageDto bindStageDto = bindArSuperDto.getTransferInOutStageDto();
+            String oocyteNum = bindStageDto.getOocyteNum();
+            String embryoNum = bindStageDto.getEmbryoNum();
+            String spermVialsNum = bindStageDto.getSpermVialsNum();
+            boolean diffOocyte = !(oocyteNum == null || oocyteNum.equals(currentTransferInOutStageDto.getOocyteNum()));
+            boolean diffEmbryo = !(embryoNum == null || embryoNum.equals(currentTransferInOutStageDto.getEmbryoNum()));
+            boolean diffSpermVial = !(spermVialsNum == null || spermVialsNum.equals(currentTransferInOutStageDto.getSpermVialsNum()));
             ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
             ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
             ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
@@ -418,5 +487,90 @@ public class TransferInOutDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
             }
         }
+    }
+
+    private void hasDraft(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        PatientDto patient = arSuperDataSubmissionDto.getPatientInfoDto().getPatient();
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                patient.getIdType(), patient.getIdNumber(), patient.getNationality(),
+                arSuperDataSubmissionDto.getOrgId(), arSuperDataSubmissionDto.getHciCode(), true);
+        if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+            dataSubmissionDraftList = dataSubmissionDraftList.stream()
+                    .filter(draft -> transferInOutStageDto.getBindSubmissionId().equals(draft.getTransferInOutStageDto().getBindSubmissionId()))
+                    .collect(Collectors.toList());
+        }
+        ArSuperDataSubmissionDto dataSubmissionDraft;
+        if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
+            dataSubmissionDraft = null;
+        } else {
+            dataSubmissionDraft = dataSubmissionDraftList.get(0);
+        }
+        if (dataSubmissionDraft != null) {
+            arSuperDataSubmissionDto.setDraftId(dataSubmissionDraft.getDraftId());
+            arSuperDataSubmissionDto.setDraftNo(dataSubmissionDraft.getDraftNo());
+            ParamUtil.setRequestAttr(request, "hasDraft", Boolean.TRUE);
+        }
+    }
+
+    private void bindStageIsInaction(HttpServletRequest request, ArSuperDataSubmissionDto bindStageArSuperDto) {
+        List<String> inactionStatus = Arrays.asList(DataSubmissionConsts.DS_STATUS_INACTIVE, DataSubmissionConsts.DS_STATUS_WITHDRAW);
+        if (inactionStatus.contains(bindStageArSuperDto.getDataSubmissionDto().getStatus())) {
+            Map<String, String> repMap = IaisCommonUtils.genNewHashMap(1);
+            repMap.put("centerName", bindStageArSuperDto.getPremisesDto().getPremiseLabel());
+            String message = MessageUtil.getMessageDesc("DS_MSG021", repMap);
+            ParamUtil.setRequestAttr(request, "bindStageIsRfc", message);
+        }
+    }
+
+    private void hasConfirmationStage(HttpServletRequest request, String bindStageDsId) {
+        ArSuperDataSubmissionDto currentArSuperDataSubmssionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        String transferConfirmationDsNo = arDataSubmissionService.getTransferConfirmationDsNoByBaseDsId(currentArSuperDataSubmssionDto.getPatientInfoDto().getPatient().getPatientCode(),
+                currentArSuperDataSubmssionDto.getHciCode(),
+                currentArSuperDataSubmssionDto.getSvcName(),
+                bindStageDsId);
+        if (StringUtil.isNotEmpty(transferConfirmationDsNo)) {
+            Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+            repMap.put("transferType", getTransferTypeDes(currentArSuperDataSubmssionDto));
+            repMap.put("submissionID", transferConfirmationDsNo);
+            String message = MessageUtil.getMessageDesc("DS_MSG020", repMap);
+            ParamUtil.setRequestAttr(request, "hasConfirmationStage", message);
+        }
+    }
+
+    private String getTransferTypeDes(ArSuperDataSubmissionDto currentArSuperDataSubmssionDto) {
+        TransferInOutStageDto transferInOutStageDto = currentArSuperDataSubmssionDto.getTransferInOutStageDto();
+        if (TRANSFER_TYPE_IN.equals(transferInOutStageDto.getTransferType())) {
+            return "transfer in";
+        } else {
+            return "transfer out";
+        }
+    }
+
+    private boolean draftAction(HttpServletRequest request) {
+        boolean hasDraft = false;
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        String actionValue = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if ("resume".equals(actionValue)) {
+            hasDraft = true;
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                    currentArDataSubmission.getDraftId());
+            if (arSuperDataSubmissionDtoDraft != null) {
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+            } else {
+                log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
+            }
+        } else if ("delete".equals(actionValue)) {
+            hasDraft = true;
+            PatientDto patient = currentArDataSubmission.getPatientInfoDto().getPatient();
+            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(patient.getIdType(),
+                    patient.getIdNumber(), patient.getNationality(),
+                    currentArDataSubmission.getOrgId(), currentArDataSubmission.getHciCode());
+            currentArDataSubmission = DataSubmissionHelper.reNew(currentArDataSubmission);
+            currentArDataSubmission.setDraftNo(null);
+            currentArDataSubmission.setDraftId(null);
+        }
+        return hasDraft;
     }
 }
