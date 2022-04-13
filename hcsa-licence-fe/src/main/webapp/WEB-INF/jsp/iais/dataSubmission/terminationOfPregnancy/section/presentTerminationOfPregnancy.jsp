@@ -109,7 +109,7 @@
     </iais:row>
     <div id="performedOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Is Termination of Pregnancy by Surgery performed inown premises?" mandatory="true"/>
+            <iais:field width="5" value="Is Termination of Pregnancy by Surgery performed in own premises?" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
                 <div class="form-check">
                     <input class="form-check-input"
