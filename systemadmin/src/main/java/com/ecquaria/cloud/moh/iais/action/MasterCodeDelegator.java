@@ -981,6 +981,7 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto oldMasterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
         MasterCodeDto masterCodeDto = (MasterCodeDto) CopyUtil.copyMutableObject(oldMasterCodeDto);
+        masterCodeDto.setUpdateCount(oldMasterCodeDto.getUpdateCount());
         getEditValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
             masterCodeDto.setVersion(1d);
