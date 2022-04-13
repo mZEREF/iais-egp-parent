@@ -8,6 +8,7 @@ public class BioSafetyEnquiryConstants {
     private BioSafetyEnquiryConstants() {}
 
     public static final String PARAM_SEARCH_CHK = "searchChk";
+    public static final String PARAM_SEARCH_KEY= "searchKey";
     public static final String PARAM_COUNT = "count";
     public static final String PARAM_SEARCH_TEXT = "searchText";
     public static final String PARAM_CHOICE_APPLICATION = "app";
@@ -33,7 +34,16 @@ public class BioSafetyEnquiryConstants {
     //url
     public static final String URL_BIO_SAFETY_INFO_FILE = "bioSafety-information-file";
 
-
+    //options
+    public static final String OPTIONS_APPLICATION_TYPE = "appTypeOps";
+    public static final String OPTIONS_APPLICATION_STATUS = "appStatusOps";
+    public static final String OPTIONS_FACILITY_CLASSIFICATION = "facClassificationOps";
+    public static final String OPTIONS_FACILITY_STATUS = "facStatusOps";
+    public static final String OPTIONS_APPROVE_FACILITY_CERTIFIER = "afcSelectionOps";
+    public static final String OPTIONS_PROCESS_TYPE = "processTypeOps";
+    public static final String OPTIONS_APPROVAL_STATUS = "approvalStatusOps";
+    public static final String OPTIONS_APPROVAL_TYPE = "approvalTypeOps";
+    public static final String OPTIONS_AFC_STATUS = "afcStatusOps";
 
     //PARAM
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
-public interface BiosafetyEnquiryClient {
+public interface OnlineEnquiryClient {
 
     @GetMapping(path = "/facility-info/names")
     FeignResponseEntity<List<String>> queryDistinctFN();

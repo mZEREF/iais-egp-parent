@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
-import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
+import sg.gov.moh.iais.egp.bsb.client.OnlineEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -37,11 +37,11 @@ public class AuditCreationDelegator {
     private static final String ACTION_TYPE = "action_type";
 
     private final AuditClientBE auditClientBE;
-    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final OnlineEnquiryClient onlineEnquiryClient;
 
-    public AuditCreationDelegator(AuditClientBE auditClientBE, BiosafetyEnquiryClient biosafetyEnquiryClient) {
+    public AuditCreationDelegator(AuditClientBE auditClientBE, OnlineEnquiryClient onlineEnquiryClient) {
         this.auditClientBE = auditClientBE;
-        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+        this.onlineEnquiryClient = onlineEnquiryClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -217,7 +217,7 @@ public class AuditCreationDelegator {
     }
 
     public void selectOption(HttpServletRequest request) {
-        List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
+        List<String> facNames = onlineEnquiryClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = new ArrayList<>(facNames.size());
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));

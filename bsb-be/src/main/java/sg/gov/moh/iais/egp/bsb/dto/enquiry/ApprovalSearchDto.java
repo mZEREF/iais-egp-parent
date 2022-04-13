@@ -24,7 +24,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApprovalSearchDto extends PagingAndSortingDto {
     private String facName;
-    private String facilityClassification;
+    private String facClassification;
     private List<String> facTypes;
     private String scheduleType;
     private String batName;
@@ -55,7 +55,7 @@ public class ApprovalSearchDto extends PagingAndSortingDto {
 
     public void clearAllFields(){
         this.facName = "";
-        this.facilityClassification = "";
+        this.facClassification = "";
         this.facTypes = null;
         this.scheduleType = "";
         this.batName = "";
@@ -71,7 +71,7 @@ public class ApprovalSearchDto extends PagingAndSortingDto {
 
     public void reqObjMapping(HttpServletRequest request){
         this.facName = ParamUtil.getString(request,PARAM_FACILITY_NAME);
-        this.facilityClassification = ParamUtil.getString(request,PARAM_FACILITY_CLASSIFICATION);
+        this.facClassification = ParamUtil.getString(request,PARAM_FACILITY_CLASSIFICATION);
         String[] facilityTypes = ParamUtil.getStrings(request,PARAM_FACILITY_TYPES);
         if(facilityTypes != null && facilityTypes.length > 0){
             this.facTypes = new ArrayList<>(Arrays.asList(facilityTypes));

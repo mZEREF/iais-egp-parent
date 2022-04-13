@@ -32,7 +32,7 @@ public class AppSearchDto extends PagingAndSortingDto {
     private String approvalDtFrom;
     @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkApprovalDtTo", parameterType = String.class, profiles = {"app"})
     private String approvalDtTo;
-    private String facilityClassification;
+    private String facClassification;
     private List<String> facTypes;
     private String facName;
     private String scheduleType;
@@ -49,7 +49,7 @@ public class AppSearchDto extends PagingAndSortingDto {
         this.appSubmissionDtTo = "";
         this.approvalDtFrom = "";
         this.approvalDtTo = "";
-        this.facilityClassification = "";
+        this.facClassification = "";
         this.facTypes = null;
         this.facName = "";
         this.scheduleType = "";
@@ -80,7 +80,7 @@ public class AppSearchDto extends PagingAndSortingDto {
        this.appSubmissionDtTo = ParamUtil.getString(request,PARAM_APPLICATION_SUBMISSION_DATE_TO);
        this.approvalDtFrom = ParamUtil.getString(request,PARAM_APPROVAL_DATE_FROM);
        this.approvalDtTo = ParamUtil.getString(request,PARAM_APPROVAL_DATE_TO);
-       this.facilityClassification = ParamUtil.getString(request,PARAM_FACILITY_CLASSIFICATION);
+       this.facClassification = ParamUtil.getString(request,PARAM_FACILITY_CLASSIFICATION);
        String[] facilityTypes = ParamUtil.getStrings(request,PARAM_FACILITY_TYPES);
        if(facilityTypes != null && facilityTypes.length > 0){
            this.facTypes = new ArrayList<>(Arrays.asList(facilityTypes));

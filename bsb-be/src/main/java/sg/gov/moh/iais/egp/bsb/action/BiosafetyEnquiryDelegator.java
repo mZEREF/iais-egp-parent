@@ -3,40 +3,20 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
-import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
+import sg.gov.moh.iais.egp.bsb.client.OnlineEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
-import sg.gov.moh.iais.egp.bsb.dto.entity.BiologicalDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
@@ -50,10 +30,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 @Slf4j
 public class BiosafetyEnquiryDelegator {
 
-    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final OnlineEnquiryClient onlineEnquiryClient;
 
-    public BiosafetyEnquiryDelegator(BiosafetyEnquiryClient biosafetyEnquiryClient) {
-        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+    public BiosafetyEnquiryDelegator(OnlineEnquiryClient onlineEnquiryClient) {
+        this.onlineEnquiryClient = onlineEnquiryClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -159,13 +139,13 @@ public class BiosafetyEnquiryDelegator {
         action.add("Reinstate");
         selectOption(request, "action", action);
         if ("app".equals(num) || "fn".equals(num) || "an".equals(num)) {
-            List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
+            List<String> facNames = onlineEnquiryClient.queryDistinctFN().getEntity();
             selectOption(request, "facilityName", facNames);
-            List<String> bioNames = biosafetyEnquiryClient.queryDistinctFA().getEntity();
+            List<String> bioNames = onlineEnquiryClient.queryDistinctFA().getEntity();
             selectOption(request, "biologicalAgent", bioNames);
         }
         if("on".equals(num)){
-           List<String> orgNames =  biosafetyEnquiryClient.queryDistinctOrgName().getEntity();
+           List<String> orgNames =  onlineEnquiryClient.queryDistinctOrgName().getEntity();
            selectOption(request,"orgName",orgNames);
         }
     }
@@ -200,7 +180,7 @@ public class BiosafetyEnquiryDelegator {
             dto.reqObjMapping(request);
         }
         if(Boolean.TRUE.equals(validationParam(request, PARAM_CHOICE_APPLICATION, dto))){
-            ResponseDto<AppResultPageInfoDto> resultPageInfoDto =  biosafetyEnquiryClient.getApplication(dto);
+            ResponseDto<AppResultPageInfoDto> resultPageInfoDto =  onlineEnquiryClient.getApplication(dto);
             if(resultPageInfoDto.ok()){
                 ParamUtil.setRequestAttr(request,KEY_PAGE_INFO,resultPageInfoDto.getEntity().getPageInfo());
                 ParamUtil.setRequestAttr(request,KEY_APPLICATION_RESULT,resultPageInfoDto.getEntity().getBsbApp());
@@ -220,7 +200,7 @@ public class BiosafetyEnquiryDelegator {
             dto.reqObjMapping(request);
         }
         if(Boolean.TRUE.equals(validationParam(request, PARAM_CHOICE_FACILITY, dto))){
-            ResponseDto<FacResultPageInfoDto> resultPageInfoDto =  biosafetyEnquiryClient.getFacility(dto);
+            ResponseDto<FacResultPageInfoDto> resultPageInfoDto =  onlineEnquiryClient.getFacility(dto);
             if(resultPageInfoDto.ok()){
                 ParamUtil.setRequestAttr(request,KEY_PAGE_INFO,resultPageInfoDto.getEntity().getPageInfo());
                 ParamUtil.setRequestAttr(request,KEY_APPLICATION_RESULT,resultPageInfoDto.getEntity().getBsbFac());
@@ -240,7 +220,7 @@ public class BiosafetyEnquiryDelegator {
             dto.reqObjMapping(request);
         }
         if(Boolean.TRUE.equals(validationParam(request, PARAM_CHOICE_APPROVAL, dto))){
-            ResponseDto<ApprovalResultDto> resultPageInfoDto =  biosafetyEnquiryClient.getApproval(dto);
+            ResponseDto<ApprovalResultDto> resultPageInfoDto =  onlineEnquiryClient.getApproval(dto);
             if(resultPageInfoDto.ok()){
                 ParamUtil.setRequestAttr(request,KEY_PAGE_INFO,resultPageInfoDto.getEntity().getPageInfo());
                 ParamUtil.setRequestAttr(request,KEY_APPLICATION_RESULT,resultPageInfoDto.getEntity().getBsbApproval());
@@ -260,7 +240,7 @@ public class BiosafetyEnquiryDelegator {
             dto.reqObjMapping(request);
         }
         if(Boolean.TRUE.equals(validationParam(request, PARAM_CHOICE_APPROVED_FACILITY_CERTIFIER, dto))){
-            ResponseDto<AFCResultPageInfoDto> resultPageInfoDto =  biosafetyEnquiryClient.getApprovedFacilityCertifier(dto);
+            ResponseDto<AFCResultPageInfoDto> resultPageInfoDto =  onlineEnquiryClient.getApprovedFacilityCertifier(dto);
             if(resultPageInfoDto.ok()){
                 ParamUtil.setRequestAttr(request,KEY_PAGE_INFO,resultPageInfoDto.getEntity().getPageInfo());
                 ParamUtil.setRequestAttr(request,KEY_APPLICATION_RESULT,resultPageInfoDto.getEntity().getBsbAFC());

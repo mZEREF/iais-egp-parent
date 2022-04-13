@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohDOViewApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <AutomaticStep defClass="" executor="" icon="" name="ViewApplication" x="260" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="viewApplication_OnStepProcess_0" name="viewApplication_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="Start" x="120" y="190">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewApplicationPage" stageIndicator="" x="440" y="190">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewApplicationPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ViewApplication" style="rectanular">
+   <position>{(280,210)(460,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ViewApplication" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(140,210)(280,210)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches />
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

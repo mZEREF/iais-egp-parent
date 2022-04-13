@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
+import sg.gov.moh.iais.egp.bsb.client.OnlineEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/bio-info")
 public class BiologicalAjaxController {
     @Autowired
-    private BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private OnlineEnquiryClient onlineEnquiryClient;
 
     @PostMapping(value = "bio.do")
     public @ResponseBody
@@ -33,7 +33,7 @@ public class BiologicalAjaxController {
          String schedule = ParamUtil.getString(request,"schedule");
          if(StringUtils.isEmpty(schedule)){schedule="null";}
          log.info(StringUtil.changeForLog("ajax query schedule"+schedule));
-         List<BatBasicInfo> batInfoList = biosafetyEnquiryClient.queryBiologicalBySchedule(schedule).getEntity();
+         List<BatBasicInfo> batInfoList = onlineEnquiryClient.queryBiologicalBySchedule(schedule).getEntity();
         if(batInfoList != null && !batInfoList.isEmpty()) {
             log.info(StringUtil.changeForLog("ajax biologicalDtoList "+batInfoList));
             List<String> strings = new ArrayList<>(batInfoList.size());

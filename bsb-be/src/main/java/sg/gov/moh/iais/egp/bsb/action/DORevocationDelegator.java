@@ -18,10 +18,7 @@ import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
@@ -48,13 +45,13 @@ public class DORevocationDelegator {
     private static final String ACTION_TYPE = "action_type";
 
     private final RevocationClient revocationClient;
-    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final OnlineEnquiryClient onlineEnquiryClient;
     private final FileRepoClient fileRepoClient;
     private final ProcessHistoryService processHistoryService;
 
-    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, FileRepoClient fileRepoClient, ProcessHistoryService processHistoryService) {
+    public DORevocationDelegator(RevocationClient revocationClient, OnlineEnquiryClient onlineEnquiryClient, FileRepoClient fileRepoClient, ProcessHistoryService processHistoryService) {
         this.revocationClient = revocationClient;
-        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+        this.onlineEnquiryClient = onlineEnquiryClient;
         this.fileRepoClient = fileRepoClient;
         this.processHistoryService = processHistoryService;
     }
@@ -78,7 +75,7 @@ public class DORevocationDelegator {
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
+        List<String> facNames = onlineEnquiryClient.queryDistinctFN().getEntity();
         selectOption(request, "facilityName", facNames);
         EnquiryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, PARAM_FACILITY_SEARCH, searchDto);
