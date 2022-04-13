@@ -99,7 +99,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
             if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) ){
                 if(donorSampleDto.getAges() ==  null
                         && IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)
-                        && !donorSampleAgeDtos.retainAll(donorSampleDto.getOldDonorSampleAgeDtos())){
+                        && donorSampleAgeDtos.equals(donorSampleDto.getOldDonorSampleAgeDtos())){
                     ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
                 }else{
