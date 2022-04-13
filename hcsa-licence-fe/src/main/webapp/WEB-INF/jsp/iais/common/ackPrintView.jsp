@@ -27,7 +27,7 @@
         </div>
         <div class="col-xs-12">
             <br/>
-            <label style="font-size: 20px">Submission successful</label>
+            <label style="font-size: 20px">Submission Successful</label>
         </div>
         <c:choose>
             <c:when test="${'APTY004' ==AppSubmissionDto.appType}">

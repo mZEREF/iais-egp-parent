@@ -35,7 +35,7 @@
                         ${AckMessage}
                     </c:when>
                     <c:otherwise>
-                        <label style="font-size: 20px">Submission successful</label>
+                        <label style="font-size: 20px">Submission Successful</label>
                         <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
                             <p>- <strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
                         </c:forEach>

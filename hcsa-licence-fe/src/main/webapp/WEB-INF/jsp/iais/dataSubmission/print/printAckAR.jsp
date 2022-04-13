@@ -16,7 +16,7 @@
 <%-- current page: ack --%>
 
 <div style="margin-top:-30px;">
-    <label class="col-xs-12" style="font-size: 20px">Submission successful</label>
+    <label class="col-xs-12" style="font-size: 20px">Submission Successful</label>
     <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
     <div class="ack-font-16">
         <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>

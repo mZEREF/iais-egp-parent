@@ -28,7 +28,7 @@
                 <div class="tab-content">
                   <iais:section title="" id = "rec_ack_page">
                     <div class="bg-title">
-                      <h3 style="border-bottom: 0px solid">Submission successful</h3>
+                      <h3 style="border-bottom: 0px solid">Submission Successful</h3>
                     </div>
                     <div class="form-group">
                       <div class="col-sm-7 col-md-7 col-xs-9">

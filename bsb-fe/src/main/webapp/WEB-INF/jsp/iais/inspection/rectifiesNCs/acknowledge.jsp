@@ -18,7 +18,7 @@
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
-            <p><strong>Submission successful</strong></p>
+            <p><strong>Submission Successful</strong></p>
             <br/>
             <p>We will notify you if any changes are required.</p>
             <br/>

@@ -27,7 +27,7 @@
             <p>You are <strong>${rfcFlowType}</strong></p>
             <c:if test="${rfcFlowType eq 'NOTIFICATION' or rfcFlowType eq 'AMENDMENT'}">
                 <br/>
-                <p><strong>Submission successful</strong></p>
+                <p><strong>Submission Successful</strong></p>
                 <br/>
                 <p>A confirmation email will be sent to lindatan@gmail.com, test@test.com, testing123@gmail.com.
 

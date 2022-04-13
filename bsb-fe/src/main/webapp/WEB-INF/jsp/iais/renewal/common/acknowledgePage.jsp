@@ -23,7 +23,7 @@
     <input type="hidden" name="action_value" value="">
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
-            <h2><strong>Submission successful</strong></h2>
+            <h2><strong>Submission Successful</strong></h2>
             <br/>
             <h2><strong>Application For Renewal of <iais:code code="${instructionInfo.type}"/></strong></h2>
             <br/>
