@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <iais:confirm msg="Do you confirm the modification ?" needCancel="true" callBack="doEdit('${MasterCodeDto.masterCodeId}')" popupOrder="myModal" yesBtnDesc="Continue" needEscapHtml="false" needFungDuoJi="true"></iais:confirm>
+                    <iais:confirm msg="Do you confirm the modification ?" needCancel="true" callBack="doEdit('${MasterCodeDto.id}')" popupOrder="myModal" yesBtnDesc="Continue" needEscapHtml="false" needFungDuoJi="true"></iais:confirm>
                 </div>
             </div>
         </div>
