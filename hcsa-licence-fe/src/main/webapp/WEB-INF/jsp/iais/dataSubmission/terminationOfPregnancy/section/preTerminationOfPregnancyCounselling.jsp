@@ -118,6 +118,7 @@
             </iais:value>
         </iais:row>
     </div>
+        <div id="numCounsellingGiven" <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
     <iais:row>
     <c:set var="toolMsg">
         <iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/>
@@ -200,6 +201,7 @@
     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
     </iais:value>
     </iais:row>
+        </div>
         <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>
                 <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?" mandatory="true"/>
@@ -210,7 +212,7 @@
                 </iais:value>
             </iais:row>
         </div>
-    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
+    <div id="secCounsellingDates" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingDateLabel" style="padding-right: 50px;" value="Date of Second or Final Pre-Counselling"
@@ -221,7 +223,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001'}">style="display: none"</c:if>>
+    <div id="secCounsellingResults" <c:if test="${preTerminationDto.patientAppointment!='GAZAREA001' || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
             <c:set var="toolMsg"><iais:message key="DS_MSG016" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingResultLabel" style="padding-right: 50px;" value="Second or Final Pre-Counselling result" mandatory="true" info="${toolMsg}"/>
@@ -293,9 +295,11 @@
             $('input[name=counsellingGiven]').change(function () {
                 if ($('#counsellingNo').prop('checked')) {
                     $('#noCounsReason').show();
+                    $('#numCounsellingGiven').hide();
                 }
                 if ($('#counsellingYes').prop('checked')) {
                     $('#noCounsReason').hide();
+                    $('#numCounsellingGiven').show();
                 }
             });
         });

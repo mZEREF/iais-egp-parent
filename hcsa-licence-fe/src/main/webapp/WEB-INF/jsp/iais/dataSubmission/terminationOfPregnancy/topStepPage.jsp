@@ -40,12 +40,12 @@
                                         <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                             <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
                                         </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                             <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                         </c:if>
                                     </c:when>
@@ -63,8 +63,12 @@
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
-                                            <%@ include file="section/previewPresentTermination.jsp" %>
-                                            <%@ include file="section/previewPostTermination.jsp" %>
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                                <%@ include file="section/previewPresentTermination.jsp" %>
+                                            </c:if>
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                                <%@ include file="section/previewPostTermination.jsp" %>
+                                            </c:if>
                                             <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
                                     </c:when>

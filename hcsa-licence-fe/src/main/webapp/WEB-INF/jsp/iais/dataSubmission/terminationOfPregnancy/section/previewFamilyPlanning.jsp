@@ -24,14 +24,12 @@
                         <iais:code code="${familyPlanDto.mostRecentContraMethod}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty familyPlanDto.otherContraMethod}">style="display: none"</c:if>>
-                    <iais:row>
-                        <iais:field width="5" value="Other Contraceptive Method Used"/>
-                        <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${familyPlanDto.otherContraMethod}"/>
-                        </iais:value>
-                    </iais:row>
-                </div>
+                <iais:row>
+                    <iais:field width="5" value="Other Contraceptive Method Used"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${familyPlanDto.otherContraMethod}"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Previous Termination of Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -50,62 +48,48 @@
                         ${patientInformationDto.patientAge}
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty familyPlanDto.gestAgeBaseOnUltrWeek}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gestation Age based on Ultrasound(Weeks)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.gestAgeBaseOnUltrWeek}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty familyPlanDto.gestAgeBaseOnUltrDay}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gestation Age based on Ultrasound(Days)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.gestAgeBaseOnUltrDay}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty familyPlanDto.gestAgeBaseNotOnUltrWeek}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gestation Age not based on Ultrasound(Weeks)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.gestAgeBaseNotOnUltrWeek}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty familyPlanDto.gestAgeBaseNotOnUltrDay}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gestation Age not based on Ultrasound(Days)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.gestAgeBaseNotOnUltrDay}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty familyPlanDto.abortChdMoreWksGender}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.abortChdMoreWksGender}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty familyPlanDto.mainTopReason}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Main Reason for Request to Terminate Pregnancy" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.mainTopReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${familyPlanDto.mainTopReason !='TOPRTP008'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Main Reason for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.otherMainTopReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
                 <iais:row>
                     <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -118,22 +102,18 @@
                         <c:out value="${familyPlanDto.topMedCondition}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty familyPlanDto.subRopReason}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Sub Reason for Request to Terminate Pregnancy" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.subRopReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${familyPlanDto.subRopReason !='TOPSCTP009'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Sub Reason for Request to Terminate Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.otherSubTopReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
             </div>
         </div>
     </div>

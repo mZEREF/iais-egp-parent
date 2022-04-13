@@ -1,3 +1,5 @@
+<c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
 <c:set var="terminationDto" value="${terminationOfPregnancyDto.terminationDto}" />
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -293,7 +295,7 @@
         </iais:value>
     </iais:row>
 </div>
-
+</c:if>
 <script>
     $(document).ready(function() {
         $('#topType').change(function () {
