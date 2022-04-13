@@ -150,6 +150,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);
         }
         for (DrugMedicationDto drugMedicationDto : drugMedicationDtos){
+            log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos i-->:"+i));
             if(StringUtil.isEmpty(drugMedicationDto.getBatchNo())){
                 errorMap.put("batchNo"+i, "GENERAL_ERR0006");
             }
@@ -175,8 +176,10 @@ if(!StringUtil.isEmpty(doctorReignNo)){
             }else if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType) && errorMap.isEmpty()){
                if(preDrugMedicationMap != null && drugMedicationMap != null){
                    Integer preCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
-                   Integer nowCount = preDrugMedicationMap.get(drugMedicationDto.getBatchNo());
-                   if(nowCount > preCount){
+                   Integer nowCount = drugMedicationMap.get(drugMedicationDto.getBatchNo());
+                   log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
+                   log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
+                   if(preCount ==  null || nowCount > preCount){
                        errorMap.put("quantity"+i, "The number must less or equal than prescribed input.");
                    }
 

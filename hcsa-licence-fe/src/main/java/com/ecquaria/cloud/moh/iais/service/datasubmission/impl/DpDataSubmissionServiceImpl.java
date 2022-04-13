@@ -174,7 +174,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
         if (StringUtil.isEmpty(submissionNo) ) {
             return null;
         }
-        return dpFeClient.getDrugMedicationDtoBySubmissionNo(submissionNo).getEntity();
+        return dpFeClient.getDrugMedicationDtoBySubmissionNoForDispensed(submissionNo).getEntity();
     }
 
 
