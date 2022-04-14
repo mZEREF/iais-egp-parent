@@ -491,7 +491,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getCycleStagesStatus()!=null){
-                filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
+                if(arDto.getCycleStagesStatus().equals(DataSubmissionConsts.DS_STATUS_COMPLETED)){
+                    filter.put("cycleStagesFinalStatus",arDto.getCycleStagesStatus());
+
+                }else {
+                    filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
+                }
             }
             if(arDto.getCycleStagesDateFrom()!=null){
                 String cycleStagesDateFrom = Formatter.formatDateTime(arDto.getCycleStagesDateFrom(),
@@ -507,7 +512,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("arOrIui",arDto.getArOrIuiCycle());
             }
             if(arDto.getIVM()!=null){//bit
-                filter.put("ivm",Integer.valueOf(arDto.getIVM()));
+                filter.put("ivm",Integer.parseInt(arDto.getIVM()));
             }
             if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
                 filter.put("cart_fcn",1);
@@ -541,11 +546,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getAbandonedCycle()!=null){//bit
-                filter.put("abandonedCycle",Integer.valueOf(arDto.getAbandonedCycle()));
+                filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
             }
 
-            if(arDto.getDonorGameteUsed()!=null){//not found
-                filter.put("donorGameteUsed",Integer.valueOf(arDto.getDonorGameteUsed()));
+            if(arDto.getDonorGameteUsed()!=null){
+                if(Integer.parseInt(arDto.getDonorGameteUsed())==1){
+                    filter.put("donorUsedYes",Integer.parseInt(arDto.getDonorGameteUsed()));
+                }else {
+                    filter.put("donorUsedNo",Integer.parseInt(arDto.getDonorGameteUsed()));
+                }
             }
             if(arDto.getDonorName()!=null){
                 filter.put("donorName", arDto.getDonorName());
@@ -553,12 +562,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getDonorIdNumber()!=null){
                 filter.put("donorIdNumber",arDto.getDonorIdNumber());
             }
-            if(arDto.getRemovedFromStorage()!=null){//not found
-                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
-            }
-            if(arDto.getEmbryosStoredBeyond()!=null){//not found
-                filter.put("embryosStoredBeyond",Integer.valueOf(arDto.getEmbryosStoredBeyond()));
-            }
+            //todo not found
+//            if(arDto.getRemovedFromStorage()!=null){
+//                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
+//            }
+            //todo not found
+//            if(arDto.getEmbryosStoredBeyond()!=null){
+//                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
+//            }
             if(arDto.getSourceSemen()!=null){
                 if("Donor".equals(arDto.getSourceSemen())){
                     filter.put("FROM_DONOR",1);
@@ -580,7 +591,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("ivf",1);
             }
             List<Integer> embryosTransferredNums=IaisCommonUtils.genNewArrayList();
-
+            if(arDto.getEmbryosTransferredNum0()!=null&& "on".equals(arDto.getEmbryosTransferredNum0())){
+                embryosTransferredNums.add(0);
+            }
             if(arDto.getEmbryosTransferredNum1()!=null&& "on".equals(arDto.getEmbryosTransferredNum1())){
                 embryosTransferredNums.add(1);
             }
@@ -763,22 +776,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transferInOrOut", "out");
                 }
             }
-            if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())
-                    ||arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())
-                    ||arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredOocyte",0);
-                filter.put("transferredEmbryo",0);
-                filter.put("transferredSperm",0);
-                filter.put("transferredList",0);
-            }
+
             if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())){
-                filter.put("transferredOocyte",1);
+                filter.put("transferredOocyte",0);
             }
             if(arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())){
-                filter.put("transferredEmbryo",1);
+                filter.put("transferredEmbryo",0);
             }
             if(arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredSperm",1);
+                filter.put("transferredSperm",0);
             }
             if(StringUtil.isNotEmpty(arDto.getTransferredInFrom())) {
                 filter.put("transferredInFrom", arDto.getTransferredInFrom());

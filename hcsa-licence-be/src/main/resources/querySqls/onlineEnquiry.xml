@@ -261,7 +261,9 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.OOCYTE_NUM or :transferredEmbryo <= dtios.EMBRYO_NUM or :transferredSperm <= dtios.SPERM_VIALS_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
@@ -365,7 +367,9 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.OOCYTE_NUM or :transferredEmbryo <= dtios.EMBRYO_NUM or :transferredSperm <= dtios.SPERM_VIALS_NUM)  </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
@@ -477,7 +481,9 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.OOCYTE_NUM or :transferredEmbryo <= dtios.EMBRYO_NUM or :transferredSperm <= dtios.SPERM_VIALS_NUM)  </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
@@ -578,7 +584,9 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.OOCYTE_NUM or :transferredEmbryo <= dtios.EMBRYO_NUM or :transferredSperm <= dtios.SPERM_VIALS_NUM)  </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
@@ -688,7 +696,9 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.OOCYTE_NUM or :transferredEmbryo <= dtios.EMBRYO_NUM or :transferredSperm <= dtios.SPERM_VIALS_NUM)  </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>

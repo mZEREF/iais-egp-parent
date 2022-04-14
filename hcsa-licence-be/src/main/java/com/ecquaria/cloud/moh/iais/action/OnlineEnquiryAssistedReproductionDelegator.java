@@ -786,14 +786,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transferInOrOut", "out");
                 }
             }
-            if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())
-                    ||arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())
-                    ||arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredOocyte",-1);
-                filter.put("transferredEmbryo",-1);
-                filter.put("transferredSperm",-1);
-                filter.put("transferredList",1);
-            }
+
             if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())){
                 filter.put("transferredOocyte",0);
             }
