@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.inspection;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InsSubmitReportDataDto {
     private SubmissionDetailsInfo submissionDetailsInfo;
+    private FacilityDetailsInfo facilityDetailsInfo;
     private List<InsFindingDisplayDto> findingDtoList;
     private InspectionOutcomeDto outcomeDto;
 }

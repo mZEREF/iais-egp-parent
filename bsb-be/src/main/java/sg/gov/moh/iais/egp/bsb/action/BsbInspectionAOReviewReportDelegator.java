@@ -64,6 +64,7 @@ public class BsbInspectionAOReviewReportDelegator {
 
         // submission details info
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
+        ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
 
         // inspection findings
         ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
