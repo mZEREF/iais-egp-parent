@@ -21,12 +21,10 @@ public class DsLaboratoryDevelopTestValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        // validate rfc part
         if(isRfc(httpServletRequest)){
             LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(httpServletRequest);
-            LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = DataSubmissionHelper.getOldLdtSuperDataSubmissionDto(httpServletRequest);
             DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
-            DsLaboratoryDevelopTestDto dsLaboratoryDevelopTestDto = ldtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
-            DsLaboratoryDevelopTestDto oldDsLaboratoryDevelopTestDto = oldLdtSuperDataSubmissionDto.getDsLaboratoryDevelopTestDto();
             if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
                 map.put("amendReason", "GENERAL_ERR0006");
             } else if ("LDTRE_002".equals(dataSubmissionDto.getAmendReason())) {
@@ -35,9 +33,6 @@ public class DsLaboratoryDevelopTestValidator implements CustomizeValidator {
                 } else if (dataSubmissionDto.getAmendReasonOther().length() > 50) {
                     map.put("amendReasonOther", NewApplicationHelper.repLength("Reason for Amendment (Others)", "50"));
                 }
-            }
-            if ("0".equals(oldDsLaboratoryDevelopTestDto.getTestStatus()) && "1".equals(dsLaboratoryDevelopTestDto.getTestStatus())){
-                map.put("testStatus", "DS_ERR062");
             }
         }
         return map;
