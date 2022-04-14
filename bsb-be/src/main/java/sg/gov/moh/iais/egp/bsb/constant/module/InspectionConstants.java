@@ -39,6 +39,7 @@ public class InspectionConstants {
     public static final String TAB_RECTIFICATION = "tabRectification";
     public static final String TAB_PROCESSING = "tabProcessing";
     public static final String TAB_INS_REPORT = "tabInsReport";
+    public static final String TAB_FAC_DETAILS = "tabFacDetails";
 
     public static final String KEY_FINDING_ITEM = "findingItem";
     public static final String KEY_FINDING_TYPE = "findingType";

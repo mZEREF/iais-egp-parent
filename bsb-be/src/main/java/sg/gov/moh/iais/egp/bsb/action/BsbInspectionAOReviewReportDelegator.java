@@ -28,8 +28,7 @@ import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 @Slf4j
 @Delegator("bsbAOReviewInspectionReport")
@@ -63,9 +62,8 @@ public class BsbInspectionAOReviewReportDelegator {
         // judge whether we need to send email
         InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId);
 
-        // facility info
-        InsFacInfoDto facInfoDto = initDataDto.getFacInfoDto();
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
+        // submission details info
+        ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
 
         // inspection findings
         ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());

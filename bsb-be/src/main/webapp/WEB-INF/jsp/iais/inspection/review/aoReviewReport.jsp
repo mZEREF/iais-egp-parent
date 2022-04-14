@@ -16,7 +16,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
 
-<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
+<%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
 <%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 
@@ -43,6 +43,9 @@
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                         </li>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">class="active"</c:if> id="facDetails" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_FAC_DETAILS}" id="doFacDetails" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                        </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">class="active"</c:if> id="insReport" role="presentation">
                                             <a href="#${InspectionConstants.TAB_INS_REPORT}" id="doInsReport" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                         </li>
@@ -59,6 +62,9 @@
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </div>
                                             <div class="swiper-slide">
+                                                <a href="#${InspectionConstants.TAB_FAC_DETAILS}" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                            </div>
+                                            <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_INS_REPORT}" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                             </div>
                                             <div class="swiper-slide">
@@ -68,10 +74,13 @@
                                     </div>
                                     <div class="tab-content">
                                         <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">active</c:if>" id="${InspectionConstants.TAB_FAC_INFO}" role="tabpanel">
-                                            <%@include file="../actual/facilityInfo.jsp" %>
+                                            <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
+                                        </div>
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAILS}" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">active</c:if>" id="${InspectionConstants.TAB_INS_REPORT}" role="tabpanel">
                                             <%@include file="../report/inspectionReport.jsp"%>
@@ -88,7 +97,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
