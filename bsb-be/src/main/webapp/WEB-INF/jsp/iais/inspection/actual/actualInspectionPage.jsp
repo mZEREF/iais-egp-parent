@@ -44,17 +44,17 @@
                             <div class="subcontent col-12">
                                 <div class="tab-gp dashboard-tab">
                                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                        <li <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">class="active"</c:if> id="info" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_FAC_INFO}" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
-                                        </li>
-                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_DETAIL}">class="active"</c:if> id="insDetails" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_INS_DETAIL}" id="doInsDetails" aria-controls="tabInsDetails" role="tab" data-toggle="tab">Inspection Details</a>
+                                        <li <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_SUBMIT_INTO}">class="active"</c:if> id="info" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_SUBMIT_INTO}" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                         </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                         </li>
-                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_FINDING}">class="active"</c:if> id="insFinding" role="presentation">
-                                            <a href="#${InspectionConstants.TAB_INS_FINDING}" id="doInsFinding" aria-controls="tabInsFinding" role="tab" data-toggle="tab">Inspection Finding(s)</a>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAIL}">class="active"</c:if> id="facDetails" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_FAC_DETAIL}" id="doFacDetails" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                        </li>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_CHECKLIST}">class="active"</c:if> id="insDetails" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_CHECKLIST}" id="doChecklist" aria-controls="tagChecklist" role="tab" data-toggle="tab">Checklist</a>
                                         </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">class="active"</c:if> id="process" role="presentation">
                                             <a href="#${InspectionConstants.TAB_PROCESSING}" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -63,16 +63,16 @@
                                     <div class="tab-nav-mobile visible-xs visible-sm">
                                         <div class="swiper-wrapper" role="tablist">
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_FAC_INFO}" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_INS_DETAIL}" aria-controls="tabInsDetails" role="tab" data-toggle="tab">Inspection Details</a>
+                                                <a href="#${InspectionConstants.TAB_SUBMIT_INTO}" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                             </div>
                                             <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </div>
                                             <div class="swiper-slide">
-                                                <a href="#${InspectionConstants.TAB_INS_FINDING}" aria-controls="tabInsFinding" role="tab" data-toggle="tab">Inspection Finding(s)</a>
+                                                <a href="#${InspectionConstants.TAB_FAC_DETAIL}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Facility Details</a>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <a href="#${InspectionConstants.TAB_CHECKLIST}" aria-controls="tabInsDetails" role="tab" data-toggle="tab">Checklist</a>
                                             </div>
                                             <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_PROCESSING}" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -80,17 +80,17 @@
                                         </div>
                                     </div>
                                     <div class="tab-content">
-                                        <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">active</c:if>" id="${InspectionConstants.TAB_FAC_INFO}" role="tabpanel">
-                                            <%@include file="facilityInfo.jsp" %>
-                                        </div>
-                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_DETAIL}">active</c:if>" id="${InspectionConstants.TAB_INS_DETAIL}" role="tabpanel">
-                                            <%@include file="inspectionDetail.jsp"%>
+                                        <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_SUBMIT_INTO}">active</c:if>" id="${InspectionConstants.TAB_SUBMIT_INTO}" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                         </div>
-                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_FINDING}">active</c:if>" id="${InspectionConstants.TAB_INS_FINDING}" role="tabpanel">
-                                            <%@include file="inspectionFinding.jsp"%>
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAIL}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAIL}" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
+                                        </div>
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_CHECKLIST}">active</c:if>" id="${InspectionConstants.TAB_CHECKLIST}" role="tabpanel">
+                                            <%@include file="checklist.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_PROCESSING}">active</c:if>" id="${InspectionConstants.TAB_PROCESSING}" role="tabpanel">
                                             <br/><br/>

@@ -84,7 +84,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabFacility" role="tabpanel">
-                                                <%@include file="facilityInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabChecklist" role="tabpanel">
                                                 <%@include file="./checkListTab.jsp" %>

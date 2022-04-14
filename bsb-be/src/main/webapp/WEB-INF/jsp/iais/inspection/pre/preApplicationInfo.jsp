@@ -23,7 +23,7 @@
                         <td style="padding-left : 20px"><iais:code code="${detailDto.processType}"/></td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Application Staus</td>
+                        <td style="text-align: right">Application Status</td>
                         <td style="padding-left : 20px"><iais:code code="${detailDto.currentStatus}"/></td>
                     </tr>
                     </tbody>
@@ -39,7 +39,7 @@
         </button>
     </a>
 
-    <c:if test="${selfAssessmentUnavailable == null || !selfAssessmentUnavailable}">
+    <c:if test="${selfAssessmentAvailable eq true}">
         <button id="viewSelfAssessmt" type="button" class="btn btn-primary">
             Self-Assessment Checklists
         </button>
