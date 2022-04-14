@@ -898,9 +898,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 setQueryFilter(arFilterDto,patientParameter,0);
                 SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
                 if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
-                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
                 }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
-                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
                 }
                 if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                     String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
@@ -1070,9 +1070,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
             }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
             }
             if(searchParam!=null){
                 patientParam.setPageNo(searchParam.getPageNo());
