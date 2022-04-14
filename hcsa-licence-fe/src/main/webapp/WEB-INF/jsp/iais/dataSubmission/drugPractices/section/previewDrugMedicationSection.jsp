@@ -1,4 +1,5 @@
 <c:set var="drugPrescribedDispensedDto" value="${dpSuperDataSubmissionDto.drugPrescribedDispensedDto}" />
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <c:set var="drugMedication" value="${drugPrescribedDispensedDto.drugMedication}" />
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
@@ -27,7 +28,16 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Strength (pg)"/>
+                        <label class="col-xs-5 col-md-4 control-label" >
+                            <c:choose>
+                                <c:when test="${drugSubmission.medication == 'MED001'}">
+                                    Strength (&micro;g/hr)
+                                </c:when>
+                                <c:otherwise>
+                                    Strength (mg)
+                                </c:otherwise>
+                            </c:choose>
+                        </label>
                         <iais:value width="7" display="true">
                             <c:out value="${drugMedicationDto.strength}" />
                         </iais:value>

@@ -96,7 +96,8 @@
                 <iais:row>
                     <iais:field width="5" value="Medication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="medication"  name="medication" firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
+                        <iais:select cssClass="medication" id = "medication" name="medication"
+                                     firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -161,7 +162,20 @@
                 $('#dispensingDate').attr("style","display: none");
             }
         });
+        $('#medication').change(function (){
+            changeStrength();
+        });
+        changeStrength();
     });
+
+    function changeStrength(){
+        var medication= $('#medication').val();
+        if('MED001' == medication){
+            $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+        }else{
+            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+        }
+    }
 
     $(document).ready(function() {
         console.log("showValidatePT!")
