@@ -108,6 +108,11 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     }
 
     @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoById(String submissionId) {
+        return assistedReproductionClient.getArSuperDataSubmissionDtoByDsId(submissionId).getEntity();
+    }
+
+    @Override
     public List<SelectOption> genPremisesOptions(String patientCode) {
         List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode,"null").getEntity();
         Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();

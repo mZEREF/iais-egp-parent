@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -1549,6 +1550,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
                     arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
                 }
+                TransferInOutStageDto transferInOutStageDto = arSuper.getTransferInOutStageDto();
+                if (StringUtil.isNotEmpty(transferInOutStageDto.getBindSubmissionId())) {
+                    ArSuperDataSubmissionDto bindStageArSuperDto = assistedReproductionService.getArSuperDataSubmissionDtoById(transferInOutStageDto.getBindSubmissionId());
+                    if (bindStageArSuperDto != null) {
+                        flagInAndOutDiscrepancy(request, transferInOutStageDto, bindStageArSuperDto);
+                    }
+                }
             }
         }
 
@@ -1644,5 +1652,20 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         }
         return arSuperDataSubmission;
+    }
+
+    public static void flagInAndOutDiscrepancy(HttpServletRequest request, TransferInOutStageDto currentTransferInOutStageDto, ArSuperDataSubmissionDto bindArSuperDto) {
+        if (bindArSuperDto != null) {
+            TransferInOutStageDto bindStageDto = bindArSuperDto.getTransferInOutStageDto();
+            String oocyteNum = bindStageDto.getOocyteNum();
+            String embryoNum = bindStageDto.getEmbryoNum();
+            String spermVialsNum = bindStageDto.getSpermVialsNum();
+            boolean diffOocyte = !(oocyteNum == null || oocyteNum.equals(currentTransferInOutStageDto.getOocyteNum()));
+            boolean diffEmbryo = !(embryoNum == null || embryoNum.equals(currentTransferInOutStageDto.getEmbryoNum()));
+            boolean diffSpermVial = !(spermVialsNum == null || spermVialsNum.equals(currentTransferInOutStageDto.getSpermVialsNum()));
+            ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
+            ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
+            ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
+        }
     }
 }
