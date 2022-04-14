@@ -190,8 +190,8 @@
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -296,8 +296,8 @@
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -411,8 +411,8 @@
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -514,8 +514,8 @@
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -625,8 +625,8 @@
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
