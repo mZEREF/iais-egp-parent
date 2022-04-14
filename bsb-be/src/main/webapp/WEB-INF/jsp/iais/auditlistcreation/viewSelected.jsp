@@ -52,6 +52,7 @@
                                         <iais:field value="Audit Type" width="15" required="true"/>
                                         <iais:value width="10">
                                             <iais:select name="auditType--v--${status.index}" id="auditType--v--${status.index}"
+                                                         cssClass="auditTypeDropdown"
                                                          value="${item.auditType}"
                                                          codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
                                             <span data-err-ind="auditType--v--${status.index}" class="error-msg"></span>

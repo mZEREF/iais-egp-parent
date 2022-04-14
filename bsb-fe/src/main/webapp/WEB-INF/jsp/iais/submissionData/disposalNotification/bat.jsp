@@ -33,6 +33,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}"
+                                                 cssClass="scheduleTyDropdown"
                                                  id="scheduleType--v--${status.index}"
                                                  value="${item.scheduleType}" onchange="schTypeChange(this)"
                                                  options="scheduleType"
@@ -47,6 +48,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="bat--v--${status.index}" id="bat--v--${status.index}"
+                                                 cssClass="bat-vDropdown"
                                                  options="" firstOption="Please Select"
                                                  value="${item.bat}"/>
                                     <span data-err-ind="bat--v--${status.index}" class="error-msg"></span>
@@ -75,6 +77,7 @@
                                     <div class="col-sm-6 col-md-7">
                                             <%--Displayed for Fifth Schedule toxin--%>
                                         <iais:select name="meaUnit--v--${status.index}" id="meaUnit--v--${status.index}"
+                                                     cssClass="meaUnitDropdown"
                                                      value="${item.meaUnit}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
                                                      firstOption="Please Select"/>

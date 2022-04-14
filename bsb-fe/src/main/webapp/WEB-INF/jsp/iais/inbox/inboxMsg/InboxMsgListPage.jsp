@@ -45,13 +45,13 @@
                                     <div class="col-md-3">
                                         <label class="col-md-3 control-label" for="searchMsgType" style="margin-top:5%;">Type</label>
                                         <div class="col-md-8">
-                                            <iais:select name="searchMsgType" id="searchMsgType" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="Please Select"/>
+                                            <iais:select name="searchMsgType" id="searchMsgType" cssClass="msgTypeSearchDropDown" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
                                         <label class="col-md-5 control-label" for="searchAppType" style="margin-top:3%;">Application Type</label>
                                         <div class="col-md-7">
-                                            <iais:select name="searchAppType" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="Please Select"/>
+                                            <iais:select name="searchAppType" cssClass="searchAppTypeDrop" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
                                     <div class="col-md-4">

@@ -8,7 +8,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="salutationM" id="salutationM">
+            <select name="salutationM" class="salutationMSelect" id="salutationM">
                 <option value="" <c:if test="${facAdminOfficer.mainAdmin.salutation eq null || facAdminOfficer.mainAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${facAdminOfficer.mainAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -34,7 +34,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="nationalityM" id="nationalityM">
+            <select name="nationalityM" class="nationalityDropdown" id="nationalityM">
                 <option value="">Please Select</option>
                 <c:forEach items="${nationalityOps}" var="na">
                     <option value="${na.value}" <c:if test="${facAdminOfficer.mainAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
@@ -102,7 +102,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="salutationA" id="salutationA">
+            <select name="salutationA" class="salutationDropDown" id="salutationA">
                 <option value="" <c:if test="${facAdminOfficer.alternativeAdmin.salutation eq null || facAdminOfficer.alternativeAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${facAdminOfficer.alternativeAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -127,7 +127,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="nationalityA" id="nationalityA">
+            <select name="nationalityA" class="nationalityDown" id="nationalityA">
                 <option value="">Please Select</option>
                 <c:forEach items="${nationalityOps}" var="na">
                     <option value="${na.value}" <c:if test="${facAdminOfficer.alternativeAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
@@ -142,7 +142,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-3">
-            <select name="idTypeA" id="idTypeA">
+            <select name="idTypeA" class="idTypeADrop" id="idTypeA">
                 <option value="IDTYPE001" <c:if test="${facAdminOfficer.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                 <option value="IDTYPE002" <c:if test="${facAdminOfficer.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
             </select>
@@ -211,7 +211,7 @@
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6 col-md-7">
-                    <select name="salutation--v--${status.index}" id="salutation--v--${status.index}">
+                    <select name="salutation--v--${status.index}" class="salutationvv" id="salutation--v--${status.index}">
                         <option value="">Please Select</option>
                         <c:forEach var="item" items="${salutationOps}">
                             <option value="${item.value}" <c:if test="${officer.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -236,7 +236,7 @@
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6 col-md-7">
-                    <select name="nationality--v--${status.index}" id="nationality--v--${status.index}">
+                    <select name="nationality--v--${status.index}" class="nationalityvv" id="nationality--v--${status.index}">
                         <option value="">Please Select</option>
                         <c:forEach items="${nationalityOps}" var="na">
                             <option value="${na.value}" <c:if test="${officer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
@@ -251,7 +251,7 @@
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-3">
-                    <select name="idType--v--${status.index}" id="idType--v--${status.index}">
+                    <select name="idType--v--${status.index}" class="idTypevv" id="idType--v--${status.index}">
                         <option value="IDTYPE001" <c:if test="${officer.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                         <option value="IDTYPE002" <c:if test="${officer.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
                     </select>

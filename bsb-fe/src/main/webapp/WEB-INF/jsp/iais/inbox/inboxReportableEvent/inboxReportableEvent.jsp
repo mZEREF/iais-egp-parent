@@ -42,7 +42,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="facilityName" class="col-sm-3 col-md-2 control-label">Facility name:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select name="facilityName" id="facilityName">
+                                        <select name="facilityName" class="facilityNameDrop" id="facilityName">
                                             <option value='<c:out value=""/>' <c:if test="${inboxSearchDto.facilityName eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="facilityName" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="item" items="${facilityName}">
@@ -54,7 +54,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="incidentType" class="col-sm-3 col-md-2 control-label">Type of Incident(s)</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select name="incidentType" id="incidentType">
+                                        <select name="incidentType" class="incidentTypeDrop" id="incidentType">
                                             <option value='<c:out value=""/>' <c:if test="${inboxSearchDto.incidentType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="submissionTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="item" items="${incidentTypeOps}">
@@ -136,7 +136,7 @@
                                                                 <p><c:out value="${item.batName}"/></p>
                                                             </td>
                                                             <td>
-                                                                <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                                <select id="appAction${status.index}" class="appActionDown" name="appAction${status.index}" data-action-select="">
                                                                     <option value="" selected="selected">Select</option>
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage--%>
                                                                     <c:if test="${item.haveInvest eq 'Y'}">

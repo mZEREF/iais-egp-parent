@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label for="commonRoleId" class="col-xs-12 col-md-4 control-label">Role</label>
                         <div class="col-xs-8 col-sm-6 col-md-6">
-                            <select name="commonRoleId" id="commonRoleId">
+                            <select name="commonRoleId"  class="commonRoleIdSelectDrop" id="commonRoleId">
                                 <%--@elvariable id="BsbRoleOptions" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                 <%--@elvariable id="bsbCurRole" type="java.lang.String"--%>
                                 <c:forEach var="option" items="${BsbRoleOptions}">
@@ -62,7 +62,7 @@
                             <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppType" class="error-msg"></span>
-                                <iais:select name="searchAppType" id="searchAppType" options="appTypeOps"
+                                <iais:select name="searchAppType" cssClass="searchAppTypeSelect" id="searchAppType" options="appTypeOps"
                                              firstOption="Please Select" value="${taskListSearchDto.searchAppType}"/>
                             </div>
                         </div>

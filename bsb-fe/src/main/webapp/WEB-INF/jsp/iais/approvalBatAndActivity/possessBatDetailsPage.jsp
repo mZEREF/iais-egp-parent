@@ -57,7 +57,7 @@
                                                                             <label for="schedule--v--${status.index}">Schedule <span class="mandatory otherQualificationSpan">*</span></label>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 30;">
-                                                                            <select name="schedule--v--${status.index}" id="schedule--v--${status.index}">
+                                                                            <select name="schedule--v--${status.index}" class="scheduleVDropdown" id="schedule--v--${status.index}">
                                                                                 <c:forEach items="${ScheduleOps}" var="schedule">
                                                                                     <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                                 </c:forEach>
@@ -74,7 +74,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 20;">
-                                                                            <select name="batName--v--${status.index}" id="batName--v--${status.index}">
+                                                                            <select name="batName--v--${status.index}" class="batNameVDropdown" id="batName--v--${status.index}">
                                                                                 <c:forEach items="${batNameOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                                 </c:forEach>
@@ -205,7 +205,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <select name="addressType--v--${status.index}" id="addressType--v--${status.index}">
+                                                                                <select name="addressType--v--${status.index}"  class="addressTypeVDropdown" id="addressType--v--${status.index}">
                                                                                     <c:forEach items="${addressTypeOps}" var="name">
                                                                                         <option value="${name.value}" <c:if test="${info.addressType eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                                     </c:forEach>

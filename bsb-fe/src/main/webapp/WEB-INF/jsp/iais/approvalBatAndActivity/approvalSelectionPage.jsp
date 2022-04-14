@@ -33,7 +33,7 @@
                         <%--@elvariable id="approvalSelectionDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalSelectionDto"--%>
                         <%--@elvariable id="selectionFacilityId" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                         <input type="hidden" id="facilityName" name="facilityName" value="${approvalSelectionDto.facilityName}">
-                        <select name="facilityId" id="facilityId">
+                        <select name="facilityId" id="facilityId" class="facilityIdDropdown">
                             <option value="">Please Select</option>
                             <c:forEach items="${selectionFacilityId}" var="facSelect">
                                 <c:set var="maskedFacilityId"><iais:mask name="facilityId" value="${facSelect.value}"/></c:set>

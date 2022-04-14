@@ -7,7 +7,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="salutationM" id="salutationM">
+            <select name="salutationM" class="salutationMDropDown" id="salutationM">
                 <option value="" <c:if test="${companyAdmin.mainAdmin.salutation eq null || companyAdmin.mainAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${companyAdmin.mainAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -42,7 +42,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="nationalityM" id="nationalityM">
+            <select name="nationalityM" class="nationalityMDrop" id="nationalityM">
                 <c:forEach items="${nationalityOps}" var="naM">
                     <option value="${naM.value}" <c:if test="${companyAdmin.mainAdmin.nationality eq naM.value}">selected="selected"</c:if>>${naM.text}</option>
                 </c:forEach>
@@ -103,7 +103,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="salutationA" id="salutationA">
+            <select name="salutationA" class="salutationADropdown" id="salutationA">
                 <option value="" <c:if test="${companyAdmin.alternativeAdmin.salutation eq null || companyAdmin.alternativeAdmin.salutation eq ''}">selected = 'selected'</c:if>>Please Select</option>
                 <c:forEach var="item" items="${salutationOps}">
                     <option value="${item.value}" <c:if test="${companyAdmin.alternativeAdmin.salutation eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -128,7 +128,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="nationalityA" id="nationalityA">
+            <select name="nationalityA"  class="nationalityDrop" id="nationalityA">
                 <c:forEach items="${nationalityOps}" var="naA">
                     <option value="${naA.value}" <c:if test="${companyAdmin.alternativeAdmin.nationality eq naA.value}">selected="selected"</c:if>>${naA.text}</option>
                 </c:forEach>
@@ -142,7 +142,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-3">
-            <select name="idTypeA" id="idTypeA">
+            <select name="idTypeA" class="idTypeADropdown" id="idTypeA">
                 <option value="IDTYPE001" <c:if test="${companyAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                 <option value="IDTYPE002" <c:if test="${companyAdmin.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
                 <option value="IDTYPE003" <c:if test="${companyAdmin.alternativeAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>

@@ -5,7 +5,7 @@
 
 <%-- This select is used to init nice-select, if we don't have at least one nice-select,
      our js generated nice-select will not have click event --%>
-<select name="doNotShow" style="display: none" disabled aria-label="forNiceSelect">
+<select name="doNotShow" style="display: none" class="doNotShowDropdown" disabled aria-label="forNiceSelect">
     <option value="error">ERROR</option>
 </select>
 
@@ -31,7 +31,7 @@
                             <td style="border: 0; padding-top: 5px; padding-bottom: 0">${status.index + 1}</td>
                             <td style="border: 0; padding-top: 5px; padding-bottom: 0">${finding.itemText}<span data-err-ind="itemValue--v--${status.index}" class="error-msg"></span></td>
                             <td style="border: 0; padding-top: 5px; padding-bottom: 0">
-                                <select name="findingType--v--${status.index}" aria-label="finding type">
+                                <select name="findingType--v--${status.index}" class="findingTypev-select" aria-label="finding type">
                                     <option value="${InspectionConstants.VALUE_FINDING_TYPE_NC}" <c:if test="${finding.findingType eq InspectionConstants.VALUE_FINDING_TYPE_NC}">selected="selected"</c:if>>Non-compliance</option>
                                     <option value="${InspectionConstants.VALUE_FINDING_TYPE_FOLLOW_UP}" <c:if test="${finding.findingType eq InspectionConstants.VALUE_FINDING_TYPE_FOLLOW_UP}">selected="selected"</c:if>>Follow-up item</option>
                                 </select>

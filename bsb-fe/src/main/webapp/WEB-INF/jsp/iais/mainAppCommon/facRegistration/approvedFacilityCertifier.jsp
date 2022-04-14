@@ -27,7 +27,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="afc" id="certifierSelection">
+            <select name="afc"  class="afcDropDown" id="certifierSelection">
                 <option value="">Please Select</option>
                 <c:forEach var="item" items="${afcOps}">
                     <option value="${item.value}" <c:if test="${afc.afc eq item.value}">selected="selected"</c:if>>${item.text}</option>

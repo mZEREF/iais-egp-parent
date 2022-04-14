@@ -94,6 +94,7 @@
                             </div>
                             <div class="col-sm-6 col-md-7">
                                 <iais:select name="receivedUnit--v--${status.index}"
+                                             cssClass="receivedDropdown"
                                              id="receivedUnit--v--${status.index}"
                                              value="${item.receivedUnit}"
                                              codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"

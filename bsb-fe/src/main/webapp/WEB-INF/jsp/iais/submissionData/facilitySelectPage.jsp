@@ -37,7 +37,7 @@
                                         <span class="mandatory">*</span>
                                     </div>
                                     <div class="col-sm-4 col-md-7 control-font-label">
-                                        <select name="facSelect" id="facSelect">
+                                        <select name="facSelect" class="facDropdown" id="facSelect">
                                             <option value="">Please Select</option>
                                             <c:forEach items="${facSelection}" var="selectList">
                                                 <option value="${selectList.value}" <c:if test="${facId eq MaskUtil.unMaskValue('id',selectList.value)}">selected="selected"</c:if>>${selectList.text}</option>

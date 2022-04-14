@@ -8,7 +8,7 @@
   <label for="appType" class="col-sm-5 col-md-5 control-label">Application Type</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appType" class="error-msg"></span>
-    <select name="appType" id="appType">
+    <select name="appType" class="appType-down" id="appType">
       <c:forEach var="item" items="${appTypeOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.appType eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>
@@ -18,7 +18,7 @@
   <label for="appStatus" class="col-sm-5 col-md-5 control-label">Application Status</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appStatus" class="error-msg"></span>
-    <select name="appStatus" id="appStatus">
+    <select name="appStatus" class="appStatusDrop" id="appStatus">
       <c:forEach var="item" items="${appStatusOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.appStatus eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>
@@ -34,7 +34,7 @@
   <label for="appFacClassification" class="col-sm-5 col-md-5 control-label">Facility Classification</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appFacClassification" class="appFacClassification-msg"></span>
-    <select name="appFacClassification" id="appFacClassification">
+    <select name="appFacClassification" class="appFacClassification-dropDown" id="appFacClassification">
       <c:forEach var="item" items="${facClassificationOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.facClassification eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>
@@ -56,7 +56,7 @@
   <label for="processType" class="col-sm-5 col-md-5 control-label">Process Type</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="processType" class="error-msg"></span>
-    <select name="processType" id="processType">
+    <select name="processType" class="processDropdown" id="processType">
       <c:forEach var="item" items="${processTypeOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.processType eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>

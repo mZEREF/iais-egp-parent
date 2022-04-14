@@ -120,7 +120,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="processingDecision" id="processingDecision">
+                                                                    <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
                                                                         <option value="MOHPRO002">Request for Information</option>
                                                                         <option value="MOHPRO025">Recommend acceptance of NC rectifications</option>
                                                                         <option value="MOHPRO026">Recommend rejection of NC rectifications </option>

@@ -127,7 +127,7 @@
                                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <select name="decision" id="decision">
+                                                                    <select name="decision" class="decisionDropDown" id="decision">
                                                                         <c:forEach var="ops" items="${decisionOps}">
                                                                             <option value="${ops.value}" <c:if test="${dto.decision eq ops.value}">selected="selected"</c:if>>${ops.text}</option>
                                                                         </c:forEach>
@@ -140,7 +140,7 @@
                                                                     <label for="approvalOfficer">Select Approval Officer</label>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <select name="approvalOfficer" id="approvalOfficer">
+                                                                    <select name="approvalOfficer"  class="approvalOfficerDropdownSelect" id="approvalOfficer">
                                                                         <option>Please Select</option>
                                                                         <option>Alice</option>
                                                                         <option>Bob</option>

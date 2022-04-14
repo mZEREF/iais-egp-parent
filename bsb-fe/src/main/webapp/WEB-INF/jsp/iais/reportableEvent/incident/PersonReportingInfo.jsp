@@ -117,7 +117,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <select name="facName" id="facName">
+                                                                        <select name="facName" class="facNameSelect" id="facName">
                                                                             <c:forEach var="item" items="${facNameOps}">
                                                                                 <option value="${item.value}" <c:if test="${item.value eq reportingPerson.facName}">selected = "selected"</c:if>>${item.text}</option>
                                                                             </c:forEach>
@@ -140,7 +140,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <select name="activityType" id="activityType">
+                                                                        <select name="activityType" class="activitytyDropdown" id="activityType">
                                                                             <option value="">Please Select</option>
                                                                         </select>
                                                                         <span data-err-ind="activityType" class="error-msg"></span>
@@ -163,7 +163,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <div class="col-md-10 col-lg-5 col-9">
-                                                                            <select id="occurrenceTimeH" name="occurrenceTimeH">
+                                                                            <select id="occurrenceTimeH" class="occurrenceTimeHDropdown" name="occurrenceTimeH">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurHHOps}">
                                                                                     <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeH eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -174,7 +174,7 @@
                                                                             <label for="occurrenceTimeH">(HH)</label>
                                                                         </div>
                                                                         <div class="col-md-10 col-lg-5 col-9">
-                                                                            <select id="occurrenceTimeM" name="occurrenceTimeM">
+                                                                            <select id="occurrenceTimeM" class="occurrenceTimeMDropdown" name="occurrenceTimeM">
                                                                                 <option value="">--</option>
                                                                                 <c:forEach var="item" items="${occurMMOps}">
                                                                                 <option value="${item.value}" <c:if test="${reportingPerson.occurrenceTimeM eq item.value}">selected = 'selected'</c:if>>${item.text}</option>
@@ -204,7 +204,7 @@
                                                                         <label for="batName">Name of Agent or Toxin Involved</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <select name = "batName" id = "batName" multiple>
+                                                                        <select name = "batName" class="batDrop" id = "batName" multiple>
                                                                             <option>Please select</option>
                                                                             <option value="Biological01">Biological01</option>
                                                                             <option value="Biological02">Biological02</option>

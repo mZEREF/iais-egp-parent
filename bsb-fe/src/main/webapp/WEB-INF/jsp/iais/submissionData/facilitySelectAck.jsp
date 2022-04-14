@@ -32,7 +32,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <select name="facSelect" id="facSelect" onchange="facChange(this)">
+                            <select name="facSelect" id="facSelect" class="facSelectDropdown" onchange="facChange(this)">
                                 <c:forEach items="${facSelection}" var="selectList">
                                     <option value="${MaskUtil.maskValue('id',selectList.value)}">${selectList.text}</option>
                                 </c:forEach>
@@ -47,7 +47,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <select name="dataSubNo" id="dataSubNo">
+                            <select name="dataSubNo" class="dataSubNoDropdown" id="dataSubNo">
                                 <option value="Please Select">Please Select</option>
                             </select>
                             <span id="dataSubNoError" class="error-msg"></span>

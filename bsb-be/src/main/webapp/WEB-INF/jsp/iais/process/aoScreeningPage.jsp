@@ -134,7 +134,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" id="processingDecision">
+                                                                            <select name="processingDecision" class="proDropSelect" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
                                                                                 <option value="MOHPRO003" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
@@ -150,7 +150,7 @@
                                                                     <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select HM <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="selectMohUser" id="selectMohUser">
+                                                                            <select name="selectMohUser" class="selectMohUserDropdown" id="selectMohUser">
                                                                                 <option value="">Please Select</option>
                                                                                 <c:forEach var="selection" items="${mohProcessDto.selectRouteToMoh}">
                                                                                     <option value="${selection.value}" <c:if test="${mohProcessDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>

@@ -31,7 +31,7 @@
                 <div class="row">
                     <iais:field value="Audit Type"/>
                     <iais:value width="18">
-                        <iais:select name="auditType" id="auditType" value="${auditSearch.auditType}"
+                        <iais:select name="auditType" cssClass="auditTypeDropdown" id="auditType" value="${auditSearch.auditType}"
                                      codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
                     </iais:value>
                 </div>

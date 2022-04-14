@@ -107,7 +107,7 @@
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="processingDecision" id="processingDecision">
+                                                                        <select name="processingDecision" class="psd-select" id="processingDecision">
                                                                             <option value="">Please Select</option>
                                                                             <option value="MOHPRO022" <c:if test="${processDto.decision eq 'MOHPRO022'}">selected="selected"</c:if>>Submit report to AO</option>
                                                                             <c:if test="${insInfo.appStatus eq 'BSBAPST029'}">

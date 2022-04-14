@@ -137,7 +137,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <select name="country" id="country" >
+                <select name="country"  class="countryDropdown" id="country" >
                     <c:forEach items="${countryOps}" var="co">
                         <option value="${co.value}" <c:if test="${co.value eq companyProfile.country}">selected="selected"</c:if>>${co.text}</option>
                     </c:forEach>
@@ -203,7 +203,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="addressType" id="addressType">
+            <select name="addressType" class="addressTypeSelect" id="addressType">
                 <option value="">Please Select</option>
                 <option value="ADDTY001">Apt Blk</option>
                 <option value="ADDTY002">Without Apt</option>

@@ -136,7 +136,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="processingDecision" id="processingDecision">
+                                                                                <select name="processingDecision" class="processDd" id="processingDecision">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="MOHPRO007" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
                                                                                     <option value="MOHPRO003" <c:if test="${aoProcessDto.processingDecision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>

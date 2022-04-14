@@ -2,7 +2,7 @@
     <label for="orgName" class="col-sm-5 col-md-5 control-label">Organisation Name</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="orgName" class="error-msg"></span>
-        <select name="orgName" id="orgName">
+        <select name="orgName" class="orgName-dropdown" id="orgName">
             <option value=""></option>
         </select>
     </div>
@@ -16,7 +16,7 @@
     <label for="afcStatus" class="col-sm-5 col-md-5 control-label">AFC Status</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="afcStatus" class="error-msg"></span>
-        <select name="afcStatus" id= "afcStatus">
+        <select name="afcStatus" class="afcStatusDropdown" id= "afcStatus">
             <c:forEach var="item" items="${afcStatusOps}">
                 <option value="${item.value}" <c:if test="${afcSearchDto.afcStatus eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>

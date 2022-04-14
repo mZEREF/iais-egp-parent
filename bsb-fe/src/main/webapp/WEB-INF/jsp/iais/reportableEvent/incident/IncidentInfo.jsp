@@ -54,7 +54,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <select name="incidentReporting" id="incidentReporting" style="overflow: hidden">
+                                                                        <select name="incidentReporting" class="incidentReportingDropdown" id="incidentReporting" style="overflow: hidden">
                                                                             <c:forEach var="item" items="${incidentReportOps}">
                                                                                 <option value="${item.value}" <c:if test="${incidentInfo.incidentReporting eq item.value}">selected="selected"</c:if>>${item.text}</option>
                                                                             </c:forEach>

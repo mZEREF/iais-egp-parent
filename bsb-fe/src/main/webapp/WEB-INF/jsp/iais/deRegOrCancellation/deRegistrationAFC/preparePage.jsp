@@ -45,7 +45,7 @@
                                             <div class="form-group ">
                                                 <label class="col-sm-5 control-label">Reasons <span style="color: red">*</span></label>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <select name="reasons" id="reasons">
+                                                    <select name="reasons" class="reasonsDrop" id="reasons">
                                                         <option value="">Please Select</option>
                                                         <option value="BSBRFAD001" <c:if test="${deRegistrationAFCDto.reasons eq 'BSBRFAD001'}">selected="selected"</c:if>>AFC team no longer have a qualified Biosafety Professional</option>
                                                         <option value="BSBRFAD002" <c:if test="${deRegistrationAFCDto.reasons eq 'BSBRFAD002'}">selected="selected"</c:if>>AFC team no longer have a qualified Engineering Professional</option>

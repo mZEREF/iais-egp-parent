@@ -15,37 +15,37 @@
                     <iais:row>
                         <iais:field value="Facility Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select id="facName" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facSearchDto.facName}"/>
+                            <iais:select id="facName" cssClass="facName-dd" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facSearchDto.facName}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                <iais:select name="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${facSearchDto.facClassification}"/>
+                                <iais:select name="facClassification" cssClass="facClassift-select" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${facSearchDto.facClassification}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Type "/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facTypes" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${facSearchDto.facTypes}"/>
+                            <iais:select name="facTypes" cssClass="facTypeDrop" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${facSearchDto.facTypes}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Schedule Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="scheduleType"  codeCategory="CATE_ID_BSB_SCH_TYPE" firstOption="Please Select" value="${facSearchDto.scheduleType}"/>
+                            <iais:select name="scheduleType"  cssClass="scheduleType-drop-down" codeCategory="CATE_ID_BSB_SCH_TYPE" firstOption="Please Select" value="${facSearchDto.scheduleType}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="batName"  options="biologicalAgent"  firstOption="Please Select" value="${facSearchDto.batName}"/>
+                            <iais:select name="batName"  options="biologicalAgent" cssClass="batName-select-drop"  firstOption="Please Select" value="${facSearchDto.batName}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Risk Level of the Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="riskLevel" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${facSearchDto.riskLevel}"/>
+                            <iais:select name="riskLevel" cssClass="risDropdown" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${facSearchDto.riskLevel}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -64,7 +64,7 @@
                     <iais:row>
                         <iais:field value="Gazetted Area"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="gazettedArea" codeCategory="CATE_ID_BSB_GAZETTED_AREA" firstOption="Please Select" value="${facSearchDto.gazettedArea}"/>
+                            <iais:select name="gazettedArea" cssClass="gazetted-selelct" codeCategory="CATE_ID_BSB_GAZETTED_AREA" firstOption="Please Select" value="${facSearchDto.gazettedArea}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -94,13 +94,13 @@
                     <iais:row>
                         <iais:field value="Facility Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facStatus" codeCategory="CATE_ID_BSB_FACILITY_STATUS" firstOption="Please Select" value="${facSearchDto.facStatus}"/>
+                            <iais:select name="facStatus" cssClass="facSt-select" codeCategory="CATE_ID_BSB_FACILITY_STATUS" firstOption="Please Select" value="${facSearchDto.facStatus}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Facility Certifier"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="afcName" options="AFC" firstOption="Please Select" value="${facSearchDto.afcName}"/>
+                            <iais:select name="afcName" cssClass="afcName-select-drop" options="AFC" firstOption="Please Select" value="${facSearchDto.afcName}"/>
                         </div>
                     </iais:row>
                 </iais:section>
@@ -125,49 +125,49 @@
                     <iais:row>
                         <iais:field value="Facility Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facName" options="facilityName"  firstOption="Please Select" value="${approvalSearchDto.facName}"/>
+                            <iais:select name="facName" cssClass="fac-select-drop" options="facilityName"  firstOption="Please Select" value="${approvalSearchDto.facName}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${approvalSearchDto.facClassification}"/>
+                            <iais:select name="facClassification" cssClass="facClassiDropdown" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${approvalSearchDto.facClassification}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Type "/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facTypes" codeCategory="CATE_ID_BSB_ACTIVE_TYPE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchDto.facTypes}"/>
+                            <iais:select name="facTypes" cssClass="facType-selelct-dropdown" codeCategory="CATE_ID_BSB_ACTIVE_TYPE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchDto.facTypes}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Schedule Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="scheduleType" codeCategory="CATE_ID_BSB_SCH_TYPE"  firstOption="Please Select" value="${approvalSearchDto.scheduleType}"/>
+                            <iais:select name="scheduleType" cssClass="scheduleT-selelct" codeCategory="CATE_ID_BSB_SCH_TYPE"  firstOption="Please Select" value="${approvalSearchDto.scheduleType}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="batName" options="biologicalAgent"  firstOption="Please Select" value="${approvalSearchDto.batName}"/>
+                            <iais:select name="batName" cssClass="batN-select-dropDown" options="biologicalAgent"  firstOption="Please Select" value="${approvalSearchDto.batName}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Nature of the sample"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="sampleNatures" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchDto.sampleNatures}"/>
+                            <iais:select name="sampleNatures" cssClass="sample-selelct" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchDto.sampleNatures}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Risk Level of the Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="riskLevel" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${approvalSearchDto.riskLevel}"/>
+                            <iais:select name="riskLevel" cssClass="risk-select" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${approvalSearchDto.riskLevel}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approval Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${approvalSearchDto.approvalType}"/>
+                            <iais:select name="approvalType"  cssClass="approval-select-drop" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${approvalSearchDto.approvalType}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -187,7 +187,7 @@
                     <iais:row>
                         <iais:field value="Approval Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="approvalStatus" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select" value="${approvalSearchDto.approvalStatus}"/>
+                            <iais:select name="approvalStatus" cssClass="approval-select-drop" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select" value="${approvalSearchDto.approvalStatus}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -230,13 +230,13 @@
                     <iais:row>
                         <iais:field value="Application Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="appType" id="appType"  codeCategory="CATE_ID_BSB_APP_TYPE" firstOption="Please Select" value="${appSearchDto.appType}"/>
+                            <iais:select name="appType" id="appType" cssClass="appTy-drop-down"  codeCategory="CATE_ID_BSB_APP_TYPE" firstOption="Please Select" value="${appSearchDto.appType}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Application Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="appStatus" id="appStatus" codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select" value="${appSearchDto.appStatus}"/>
+                            <iais:select name="appStatus" id="appStatus" cssClass="appDropdown" codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select" value="${appSearchDto.appStatus}"/>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -268,43 +268,43 @@
                     <iais:row>
                         <iais:field value="Facility Classification"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facClassification" id="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${appSearchDto.facClassification}"/>
+                            <iais:select name="facClassification" cssClass="facClassif-select" id="facClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" value="${appSearchDto.facClassification}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                           <iais:select name="facTypes" id="facTypes" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${appSearchDto.facTypes}"/>
+                           <iais:select name="facTypes" id="facTypes" cssClass="facType-select-drop" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${appSearchDto.facTypes}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                <iais:select name="facName" id="facName" options="facilityName" firstOption="Please Select" value="${appSearchDto.facName}"/>
+                                <iais:select name="facName" id="facName" cssClass="dN-select" options="facilityName" firstOption="Please Select" value="${appSearchDto.facName}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Schedule Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="scheduleType" id="scheduleType" codeCategory="CATE_ID_BSB_SCH_TYPE" firstOption="Please Select" value="${appSearchDto.scheduleType}"/>
+                            <iais:select name="scheduleType" cssClass="st-select" id="scheduleType" codeCategory="CATE_ID_BSB_SCH_TYPE" firstOption="Please Select" value="${appSearchDto.scheduleType}"/>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="batName" id="batName" options="biologicalAgent" firstOption="Please Select" value="${appSearchDto.batName}"/>
+                            <iais:select name="batName" cssClass="bNDropdown" id="batName" options="biologicalAgent" firstOption="Please Select" value="${appSearchDto.batName}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Risk Level of the Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${appSearchDto.riskLevel}"/>
+                            <iais:select name="riskLevel" cssClass="clDropdown" id="riskLevel" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${appSearchDto.riskLevel}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Process Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="processType" id="processType" codeCategory="CATE_ID_BSB_PRO_TYPE" firstOption="Please Select" value="${appSearchDto.processType}"/>
+                            <iais:select name="processType" cssClass="pt-select" id="processType" codeCategory="CATE_ID_BSB_PRO_TYPE" firstOption="Please Select" value="${appSearchDto.processType}"/>
                         </div >
                     </iais:row>
                 </iais:section>
@@ -328,7 +328,7 @@
                     <iais:row>
                         <iais:field value="Organisation Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="orgName" options="orgName" firstOption="Please Select" value="${afcSearchDto.orgName}"/>
+                            <iais:select name="orgName" cssClass="on-drop-down" options="orgName" firstOption="Please Select" value="${afcSearchDto.orgName}"/>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -340,7 +340,7 @@
                     <iais:row>
                         <iais:field value="AFC Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                <iais:select name="afcStatus" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select" value="${afcSearchDto.afcStatus}"/>
+                                <iais:select name="afcStatus"  cssClass="astDropdown" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select" value="${afcSearchDto.afcStatus}"/>
                         </div>
                     </iais:row>
                     <iais:row>

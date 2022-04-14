@@ -53,7 +53,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="schedule" id="schedule">
+                                                                <select name="schedule" class="scheduleDropdown" id="schedule">
                                                                     <c:forEach items="${ScheduleOps}" var="schedule">
                                                                         <option value="${schedule.value}" <c:if test="${batInfo.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                     </c:forEach>
@@ -67,7 +67,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="batName" id="batName">
+                                                                <select name="batName"  class="batNDropdown" id="batName">
                                                                     <c:forEach items="${batNameOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                     </c:forEach>
@@ -128,7 +128,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="addressType" id="addressType">
+                                                                <select name="addressType" class="addressTypeDropdown" id="addressType">
                                                                     <c:forEach items="${addressTypeOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.addressType eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                     </c:forEach>

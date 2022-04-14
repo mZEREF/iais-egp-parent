@@ -62,7 +62,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <select name="batId--v--${status.index}" id="batId--v--${status.index}">
+                                                                            <select name="batId--v--${status.index}"  class="batId-v-Drop" id="batId--v--${status.index}">
                                                                                 <c:forEach items="${batIdOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batId eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                                 </c:forEach>
@@ -195,7 +195,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <select name="transferCountry--v--${status.index}" id="transferCountry--v--${status.index}">
+                                                                                <select name="transferCountry--v--${status.index}" class="transferCountryvDropdown" id="transferCountry--v--${status.index}">
                                                                                     <c:forEach items="${countryOps}" var="country">
                                                                                         <option value="${country.value}" <c:if test="${info.transferCountry eq country.value}">selected="selected"</c:if>>${country.text}</option>
                                                                                     </c:forEach>

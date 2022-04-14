@@ -119,7 +119,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" id="processingDecision">
+                                                                            <select name="processingDecision" class="pd-drop-down" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO001'}">selected="selected"</c:if>>Mark as ready</option>
                                                                                 <%--<option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>--%>
