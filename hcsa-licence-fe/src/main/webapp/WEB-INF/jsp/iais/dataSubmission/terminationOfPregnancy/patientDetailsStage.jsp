@@ -22,6 +22,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     <%@include file="section/patientDetails.jsp" %>
+                    <%@include file="common/topDsAmendment.jsp" %>
                 </div>
                 <%@include file="common/topPiFooter.jsp" %>
             </div>

@@ -179,15 +179,7 @@
     </iais:value>
     </iais:row>
 
-    <div id="preCounsNoCondReasons" <c:if test="${preTerminationDto.counsellingGiven != false}">style="display: none"</c:if> >
-        <iais:row>
-            <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
-                            value="${preTerminationDto.preCounsNoCondReason}"/>
-            </iais:value>
-        </iais:row>
-    </div>
+
     <iais:row>
     <label class="col-xs-5 col-md-4 control-label">First Pre-Counselling Result
         <span id="counsellingResult" class="mandatory">
@@ -201,6 +193,15 @@
     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
     </iais:value>
     </iais:row>
+        </div>
+        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>16}">style="display: none"</c:if> >
+            <iais:row>
+                <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
+                                value="${preTerminationDto.preCounsNoCondReason}"/>
+                </iais:value>
+            </iais:row>
         </div>
         <div id="patientAppointments" <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
             <iais:row>

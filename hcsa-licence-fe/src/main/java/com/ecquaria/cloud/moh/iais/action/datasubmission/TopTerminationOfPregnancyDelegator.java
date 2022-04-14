@@ -485,6 +485,8 @@ public class TopTerminationOfPregnancyDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto() == null ? new PostTerminationDto() : terminationOfPregnancyDto.getPostTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, postTerminationDto);
+        String TopPlace=ParamUtil.getString(request,"TopPlace");
+        postTerminationDto.setCounsellingPlace(TopPlace);
         terminationOfPregnancyDto.setPostTerminationDto(postTerminationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);

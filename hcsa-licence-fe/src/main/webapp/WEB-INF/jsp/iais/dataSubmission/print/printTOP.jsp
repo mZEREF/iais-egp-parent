@@ -8,6 +8,7 @@
 <c:choose>
     <c:when test="${submissionType == 'TOP_TP002'}">
         <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
+        <%@include file="../terminationOfPregnancy/common/previewTopDsAmendment.jsp" %>
         <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'TOP_TP001'}">
