@@ -31,14 +31,18 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
     protected final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
-    private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
-    private final static String ADD_DONOR_MAX_SIZE               ="arAddDonorMaxSize";
+    private final static String  DONOR_USED_TYPES                  = "donorUsedTypes";
+    private final static String ADD_DONOR_MAX_SIZE                 ="arAddDonorMaxSize";
     private final static String OLD_DONORS_SELECTED               ="oldDonorsSelected";
+    private final static String DONOR_RESULT_SIZE                 = "donorResultSize";
+    private final static String DONOR_MESSAGE_TIP                 = "donorMessageTip";
     protected void setDonorUserSession(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
         ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
         ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
         ParamUtil.setSessionAttr(request, ADD_DONOR_MAX_SIZE,SystemParamUtil.getSystemParamConfig().getArAddDonorMaxSize());
+        ParamUtil.setSessionAttr(request, DONOR_RESULT_SIZE,MasterCodeUtil.getCodeDesc("DSPC_004"));
+        ParamUtil.setSessionAttr(request,DONOR_MESSAGE_TIP,MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
         ParamUtil.clearSession(request,OLD_DONORS_SELECTED);
     }
     protected void actionArDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos){
@@ -132,6 +136,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     }
                 });
                 if(errorMap.isEmpty()){
+                    if(donorSampleDto.getDonorUseSize()>= Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"))){
+                        ParamUtil.setRequestAttr(request, "donorResultMoreValue", AppConsts.YES);
+                    }
                     setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto,request);
                 }else {
                     clearDonorAges(arDonorDto);
@@ -146,6 +153,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         setRfcDonorSelectData(request,donorSampleDto);
         List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
         arDonorDto.setDonorSampleAgeDtos(ages);
+        arDonorDto.setDonorUseSize(donorSampleDto.getDonorUseSize());
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
         arDonorDto.setDonorSampleId(donorSampleDto.getId());
         if(!donorSampleDto.isDirectedDonation()){
@@ -213,6 +221,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         arDonorDto.setRelation(null);
         arDonorDto.setDonorIdentityKnown(null);
         arDonorDto.setDonorSampleId(null);
+        arDonorDto.setDonorUseSize(0);
     }
 
     protected void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){

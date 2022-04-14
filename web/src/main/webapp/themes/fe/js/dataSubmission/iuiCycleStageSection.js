@@ -6,6 +6,7 @@ $(document).ready(function (){
        showOtherPremises(1);
    }
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
+    showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
 });
 
 

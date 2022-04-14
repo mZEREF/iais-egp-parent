@@ -199,3 +199,5 @@
 <input type="hidden" name="DSERR019TipShow" value="${empty DS_ERR019Message ? '' : 1}" id="DSERR019TipShow">
 <iais:confirm msg="${DS_ERR019Message}" needCancel="false" popupOrder="DSERR019Tip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="DSERR019MessageTipClose()" />
 
+<input type="hidden" name="donorMessageTipShow" value="${empty donorResultMoreValue ? '' : 1}" id="donorMessageTipShow">
+<iais:confirm msg="${donorMessageTip}" needCancel="false" popupOrder="donorMessageTip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="donorMessageTipClose()" />
