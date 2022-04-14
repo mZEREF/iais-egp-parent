@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
@@ -44,7 +45,8 @@ public class BsbInspectionAOReviewReportDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
+        //TODO: update
+//        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "AO Review Inspection Report");
     }
@@ -52,27 +54,30 @@ public class BsbInspectionAOReviewReportDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
-        session.removeAttribute(KEY_INS_INFO);
-        session.removeAttribute(KEY_INS_FINDING);
-        session.removeAttribute(KEY_INS_OUTCOME);
+        session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
+        session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
+//        session.removeAttribute(KEY_INS_FINDING);
+//        session.removeAttribute(KEY_INS_OUTCOME);
         session.removeAttribute(KEY_INS_DECISION);
 
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        // TODO: will update
+//        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String appId = "48BD553A-07BB-EC11-BE76-000C298D317C";
 
         // judge whether we need to send email
         InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId);
 
         // submission details info
-        ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
-        ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
+        ParamUtil.setSessionAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
+        ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
 
-        // inspection findings
-        ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
-        ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
-
-        // inspection outcome
-        InspectionOutcomeDto outcomeDto = initDataDto.getOutcomeDto();
-        ParamUtil.setSessionAttr(request, KEY_INS_OUTCOME, outcomeDto);
+//        // inspection findings
+//        ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
+//        ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
+//
+//        // inspection outcome
+//        InspectionOutcomeDto outcomeDto = initDataDto.getOutcomeDto();
+//        ParamUtil.setSessionAttr(request, KEY_INS_OUTCOME, outcomeDto);
 
         // inspection processing
         InsProcessDto processDto = new InsProcessDto();
@@ -81,9 +86,15 @@ public class BsbInspectionAOReviewReportDelegator {
 
     public void pre(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        //TODO: update
+//        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String appId = "48BD553A-07BB-EC11-BE76-000C298D317C";
         List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
+
+        // view application need appId and moduleType
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
+        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_NEW_FACILITY);
     }
 
     public void bindAction(BaseProcessClass bpc) {

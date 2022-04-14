@@ -53,6 +53,15 @@ $(function () {
         $("input[name='action_type']").val('submit');
         $("#mainForm").submit();
     });
+
+    $("#processingDecision").change(function () {
+        var selectValue = $(this).val();
+        if (selectValue === "MOHPRO022") {
+            $("#selectMohUserDiv").show();
+        } else {
+            $("#selectMohUserDiv").hide();
+        }
+    })
 })
 
 // inspection findings' sections

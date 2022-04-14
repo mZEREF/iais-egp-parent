@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -75,6 +76,7 @@
                                     <div class="tab-content">
                                         <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_SUBMIT_INTO}">active</c:if>" id="${InspectionConstants.TAB_SUBMIT_INTO}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
+                                        </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                         </div>
@@ -117,14 +119,29 @@
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="psd-select" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="MOHPRO022" <c:if test="${processDto.decision eq 'MOHPRO022'}">selected="selected"</c:if>>Submit report to AO</option>
-                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq 'BSBAPST029'}">
-                                                                                <option value="MOHPRO023" <c:if test="${processDto.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route report to applicant</option>
-                                                                                <option value="MOHPRO024" <c:if test="${processDto.decision eq 'MOHPRO024'}">selected="selected"</c:if>>Mark report as final</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
+                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_REPORT_FINALISATION}">
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}">selected="selected"</c:if>>Mark report as final</option>
                                                                             </c:if>
                                                                             <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
+                                                                <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <div class="input-group">
+                                                                        <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
+                                                                            <option value="">Please Select</option>
+                                                                            <c:forEach var="selection" items="${processDto.selectRouteToMoh}">
+                                                                                <option value="${selection.value}" <c:if test="${processDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                        <span data-err-ind="selectMohUser" class="error-msg" ></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>
