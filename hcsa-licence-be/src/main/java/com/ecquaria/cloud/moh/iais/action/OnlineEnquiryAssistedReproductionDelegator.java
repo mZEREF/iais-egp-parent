@@ -778,10 +778,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("disposalDateTo", disposalDateTo);
             }
             if(arDto.getTransferInOrOut()!=null){
-                if("0".equals(arDto.getTransferInOrOut())){
+                if("1".equals(arDto.getTransferInOrOut())){
                     filter.put("transferInOrOut", "in");
                 }
-                if("1".equals(arDto.getTransferInOrOut())){
+                if("0".equals(arDto.getTransferInOrOut())){
                     filter.put("transferInOrOut", "out");
                 }
             }
