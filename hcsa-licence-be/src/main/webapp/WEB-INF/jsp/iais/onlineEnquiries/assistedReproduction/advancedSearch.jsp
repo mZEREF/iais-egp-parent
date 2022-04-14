@@ -548,7 +548,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum4" id="ageEmbryosNum4"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 =='on'  }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum4 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum4"><span
