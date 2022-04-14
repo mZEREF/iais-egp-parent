@@ -108,7 +108,9 @@ public class BsbSubmitInspectionReportDelegator {
                 validateResult = "applicant";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL.equals(processDto.getDecision())) {
                 validateResult = "final";
-            } else {
+            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+                validateResult = "skip";
+            }else {
                 validateResult = "invalid";
             }
         } else {
@@ -119,6 +121,14 @@ public class BsbSubmitInspectionReportDelegator {
         }
         log.info("Officer submit decision [{}] for submit inspection report, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        inspectionClient.skipInspection(appId,taskId,processDto);
     }
 
     public void submitToAo(BaseProcessClass bpc) {

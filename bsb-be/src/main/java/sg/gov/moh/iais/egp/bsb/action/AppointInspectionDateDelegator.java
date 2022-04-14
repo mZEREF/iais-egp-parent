@@ -11,12 +11,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
+import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
@@ -46,11 +50,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_
 public class AppointInspectionDateDelegator {
 
     private final BsbAppointmentClient bsbAppointmentClient;
+    private final InspectionClient inspectionClient;
     private final ProcessHistoryService processHistoryService;
     private final ApptInspectionDateService apptInspectionDateService;
 
-    public AppointInspectionDateDelegator(BsbAppointmentClient bsbAppointmentClient, ProcessHistoryService processHistoryService, ApptInspectionDateService apptInspectionDateService) {
+    public AppointInspectionDateDelegator(BsbAppointmentClient bsbAppointmentClient, InspectionClient inspectionClient, ProcessHistoryService processHistoryService, ApptInspectionDateService apptInspectionDateService) {
         this.bsbAppointmentClient = bsbAppointmentClient;
+        this.inspectionClient = inspectionClient;
         this.processHistoryService = processHistoryService;
         this.apptInspectionDateService = apptInspectionDateService;
     }
@@ -94,6 +100,13 @@ public class AppointInspectionDateDelegator {
         // view application need appId and moduleType
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
+        inspectionClient.skipInspection(appId,taskId,new InsProcessDto(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION));
     }
 
     public void setApptInspectionDateDto(String taskId, HttpServletRequest request) {

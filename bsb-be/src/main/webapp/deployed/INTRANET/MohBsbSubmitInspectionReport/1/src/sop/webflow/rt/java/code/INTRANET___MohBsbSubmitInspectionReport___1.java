@@ -49,4 +49,8 @@ public class INTRANET___MohBsbSubmitInspectionReport___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "markFinal", this);
 	}
 
+	public void skip_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "skip", this);
+	}
+
 }

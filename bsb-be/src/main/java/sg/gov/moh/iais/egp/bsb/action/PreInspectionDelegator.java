@@ -167,6 +167,8 @@ public class PreInspectionDelegator {
                 validateResult = "ready";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())) {
                 validateResult = "rfi";
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+                validateResult = "skip";
             } else {
                 validateResult = "unknown";
             }
@@ -193,6 +195,14 @@ public class PreInspectionDelegator {
 
     public void rfi(BaseProcessClass bpc) {
         throw new UnsupportedOperationException("To be implemented in the future");
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        inspectionClient.skipInspection(appId,taskId,processDto);
     }
 
     private AppointmentReviewDataDto getReviewDataDto(HttpServletRequest request) {

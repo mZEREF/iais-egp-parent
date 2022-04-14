@@ -108,6 +108,7 @@
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO023" <c:if test="${insDecision.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route back to applicant</option>
                                                                                 <option value="MOHPRO010" <c:if test="${insDecision.decision eq 'MOHPRO010'}">selected="selected"</c:if>>Accept response to follow-up items</option>
+                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                             </select>
                                                                             <span data-err-ind="decision" class="error-msg" ></span>
                                                                         </div>

@@ -121,7 +121,8 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="pd-drop-down" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO001'}">selected="selected"</c:if>>Mark as ready</option>
+                                                                                <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO021'}">selected="selected"</c:if>>Mark as ready</option>
+                                                                                <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>
                                                                                 <%--<option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>--%>
                                                                             </select>
                                                                             <span data-err-ind="processingDecision" class="error-msg" ></span>

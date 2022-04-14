@@ -121,9 +121,10 @@
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
-                                                                        <option value="MOHPRO002">Request for Information</option>
-                                                                        <option value="MOHPRO025">Recommend acceptance of NC rectifications</option>
-                                                                        <option value="MOHPRO026">Recommend rejection of NC rectifications </option>
+                                                                        <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
+                                                                        <option value="MOHPRO025" <c:if test="${insDecision.decision eq 'MOHPRO025'}">selected="selected"</c:if>>Recommend acceptance of NC rectifications</option>
+                                                                        <option value="MOHPRO026" <c:if test="${insDecision.decision eq 'MOHPRO026'}">selected="selected"</c:if>>Recommend rejection of NC rectifications</option>
+                                                                        <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

@@ -123,6 +123,7 @@
                                                                                 <option value="MOHPRO023" <c:if test="${processDto.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route report to applicant</option>
                                                                                 <option value="MOHPRO024" <c:if test="${processDto.decision eq 'MOHPRO024'}">selected="selected"</c:if>>Mark report as final</option>
                                                                             </c:if>
+                                                                            <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>

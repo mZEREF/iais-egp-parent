@@ -114,6 +114,7 @@
                                                         </div>
                                                         <div style="text-align: right">
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
+                                                            <button name="skipBtn" id="skipBtn" type="button" class="btn btn-md" onclick="skipInspection()">Skip Inspection</button>
                                                         </div>
                                                     </div>
                                                 </div>

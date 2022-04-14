@@ -115,6 +115,8 @@ public class BsbInspectionOfficerReviewNCsDelegator {
                 validateResult = "rfi";
             }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPT_RECTIFICATIONS.equals(processDto.getDecision())|| MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS.equals(processDto.getDecision())){
                 validateResult = "finalize";
+            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+                validateResult = "skip";
             }else {
                 validateResult = "invalid";
             }
@@ -162,6 +164,14 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.finalizeReviewInspectionNC(appId,taskId,processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully finalize report.");
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        inspectionClient.skipInspection(appId,taskId,processDto);
     }
 
 }

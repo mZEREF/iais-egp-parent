@@ -44,4 +44,9 @@ public class INTRANET___BsbApptInspectionDate___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "saveAppointmentDate", this);
 	}
 
+	public void skip_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "skip", this);
+	}
+
+
 }

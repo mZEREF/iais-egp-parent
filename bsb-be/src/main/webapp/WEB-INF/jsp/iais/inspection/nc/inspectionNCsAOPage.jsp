@@ -117,9 +117,10 @@
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision" class="pd-drop-down" id="processingDecision">
-                                                                        <option value="MOHPRO002">Request for Information</option>
-                                                                        <option value="MOHPRO027">Accept Rectifications</option>
-                                                                        <option value="MOHPRO028">Reject Rectifications</option>
+                                                                        <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
+                                                                        <option value="MOHPRO027" <c:if test="${insDecision.decision eq 'MOHPRO027'}">selected="selected"</c:if>>Accept Rectifications</option>
+                                                                        <option value="MOHPRO028" <c:if test="${insDecision.decision eq 'MOHPRO028'}">selected="selected"</c:if>>Reject Rectifications</option>
+                                                                        <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

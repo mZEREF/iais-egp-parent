@@ -51,4 +51,8 @@ public class INTRANET___MohBsbInspectionNCsAOReview___1 extends BaseProcessClass
 		EngineHelper.delegate(DELEGATOR, "finalizeProcess", this);
 	}
 
+	public void skip_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "skip", this);
+	}
+
 }

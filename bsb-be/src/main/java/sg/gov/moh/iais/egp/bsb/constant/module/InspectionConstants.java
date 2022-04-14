@@ -5,6 +5,7 @@ public class InspectionConstants {
 
     public static final String KEY_APP_ID = "appId";
     public static final String KEY_TASK_ID = "taskId";
+    public static final String KEY_ACTION_TYPE_SKIP = "skip";
 
     public static final String KEY_SELF_ASSESSMENT_CHK_LST = "bsbSelfAssessmentCheckList";
     public static final String KEY_SELF_ASSESSMENT_CONFIG = "bsbSelfAssessmentConfig";

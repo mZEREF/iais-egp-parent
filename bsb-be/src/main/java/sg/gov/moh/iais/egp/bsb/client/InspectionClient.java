@@ -90,6 +90,11 @@ public interface InspectionClient {
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/skip-flow", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void skipInspection(@RequestParam("appId") String appId,
+                        @RequestParam("taskId") String taskId,
+                        @RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/actual/report/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
     void finalizeInspectionReport(@RequestParam("appId") String appId,
                                   @RequestParam("taskId") String taskId,

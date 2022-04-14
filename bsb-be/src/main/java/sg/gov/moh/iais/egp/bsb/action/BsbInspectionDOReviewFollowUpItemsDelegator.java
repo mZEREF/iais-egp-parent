@@ -102,6 +102,8 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
                 validateResult = "routeBack";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_VERIFIED.equals(processingDecision)){
                 validateResult = "acceptResponse";
+            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)){
+                validateResult = "skip";
             } else {
                 validateResult = "invalid";
             }
@@ -130,5 +132,13 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto insProcessDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        inspectionClient.skipInspection(appId,taskId,insProcessDto);
     }
 }
