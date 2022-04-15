@@ -1091,6 +1091,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
         if(StringUtil.isNotEmpty(additional)&&StringUtil.isNotEmpty(key)){
+            request.getSession().removeAttribute("arTransactionHistoryFilterDto");
             if("patient".equals(additional)){
                 patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(key);
 
