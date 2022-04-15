@@ -223,8 +223,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveFrom", errMsg);
-                }
-                if(isEffect){
+                }else if(isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
                 }
@@ -234,7 +233,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
-                }
+                }else
                 if(!isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -563,7 +562,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                             errItems.add(errMsg);
                             result = true;
-                        }
+                        }else
                         if(isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
@@ -575,7 +574,7 @@ public class MasterCodeDelegator {
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                             errItems.add(errMsg);
                             result = true;
-                        }
+                        }else
                         if(!isEffect){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                             errItems.add( errMsg);
@@ -860,11 +859,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String mcuperrErrMsg8 = MessageUtil.getMessageDesc("MCUPERR008");
         List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
-        String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
-        if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
-            return;
-        }
+
         MasterCodeDto masterCodeDto = new MasterCodeDto();
         getValueFromPage(masterCodeDto, request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -891,7 +886,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveFrom", errMsg);
-                }
+                }else
                 if(isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -904,7 +899,7 @@ public class MasterCodeDelegator {
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
-                }
+                }else
                 if(!isEffect){
                     String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                     errorMap.put("status", errMsg);
@@ -986,6 +981,20 @@ public class MasterCodeDelegator {
             String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
             ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
         }
+        MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+        //eic
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+        msDto.setUpdateAt(new Date());
+        syncMasterCodeList.add(msDto);
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+        MasterCodeUtil.refreshCache();
+        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date);
+        String dateReplace = dateStr.replace(" "," at ");
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
+        ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
+
     }
 
     /**
@@ -1063,7 +1072,7 @@ public class MasterCodeDelegator {
                     //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
                 }
-            }
+            }else
             if(!newIsEffect){
                 String errMsg = MessageUtil.getMessageDesc("MCUPERR012");
                 errorMap.put("status", errMsg);

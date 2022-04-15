@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -19,9 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -32,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -60,18 +58,8 @@ import java.util.Set;
 @EnableAsync
 public class GiroAccountServiceImpl implements GiroAccountService {
 
-    @Autowired
-    private LicEicClient licEicClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     private BeEicGatewayClient gatewayClient;
     @Autowired
@@ -123,32 +111,23 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
     @Override
     public void syncFeGiroAcctDto(List<GiroAccountInfoDto> giroAccountInfoDtoList) {
-        EicRequestTrackingDto trackDto = getLicEicRequestTrackingDtoByRefNo(giroAccountInfoDtoList.get(0).getEventRefNo());
-        eicCallFeGiroLic(giroAccountInfoDtoList);
-        trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        updateGiroAccountInfoTrackingDto(trackDto);
-
-    }
-
-    public void eicCallFeGiroLic(List<GiroAccountInfoDto> giroAccountInfoDtoList) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         log.info(StringUtil.changeForLog("=======>>>>>"+" Lic Giro Account Information Id :"+giroAccountInfoDtoList.get(0).getId()));
-
-        gatewayClient.updateGiroAccountInfo(giroAccountInfoDtoList,
-                signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+        gatewayClient.callEicWithTrack(giroAccountInfoDtoList, gatewayClient::updateGiroAccountInfo,
+                this.getClass(), "eicCallFeGiroLic");
     }
 
-    @Override
-    public void updateGiroAccountInfoTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
-        licEicClient.saveEicTrack(licEicRequestTrackingDto);
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public void eicCallFeGiroLic(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return;
+        }
+        List<GiroAccountInfoDto> giroAccountInfoDtoList = JsonUtil.parseToList(jsonList, GiroAccountInfoDto.class);
+        gatewayClient.updateGiroAccountInfo(giroAccountInfoDtoList);
     }
-
-
-    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
-        return licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-    }
-
 
     @Override
     @Async("emailAsyncExecutor")

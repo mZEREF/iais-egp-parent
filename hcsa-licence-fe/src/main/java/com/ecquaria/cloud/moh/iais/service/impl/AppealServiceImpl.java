@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
@@ -42,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -81,9 +79,6 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -119,14 +114,6 @@ public class AppealServiceImpl implements AppealService {
     private static final String N = "N";
     private static final String APPEALING_FOR = "appealingFor";
     private static final String TYPE = "type";
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -154,8 +141,6 @@ public class AppealServiceImpl implements AppealService {
     private RequestForChangeService requestForChangeService;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
-    @Autowired
-    private Environment env;
     @Autowired
     private ComFileRepoClient comFileRepoClient;
     @Autowired
@@ -1255,17 +1240,11 @@ public class AppealServiceImpl implements AppealService {
                 applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0, entity1.getApplicationNo().lastIndexOf('-')));
                 applicationDto.setApplicationNo(entity1.getApplicationNo());
                 applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-                List<AppPremisesRoutingHistoryDto> hisList;
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                String gatewayUrl = env.getProperty("iais.inter.gateway.url");
                 Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
                 appNo=entity1.getApplicationNo();
                 params.put("appNo", entity1.getApplicationNo());
-                hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-                        MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
-                if(hisList!=null){
+                List<AppPremisesRoutingHistoryDto> hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
+                if (hisList != null) {
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
                         if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
                                 || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
@@ -1474,16 +1453,10 @@ public class AppealServiceImpl implements AppealService {
             s = rfiApplication.getApplicationNo();
             appNo=s;
             rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-            List<AppPremisesRoutingHistoryDto> hisList;
             Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
             params.put("appNo", s);
-            hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
-                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
-            if(hisList!=null){
+            List<AppPremisesRoutingHistoryDto> hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
+            if (hisList != null) {
                 for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
                     if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
                             || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
@@ -1685,67 +1658,6 @@ public class AppealServiceImpl implements AppealService {
         }
         appealDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appealDto;
-    }
-
-
-    /*private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
-        LoginContext loginContext = (LoginContext) request.getSession().getAttribute("loginContext");
-        String newApplicationNo = (String) request.getAttribute("newApplicationNo");
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("applicationNo", newApplicationNo);
-        MsgTemplateDto entity = licenceFeMsgTemplateClient.getMsgTemplate("55314F99-F97A-EA11-BE82-000C29F371DC").getEntity();
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(" MOH IAIS –Submission of Appeal - " + newApplicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setClientQueryCode("Appeal");
-        if (loginContext != null) {
-            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
-            if (licenseeEmailAddrs != null) {
-                log.info(licenseeEmailAddrs.toString());
-                emailDto.setReceipts(licenseeEmailAddrs);
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-
-
-            }
-        }
-        //need address form login
-    }*/
-
-    private void sendAdminEmail(HttpServletRequest request) throws IOException, TemplateException {
-        List<String> email = adminEmail(request);
-        String newApplicationNo =(String) request.getAttribute("newApplicationNo");
-        EmailDto emailDto=new EmailDto();
-        emailDto.setContent("Send notification to Admin Officer when appeal application is submitted.");
-        emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setClientQueryCode(newApplicationNo);
-        emailDto.setReceipts(email);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            }
-        }
-
-
-        private List<String> adminEmail(HttpServletRequest request) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String orgId = loginContext.getOrgId();
-        List<String> email = requestForChangeService.getAdminEmail(orgId);
-        return email;
     }
 
     private void sendAllNotification(String appNo,String appType,LicenceDto licenceDto, LicenseeDto licenseeDto,HcsaServiceDto hcsaServiceDto,ApplicationGroupDto applicationGroupDto) throws IOException, TemplateException{

@@ -22,8 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -33,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,12 +51,6 @@ public class FeUserManagement {
     OrganizationClient organizationClient;
     @Autowired
     IntranetUserService intranetUserService;
-    @Autowired
-    private EicRequestTrackingHelper requestTrackingHelper;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
 
     public void start(BaseProcessClass bpc){
         log.debug("****doStart Process ****");

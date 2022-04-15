@@ -6,17 +6,28 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.grio.GrioConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.*;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack1.InputAck1Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack1.InputHeaderAck1Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack2OrAck3.InputAck2Or3Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack2OrAck3.InputDataAck2Or3Dto;
 import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack2OrAck3.InputHeaderAck2Or3Dto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroDataXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroGroupDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentSendGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroPaymentXmlDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.GiroXmlPaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputHeaderDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InputTrailerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InvoiceDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -26,20 +37,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -49,15 +56,21 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
-import java.io.IOException;
-import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ServiceConfigServiceImpl
@@ -85,22 +98,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
-    private AppEicClient appEicClient;
+
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
 
@@ -304,11 +302,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<SelectOption> getPubHolidaySelect() {
         List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
         List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         try {
-            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday().getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -401,7 +396,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         giroPaymentXmlDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         //set giro account info
         List<String> accInfoList = getGiroAccountAndBICByLicId(appGrp.getLicenceId());
-        if(IaisCommonUtils.isNotEmpty(accInfoList)){
+        if (accInfoList != null && !accInfoList.isEmpty()) {
             for(int i =0; i< accInfoList.size();i++){
                 if(i==0){
                     giroPaymentXmlDto.setBankNo(accInfoList.get(i));
@@ -633,7 +628,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
             GiroGroupDataDto giroGroupDataDto = JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(),GiroGroupDataDto.class);
             List<String> accountBicList = getGiroAccountAndBICByGroupNo(giroGroupDataDto.getAppGroupNo());
-            if(IaisCommonUtils.isNotEmpty(accountBicList) && StringUtil.isNotEmpty(accountBicList.get(1))){
+            if(accountBicList != null && accountBicList.size() >= 3 && StringUtil.isNotEmpty(accountBicList.get(1))){
                 String giroAccount = accountBicList.get(0);
                 InputDetailDto inputDetailDto = new InputDetailDto();
                 inputDetailDto.setAppGroupNo(giroGroupDataDto.getAppGroupNo());
@@ -766,7 +761,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             return "";
         }
         if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
-            List<String> licIds = Arrays.asList(applicationDto.getOriginLicenceId());
+            List<String> licIds = Collections.singletonList(applicationDto.getOriginLicenceId());
             List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
@@ -794,7 +789,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     private List<String> getGiroAccountAndBICByLicId(String licId){
         if(StringUtil.isNotEmpty(licId)){
-            List<String> licIds = Arrays.asList(licId);
+            List<String> licIds = Collections.singletonList(licId);
             List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
             GiroAccountInfoDto orgGiroAccountInfoDto = null;
             if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
@@ -1126,25 +1121,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
        }
         log.info(" sysnSaveGroupToBe end");
     }
+
+
     @Override
-    public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto){
+    public String saveAppGroupGiroSysnEic(ApplicationGroupDto applicationGroupDto) {
         try {
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ServiceConfigServiceImpl.class.getName(),
-                    "saveAppGroupGiroSysnEic",currentApp + "-" + currentDomain
-                    , ApplicationGroupDto.class.getName(), JsonUtil.parseToJson(applicationGroupDto));
-            String eicRefNo = eicRequestTrackingDto.getRefNo();
-            String saveSuccess = feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto).getEntity();
-            //get eic record
-            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-            //update eic record status
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-            eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            appEicClient.updateStatus(eicRequestTrackingDtos);
-            return saveSuccess;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+            return feEicGatewayClient.callEicWithTrack(applicationGroupDto, feEicGatewayClient::saveAppGroupSysnEic,
+                    "saveAppGroupSysnEic").getEntity();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return AppConsts.NO;
     }

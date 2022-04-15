@@ -141,30 +141,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private EicClient eicClient;
-
-    @Autowired
     private AppealApplicaionService appealApplicaionService;
     @Autowired
     private OrganizationClient organizationClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -269,10 +251,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
     @Override
     public ApplicationDto callEicInterApplication(ApplicationDto applicationDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        return beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication,
+                "updateApplication").getEntity();
     }
 
     @Override
@@ -286,69 +266,37 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<PaymentRequestDto> eicFeStripeRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
         log.info(StringUtil.changeForLog("The updateFEPaymentRefund start ..."));
-        String moduleName = currentApp + "-" + currentDomain;
-        EicRequestTrackingDto dto = new EicRequestTrackingDto();
-        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        dto.setActionClsName(this.getClass().getName());
-        dto.setActionMethod("callEicInterPaymentRefund");
-        dto.setDtoClsName(List.class.getName());
-        dto.setDtoObject(JsonUtil.parseToJson(appReturnFeeDtos));
-        String refNo = String.valueOf(System.currentTimeMillis());
-        log.info(StringUtil.changeForLog("The updateFEPaymentRefund refNo is  -- >:"+refNo));
-        dto.setRefNo(refNo);
-        dto.setModuleName(moduleName);
-        eicClient.saveEicTrack(dto);
-        List<PaymentRequestDto> paymentRequestDtos=callEicInterPaymentRefund(appReturnFeeDtos);
-        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-        Date now = new Date();
-        dto.setProcessNum(1);
-        dto.setFirstActionAt(now);
-        dto.setLastActionAt(now);
-        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
-        list.add(dto);
-        eicClient.updateStatus(list);
+        List<PaymentRequestDto> paymentRequestDtos = beEicGatewayClient.callEicWithTrack(appReturnFeeDtos,
+                this::callEicInterPaymentRefund, this.getClass(), "doStripeRefunds");
         log.info(StringUtil.changeForLog("The updateFEPaymentRefund end ..."));
         return paymentRequestDtos;
     }
 
     private List<PaymentRequestDto> callEicInterPaymentRefund(List<AppReturnFeeDto> appReturnFeeDtos) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.doStripeRefunds(appReturnFeeDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        return beEicGatewayClient.doStripeRefunds(appReturnFeeDtos).getEntity();
     }
 
+    /**
+     * EIC Tracking List
+     *
+     * @param jsonList
+     */
+    public List<PaymentRequestDto> doStripeRefunds(String jsonList) {
+        if (StringUtil.isEmpty(jsonList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<AppReturnFeeDto> appReturnFeeDtos = JsonUtil.parseToList(jsonList, AppReturnFeeDto.class);
+        return callEicInterPaymentRefund(appReturnFeeDtos);
+    }
 
     @Override
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         log.info(StringUtil.changeForLog("The updateFEApplicaiton start ..."));
         //0075066 there is not application in the FE for the cession
         try{
-            if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
-                String moduleName = currentApp + "-" + currentDomain;
-                EicRequestTrackingDto dto = new EicRequestTrackingDto();
-                dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-                dto.setActionClsName(this.getClass().getName());
-                dto.setActionMethod("callEicInterApplication");
-                dto.setDtoClsName(applicationDto.getClass().getName());
-                dto.setDtoObject(JsonUtil.parseToJson(applicationDto));
-                String refNo = String.valueOf(System.currentTimeMillis());
-                log.info(StringUtil.changeForLog("The updateFEApplicaiton refNo is  -- >:"+refNo));
-                dto.setRefNo(refNo);
-                dto.setModuleName(moduleName);
-                eicClient.saveEicTrack(dto);
+            if (!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 callEicInterApplication(applicationDto);
-                dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-                Date now = new Date();
-                dto.setProcessNum(1);
-                dto.setFirstActionAt(now);
-                dto.setLastActionAt(now);
-                dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
-                list.add(dto);
-                eicClient.updateStatus(list);
-            }else{
+            } else {
                 log.info(StringUtil.changeForLog("The cession application ..."));
             }
         }catch (Exception e){
@@ -1304,10 +1252,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<ApplicationDto> applicationDto = eventApplicationGroupDto.getApplicationDto();
         if(!IaisCommonUtils.isEmpty(applicationDto)){
             for (ApplicationDto applicationDto1 : applicationDto){
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                beEicGatewayClient.updateApplication(applicationDto1, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
+                callEicInterApplication(applicationDto1);
             }
             updateAppealApplicationStatus(applicationDto);
         }else{
@@ -1324,14 +1269,11 @@ public class ApplicationServiceImpl implements ApplicationService {
                 appId.add(applicationDto.getId());
             }
             List<ApplicationDto> applicationDtoList = applicationClient.getAppealApplicationByApplicationIds(appId).getEntity();
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             for(ApplicationDto applicationDto : applicationDtoList){
                 if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                    applicationClient.updateApplication(applicationDto);
-                    beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    updateBEApplicaiton(applicationDto);
+                    callEicInterApplication(applicationDto);
                 }
             }
         }
