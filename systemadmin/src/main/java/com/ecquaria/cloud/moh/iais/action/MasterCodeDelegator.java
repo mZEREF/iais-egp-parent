@@ -1048,10 +1048,6 @@ public class MasterCodeDelegator {
             //inactive all
             List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
             syncMasterCodeList.addAll(masterCodeDtos);
-            String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-            masterCodeDto.setCodeCategory(codeCategory);
-
-            masterCodeService.updateMasterCode(masterCodeDto);
         }else{
             //update old
             LocalDate oldFromDate = transferLocalDate(oldMasterCodeDto.getEffectiveFrom());
