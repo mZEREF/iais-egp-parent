@@ -2,10 +2,8 @@ package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -26,11 +24,10 @@ import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
+import sg.gov.moh.iais.egp.bsb.service.ApptInspectionDateService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
@@ -44,11 +41,13 @@ public class OnlineApptAjaxController {
     private final BsbAppointmentClient bsbAppointmentClient;
     private final OrganizationClient organizationClient;
     private final AppointmentClient appointmentClient;
+    private final ApptInspectionDateService apptInspectionDateService;
 
-    public OnlineApptAjaxController(BsbAppointmentClient bsbAppointmentClient, OrganizationClient organizationClient, AppointmentClient appointmentClient) {
+    public OnlineApptAjaxController(BsbAppointmentClient bsbAppointmentClient, OrganizationClient organizationClient, AppointmentClient appointmentClient, ApptInspectionDateService apptInspectionDateService) {
         this.bsbAppointmentClient = bsbAppointmentClient;
         this.organizationClient = organizationClient;
         this.appointmentClient = appointmentClient;
+        this.apptInspectionDateService = apptInspectionDateService;
     }
 
     @PostMapping(value = "insp.date")
@@ -66,23 +65,8 @@ public class OnlineApptAjaxController {
             //get inspection date
             if (AppConsts.SUCCESS.equals(actionButtonFlag)) {
                 AppointmentDto appointmentDto = bsbAppointmentClient.getApptStartEndDateByAppId(dto.getApplicationId()).getEntity();
-                String startDateStr = appointmentDto.getStartDate();
                 //Compares user specified time with the current time
-                if (StringUtils.hasLength(startDateStr)){
-                    Date today = new Date();
-                    String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
-                    try {
-                        today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
-                        Date startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-                        if (startDate.before(today)) {
-                            appointmentDto.setStartDate(null);
-                            appointmentDto.setEndDate(null);
-                        }
-                    } catch (ParseException e) {
-                        log.info("AppointmentDto: start date conversion Error!!!!!");
-                        log.error(e.getMessage(), e);
-                    }
-                }
+                apptInspectionDateService.setStartEndDateNull(appointmentDto);
 
                 List<AppointmentUserDto> appointmentUserDtos = new ArrayList<>();
                 AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
@@ -94,20 +78,7 @@ public class OnlineApptAjaxController {
                 //set system key
                 appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
                 //get Start date and End date when application no date
-                if (!StringUtils.hasLength(appointmentDto.getStartDate()) && !StringUtils.hasLength(appointmentDto.getEndDate())) {
-                    //todo get startDate and endDate from service table,no table now,set time as below
-                    Calendar startCal = Calendar.getInstance();
-                    //todo the startCal is submitDt + date
-                    startCal.setTime(new Date());
-                    startCal.add(Calendar.DAY_OF_YEAR, 7);
-                    appointmentDto.setStartDate(DateUtil.convertToString(startCal.getTime(), null));
-
-                    Calendar endCal = Calendar.getInstance();
-                    //todo the endCal is expiryDt + (-date)
-                    endCal.setTime(startCal.getTime());
-                    endCal.add(Calendar.DATE, 2);
-                    appointmentDto.setEndDate(DateUtil.convertToString(endCal.getTime(), null));
-                }
+                apptInspectionDateService.setStartDtAndEndDt(appointmentDto);
 //                    List<String> premCorrIds = apptInspectionDateDto.getRefNo();
                 //todo no service in application
 //               Map<String, String> appIdServiceIdMap = getappIdServiceIdMapByRefNo(premCorrIds);
@@ -125,7 +96,7 @@ public class OnlineApptAjaxController {
                 appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                 appointmentDto.setUsers(appointmentUserDtos);
                 apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                boolean dateFlag = getStartEndDateFlag(appointmentDto);
+                boolean dateFlag = apptInspectionDateService.getStartEndDateFlag(appointmentDto);
                 if (dateFlag && newInspDateFlag) {
                     //set Inspection date show, flag,
                     getNewInspDateData(apptInspectionDateDto, appointmentDto, map, request, taskDtoList);
@@ -399,51 +370,6 @@ public class OnlineApptAjaxController {
             }
         }
         return newInspDateFlag;
-    }
-
-    private boolean getStartEndDateFlag(AppointmentDto appointmentDto) {
-        Date today = new Date();
-        String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
-        String startDateStr = appointmentDto.getStartDate();
-        String endDateStr = appointmentDto.getEndDate();
-        Date startDate = null;
-        Date endDate = null;
-        try {
-            today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
-            if (StringUtils.hasLength(startDateStr)) {
-                startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-            }
-            if (StringUtils.hasLength(endDateStr)) {
-                endDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-            }
-        } catch (ParseException e) {
-            log.info("Appt Date Error!!!!!");
-            log.error(e.getMessage(), e);
-        }
-        if (endDate != null) {
-            if (endDate.before(today)) {
-                return false;
-            } else {
-                if (startDate == null) {
-                    return false;
-                } else {
-                    if (startDate.before(today)) {
-                        startDate = new Date();
-                        appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                    }
-                }
-            }
-        } else {
-            if (startDate == null) {
-                return false;
-            } else {
-                if (startDate.before(today)) {
-                    startDate = new Date();
-                    appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                }
-            }
-        }
-        return true;
     }
 
     private void setSvcIdLicDtMapByApp(String appPremCorrId, String serviceId, Map<String, Date> svcIdLicDtMap) {

@@ -13,27 +13,27 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___BsbApptReSchedulingInspDate___1 extends BaseProcessClass {
-//	private static final String DELEGATOR ="apptReSchedulingInspDateDelegator";
+public class INTRANET___BsbOfficerProcessRescheduleInsTask___1 extends BaseProcessClass {
+//	private static final String DELEGATOR ="bsbRescheduleApptDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "apptReSchInspDateStart", this);
+//		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "apptReSchInspDateStart", this);
+	// 		init->OnStepProcess
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "apptReSchInspDateStart", this);
+	// 		prepareData->OnStepProcess
 	}
 
 	public void validateDate_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "apptReSchInspDateStart", this);
+	// 		validateDate->OnStepProcess
 	}
 
 	public void processDate_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "apptReSchInspDateStart", this);
+	// 		processDate->OnStepProcess
 	}
 
 }

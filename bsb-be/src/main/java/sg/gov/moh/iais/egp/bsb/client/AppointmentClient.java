@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author ShiCheng_Xu
- */
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class)
 public interface AppointmentClient {
 

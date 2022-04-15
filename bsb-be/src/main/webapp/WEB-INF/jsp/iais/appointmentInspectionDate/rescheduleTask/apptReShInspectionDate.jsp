@@ -54,11 +54,11 @@
                       </div>
                       <div class="tab-content">
                         <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                          <%@ include file="applicationInfo.jsp" %>
+                          <%@ include file="../applicationInfo.jsp" %>
                         </div>
 
                         <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                          <%@ include file="../doDocument/tabDocuments.jsp" %>
+                          <%@ include file="../../doDocument/tabDocuments.jsp" %>
                         </div>
 
                         <div class="tab-pane" id="tabProcessing" role="tabpanel">
