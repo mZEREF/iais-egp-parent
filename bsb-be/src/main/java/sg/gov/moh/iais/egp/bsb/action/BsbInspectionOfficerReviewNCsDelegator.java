@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -27,13 +29,9 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
-/**
- * @author YiMing
- * @version 2022/2/24 10:41
- **/
+
 @Slf4j
 @Delegator("bsbInspectionOfficerReviewNCs")
 public class BsbInspectionOfficerReviewNCsDelegator {
@@ -70,19 +68,29 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         InsNCRectificationDataDto initDataDto = inspectionClient.getInitInsNCRectificationData(appId);
 
 
-        // facility info
-        InsFacInfoDto facInfoDto = initDataDto.getFacInfoDto();
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
+        // submission info
+        SubmissionDetailsInfo submissionDetailsInfo = initDataDto.getSubmissionDetailsInfo();
+        ParamUtil.setSessionAttr(request, KEY_SUBMISSION_DETAILS_INFO, submissionDetailsInfo);
+
+        // facility details
+        FacilityDetailsInfo facilityDetailsInfo = initDataDto.getFacilityDetailsInfo();
+        ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, facilityDetailsInfo);
 
         // inspection NCs
         ArrayList<InsRectificationDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getRectificationDisplayDtoList());
         ParamUtil.setSessionAttr(request, KEY_INS_NON_COMPLIANCE, findingDisplayDtoList);
 
         //inspection NCs Document
+        // TODO temporary allow empty map
         List<DocRecordInfo> rectificationDocs = initDataDto.getRectificationDoc();
-        Assert.notEmpty(rectificationDocs,"inspection non-compliance rectification document is null");
-        Map<String,List<DocRecordInfo>> docSubTypeDocRecordInfoMap = CollectionUtils.groupCollectionToMap(rectificationDocs,DocRecordInfo::getDocSubType);
-        ParamUtil.setSessionAttr(request,KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP,new HashMap<>(docSubTypeDocRecordInfoMap));
+        HashMap<String,List<DocRecordInfo>> docSubTypeDocRecordInfoMap;
+        if (rectificationDocs.isEmpty()) {
+            docSubTypeDocRecordInfoMap = new HashMap<>();
+        } else {
+//            Assert.notEmpty(rectificationDocs,"inspection non-compliance rectification document is null");
+            docSubTypeDocRecordInfoMap = (HashMap<String, List<DocRecordInfo>>) CollectionUtils.groupCollectionToMap(rectificationDocs,DocRecordInfo::getDocSubType);
+        }
+        ParamUtil.setSessionAttr(request,KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP, docSubTypeDocRecordInfoMap);
 
         // inspection processing
         InsProcessDto processDto = new InsProcessDto();
@@ -130,25 +138,25 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
     }
 
-    public void routeToAO(BaseProcessClass bpc){
+    public void routeToAO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.reviewInspectionNCToAO(appId,taskId,processDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully route to AO report.");
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully route to AO review.");
     }
 
-    public void requestForInformationToApplicant(BaseProcessClass bpc){
+    public void requestForInformationToApplicant(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.reviewInspectionNCDORequestForInformation(appId,taskId,processDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully route to Applicant report.");
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully route to applicant for information.");
     }
 
-    public void requestForInformationToDO(BaseProcessClass bpc){
+    public void requestForInformationToDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);

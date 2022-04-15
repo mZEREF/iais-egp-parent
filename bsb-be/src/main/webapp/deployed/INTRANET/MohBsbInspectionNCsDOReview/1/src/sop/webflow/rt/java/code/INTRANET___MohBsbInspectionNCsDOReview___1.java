@@ -43,12 +43,12 @@ public class INTRANET___MohBsbInspectionNCsDOReview___1 extends BaseProcessClass
 
 	public void requestForInformation_OnStepProcess_0() throws Exception {
 	// 		RequestForInformation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "routeToAO", this);
+		EngineHelper.delegate(DELEGATOR, "requestForInformationToApplicant", this);
 	}
 
 	public void routeToAO_OnStepProcess_0() throws Exception {
 		// 		RouteToAO->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
+		EngineHelper.delegate(DELEGATOR, "routeToAO", this);
 	}
 
 	public void skip_OnStepProcess_0() throws Exception {
