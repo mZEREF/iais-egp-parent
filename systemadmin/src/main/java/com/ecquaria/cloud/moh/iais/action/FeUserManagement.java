@@ -309,22 +309,7 @@ public class FeUserManagement {
                         });
                     }
                     intranetUserService.assignRole(orgUserRoleDtoList);
-
-                    EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT,
-                            FeUserManagement.class.getName(), "syncFeUser", currentApp + "-" + currentDomain,
-                            FeUserDto.class.getName(), JsonUtil.parseToJson(userAttr));
-                    //sync fe db
-                    try {
-                        syncFeUser(userAttr);
-                        track.setProcessNum(track.getProcessNum() + 1);
-                        track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
-                    } catch (Throwable e){
-                        track.setProcessNum(track.getProcessNum() + 1);
-                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
-                        log.error(e.getMessage(), e);
-                    }
-
+                    syncFeUserWithTrack(userAttr);
                     ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
                 }else {
                     ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr("identityNo", "USER_ERR002"));
