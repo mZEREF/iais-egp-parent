@@ -136,7 +136,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     }
                 });
                 if(errorMap.isEmpty()){
-                    if(donorSampleDto.getDonorUseSize()>= Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"))){
+                    if(donorSampleDto.getDonorUseSize()> Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"))){
                         ParamUtil.setRequestAttr(request, "donorResultMoreValue", AppConsts.YES);
                     }
                     setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto,request);
