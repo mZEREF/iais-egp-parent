@@ -109,6 +109,7 @@ public class EventbusCallBackDelegate {
                         } catch (InterruptedException e) {
                             log.error(e.getMessage(),e);
                             Thread.currentThread().interrupt();
+                            throw e;
                         }
                         flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
                         if (setVal.equals(flag)) {
@@ -127,6 +128,9 @@ public class EventbusCallBackDelegate {
             if (dto != null) {
                 dto.setStatus("Failed");
                 eventBusClient.updateCallbackTracking(dto);
+            }
+            if (th instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
             }
         }
         log.info("<=========== Eventbus Callback Finish ===========>");

@@ -8,11 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
@@ -31,26 +29,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -87,9 +79,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private LicenceClient licenceClient;
 
     @Autowired
-    private OrgEicClient orgEicClient;
-
-    @Autowired
     private NotificationHelper notificationHelper;
 
     @Autowired
@@ -99,25 +88,10 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Autowired
     private FeEicGatewayClient feEicGatewayClient;
 
     @Autowired
-    private AppEicClient appEicClient;
-
-    @Autowired
     private SystemAdminClient systemAdminClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -127,8 +101,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
      */
     @Override
     public ApptFeConfirmDateDto getApptSystemDate(String appPremCorrId, String appStatus) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
 
         if(!StringUtil.isEmpty(appPremCorrId)) {
@@ -148,8 +120,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 Set<String> apptRefNoSet = new HashSet<>(apptRefNos);
                 apptRefNos = new ArrayList<>(apptRefNoSet);
                 //save eic record
-                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
+                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos).getEntity();
                 Map<String, List<ApptUserCalendarDto>> apptInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                 if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                     for(ApptRequestDto apptRequestDto : apptRequestDtos){
@@ -297,8 +268,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public void confirmInspectionDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         //get selected date
         String checkDate = apptFeConfirmDateDto.getCheckDate();
@@ -341,20 +310,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
-                "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        apptFeDataUpdateCreateBe(apptInspectionDateDto);
+
         //create task
         apptFeConfirmDateDto.setEmailDto(null);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
@@ -374,23 +331,14 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         return cancelRefNo;
     }
 
+    private void apptFeDataUpdateCreateBe( ApptInspectionDateDto apptInspectionDateDto) {
+        feEicGatewayClient.callEicWithTrack(apptInspectionDateDto, feEicGatewayClient::apptFeDataUpdateCreateBe,
+                "apptFeDataUpdateCreateBe");
+
+    }
+
     private void ccCalendarStatusEic(ApptCalendarStatusDto apptCalendarStatusDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "ccCalendarStatusEic",
-                "hcsa-licence-web-internet", ApptCalendarStatusDto.class.getName(), JsonUtil.parseToJson(apptCalendarStatusDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.updateUserCalendarStatus(apptCalendarStatusDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        feEicGatewayClient.callEicWithTrack(apptCalendarStatusDto, feEicGatewayClient::updateUserCalendarStatus, "updateUserCalendarStatus");
     }
 
     private void setRecommendationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
@@ -408,8 +356,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         if(IaisCommonUtils.isEmpty(apptFeConfirmDateDto.getInspectionNewDate())) {
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             //get new Inspection date
             AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
             List<AppointmentUserDto> appointmentUserDtos = getUserCalendarDtosByMap(apptFeConfirmDateDto.getApptInspDateMap());
@@ -423,26 +369,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
             appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
 
-            //save eic record
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
-                    "hcsa-licence-web-internet", AppointmentDto.class.getName(), JsonUtil.parseToJson(appointmentDto));
-            String eicRefNo = eicRequestTrackingDto.getRefNo();
-            List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getUserCalendarByUserId(appointmentDto).getEntity();
             Map<String, List<ApptUserCalendarDto>> appInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
             if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                 for(ApptRequestDto apptRequestDto : apptRequestDtos){
                     appInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                 }
             }
-            //get eic record
-            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-            //update eic record status
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-            eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            appEicClient.updateStatus(eicRequestTrackingDtos);
 
             Map<String, Date> inspectionNewDateMap = IaisCommonUtils.genNewHashMap();
             List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
@@ -510,8 +443,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public ApptFeConfirmDateDto confirmNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         //get selected key
         String key = apptFeConfirmDateDto.getCheckNewDate();
@@ -554,20 +485,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmNewDate",
-                "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        apptFeDataUpdateCreateBe(apptInspectionDateDto);
 
         apptFeConfirmDateDto.setEmailDto(null);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
@@ -583,8 +501,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
@@ -594,20 +510,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "saveAccSpecificDate",
-                "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        apptFeDataUpdateCreateBe(apptInspectionDateDto);
 
         apptFeConfirmDateDto.setEmailDto(null);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
@@ -736,8 +639,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String applicationNo = getApplicationByCorrId(apptFeConfirmDateDto.getAppPremCorrId());
         TaskDto taskDto = new TaskDto();
         taskDto.setRefNo(apptFeConfirmDateDto.getAppPremCorrId());
@@ -747,20 +648,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptFeConfirmDateDto.setTaskDto(taskDto);
         //set list and map
         apptFeConfirmDateDto = setAppNoListByCorrIds(apptFeConfirmDateDto);
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "createApptDateTask",
-                "hcsa-licence-web-internet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.createFeReplyTask(apptFeConfirmDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = orgEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        orgEicClient.updateStatus(eicRequestTrackingDtos);
+
+        feEicGatewayClient.callEicWithTrack(apptFeConfirmDateDto, feEicGatewayClient::createFeReplyTask, "createFeReplyTask");
     }
 
     private ApptFeConfirmDateDto setAppNoListByCorrIds(ApptFeConfirmDateDto apptFeConfirmDateDto) {
@@ -813,8 +702,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         //get cancel apptRefNo List
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<AppPremisesInspecApptDto> apptInspectionDateDtos = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList();
@@ -838,20 +725,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setAppPremisesRecommendationDtos(null);
         apptInspectionDateDto.setRefNo(null);
 
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "rejectSystemDateAndCreateTask",
-                "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        apptFeDataUpdateCreateBe(apptInspectionDateDto);
+
         //send email and create task
         sendEmailRequestNewDate(apptFeConfirmDateDto);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
@@ -982,8 +857,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
      */
     @Override
     public ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId, String appStatus) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
         //get All CorrDto From Same Premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationFeClient.getLastAppPremisesCorrelationDtoByCorreId(appPremCorrId).getEntity();
@@ -1001,29 +874,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             if(appPremisesInspecApptDto != null){
                 List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 apptRefNos.add(appPremisesInspecApptDto.getApptRefNo());
-
-                //save eic record
-                ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
-                apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
-                        "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
-                String eicRefNo = eicRequestTrackingDto.getRefNo();
-                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
+                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos).getEntity();
                 Map<String, List<ApptUserCalendarDto>> apptInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                 if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                     for(ApptRequestDto apptRequestDto : apptRequestDtos){
                         apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                     }
                 }
-                //get eic record
-                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                //update eic record status
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                appEicClient.updateStatus(eicRequestTrackingDtos);
 
                 Date specStartInspDate = new Date();
                 Date specEndInspDate;
@@ -1077,8 +934,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public void rejectSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList();
         //get cancel apptRefNo List
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
@@ -1096,20 +951,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setAppPremisesRecommendationDtos(null);
         apptInspectionDateDto.setRefNo(null);
 
-        //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "rejectSpecificDate",
-                "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        apptFeDataUpdateCreateBe(apptInspectionDateDto);
 
         apptFeConfirmDateDto.setEmailDto(null);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);

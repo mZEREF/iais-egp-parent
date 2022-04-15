@@ -38,16 +38,6 @@ public class AppGroupMiscServiceImpl implements AppGroupMiscService {
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Override
     public List<NotificateApplicationDto> getNotificateApplicationDtos() {
         return applicationClient.getNotificateApplicationDtos().getEntity();
@@ -58,11 +48,8 @@ public class AppGroupMiscServiceImpl implements AppGroupMiscService {
         notificateApplicationDto =  applicationClient.updateNotificateApplicationDto(notificateApplicationDto).getEntity();
         List<ApplicationDto> amendApplicationDtos = notificateApplicationDto.getAmendApplicationDtos();
         if(IaisCommonUtils.isNotEmpty(amendApplicationDtos)){
-            for(ApplicationDto applicationDto: amendApplicationDtos ){
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
+            for (ApplicationDto applicationDto : amendApplicationDtos) {
+                beEicGatewayClient.callEicWithTrack(applicationDto, beEicGatewayClient::updateApplication, "updateApplication");
             }
         }
         return notificateApplicationDto;

@@ -54,4 +54,5 @@ public interface InboxService {
     List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
     Map<String,Boolean> getMapCanInsp();
     Integer dssDraftNum(InterMessageSearchDto interMessageSearchDto);
+    void recallAppTasksEic(String jsonData);
 }

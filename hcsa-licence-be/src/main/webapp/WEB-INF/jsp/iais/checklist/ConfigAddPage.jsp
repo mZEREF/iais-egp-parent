@@ -35,12 +35,14 @@
         <div class="form-horizontal">
             <div class="form-group">
                 <iais:field value="Common" id="commonField"/>
-                <div class="col-md-5">
-                    <p>
-                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false" value="${common}"
-                           style="margin-top: 18px;">
-                    <label for="common" style="margin-left: 20px;">General Regulation</label>
-                    </p>
+                <div class="form-check-gp col-xs-12 col-md-5" style="padding-left: 0;">
+                    <div class="form-check">
+                        <input class="form-check-input " id="common" type="checkbox" name="common" aria-invalid="false"
+                               value="1">
+                        <label class="form-check-label" for="common">
+                            <span class="check-square"></span>General Regulation
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -132,12 +134,20 @@
 
     $(document).ready(function(){
         checkInputStatus();
+
+        $('#common').on('click', function () {
+            if ($(this).is(":checked")) {
+                setCommon();
+                disableInput();
+            } else {
+                openInput();
+            }
+        });
     })
 
-    let hasClick = false;
     function checkInputStatus(){
-        let commonVal = $('#common').val();
-        if ('1' == commonVal && !hasClick) {
+        let commonVal = $('#commonSelect').val();
+        if ('1' == commonVal) {
             setCommon();
             disableInput();
         }else {
@@ -147,9 +157,7 @@
 
     function setCommon(){
         $('#common').attr("checked", "checked");
-        $('#common').val(1);
         $('#commonField').append("<span style=\"color: red\"> *</span>");
-        hasClick = true;
     }
 
     function clearInput(){
@@ -165,13 +173,6 @@
         checkInputStatus()
     }
 
-    common.onclick = function () {
-        if (!hasClick){
-            setCommon();
-            disableInput();
-        }
-    }
-
     $(".form-horizontal select").change(function () {
         $('#common').attr('disabled', 'disabled')
     });
@@ -180,9 +181,9 @@
         $('.nice-select').addClass('disabled');
         $('#hciCode').attr('disabled', 'disabled');
         $('#hciCode').val(null);
-        $('#serviceNameField span').hide();
-        $('#moduleField span').hide();
-        $('#typeField span').hide();
+        $('#serviceNameField span').remove();
+        $('#moduleField span').remove();
+        $('#typeField span').remove();
 
         $('.needDisableI').css('border-color', '#ededed');
         $('.needDisableI').css('color', '#999');
@@ -196,7 +197,7 @@
             $('#common').attr('disabled', 'disabled')
             $('#common').val()
         }
-
+        $('#commonField span').remove();
         $('#serviceNameField').append("<span style=\"color: red\"> *</span>");
         $('#moduleField').append("<span style=\"color: red\"> *</span>");
         $('#typeField').append("<span style=\"color: red\"> *</span>");

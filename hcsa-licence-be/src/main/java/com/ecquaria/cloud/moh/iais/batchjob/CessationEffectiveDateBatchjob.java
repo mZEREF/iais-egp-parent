@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -15,34 +14,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -63,28 +58,11 @@ public class CessationEffectiveDateBatchjob {
     @Autowired
     private CessationClient cessationClient;
     @Autowired
-    private LicenceApproveBatchjob licenceApproveBatchjob;
-    @Autowired
-    private LicenceService licenceService;
-    @Autowired
     InspEmailService inspEmailService;
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
     private BeEicGatewayClient gatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
@@ -375,24 +353,13 @@ public class CessationEffectiveDateBatchjob {
                 updateLicenceDtos.removeAll(licNeedNew);
             }
             hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-            EicRequestTrackingDto etd = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT,
-                    CessationEffectiveDateBatchjob.class.getName(), "callEicSync", "hcsa-licence-web-intranet",
-                    List.class.getName(), JsonUtil.parseToJson(updateLicenceDtos));
-            try {
-                callEicSync(updateLicenceDtos);
-                etd.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingHelper.saveEicTrack(EicClientConstant.LICENCE_CLIENT, etd);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+            callEicSync(updateLicenceDtos);
         }
     }
 
     public void callEicSync(List<LicenceDto> updateLicenceDtos) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        gatewayClient.callEicWithTrack(updateLicenceDtos, gatewayClient::updateFeLicDto, gatewayClient.getClass(),
+                "updateFeLicDto", EicClientConstant.LICENCE_CLIENT);
     }
 
     private void updateAppGroups(List<ApplicationGroupDto> applicationGroupDtos) {

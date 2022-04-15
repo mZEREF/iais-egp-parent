@@ -6,10 +6,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
@@ -21,13 +19,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -41,10 +35,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -69,27 +61,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     private String acquireParameter(String appType, Function<String, String> t){
         return t.apply(appType);
@@ -213,32 +184,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         adhocConfig.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         FeignResponseEntity<AdhocCheckListConifgDto> result = applicationClient.saveAdhocChecklist(adhocConfig);
         if (HttpStatus.SC_OK == result.getStatusCode()) {
-            AdhocCheckListConifgDto entity = result.getEntity();
-
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
-                    AdhocChecklistServiceImpl.class.getName(),
-                    "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
-                    AdhocCheckListConifgDto.class.getName(), JsonUtil.parseToJson(entity));
-
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callEicGatewaySaveItem(entity);
-                        preEicRequest.setProcessNum(1);
-                        Date now = new Date();
-                        preEicRequest.setFirstActionAt(now);
-                        preEicRequest.setLastActionAt(now);
-                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
-                    }
-                }
-            }catch (Exception e){
-                log.debug(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
-            }
-
-
+            callEicGatewaySaveItem(result.getEntity());
         }
     }
 
@@ -301,10 +247,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
         //route to fe
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-        gatewayClient.syncAdhocItemData(data, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        gatewayClient.callEicWithTrack(data, gatewayClient::syncAdhocItemData, "syncAdhocItemData");
     }
 }

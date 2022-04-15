@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -26,61 +27,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class InboxMsgServiceImpl implements InboxMsgService {
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
 
-    @Autowired
-    private EicClient eicClient;
-
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
     @Override
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
-        String moduleName = currentApp + "-" + currentDomain;
-        EicRequestTrackingDto dto = new EicRequestTrackingDto();
-        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dto.setActionClsName(this.getClass().getName());
-        dto.setActionMethod("callEicInterMsg");
-        dto.setDtoClsName(interMessageDto.getClass().getName());
-        dto.setDtoObject(JsonUtil.parseToJson(interMessageDto));
-        dto.setRefNo(interMessageDto.getRefNo());
-        dto.setModuleName(moduleName);
-        eicClient.saveEicTrack(dto);
-        callEicInterMsg(interMessageDto);
-        dto = eicClient.getPendingRecordByReferenceNumber(interMessageDto.getRefNo()).getEntity();
-        Date now = new Date();
-        dto.setProcessNum(1);
-        dto.setFirstActionAt(now);
-        dto.setLastActionAt(now);
-        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
-        list.add(dto);
-        eicClient.updateStatus(list);
+        beEicGatewayClient.callEicWithTrack(interMessageDto, this::callEicInterMsg, this.getClass(),
+                "callEicInterMsg", EicClientConstant.SYSTEM_ADMIN_CLIENT);
         return interMessageDto;
     }
 
     public void callEicInterMsg(InterMessageDto interMessageDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        beEicGatewayClient.saveInboxMessage(interMessageDto).getEntity();
     }
 
     @Override

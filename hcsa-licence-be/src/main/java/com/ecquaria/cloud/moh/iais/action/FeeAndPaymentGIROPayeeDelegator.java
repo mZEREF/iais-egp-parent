@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesV
 import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -54,7 +52,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -586,20 +583,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
 
     private void eicSyncGiroAcctToFe(String refNo, List<GiroAccountInfoDto> giroAccountInfoDtoList1) {
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.GiroAccountServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeGiroLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(List.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(giroAccountInfoDtoList1));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(refNo);
-        giroAccountService.updateGiroAccountInfoTrackingDto(eicRequestTrackingDto);
         giroAccountService.syncFeGiroAcctDto(giroAccountInfoDtoList1);
     }
 
