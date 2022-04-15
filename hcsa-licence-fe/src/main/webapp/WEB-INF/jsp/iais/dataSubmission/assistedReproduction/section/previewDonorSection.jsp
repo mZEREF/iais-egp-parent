@@ -38,13 +38,13 @@
 
                  <c:if test="${donorDto.directedDonation}">
                      <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                         <iais:field width="5" value="ID Type" info="${donorDto.donorUseSize >= donorResultSize ? donorMessageTip : ''}" />
+                         <iais:field width="5" value="ID Type" />
                          <iais:value width="7" cssClass="col-md-7" display="true">
                              <iais:code code="${donorDto.idType}"/>
                          </iais:value>
                      </iais:row>
                      <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                         <iais:field width="5" value="ID No." />
+                         <iais:field width="5" value="ID No." info="${donorDto.donorUseSize >= donorResultSize ? donorMessageTip : ''}"/>
                          <iais:value width="7" cssClass="col-md-7" display="true">
                              <c:out value="${donorDto.idNumber}" />
                          </iais:value>
