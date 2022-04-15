@@ -137,7 +137,7 @@
                                                                     <div class="input-group">
                                                                         <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
                                                                             <option value="">Please Select</option>
-                                                                            <c:forEach var="selection" items="${processDto.selectRouteToMoh}">
+                                                                            <c:forEach var="selection" items="${selectRouteToMoh}">
                                                                                 <option value="${selection.value}" <c:if test="${processDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
                                                                             </c:forEach>
                                                                         </select>
@@ -148,11 +148,13 @@
                                                             </div>
                                                         </div>
                                                         <div style="text-align: right">
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>

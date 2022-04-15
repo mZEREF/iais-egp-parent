@@ -130,11 +130,13 @@
                                                             </div>
                                                         </div>
                                                         <div style="text-align: right">
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>

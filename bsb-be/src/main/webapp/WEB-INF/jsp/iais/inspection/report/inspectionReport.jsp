@@ -91,41 +91,130 @@
         <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
     </div>
 
-    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part I: Inspection Checklist</p>
-    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part II: Findings/Observations</p>
-    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part III: Follow-Up Item</p>
-
-    <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
-
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
-                    <thead>
+                    <thead style="display: none">
                     <tr>
-                        <th scope="col" style="width:5%">S/N</th>
-                        <th scope="col" style="width:15%">Category</th>
-                        <th scope="col" style="width:25%">Item Description</th>
-                        <th scope="col" style="width:15%">Finding Type</th>
-                        <th scope="col" style="width:30%">MOH Remarks</th>
-                        <th scope="col" style="width:10%">Deadline</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                     </thead>
-                    <c:forEach var="finding" items="${insFindingList}" varStatus="status">
                     <tr>
-                        <td>${status.count}</td>
-                        <td>${finding.section}</td>
-                        <td>${finding.item}</td>
-                        <td>${finding.findingType}</td>
-                        <td>${finding.remarks}</td>
-                        <td>${finding.deadline}</td>
+                        <td colspan="2" style="font-weight:bold">Part I: Inspection Checklist</td>
                     </tr>
-                    </c:forEach>
+                    <tr>
+                        <td class="col-6">Checklist Used</td>
+                        <td>Biosafety Regulation</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="font-weight:bold">Part II: Findings/Observations</td>
+                    </tr>
+                    <tr>
+                        <td class="col-6"><label for="observation"></label>Observation</td>
+                        <td>
+                            <div class="col-sm-7 col-md-5 col-xs-10">
+                                <div class="input-group">
+                                    <textarea id="observation" name="observation" cols="200" rows="5" maxlength="300"><c:out value="${processDto.observation}"/></textarea>
+                                    <span data-err-ind="observation" class="error-msg"></span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-6"><label for="remarks"></label>Remarks</td>
+                        <td>
+                            <div class="col-sm-7 col-md-5 col-xs-10">
+                                <div class="input-group">
+                                    <textarea id="remarks" name="remarks" cols="200" rows="5" maxlength="300"><c:out value="${processDto.remark}"/></textarea>
+                                    <span data-err-ind="remark" class="error-msg"></span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-6" rowspan="2" style="vertical-align: top">Checklist Item</td>
+                        <td>
+                            <div class="table-gp">
+                                <p>General Regulation</p>
+                                <table aria-describedby="" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width:5%">S/N</th>
+                                        <th scope="col" style="width:15%">Item Description</th>
+                                        <th scope="col" style="width:15%">Findings/Non-Compliance</th>
+                                        <th scope="col" style="width:15%">Action Required</th>
+                                        <th scope="col" style="width:15%">Rectified?</th>
+                                        <th scope="col" style="width:15%">Applicant's Input</th>
+                                        <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                    </tr>
+                                    </thead>
+                                    <c:forEach var="finding" items="${insFindingList}" varStatus="status">
+                                    <tr>
+                                        <td>${status.count}</td>
+                                    </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="table-gp">
+                                <p>BSB Regulation</p>
+                                <table aria-describedby="" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width:5%">S/N</th>
+                                        <th scope="col" style="width:15%">Item Description</th>
+                                        <th scope="col" style="width:15%">Findings/Non-Compliance</th>
+                                        <th scope="col" style="width:15%">Action Required</th>
+                                        <th scope="col" style="width:15%">Rectified?</th>
+                                        <th scope="col" style="width:15%">Applicant's Input</th>
+                                        <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                    </tr>
+                                    </thead>
+                                    <c:forEach var="finding" items="${insFindingList}" varStatus="status">
+                                        <tr>
+                                            <td>${status.count}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="font-weight:bold">Part III: Follow-Up Item</td>
+                    </tr>
+                    <tr>
+                        <td class="col-6">Checklist Used</td>
+                        <td>
+                            <div class="table-gp">
+                                <p>General Regulation</p>
+                                <table aria-describedby="" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width:5%">S/N</th>
+                                        <th scope="col" style="width:25%">Item Description</th>
+                                        <th scope="col" style="width:25%">Observations for Follow-up</th>
+                                        <th scope="col" style="width:25%">Action Required</th>
+                                        <th scope="col" style="width:20%">Deadline</th>
+                                    </tr>
+                                    </thead>
+                                    <c:forEach var="finding" items="${insFindingList}" varStatus="status">
+                                        <tr>
+                                            <td>${status.count}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
     </div>
-
     <div class="alert alert-info report-sub-title" role="alert">
         <h4 style="border-bottom: none">Section D (Recommendation)</h4>
     </div>

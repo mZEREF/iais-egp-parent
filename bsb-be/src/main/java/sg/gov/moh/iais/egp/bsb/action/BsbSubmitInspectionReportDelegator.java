@@ -12,17 +12,14 @@ import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
-import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
@@ -44,8 +41,7 @@ public class BsbSubmitInspectionReportDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        // TODO: will update
-//        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
+        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
     }
@@ -55,13 +51,12 @@ public class BsbSubmitInspectionReportDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
         session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
-//        session.removeAttribute(KEY_INS_FINDING);
-//        session.removeAttribute(KEY_INS_OUTCOME);
+        session.removeAttribute(KEY_INS_INFO);
+        session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
+        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_DECISION);
 
-        // TODO: will update
-//        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        String appId = "48BD553A-07BB-EC11-BE76-000C298D317C";
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
 
         // judge whether we need to send email
         InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId);
@@ -72,14 +67,10 @@ public class BsbSubmitInspectionReportDelegator {
         ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
         // inspection report
         ParamUtil.setSessionAttr(request, KEY_INS_INFO, initDataDto.getInsFacInfoDto());
-
-//        // inspection findings
-//        ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
-//        ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
-//
-//        // inspection outcome
-//        InspectionOutcomeDto outcomeDto = initDataDto.getOutcomeDto();
-//        ParamUtil.setSessionAttr(request, KEY_INS_OUTCOME, outcomeDto);
+        // show route to moh selection list
+        ParamUtil.setRequestAttr(request, KEY_SELECT_ROUTE_TO_MOH, initDataDto.getSelectRouteToMoh());
+        // show routingHistory list
+        ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, initDataDto.getProcessHistoryDtoList());
 
         // inspection processing
         InsProcessDto processDto = new InsProcessDto();
@@ -88,9 +79,7 @@ public class BsbSubmitInspectionReportDelegator {
 
     public void pre(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        // TODO: will update
-//        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        String appId = "48BD553A-07BB-EC11-BE76-000C298D317C";
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
 

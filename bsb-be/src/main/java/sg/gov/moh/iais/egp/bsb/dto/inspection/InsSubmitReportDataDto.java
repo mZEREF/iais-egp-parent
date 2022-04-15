@@ -1,8 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.inspection;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
+import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 
@@ -16,5 +17,6 @@ public class InsSubmitReportDataDto {
     private FacilityDetailsInfo facilityDetailsInfo;
     private List<InsFindingDisplayDto> findingDtoList;
     private InsFacInfoDto insFacInfoDto;
-    private InspectionOutcomeDto outcomeDto;
+    private List<ProcessHistoryDto> processHistoryDtoList;
+    private List<SelectOption> selectRouteToMoh;
 }
