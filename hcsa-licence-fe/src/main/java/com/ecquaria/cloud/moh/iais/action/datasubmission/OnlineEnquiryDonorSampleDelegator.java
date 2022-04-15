@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -211,6 +212,9 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request, "donorResultSize",Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004")));
+        ParamUtil.setSessionAttr(request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
+
         String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
         String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
