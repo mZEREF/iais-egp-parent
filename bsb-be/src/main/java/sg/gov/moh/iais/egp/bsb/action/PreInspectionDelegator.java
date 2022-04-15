@@ -2,11 +2,9 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,19 +12,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
-import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -37,9 +31,22 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_REVIEW_DATA;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_CHKL_CONFIG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_EDITABLE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_CONFIG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SELF_ASSESSMENT_AVAILABLE;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SEPARATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
 
 
@@ -47,17 +54,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbPreInspection")
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
-    private final InternalDocClient internalDocClient;
-
-    private final ProcessHistoryService processHistoryService;
-    private final BsbAppointmentClient bsbAppointmentClient;
 
     @Autowired
-    public PreInspectionDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient, ProcessHistoryService processHistoryService, BsbAppointmentClient bsbAppointmentClient) {
+    public PreInspectionDelegator(InspectionClient inspectionClient) {
         this.inspectionClient = inspectionClient;
-        this.internalDocClient = internalDocClient;
-        this.processHistoryService = processHistoryService;
-        this.bsbAppointmentClient = bsbAppointmentClient;
     }
 
 
@@ -79,45 +79,27 @@ public class PreInspectionDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        InsFacInfoDto facInfoDto = (InsFacInfoDto) ParamUtil.getSessionAttr(request, KEY_INS_INFO);
-        if (facInfoDto == null) {
-            facInfoDto = inspectionClient.getInsFacInfo(appId);
-            ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
+        String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
+        PreInspectionDataDto preInspectionDataDto = inspectionClient.getPreInspectionDataDto(appId);
+        SubmissionDetailsInfo submissionDetailsInfo = preInspectionDataDto.getSubmissionDetailsInfo();
+        ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, submissionDetailsInfo);
+        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, preInspectionDataDto.getInternalDocDisplayDtoList());
+        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, preInspectionDataDto.getSupportDocDisplayDtoList());
+        ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, preInspectionDataDto.getFacilityDetailsInfo());
+        ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, preInspectionDataDto.getProcessHistoryDtoList());
+        ParamUtil.setRequestAttr(request, KEY_INSPECTION_CONFIG, Arrays.asList(preInspectionDataDto.getCommonChecklistConfigDto(), preInspectionDataDto.getBsbChecklistConfigDto()));
+
+        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(submissionDetailsInfo.getApplicationStatus())) {
+            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
+        } else {
+            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
         }
-//        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(facInfoDto.getAppStatus())) {
-//            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
-//        } else {
-//            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
-//        }
+
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         if (processDto == null) {
             processDto = new InsProcessDto();
             ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         }
-        List<ChecklistConfigDto> inspectionConfig = (List<ChecklistConfigDto>) ParamUtil.getSessionAttr(request, KEY_INSPECTION_CONFIG);
-        if (inspectionConfig == null || inspectionConfig.isEmpty()) {
-            ChecklistConfigDto bsbChecklistConfigDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
-            ChecklistConfigDto commonChecklistConfigDto = inspectionClient.getMaxVersionCommonConfig();
-            ParamUtil.setRequestAttr(request, KEY_INSPECTION_CONFIG, Arrays.asList(commonChecklistConfigDto, bsbChecklistConfigDto));
-        }
-        AppointmentReviewDataDto appointmentReviewDataDto = getReviewDataDto(request);
-        if (StringUtil.isEmpty(appointmentReviewDataDto.getApplicationNo())) {
-            ResponseDto<AppointmentReviewDataDto> result = bsbAppointmentClient.getOfficerReviewData(appId);
-            if (result.ok()) {
-                String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-                appointmentReviewDataDto = result.getEntity();
-                appointmentReviewDataDto.setTaskId(taskId);
-                ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, appointmentReviewDataDto);
-                //show routingHistory list
-                processHistoryService.getAndSetHistoryInSession(appointmentReviewDataDto.getSubmissionDetailsDto().getApplicationNo(), request);
-            } else {
-                log.warn("get appointment API doesn't return ok, the response is {}", result);
-                ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, new AppointmentReviewDataDto());
-            }
-        }
-        List<DocDisplayDto> internalDocDisplayDto = internalDocClient.getInternalDocForDisplay(appId);
-        ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
     }
 
     public void bindAction(BaseProcessClass bpc) {

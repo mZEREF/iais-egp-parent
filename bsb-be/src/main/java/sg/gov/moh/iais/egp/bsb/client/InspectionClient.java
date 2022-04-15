@@ -14,6 +14,9 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
+    @GetMapping(value = "/inspection/pre/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    PreInspectionDataDto getPreInspectionDataDto(@RequestParam("appId") String appId);
+
     @GetMapping(value = "/inspection/pre/facInfo", produces = MediaType.APPLICATION_JSON_VALUE)
     InsFacInfoDto getInsFacInfo(@RequestParam("appId") String appId);
 

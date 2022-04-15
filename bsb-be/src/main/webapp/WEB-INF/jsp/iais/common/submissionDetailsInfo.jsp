@@ -43,6 +43,12 @@
             View Application
         </button>
     </a>
+    <%--perInspection--%>
+    <c:if test="${not empty selfAssessmentAvailable}">
+        <button id="viewSelfAssessmt" type="button" class="btn btn-primary" <c:if test="${selfAssessmentAvailable eq false}">disabled</c:if>>
+            Self-Assessment Checklists
+        </button>
+    </c:if>
 </div>
 <c:choose>
     <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
