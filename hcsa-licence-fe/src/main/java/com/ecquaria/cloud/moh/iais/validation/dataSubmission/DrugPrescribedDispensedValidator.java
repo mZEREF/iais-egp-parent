@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -87,12 +86,13 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         String drugType = drugSubmission.getDrugType();
         String startDate = drugSubmission.getStartDate();
         String endDate = drugSubmission.getEndDate();
+        List<DrugMedicationDto> preDrugMedicationDtos = IaisCommonUtils.genNewArrayList();
 
         if (StringUtil.isEmpty(prescriptionDate)&& "DPD001".equals(drugType)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Date of Prescription", "field");
             errorMap.put("prescriptionDate", errMsg);
         }
-        if("DPD002".equals(drugType)){
+        if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
             if (StringUtil.isEmpty(dispensingDate)  ) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Date of Dispensing", "field");
                 errorMap.put("dispensingDate", errMsg);
@@ -102,9 +102,11 @@ if(!StringUtil.isEmpty(doctorReignNo)){
            if(StringUtil.isEmpty(drugSubmission.getPrescriptionSubmissionId())){
                 errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0006");
             }else {
-               DpSuperDataSubmissionDto dpSuperDataSubmissionDto= dpDataSubmissionService.getDpSuperDataSubmissionDto(drugSubmission.getPrescriptionSubmissionId());
-               //todo
-               // errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+               preDrugMedicationDtos = dpDataSubmissionService.
+                       getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
+               if(IaisCommonUtils.isEmpty(preDrugMedicationDtos)){
+                   errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+               }
             }
 
         }
@@ -141,8 +143,6 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         Map<String,Integer> preDrugMedicationMap = null ;
         Map<String,Integer> drugMedicationMap = null;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
-            List<DrugMedicationDto> preDrugMedicationDtos = dpDataSubmissionService.
-                    getDrugMedicationDtoBySubmissionNo(drugSubmission.getPrescriptionSubmissionId());
             List<DrugMedicationDto> oldDrugMedicationDtos =  dpDataSubmissionService.
                     getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId());
             preDrugMedicationMap = tidyDrugMedicationDto(null,preDrugMedicationDtos);
