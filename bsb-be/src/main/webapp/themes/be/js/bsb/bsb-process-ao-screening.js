@@ -1,6 +1,5 @@
 $(function () {
     validate();
-    $("input[type='radio']").attr("disabled",true);
     var processingDecisionObj = $("#processingDecision");
     var processingDecisionVal =  processingDecisionObj.val();
     if (processingDecisionVal === "MOHPRO009") {

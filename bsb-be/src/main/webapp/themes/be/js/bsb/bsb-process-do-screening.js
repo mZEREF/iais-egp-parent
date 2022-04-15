@@ -28,7 +28,17 @@ $(function () {
             addRadioDisable(radioName);
         }
     })
-    $("input[data-radio-type='facilityActivityYes']").click(function (){
+    var facilityActivityYesRadioObj = $("input[data-radio-type='facilityActivityYes']");
+    var activityRadioYesList = facilityActivityYesRadioObj.valueOf();
+    $.each(activityRadioYesList, function (n, value){
+        if (value.checked === true){
+            var radioName = $(this).attr("name");
+            removeRadioDisable(radioName);
+        }
+    })
+    facilityActivityNoRadioObj.removeAttr("disabled");
+    facilityActivityYesRadioObj.removeAttr("disabled");
+    facilityActivityYesRadioObj.click(function (){
         var radioName = $(this).attr("name");
         removeRadioDisable(radioName)
     })
