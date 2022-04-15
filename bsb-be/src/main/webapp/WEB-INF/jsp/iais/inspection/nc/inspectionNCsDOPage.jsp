@@ -16,8 +16,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
-<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsInfoDto"--%>
-<%--@elvariable id="insFindingList" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto"--%>
+<%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="itemSelection" type="java.lang.String"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
 
@@ -29,7 +28,6 @@
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
 
-        <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(insFindingList.itemDtoList.size())}">
         <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
         <input type="hidden" id="section_repeat_section_id_prefix" value="findingTr" readonly disabled>
         <input type="hidden" id="section_repeat_section_group_id" value="findingTBody" readonly disabled>
@@ -104,7 +102,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
@@ -121,7 +119,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label"> Duty Officer’s Recommendation</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
