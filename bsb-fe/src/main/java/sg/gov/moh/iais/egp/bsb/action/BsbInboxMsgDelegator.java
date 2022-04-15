@@ -189,7 +189,7 @@ public class BsbInboxMsgDelegator {
     private InboxMsgSearchDto getDefaultSearchDto() {
         InboxMsgSearchDto dto = new InboxMsgSearchDto();
         dto.clearAllFields();
-        dto.defaultPaging();
+        dto.defaultPaging("subject,asc");
         return dto;
     }
 }

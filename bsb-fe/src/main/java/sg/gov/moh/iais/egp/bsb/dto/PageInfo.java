@@ -51,4 +51,8 @@ public class PageInfo {
     public static PageInfo emptyPageInfo(PagingAndSortingDto dto) {
         return emptyPageInfo(dto.getSize());
     }
+
+    public static PageInfo emptyPageInfo(PageableDto dto) {
+        return emptyPageInfo(dto.getSize());
+    }
 }
