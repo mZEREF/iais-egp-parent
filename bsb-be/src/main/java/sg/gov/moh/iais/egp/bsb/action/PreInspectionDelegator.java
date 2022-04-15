@@ -85,11 +85,11 @@ public class PreInspectionDelegator {
             facInfoDto = inspectionClient.getInsFacInfo(appId);
             ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
         }
-        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(facInfoDto.getAppStatus())) {
-            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
-        }
+//        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(facInfoDto.getAppStatus())) {
+//            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
+//        } else {
+//            ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
+//        }
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         if (processDto == null) {
             processDto = new InsProcessDto();

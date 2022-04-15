@@ -16,7 +16,7 @@
 
 <div class="tab-pane" id="tabInspection" role="tabpanel">
     <div class="alert alert-info report-sub-title" role="alert">
-        <h4 style="border-bottom: none">1. Facility Information</h4>
+        <h4 style="border-bottom: none">Section A (Facility Details)</h4>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -41,11 +41,7 @@
                         <td><iais:code code="${insInfo.classification}"/></td>
                     </tr>
                     <tr>
-                        <td>Facility Activity</td>
-                        <td><iais:code code="${insInfo.activityType}"/></td>
-                    </tr>
-                    <tr>
-                        <td>Person in charge</td>
+                        <td>Person-in-Charge</td>
                         <td><c:out value="${insInfo.adminName}"/></td>
                     </tr>
                     <tr>
@@ -58,7 +54,7 @@
     </div>
 
     <div class="alert alert-info report-sub-title" role="alert">
-        <h4 style="border-bottom: none">2. Inspection Detail</h4>
+        <h4 style="border-bottom: none">Section B (Inspection Details)</h4>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -72,19 +68,19 @@
                     </thead>
                     <tr>
                         <td class="col-4">Date of Inspection</td>
-                        <td></td>
+                        <td>07/03/2022</td>
                     </tr>
                     <tr>
                         <td>Purpose of Inspection</td>
-                        <td></td>
+                        <td>To Inspect BSL 3 Facility</td>
                     </tr>
                     <tr>
-                        <td>Facility Representative(s)</td>
-                        <td></td>
+                        <td>Facility Representative</td>
+                        <td>Abe Shino</td>
                     </tr>
                     <tr>
-                        <td>MOH Duty Officer(s)</td>
-                        <td></td>
+                        <td>MOH Inspector</td>
+                        <td>DO1, DO2</td>
                     </tr>
                 </table>
             </div>
@@ -92,8 +88,15 @@
     </div>
 
     <div class="alert alert-info report-sub-title" role="alert">
-        <h4 style="border-bottom: none">3. Inspection Finding(s)</h4>
+        <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
     </div>
+
+    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part I: Inspection Checklist</p>
+    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part II: Findings/Observations</p>
+    <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Part III: Follow-Up Item</p>
+
+    <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
+
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -124,7 +127,7 @@
     </div>
 
     <div class="alert alert-info report-sub-title" role="alert">
-        <h4 style="border-bottom: none">4. Outcome of Inspection</h4>
+        <h4 style="border-bottom: none">Section D (Recommendation)</h4>
     </div>
     <div class="row">
         <div class="col-12">
@@ -145,13 +148,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Follow-up required</td>
-                        <td>
-                            <span class="fa <c:choose><c:when test="${InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES eq insOutcome.followUpRequired}">fa-check-square-o</c:when><c:otherwise>fa-square-o</c:otherwise></c:choose>"> Yes</span>&nbsp;&nbsp;&nbsp;
-                            <span class="fa <c:choose><c:when test="${InspectionConstants.VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO eq insOutcome.followUpRequired}">fa-check-square-o</c:when><c:otherwise>fa-square-o</c:otherwise></c:choose>"> No</span>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>Outcome</td>
                         <td>
                             <span class="fa <c:choose><c:when test="${InspectionConstants.VALUE_OUTCOME_OUTCOME_PASS eq insOutcome.outcome}">fa-check-square-o</c:when><c:otherwise>fa-square-o</c:otherwise></c:choose>"> Pass</span>&nbsp;&nbsp;&nbsp;
@@ -162,6 +158,10 @@
                     <tr>
                         <td>Remarks</td>
                         <td><c:out value="${insOutcome.remarks}"/></td>
+                    </tr>
+                    <tr>
+                        <td>Facility Validity Date</td>
+                        <td><c:out value="${insOutcome.facilityValidityDate}"/></td>
                     </tr>
                 </table>
             </div>

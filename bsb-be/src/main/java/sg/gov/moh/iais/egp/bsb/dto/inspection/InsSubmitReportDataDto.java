@@ -15,5 +15,6 @@ public class InsSubmitReportDataDto {
     private SubmissionDetailsInfo submissionDetailsInfo;
     private FacilityDetailsInfo facilityDetailsInfo;
     private List<InsFindingDisplayDto> findingDtoList;
+    private InsFacInfoDto insFacInfoDto;
     private InspectionOutcomeDto outcomeDto;
 }
