@@ -1,16 +1,18 @@
 package sg.gov.moh.iais.egp.bsb.dto.inspection;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
+import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
+import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
+
+import java.util.List;
 
 
 @Data
 public class InsSubmitFindingDataDto {
-    private InsInfoDto insInfoDto;
-    private InsFindingFormDto findingFormDto;
-    private InspectionChecklistDto checklistDto;
-    private ChecklistConfigDto configDto;
-    private InspectionOutcomeDto outcomeDto;
+    private SubmissionDetailsInfo submissionDetailsInfo;
+    private FacilityDetailsInfo facilityDetailsInfo;
+    private List<DocDisplayDto> supportDocDisplayDtoList;
+    private List<ProcessHistoryDto> processHistoryDtoList;
 }

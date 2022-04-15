@@ -104,7 +104,16 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-xs-12 col-md-4 control-label label-normal" for="remarks">Remarks</label>
+                                                                <div class="col-sm-7 col-md-8 col-xs-10">
+                                                                    <p>
+                                                                        <textarea id="remarks" name="remarks" style="width: 100%;margin-bottom: 15px;" rows="3"  maxlength="500"></textarea>
+                                                                    </p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
@@ -115,10 +124,12 @@
                                                         <div style="text-align: right">
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             <button name="skipBtn" id="skipBtn" type="button" class="btn btn-md" onclick="skipInspection()">Skip Inspection</button>
+                                                            <button name="skipValidation" id="skipValidation" type="button" class="btn btn-md" onclick="skipValidate()">Skip Validation</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>

@@ -210,3 +210,11 @@ function doInspectorProRecCheck(){
         allNcItemCheck.checked = false;
     }
 }
+
+
+function skipValidate(){
+    showWaiting();
+    $("[name='action_type']").val("submit");
+    $("[name='action_value']").val("noValidate");
+    $("#mainForm").submit();
+}
