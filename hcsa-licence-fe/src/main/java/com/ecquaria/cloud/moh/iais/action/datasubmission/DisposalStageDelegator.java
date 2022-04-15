@@ -16,9 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +32,6 @@ import java.util.Map;
 @Delegator("disposalDelegator")
 @Slf4j
 public class DisposalStageDelegator extends CommonDelegator{
-    @Autowired
-    private ArFeClient arFeClient;
 
     @Override
     public void start(BaseProcessClass bpc) {

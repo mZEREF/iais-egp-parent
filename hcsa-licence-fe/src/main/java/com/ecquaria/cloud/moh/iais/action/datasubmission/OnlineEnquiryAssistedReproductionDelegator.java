@@ -512,7 +512,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("arOrIui",arDto.getArOrIuiCycle());
             }
             if(arDto.getIVM()!=null){//bit
-                filter.put("ivm",Integer.parseInt(arDto.getIVM()));
+                filter.put("ivm", Integer.valueOf(arDto.getIVM()));
             }
             if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
                 filter.put("cart_fcn",1);
@@ -545,15 +545,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
 
-            if(arDto.getAbandonedCycle()!=null){//bit
-                filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
+            if (arDto.getAbandonedCycle() != null) {//bit
+                filter.put("abandonedCycle", Integer.valueOf(arDto.getAbandonedCycle()));
             }
 
-            if(arDto.getDonorGameteUsed()!=null){
-                if(Integer.parseInt(arDto.getDonorGameteUsed())==1){
-                    filter.put("donorUsedYes",Integer.parseInt(arDto.getDonorGameteUsed()));
-                }else {
-                    filter.put("donorUsedNo",Integer.parseInt(arDto.getDonorGameteUsed()));
+            if (arDto.getDonorGameteUsed() != null) {
+                if (Integer.parseInt(arDto.getDonorGameteUsed()) == 1) {
+                    filter.put("donorUsedYes", Integer.valueOf(arDto.getDonorGameteUsed()));
+                } else {
+                    filter.put("donorUsedNo", Integer.valueOf(arDto.getDonorGameteUsed()));
                 }
             }
             if(arDto.getDonorName()!=null){

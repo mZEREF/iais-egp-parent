@@ -45,7 +45,7 @@ public class FreezingStageDelegator extends CommonDelegator {
         ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
         ArChangeInventoryDto arChangeInventoryDto = new ArChangeInventoryDto();
         arSuperDataSubmission.setArChangeInventoryDto(arChangeInventoryDto);
-        if (arChangeInventoryDto != null && arSubFreezingStageDto != null) {
+        if (arSubFreezingStageDto != null) {
             String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
             int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());
             if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {

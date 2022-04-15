@@ -1,7 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,19 +9,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.shaded.com.google.common.collect.Maps;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.excel.CsvConvertUtil;
 import sg.gov.moh.iais.egp.bsb.util.excel.ExcelConverter;
@@ -142,7 +140,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
      */
     public boolean validateDataFile() {
         if (this.newFile == null) {
-            Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
             errorMap.put(DocConstants.DOC_TYPE_DATA_COMMITTEE, "This document is mandatory");
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);
             return false;
@@ -178,7 +176,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
             return true;
         } catch (IOException e) {
             log.error("Fail to convert EXCEL/CSV to DTOs", e);
-            Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
             errorMap.put(DocConstants.DOC_TYPE_DATA_COMMITTEE, "Could not parse file content.");
             this.newFile = null;
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);

@@ -59,6 +59,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -1100,7 +1101,7 @@ public class ConfigServiceImpl implements ConfigService {
     private void view(HttpServletRequest request, String crud_action_value) {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
         List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
-        categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
+        categoryDtos.sort(Comparator.comparing(HcsaServiceCategoryDto::getName));
         request.getSession().setAttribute("categoryDtos",categoryDtos);
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCodes(codeSvc);
         request.getSession().setAttribute("codeSelectOptionList",selectOptionList);

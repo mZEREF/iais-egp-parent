@@ -70,7 +70,7 @@ public class AppointInspectionDateDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, "canNotUploadInternalDoc", true);
+        ParamUtil.setRequestAttr(request, "canNotUploadInternalDoc", Boolean.TRUE);
         AppointmentReviewDataDto dto = getReviewDataDto(request);
         if (StringUtils.isEmpty(dto.getApplicationId())) {
             String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);

@@ -5,16 +5,20 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public final class FeInboxHelper {
-    public final static List<String> allDataSubmissionStatuses = Arrays.asList(DataSubmissionConsts.DS_STATUS_ACTIVE,DataSubmissionConsts.DS_STATUS_DRAFT,
+    public final static Set<String> allDataSubmissionStatuses = new HashSet<>(Arrays.asList(DataSubmissionConsts.DS_STATUS_ACTIVE,
+                                                                               DataSubmissionConsts.DS_STATUS_DRAFT,
                                                                                DataSubmissionConsts.DS_STATUS_AMENDED, DataSubmissionConsts.DS_STATUS_LOCKED,
-                                                                               DataSubmissionConsts.DS_STATUS_UNLOCKED);
-    public final static List<String> dataInboxNoNeedShowStatuses =  Arrays.asList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
+                                                                               DataSubmissionConsts.DS_STATUS_UNLOCKED));
+    public final static List<String> dataInboxNoNeedShowStatuses =  Collections.singletonList(DataSubmissionConsts.DS_STATUS_WITHDRAW);
     public final  static Map<String,String> SUBMISSIONNO_STATUS = getSubmissionNoStatus();
 
     public final static List<SelectOption> dataSubmissionStatusOptions = getInboxStatuses();

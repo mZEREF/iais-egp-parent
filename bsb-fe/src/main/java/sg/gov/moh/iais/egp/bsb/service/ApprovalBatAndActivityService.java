@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.service;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,10 +107,12 @@ public class ApprovalBatAndActivityService {
                 appInfoNodeGroup = newApprovalActivityAppInfoNodeGroup(new Node[0]);
                 break;
             default:
-                log.info("no such processType {}", StringUtils.normalizeSpace(processType));
+                log.info(StringUtil.changeForLog("no such processType " + StringUtils.normalizeSpace(processType)));
                 break;
         }
-
+        if (appInfoNodeGroup == null) {
+            return null;
+        }
         SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{appInfoNodeGroup});
         SimpleNode previewNode = new SimpleNode(new PreviewDto(), NODE_NAME_PREVIEW, new Node[]{appInfoNodeGroup, primaryDocNode});
 

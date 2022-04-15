@@ -284,7 +284,7 @@ public class MohDsActionDelegator {
             dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DataSubmissionDto dataSubmissionDto = dpSuper.getDataSubmissionDto();
             if(dataSubmissionDto ==null){
-                new DataSubmissionDto();
+                dataSubmissionDto = new DataSubmissionDto();
             }
             if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
                 dataSubmissionDto.setAmendReason(null);
@@ -359,11 +359,11 @@ public class MohDsActionDelegator {
     private String prepareArRfc(String submissionNo, HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                 submissionNo);
-        arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
         String uri;
         if (arSuper == null) {
             uri = DEFAULT_URI;
         } else {
+            arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(arSuper));
             arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

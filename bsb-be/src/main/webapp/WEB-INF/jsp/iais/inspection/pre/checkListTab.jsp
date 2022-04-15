@@ -21,7 +21,7 @@
             </div>
             <div class="panel-collapse collapse in" id="collapse${section.section}" role="tabpanel">
                 <div class="panel-body">
-                    <table class="table">
+                    <table class="table" aria-describedby="BSB Regulation">
                         <thead>
                         <tr>
                             <th scope="col" style="width: 15%">Checklist Item Clause</th>

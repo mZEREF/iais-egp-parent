@@ -1,8 +1,8 @@
 <div class=" col-md-12">
     <div class="row">
-        <b class="col-md-12" style="font-size:2.0rem">
+        <strong class="col-md-12" style="font-size:2.0rem">
             Current Identity
-        </b>
+        </strong>
     </div>
 
     <div class="table-gp">
@@ -95,9 +95,9 @@
     </div>
     <br>
     <div class="row">
-        <b class="col-md-12" style="font-size:2.0rem">
+        <strong class="col-md-12" style="font-size:2.0rem">
             Previous Identities
-        </b>
+        </strong>
     </div>
     <hr>
     <div class="table-gp">
