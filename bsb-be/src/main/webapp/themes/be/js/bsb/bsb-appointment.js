@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function () {
     var sysInspDateFlag = $("#sysInspDateFlag").val();
     var sysSpecDateFlag = $("#sysSpecDateFlag").val();
     if('true' == sysInspDateFlag){
@@ -17,20 +17,20 @@ $(document).ready(function() {
         $("#disApptSpecInspDate").show();
         $("#apptSpecInspDate").hide();
     }
-    // var apptBackShow = $("#apptBackShow").val();
-    // if('back' == apptBackShow){
-    //     apptInspectionDateJump();
-    // }
-});
 
-// function apptInspectionDateJump(){
-//     $("#apptInspTabInfo").removeClass('active');
-//     $("#apptInspTabDocuments").removeClass('active');
-//     $("#apptInspTabProcessing").removeClass('active');
-//     $('#apptInspectionDate').trigger("click");
-//     $("#apptInspectionDateProcess").click();
-//     $("#apptInspTabProcessing").addClass('active');
-// }
+    $("#searchBtn").click(function () {
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("#mainForm").submit();
+    });
+
+    $("#clearBtn").click(function() {
+        $('input[name="searchAppNo"]').val("");
+        $("#searchAppType option:first").prop("selected", 'selected');
+        $("#searchAppStatus option:first").prop("selected", 'selected');
+        $("#beInboxFilter .current").text("Please Select");
+    });
+});
 
 function apptInspectionDateConfirm() {
     showWaiting();
@@ -108,5 +108,12 @@ function apptInspectionSpecDateConfirm() {
 function apptInspectionSpecDateBack() {
     showWaiting();
     $("#actionValue").val('back');
+    $("#mainForm").submit();
+}
+
+function rescheduleAppointment(id){
+    showWaiting();
+    $("[name='action_type']").val("reschedule");
+    $("[name='maskedAppId']").val(id);
     $("#mainForm").submit();
 }

@@ -28,4 +28,8 @@ public class AppointmentConstants {
     public static final String ERROR_MSG_END_DATE_BEFORE_START_DATE = "EndDate can not be earlier than startDate";
     public static final String ERROR_MSG_COLLISION_DATE = "Rest day, please reselect another date";
 
+    public static final String BACK_URL = "backUrl";
+    public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";
+    public static final String BACK_URL_RESCHEDULE_APPOINTMENT = "/bsb-be/eservicecontinue/INTRANET/BsbOfficerRescheduleApptList";
+
 }

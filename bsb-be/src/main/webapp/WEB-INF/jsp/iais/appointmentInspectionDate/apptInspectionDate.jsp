@@ -15,22 +15,15 @@
 <%
   String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
-<style type="text/css">
-  li.apptInspScheduleUl:before {
-    background-color: #333333;
-  }
-</style>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-appointment.js"></script>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <%--@elvariable id="apptReviewData" type="sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto"--%>
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-<%--    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
     <input type="hidden" name="apptInspectionDateType" value="">
-<%--    <input type="hidden" id="actionValue" name="actionValue" value="">--%>
     <input type="hidden" id="processDec" name="processDec" value="">
     <input type="hidden" id="sysInspDateFlag" name="sysInspDateFlag" value="${apptInspectionDateDto.sysInspDateFlag}">
     <input type="hidden" id="sysSpecDateFlag" name="sysSpecDateFlag" value="${apptInspectionDateDto.sysSpecDateFlag}">
@@ -92,7 +85,7 @@
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                  <c:when test="${apptReviewData eq null}">
+                                  <c:when test="${apptInspectionDateDto.applicationInfoShow eq null}">
                                     <tr>
                                       <td colspan="7">
                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>

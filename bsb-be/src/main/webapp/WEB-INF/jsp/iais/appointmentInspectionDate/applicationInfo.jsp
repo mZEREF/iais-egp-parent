@@ -40,5 +40,6 @@
     </a>
 </div>
 <div style="text-align: left">
-    <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
+    <%--@elvariable id="backUrl" type="java.lang.String"--%>
+    <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="${backUrl}"><em class="fa fa-angle-left"></em> Previous</a>
 </div>

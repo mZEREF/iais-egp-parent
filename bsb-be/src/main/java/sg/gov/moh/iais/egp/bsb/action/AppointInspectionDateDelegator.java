@@ -8,14 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbAppointmentClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
@@ -30,9 +27,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
@@ -100,6 +95,7 @@ public class AppointInspectionDateDelegator {
         // view application need appId and moduleType
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, dto.getApplicationId());
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, MODULE_VIEW_NEW_FACILITY);
+        ParamUtil.setRequestAttr(request, BACK_URL, BACK_URL_TASK_LIST);
     }
 
     public void skip(BaseProcessClass bpc){
@@ -154,27 +150,11 @@ public class AppointInspectionDateDelegator {
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         AppointmentDto specificApptDto = apptInspectionDateService.getValidateValue(dto, request);
         //validation
-        String actionType;
         dto.setModule("specifyAppointmentDate");
         ValidationResultDto validationResultDto = bsbAppointmentClient.validateAppointmentData(dto);
-        if ("back".equals(actionValue)) {
-            actionType = "back";
-        } else {
-            if (!validationResultDto.isPass()) {
-                ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
-                actionType = "prepare";
-            } else {
-                actionType = "next";
-                Map<String, String> errMap = apptInspectionDateService.validateDateFromUserCalendar(specificApptDto);
-                if (!CollectionUtils.isEmpty(errMap)){
-                    validationResultDto.setPass(false);
-                    validationResultDto.setErrorMap((HashMap<String, String>) errMap);
-                    ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
-                    actionType = "prepare";
-                }
-            }
-        }
+        String actionType = apptInspectionDateService.ensureValResult(actionValue,validationResultDto,request,specificApptDto);
         ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, actionType);
+        ParamUtil.setSessionAttr(request, APPOINTMENT_REVIEW_DATA, dto);
     }
 
     public void saveAppointmentDate(BaseProcessClass bpc) {
