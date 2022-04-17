@@ -174,7 +174,7 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="AR / IUI Cycle"/>
+                                    <iais:field width="4" value="AR / IUI / EFO Cycle"/>
                                     <iais:value width="7" cssClass="col-md-7"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions"
                                                      cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
@@ -548,7 +548,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum4" id="ageEmbryosNum4"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 =='on'  }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum4 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum4"><span

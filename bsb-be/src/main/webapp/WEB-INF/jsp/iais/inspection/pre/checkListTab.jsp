@@ -65,10 +65,11 @@
     </c:choose>
 
     <div style="float:right">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#downloadInspection">
+        <button type="button" class="btn btn-primary">
             DOWNLOAD
         </button>
-        <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#edit">
+        <%--TODO AdHocCheckList is no exits--%>
+        <button type="button" style="float:right" class="btn btn-primary" >
             EDIT
         </button>
     </div>

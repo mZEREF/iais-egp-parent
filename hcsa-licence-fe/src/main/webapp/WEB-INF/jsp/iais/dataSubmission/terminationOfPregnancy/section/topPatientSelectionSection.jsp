@@ -14,17 +14,17 @@
                     <iais:field width="5" value="Patient ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                     value="${patientInformationDto.idType}" cssClass="idTypeSel"/>
+                                     value="${patientInformationDto.idType}" cssClass="idTypeSel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
-                        <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}"/>
+                        <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}" onchange="clearSelection()"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient Nationality" mandatory="true"/>
                     <iais:value width="4" cssClass="col-md-4">
                         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
-                                     value="${patientInformationDto.nationality}" cssClass="nationalitySel"/>
+                                     value="${patientInformationDto.nationality}" cssClass="nationalitySel" onchange="clearSelection()"/>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
                         <a class="retrieveIdentification" onclick="retrieveValidateTop()">

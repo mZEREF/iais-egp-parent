@@ -45,14 +45,6 @@ public class PostInspectionBatchJob {
     private GenerateIdClient generateIdClient;
     @Autowired
     private AuditSystemListService auditSystemListService;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The postInspection is start ..."));
@@ -68,8 +60,6 @@ public class PostInspectionBatchJob {
     }
 
     public void jobExecute(){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, List<String>> map = hcsaLicenceClient.getPostInspectionMap().getEntity();
         log.debug(StringUtil.changeForLog("=============map size================" + map.size()));
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -77,7 +67,7 @@ public class PostInspectionBatchJob {
             List<String> insGrpIds = IaisCommonUtils.genNewArrayList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
             //generate grpNo
-            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for (AppSubmissionDto entity : appSubmissionDtoList) {
                 try {

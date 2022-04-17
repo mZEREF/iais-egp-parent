@@ -34,36 +34,30 @@
                         <iais:code code="${patientInformationDto.nationality}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty patientInformationDto.commResidenceInSgDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Date Commenced Residence In Singapore"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.commResidenceInSgDate}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty patientInformationDto.residenceStatus}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Residence Status"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.residenceStatus}"/>
                         </iais:value>
                     </iais:row>
-                </div>
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.ethnicGroup}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Ethnic Group"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.otherEthnicGroup}"/>
                         </iais:value>
                     </iais:row>
-                </div>
                 <iais:row>
                     <iais:field width="5" value="Marital Status"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -94,15 +88,12 @@
                         <iais:code code="${patientInformationDto.occupation}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${patientInformationDto.occupation!='TOPOCC014'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Occupation"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.otherOccupation}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty patientInformationDto.livingChildrenGenders}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
@@ -111,7 +102,6 @@
                             <%--</c:forEach>--%>
                         </iais:value>
                     </iais:row>
-                </div>
             </div>
         </div>
     </div>

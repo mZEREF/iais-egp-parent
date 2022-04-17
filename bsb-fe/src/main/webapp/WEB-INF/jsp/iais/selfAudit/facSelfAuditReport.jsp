@@ -96,6 +96,7 @@
                                                             <iais:field value="Scenario Category" required="true"/>
                                                             <iais:value width="10">
                                                                 <iais:select name="scenarioCategory"
+                                                                             cssClass="scenarioCategoryDropdwon"
                                                                              id="scenarioCategory"
                                                                              value="${selfAudit.scenarioCategory}"
                                                                              codeCategory="CATE_ID_BSB_SCENARIO_CATEGORY"

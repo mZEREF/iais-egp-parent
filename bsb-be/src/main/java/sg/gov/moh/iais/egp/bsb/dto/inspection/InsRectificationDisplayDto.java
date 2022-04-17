@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class InsRectificationDisplayDto implements Serializable {
     private String itemValue;
     private String itemText;
+    private String finding;
+    private String actionRequired;
     private String remark;
     private String status;
-    private String deadline;
 }

@@ -7,21 +7,26 @@
         <iais:field width="5" value="Contraceptive History" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select name="contraHistory" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_HISTORY"
-                         value="${familyPlanDto.contraHistory}" cssClass="contraHistory"/>
+                         value="${familyPlanDto.contraHistory}" id="contraHistorys" cssClass="contraHistory"/>
         </iais:value>
     </iais:row>
-    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.contraHistory!='TOPCH001'}">style="display: none"</c:if>>
+    <div id="mostRecentContraMethods" <c:if test="${familyPlanDto.contraHistory!='TOPCH003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Most Recent Contraceptive Methods Used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="mostRecentContraMethod" firstOption="Please Select" codeCategory="TOP_CONTRACEPTIVE_METHODS"
-                             value="${familyPlanDto.mostRecentContraMethod}" id="ContraMethod" cssClass="mostRecentContraMethod" onchange="checkMantory(this, '#otherContraMethodLabel', 'TOPMRC007')"/>
+                             value="${familyPlanDto.mostRecentContraMethod}" id="contraMethod" cssClass="mostRecentContraMethod"/>
             </iais:value>
         </iais:row>
     </div>
         <iais:row>
-            <iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
-                        mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>
+            <label class="col-xs-5 col-md-4 control-label">Other Contraceptive Method Used
+                <span id="otherContraMethod" class="mandatory">
+                    <c:if test="${familyPlanDto.contraHistory =='TOPCH003' && familyPlanDto.mostRecentContraMethod =='TOPMRC007'}">*</c:if>
+                </span>
+            </label>
+            <%--<iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
+                        mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>--%>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
@@ -101,7 +106,7 @@
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
-    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP002'}">style="display: none"</c:if>>
+    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP006' && familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -109,7 +114,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP002' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if> >
+    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if> >
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -117,7 +122,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherMainTopReason" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP008'}">style="display: none"</c:if>>
+    <div id="otherMainTopReason" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP011'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Main Reason for Termination of Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -125,7 +130,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
+    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -134,7 +139,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReasons" style="${familyPlanDto.subRopReason ==null || familyPlanDto.mainTopReason!='TOPRTP004' || familyPlanDto.subRopReason !='TOPSCTP003' || !familyPlanDto.subRopReason eq 'TOPSCTP006' ? 'display: none' : ''}" >
+    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP003') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -165,6 +170,7 @@
 </div>
 <script>
     $(document).ready(function() {
+        otherContraMethod();
         $('#subRopReason').change(function () {
             subRopReason();
         });
@@ -177,6 +183,18 @@
         gestAgeBaseOnUltrWeek();
         contraHistory();
     });
+    function otherContraMethod(){
+        $('#contraMethod,#contraHistorys').change(function () {
+            var contraHistory = $('#contraHistorys').val();
+            var mostRecentContraMethod = $('#contraMethod').val();
+            if(mostRecentContraMethod == "TOPMRC007" && contraHistory == "TOPCH003"){
+                $('#otherContraMethod').text('*');
+            }else {
+                $('#otherContraMethod').text('');
+            }
+        });
+    }
+
     function subRopReason() {
         var subRopReason= $('#subRopReason').val();
         if(subRopReason == "TOPSCTP003" || subRopReason == "TOPSCTP006"){
@@ -188,7 +206,7 @@
     function otherMainTopReason() {
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP008"){
+            if(mainTopReason == "TOPRTP011"){
                 $('#otherMainTopReason').show();
             }else {
                 $('#otherMainTopReason').hide();
@@ -199,7 +217,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP005" || mainTopReason=="TOPRTP002"){
+            if(mainTopReason == "TOPRTP006" || mainTopReason=="TOPRTP003"){
                 $('#topRiskConditions').show();
             }else {
                 $('#topRiskConditions').hide();
@@ -211,7 +229,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP002" || mainTopReason == "TOPRTP006"){
+            if(mainTopReason == "TOPRTP003" || mainTopReason == "TOPRTP004"){
                 $('#topMedConditions').show();
             }else {
                 $('#topMedConditions').hide();
@@ -224,7 +242,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP004"){
+            if(mainTopReason == "TOPRTP005" || mainTopReason == 'TOPRTP003'){
                 $('#subRopReasons').show();
             }else {
                 $('#subRopReasons').hide();
@@ -237,7 +255,7 @@
             console.log("1");
             var gestAgeBaseOnUltrWeek= $('[name=gestAgeBaseOnUltrWeek]').val();
 
-            if(gestAgeBaseOnUltrWeek >="15" && !isNaN(gestAgeBaseOnUltrWeek)){
+            if(gestAgeBaseOnUltrWeek >=15 && !isNaN(gestAgeBaseOnUltrWeek)){
                 $('#abortChdMoreWksGenders').show();
             }else {
                 $('#abortChdMoreWksGenders').hide();
@@ -245,11 +263,11 @@
         });
     }
     function contraHistory(){
-        $('#contraHistory').change(function () {
+        $('#contraHistorys').change(function () {
 
-            var contraHistory= $('#contraHistory option:selected').val();
+            var contraHistory= $('#contraHistorys').val();
 
-            if(contraHistory == "TOPCH001"){
+            if(contraHistory == "TOPCH003"){
                 $('#mostRecentContraMethods').show();
             }else {
                 $('#mostRecentContraMethods').hide();

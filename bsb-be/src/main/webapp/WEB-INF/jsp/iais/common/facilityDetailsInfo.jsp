@@ -60,11 +60,11 @@
                                     <div class="col-md-3">
                                         <div class="row">
                                             <label>
-                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">Yes</span>
                                             <label>
-                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS002' or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS002' or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">No</span>
                                         </div>
@@ -96,11 +96,11 @@
                                     <div class="col-md-3">
                                         <div class="row">
                                             <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001"/>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">Yes</span>
                                             <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002"/>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">No</span>
                                         </div>

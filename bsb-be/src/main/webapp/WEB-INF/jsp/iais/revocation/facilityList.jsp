@@ -39,7 +39,7 @@
                                 <iais:row>
                                     <iais:field value="Facility Name"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select id="facilityName" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facilitySearch.facilityName}"/>
+                                        <iais:select id="facilityName" cssClass="facilityNameDowmSelect" name="facilityName"  options="facilityName" firstOption="Please Select" value="${facilitySearch.facilityName}"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -51,7 +51,7 @@
                                 <iais:row>
                                     <iais:field value="Facility Classification"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select id="facilityClassification" name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" multiSelect="true" multiValues="${facilitySearch.facilityClassifications}"/>
+                                        <iais:select id="facilityClassification" cssClass="facilityClassificationDropdownSelect" name="facilityClassification" codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION" firstOption="Please Select" multiSelect="true" multiValues="${facilitySearch.facilityClassifications}"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -63,13 +63,13 @@
                                 <iais:row>
                                     <iais:field value="Approval Status"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="approvalStatus" id="approvalStatus" value="${facilitySearch.approvalStatus}" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select"/>
+                                        <iais:select name="approvalStatus" cssClass="approvalStatusSelectDrop" id="approvalStatus" value="${facilitySearch.approvalStatus}" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Process Type"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${facilitySearch.approvalType}"/>
+                                        <iais:select name="approvalType" cssClass="approvalTypeSelectDropdown" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select" value="${facilitySearch.approvalType}"/>
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -141,7 +141,7 @@
                                                 <td><c:out value="${items.facAddress}"/></td>
                                                 <td><iais:code code="${items.facStatus}"/></td>
                                                 <td style="width: 13%">
-                                                    <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                    <select id="appAction${status.index}" name="appAction${status.index}" class="appActionDropdownSelect" data-action-select="">
                                                         <option value="#" selected="selected">Select</option>
                                                         <c:if test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
                                                             <option value="/bsb-be/eservice/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&from=fac">Revoke</option>

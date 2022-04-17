@@ -76,7 +76,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("immature", errMsg);
                 }
                 if(disposalStageDto.getImmature()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("immature", errMsg023);
                 }
                 if(disposalStageDto.getImmatureString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -98,7 +98,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("abnormallyFertilised", errMsg);
                 }
                 if(disposalStageDto.getAbnormallyFertilised()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("abnormallyFertilised", errMsg023);
                 }
                 if(disposalStageDto.getAbnormallyFertilisedString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -120,7 +120,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("unfertilised", errMsg);
                 }
                 if(disposalStageDto.getUnfertilised()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("unfertilised", errMsg023);
                 }
                 if(disposalStageDto.getUnfertilisedString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -143,7 +143,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("atretic", errMsg);
                 }
                 if(disposalStageDto.getAtretic()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("atretic", errMsg023);
                 }
                 if(disposalStageDto.getAtreticString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -164,7 +164,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("damaged", errMsg);
                 }
                 if(disposalStageDto.getDamaged()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("damaged", errMsg023);
                 }
                 if(disposalStageDto.getDamagedString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -186,7 +186,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("lysedOrDegenerated", errMsg);
                 }
                 if(disposalStageDto.getLysedOrDegenerated()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("lysedOrDegenerated", errMsg023);
                 }
                 if(disposalStageDto.getLysedOrDegeneratedString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -211,7 +211,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                     errorMap.put("unhealthyNum", errMsg);
                 }
                 if(disposalStageDto.getUnhealthyNum()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("unhealthyNum", errMsg023);
                 }
                 if(disposalStageDto.getUnhealthyNumString().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -234,7 +234,7 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                 errorMap.put("otherDiscardedNum", errMsg);
             }
             if(disposalStageDto.getOtherDiscardedNum()>maxSamplesNum){
-                errorMap.put("totalNum", errMsg023);
+                errorMap.put("otherDiscardedNum", errMsg023);
             }
             if(disposalStageDto.getOtherDiscardedNum()>0){
 

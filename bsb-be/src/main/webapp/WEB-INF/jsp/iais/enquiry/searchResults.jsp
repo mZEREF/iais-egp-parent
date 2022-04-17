@@ -64,7 +64,7 @@
                             </thead>
                             <tbody class="form-horizontal">
                             <c:choose>
-                                <c:when test="${empty appInfoSearchResult}">
+                                <c:when test="${empty appResult}">
                                     <tr>
                                         <td colspan="6">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
@@ -72,7 +72,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
+                                    <c:forEach var="items" items="${appResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index+1}"/></td>
                                             <td>
@@ -113,7 +113,7 @@
                             </tbody>
                         </table>
                     </c:if>
-                    <c:if test="${count=='fn'}">
+                    <c:if test="${count=='fac'}">
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
@@ -162,7 +162,7 @@
                             </thead>
                             <tbody class="form-horizontal">
                             <c:choose>
-                                <c:when test="${empty facInfoSearchResult}">
+                                <c:when test="${empty facResult}">
                                     <tr>
                                         <td colspan="6">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
@@ -170,7 +170,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="items" items="${facInfoSearchResult}" varStatus="status">
+                                    <c:forEach var="items" items="${facResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${items.facility.facilityName}"/></td>
@@ -204,7 +204,7 @@
                             </tbody>
                         </table>
                     </c:if>
-                    <c:if test="${count=='an'}">
+                    <c:if test="${count=='approval'}">
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
@@ -256,7 +256,7 @@
                             </thead>
                             <tbody class="form-horizontal">
                             <c:choose>
-                                <c:when test="${empty approvalSearchResult}">
+                                <c:when test="${empty approvalResult}">
                                     <tr>
                                         <td colspan="6">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
@@ -264,7 +264,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
+                                    <c:forEach var="items" items="${approvalResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
                                             <td><iais:code code="${items.apprNo}"/></td>
@@ -296,7 +296,7 @@
                             </tbody>
                         </table>
                     </c:if>
-                    <c:if test="${count=='on'}">
+                    <c:if test="${count=='afc'}">
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
@@ -327,7 +327,7 @@
                             </thead>
                             <tbody class="form-horizontal">
                             <c:choose>
-                                <c:when test="${empty approvedSearchResult}">
+                                <c:when test="${empty afcResult}">
                                     <tr>
                                         <td colspan="6">
                                             <iais:message key="GENERAL_ACK018" escape="true"/>
@@ -335,7 +335,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="items" items="${approvedSearchResult}" varStatus="status">
+                                    <c:forEach var="items" items="${afcResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value = "${items.orgName}"/></td>

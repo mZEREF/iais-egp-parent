@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/approvalBatAndActivity/beginPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/facRegistration/start/applyNew.jsp"%>

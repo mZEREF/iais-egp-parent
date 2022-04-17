@@ -3,7 +3,11 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -41,6 +45,10 @@ public class MohDsPrintDelegator {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                     DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         }
+        if(DataSubmissionConstant.PRINT_FLAG_LDT.equals(printflag)){
+            String title = ParamUtil.getString(bpc.request, "title");
+            ParamUtil.setRequestAttr(bpc.request, "title", title);
+        }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);
         ParamUtil.setRequestAttr(bpc.request, "DeclarationsCheckBox", "hide");
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
@@ -76,10 +84,16 @@ public class MohDsPrintDelegator {
                     dataSubmissionDto.setDeclaration(null);
                 }
             }else if((dataSubmissionDto.getSubmissionType().equals(DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED))){
-                String declaration = ParamUtil.getString(request, "declaration");
+                String dpLateReasonRadio = ParamUtil.getString(request, "dpLateReasonRadio");
                 String remarks=ParamUtil.getString(request, "remarks");
-                dataSubmissionDto.setDeclaration(declaration);
+                String[] declaration = ParamUtil.getStrings(request, "declaration");
+                dataSubmissionDto.setDpLateReasonRadio(dpLateReasonRadio);
                 dataSubmissionDto.setRemarks(remarks);
+                if(declaration != null && declaration.length >0){
+                    dataSubmissionDto.setDeclaration(declaration[0]);
+                }else{
+                    dataSubmissionDto.setDeclaration(null);
+                }
             }
             dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, request);
@@ -104,7 +118,6 @@ public class MohDsPrintDelegator {
                 dataSubmissionDto.setDeclaration(null);
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
-            return AppConsts.YES;
         }
         return AppConsts.YES;
     }

@@ -6,7 +6,22 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EicArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -38,7 +53,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -112,6 +132,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return null;
         }
         return arFeClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionId(String submissionId) {
+        log.info(StringUtil.changeForLog("----- Submission Id: " + submissionId + " -----"));
+        if (StringUtil.isEmpty(submissionId)) {
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDtoByDsId(submissionId).getEntity();
     }
 
     @Override
@@ -235,8 +264,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
-            String orgId, String hciCode, boolean onlyStage) {
+    public List<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
+                                                                                  String orgId, String hciCode, boolean onlyStage) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + hciCode + " : " + idType
                 + " : " + idNumber + " : " + nationality + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
@@ -673,6 +702,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     private boolean greaterFourDay(String code) {
         return "AOFET005".equals(code) || "AOFET006".equals(code);
+    }
+
+    @Override
+    public String getTransferConfirmationDsNoByBaseDsId(String patientCode, String hciCode, String svcName, String submissionId) {
+        return arFeClient.getTransferConfirmationDsNo(patientCode, hciCode, svcName, submissionId).getEntity();
     }
 
     @Override

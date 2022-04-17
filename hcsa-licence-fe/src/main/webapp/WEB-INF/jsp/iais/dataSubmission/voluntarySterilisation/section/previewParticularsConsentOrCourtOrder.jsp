@@ -89,7 +89,9 @@
                                                        varStatus="ind">
                                         <div id="selectedVssFileDiv${vssFile.seqNum}">
                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                                <iais:downloadLink fileRepoIdName="fileRo${ind.index}" fileRepoId="${vssFile.fileRepoId}" docName="${vssFile.docName}"/>
+                                                <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                                                     ${vssFile.docName}
+                                                </span>
                                             </span>
                                         </div>
                                     </c:forEach>

@@ -5,6 +5,7 @@ public class InspectionConstants {
 
     public static final String KEY_APP_ID = "appId";
     public static final String KEY_TASK_ID = "taskId";
+    public static final String KEY_ACTION_TYPE_SKIP = "skip";
 
     public static final String KEY_SELF_ASSESSMENT_CHK_LST = "bsbSelfAssessmentCheckList";
     public static final String KEY_SELF_ASSESSMENT_CONFIG = "bsbSelfAssessmentConfig";
@@ -14,7 +15,7 @@ public class InspectionConstants {
     public static final String KEY_CHKL_CONFIG = "checklistConfigDto";
     public static final String KEY_ANSWER_MAP = "answerMap";
     public static final String KEY_EDITABLE = "editable";
-    public static final String KEY_SELF_ASSESSMENT_UNAVAILABLE = "selfAssessmentUnavailable";
+    public static final String KEY_SELF_ASSESSMENT_AVAILABLE = "selfAssessmentAvailable";
 
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
@@ -33,12 +34,15 @@ public class InspectionConstants {
 
     public static final String TAB_ACTIVE = "activeTab";
     public static final String TAB_FAC_INFO = "tabInfo";
-    public static final String TAB_INS_DETAIL = "tabInsDetails";
-    public static final String TAB_DOC = "tabDocuments";
     public static final String TAB_INS_FINDING = "tabInsFinding";
     public static final String TAB_RECTIFICATION = "tabRectification";
     public static final String TAB_PROCESSING = "tabProcessing";
     public static final String TAB_INS_REPORT = "tabInsReport";
+    public static final String TAB_SUBMIT_INTO = "sumissionInfo";
+    public static final String TAB_DOC = "tabDocuments";
+    public static final String TAB_FAC_DETAIL = "tabFacilityDetails";
+    public static final String TAB_CHECKLIST = "tabChecklist";
+    public static final String TAB_FAC_DETAILS = "tabFacDetails";
 
     public static final String KEY_FINDING_ITEM = "findingItem";
     public static final String KEY_FINDING_TYPE = "findingType";

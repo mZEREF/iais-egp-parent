@@ -42,7 +42,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchFacilityName" class="col-sm-3 col-md-2 control-label">Facility name:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select name="searchFacilityName" id="searchFacilityName">
+                                        <select name="searchFacilityName" class="searchFacilityNameDrop" id="searchFacilityName">
                                             <option value='<c:out value=""/>' <c:if test="${inboxDataSubmissionSearchDto.searchFacName eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="facilityName" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="facNameItem" items="${facilityName}">
@@ -54,7 +54,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchType" class="col-sm-3 col-md-2 control-label">Type:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select name="searchType" id="searchType">
+                                        <select name="searchType" class="searchTypeDrop" id="searchType">
                                             <option value='<c:out value=""/>' <c:if test="${inboxDataSubmissionSearchDto.searchType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="submissionTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="typeItem" items="${submissionTypeOps}">
@@ -66,7 +66,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchStatus" class="col-sm-3 col-md-2 control-label">Status:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select name="searchStatus" id="searchStatus">
+                                        <select name="searchStatus" class="searchStatusDrop" id="searchStatus">
                                             <option value='<c:out value=""/>' <c:if test="${inboxDataSubmissionSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="submissionStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="statusItem" items="${submissionStatusOps}">
@@ -143,7 +143,7 @@
                                                             </td>
                                                             <td>
                                                                 <c:if test="${item.status ne 'DATASTA002'}">
-                                                                    <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                                    <select id="appAction${status.index}" class="appActionDown" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage--%>
                                                                         <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' and item.applicationStatus ne 'BSBAPST009')}">

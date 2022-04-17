@@ -40,33 +40,22 @@
       <div class="form-horizontal">
         <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
         <br><br>
-        <div class="form-group">
-          <div class="col-xs-12">
-            <tr>
-              <td>
-                <label>
-                  Common  &nbsp;
-                  <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false"
-                      <c:if test="${param.module != null && param.module != ''}"> checked="checked"</c:if> value="General Regulation"
-                      style="margin: 6px 0;">
-                  <span style="margin-left: 20px;">General Regulation</span>
-                </label>
-              </td>
-            </tr>
-
-            <br><br>
-            <tr>
-              <td>
-                <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" request="${pageContext.request}"></iais:checkbox>
-              </td>
-
-
-              <td>
-                <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" request="${pageContext.request}"></iais:checkbox>
-              </td>
-            </tr>
-
+        <iais:row>
+          <label class="col-xs-12 col-md-2 control-label" style="padding-left: 0;">Common </label>
+          <div class="form-check-gp col-xs-12 col-md-6" style="padding-left: 0;">
+            <div class="form-check">
+              <input class="form-check-input " id="commmon" type="checkbox" name="module" aria-invalid="false"
+              <c:if test="${param.module != null && param.module != ''}"> checked="checked"</c:if>
+                     value="General Regulation">
+              <label class="form-check-label" for="commmon">
+                <span class="check-square"></span>General Regulation
+              </label>
+            </div>
           </div>
+        </iais:row>
+        <div class="form-group">
+          <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" request="${pageContext.request}"></iais:checkbox>
+          <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" request="${pageContext.request}"></iais:checkbox>
         </div>
 
         <div class="form-group">

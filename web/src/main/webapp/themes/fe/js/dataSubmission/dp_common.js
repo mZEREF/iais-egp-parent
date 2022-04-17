@@ -128,7 +128,11 @@ function getDataForPrinting() {
     if (isEmpty(remarks)) {
         remarks= '';
     }
-    return {declaration: declaration,remarks: remarks, printflag: printflag};
+    var dpLateReasonRadio = $('input[name="dpLateReasonRadio"]:checked').val();
+    if (isEmpty(dpLateReasonRadio)) {
+        dpLateReasonRadio = '';
+    }
+    return {declaration: declaration,remarks: remarks,dpLateReasonRadio: dpLateReasonRadio, printflag: printflag};
 }
 function showPopCommon(controlId,showPopId,val){
     if($(controlId).length == 0){

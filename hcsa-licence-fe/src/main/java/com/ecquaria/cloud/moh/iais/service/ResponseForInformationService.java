@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
@@ -23,6 +21,5 @@ public interface ResponseForInformationService {
     String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     void compressFile(String rfiId);
     String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto);
-    void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 
 }

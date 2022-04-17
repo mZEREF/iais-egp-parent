@@ -39,7 +39,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Strength (pg)" mandatory="true"/>
+                        <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>Strength (pg)&nbsp;<span class="mandatory">*</span></label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_strength"${index}></span>
@@ -91,7 +91,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field width="5" value="Strength (pg)" mandatory="true"/>
+                            <label class="col-xs-5 col-md-4 control-label" name ='strengthlabel'>Strength (pg)&nbsp;<span class="mandatory">*</span></label>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="3" type="text" name="strength${index}" value="${drugMedicationDto.strength}"/>
                             </iais:value>

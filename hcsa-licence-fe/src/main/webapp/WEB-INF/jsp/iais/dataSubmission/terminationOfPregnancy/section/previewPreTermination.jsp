@@ -22,14 +22,12 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty preTerminationDto.counsellingGiven}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Reason for No Counselling"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${preTerminationDto.counsellingGiven}"/>
+                            <c:out value="${preTerminationDto.noCounsReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
                 <iais:row>
                     <iais:field width="6" value="Given Counselling On Mid-Trimester Pregnancy Termination"/>
                     <iais:value width="6" display="true">
@@ -41,7 +39,6 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${empty preTerminationDto.patientSign}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"/>
                         <iais:value width="6" display="true">
@@ -53,87 +50,66 @@
                             </c:if>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellorIdType}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor ID Type" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${preTerminationDto.counsellorIdType}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellorIdNo}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor ID No."/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellorIdNo}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellorName}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counsellor Name"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellorName}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Termination Counselling Date"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellingPlace}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Place"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${preTerminationDto.counsellingPlace}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.preCounsNoCondReason}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.preCounsNoCondReason}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.counsellingResult}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Pre-Counselling Result" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${preTerminationDto.counsellingResult}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.patientAppointment}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"/>
                         <iais:value width="6" display="true">
                             <iais:code code="${preTerminationDto.patientAppointment}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.secCounsellingDate}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Date of Second or Final Pre-Counselling" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.secCounsellingDate}"/>
                         </iais:value>
                     </iais:row>
-                </div>
-                <div <c:if test="${empty preTerminationDto.secCounsellingResult}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Second or Final Pre-Counselling result" />
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${preTerminationDto.secCounsellingResult}"/>
                         </iais:value>
                     </iais:row>
-                </div>
             </div>
         </div>
     </div>

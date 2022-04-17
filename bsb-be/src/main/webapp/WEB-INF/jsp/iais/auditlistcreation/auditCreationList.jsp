@@ -36,6 +36,7 @@
                                     <iais:field value="Facility Name"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityName" id="facilityName"
+                                                     cssClass="facilityNameDropdown"
                                                      value="${auditSearch.facilityName}"
                                                      options="facilityName"
                                                      firstOption="All"/>
@@ -46,6 +47,7 @@
                                     <iais:field value="Facility classification"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityClassification" id="facilityClassification"
+                                                     cssClass="facilityClassificationDropdown"
                                                      value="${auditSearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
                                                      firstOption="All"/>
@@ -56,6 +58,7 @@
                                     <iais:field value="Active Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
+                                                     cssClass="facilityTypeDropdown"
                                                      value="${auditSearch.activeType}"
                                                      codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="All"/>
                                     </iais:value>
@@ -65,6 +68,7 @@
                                     <iais:field value="Audit Type"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
+                                                     cssClass="auditTypeDropdown"
                                                      value="${auditSearch.auditType}"
                                                      codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>
                                         <span id="error_auditType"

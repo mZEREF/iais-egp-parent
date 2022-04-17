@@ -53,6 +53,15 @@ $(function () {
         $("input[name='action_type']").val('submit');
         $("#mainForm").submit();
     });
+
+    $("#processingDecision").change(function () {
+        var selectValue = $(this).val();
+        if (selectValue === "MOHPRO022") {
+            $("#selectMohUserDiv").show();
+        } else {
+            $("#selectMohUserDiv").hide();
+        }
+    })
 })
 
 // inspection findings' sections
@@ -200,4 +209,12 @@ function doInspectorProRecCheck(){
     }else{
         allNcItemCheck.checked = false;
     }
+}
+
+
+function skipValidate(){
+    showWaiting();
+    $("[name='action_type']").val("submit");
+    $("[name='action_value']").val("noValidate");
+    $("#mainForm").submit();
 }

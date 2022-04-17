@@ -80,3 +80,8 @@ function sourceChange(own,value,row,index){
 function DSERR019MessageTipClose(){
     $('#DSERR019Tip').modal('hide');
 }
+
+function donorMessageTipClose(){
+    $('#donorMessageTip').modal('hide');
+}
+

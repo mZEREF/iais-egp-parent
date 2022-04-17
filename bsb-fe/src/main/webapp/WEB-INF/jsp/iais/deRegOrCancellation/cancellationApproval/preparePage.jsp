@@ -61,7 +61,7 @@
                                             <div class="form-group ">
                                                 <label class="col-sm-5 control-label">Reasons <span style="color: red">*</span></label>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <select name="reasons" id="reasons">
+                                                    <select name="reasons" class="reasonsDropdown" id="reasons">
                                                         <option value="">Please Select</option>
                                                         <option value="BSBRFAC001" <c:if test="${cancellationApprovalDto.reasons eq 'BSBRFAC001'}">selected="selected"</c:if>>No work involving the biological agent and/or toxin</option>
                                                         <option value="BSBRFAC002" <c:if test="${cancellationApprovalDto.reasons eq 'BSBRFAC002'}">selected="selected"</c:if>>Termination of project/business</option>

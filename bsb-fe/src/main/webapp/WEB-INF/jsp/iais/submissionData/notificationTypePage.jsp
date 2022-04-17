@@ -33,7 +33,7 @@
                                     <iais:row>
                                         <iais:field value="Type"/>
                                         <iais:value width="50">
-                                            <select id="selectType">
+                                            <select id="selectType" class="selectTypeDropdown">
                                                 <option value="1">Notification of Consumption</option>
                                                 <option value="2">Notification of Complete Destruction and/or Disposal
                                                     Stock Inventory

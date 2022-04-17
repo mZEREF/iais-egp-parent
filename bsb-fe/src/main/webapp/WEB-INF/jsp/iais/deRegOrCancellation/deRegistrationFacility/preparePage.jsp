@@ -49,7 +49,7 @@
                                             <div class="form-group ">
                                                 <label class="col-sm-5 control-label">Reasons <span style="color: red">*</span></label>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <select name="reasons" id="reasons">
+                                                    <select name="reasons" class="reasonsDown" id="reasons">
                                                         <option value="">Please Select</option>
                                                         <option value="BSBRFFD001" <c:if test="${deRegistrationFacilityDto.reasons eq 'BSBRFFD001'}">selected="selected"</c:if>>Moving to a different location</option>
                                                         <option value="BSBRFFD002" <c:if test="${deRegistrationFacilityDto.reasons eq 'BSBRFFD002'}">selected="selected"</c:if>>No longer handling First Schedule biological agent(s)</option>

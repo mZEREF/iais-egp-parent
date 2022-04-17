@@ -2,6 +2,7 @@
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type">
+    <input type="hidden" name="title" value="${title}">
     <div class="main-content">
         <div class="container">
             <div class="row form-group tab-content" style="border-bottom: 1px solid #D1D1D1;">

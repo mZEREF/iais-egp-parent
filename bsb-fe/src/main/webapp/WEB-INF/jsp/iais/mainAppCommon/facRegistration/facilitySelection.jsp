@@ -1,3 +1,4 @@
+<%--@elvariable id="serviceSelection" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto"--%>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <p class="assessment-title">Facility Classification</p>
 <div class="form-check-gp">

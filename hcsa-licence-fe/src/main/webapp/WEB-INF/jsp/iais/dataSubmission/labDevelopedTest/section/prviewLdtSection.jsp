@@ -97,7 +97,7 @@
                         </iais:row>
 
                         <%@ include file="./previewDsAmendment.jsp" %>
-
+                        <%@ include file="./ldtDeclaration.jsp" %>
                     </div>
                 </div>
             </div>

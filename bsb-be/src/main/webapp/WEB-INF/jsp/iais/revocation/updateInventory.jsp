@@ -27,7 +27,7 @@
                             <iais:field value="Biological Agents or Toxins" width="15" required="false"/>
                             <iais:value width="10">
                                 <%--                                <iais:select name="toxins" value="toxins" firstOption="Please Select"/>--%>
-                                <select id="toxinsSelect">
+                                <select id="toxinsSelect" class="toxinsSelectDrop">
                                     <option>Please Select</option>
                                     <option>Biological Agents</option>
                                     <option>Toxins</option>
@@ -46,7 +46,7 @@
                             <iais:field value="Physical Possession of Agent (Current state)" width="15"
                                         required="false"/>
                             <iais:value width="10">
-                                <select id="stateSelect">
+                                <select id="stateSelect" class="stateSelectDropdown">
                                     <option>Please Select</option>
                                     <option>Yes</option>
                                     <option>No</option>

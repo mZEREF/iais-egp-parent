@@ -18,6 +18,12 @@ function sortRecords(field, sortType) {
     $("#mainForm").submit();
 }
 
+function skipInspection(){
+    showWaiting();
+    $("[name='action_type']").val("skip");
+    $("#mainForm").submit();
+}
+
 
 $(function () {
     $('#pageJumpNoPageSize').change(function () {

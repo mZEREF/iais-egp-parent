@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,9 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
         private String unitNo;
         private String streetName;
         private String buildingName;
+        private String country;
+        private String city;
+        private String state;
 
         private String contactPersonName;
         private String emailAddress;
@@ -52,8 +56,15 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
     private String activityEntityId;
     private String activityType;
 
+    private String facilityName;
+    private String blockNo;
+    private String floorAndUnit;
+    private String street;
+    private String postalCode;
+
     private List<BATInfo> batInfos;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     public ApprovalToLargeDto() {
@@ -114,6 +125,46 @@ public class ApprovalToLargeDto extends ValidatableNodeValue {
 
     public void setBatInfos(List<BATInfo> batInfos) {
         this.batInfos = new ArrayList<>(batInfos);
+    }
+
+    public String getFacilityName() {
+        return facilityName;
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
+    }
+
+    public String getBlockNo() {
+        return blockNo;
+    }
+
+    public void setBlockNo(String blockNo) {
+        this.blockNo = blockNo;
+    }
+
+    public String getFloorAndUnit() {
+        return floorAndUnit;
+    }
+
+    public void setFloorAndUnit(String floorAndUnit) {
+        this.floorAndUnit = floorAndUnit;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     // ---------------------------- request -> object ----------------------------------------------

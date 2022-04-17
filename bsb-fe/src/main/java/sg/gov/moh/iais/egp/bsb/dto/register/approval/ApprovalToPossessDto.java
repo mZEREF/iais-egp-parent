@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.approval;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,8 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
         private String unitNo;
         private String streetName;
         private String buildingName;
+        private String country;
+        private String state;
 
         private String contactPersonName;
         private String emailAddress;
@@ -49,9 +52,6 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
         private String expectedDate;
         private String courierServiceProviderName;
         private String remarks;
-
-        private Map<String, String> sampleEntityIdMap;
-        private Map<String, String> workEntityIdMap;
     }
 
     private String activityEntityId;
@@ -59,6 +59,7 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
 
     private List<BATInfo> batInfos;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     public ApprovalToPossessDto() {
@@ -66,8 +67,6 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
         BATInfo batInfo = new BATInfo();
         batInfo.sampleType = new ArrayList<>();
         batInfo.workType = new ArrayList<>();
-        batInfo.sampleEntityIdMap = new HashMap<>();
-        batInfo.workEntityIdMap = new HashMap<>();
         batInfos.add(batInfo);
     }
 
@@ -147,6 +146,8 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_UNIT_NO                            = "unitNo";
     private static final String KEY_PREFIX_STREET_NAME                        = "streetName";
     private static final String KEY_PREFIX_BUILDING_NAME                      = "buildingName";
+    private static final String KEY_PREFIX_COUNTRY                            = "country";
+    private static final String KEY_PREFIX_STATE                              = "state";
     private static final String KEY_PREFIX_CONTACT_PERSON_NAME                = "contactPersonName";
     private static final String KEY_PREFIX_EMAIL_ADDRESS                      = "emailAddress";
     private static final String KEY_PREFIX_CONTACT_NO                         = "contactNo";
@@ -177,8 +178,7 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
             } else {
                 info.setWorkType(new ArrayList<>(0));
             }
-            // TODO: update to masterCode
-            if (info.getWorkType().contains("BNOTW006")) {
+            if (info.getWorkType().contains(MasterCodeConstants.WORK_TYPE_OTHERS)) {
                 info.setOtherWorkType(ParamUtil.getString(request, KEY_PREFIX_OTHER_WORK_TYPE + SEPARATOR +idx));
             }
             info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +idx));
@@ -191,6 +191,8 @@ public class ApprovalToPossessDto extends ValidatableNodeValue {
             info.setUnitNo(ParamUtil.getString(request, KEY_PREFIX_UNIT_NO + SEPARATOR +idx));
             info.setStreetName(ParamUtil.getString(request, KEY_PREFIX_STREET_NAME + SEPARATOR +idx));
             info.setBuildingName(ParamUtil.getString(request, KEY_PREFIX_BUILDING_NAME + SEPARATOR +idx));
+            info.setCountry(ParamUtil.getString(request, KEY_PREFIX_COUNTRY + SEPARATOR +idx));
+            info.setState(ParamUtil.getString(request, KEY_PREFIX_STATE + SEPARATOR +idx));
             info.setContactPersonName(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_NAME + SEPARATOR +idx));
             info.setEmailAddress(ParamUtil.getString(request, KEY_PREFIX_EMAIL_ADDRESS + SEPARATOR +idx));
             info.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR +idx));

@@ -51,7 +51,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchProcessType" class="col-sm-3 col-md-2 control-label">Process Type:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchProcessType" name="searchProcessType">
+                                        <select id="searchProcessType" class="searchProcessTypeDropDown" name="searchProcessType">
                                             <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${processTypeOps}">
@@ -64,7 +64,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchStatus" class="col-sm-3 col-md-2 control-label">Status:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchStatus" name="searchStatus">
+                                        <select id="searchStatus" class="searchStatusDrop" name="searchStatus">
                                             <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="approvalStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="approvalStatusItem" items="${approvalStatusOps}">
@@ -181,7 +181,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select id="approvalAction${status.index}" name="approvalAction${status.index}" data-action-select="">
+                                                                <select id="approvalAction${status.index}" class="approvalActionDrop" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
                                                                     <c:choose>
                                                                         <c:when test="${approval.status eq 'APPRSTA001' and approval.processType eq 'PROTYPE001'}">

@@ -1,6 +1,5 @@
 $(function () {
     validate();
-    $("input[type='radio']").attr("disabled", true);
     $("#submitBtn").click(function () {
         showWaiting();
         $('#mainForm').submit();

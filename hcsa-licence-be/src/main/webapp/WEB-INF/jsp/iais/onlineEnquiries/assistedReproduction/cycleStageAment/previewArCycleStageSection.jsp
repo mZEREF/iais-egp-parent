@@ -156,7 +156,7 @@
                 <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">Total No. of AR cycles previously undergone by patient
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="${MessageUtil.getMessageDesc("DS_ACK002")}"
+                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_ACK002")}</span>"
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>
@@ -194,7 +194,7 @@
                     <c:if test="${!empty DS_ERR018Tip}">
                         <label class="col-xs-4 col-md-4 control-label">Enhanced Counselling
                             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                               title="${DS_ERR018Tip}"
+                               title="<span style='font-size: 1.5rem;'>${DS_ERR018Tip}</span>"
                                style="z-index: 10"
                                data-original-title="">i</a>
                         </label>

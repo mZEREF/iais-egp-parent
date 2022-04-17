@@ -96,7 +96,7 @@
 
                         <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
                             <iais:row >
-                                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="counsellor"/></c:set>
+                                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="donor"/></c:set>
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true" info="${toolMsg}"/>
                                 <iais:value width="7" cssClass="col-md-7">
                                     <iais:select name="knownIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.knownIdType}"

@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class InsFacInfoDto implements Serializable {
     private String facName;
     private String classification;
-    private String activityType;
     private String blk;
     private String street;
     private String floor;
@@ -17,5 +16,4 @@ public class InsFacInfoDto implements Serializable {
     private String adminName;
     private String adminMobileNo;
     private String adminEmail;
-    private String appStatus;
 }

@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 30">
                             <input type="hidden" id="facilityName" name="facilityName" value="${activity.facilityName}">
-                            <select name="facilityId" id="facilityId">
+                            <select name="facilityId" class="facilityIdDropdown" id="facilityId">
                                 <c:forEach items="${facilityIdSelect}" var="facSelect">
                                     <option value="${MaskUtil.maskValue('facilityId',facSelect.value)}" <c:if test="${activity.facilityId eq facSelect.value}">selected="selected"</c:if>>${facSelect.text}</option>
                                 </c:forEach>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 20;">
                             <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
-                            <select name="activityId" id="activityId">
+                            <select name="activityId" class="activityIdDown" id="activityId">
                                 <option>Please Select</option>
                                 <c:forEach items="${activityIdSelectDto}" var="selectDto">
                                     <c:forEach items="${selectDto.activityIdList}" var="selectList">

@@ -28,9 +28,9 @@ public interface InventoryClient {
     @GetMapping(path ="/bio_info/name/{bioName}")
     ResponseDto<Biological> getBiologicalByName(@PathVariable(name = "bioName") String bioName);
 
-    @GetMapping(value = "/iny_info/agent", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/online-enquiry/inventory/agent", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InventoryAgentResultDto> findInventoryByAgentInfo(@RequestBody InventoryDto dto);
 
-    @GetMapping(value = "/iny_info/date", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/online-enquiry/inventory/date", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InventoryDtResultDto> findInventoryByDt(@RequestBody InventoryDto dto);
 }

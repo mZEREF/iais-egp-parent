@@ -104,10 +104,11 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" id="processingDecision">
+                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO023" <c:if test="${insDecision.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route back to applicant</option>
                                                                                 <option value="MOHPRO010" <c:if test="${insDecision.decision eq 'MOHPRO010'}">selected="selected"</c:if>>Accept response to follow-up items</option>
+                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                             </select>
                                                                             <span data-err-ind="decision" class="error-msg" ></span>
                                                                         </div>

@@ -1,5 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
@@ -46,7 +44,7 @@
                                     <label>
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
-                                               name="searchNo" maxlength="100"/>
+                                               name="searchText" maxlength="100"/>
                                     </label>
                                 </iais:value>
                             </iais:row>
@@ -58,22 +56,22 @@
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="fnChk" type="radio"
-                                           <c:if test="${count=='fn'}">checked</c:if>
+                                           <c:if test="${count=='fac'}">checked</c:if>
                                            name="searchChk"
                                            value="fn"/><label for="fnChk">&nbsp;Facility Name</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="anChk" type="radio"
-                                           <c:if test="${count=='an'}">checked</c:if> value="an"
+                                           <c:if test="${count=='approval'}">checked</c:if> value="an"
                                            name="searchChk"/><label for="anChk">&nbsp;Approval No</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="onChk" type="radio"
-                                           <c:if test="${count=='on'}">checked</c:if> value="on"
+                                           <c:if test="${count=='afc'}">checked</c:if> value="on"
                                            name="searchChk"/><label for="onChk">&nbsp;Organisation Name</label>
                                 </iais:value>
                             </iais:row>
-                            <iais:row id="selectSearchChkMsg" style="display: none">
+                            <iais:row id="selectSearchChkMsg" cssClass="selectSearchChkMsg-select" style="display: none">
                                 <div class="row" height="1"
                                      style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
                                      id="selectSearchChkMsg">

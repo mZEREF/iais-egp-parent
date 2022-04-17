@@ -17,7 +17,7 @@
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <c:choose>
-                        <c:when test="${not empty outStageDsNo}">
+                        <c:when test="${not empty bindStageSubmissionId}">
                             <%@include file="section/transferInOutStageReceiveSection.jsp" %>
                         </c:when>
                         <c:otherwise>

@@ -7,7 +7,7 @@
             <div style="font-size: 16px;text-align: right;"><a href="javascript:void(0)" onclick="printData()"> <em
                     class="fa fa-print"></em>Print</a></div>
             </p>
-            <label class="col-xs-12" style="font-size: 20px">Submission successful</label>
+            <label class="col-xs-12" style="font-size: 20px">Submission Successful</label>
             <p class="col-xs-12 margin-btm">- <strong>Laboratory Developed Test</strong></p>
             <div class="ack-font-16">
                 <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>

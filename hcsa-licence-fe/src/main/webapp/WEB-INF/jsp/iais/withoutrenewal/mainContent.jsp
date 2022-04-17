@@ -169,7 +169,7 @@
                                 </div>
 
                                 <div class="tab-pane" id="tabAck" role="tabpanel">
-                                    <h2><strong>Submission successful</strong></h2>
+                                    <h2><strong>Submission Successful</strong></h2>
                                     <h3><strong>-Clinical Laboratory</strong>(Renewal+Amendment)</h3>
                                     <h3><strong>-Clinical Laboratory</strong>(Amendment)</h3>
                                     <br>

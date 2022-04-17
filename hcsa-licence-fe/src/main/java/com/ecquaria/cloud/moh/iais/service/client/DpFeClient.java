@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = DpFeClientFallback.class)
 public interface DpFeClient {
@@ -60,4 +60,9 @@ public interface DpFeClient {
                                                   @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
                                                   @RequestParam(name = "orgId") String orgId);
 
+    @GetMapping(value = "/data-submission/DrugMedicationDtos/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNo(@PathVariable("submissionNo") String submissionNo);
+
+    @GetMapping(value = "/data-submission/DrugMedicationDtos/{submissionNo}/Dispensed", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(@PathVariable("submissionNo") String submissionNo);
 }

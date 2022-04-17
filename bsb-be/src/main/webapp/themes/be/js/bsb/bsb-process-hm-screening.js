@@ -1,6 +1,5 @@
 $(function () {
     validate();
-    $("input[type='radio']").attr("disabled",true);
     $("#submitBtn").click(function () {
         showWaiting();
         $("input[type='radio']").removeAttr("disabled");

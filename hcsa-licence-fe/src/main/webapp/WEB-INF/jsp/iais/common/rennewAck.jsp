@@ -1,5 +1,5 @@
 <div class="col-xs-12">
-    <p class="ack-font-20"><strong>Submission successful</strong></p>
+    <p class="ack-font-20"><strong>Submission Successful</strong></p>
 </div>
 
 <c:forEach items="${serviceNamesAck}" var="serviceName">

@@ -32,12 +32,14 @@
                                 <div id="appInfoPanel" role="tabpanel">
                                     <%@include file="subStepNavTab.jsp"%>
                                     <div class="form-horizontal">
-                                        <p class="assessment-title" style="font-size:18px; font-weight: bold">Facility Activity Type</p>
+                                        <p class="assessment-title" style="font-size:18px; font-weight: bold">Facility Activity Type <span style="color: red">*</span></p>
                                         <p class="assessment-title" style="border-bottom: 1px solid black; font-size:15px; padding-bottom: 10px;">Please select the facility activity type from the following:</p>
+                                        <%--@elvariable id="notExistFacActivityTypeApprovalList" type="java.util.List<java.lang.String>"--%>
+                                        <%--@elvariable id="approvalToActivityDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToActivityDto"--%>
                                         <c:forEach items="${notExistFacActivityTypeApprovalList}" var="facActivity">
                                             <div>
-                                                <input type="checkbox" name="facActivityTypes" <c:if test="${approvalToActivityDto.facActivityTypes.contains(facActivity)}">checked="checked"</c:if> value="${facActivity}"/>
-                                                <label class="form-check-label"><span class="check-square"><iais:code code="${facActivity}"/></span></label>
+                                                <input type="checkbox" name="facActivityTypes" id="facActivityTypes" <c:if test="${approvalToActivityDto.facActivityTypes.contains(facActivity)}">checked="checked"</c:if> value="${facActivity}"/>
+                                                <label for="facActivityTypes" class="form-check-label"><span class="check-square"><iais:code code="${facActivity}"/></span></label>
                                             </div>
                                         </c:forEach>
                                         <div>

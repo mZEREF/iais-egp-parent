@@ -37,10 +37,6 @@ public class EicTrackingClearJobHandler extends IJobHandler {
     private EicClient eicClient;
     @Autowired
     private OrgEicClient orgEicClient;
-    @Value("${spring.application.name}")
-    private String currentApp;
-    @Value("${iais.current.domain}")
-    private String currentDomain;
 
     @Override
     public ReturnT<String> execute(String s) {

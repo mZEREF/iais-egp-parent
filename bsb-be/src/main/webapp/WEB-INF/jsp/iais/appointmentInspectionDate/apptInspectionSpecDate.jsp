@@ -43,7 +43,7 @@
                                                 <span data-err-ind="specifyStartDate" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
-                                                <iais:select name="specifyStartHour" options="startHoursOption" firstOption="--:--" value="${apptReviewData.specifyStartHour}"/>
+                                                <iais:select name="specifyStartHour" cssClass="specifyStartHourDropdown" options="startHoursOption" firstOption="--:--" value="${apptReviewData.specifyStartHour}"/>
                                                 <span data-err-ind="specifyStartHour" class="error-msg" ></span>
                                             </div>
                                         </div>
@@ -69,7 +69,7 @@
                                                 <span data-err-ind="specifyEndDate" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
-                                                <iais:select name="specifyEndHour" options="endHoursOption" firstOption="--:--" value="${apptReviewData.specifyEndHour}"/>
+                                                <iais:select name="specifyEndHour" cssClass="specifyEndHourDrop" options="endHoursOption" firstOption="--:--" value="${apptReviewData.specifyEndHour}"/>
                                                 <span data-err-ind="specifyEndHour" class="error-msg" ></span>
                                             </div>
                                         </div>

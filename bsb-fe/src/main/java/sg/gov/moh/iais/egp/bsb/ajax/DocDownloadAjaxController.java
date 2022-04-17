@@ -15,7 +15,6 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
@@ -218,15 +217,15 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetSavedFile);
     }
 
-    @GetMapping("/approvalApp/new/{id}")
-    public void downloadApprovalNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::approvalAppGetNewFile);
-    }
+//    @GetMapping("/approvalApp/new/{id}")
+//    public void downloadApprovalNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+//        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::approvalAppGetNewFile);
+//    }
 
-    @GetMapping("/approvalApp/repo/{id}")
-    public void downloadApprovalSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
-    }
+//    @GetMapping("/approvalApp/repo/{id}")
+//    public void downloadApprovalSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+//        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+//    }
 
     @GetMapping("/audit/repo/{id}")
     public void downloadAuditSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
@@ -455,28 +454,28 @@ public class DocDownloadAjaxController {
      * Approval app get the new doc file object
      * @param id key of the newDocMap in the PrimaryDocDto
      */
-    private MultipartFile approvalAppGetNewFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
-        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
-        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
-        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
-    }
+//    private MultipartFile approvalAppGetNewFile(HttpServletRequest request, String id) {
+//        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
+//        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
+//        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
+//        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+//    }
 
     /**
      * Approval app get the saved doc file data
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
-    private MultipartFile approvalAppGetSavedFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
-        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
-        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
-        DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
-        if (info == null) {
-            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
-        }
-        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
-        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
-    }
+//    private MultipartFile approvalAppGetSavedFile(HttpServletRequest request, String id) {
+//        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
+//        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
+//        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
+//        DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+//        if (info == null) {
+//            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+//        }
+//        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+//        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+//    }
 
     /**
      * Facility Certifier registration get the new doc file object

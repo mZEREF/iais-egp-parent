@@ -27,28 +27,28 @@ public class FamilyPlanValidator implements CustomizeValidator {
             familyPlanDto = new FamilyPlanDto();
         }
 
-        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+        if("TOPCH003".equals(familyPlanDto.getContraHistory())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"mostRecentContraMethod");
             errorMap.putAll(result.retrieveAll());
         }
 
-        if("TOPRTP008".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP011".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP002".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP006".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP002".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP003".equals(familyPlanDto.getMainTopReason()) || "TOPRTP004".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP004".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"subRopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP004".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
             if("TOPSCTP003".equals(familyPlanDto.getSubRopReason()) || "TOPSCTP006".equals(familyPlanDto.getSubRopReason())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherSubTopReason");
                 errorMap.putAll(result.retrieveAll());
@@ -110,7 +110,7 @@ public class FamilyPlanValidator implements CustomizeValidator {
                 errorMap.put("gestAgeBaseNotOnUltrDay", "Negative numbers are not allowed on this field.");
             }
         }
-        if("TOPCH001".equals(familyPlanDto.getContraHistory())){
+        if("TOPCH003".equals(familyPlanDto.getContraHistory())){
             if("TOPMRC007".equals(familyPlanDto.getMostRecentContraMethod())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherContraMethod");
                 errorMap.putAll(result.retrieveAll());

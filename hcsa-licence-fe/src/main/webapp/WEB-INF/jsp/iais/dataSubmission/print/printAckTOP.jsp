@@ -15,8 +15,8 @@
 
 <%-- current page: ack --%>
 
-<label class="col-xs-12" style="font-size: 20px">Submission successful</label>
-<p class="col-xs-12 margin-btm">- <strong>Laboratory Developed Test</strong></p>
+<label class="col-xs-12" style="font-size: 20px">Submission Successful</label>
+<p class="col-xs-12 margin-btm">- <strong>Submit Patient Information</strong></p>
 <div class="ack-font-16">
     <p class="col-xs-12">A notification email will be sent to ${emailAddress}.</p>
     <p class="col-xs-12 margin-btm"><iais:message key="DS_MSG004" escape="false"></iais:message></p>

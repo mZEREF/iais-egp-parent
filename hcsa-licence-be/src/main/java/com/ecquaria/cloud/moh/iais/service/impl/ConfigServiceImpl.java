@@ -4,8 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -28,16 +26,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -50,9 +44,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,13 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -105,25 +98,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${iais.email.sender}")
     private String mailSender;
     @Autowired
-    private BeEicGatewayClient gatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
+    private BeEicGatewayClient beEicGatewayClient;
 
     private CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
@@ -1100,7 +1075,7 @@ public class ConfigServiceImpl implements ConfigService {
         personnelDto.setPageMaximumCount(mix);
         try {
             if (StringUtil.isDigit(man)) {
-                personnelDto.setMandatoryCount(Integer.parseInt(man));
+                personnelDto.setMandatoryCount(Integer.valueOf(man));
             } else {
                 personnelDto.setMandatoryCount(null);
             }
@@ -1108,7 +1083,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         try {
             if (StringUtil.isDigit(mix)) {
-                personnelDto.setMaximumCount(Integer.parseInt(mix));
+                personnelDto.setMaximumCount(Integer.valueOf(mix));
             } else {
                 personnelDto.setMaximumCount(null);
             }
@@ -1515,38 +1490,12 @@ public class ConfigServiceImpl implements ConfigService {
         }
     }
 
-
-    private void eic(HcsaServiceConfigDto hcsaServiceConfigDto){
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+    public void eic(HcsaServiceConfigDto hcsaServiceConfigDto) {
+        beEicGatewayClient.saveFeServiceConfig(hcsaServiceConfigDto);
     }
 
-    private void eicGateway(HcsaServiceConfigDto hcsaServiceConfigDto){
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, ConfigServiceImpl.class.getName(),
-                    "eic", currentApp + "-" + currentDomain,
-                    HcsaServiceConfigDto.class.getName(), JsonUtil.parseToJson(hcsaServiceConfigDto));
-            AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
-            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-            if (fetchResult != null && HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(fetchResult)));
-                EicRequestTrackingDto entity = fetchResult.getEntity();
-                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                    eic(hcsaServiceConfigDto);
-                    entity.setProcessNum(1);
-                    Date now = new Date();
-                    entity.setFirstActionAt(now);
-                    entity.setLastActionAt(now);
-                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    entity.setAuditTrailDto(intenet);
-                    eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
-
-                }
-            } else {
-                log.info(StringUtil.changeForLog("------ null----"));
-            }
-
-
+    private void eicGateway(HcsaServiceConfigDto hcsaServiceConfigDto) {
+        beEicGatewayClient.callEicWithTrack(hcsaServiceConfigDto, this::eic, this.getClass(),
+                "eic");
     }
 }

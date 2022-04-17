@@ -3,6 +3,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -13,9 +15,11 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-bat-and-activity.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-biological-agent-toxin.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <%@include file="dashboard.jsp"%>
+<%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto"--%>
 <form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -49,7 +53,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="schedule" id="schedule">
+                                                                <select name="schedule" class="scheduleDropdown" id="schedule">
                                                                     <c:forEach items="${ScheduleOps}" var="schedule">
                                                                         <option value="${schedule.value}" <c:if test="${batInfo.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                     </c:forEach>
@@ -63,7 +67,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="batName" id="batName">
+                                                                <select name="batName"  class="batNDropdown" id="batName">
                                                                     <c:forEach items="${batNameOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                     </c:forEach>
@@ -124,7 +128,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="addressType" id="addressType">
+                                                                <select name="addressType" class="addressTypeDropdown" id="addressType">
                                                                     <c:forEach items="${addressTypeOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.addressType eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                     </c:forEach>

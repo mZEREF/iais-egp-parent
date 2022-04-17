@@ -46,7 +46,7 @@
                 <iais:row>
                     <iais:field width="3" value="Doctor's Professional Registration No." mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" style="width: 380px;">
-                        <iais:input maxLength="20" type="text" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" />
+                        <iais:input maxLength="20" type="text" name="doctorReignNo" value="${drugSubmission.doctorReignNo}" onchange="clearDockerSelection();"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_doctorReignNo"></span>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3" display="true">
@@ -96,7 +96,8 @@
                 <iais:row>
                     <iais:field width="5" value="Medication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="medication"  name="medication" firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
+                        <iais:select cssClass="medication" id = "medication" name="medication"
+                                     firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -124,9 +125,12 @@
 </div>
 <div class="selectionHidden">
     <input type="hidden" name="name" id="patientNameHidden" value="${drugSubmission.name}">
-    <input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
     <input type="hidden" name="prsFlag" value="${prsFlag}"/>
 </div>
+<div class="doctorNameSelectionHidden">
+<input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+</div>
+
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -161,7 +165,20 @@
                 $('#dispensingDate').attr("style","display: none");
             }
         });
+        $('#medication').change(function (){
+            changeStrength();
+        });
+        changeStrength();
     });
+
+    function changeStrength(){
+        var medication= $('#medication').val();
+        if('MED001' == medication){
+            $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
+        }else{
+            $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+        }
+    }
 
     $(document).ready(function() {
         console.log("showValidatePT!")
@@ -218,6 +235,12 @@
         clearErrorMsg();
         $('#name').find('p').text('');
         clearFields('.selectionHidden');
+    }
+    function clearDockerSelection(){
+        console.log("clearDockerSelection!")
+        clearErrorMsg();
+        $('#names').find('p').text('');
+        clearFields('.doctorNameSelectionHidden');
     }
 
     $(document).ready(function() {

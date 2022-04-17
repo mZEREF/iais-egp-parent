@@ -41,10 +41,14 @@
                                     <div class="document-content">
                                         <div class="document-info-list">
                                             <ul>
-                                                <li><p>The maximum file size for each upload is 5MB</p></li>
-                                                <li><p>Acceptable file formats are PDF, word, JPG, Excel and PNG</p></li>
+                                                <li><p>The maximum file size per document is 10 MB.</p></li>
+                                                <li><p>Acceptable file formats: JPG, PNG, PDF, CSV, DOCX, JPEG, XLS, DOC and XLSX</p></li>
+                                                <li><p>Please ensure that the corresponding Document Type is selected for each document uploaded under Others.</p></li>
                                             </ul>
                                         </div>
+                                        <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto$DocRecordInfo>>"--%>
+                                        <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto$NewDocInfo>>"--%>
+                                        <%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
                                         <div class="document-upload-gp">
                                             <h2>PRIMARY DOCUMENTS</h2>
                                             <c:forEach var="doc" items="${docSettings}">

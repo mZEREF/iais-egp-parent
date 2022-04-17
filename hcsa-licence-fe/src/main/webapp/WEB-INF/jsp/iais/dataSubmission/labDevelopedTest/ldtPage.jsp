@@ -2,10 +2,6 @@
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type">
-    <input type="hidden" id="isRfc"
-           value="${isRfc}">
-    <input type="hidden" id="testStatus"
-           value="${dsLaboratoryDevelopTestDto.testStatus}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -14,71 +10,64 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div class="row form-horizontal">
-                                    <div id="disabledPart">
-                                        <iais:row>
-                                            <iais:field value="Name of Laboratory" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <iais:select cssClass="Salutation" name="hciCode" id="hciCode"
-                                                             options="premissOptions" firstOption="Please Select"
-                                                             value="${dsLaboratoryDevelopTestDto.hciCode}"/>
-                                                <span class="error-msg" name="errorMsg" id="error_hciCode"></span>
-                                            </iais:value>
-                                        </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Name of Laboratory" width="11" required="true"/>
+                                        <iais:value width="11">
+                                            <iais:select cssClass="Salutation" name="hciCode" id="hciCode"
+                                                         options="premissOptions" firstOption="Please Select"
+                                                         value="${dsLaboratoryDevelopTestDto.hciCode}"/>
+                                            <span class="error-msg" name="errorMsg" id="error_hciCode"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="Name of LDT Test" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <input type="text" name="ldtTestName" id="ldtTestName" maxlength="50"
-                                                       value="${dsLaboratoryDevelopTestDto.ldtTestName}"/>
-                                                <span class="error-msg" name="errorMsg" id="error_ldtTestName"></span>
-                                            </iais:value>
-                                        </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Name of LDT Test" width="11" required="true"/>
+                                        <iais:value width="11">
+                                            <input type="text" name="ldtTestName" id="ldtTestName" maxlength="50"
+                                                   value="${dsLaboratoryDevelopTestDto.ldtTestName}"/>
+                                            <span class="error-msg" name="errorMsg" id="error_ldtTestName"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="Intended Purpose of Test" width="11" required="true"/>
-                                            <iais:value width="11">
+                                    <iais:row>
+                                        <iais:field value="Intended Purpose of Test" width="11" required="true"/>
+                                        <iais:value width="11">
                                                <textarea id="intendedPurpose" style="width: 100%;margin-bottom: 15px;"
                                                          rows="6" name="intendedPurpose"
                                                          maxlength="500">${dsLaboratoryDevelopTestDto.intendedPurpose}</textarea>
-                                                <span class="error-msg" name="errorMsg"
-                                                      id="error_intendedPurpose"></span>
-                                            </iais:value>
-                                        </iais:row>
+                                            <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="Date LDT was made or will be made available" width="11"
-                                                        required="true"/>
-                                            <iais:value width="11">
-                                                <iais:datePicker id="ldtDate" name="ldtDate"
-                                                                 dateVal="${dsLaboratoryDevelopTestDto.ldtDate}"/>
-                                                <span class="error-msg" name="errorMsg" id="error_ldtDate"></span>
-                                            </iais:value>
-                                        </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Date LDT was made or will be made available" width="11"
+                                                    required="true"/>
+                                        <iais:value width="11">
+                                            <iais:datePicker id="ldtDate" name="ldtDate"
+                                                             dateVal="${dsLaboratoryDevelopTestDto.ldtDate}"/>
+                                            <span class="error-msg" name="errorMsg" id="error_ldtDate"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="Person responsible for the test" width="11"
-                                                        required="true"/>
-                                            <iais:value width="11">
-                                                <input type="text" name="responsePerson" id="responsePerson"
-                                                       value="${dsLaboratoryDevelopTestDto.responsePerson}"
-                                                       maxlength="66"/>
-                                                <span class="error-msg" name="errorMsg"
-                                                      id="error_responsePerson"></span>
-                                            </iais:value>
-                                        </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Person responsible for the test" width="11" required="true"/>
+                                        <iais:value width="11">
+                                            <input type="text" name="responsePerson" id="responsePerson"
+                                                   value="${dsLaboratoryDevelopTestDto.responsePerson}" maxlength="66"/>
+                                            <span class="error-msg" name="errorMsg" id="error_responsePerson"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="Designation" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <input type="text" name="designation" id="designation"
-                                                       value="${dsLaboratoryDevelopTestDto.designation}"
-                                                       maxlength="20"/>
-                                                <span class="error-msg" name="errorMsg" id="error_designation"></span>
-                                            </iais:value>
-                                        </iais:row>
-                                    </div>
+                                    <iais:row>
+                                        <iais:field value="Designation" width="11" required="true"/>
+                                        <iais:value width="11">
+                                            <input type="text" name="designation" id="designation"
+                                                   value="${dsLaboratoryDevelopTestDto.designation}" maxlength="20"/>
+                                            <span class="error-msg" name="errorMsg" id="error_designation"></span>
+                                        </iais:value>
+                                    </iais:row>
 
-                                    <iais:row id="testStatusRow">
+                                    <iais:row>
                                         <label class="col-xs-11 col-md-4 control-label">Status of Test
                                             <span style="color: red"> *</span>
                                             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
@@ -88,7 +77,7 @@
                                                style="z-index: 10"
                                                data-original-title="">i</a>
                                         </label>
-                                        <iais:value width="11">
+                                        <iais:value width="10">
                                             <div class="form-check col-md-6" style="padding: 0px;">
                                                 <input class="form-check-input"
                                                        type="radio"

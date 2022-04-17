@@ -14,6 +14,9 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
+    @GetMapping(value = "/inspection/pre/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    PreInspectionDataDto getPreInspectionDataDto(@RequestParam("appId") String appId);
+
     @GetMapping(value = "/inspection/pre/facInfo", produces = MediaType.APPLICATION_JSON_VALUE)
     InsFacInfoDto getInsFacInfo(@RequestParam("appId") String appId);
 
@@ -89,6 +92,11 @@ public interface InspectionClient {
     void reviewInspectionReportRouteBackToDO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/skip-flow", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void skipInspection(@RequestParam("appId") String appId,
+                        @RequestParam("taskId") String taskId,
+                        @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/report/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
     void finalizeInspectionReport(@RequestParam("appId") String appId,

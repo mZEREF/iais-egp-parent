@@ -91,9 +91,12 @@ public class EndCycleDelegator extends CommonDelegator{
     public void pageConfirmAction(BaseProcessClass bpc) {
         super.pageConfirmAction(bpc);
 
+        // oocyte embryo must be 0
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType()) && ACTION_TYPE_SUBMISSION.equals(actionType)) {
+        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())
+                && ACTION_TYPE_SUBMISSION.equals(actionType)
+                && arSuperDataSubmission.getEndCycleStageDto().getCycleAbandoned()) {
             String errorMapJson = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG);
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             if (StringUtil.isNotEmpty(errorMapJson)) {

@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -16,7 +17,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
 
-<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto"--%>
+<%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
 <%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 
@@ -43,6 +44,9 @@
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">class="active"</c:if> id="documents" role="presentation">
                                             <a href="#${InspectionConstants.TAB_DOC}" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                         </li>
+                                        <li <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">class="active"</c:if> id="facDetails" role="presentation">
+                                            <a href="#${InspectionConstants.TAB_FAC_DETAILS}" id="doFacDetails" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                        </li>
                                         <li <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">class="active"</c:if> id="insReport" role="presentation">
                                             <a href="#${InspectionConstants.TAB_INS_REPORT}" id="doInsReport" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                         </li>
@@ -59,6 +63,9 @@
                                                 <a href="#${InspectionConstants.TAB_DOC}" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </div>
                                             <div class="swiper-slide">
+                                                <a href="#${InspectionConstants.TAB_FAC_DETAILS}" aria-controls="tabFacDetails" role="tab" data-toggle="tab">Facility Details</a>
+                                            </div>
+                                            <div class="swiper-slide">
                                                 <a href="#${InspectionConstants.TAB_INS_REPORT}" aria-controls="tabInsReport" role="tab" data-toggle="tab">Inspection Report</a>
                                             </div>
                                             <div class="swiper-slide">
@@ -68,10 +75,13 @@
                                     </div>
                                     <div class="tab-content">
                                         <div class="tab-pane <c:if test="${empty activeTab or activeTab eq InspectionConstants.TAB_FAC_INFO}">active</c:if>" id="${InspectionConstants.TAB_FAC_INFO}" role="tabpanel">
-                                            <%@include file="../actual/facilityInfo.jsp" %>
+                                            <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_DOC}">active</c:if>" id="${InspectionConstants.TAB_DOC}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
+                                        </div>
+                                        <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAILS}" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">active</c:if>" id="${InspectionConstants.TAB_INS_REPORT}" role="tabpanel">
                                             <%@include file="../report/inspectionReport.jsp"%>
@@ -88,7 +98,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${insInfo.appStatus}"/></p>
+                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
@@ -107,10 +117,11 @@
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="processingDecision" id="processingDecision">
+                                                                        <select name="processingDecision" class="pro-drop" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="MOHPRO007" <c:if test="${processDto.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve Inspection Report</option>
-                                                                            <option value="MOHPRO008" <c:if test="${processDto.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back Draft Report</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}">selected="selected"</c:if>>Approve Inspection Report</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back Draft Report</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>
@@ -119,11 +130,13 @@
                                                             </div>
                                                         </div>
                                                         <div style="text-align: right">
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>

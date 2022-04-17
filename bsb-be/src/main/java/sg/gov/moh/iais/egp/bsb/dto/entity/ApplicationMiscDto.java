@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.LocalDate;
-
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,45 +19,9 @@ public class ApplicationMiscDto extends BaseEntityDto {
     @JMap(value = "${application.id}")
     private String applicationId;
 
-    private RoutingHistoryDto routingHistory;
+    private String role;
 
-    private String relateRecId;
+    private String type;
 
-    private LocalDate effectiveDate;
-
-    private String reason;
-
-    private String reasonContent;
-
-    private String remarks;
-
-    private String finalRemarks;
-
-    private String riskLevel;
-
-    private String riskLevelComments;
-
-    private LocalDate erpReportDt;
-
-    private LocalDate redTeamingReportDt;
-
-    private LocalDate lentivirusReportDt;
-
-    private LocalDate internalInspectionReportDt;
-
-    private LocalDate validityStartDt;
-
-    private LocalDate validityEndDt;
-
-    private String selectedAfc;
-
-    private String processDecision;
-
-    private String suspensionType;
-
-    private LocalDate suspensionStartDt;
-
-    private LocalDate suspensionEndDt;
-
-    private String additionalComments;
+    private String content;
 }

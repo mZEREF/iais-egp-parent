@@ -65,7 +65,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForTreatNum", errMsg);
                 }
                 if(donationStageDto.getDonResForTreatNum()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("donResForTreatNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -88,7 +88,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("donResForCurCenNotTreatNum", errMsg);
                 }
                 if(donationStageDto.getDonResForCurCenNotTreatNum()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("donResForCurCenNotTreatNum", errMsg023);
                 }
                 if(donationStageDto.getDonResForCurCenNotTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -119,7 +119,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("trainingNum", errMsg);
                 }
                 if(donationStageDto.getTrainingNum()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("trainingNum", errMsg023);
                 }
                 if(donationStageDto.getTrainingNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");
@@ -142,7 +142,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                     errorMap.put("treatNum", errMsg);
                 }
                 if(donationStageDto.getTreatNum()>maxSamplesNum){
-                    errorMap.put("totalNum", errMsg023);
+                    errorMap.put("treatNum", errMsg023);
                 }
                 if(donationStageDto.getTreatNumStr().length()>2){
                     String general_err0041= NewApplicationHelper.repLength("This field","2");

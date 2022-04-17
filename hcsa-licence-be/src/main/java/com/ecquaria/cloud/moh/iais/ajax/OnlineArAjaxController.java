@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -225,7 +226,11 @@ public class OnlineArAjaxController {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
         searchParam.setPageNo(0);
         searchParam.setPageSize(Integer.MAX_VALUE);
-
+        if(searchParam.getSortMap().containsKey("ID_TYPE_DESC")){
+            HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"dpi.ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+        }else if(searchParam.getSortMap().containsKey("NATIONALITY_DESC")){
+            HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+        }
         log.debug("indicates that a record has been selected ");
 
         QueryHelp.setMainSql("onlineEnquiry", "advancedSearchPatientByAssistedReproduction",searchParam);

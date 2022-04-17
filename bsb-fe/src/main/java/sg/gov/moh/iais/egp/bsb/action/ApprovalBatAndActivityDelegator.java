@@ -7,7 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalBatAndActivityClient;
@@ -23,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.ApprovalBatAndActivityService;
 import sg.gov.moh.iais.egp.bsb.service.DocSettingService;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +49,7 @@ public class ApprovalBatAndActivityDelegator {
     private final ApprovalBatAndActivityClient approvalBatAndActivityClient;
     private final DocSettingService docSettingService;
 
+    @Autowired
     public ApprovalBatAndActivityDelegator(ApprovalBatAndActivityService approvalBatAndActivityService, ApprovalBatAndActivityClient approvalBatAndActivityClient, DocSettingService docSettingService) {
         this.approvalBatAndActivityService = approvalBatAndActivityService;
         this.approvalBatAndActivityClient = approvalBatAndActivityClient;
@@ -98,7 +102,7 @@ public class ApprovalBatAndActivityDelegator {
     public void preApprovalSelection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         //TODO: The facility value will be obtained from another method, and the method will be deleted
-        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getAllMainActivityApprovedFacility();
+        List<FacilityBasicInfo> facilityBasicInfoList = approvalBatAndActivityClient.getApprovedFacility();
         List<SelectOption> facilityIdList = new ArrayList<>(facilityBasicInfoList.size());
         if (!CollectionUtils.isEmpty(facilityBasicInfoList)) {
             for (FacilityBasicInfo fac : facilityBasicInfoList) {
@@ -225,6 +229,16 @@ public class ApprovalBatAndActivityDelegator {
         }
         Nodes.needValidation(approvalAppRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToPossessDto);
+
+        List<SelectOption> scheduleOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
+        ParamUtil.setRequestAttr(request, "ScheduleOps", scheduleOps);
+
+        List<SelectOption> batNameOps = new ArrayList<>(2);
+        batNameOps.add(new SelectOption("AEE1CC32-46F0-EB11-8B7D-000C293F0C99", "BRUCELLA CANIS"));
+        batNameOps.add(new SelectOption("A4A0E7C9-46F0-EB11-8B7D-000C293F0C99", "CHLAMUDIA PSTTACI"));
+        ParamUtil.setRequestAttr(request, "batNameOps", batNameOps);
+
+        ParamUtil.setRequestAttr(request, "addressTypeOps", MasterCodeHolder.ADDRESS_TYPE.allOptions());
     }
 
     public void handlePossessBatDetails(BaseProcessClass bpc){

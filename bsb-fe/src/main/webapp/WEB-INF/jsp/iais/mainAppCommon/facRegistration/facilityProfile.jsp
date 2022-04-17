@@ -21,7 +21,7 @@
         <span class="mandatory otherQualificationSpan">*</span>
     </div>
     <div class="col-sm-6 col-md-7">
-        <select name="facType" id="facType">
+        <select name="facType" class="facTypedd" id="facType">
             <option value="">Please Select</option>
             <c:forEach var="type" items="${facTypeOps}">
             <option value="${type.value}" <c:if test="${type.value eq facProfile.facType}">selected="selected"</c:if> >${type.text}</option>
@@ -131,7 +131,7 @@
                 <span class="mandatory otherQualificationSpan">*</span>
             </div>
             <div class="col-sm-6 col-md-7">
-                <select name="addressType" id="addressType">
+                <select name="addressType" class="addressTypedd" id="addressType">
                     <option value="">Please Select</option>
                     <c:forEach var="type" items="${addressTypeOps}">
                         <option value="${type.value}" <c:if test="${type.value eq facProfile.addressType}">selected="selected"</c:if> >${type.text}</option>

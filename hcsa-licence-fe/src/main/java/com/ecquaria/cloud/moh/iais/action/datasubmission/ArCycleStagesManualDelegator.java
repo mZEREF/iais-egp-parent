@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * ARCycleStagesManualDelegator
@@ -206,9 +207,20 @@ public class ArCycleStagesManualDelegator {
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("Action Value: " + actionValue));
         if (StringUtil.isEmpty(actionValue)) {
-            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+            List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode, true);
+            if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+                dataSubmissionDraftList = dataSubmissionDraftList.stream()
+                        .filter(arSuperDataSubmissionDto -> StringUtil.isEmpty(arSuperDataSubmissionDto.getTransferInOutStageDto().getBindSubmissionId()))
+                        .collect(Collectors.toList());
+            }
+            ArSuperDataSubmissionDto dataSubmissionDraft;
+            if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
+                dataSubmissionDraft = null;
+            } else {
+                dataSubmissionDraft = dataSubmissionDraftList.get(0);
+            }
             if (dataSubmissionDraft != null/* && !Objects.equals(currentArDataSubmission.getDraftNo(),
                     dataSubmissionDraft.getDraftNo())*/) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());

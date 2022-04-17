@@ -70,7 +70,13 @@
                                 <hr>
                                 <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorIdentityKnown !='DIK001' }">
                                     <div class="row"  >
-                                        <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
+                                        <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize > donorResultSize}">
+                                            <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code" info="${donorMessageTip}"/>
+                                        </c:if>
+                                        <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize <= donorResultSize}">
+                                            <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code"/>
+                                        </c:if>
+
                                         <div class="col-md-6">
                                             <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.donorSampleCode}" />
                                         </div>
@@ -89,7 +95,12 @@
                                 </div>
                                 <hr>
                                 <div class="row">
-                                    <iais:field width="6" cssClass="col-md-6" value="ID No."/>
+                                    <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize > donorResultSize}" >
+                                        <iais:field width="6" cssClass="col-md-6" value="ID No."  info="${donorMessageTip}" />
+                                    </c:if>
+                                    <c:if test="${donorInfoDataSubmissionDto.donorSampleDto.donorUseSize <= donorResultSize}">
+                                        <iais:field width="6" cssClass="col-md-6" value="ID No."   />
+                                    </c:if>
 
                                     <div class="col-md-6">
                                         <c:out value="${donorInfoDataSubmissionDto.donorSampleDto.idNumber}" />

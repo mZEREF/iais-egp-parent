@@ -89,7 +89,7 @@
                                   <iais:datePicker id = "specificStartDate" name = "specificStartDate" dateVal="${apptInspectionDateDto.specificStartDate}"></iais:datePicker>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
-                                  <iais:select name="startHours" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.startHours}"></iais:select>
+                                  <iais:select name="startHours" cssClass="startHoursDropdown" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.startHours}"></iais:select>
                                 </div>
                               </div>
                             </div>
@@ -113,7 +113,7 @@
                                   <iais:datePicker id = "specificEndDate" name = "specificEndDate" dateVal="${apptInspectionDateDto.specificEndDate}"></iais:datePicker>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
-                                  <iais:select name="endHours" options="endHoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"></iais:select>
+                                  <iais:select name="endHours" cssClass="endHoursDropdown" options="endHoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"></iais:select>
                                 </div>
                               </div>
                             </div>

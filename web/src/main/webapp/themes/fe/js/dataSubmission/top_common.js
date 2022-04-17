@@ -63,6 +63,7 @@ $(document).ready(function() {
             $('#nextBtn').html('Preview');
         } else if ('top-submission' == currPage){
             $('#nextBtn').html('Proceed');
+            $('#saveDraftBtn').remove();
         }
         $('#nextBtn').click(function () {
             showWaiting();

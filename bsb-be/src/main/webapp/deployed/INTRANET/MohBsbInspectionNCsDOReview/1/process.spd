@@ -51,6 +51,13 @@
     <JavaCode defClass="" executor="" methodName="routeToAO_OnStepProcess_0" name="routeToAO_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Skip" x="280" y="480">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="skip_OnStepProcess_0" name="skip_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page" stageIndicator="" x="380" y="100">
@@ -60,6 +67,12 @@
    <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Acknowledge" stageIndicator="" x="480" y="580">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AfterSkipPage" stageIndicator="" x="260" y="590">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -110,6 +123,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Pre" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/BackMerge" style="rectanular">
    <position>{(310,240)(310,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Skip" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
+   <position>{(490,400)(300,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Skip" style="rectanular">
+   <position>{(300,500)(280,610)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -123,6 +142,7 @@
    <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;rfi&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/RouteToAO" value="&quot;ao&quot;" />
    <SwitchCase component="/Merges/Merge/BackMerge" value="" />
+   <SwitchCase component="/Steps/AutomaticStep/Skip" value="&quot;skip&quot;" />
   </Switch>
  </Switches>
  <Branches />

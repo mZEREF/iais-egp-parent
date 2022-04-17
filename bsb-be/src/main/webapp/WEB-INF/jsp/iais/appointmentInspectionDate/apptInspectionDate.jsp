@@ -151,6 +151,7 @@
                                 <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                               </iais:action>
                             </c:if>
+                            <button id="skipInsFlow" class="btn btn-md" style="float:right" type="button" onclick="javascript:skipInspection()">Skip Inspection</button>
                             <br><br><br>
                           </iais:section>
                           <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp"%>

@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <br/>
-    <p class="ack-font-20"><strong>Submission successful</strong></p>
+    <p class="ack-font-20"><strong>Submission Successful</strong></p>
 </div>
 
 <div class="col-xs-12">

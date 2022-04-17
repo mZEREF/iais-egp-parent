@@ -91,7 +91,7 @@
                 </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" id="next" href="javascript:void(0);">START APPLICATION</a>
+                        <a class="btn btn-primary next" id="next">START APPLICATION</a>
                     </div>
                 </div>
             </div>

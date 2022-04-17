@@ -183,13 +183,15 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -287,13 +289,15 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -306,8 +310,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_0010' then 'EFO'
-                when 'DSCL_0011' then '-'
+                when 'DSCL_010' then 'EFO'
+                when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
                 CONCAT(case lp.BUSINESS_NAME when null then '-, ' when '' then '-, ' else lp.BUSINESS_NAME + ', ' end ,
@@ -400,13 +404,15 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -419,8 +425,8 @@
                 SELECT dc.ID,dpi.PATIENT_CODE patient_code,
                 case dc.CYCLE_TYPE
                 when 'DSCL_009' then 'IUI'
-                when 'DSCL_0010' then 'EFO'
-                when 'DSCL_0011' then '-'
+                when 'DSCL_010' then 'EFO'
+                when 'DSCL_011' then '-'
                 else '-' end
                 as DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
                 CONCAT(case dcen.CENTER_NAME when null then '-, ' else dcen.CENTER_NAME + ', ' end ,
@@ -501,13 +507,15 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND TRANSFER_TYPE ='in' AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND TRANSFER_TYPE ='out' AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -610,13 +618,15 @@
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
                 <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(datetime,:disposalDateTo)</#if>
                 <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
-                <#if transferredList??> AND :transferredList = 1 and (:transferredOocyte <= dtios.EMBRYO_NUM or :transferredEmbryo <= dtios.SPERM_VIALS_NUM or :transferredSperm <= dtios.OOCYTE_NUM) </#if>
+                <#if transferredOocyte??> AND  :transferredOocyte <= dtios.OOCYTE_NUM </#if>
+                <#if transferredEmbryo??> AND  :transferredEmbryo <= dtios.EMBRYO_NUM </#if>
+                <#if transferredSperm??> AND  :transferredSperm <= dtios.SPERM_VIALS_NUM </#if>
                 <#if transferredInFrom??> AND  charindex(:transferredInFrom, dtios.TRANS_IN_FROM_HCI_CODE) >0</#if>
                 <#if transferOutTo??> AND  charindex(:transferOutTo, dtios.TRANS_OUT_TO_HCI_CODE) >0</#if>
                 <#if transferDateFrom??> AND dtios.CREATED_DT >= convert(date,:transferDateFrom)</#if>
                 <#if transferDateTo??> AND dtios.CREATED_DT <= convert(datetime,:transferDateTo)</#if>
-                <#if pgtNo??> AND :pgtNo = 1 AND dps.ID is null </#if>
-                <#if pgtYes??> AND :pgtYes = 1 AND dps.ID is not null </#if>
+                <#if pgtNo??> AND :pgtNo = 1 AND dpi.PATIENT_CODE not in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
+                <#if pgtYes??> AND :pgtYes = 1 AND dpi.PATIENT_CODE  in (SELECT distinct dpiNN.PATIENT_CODE FROM ds_patient_information dpiNN  join ds_cycle dcNN on dcNN.PATIENT_CODE = dpiNN.PATIENT_CODE join ds_data_submission ddsNN on ddsNN.CYCLE_STAGE ='AR_STG005' and ddsNN.CYCLE_ID =dcNN.ID ) </#if>
                 <#if pgtMCom??> AND  dps.IS_PGT_M_WU_COM = :pgtMCom </#if>
                 <#if pgtMRare??> AND  dps.IS_PGT_M_WU_RARE = :pgtMRare </#if>
                 <#if pgtMEbt??> AND  dps.IS_PGT_M_EBT = :pgtMEbt </#if>
@@ -705,10 +715,27 @@
 
     <sql key = "searchCycleStageByPatientCode" remarks="search Cycle Stage">
         <![CDATA[
-            SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID and dds2.STATUS not in ('DS002','DS012')) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
+            SELECT distinct dc.ID,null as cycle_no,dc.CREATED_DT ,
+            (case dc.CYCLE_TYPE
+            when 'DSCL_008' then 'AR'
+            when 'DSCL_009' then 'IUI'
+            when 'DSCL_010' then 'EFO'
+             else  '-' end) as CYCLE_TYPE
+            , dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID and dds1.STATUS not in ('DS002','DS012'))
-             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011') and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010') and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
+
+    <sql key = "searchNonCycleStageByPatientCode" remarks="search Cycle Stage">
+        <![CDATA[
+            SELECT distinct dc.ID,null as cycle_no,dc.CREATED_DT ,'-' as CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
+            from ds_cycle dc
+            join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID and dds1.STATUS not in ('DS002','DS012'))
+             where dc.CYCLE_TYPE ='DSCL_011' and dds.STATUS not in ('DS002','DS012') and dc.STATUS !='DS012'
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>

@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
@@ -31,8 +30,6 @@ public interface GiroAccountService {
     GiroAccountInfoDto findGiroAccountInfoDtoByAcctId(String acctId);
 
     void syncFeGiroAcctDto(List<GiroAccountInfoDto> giroAccountInfoDto);
-
-    void updateGiroAccountInfoTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 
     void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto,int size);
 }

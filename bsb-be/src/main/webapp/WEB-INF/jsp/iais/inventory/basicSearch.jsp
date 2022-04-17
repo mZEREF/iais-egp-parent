@@ -65,7 +65,7 @@
                                     <label for="transactionDateChk">&nbsp;Search by Transaction Date</label>
                                 </iais:value>
                             </iais:row>
-                            <iais:row id="selectSearchChkMsg" style="display: none">
+                            <iais:row id="selectSearchChkMsg" cssClass="ssc-select" style="display: none">
                                 <div class="row"
                                      style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
                                      id="selectSearchChkMsg">

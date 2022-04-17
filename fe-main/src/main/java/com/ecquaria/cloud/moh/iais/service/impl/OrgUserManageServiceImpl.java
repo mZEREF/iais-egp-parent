@@ -5,7 +5,6 @@ import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -23,8 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeMainEmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -42,7 +39,6 @@ import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
@@ -73,17 +69,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
 
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
     @Autowired
     private FeMainEmailHelper feMainEmailHelper;
-
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
     @SearchTrack(catalog = "interInboxQuery", key = "feUserList")
@@ -140,39 +127,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         }
     }
 
-    public void callFeEicCreateAccount(OrganizationDto organizationDto){
-        eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto);
-    }
-
-    private FeUserDto syncAccountInformationToBackend(OrganizationDto postCreate){
-        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, OrgUserManageServiceImpl.class.getName(),
-                "callFeEicCreateAccount", currentApp + "-" + currentDomain,
-                OrganizationDto.class.getName(), JsonUtil.parseToJson(postCreate));
-
-        try {
-            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
-                EicRequestTrackingDto entity = fetchResult.getEntity();
-                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-                    callFeEicCreateAccount(postCreate);
-                    entity.setProcessNum(1);
-                    Date now = new Date();
-                    entity.setFirstActionAt(now);
-                    entity.setLastActionAt(now);
-                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
-                }
-            }
-
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("encounter failure when sync user account to be"), e);
-        }
-
-
-        FeUserDto postCreateUser = postCreate.getFeUserDto();
-        return postCreateUser;
-    }
-
     @Override
     public void refreshLicensee(String uen) {
         // eicGatewayFeMainClient.getUen(uen);
@@ -187,8 +141,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     private String refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
         return licenceClient.refreshSubLicenseeInfo(licenseeDto).getEntity();
     }
+
     private void refreshBeSubLicenseeInfo(LicenseeDto licenseeDto) {
-        eicGatewayFeMainClient.refreshSubLicenseeInfo(licenseeDto);
+        eicGatewayFeMainClient.callEicWithTrackForApp(licenseeDto, eicGatewayFeMainClient::refreshSubLicenseeInfo,
+                "refreshSubLicenseeInfo");
     }
 
     @Override
@@ -206,7 +162,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void updateUserBe(OrganizationDto organizationDto){
         try {
-            eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto);
+            eicGatewayFeMainClient.callEicWithTrackForOrg(organizationDto, eicGatewayFeMainClient::syncAccountDataFormFe,
+                    "syncAccountDataFormFe");
         }catch (Exception e){
             log.error(StringUtil.changeForLog("encounter failure when sync account data to be"));
             log.error(e.getMessage(), e);

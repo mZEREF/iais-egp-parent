@@ -29,6 +29,7 @@
                             <div class="tab-pane fade in active">
                                 <div id="appInfoPanel" role="tabpanel">
                                     <%@include file="subStepNavTab.jsp"%>
+                                    <%--@elvariable id="facProfileDto" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto"--%>
                                     <div class="form-horizontal">
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
                                         <div class="form-group ">

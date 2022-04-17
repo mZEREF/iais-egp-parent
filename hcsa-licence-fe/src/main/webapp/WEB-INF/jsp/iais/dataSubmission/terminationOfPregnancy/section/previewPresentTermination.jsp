@@ -1,3 +1,5 @@
+<c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}" />
+<c:if test="${preTerminationDto.secCounsellingResult !='TOPSP001' && preTerminationDto.secCounsellingResult !='TOPSP002'}">
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -143,3 +145,4 @@
         </div>
     </div>
 </div>
+</c:if>

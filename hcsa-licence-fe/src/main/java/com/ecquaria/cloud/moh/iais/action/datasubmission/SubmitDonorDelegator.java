@@ -95,11 +95,14 @@ public class SubmitDonorDelegator extends CommonDelegator {
 
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
-            validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
+            boolean validate = validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
+            if(!validate){
+                return;
+            }
             if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(arSuperDataSubmissionDto.getAppType()) ){
                 if(donorSampleDto.getAges() ==  null
                         && IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)
-                        && !donorSampleAgeDtos.retainAll(donorSampleDto.getOldDonorSampleAgeDtos())){
+                        && donorSampleAgeDtos.equals(donorSampleDto.getOldDonorSampleAgeDtos())){
                     ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, DataSubmissionConstant.PAGE_STAGE_PAGE);
                 }else{

@@ -44,7 +44,7 @@
                          </iais:value>
                      </iais:row>
                      <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                         <iais:field width="5" value="ID No." />
+                         <iais:field width="5" value="ID No." info="${donorDto.donorUseSize > donorResultSize ? donorMessageTip : ''}"/>
                          <iais:value width="7" cssClass="col-md-7" display="true">
                              <c:out value="${donorDto.idNumber}" />
                          </iais:value>
@@ -54,7 +54,7 @@
                  <c:if test="${!donorDto.directedDonation}">
 
                      <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
-                         <iais:field width="5" value="Donor Sample Code / ID" />
+                         <iais:field width="5" value="Donor Sample Code / ID" info="${donorDto.donorUseSize > donorResultSize ? donorMessageTip : ''}" />
                          <iais:value width="7" cssClass="col-md-3" display="true">
                              <iais:optionText value="${donorDto.idType}" selectionOptions="donorSampleDropDown"/>
                          </iais:value>

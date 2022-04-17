@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDefectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeBabyDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -778,21 +779,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("disposalDateTo", disposalDateTo);
             }
             if(arDto.getTransferInOrOut()!=null){
-                if("0".equals(arDto.getTransferInOrOut())){
+                if("1".equals(arDto.getTransferInOrOut())){
                     filter.put("transferInOrOut", "in");
                 }
-                if("1".equals(arDto.getTransferInOrOut())){
+                if("0".equals(arDto.getTransferInOrOut())){
                     filter.put("transferInOrOut", "out");
                 }
             }
-            if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())
-                    ||arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())
-                    ||arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
-                filter.put("transferredOocyte",-1);
-                filter.put("transferredEmbryo",-1);
-                filter.put("transferredSperm",-1);
-                filter.put("transferredList",1);
-            }
+
             if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())){
                 filter.put("transferredOocyte",0);
             }
@@ -904,9 +898,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 setQueryFilter(arFilterDto,patientParameter,0);
                 SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
                 if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
-                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
                 }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
-                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+                    HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
                 }
                 if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
                     String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
@@ -1008,6 +1002,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> aRorIUICycleOptions= IaisCommonUtils.genNewArrayList();
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
+        aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_EFO,"EFO"));
         ParamUtil.setRequestAttr(bpc.request,"aRorIUICycleOptions",aRorIUICycleOptions);
         List<SelectOption> cycleStagesStatusOptions= IaisCommonUtils.genNewArrayList();
         cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ACTIVE,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_STATUS_ACTIVE)));
@@ -1075,9 +1070,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(patientParam.getSortMap().containsKey("ID_TYPE_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.ID_TYPE","ID_TYPE_DESC",MasterCodeUtil.CATE_ID_DS_ID_TYPE);
             }else if(patientParam.getSortMap().containsKey("NATIONALITY_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
+                HalpSearchResultHelper.setMasterCodeForSearchParam(patientParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
             }
             if(searchParam!=null){
                 patientParam.setPageNo(searchParam.getPageNo());
@@ -1105,6 +1100,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
         if(StringUtil.isNotEmpty(additional)&&StringUtil.isNotEmpty(key)){
+            request.getSession().removeAttribute("arTransactionHistoryFilterDto");
             if("patient".equals(additional)){
                 patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(key);
 
@@ -1306,86 +1302,38 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     cycleStageParam.setPageSize(searchParam.getPageSize());
                 }
                 CrudHelper.doPaging(cycleStageParam,bpc.request);
-
                 QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);
                 SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
-                List<ArEnquiryCycleStageDto> arEnquiryCycleStageDtoList=cycleStageResult.getRows();
-                List<ArEnquiryCycleStageDto> arEnquiryCycle=IaisCommonUtils.genNewArrayList();
-                List<ArEnquiryCycleStageDto> arEnquiryNonCycle=IaisCommonUtils.genNewArrayList();
 
-                if(IaisCommonUtils.isNotEmpty(arEnquiryCycleStageDtoList)){
-                    for (ArEnquiryCycleStageDto ar:arEnquiryCycleStageDtoList
-                         ) {
-                        switch (ar.getCycleType()){
-                            case DataSubmissionConsts.DS_CYCLE_NON:
-                                ar.setCycleType("-");
-                                arEnquiryNonCycle.add(ar);
-                                break;
-                            case DataSubmissionConsts.DS_CYCLE_AR:
-                                ar.setCycleType("AR");
-                                arEnquiryCycle.add(ar);break;
-                            case DataSubmissionConsts.DS_CYCLE_IUI:
-                                ar.setCycleType("IUI");
-                                arEnquiryCycle.add(ar);break;
-                            case DataSubmissionConsts.DS_CYCLE_EFO:
-                                ar.setCycleType("EFO");
-                                arEnquiryCycle.add(ar);break;
-                            default:
-                        }
-
-                    }
+                SearchParam nonCycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
+                if(searchParam!=null){
+                    nonCycleStageParam.setPageNo(searchParam.getPageNo());
+                    nonCycleStageParam.setPageSize(searchParam.getPageSize());
                 }
-                SearchResult<ArEnquiryCycleStageDto> cycleResult = new SearchResult<>();
-                cycleResult.setRows(arEnquiryCycle);
-                cycleResult.setRowCount(arEnquiryCycle.size());
-                ParamUtil.setRequestAttr(request,"cycleResult",cycleResult);
-                SearchResult<ArEnquiryCycleStageDto> noCycleResult = new SearchResult<>();
-                noCycleResult.setRows(arEnquiryNonCycle);
-                noCycleResult.setRowCount(arEnquiryNonCycle.size());
-                ParamUtil.setRequestAttr(request,"noCycleResult",noCycleResult);
+                CrudHelper.doPaging(nonCycleStageParam,bpc.request);
+                QueryHelp.setMainSql("onlineEnquiry","searchNonCycleStageByPatientCode",nonCycleStageParam);
+                SearchResult<ArEnquiryCycleStageDto> nonCycleStageResult = assistedReproductionService.searchCycleStageByParam(nonCycleStageParam);
+
+                if(nonCycleStageResult.getRowCount()>cycleStageResult.getRowCount()){
+                    cycleStageResult.setRowCount(nonCycleStageResult.getRowCount());
+                }
+                ParamUtil.setRequestAttr(request,"noCycleResult",nonCycleStageResult);
                 ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
                 ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
+                ParamUtil.setSessionAttr(request,"nonCycleStageParam",nonCycleStageParam);
             }
         }else {
             SearchParam cycleStageParam = (SearchParam) ParamUtil.getSessionAttr(request,"cycleStageParam");
             SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
-            List<ArEnquiryCycleStageDto> arEnquiryCycleStageDtoList=cycleStageResult.getRows();
-            List<ArEnquiryCycleStageDto> arEnquiryCycle=IaisCommonUtils.genNewArrayList();
-            List<ArEnquiryCycleStageDto> arEnquiryNonCycle=IaisCommonUtils.genNewArrayList();
-
-            if(IaisCommonUtils.isNotEmpty(arEnquiryCycleStageDtoList)){
-                for (ArEnquiryCycleStageDto ar:arEnquiryCycleStageDtoList
-                ) {
-                    switch (ar.getCycleType()){
-                        case DataSubmissionConsts.DS_CYCLE_NON:
-                            ar.setCycleNo("Non-cycle");
-                            ar.setCycleType("-");
-                            arEnquiryNonCycle.add(ar);
-                            break;
-                        case DataSubmissionConsts.DS_CYCLE_AR:
-                            ar.setCycleType("AR");
-                            arEnquiryCycle.add(ar);break;
-                        case DataSubmissionConsts.DS_CYCLE_IUI:
-                            ar.setCycleType("IUI");
-                            arEnquiryCycle.add(ar);break;
-                        case DataSubmissionConsts.DS_CYCLE_EFO:
-                            ar.setCycleType("EFO");
-                            arEnquiryCycle.add(ar);break;
-                        default:
-                    }
-
-                }
+            SearchParam nonCycleStageParam = (SearchParam) ParamUtil.getSessionAttr(request,"nonCycleStageParam");
+            SearchResult<ArEnquiryCycleStageDto> nonCycleStageResult = assistedReproductionService.searchCycleStageByParam(nonCycleStageParam);
+            if(nonCycleStageResult.getRowCount()>cycleStageResult.getRowCount()){
+                cycleStageResult.setRowCount(nonCycleStageResult.getRowCount());
             }
-            SearchResult<ArEnquiryCycleStageDto> cycleResult = new SearchResult<>();
-            cycleResult.setRows(arEnquiryCycle);
-            cycleResult.setRowCount(arEnquiryCycle.size());
-            ParamUtil.setRequestAttr(request,"cycleResult",cycleResult);
-            SearchResult<ArEnquiryCycleStageDto> noCycleResult = new SearchResult<>();
-            noCycleResult.setRows(arEnquiryNonCycle);
-            noCycleResult.setRowCount(arEnquiryNonCycle.size());
-            ParamUtil.setRequestAttr(request,"noCycleResult",noCycleResult);
+            ParamUtil.setRequestAttr(request,"noCycleResult",nonCycleStageResult);
             ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
             ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
+            ParamUtil.setSessionAttr(request,"nonCycleStageParam",nonCycleStageParam);
         }
 
 
@@ -1596,6 +1544,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(StringUtil.isNotEmpty(arSuper.getTransferInOutStageDto().getTransInFromHciCode())&&map.containsKey(arSuper.getTransferInOutStageDto().getTransInFromHciCode())){
                     arSuper.getTransferInOutStageDto().setTransInFromHciCode(map.get(arSuper.getTransferInOutStageDto().getTransInFromHciCode()));
                 }
+                TransferInOutStageDto transferInOutStageDto = arSuper.getTransferInOutStageDto();
+                if (StringUtil.isNotEmpty(transferInOutStageDto.getBindSubmissionId())) {
+                    ArSuperDataSubmissionDto bindStageArSuperDto = assistedReproductionService.getArSuperDataSubmissionDtoById(transferInOutStageDto.getBindSubmissionId());
+                    if (bindStageArSuperDto != null) {
+                        flagInAndOutDiscrepancy(request, transferInOutStageDto, bindStageArSuperDto);
+                    }
+                }
             }
         }
 
@@ -1691,5 +1646,20 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         }
         return arSuperDataSubmission;
+    }
+
+    public static void flagInAndOutDiscrepancy(HttpServletRequest request, TransferInOutStageDto currentTransferInOutStageDto, ArSuperDataSubmissionDto bindArSuperDto) {
+        if (bindArSuperDto != null) {
+            TransferInOutStageDto bindStageDto = bindArSuperDto.getTransferInOutStageDto();
+            String oocyteNum = bindStageDto.getOocyteNum();
+            String embryoNum = bindStageDto.getEmbryoNum();
+            String spermVialsNum = bindStageDto.getSpermVialsNum();
+            boolean diffOocyte = !(oocyteNum == null || oocyteNum.equals(currentTransferInOutStageDto.getOocyteNum()));
+            boolean diffEmbryo = !(embryoNum == null || embryoNum.equals(currentTransferInOutStageDto.getEmbryoNum()));
+            boolean diffSpermVial = !(spermVialsNum == null || spermVialsNum.equals(currentTransferInOutStageDto.getSpermVialsNum()));
+            ParamUtil.setRequestAttr(request, "diffOocyte", diffOocyte);
+            ParamUtil.setRequestAttr(request, "diffEmbryo", diffEmbryo);
+            ParamUtil.setRequestAttr(request, "diffSpermVial", diffSpermVial);
+        }
     }
 }

@@ -287,8 +287,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public void sendEmail(String appGrpId, String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject, String aoName) throws Exception {
         //send email  rfc submit and pay giro
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         switch (subject) {
             case "RfcAndGiro":
                 MsgTemplateDto RfcAndGiroMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
@@ -305,8 +303,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "RfcAndOnPay":
@@ -323,8 +320,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "rfcApproval":
@@ -340,8 +336,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "rfcReject":
@@ -357,8 +352,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "rfcToLicensee":
@@ -375,8 +369,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "rfcForInterClarification":
@@ -393,8 +386,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             case "rfcToNotificationLicence":
@@ -412,8 +404,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
+                    feEicGatewayClient.callEicWithTrack(emailDto, feEicGatewayClient::sendEmail, "sendEmail");
                 }
                 break;
             default:
@@ -470,11 +461,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public String sendNotification(EmailDto email) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return feEicGatewayClient.feSendEmail(email, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+    public void sendNotification(EmailDto email) {
+        feEicGatewayClient.callEicWithTrack(email, feEicGatewayClient::sendEmail, "sendEmail");
     }
 
 

@@ -34,6 +34,10 @@ public class ApplicationDto extends BaseEntityDto {
 
     private Date applicationDt;
 
+    private String applicantUen;
+
+    private String applicantUserId;
+
     private LocalDate approvalDate;
 
     private Date doVerifiedDt;

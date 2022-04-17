@@ -314,6 +314,26 @@ public class LdtDataSubmissionDelegator {
         String crud_action_type = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, crud_action_type);
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_CONFIRM);
+        // declaration
+        String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+        LdtSuperDataSubmissionDto currentLdtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
+        DataSubmissionDto dataSubmissionDto = currentLdtSuperDataSubmissionDto.getDataSubmissionDto();
+        if (declaration != null && declaration.length > 0) {
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        } else {
+            dataSubmissionDto.setDeclaration(null);
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        //for declaration validate
+        if (ACTION_TYPE_SUBMIT.equals(crud_action_type)) {
+            if (declaration == null || declaration.length == 0) {
+                errorMap.put("declaration", "GENERAL_ERR0006");
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_CONFIRM);
+        }
     }
 
     /**

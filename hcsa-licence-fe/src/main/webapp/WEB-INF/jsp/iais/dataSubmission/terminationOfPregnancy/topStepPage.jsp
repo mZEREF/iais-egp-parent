@@ -40,18 +40,19 @@
                                         <%@ include file="section/preTerminationOfPregnancyCounselling.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT004'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                             <%@ include file="section/presentTerminationOfPregnancy.jsp" %>
                                         </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT005'}">
-                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR003' || (preTerminationDto.secCounsellingResult !='TOPSP002' || preTerminationDto.secCounsellingResult !='TOPSP003')}">
+                                        <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                             <%@ include file="section/postTerminationOfPregnancyCounselling.jsp" %>
                                         </c:if>
                                     </c:when>
                                     <c:when test="${currCode == 'TOPT010'}">
                                         <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
                                             <div class="col-xs-12 col-md-10">
+                                                <strong style="font-size: 2rem;">Preview & Submit</strong>
                                             </div>
                                             <div class="col-xs-12 col-md-2 text-right">
                                                 <p class="print" style="font-size: 16px;">
@@ -62,8 +63,12 @@
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
-                                            <%@ include file="section/previewPresentTermination.jsp" %>
-                                            <%@ include file="section/previewPostTermination.jsp" %>
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                                <%@ include file="section/previewPresentTermination.jsp" %>
+                                            </c:if>
+                                            <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
+                                                <%@ include file="section/previewPostTermination.jsp" %>
+                                            </c:if>
                                             <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
                                     </c:when>

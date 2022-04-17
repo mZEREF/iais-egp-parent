@@ -28,26 +28,15 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     @Autowired
     private ApplicationClient applicationClient;
 
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Override
     public AppealApplicationDto updateFEAppealApplicationDto(String eventRefNum,String submissionId) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         EicRequestTrackingDto appEicRequestTrackingDto = getAppEicRequestTrackingDtoByRefNo(eventRefNum);
-        AppealApplicationDto appealApplicationDto = EicUtil.getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
-        if(appealApplicationDto!=null){
-            appealApplicationDto = beEicGatewayClient.updateAppealApplication(appealApplicationDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        }else{
-            log.debug(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
+        AppealApplicationDto appealApplicationDto = EicUtil.getObjectApp(appEicRequestTrackingDto, AppealApplicationDto.class);
+        if (appealApplicationDto != null) {
+            appealApplicationDto = beEicGatewayClient.callEicWithTrack(appealApplicationDto,
+                    beEicGatewayClient::updateAppealApplication, "updateAppealApplication").getEntity();
+        } else {
+            log.debug(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:" + eventRefNum));
         }
         return appealApplicationDto;
     }

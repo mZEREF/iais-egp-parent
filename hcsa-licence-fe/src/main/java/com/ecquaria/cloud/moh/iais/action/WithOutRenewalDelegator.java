@@ -1697,8 +1697,8 @@ public class WithOutRenewalDelegator {
     }
 
     private double add(Double v1, Double v2) {
-        v1 = (v1 == null ? Double.valueOf(0.0) : v1);
-        v2 = (v2 == null ? Double.valueOf(0.0) : v2);
+        v1 = (v1 == null ? Double.valueOf(0.0D) : v1);
+        v2 = (v2 == null ? Double.valueOf(0.0D) : v2);
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
         return b1.add(b2).doubleValue();

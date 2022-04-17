@@ -8,6 +8,7 @@ $(document).ready(function (){
     }
     showPopCommon('#enhancedCounsellingTipShow','#enhancedCounsellingTip',1);
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
+    showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
 });

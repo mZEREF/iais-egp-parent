@@ -30,7 +30,7 @@
                                     <iais:row>
                                         <iais:field value="${iais_Login_User_Info_Attr.userName}:" required="true"/>
                                         <iais:value width="5">
-                                                <iais:select name="reassignUserId" firstOption="Please Select" options="userOption" value="${selectedUser}"/>
+                                                <iais:select name="reassignUserId" cssClass="reassignUserIdDropdown" firstOption="Please Select" options="userOption" value="${selectedUser}"/>
                                                 <br><span data-err-ind="reassignUserId" class="error-msg"></span>
                                         </iais:value>
                                     </iais:row>

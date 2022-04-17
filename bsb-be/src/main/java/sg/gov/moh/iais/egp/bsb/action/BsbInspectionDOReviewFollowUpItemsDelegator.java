@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
 
 /**
  * @author : LiRan
@@ -65,8 +66,8 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, AppViewConstants.MODULE_VIEW_INSPECTION_FOLLOW_UP_ITEMS);
         // facility info
         InsSubmitReportDataDto initDataDto = inspectionClient.getInitInsSubmitReportData(appId);
-        InsFacInfoDto facInfoDto = initDataDto.getFacInfoDto();
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, facInfoDto);
+        // submission details info
+        ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
         // inspection findings
         ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
         ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
@@ -101,6 +102,8 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
                 validateResult = "routeBack";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_VERIFIED.equals(processingDecision)){
                 validateResult = "acceptResponse";
+            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)){
+                validateResult = "skip";
             } else {
                 validateResult = "invalid";
             }
@@ -129,5 +132,13 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         InsProcessDto insProcessDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
+    }
+
+    public void skip(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto insProcessDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        inspectionClient.skipInspection(appId,taskId,insProcessDto);
     }
 }

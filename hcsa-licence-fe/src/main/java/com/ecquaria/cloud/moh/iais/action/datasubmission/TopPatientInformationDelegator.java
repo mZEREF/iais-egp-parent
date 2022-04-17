@@ -246,7 +246,30 @@ public class TopPatientInformationDelegator {
      * @throws
      */
     public void doPageConfirmAction(BaseProcessClass bpc) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto=DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        if(topSuperDataSubmissionDto==null){
+            topSuperDataSubmissionDto=new TopSuperDataSubmissionDto();
+        }
+        DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
+        //declaration
         String crud_action_type = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
+        if(declaration != null && declaration.length >0){
+            dataSubmissionDto.setDeclaration(declaration[0]);
+        }else{
+            dataSubmissionDto.setDeclaration(null);
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if("submission".equals(crud_action_type)){
+            if(declaration == null || declaration.length == 0){
+                errorMap.put("declaration", "GENERAL_ERR0006");
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            crud_action_type = ACTION_TYPE_CONFIRM;
+        }
         ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_PI, crud_action_type);
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_CONFIRM);
     }

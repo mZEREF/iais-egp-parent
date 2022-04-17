@@ -13,12 +13,13 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopPatientSelectService;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PatientDetailsValidator implements CustomizeValidator {
@@ -73,6 +74,12 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             if (Integer.valueOf(livingChildrenNo) > 10) {
                 errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
+            } else if(livingChildrenNo.length()>2){
+                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                repMap.put("maxlength", "2");
+                repMap.put("field", "No. of Living Children");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
+                errorMap.put("livingChildrenNo", errMsg);
             }
         }
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){

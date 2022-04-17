@@ -49,7 +49,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchProcessType" class="col-sm-3 col-md-2 control-label">Process Type:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchProcessType" name="searchProcessType">
+                                        <select id="searchProcessType" class="searchProcessDrop" name="searchProcessType">
                                             <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${processTypeOps}">
@@ -62,7 +62,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchStatus" class="col-sm-3 col-md-2 control-label">Status:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchStatus" name="searchStatus">
+                                        <select id="searchStatus" class="searchStatusDown" name="searchStatus">
                                             <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="appStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${appStatusOps}">
@@ -164,12 +164,12 @@
                                                                 <iais-bsb:app-action info="${app}"/>
                                                                 <c:choose>
                                                                     <c:when test="${not actionAvailable}">
-                                                                        <select disabled="disabled">
+                                                                        <select  class="naDropdown" disabled="disabled">
                                                                             <option>N/A</option>
                                                                         </select>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                                        <select id="appAction${status.index}" class="appAction-drop" name="appAction${status.index}" data-action-select="">
                                                                             <option value="#" selected="selected">Select</option>
                                                                         <c:if test="${AppEditableJudge}">
                                                                             <c:choose>

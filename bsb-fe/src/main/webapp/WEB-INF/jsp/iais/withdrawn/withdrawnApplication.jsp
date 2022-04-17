@@ -74,7 +74,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <iais:select name="reason" id="reason" value="${withdrawnDto.reason}" codeCategory="CATE_ID_BSB_REASON_FOR_WITHDRAWN" firstOption="Please Select" onchange="isRemarksMandatory()"/>
+                                                <iais:select name="reason" cssClass="resonDropdown" id="reason" value="${withdrawnDto.reason}" codeCategory="CATE_ID_BSB_REASON_FOR_WITHDRAWN" firstOption="Please Select" onchange="isRemarksMandatory()"/>
                                                 <span data-err-ind="reason" class="error-msg"></span>
                                             </div>
                                         </div>

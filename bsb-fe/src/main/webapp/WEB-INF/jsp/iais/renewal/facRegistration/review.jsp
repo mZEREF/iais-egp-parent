@@ -62,7 +62,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7" style="z-index: 20">
-                                                <select name="approvedFacCertifier" id="approvedFacCertifier">
+                                                <select name="approvedFacCertifier" class="approvedFacCertifierDropdown" id="approvedFacCertifier">
                                                     <c:forEach items="${approvedFacCertifierOps}" var="certifier">
                                                         <option value="${certifier.value}" <c:if test="${review.approvedFacCertifier eq certifier.value}">selected="selected"</c:if>>${certifier.text}</option>
                                                     </c:forEach>

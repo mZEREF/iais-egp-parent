@@ -36,15 +36,12 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Embryo Created Cycle Stage");
-
+        ParamUtil.setSessionAttr(bpc.request, "totalFreshMax",0);
+        ParamUtil.setSessionAttr(bpc.request, "totalThawedMax",0);
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if(arSuperDataSubmissionDto==null){
-            arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
-        }
         if(arSuperDataSubmissionDto.getEmbryoCreatedStageDto()==null){
             arSuperDataSubmissionDto.setEmbryoCreatedStageDto(new EmbryoCreatedStageDto());
         }
-
 
         ParamUtil.setSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
@@ -61,6 +58,28 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
 
+        int totalThawedMax =0;
+        int totalFreshMax =0;
+
+        ArSuperDataSubmissionDto arSuperFertilisationDto =arFeClient.getArSuperDataSubmissionDto(arSuperDataSubmissionDto.getSelectionDto().getLastDataSubmission().getSubmissionNo()).getEntity();
+        if(arSuperFertilisationDto.getFertilisationDto().isGiftUsed()){
+            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesGiftNum());
+            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesGiftNum());
+        }
+        if(arSuperFertilisationDto.getFertilisationDto().isIcsiUsed()){
+            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesMicroInjectedNum());
+            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesMicroinjectedNum());
+        }
+        if(arSuperFertilisationDto.getFertilisationDto().isIvfUsed()){
+            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesInseminatedNum());
+            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesInseminatedNum());
+        }
+        if(arSuperFertilisationDto.getFertilisationDto().isZiftUsed()){
+            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesZiftNum());
+            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesZiftNum());
+        }
+        ParamUtil.setSessionAttr(bpc.request, "totalFreshMax",totalFreshMax);
+        ParamUtil.setSessionAttr(bpc.request, "totalThawedMax",totalThawedMax);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
         int totalNum =0;

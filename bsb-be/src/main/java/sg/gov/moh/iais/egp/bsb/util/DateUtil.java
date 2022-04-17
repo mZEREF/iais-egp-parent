@@ -5,6 +5,8 @@ import sg.gov.moh.iais.egp.bsb.constant.AppConstants;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -25,6 +27,10 @@ public class DateUtil {
 
     public static String convertToString(LocalDate localDate){
         return AppConstants.DEFAULT_DATE_FORMATTER.format(localDate);
+    }
+
+    public static Date parseToLocalDateTime(String source){
+        return Date.from(LocalDateTime.parse(source, AppConstants.DEFAULT_DATE_FORMATTER).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static String convertToString(Date date, String pattern) {
