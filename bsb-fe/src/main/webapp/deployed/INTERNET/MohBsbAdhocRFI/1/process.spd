@@ -37,6 +37,13 @@
     <JavaCode defClass="" executor="" methodName="backList_OnStepProcess_0" name="backList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="next" x="710" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="next_OnStepProcess_0" name="next_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="rfiListPage" stageIndicator="" x="350" y="100">
@@ -61,40 +68,43 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(120,120)(295,150)}</position>
+   <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/rfiListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRfiList" style="oblique">
-   <position>{(295,150)(395,150)}</position>
+   <position>{(270,120)(370,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAdhocRfiDetail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/rfiListPage" style="oblique">
-   <position>{(395,150)(505,150)}</position>
+   <position>{(370,120)(480,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/submintAdhocRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(865,150)(885,310)}</position>
+   <position>{(840,120)(860,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submintAdhocRfi" style="oblique">
-   <position>{(885,310)(765,270)}</position>
+   <position>{(860,280)(740,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/backList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(865,150)(1015,450)}</position>
+   <position>{(840,120)(990,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/backList" style="oblique">
-   <position>{(1015,450)(295,150)}</position>
+   <position>{(990,420)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/adhocRfiDetail" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAdhocRfiDetail" style="oblique">
-   <position>{(505,150)(635,150)}</position>
+   <position>{(480,120)(610,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAdhocRfiDetail" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(765,270)(505,150)}</position>
+   <position>{(740,240)(480,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Pages/WebPage/successPage" style="oblique">
-   <position>{(885,520)(295,150)}</position>
+   <position>{(860,490)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/successPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(765,270)(885,520)}</position>
+   <position>{(740,240)(860,490)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/adhocRfiDetail" style="rectanular">
-   <position>{(635,150)(865,150)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/next" style="rectanular">
+   <position>{(755,150)(840,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/next" linkstyle="Direct" name="" sourceName="/Pages/WebPage/adhocRfiDetail" style="oblique">
+   <position>{(610,120)(755,150)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

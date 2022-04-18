@@ -37,4 +37,8 @@ public class INTERNET___MohBsbAdhocRFI___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "backList", this);// 		backList->OnStepProcess
 	}
 
+	public void next_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "next", this);// 		next->OnStepProcess
+	}
+
 }

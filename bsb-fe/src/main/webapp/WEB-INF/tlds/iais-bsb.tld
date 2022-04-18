@@ -96,4 +96,21 @@
             <type>sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Simple LocalDate Format tag</description>
+        <name>format-LocalDate</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.LocalDateFormatTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>localDate</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.time.LocalDate</type>
+        </attribute>
+        <attribute>
+            <name>pattern</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

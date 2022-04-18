@@ -2,7 +2,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
@@ -52,8 +52,8 @@
                                             <tr>
                                                 <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                                 <td><c:out value="${pool.applicationId}"/></td>
-                                                <td><fmt:formatDate value="${pool.startDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
-                                                <td><fmt:formatDate value="${pool.dueDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                                <td><iais-bsb:format-LocalDate localDate='${pool.startDate}'/></td>
+                                                <td><iais-bsb:format-LocalDate localDate='${pool.dueDate}'/></td>
                                                 <td><c:out value="${pool.facilityNo}" /></td>
                                                 <td>
                                                     <iais:action >
@@ -68,7 +68,7 @@
                                 </tbody>
                             </table>
                             <iais:action style="text-align:left;">
-                                <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                                <div align="left"><span><a  href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                             </iais:action>
                         </div>
                     </div>

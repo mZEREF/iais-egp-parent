@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="egov-cloud" uri="ecquaria/sop/egov-cloud" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     //handle to the Engine APIs
@@ -37,115 +37,108 @@
                                     <iais:section title="" id="rfiDetail">
                                         <iais:row>
                                             <iais:field value="Reference No. "/>
-                                            <iais:value width="18">
-                                                <label class="control-label">
-                                                    <span >${licPreReqForInfoDto.officerRemarks}</span>
-                                                </label>
+                                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                                <c:out value="${licPreReqForInfoDto.facilityNo}"/>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Submission Type "/>
-                                            <iais:value width="18">
-                                                <label class="control-label">
-                                                    <span >${licPreReqForInfoDto.officerRemarks}</span>
-                                                </label>
+                                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                                <c:out value="${licPreReqForInfoDto.submissionType}"/>
                                             </iais:value>
+
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Title "/>
-                                            <iais:value width="18">
-                                                <label class="control-label">
-                                                    <span >${licPreReqForInfoDto.officerRemarks}</span>
-                                                </label>
+                                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                                <c:out value="${licPreReqForInfoDto.title}"/>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date "/>
-                                            <iais:value width="18">
-                                                <label class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
-                                                                                             pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                                <iais-bsb:format-LocalDate localDate='${licPreReqForInfoDto.dueDate}'/>
                                             </iais:value>
                                         </iais:row>
-                                        <c:if test="${ licPreReqForInfoDto.needDocument or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
+                                        <c:if test="${ licPreReqForInfoDto.supportingDocRequired or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
                                             <iais:row>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="checkbox" disabled name="reqType"
-                                                               <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if> />&nbsp;Information
+                                                               <c:if test="${licPreReqForInfoDto.informationRequired}">checked</c:if> />&nbsp;Information
                                                     </label>
                                                     <label>
                                                         <input type="checkbox" disabled name="reqType"
-                                                               <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />&nbsp;Supporting
+                                                               <c:if test="${licPreReqForInfoDto.supportingDocRequired}">checked</c:if> />&nbsp;Supporting
                                                         Documents
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
                                         <H3></H3>
-                                        <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}"
-                                                   var="infoReply" varStatus="infoStatus">
-                                            <iais:row style="text-align:center;">
+                                        <c:if test="${licPreReqForInfoDto.informationRequired}">
+                                            <iais:row >
                                                 <div class="col-sm-7 col-md-10 col-xs-10">
-                                                    <strong>${infoReply.title}</strong>
+                                                    <strong>${licPreReqForInfoDto.titleOfInformationRequired}</strong>
                                                 </div>
                                             </iais:row>
                                             <iais:row >
                                                 <iais:value width="18">
                                                     <label>
-                                                        <textarea  maxlength="1000" name="userReply${infoReply.id}"
+                                                        <textarea  maxlength="1000" name="userReply"
                                                                    rows="8" style=" font-weight:normal;"
-                                                                   cols="130">${infoReply.userReply}</textarea>
+                                                                   cols="130">${licPreReqForInfoDto.suppliedInformation}</textarea>
                                                     </label>
-                                                    <span id="error_userReply${infoReply.id}" name="iaisErrorMsg"
+                                                    <span id="error_userReply" name="iaisErrorMsg"
                                                           class="error-msg"></span>
                                                 </iais:value>
                                             </iais:row>
-                                        </c:forEach>
-                                        <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
-                                                       var="rfiMultiFile">
-                                                <c:set var="fileList" value="${rfiMultiFile.value}"/>
-                                                <c:set var="configIndex" value="${rfiMultiFile.key}"/>
-                                                <iais:row>
-                                                    <div class="col-sm-7 col-md-11 col-xs-10">
-                                                        <strong>${fileList.get(0).title}</strong>
-                                                    </div>
-                                                </iais:row>
-                                                <iais:row>
-                                                    <div class="col-sm-7 col-md-12 col-xs-10">
-                                                        <div class="document-upload-gp ">
-                                                            <div class="document-upload-list">
-                                                                <div class="file-upload-gp">
-                                                                    <input type="hidden" name="configIndex" value="${configIndex}"/>
-                                                                    <div id="uploadFileBox${configIndex}" >
-                                                                        <c:forEach var="file" items="${fileList}" varStatus="fileStat">
-                                                                            <c:if test="${not empty file.docName }">
-                                                                                <p class="fileList">
-                                                                                    <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${file.fileRepoId}" docName="${file.docName}"/>
-                                                                                    &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button>
-                                                                                    <input hidden name='fileSize' value='${file.docSize}'/>
-                                                                                </p>
-                                                                            </c:if>
-                                                                        </c:forEach>
-                                                                    </div>
-                                                                    <ul class="upload-enclosure-ul">
-                                                                    </ul>
-                                                                    <br/>
-                                                                    <a class="btn file-upload btn-secondary"  href="javascript:void(0);">Attachment</a>
-                                                                    <br/>
+                                        </c:if>
+
+                                        <c:if test="${licPreReqForInfoDto.supportingDocRequired}">
+
+                                            <c:set var="fileList" value="${rfiMultiFile.value}"/>
+                                            <c:set var="configIndex" value="${rfiMultiFile.key}"/>
+                                            <iais:row>
+                                                <div class="col-sm-7 col-md-11 col-xs-10">
+                                                    <strong>${licPreReqForInfoDto.titleOfSupportingDocRequired}</strong>
+                                                </div>
+                                            </iais:row>
+                                            <iais:row>
+                                                <div class="col-sm-7 col-md-12 col-xs-10">
+                                                    <div class="document-upload-gp ">
+                                                        <div class="document-upload-list">
+                                                            <h3>Attachment</h3>
+                                                            <div class="file-upload-gp">
+                                                                <input type="hidden" name="configIndex" value="${configIndex}"/>
+                                                                <div id="uploadFileBox${configIndex}" >
+                                                                    <c:forEach var="file" items="${fileList}" varStatus="fileStat">
+                                                                        <c:if test="${not empty file.docName }">
+                                                                            <p class="fileList">
+                                                                                <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${file.fileRepoId}" docName="${file.docName}"/>
+                                                                                &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button>
+                                                                                <input hidden name='fileSize' value='${file.docSize}'/>
+                                                                            </p>
+                                                                        </c:if>
+                                                                    </c:forEach>
                                                                 </div>
+                                                                <ul class="upload-enclosure-ul">
+                                                                </ul>
+                                                                <br/>
+                                                                <a class="btn file-upload btn-secondary"  href="javascript:void(0);">UPLOAD</a>
+                                                                <br/>
                                                             </div>
-                                                            <span name="iaisErrorMsg" class="error-msg" id="error_UploadFile${configIndex}"></span>
                                                         </div>
-                                                        <br/>
+                                                        <span name="iaisErrorMsg" class="error-msg" id="error_UploadFile${configIndex}"></span>
                                                     </div>
-                                                </iais:row>
-                                            </c:forEach>
+                                                    <br/>
+                                                </div>
+                                            </iais:row>
 
                                         </c:if>
                                         <iais:action>
                                             <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a>
-                                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSubmit()">Proceed to Submit</button>
+                                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSubmit()">Submit</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -162,7 +155,7 @@
 <script type="text/javascript">
     function doBack() {
         showWaiting();
-        $("[name='crud_action_type']").val("back");
+        $("[name='crud_action_type']").val("backList");
         $("#mainForm").submit();
         dismissWaiting();
     }
