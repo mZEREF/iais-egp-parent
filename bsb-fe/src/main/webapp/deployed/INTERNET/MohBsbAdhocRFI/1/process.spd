@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBsbAdhocRFI" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preRfiList" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preRfiList_OnStepProcess_0" name="preRfiList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preAdhocRfiDetail" x="460" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAdhocRfiDetail_OnStepProcess_0" name="preAdhocRfiDetail_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submintAdhocRfi" x="840" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submintAdhocRfi_OnStepProcess_0" name="submintAdhocRfi_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="backList" x="970" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backList_OnStepProcess_0" name="backList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="rfiListPage" stageIndicator="" x="350" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="successPage" stageIndicator="" x="840" y="470">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adhocRfiDetail" stageIndicator="" x="590" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
+   <position>{(120,120)(295,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/rfiListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRfiList" style="oblique">
+   <position>{(295,150)(395,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preAdhocRfiDetail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/rfiListPage" style="oblique">
+   <position>{(395,150)(505,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submintAdhocRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(865,150)(885,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submintAdhocRfi" style="oblique">
+   <position>{(885,310)(765,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/backList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(865,150)(1015,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/backList" style="oblique">
+   <position>{(1015,450)(295,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/adhocRfiDetail" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAdhocRfiDetail" style="oblique">
+   <position>{(505,150)(635,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preAdhocRfiDetail" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(765,270)(505,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRfiList" linkstyle="Direct" name="" sourceName="/Pages/WebPage/successPage" style="oblique">
+   <position>{(885,520)(295,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/successPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(765,270)(885,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/adhocRfiDetail" style="rectanular">
+   <position>{(635,150)(865,150)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preAdhocRfiDetail" componentIfTrue="/Pages/WebPage/successPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="720" y="220">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/submintAdhocRfi" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="820" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/submintAdhocRfi" value="&quot;submit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/backList" value="&quot;back&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
