@@ -94,11 +94,11 @@
                                                                     <div class="col-sm-7 col-md-5 col-xs-10 control-label">
                                                                         <div class="input-group">
                                                                             <label>
-                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'Y'}">checked="checked"</c:if> value="Y" disabled="disabled"/>
                                                                             </label>
                                                                             <span class="check-circle">Yes</span>
                                                                             <label>
-                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                                <input type="radio" name="inspectionRequired" <c:if test="${mohProcessDto.inspectionRequired eq 'N'}">checked="checked"</c:if> value="N" disabled="disabled"/>
                                                                             </label>
                                                                             <span class="check-circle">No</span>
                                                                             <span data-err-ind="inspectionRequired" class="error-msg" ></span>
@@ -111,11 +111,11 @@
                                                                         <div class="col-sm-7 col-md-5 col-xs-10 control-label">
                                                                             <div class="input-group">
                                                                                 <label>
-                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
+                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'Y'}">checked="checked"</c:if> value="Y" disabled="disabled"/>
                                                                                 </label>
                                                                                 <span class="check-circle">Yes</span>
                                                                                 <label>
-                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N"/>
+                                                                                    <input type="radio" name="certificationRequired" <c:if test="${mohProcessDto.certificationRequired eq 'N'}">checked="checked"</c:if> value="N" disabled="disabled"/>
                                                                                 </label>
                                                                                 <span class="check-circle">No</span>
                                                                                 <span data-err-ind="certificationRequired" class="error-msg" ></span>
