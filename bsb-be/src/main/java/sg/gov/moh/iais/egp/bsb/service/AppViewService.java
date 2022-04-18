@@ -106,9 +106,10 @@ public class AppViewService {
             orgAddressInfo.setStreet("Toa Payoh Lorong 2");
             orgAddressInfo.setBuilding("-");
             ParamUtil.setRequestAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facilityRegisterDto.getFacilityProfileDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facilityRegisterDto.getFacilityOperatorDto());
-            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facilityRegisterDto);
+            ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facilityRegisterDto.getFacilityAuthoriserDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN_OFFICER, facilityRegisterDto.getFacilityAdminAndOfficerDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facilityRegisterDto.getFacilityCommitteeDto());
 
