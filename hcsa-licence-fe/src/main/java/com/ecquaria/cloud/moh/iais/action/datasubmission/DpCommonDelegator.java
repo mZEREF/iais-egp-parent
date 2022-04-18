@@ -3,7 +3,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -16,16 +19,14 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Description DpCommonDelegator
@@ -101,14 +102,16 @@ public abstract class DpCommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        String URL = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission";
         if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS)
-                    .append(bpc.request.getServerName())
-                    .append(InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            URL = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
         }
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(URL);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     /**
