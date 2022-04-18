@@ -146,6 +146,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>
