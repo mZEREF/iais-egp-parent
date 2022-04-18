@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -30,14 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_REVIEW_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_CHKL_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_EDITABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SELF_ASSESSMENT_AVAILABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SEPARATOR;
@@ -55,6 +52,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
 
+    private final static String INIT_DATA_DTO = "preInspectionDataDto";
+
     @Autowired
     public PreInspectionDelegator(InspectionClient inspectionClient) {
         this.inspectionClient = inspectionClient;
@@ -70,11 +69,7 @@ public class PreInspectionDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpSession session = bpc.request.getSession();
-        session.removeAttribute(KEY_INS_INFO);
         session.removeAttribute(KEY_INS_DECISION);
-        session.removeAttribute(APPOINTMENT_REVIEW_DATA);
-        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
-        session.removeAttribute(KEY_INSPECTION_CONFIG);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -168,7 +163,13 @@ public class PreInspectionDelegator {
 
 
     public void rfi(BaseProcessClass bpc) {
-        throw new UnsupportedOperationException("To be implemented in the future");
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        log.info("AppId {} TaskId {} Inspection mark as rfi", appId, taskId);
+        inspectionClient.changeInspectionStatusToRfi(appId, taskId, processDto);
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
     public void skip(BaseProcessClass bpc){
@@ -177,10 +178,5 @@ public class PreInspectionDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         inspectionClient.skipInspection(appId,taskId,processDto);
-    }
-
-    private AppointmentReviewDataDto getReviewDataDto(HttpServletRequest request) {
-        AppointmentReviewDataDto appointmentReviewDataDto = (AppointmentReviewDataDto) ParamUtil.getSessionAttr(request, APPOINTMENT_REVIEW_DATA);
-        return appointmentReviewDataDto == null ? new AppointmentReviewDataDto() : appointmentReviewDataDto;
     }
 }

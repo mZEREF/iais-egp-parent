@@ -116,21 +116,40 @@
                                                                     <div class="clear"></div>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
+                                                                    <label for="processingDecision"
+                                                                           class="col-xs-12 col-md-4 control-label">Processing
+                                                                        Decision <span
+                                                                                style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" class="pd-drop-down" id="processingDecision">
+                                                                            <select name="processingDecision"
+                                                                                    class="pd-drop-down"
+                                                                                    id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO021" <c:if test="${processDto.decision eq 'MOHPRO021'}">selected="selected"</c:if>>Mark as ready</option>
-                                                                                <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
-                                                                                <%--<option value="MOHPRO002" <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for information</option>--%>
+                                                                                <option value="MOHPRO021"
+                                                                                        <c:if test="${processDto.decision eq 'MOHPRO021'}">selected="selected"</c:if>>
+                                                                                    Mark as ready
+                                                                                </option>
+                                                                                <%--@elvariable id="selfAssessmentAvailable" type="java.lang.Boolean"--%>
+                                                                                <c:if test="${selfAssessmentAvailable}">
+                                                                                <option value="MOHPRO002"
+                                                                                        <c:if test="${processDto.decision eq 'MOHPRO002'}">selected="selected"</c:if>>
+                                                                                    Request for information
+                                                                                </option>
+                                                                                </c:if>
+                                                                                    <option value="MOHPRO029"
+                                                                                            <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>
+                                                                                        Skip Inspection
+                                                                                    </option>
                                                                             </select>
-                                                                            <span data-err-ind="processingDecision" class="error-msg" ></span>
+                                                                            <span data-err-ind="processingDecision"
+                                                                                  class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
                                                             </div>
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <div style="text-align: right">
                                                                 <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             </div>
