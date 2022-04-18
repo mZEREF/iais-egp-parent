@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.entity;
+package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
@@ -45,5 +45,5 @@ public class AdhocRfiDto extends BaseEntityDto {
     @JMap(value = "${application.id}")
     private String applicationId;
 
-
+    private String requestor;
 }

@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.entity.AdhocRfiDto;
-import sg.gov.moh.iais.egp.bsb.entity.AdhocRfiQueryDto;
-import sg.gov.moh.iais.egp.bsb.entity.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 

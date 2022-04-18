@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.entity.AdhocRfiQueryDto;
-import sg.gov.moh.iais.egp.bsb.entity.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
 
 /**
  * AdhocRfiClient
