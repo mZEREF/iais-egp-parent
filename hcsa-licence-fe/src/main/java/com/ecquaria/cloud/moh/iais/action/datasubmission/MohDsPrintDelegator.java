@@ -108,7 +108,7 @@ public class MohDsPrintDelegator {
                 dataSubmissionDto.setDeclaration(null);
             }
             DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
-        }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTVSS,DataSubmissionConstant.PRINT_FLAG_TOP})) {
+        }else if(StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTTOP,DataSubmissionConstant.PRINT_FLAG_TOP})) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
             String[] declaration = ParamUtil.getStrings(request, "declaration");
