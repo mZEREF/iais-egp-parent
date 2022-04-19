@@ -37,7 +37,12 @@
         border-radius: 30px;
         border: 1px solid grey;
     }
-
+    .column-sort {
+        float: left;
+        display: block;
+        margin: 0 0 9px 0;
+        width: 14px;
+    }
 </style>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
@@ -195,25 +200,25 @@
                                     <thead>
                                     <tr >
 
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="BUSINESS_NAME"
                                                              value="AR Centre"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="DONOR_SAMPLE_CODE"
                                                              value="Donor Sample Code / ID No."/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="SAMPLE_TYPE_DESC"
                                                              value="Sample Type"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="SAMPLE_FROM_HCI_CODE"
                                                              value="Name of Bank / AR Centre where sample is collected"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="DONOR_NAME"
                                                              value="Donor's Name"/>
-                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="true" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field="age_no"
                                                              value="No of Live Birth Events Recorded"/>
-                                        <iais:sortableHeader needSort="false" style="white-space: nowrap;"
+                                        <iais:sortableHeader needSort="false" style="white-space: nowrap;padding: 15px 30px 15px 0px;"
                                                              field=""
                                                              value="Action"/>
                                     </tr>
