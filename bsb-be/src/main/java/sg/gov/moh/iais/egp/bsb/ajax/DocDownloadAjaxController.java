@@ -102,6 +102,11 @@ public class DocDownloadAjaxController {
         }
     }
 
+    @GetMapping("/repo/{repoId}")
+    public void downloadFileFromRepo(@PathVariable("repoId") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getStandaloneSavedFile);
+    }
+
     @GetMapping("/facility/repo/{id}")
     public void downloadSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedFile);
@@ -150,6 +155,15 @@ public class DocDownloadAjaxController {
     @GetMapping("/appointment/fac/repo/{id}")
     public void downloadAppointmentFacFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::appointmentGetSavedFile);
+    }
+
+    /** Download saved files directly from file-repo
+     * @param repoId file repo ID
+     */
+    private MultipartFile getStandaloneSavedFile(HttpServletRequest request, String repoId) {
+        byte[] content = fileRepoClient.getFileFormDataBase(repoId).getEntity();
+        String filename = request.getParameter("filename");
+        return new ByteArrayMultipartFile(null, filename, null, content);
     }
 
     /**

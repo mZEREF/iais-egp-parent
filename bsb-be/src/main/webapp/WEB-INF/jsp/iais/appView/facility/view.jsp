@@ -16,7 +16,6 @@
 <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}" facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}" batList="${batList}"
              afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
              profileEditJudge="false" batListEditJudge="false" docEditJudge="false" otherAppInfoEditJudge="false" afcEditJudge="false" containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
-    <jsp:attribute name="editFrag"></jsp:attribute>
     <jsp:attribute name="docFrag">
         <c:forEach var="doc" items="${docSettings}">
             <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
@@ -29,7 +28,7 @@
                     <c:forEach var="file" items="${savedFileList}">
                         <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
                         <div class="form-group">
-                            <div class="col-10"><p><a href="/bsb-fe/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                            <div class="col-10"><p><a href="/bsb-be/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
                             <div class="clear"></div>
                         </div>
                     </c:forEach>
