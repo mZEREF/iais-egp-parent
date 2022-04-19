@@ -1,6 +1,6 @@
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
-<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
+<c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>

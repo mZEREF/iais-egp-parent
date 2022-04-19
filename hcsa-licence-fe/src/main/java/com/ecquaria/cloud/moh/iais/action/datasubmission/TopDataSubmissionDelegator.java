@@ -125,7 +125,11 @@ public class TopDataSubmissionDelegator {
         if(currentSuper==null){
            currentSuper=new TopSuperDataSubmissionDto();
         }
-        PatientInformationDto patientInformationDto = currentSuper.getPatientInformationDto() == null ? new PatientInformationDto():currentSuper.getPatientInformationDto();
+        TerminationOfPregnancyDto terminationOfPregnancyDto= currentSuper.getTerminationOfPregnancyDto();
+        if(terminationOfPregnancyDto==null){
+            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
+        }
+        PatientInformationDto patientInformationDto = terminationOfPregnancyDto.getPatientInformationDto() == null ? new PatientInformationDto():terminationOfPregnancyDto.getPatientInformationDto();
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
             if(patientInformationDto.getPatientAge()<16){
                 selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));

@@ -1,7 +1,7 @@
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}"/>
 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
-<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
+<c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
@@ -174,7 +174,7 @@
         <%--<iais:select name="counsellingPlace" firstOption="Please Select" codeCategory="TOP_PRE_COUNSELLING_PLACE"
                      value="${preTerminationDto.counsellingPlace}" cssClass="counsellingPlace"/>--%>
         <iais:select name="counsellingPlace" options="CounsellingPlace" value="${preTerminationDto.counsellingPlace}"
-                     cssClass="counsellingPlace"/>
+                     id="counsellingPlaces" cssClass="counsellingPlace"/>
     <span class="error-msg" name="iaisErrorMsg" id="error_counsellingPlace"></span>
     </iais:value>
     </iais:row>
@@ -194,12 +194,13 @@
     </iais:value>
     </iais:row>
         </div>
-        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>16}">style="display: none"</c:if> >
+        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
             <iais:row>
                 <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
                                 value="${preTerminationDto.preCounsNoCondReason}"/>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_preCounsNoCondReason"></span>
                 </iais:value>
             </iais:row>
         </div>
@@ -243,6 +244,9 @@
             });
             $('#counsellingResults,input[name=counsellingGiven]').change(function () {
                 counselling();
+            });
+            $('#counsellingPlaces').change(function () {
+                counsellingPlace();
             });
             $('#counsellingResults').change(function () {
                 counsellingResults();
@@ -315,6 +319,15 @@
                 $('#secCounsellingResults').hide();
             }
         }
+        function counsellingPlace() {
+            var counsellingPlace = $('#counsellingPlaces').val();
+            if (counsellingPlace == "AR_SC_001") {
+                $('#preCounsNoCondReasons').hide();
+            }else {
+                $('#preCounsNoCondReasons').show();
+            }
+        }
+
         function secCounsellingDate(){
             var patientAppointment = $('#secCounsellings').val();
             if (patientAppointment =="GAZAREA001") {

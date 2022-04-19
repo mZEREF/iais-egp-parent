@@ -84,6 +84,11 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.put("noCounsReason", "GENERAL_ERR0006");
             }
         }
+        if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
+            if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
+                errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+            }
+        }
         return errorMap;
     }
 }
