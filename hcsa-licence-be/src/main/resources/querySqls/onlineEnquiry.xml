@@ -755,7 +755,9 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
-            <#if transfers??> AND :transfers = 1 AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
+            <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            <#if transfersNotIn??> AND :transfersNotIn = 1 AND dc.id not in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
             UNION ALL
             SELECT  dds.ID ,
@@ -780,7 +782,9 @@
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(datetime,:submission_to_date)</#if>
-            <#if transfers??> AND :transfers = 1 AND dds3.CYCLE_STAGE ='AR_STG016'</#if>
+            <#if transfers??> AND :transfers = 1 AND dc.id in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            <#if transfersNotIn??> AND :transfersNotIn = 1 AND dc.id not in (SELECT dcIn.ID FROM ds_cycle dcIn join ds_data_submission ddsIn on ddsIn.CYCLE_STAGE ='AR_STG016' and ddsIn.CYCLE_ID =dcIn.ID )</#if>
+            
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
         ) tt
         where 1=1

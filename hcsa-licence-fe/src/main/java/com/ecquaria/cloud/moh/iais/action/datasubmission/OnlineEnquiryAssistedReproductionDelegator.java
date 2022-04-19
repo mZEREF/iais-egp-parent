@@ -1226,6 +1226,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 if(arDto.getIncludeTransfers()!=null) {
                     filter.put("transfers", 1);
+                }else {
+                    filter.put("transfersNotIn", 1);
                 }
                 if(arDto.getCycleNumber()!=null) {
                     filter.put("cycleNo", Integer.valueOf(arDto.getCycleNumber()));
