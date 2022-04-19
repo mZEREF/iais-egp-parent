@@ -73,16 +73,15 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
+                        <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroup" firstOption="Please Select"
                                          codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
                         </iais:value>
                     </iais:row>
-                    <div id="otherEthnicGroups"
-                         <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
+                    <div id="otherEthnicGroups" <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="5" value="Other Ethnic Group" mandatory="true"/>
+                            <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="200" type="text" id="otherEthnicGroup" name="otherEthnicGroup"
                                             value="${patientInformationDto.otherEthnicGroup}"/>

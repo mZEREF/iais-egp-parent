@@ -54,7 +54,7 @@
                     </iais:value>
                 </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Other Ethnic Group"/>
+                        <iais:field width="5" value="Ethnic Group (Others)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.otherEthnicGroup}"/>
                         </iais:value>
