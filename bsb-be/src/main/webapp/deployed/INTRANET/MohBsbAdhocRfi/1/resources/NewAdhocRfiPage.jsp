@@ -1,1 +1,1 @@
-<%@include file = "/WEB-INF/jsp/iais/adhocRfi/newAdhocRfi.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/adhocRfi/newAdhocRfi.jsp"%>

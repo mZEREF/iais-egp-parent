@@ -92,11 +92,6 @@ public class VssDataSubmissionDelegator {
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(" ----- PrepareSwitch ------ ");
         DsConfigHelper.initVssConfig(bpc.request);
-      /*  VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
-        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(vssSuperDataSubmissionDto.getAppType())) {
-            String crud_action_type = "rfc";
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, crud_action_type);
-        }*/
         String actionType = getActionType(bpc.request);
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);

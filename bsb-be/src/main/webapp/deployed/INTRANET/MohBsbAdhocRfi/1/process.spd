@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="preViewAdhocRfi_OnStepProcess_0" name="preViewAdhocRfi_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoGreateRfi" x="940" y="500">
+  <AutomaticStep defClass="" executor="" icon="" name="DoGreateRfi" x="900" y="640">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -72,6 +72,13 @@
     <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Validate" x="1160" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validate_OnStepProcess_0" name="validate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AdhocRfiPage" stageIndicator="" x="380" y="290">
@@ -80,7 +87,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="NewAdhocRfiPage" stageIndicator="" x="920" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="NewAdhocRfiPage" stageIndicator="" x="960" y="290">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -123,22 +130,16 @@
    <position>{(680,310)(495,207)(404,208)(301,209)(280,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/NewAdhocRfiPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreNewAdhocRfi" style="oblique">
-   <position>{(810,310)(940,310)}</position>
+   <position>{(810,310)(980,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/NewAdhocRfiPage" style="oblique">
-   <position>{(940,310)(970,420)}</position>
+   <position>{(980,310)(1150,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoGreateRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(970,420)(960,520)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Validate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1150,370)(1180,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(970,420)(300,500)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoGreateRfi" style="oblique">
-   <position>{(960,520)(980,670)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreNewAdhocRfi" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(980,670)(810,310)}</position>
+   <position>{(1150,370)(300,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreAdhocRfi" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(300,500)(280,310)}</position>
@@ -167,9 +168,6 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(300,640)(300,500)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(980,670)(670,560)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
    <position>{(670,560)(300,500)}</position>
   </SynchronousLink>
@@ -185,11 +183,20 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Sort" style="oblique">
    <position>{(640,420)(300,500)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoGreateRfi" style="oblique">
+   <position>{(920,660)(670,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Validate" style="oblique">
+   <position>{(1180,480)(1030,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreNewAdhocRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(1030,500)(810,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoGreateRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(1030,500)(920,660)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PreNewAdhocRfi" componentIfTrue="/Pages/WebPage/SuccessPage" defClass="" executor="" icon="" leftOperand="isValidate" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="960" y="650">
-   <Description/>
-  </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/PreViewAdhocRfi" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValidate" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="280" y="620">
    <Description/>
   </Condition>
@@ -203,15 +210,20 @@
    <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="action_type" name="Switch2" x="950" y="400">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="action_type" name="Switch2" x="1130" y="350">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/DoGreateRfi" value="&quot;submit&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Validate" value="&quot;validate&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch3" x="660" y="770">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/DoUpdate" value="&quot;update&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/DoCancel" value="&quot;cancel&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="isValidate" name="Switch4" x="1010" y="480">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PreNewAdhocRfi" value="&quot;false&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/DoGreateRfi" value="&quot;true&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

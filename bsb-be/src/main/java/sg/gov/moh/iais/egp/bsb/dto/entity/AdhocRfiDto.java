@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.time.LocalDate;
 
@@ -31,6 +33,8 @@ public class AdhocRfiDto extends BaseEntityDto{
 
     private String status;
 
+    private String approveNo;
+
     private Boolean informationRequired;
 
     private Boolean supportingDocRequired;
@@ -43,6 +47,16 @@ public class AdhocRfiDto extends BaseEntityDto{
 
     @JMap(value = "${application.id}")
     private String applicationId;
+
+    @JsonIgnore
+    private ValidationResultDto validationResultDto;
+
+    public String retrieveValidationResult() {
+        if (this.validationResultDto == null) {
+            throw new IllegalStateException("This DTO is not validated");
+        }
+        return this.validationResultDto.toErrorMsg();
+    }
 
 
 }
