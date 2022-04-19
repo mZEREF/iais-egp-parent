@@ -1050,7 +1050,7 @@ public class MasterCodeDelegator {
             syncMasterCodeList.addAll(masterCodeDtos);
             String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory);
-
+            masterCodeDto.setUpdateCount(masterCodeDto.getUpdateCount() + 1);
             masterCodeService.updateMasterCode(masterCodeDto);
         }else{
             //update old
@@ -1096,8 +1096,8 @@ public class MasterCodeDelegator {
             String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory2);
             masterCodeDto = masterCodeService.updateMasterCode(masterCodeDto);
-            syncMasterCodeList.add(masterCodeDto);
         }
+        syncMasterCodeList.add(masterCodeDto);
 
         //eic update fe
         Date now = new Date();
