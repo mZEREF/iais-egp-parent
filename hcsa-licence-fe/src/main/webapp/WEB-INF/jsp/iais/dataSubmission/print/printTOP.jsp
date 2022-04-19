@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
-<c:set var="submissionType" value="${topSuperDataSubmissionDto.submissionType}"/>
+<%--<c:set var="submissionType" value="${topSuperDataSubmissionDto.submissionType}"/>
 <c:choose>
     <c:when test="${submissionType == 'TOP_TP002'}">
         <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
@@ -12,13 +12,9 @@
         <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
     </c:when>
     <c:when test="${submissionType == 'TOP_TP001'}">
-        <h3>Preview & Submit</h3>
-        <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
-        <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
-        <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
-        <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
-        <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
+
     </c:when>
+</c:choose>--%>
     <%--<c:when test="${currCode == 'TOPT001'}">
         <%@include file="../terminationOfPregnancy/section/patientDetail.jsp" %>
     </c:when>
@@ -29,7 +25,14 @@
         <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
         <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
     </c:when>--%>
-</c:choose>
+
+    <h3>Preview & Submit</h3>
+    <%@include file="../terminationOfPregnancy/section/previewPatientDetails.jsp" %>
+    <%@include file="../terminationOfPregnancy/section/previewFamilyPlanning.jsp" %>
+    <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
+    <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
+    <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
+    <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
 <%--
 <script>
     $(function () {
