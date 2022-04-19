@@ -9,8 +9,8 @@
     <div id="patientDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
+                <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
                 <iais:row>
                     <iais:field width="5" value="Name of Patient"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -99,8 +99,8 @@
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <%--<c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders">--%>
-                            <iais:code code="${patientInformationDto.livingChildrenGenders}"/>
-                            <%--</c:forEach>--%>
+                                <iais:code code="${patientInformationDto.livingChildrenGenders}"/>
+
                         </iais:value>
                     </iais:row>
             </div>

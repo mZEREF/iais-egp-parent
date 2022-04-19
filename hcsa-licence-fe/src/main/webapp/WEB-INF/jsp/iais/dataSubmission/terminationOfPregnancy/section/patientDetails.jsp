@@ -56,7 +56,7 @@
                             </span>
                         </label>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="commResidenceInSgDate" id="commResidenceInSgDate" value="${patientInformationDto.commResidenceInSgDate}"/>
+                            <iais:datePicker name="commResidenceInSgDate" id="commResidenceInSgDates" value="${patientInformationDto.commResidenceInSgDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_commResidenceInSgDate"></span>
                         </iais:value>
                     </iais:row>
@@ -68,7 +68,7 @@
                         </label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="residenceStatus" name="residenceStatus" firstOption="Please Select"
-                                         codeCategory="TOP_RESIDENCE_STATUS" id="residenceStatus" value="${patientInformationDto.residenceStatus}"/>
+                                         codeCategory="TOP_RESIDENCE_STATUS" id="residenceStatu" value="${patientInformationDto.residenceStatus}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_residenceStatus"></span>
                         </iais:value>
                     </iais:row>
@@ -130,7 +130,7 @@
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="otherOccupation"
+                    <div id="otherOccupations"
                          <c:if test="${patientInformationDto.occupation!='TOPOCC014'}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Other Occupation" mandatory="true"/>
@@ -188,9 +188,9 @@
             var activityStatus = $('#activityStatus option:selected').val();
 
             if (activityStatus == "TOPAS001") {
-                $('#occupations').attr("style", "display: block");
+                $('#occupations').show();
             } else {
-                $('#occupations').attr("style", "display: none");
+                $('#occupations').hide();
             }
         });
     });
@@ -200,9 +200,9 @@
             var occupation = $('#occupation option:selected').val();
 
             if (occupation == "TOPOCC014") {
-                $('#otherOccupation').attr("style", "display: block");
+                $('#otherOccupations').show();
             } else {
-                $('#otherOccupation').attr("style", "display: none");
+                $('#otherOccupations').hide();
             }
         });
     });
@@ -299,57 +299,35 @@
             return;
         }
         clearSelection();
-        $('#patientName').find('p').text(data.selection.patientName);
-        $('[name="patientName"]').val('1');
         $('#patientName').val(data.selection.patientName);
 
-        $('#birthData').find('p').text(data.selection.birthData);
-        $('[name="birthData"]').val('1');
         $('#birthData').val(data.selection.birthData);
 
-        $('#nationality').find('p').text(data.selection.nationality);
-        $('[name="nationality"]').val('1');
-        $('.current').val(data.selection.nationality);
-
-        /*$('#commResidenceInSgDate').find('p').text(data.selection.commResidenceInSgDate);
-        $('[name="commResidenceInSgDate"]').val('1');
-        $('#commResidenceInSgDate').val(data.selection.commResidenceInSgDate);
-
-        $('#residenceStatus').find('p').text(data.selection.residenceStatus);
-        $('[name="residenceStatus"]').val('1');
-        $('#residenceStatus').val(data.selection.residenceStatus);*/
-
-        $('#ethnicGroup').find('p').text(data.selection.ethnicGroup);
-        $('[name="ethnicGroup"]').val('1');
-        $('#ethnicGroup').val(data.selection.ethnicGroup);
-
-        /*$('#otherEthnicGroup').find('p').text(data.selection.otherEthnicGroup);
-        $('[name="otherEthnicGroup"]').val('1');
-        $('#otherEthnicGroup').val(data.selection.otherEthnicGroup);*/
-
-        $('#maritalStatus').find('p').text(data.selection.maritalStatus);
-        $('[name="maritalStatus"]').val('1');
-        $('#maritalStatus').val(data.selection.maritalStatus);
-
-        $('#educationLevel').find('p').text(data.selection.educationLevel);
-        $('[name="educationLevel"]').val('1');
-        $('#educationLevel').val(data.selection.educationLevel);
-
-        $('#childrenNum').find('p').text(data.selection.livingChildrenNo);
-        $('[name="livingChildrenNo"]').val('1');
+        fillValue($('#nationality'),data.selection.nationality);
+        if(!isEmpty(data.selection.commResidenceInSgDate)){
+            $('#commResidenceInSgDates').val(data.selection.commResidenceInSgDate);
+        }
+        if(!isEmpty(data.selection.residenceStatus)){
+            console.log("residenceStatus!")
+            fillValue($('#residenceStatu'),data.selection.residenceStatus);
+        }
+        fillValue($('#ethnicGroups'),data.selection.ethnicGroup);
+        if(!isEmpty(data.selection.otherEthnicGroup)){
+            $('#otherEthnicGroups').show();
+            fillValue($('#otherEthnicGroup'),data.selection.otherEthnicGroup);
+        }
+        fillValue($('#maritalStatus'),data.selection.maritalStatus);
+        fillValue($('#educationLevel'),data.selection.educationLevel);
         $('#childrenNum').val(data.selection.livingChildrenNo);
-
-        $('#activityStatus').find('p').text(data.selection.activityStatus);
-        $('[name="activityStatus"]').val('1');
-        $('#activityStatus').val(data.selection.activityStatus);
-
-        $('#occupation').find('p').text(data.selection.occupation);
-        $('[name="occupation"]').val('1');
-        $('#occupation').val(data.selection.occupation);
-
-        /*$('#otherOccupation').find('p').text(data.selection.otherOccupation);
-        $('[name="otherOccupation"]').val('1');
-        $('#otherOccupation').val(data.selection.otherOccupation);*/
+        fillValue($('#activityStatus'),data.selection.activityStatus);
+        if(!isEmpty(data.selection.occupation)){
+            $('#occupations').show();
+            fillValue($('#occupation'),data.selection.occupation);
+        }
+        if(!isEmpty(data.selection.otherOccupation)){
+            $('#otherOccupations').show();
+            fillValue($('#otherOccupation'),data.selection.otherOccupation);
+        }
     }
     function clearSelection(){
         console.log("clearSelection!")
