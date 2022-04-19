@@ -32,50 +32,50 @@
                     <div class="row form-horizontal">
 
                         <iais:row>
-                            <iais:field value="Name of Laboratory" width="6" cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Name of Laboratory" width="5" cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="<%=hciName%>"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Name of LDT Test" width="6" cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Name of LDT Test" width="5" cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dsLaboratoryDevelopTestDto.ldtTestName}"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Intended Purpose of Test" width="6" cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Intended Purpose of Test" width="5" cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dsLaboratoryDevelopTestDto.intendedPurpose}"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Date LDT was made or will be made available" width="6"
-                                        cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Date LDT was made or will be made available" width="5"
+                                        cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <fmt:formatDate value="${dsLaboratoryDevelopTestDto.ldtDate}" pattern="dd/MM/yyyy"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Person responsible for the test" width="6" cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Person responsible for the test" width="5" cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dsLaboratoryDevelopTestDto.responsePerson}"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Designation" width="6" cssClass="col-md-6"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Designation" width="5" cssClass="col-md-5"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dsLaboratoryDevelopTestDto.designation}"/>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <label class="col-xs-6 col-md-4 control-label col-md-6">Status of Test&nbsp;
+                            <label class="col-xs-5 col-md-4 control-label col-md-5">Status of Test&nbsp;
                                 <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                    data-html="true" href="javascript:void(0);"
                                    title='Active - Clinical laboratory continues to offer this LDT in their laboratory.
@@ -83,15 +83,15 @@
                                    style="z-index: 10"
                                    data-original-title="">i</a>
                             </label>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:if test="${dsLaboratoryDevelopTestDto.testStatus == '1'}">Active</c:if>
                                 <c:if test="${dsLaboratoryDevelopTestDto.testStatus == '0'}">Inactive</c:if>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
-                            <iais:field value="Remarks" width="6" cssClass="col-md-6" required="false"/>
-                            <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:field value="Remarks" width="5" cssClass="col-md-5" required="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
                                 <c:out value="${dsLaboratoryDevelopTestDto.remarks}"/>
                             </iais:value>
                         </iais:row>
