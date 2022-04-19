@@ -106,7 +106,7 @@
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART' and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                where dds.STATUS != 'DS002'
+                where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
@@ -127,7 +127,7 @@
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.DS_TYPE = 'ART'
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
-                where dds.STATUS != 'DS002'
+                where dds.STATUS not in ('DS002','DS012')
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre</#if>
             <#if submissionId??> AND  :submissionId = dds.SUBMISSION_NO</#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
@@ -183,11 +183,11 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS != 'DS002'
+                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS not in ('DS002','DS012')
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =ddsAcs.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
-                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
@@ -290,10 +290,10 @@
               ) AS BUSINESS_NAME  ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS != 'DS002'
+                join ds_data_submission ddsAcs on ddsAcs.CYCLE_ID = dc.ID and ddsAcs.STATUS not in ('DS002','DS012')
                 join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =ddsAcs.ID
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
-                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                left join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_ar_donor dad on dad.CYCLE_STAGE_ID = dacs.ID
@@ -412,7 +412,7 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
@@ -516,7 +516,7 @@
               ) AS BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
-                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS != 'DS002'
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID and dds.STATUS not in ('DS002','DS012')
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE = 'ART'
                 left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
