@@ -115,7 +115,7 @@ public class FacilityRegistrationService {
                     changeRootNodeGroup(facRegRoot, selectionDto);
 
                     // change BAT node group if necessary
-                    if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
+                    if (!MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
                         NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
                         changeBatNodeGroup(batGroup, selectionDto);
                     }
