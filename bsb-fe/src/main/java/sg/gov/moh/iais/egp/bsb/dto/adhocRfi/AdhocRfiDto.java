@@ -6,6 +6,7 @@ import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.BaseEntityDto;
 
 import java.time.LocalDate;
@@ -44,6 +45,8 @@ public class AdhocRfiDto extends BaseEntityDto {
 
     @JMap(value = "${application.id}")
     private String applicationId;
+
+    private ApplicationDto applicationDto;
 
     private String requestor;
 }

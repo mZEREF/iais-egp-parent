@@ -38,48 +38,48 @@
                                         <iais:row>
                                             <iais:field value="Reference No. "/>
                                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                                <c:out value="${licPreReqForInfoDto.facilityNo}"/>
+                                                <c:out value="${adhocReqForInfoDto.facilityNo}"/>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Submission Type "/>
                                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                                <c:out value="${licPreReqForInfoDto.submissionType}"/>
+                                                <c:out value="${adhocReqForInfoDto.submissionType}"/>
                                             </iais:value>
 
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Title "/>
                                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                                <c:out value="${licPreReqForInfoDto.title}"/>
+                                                <c:out value="${adhocReqForInfoDto.title}"/>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date "/>
                                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                                <iais-bsb:format-LocalDate localDate='${licPreReqForInfoDto.dueDate}'/>
+                                                <iais-bsb:format-LocalDate localDate='${adhocReqForInfoDto.dueDate}'/>
                                             </iais:value>
                                         </iais:row>
-                                        <c:if test="${ licPreReqForInfoDto.supportingDocRequired or not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos }">
+                                        <c:if test="${ adhocReqForInfoDto.supportingDocRequired or not empty adhocReqForInfoDto.licPremisesReqForInfoReplyDtos }">
                                             <iais:row>
                                                 <iais:value width="18">
                                                     <label>
                                                         <input type="checkbox" disabled name="reqType"
-                                                               <c:if test="${licPreReqForInfoDto.informationRequired}">checked</c:if> />&nbsp;Information
+                                                               <c:if test="${adhocReqForInfoDto.informationRequired}">checked</c:if> />&nbsp;Information
                                                     </label>
                                                     <label>
                                                         <input type="checkbox" disabled name="reqType"
-                                                               <c:if test="${licPreReqForInfoDto.supportingDocRequired}">checked</c:if> />&nbsp;Supporting
+                                                               <c:if test="${adhocReqForInfoDto.supportingDocRequired}">checked</c:if> />&nbsp;Supporting
                                                         Documents
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
                                         <H3></H3>
-                                        <c:if test="${licPreReqForInfoDto.informationRequired}">
+                                        <c:if test="${adhocReqForInfoDto.informationRequired}">
                                             <iais:row >
                                                 <div class="col-sm-7 col-md-10 col-xs-10">
-                                                    <strong>${licPreReqForInfoDto.titleOfInformationRequired}</strong>
+                                                    <strong>${adhocReqForInfoDto.titleOfInformationRequired}</strong>
                                                 </div>
                                             </iais:row>
                                             <iais:row >
@@ -87,7 +87,7 @@
                                                     <label>
                                                         <textarea  maxlength="1000" name="userReply"
                                                                    rows="8" style=" font-weight:normal;"
-                                                                   cols="130">${licPreReqForInfoDto.suppliedInformation}</textarea>
+                                                                   cols="130">${adhocReqForInfoDto.suppliedInformation}</textarea>
                                                     </label>
                                                     <span id="error_userReply" name="iaisErrorMsg"
                                                           class="error-msg"></span>
@@ -95,13 +95,13 @@
                                             </iais:row>
                                         </c:if>
 
-                                        <c:if test="${licPreReqForInfoDto.supportingDocRequired}">
+                                        <c:if test="${adhocReqForInfoDto.supportingDocRequired}">
 
                                             <c:set var="fileList" value="${rfiMultiFile.value}"/>
                                             <c:set var="configIndex" value="${rfiMultiFile.key}"/>
                                             <iais:row>
                                                 <div class="col-sm-7 col-md-11 col-xs-10">
-                                                    <strong>${licPreReqForInfoDto.titleOfSupportingDocRequired}</strong>
+                                                    <strong>${adhocReqForInfoDto.titleOfSupportingDocRequired}</strong>
                                                 </div>
                                             </iais:row>
                                             <iais:row>

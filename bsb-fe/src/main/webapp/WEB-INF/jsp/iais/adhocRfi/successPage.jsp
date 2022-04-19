@@ -20,18 +20,15 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
-                    <div class="bg-title">
-                        <h2>
-                            <span><iais:message key="RFI_ACK002" escape="true"></iais:message></span>
-                        </h2>
-                    </div>
+                    <br><br><br>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
-
+                                        <h2>
+                                            <span><iais:message key="RFI_ACK002" escape="true"></iais:message></span>
+                                        </h2>
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-secondary" type="button"  onclick="javascript:doDone()">Done</button>
                                         </iais:action>

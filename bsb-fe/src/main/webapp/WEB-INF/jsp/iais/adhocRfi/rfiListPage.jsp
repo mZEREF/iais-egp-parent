@@ -51,10 +51,10 @@
                                         <c:forEach var="pool" items="${reqForInfoSearchList}" varStatus="status">
                                             <tr>
                                                 <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                                <td><c:out value="${pool.applicationId}"/></td>
+                                                <td><c:out value="${pool.applicationDto.applicationNo}"/></td>
                                                 <td><iais-bsb:format-LocalDate localDate='${pool.startDate}'/></td>
                                                 <td><iais-bsb:format-LocalDate localDate='${pool.dueDate}'/></td>
-                                                <td><c:out value="${pool.facilityNo}" /></td>
+                                                <td><c:out value="${pool.requestor}" /></td>
                                                 <td>
                                                     <iais:action >
                                                         <a href="#" onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
