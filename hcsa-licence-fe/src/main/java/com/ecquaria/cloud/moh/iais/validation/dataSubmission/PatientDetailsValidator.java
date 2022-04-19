@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -27,7 +28,11 @@ public class PatientDetailsValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
-        PatientInformationDto patientInformationDto=topSuperDataSubmissionDto.getPatientInformationDto();
+        TerminationOfPregnancyDto terminationOfPregnancyDto= topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        if(terminationOfPregnancyDto==null){
+            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
+        }
+        PatientInformationDto patientInformationDto=terminationOfPregnancyDto.getPatientInformationDto();
         if(patientInformationDto==null){
             patientInformationDto = new PatientInformationDto();
         }
@@ -60,8 +65,10 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 errorMap.put("residenceStatus", "GENERAL_ERR0006");
             }
         }
-        if("ETHG005".equals(patientInformationDto.getEthnicGroup()) && StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
-            errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
+        if("ECGP004".equals(patientInformationDto.getEthnicGroup())){
+            if(StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
+                errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
+            }
         }
         if(!StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             errorMap.put("livingChildrenNo", "GENERAL_ERR0002");

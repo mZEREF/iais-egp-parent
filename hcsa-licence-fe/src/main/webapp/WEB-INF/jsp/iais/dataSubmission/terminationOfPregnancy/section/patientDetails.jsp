@@ -75,11 +75,11 @@
                     <iais:row>
                         <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroup" firstOption="Please Select"
+                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroups" firstOption="Please Select"
                                          codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
                         </iais:value>
                     </iais:row>
-                    <div id="otherEthnicGroups" <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
+                    <div id="otherEthnicGroups" <c:if test="${patientInformationDto.ethnicGroup!='ECGP004'}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
@@ -171,11 +171,11 @@
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
-        $('#ethnicGroup').change(function () {
+        $('#ethnicGroups').change(function () {
 
-            var ethnicGroup = $('#ethnicGroup').val();
+            var ethnicGroup = $('#ethnicGroups').val();
 
-            if (ethnicGroup == "ETHG005") {
+            if (ethnicGroup == "ECGP004") {
                 $('#otherEthnicGroups').show();
             } else {
                 $('#otherEthnicGroups').hide();
