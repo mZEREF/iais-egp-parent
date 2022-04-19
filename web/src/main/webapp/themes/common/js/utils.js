@@ -695,11 +695,16 @@ function callCommonAjax(options, callback) {
     if (!isEmpty(options.type)) {
         type = options.type;
     }
+    var async = true;
+    if (!isEmpty(options.async)) {
+        async = options.async;
+    }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
-        data: options,
+        data: options.data | options,
+        async: async,
         type: type,
         success: function (data) {
             if (typeof callback === 'function') {
@@ -723,6 +728,13 @@ function callFunc(func) {
     } catch (e) {
         console.log(e);
     }
+}
+
+function getContextPath() {
+    var pathName = document.location.pathname;
+    var index = pathName.substr(1).indexOf("/");
+    var result = pathName.substr(0,index+1);
+    return result;
 }
 
 
