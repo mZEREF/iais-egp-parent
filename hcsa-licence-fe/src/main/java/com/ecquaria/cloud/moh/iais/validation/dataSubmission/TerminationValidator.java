@@ -23,14 +23,35 @@ public class TerminationValidator implements CustomizeValidator {
         if(StringUtil.isEmpty(terminationDto)){
             terminationDto=new TerminationDto();
         }
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ){
+            if(StringUtil.isEmpty(terminationDto.getSpType())){
+                errorMap.put("spType", "GENERAL_ERR0006");
+            }
+            if(StringUtil.isEmpty(terminationDto.getAnType())){
+                errorMap.put("anType", "GENERAL_ERR0006");
+            }
+            if("TOPTSP003".equals(terminationDto.getSpType())){
+                if(StringUtil.isEmpty(terminationDto.getOtherSpType())){
+                    errorMap.put("otherSpType", "GENERAL_ERR0006");
+                }
+            }
+            if("TOPTA004".equals(terminationDto.getAnType())){
+                if(StringUtil.isEmpty(terminationDto.getOtherAnType())){
+                    errorMap.put("otherAnType", "GENERAL_ERR0006");
+                }
+            }
+        }
         if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
             ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"drugType");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPTOD005".equals(terminationDto.getDrugType())){
-            ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"otherDrugType");
-            errorMap.putAll(result.retrieveAll());
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP002".equals(terminationDto.getTopType()) ){
+            if("TOPTOD005".equals(terminationDto.getDrugType())){
+                ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"otherDrugType");
+                errorMap.putAll(result.retrieveAll());
+            }
         }
+
         if(!StringUtil.isEmpty(terminationDto.getComplicationForOperRslt())){
             if(terminationDto.getComplicationForOperRslt() == true){
                 ValidationResult result = WebValidationHelper.validateProperty(terminationDto,"ariseOperationComplication");

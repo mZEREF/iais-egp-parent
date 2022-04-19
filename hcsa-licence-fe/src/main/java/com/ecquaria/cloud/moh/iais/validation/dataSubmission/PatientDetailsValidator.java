@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
@@ -10,17 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.TopPatientSelectService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 public class PatientDetailsValidator implements CustomizeValidator {
@@ -37,13 +32,13 @@ public class PatientDetailsValidator implements CustomizeValidator {
             patientInformationDto = new PatientInformationDto();
         }
 
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        /*LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         TopPatientSelectService topPatientSelectService = SpringContextHelper.getContext().getBean(TopPatientSelectService.class);
         PatientInformationDto patientInformation=topPatientSelectService.getTopPatientSelect(patientInformationDto.getIdType(), patientInformationDto.getIdNumber(), orgId);
         if (patientInformation != null && (StringUtil.isEmpty(patientInformationDto.getId()) || !Objects.equals(patientInformationDto.getId(), patientInformationDto.getId()))) {
             errorMap.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-        }
+        }*/
         String birthDate = patientInformationDto.getBirthData();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {

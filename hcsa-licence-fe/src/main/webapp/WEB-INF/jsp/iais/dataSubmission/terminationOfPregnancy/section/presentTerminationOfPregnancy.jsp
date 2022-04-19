@@ -13,35 +13,39 @@
     </iais:row>
     <div id="spTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Type of Surgical Procedure "/>
+            <iais:field width="5" value="Type of Surgical Procedure" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="spType" firstOption="Please Select" id="spType" codeCategory="TOP_TYPE_OF_SURGICAL_PROCEDURE"
                              value="${terminationDto.spType}" cssClass="spType"/>
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_spType"></span>
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSpType" <c:if test="${terminationDto.spType!='TOPTSP003'}">style="display: none"</c:if>>
+    <div id="otherSpTypes" <c:if test="${terminationDto.spType!='TOPTSP003' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003')}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Type of Surgical Procedure - others"/>
+            <iais:field width="5" value="Type of Surgical Procedure - others" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherSpType" value="${terminationDto.otherSpType}" />
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherSpType"></span>
             </iais:value>
         </iais:row>
     </div>
     <div id="anTypes" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Type of Anaesthesia"/>
+            <iais:field width="5" value="Type of Anaesthesia" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="anType" firstOption="Please Select" codeCategory="TOP_TYPE_OF_ANAESTHESIA"
                              value="${terminationDto.anType}" cssClass="anType" id="anType"/>
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_anType"></span>
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherAnType" <c:if test="${terminationDto.anType!='TOPTA004'}">style="display: none"</c:if>>
+    <div id="otherAnTypes" <c:if test="${terminationDto.anType!='TOPTA004' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003')}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Other Type of Anaesthesia"/>
+            <iais:field width="5" value="Other Type of Anaesthesia" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="66" type="text" name="otherAnType"/>
+                <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_otherAnType"></span>
             </iais:value>
         </iais:row>
     </div>
@@ -54,7 +58,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD005'}">style="display: none"</c:if>>
+    <div id="otherDrugTypes" <c:if test="${terminationDto.drugType!='TOPTOD005' || (terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Drug (Others)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -356,6 +360,7 @@
             $('#spTypes').show();
         }else {
             $('#spTypes').hide();
+            $('#otherSpTypes').hide();
         }
     }
     function performedOwns() {
@@ -408,17 +413,17 @@
     function anType() {
         var anType= $('#anType').val();
         if(anType == "TOPTA004"){
-            $('#otherAnType').show();
+            $('#otherAnTypes').show();
         }else {
-            $('#otherAnType').hide();
+            $('#otherAnTypes').hide();
         }
     }
     function spType() {
         var spType= $('#spType').val();
         if(spType == "TOPTSP003"){
-            $('#otherSpType').show();
+            $('#otherSpTypes').show();
         }else {
-            $('#otherSpType').hide();
+            $('#otherSpTypes').hide();
         }
     }
     function anTypes() {
@@ -427,6 +432,7 @@
             $('#anTypes').show();
         }else {
             $('#anTypes').hide();
+            $('#otherAnTypes').hide();
         }
     }
     function topType() {
@@ -435,6 +441,7 @@
             $('#drugTypes').show();
         }else {
             $('#drugTypes').hide();
+            $('#otherDrugTypes').hide();
         }
     }
     function drugType() {
