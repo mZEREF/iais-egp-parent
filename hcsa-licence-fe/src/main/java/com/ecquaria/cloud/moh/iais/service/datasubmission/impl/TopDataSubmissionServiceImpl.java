@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -155,6 +155,16 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     }
 
     @Override
+    public PatientInformationDto getTopPatientSelect(String idType, String idNumber, String orgId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + idType
+                + " : " + idNumber + " -----"));
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(orgId)) {
+            return null;
+        }
+        return topFeClient.getTopPatientSelect(idType, idNumber, orgId).getEntity();
+    }
+
+   /* @Override
     public String getDraftNo() {
         String draftNo = systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
         log.info(StringUtil.changeForLog("The Draft No: " + draftNo));
@@ -166,5 +176,5 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         String submissionNo = systemAdminClient.submissionID(DataSubmissionConsts.DS_TOP).getEntity();
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
-    }
+    }*/
 }

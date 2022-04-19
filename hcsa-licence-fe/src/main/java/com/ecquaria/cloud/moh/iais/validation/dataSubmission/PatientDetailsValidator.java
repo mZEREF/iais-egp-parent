@@ -35,8 +35,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         TopPatientSelectService topPatientSelectService = SpringContextHelper.getContext().getBean(TopPatientSelectService.class);
-        PatientInformationDto patientInformation=topPatientSelectService.getTopPatientSelect(patientInformationDto.getIdType(), patientInformationDto.getIdNumber(),
-                patientInformationDto.getNationality(), orgId);
+        PatientInformationDto patientInformation=topPatientSelectService.getTopPatientSelect(patientInformationDto.getIdType(), patientInformationDto.getIdNumber(), orgId);
         if (patientInformation != null && (StringUtil.isEmpty(patientInformationDto.getId()) || !Objects.equals(patientInformationDto.getId(), patientInformationDto.getId()))) {
             errorMap.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
         }

@@ -56,7 +56,7 @@ public class TopFeClientFallback implements TopFeClient{
     }
 
     @Override
-    public FeignResponseEntity<PatientInformationDto> getTopPatientSelect(String idType, String idNumber, String nationality, String orgId) {
+    public FeignResponseEntity<PatientInformationDto> getTopPatientSelect(String idType, String idNumber , String orgId) {
         return getFeignResponseEntity();
     }
 }

@@ -562,9 +562,10 @@ public final class DataSubmissionHelper {
         cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+        /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_TOP;
-        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+        }else*/
+        if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
             cycleType = DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP;
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
