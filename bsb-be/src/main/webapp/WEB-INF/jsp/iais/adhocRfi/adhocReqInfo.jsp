@@ -80,7 +80,7 @@
                                                     <td><iais-bsb:format-LocalDate localDate='${info.dueDate}'/></td>
                                                     <td>
                                                         <iais:action >
-                                                            <a href="#" onclick="">View</a>
+                                                            <a href="#" onclick="javascript:doView('${info.id}')">View</a>
                                                         </iais:action>
                                                     </td>
                                                 </tr>
@@ -111,4 +111,11 @@
             $("#mainForm").submit();
         });
     });
+    function doView(id){
+        showWaiting();
+        console.log(1)
+        $("[name='action_type']").val("view");
+        $("[name='action_value']").val(id);
+        $("#mainForm").submit();
+    }
 </script>

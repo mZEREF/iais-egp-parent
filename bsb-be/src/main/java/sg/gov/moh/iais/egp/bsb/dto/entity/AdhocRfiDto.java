@@ -33,8 +33,6 @@ public class AdhocRfiDto extends BaseEntityDto{
 
     private String status;
 
-    private String approveNo;
-
     private Boolean informationRequired;
 
     private Boolean supportingDocRequired;
@@ -47,16 +45,5 @@ public class AdhocRfiDto extends BaseEntityDto{
 
     @JMap(value = "${application.id}")
     private String applicationId;
-
-    @JsonIgnore
-    private ValidationResultDto validationResultDto;
-
-    public String retrieveValidationResult() {
-        if (this.validationResultDto == null) {
-            throw new IllegalStateException("This DTO is not validated");
-        }
-        return this.validationResultDto.toErrorMsg();
-    }
-
 
 }

@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.NewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 /**
@@ -25,11 +26,11 @@ public interface AdhocRfiClient {
     ResponseDto<AdhocRfiQueryResultDto> queryAdhocRfi(@SpringQueryMap AdhocRfiQueryDto adhocRfiQueryDto);
 
     @GetMapping(value = "/adhoc-rfi/pre-reqInfo/{approvalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<AdhocRfiDto> queryPreNewData(@PathVariable("approvalId") String approvalId);
+    ResponseDto<NewAdhocRfiDto> queryPreNewData(@PathVariable("approvalId") String approvalId);
 
     @PostMapping(path = "/adhoc-rfi/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveAdhocRfi(@RequestBody AdhocRfiDto adhocRfiDto);
+    ResponseDto<String> saveAdhocRfi(@RequestBody NewAdhocRfiDto newAdhocRfiDto);
 
     @PostMapping(path = "/adhoc-rfi/validate/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateManualAdhocRfi(@RequestBody AdhocRfiDto adhocRfiDto);
+    ValidationResultDto validateManualAdhocRfi(@RequestBody NewAdhocRfiDto newAdhocRfiDto);
 }

@@ -57,7 +57,7 @@
                         <iais:row>
                             <iais:field value="Status" width="15" required="false"/>
                             <iais:value width="10">
-                                <iais:select cssClass="statusDropdown" id="rfiStatus" value="${newReqInfo.dueDate}${newReqInfo.dueDate}" name="status" options="statusList"></iais:select>
+                                <iais:select cssClass="statusDropdown" id="rfiStatus" value="${newReqInfo.dueDate}" name="status" options="statusList"></iais:select>
                             </iais:value>
                         </iais:row>
                         <div class="row" >
