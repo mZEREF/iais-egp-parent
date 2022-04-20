@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
+package sg.gov.moh.iais.egp.bsb.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

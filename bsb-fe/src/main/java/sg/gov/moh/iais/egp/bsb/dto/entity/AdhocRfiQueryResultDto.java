@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
+package sg.gov.moh.iais.egp.bsb.dto.entity;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;

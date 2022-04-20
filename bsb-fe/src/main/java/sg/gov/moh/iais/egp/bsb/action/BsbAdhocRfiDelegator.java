@@ -3,24 +3,32 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +48,8 @@ public class BsbAdhocRfiDelegator {
     public static final String KEY_ADHOC_PAGE_INFO = "pageInfo";
     @Autowired
     private  AdhocRfiClient adhocRfiClient;
+    @Autowired
+    private OrgUserManageService orgUserManageService;
 
 
     public void start(BaseProcessClass bpc) {
@@ -53,46 +63,26 @@ public class BsbAdhocRfiDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
 
+        AdhocRfiQueryDto searchDto = getSearchDto(request);
+        ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
+        ResponseDto<AdhocRfiQueryResultDto> resultDto = adhocRfiClient.queryAdhocRfi(searchDto);
+        if (resultDto.ok()) {
+            ParamUtil.setRequestAttr(request, KEY_ADHOC_PAGE_INFO, resultDto.getEntity().getPageInfo());
+            List<AdhocRfiDto> reqForInfos = resultDto.getEntity().getRfiList();
 
-
-
-
-        List<AdhocRfiDto> reqInfos = IaisCommonUtils.combineList();
-        AdhocRfiDto adhocRfiDto = new AdhocRfiDto();
-        adhocRfiDto.setId("adhocRfi.getId()");
-        adhocRfiDto.setApplicationId("APP");
-        adhocRfiDto.setFacilityNo("adhocRfi.getFacilityNo()");
-        adhocRfiDto.setEmail("adhocRfi.getEmail()");
-        adhocRfiDto.setStatus("adhocRfi.getStatus()");
-        adhocRfiDto.setInformationRequired(true);
-        adhocRfiDto.setDueDate(LocalDate.now());
-        adhocRfiDto.setTitle("adhocRfi.getTitle()");
-        adhocRfiDto.setTitleOfInformationRequired("adhocRfi.getTitleOfInformationRequired()");
-        adhocRfiDto.setTitleOfSupportingDocRequired("adhocRfi.getTitleOfSupportingDocRequired()");
-        adhocRfiDto.setSubmissionType("adhocRfi.getSubmissionType()");
-        adhocRfiDto.setSupportingDocRequired(true);
-        adhocRfiDto.setStartDate(LocalDate.now());
-        reqInfos.add(adhocRfiDto);
-        ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, (Serializable) reqInfos);
-
-//        AdhocRfiQueryDto searchDto = getSearchDto(request);
-//        ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
-//        ResponseDto<AdhocRfiQueryResultDto> resultDto = adhocRfiClient.queryAdhocRfi(searchDto);
-//        if (resultDto.ok()) {
-//            ParamUtil.setRequestAttr(request, KEY_ADHOC_PAGE_INFO, resultDto.getEntity().getPageInfo());
-//            List<AdhocRfiDto> reqForInfos = resultDto.getEntity().getRfiList();
-//            for (AdhocRfiDto adRfi:reqForInfos
-//                 ) {
-//                ApplicationDto applicationDto=adhocRfiClient.getApplicationDtoByAppId(adRfi.getApplicationId()).getEntity();
-//                adRfi.setApplicationDto(applicationDto);
-//
-//            }
-//            ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, (Serializable) reqForInfos);
-//        } else {
-//            log.warn("get adhocRfi API doesn't return ok, the response is {}", resultDto);
-//            ParamUtil.setRequestAttr(request, KEY_ADHOC_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-//            ParamUtil.setRequestAttr(request, KEY_ADHOC_RFI_LIST, new ArrayList<>());
-//        }
+            for (AdhocRfiDto adRfi:reqForInfos
+                 ) {
+                ApplicationDto applicationDto=adhocRfiClient.getApplicationDtoByAppId(adRfi.getApplicationId()).getEntity();
+                adRfi.setApplication(MiscUtil.transferEntityDto(applicationDto, Application.class));
+                FeUserDto orgUserDto=orgUserManageService.getUserAccount(adRfi.getId());
+                adRfi.setRequestor(orgUserDto.getDisplayName());
+            }
+            ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, (Serializable) reqForInfos);
+        } else {
+            log.warn("get adhocRfi API doesn't return ok, the response is {}", resultDto);
+            ParamUtil.setRequestAttr(request, KEY_ADHOC_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, new ArrayList<>());
+        }
 
     }
 
@@ -102,26 +92,19 @@ public class BsbAdhocRfiDelegator {
         try {
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if(!StringUtil.isEmpty(id)){
-                adhocRfiDto=adhocRfiClient.getAdhocRfiById(id).getEntity();
+                List<AdhocRfiDto> reqForInfos = (List<AdhocRfiDto>) ParamUtil.getSessionAttr(request, KEY_ADHOC_RFI_LIST);
+                for (AdhocRfiDto rfi:reqForInfos
+                     ) {
+                    if(rfi.getId().equals(id)){
+                        adhocRfiDto=rfi;
+                        break;
+                    }
+                }
 
             }
         }catch (Exception e){
             log.error("not mask id");
         }
-        adhocRfiDto = new AdhocRfiDto();
-        adhocRfiDto.setId("adhocRfi.getId()");
-        adhocRfiDto.setApplicationId("APP");
-        adhocRfiDto.setFacilityNo("adhocRfi.getFacilityNo()");
-        adhocRfiDto.setEmail("adhocRfi.getEmail()");
-        adhocRfiDto.setStatus("adhocRfi.getStatus()");
-        adhocRfiDto.setInformationRequired(true);
-        adhocRfiDto.setDueDate(LocalDate.now());
-        adhocRfiDto.setTitle("adhocRfi.getTitle()");
-        adhocRfiDto.setTitleOfInformationRequired("adhocRfi.getTitleOfInformationRequired()");
-        adhocRfiDto.setTitleOfSupportingDocRequired("adhocRfi.getTitleOfSupportingDocRequired()");
-        adhocRfiDto.setSubmissionType("adhocRfi.getSubmissionType()");
-        adhocRfiDto.setSupportingDocRequired(true);
-        adhocRfiDto.setStartDate(LocalDate.now());
         ParamUtil.setSessionAttr(request,"adhocReqForInfoDto",adhocRfiDto);
 
 
@@ -174,7 +157,7 @@ public class BsbAdhocRfiDelegator {
             return;
         }
         adhocRfiDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
-       // adhocRfiClient.saveAdhocRfi(adhocRfiDto);
+        adhocRfiClient.saveAdhocRfi(adhocRfiDto);
     }
 
     public void backList(BaseProcessClass bpc) {

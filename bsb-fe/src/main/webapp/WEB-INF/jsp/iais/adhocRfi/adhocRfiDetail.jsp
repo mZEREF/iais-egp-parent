@@ -44,7 +44,7 @@
                                         <iais:row>
                                             <iais:field value="Submission Type "/>
                                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                                <c:out value="${adhocReqForInfoDto.submissionType}"/>
+                                                <iais:code code="${adhocReqForInfoDto.submissionType}"/>
                                             </iais:value>
 
                                         </iais:row>
@@ -60,7 +60,7 @@
                                                 <iais-bsb:format-LocalDate localDate='${adhocReqForInfoDto.dueDate}'/>
                                             </iais:value>
                                         </iais:row>
-                                        <c:if test="${ adhocReqForInfoDto.supportingDocRequired or not empty adhocReqForInfoDto.licPremisesReqForInfoReplyDtos }">
+                                        <c:if test="${ adhocReqForInfoDto.supportingDocRequired}">
                                             <iais:row>
                                                 <iais:value width="18">
                                                     <label>
@@ -155,7 +155,7 @@
 <script type="text/javascript">
     function doBack() {
         showWaiting();
-        $("[name='crud_action_type']").val("backList");
+        $("[name='crud_action_type']").val("back");
         $("#mainForm").submit();
         dismissWaiting();
     }

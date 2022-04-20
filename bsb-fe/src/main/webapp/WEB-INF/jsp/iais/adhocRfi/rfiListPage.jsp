@@ -51,7 +51,7 @@
                                         <c:forEach var="pool" items="${reqForInfoSearchList}" varStatus="status">
                                             <tr>
                                                 <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                                <td><c:out value="${pool.applicationDto.applicationNo}"/></td>
+                                                <td><c:out value="${pool.application.applicationNo}"/></td>
                                                 <td><iais-bsb:format-LocalDate localDate='${pool.startDate}'/></td>
                                                 <td><iais-bsb:format-LocalDate localDate='${pool.dueDate}'/></td>
                                                 <td><c:out value="${pool.requestor}" /></td>

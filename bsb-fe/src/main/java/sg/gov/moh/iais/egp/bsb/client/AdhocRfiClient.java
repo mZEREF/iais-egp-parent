@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 
 /**

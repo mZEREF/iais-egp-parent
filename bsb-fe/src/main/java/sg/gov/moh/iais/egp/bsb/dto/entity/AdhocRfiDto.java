@@ -1,13 +1,11 @@
-package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
+package sg.gov.moh.iais.egp.bsb.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
-import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.BaseEntityDto;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 
 import java.time.LocalDate;
 
@@ -43,10 +41,11 @@ public class AdhocRfiDto extends BaseEntityDto {
 
     private String suppliedInformation;
 
-    @JMap(value = "${application.id}")
-    private String applicationId;
-
-    private ApplicationDto applicationDto;
+    private Application application;
 
     private String requestor;
+
+
+    private String applicationId;
+
 }
