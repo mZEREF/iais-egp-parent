@@ -699,11 +699,15 @@ function callCommonAjax(options, callback) {
     if (!isEmpty(options.async)) {
         async = options.async;
     }
+    var data = options.data;
+    if (isEmpty(data)) {
+        data = options;
+    }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
-        data: options.data | options,
+        data: data,
         async: async,
         type: type,
         success: function (data) {
