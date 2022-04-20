@@ -4,13 +4,10 @@
     <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
       <div class="alert alert-info" role="alert">
         <strong>
-          <h4>View & Mark Submitted Rectifications</h4>
+          <h4>Verify Submitted Rectification</h4>
         </strong>
       </div>
       <iais:section title="" id = "retificationView">
-        <iais:row>
-          <iais:field value="Rectifications submitted by Applicant"/>
-        </iais:row>
         <div class="table-gp" id = "processRec">
           <table aria-describedby="" class="table">
             <thead>

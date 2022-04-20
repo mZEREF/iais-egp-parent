@@ -12,8 +12,8 @@ public class InspectionConstants {
     public static final String KEY_ROUTE = "route";
 
     //NC Rectification and Follow-up items
-    public static final String KEY_RECTIFY_FINDING_FORM = "ncsPreData";
-    public static final String KEY_RECTIFY_SAVED_REMARK_MAP = "ncsSavedRemarkMap";
+    public static final String KEY_NCS_RECTIFICATION_DISPLAY_DATA = "ncsPreData";
+    public static final String KEY_RECTIFY_SAVED_DATA_MAP = "ncsSavedRemarkMap";
     public static final String KEY_RECTIFY_SAVED_DOC_DTO = "ncsSavedDocDto";
     public static final String KEY_RECTIFY_ITEM_SAVE_DTO = "rectifyItemSaveDto";
     public static final String KEY_ITEM_VALUE     = "itemValue";

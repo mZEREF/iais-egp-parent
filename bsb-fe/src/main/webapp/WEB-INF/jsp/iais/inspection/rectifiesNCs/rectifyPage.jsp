@@ -36,23 +36,39 @@
 
     <div class="main-content">
         <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
+            <div class="row" style="margin: 0 auto">
+                <div class="col-xs-12" style="padding-top: 50px">
                     <div class="form-horizontal">
                         <div class="col-md-10">
                             <div class="row" style="font-weight: 700;text-align: center">
-                                <div class="col-md-3">S/N</div>
-                                <div class="col-md-6">Checklist Question</div>
-                                <div class="col-md-3">Remarks</div>
+                                <div class="col-md-1">S/N</div>
+                                <div class="col-md-4">Item Description</div>
+                                <div class="col-md-3">Findings/Non-Compliance</div>
+                                <div class="col-md-2">Action Required</div>
+                                <div class="col-md-2">MOH Remarks</div>
                             </div>
                             <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
-                                <div class="col-md-3">1</div>
-                                <div class="col-md-6"><c:out value="${rectifyItemDto.itemText}"/></div>
-                                <div class="col-md-3"><c:out value="${rectifyItemDto.remarks}"/></div>
+                                <div class="col-md-1">1</div>
+                                <div class="col-md-4"><c:out value="${rectifyItemDto.itemText}"/></div>
+                                <div class="col-md-3"><c:out value="${rectifyItemDto.finding}"/></div>
+                                <div class="col-md-2"><c:out value="${rectifyItemDto.actionRequired}"/></div>
+                                <div class="col-md-2">
+                                    <c:choose>
+                                        <c:when test="${rectifyItemDto.remark ne null}"><c:out value="${rectifyItemDto.remark}"/><</c:when>
+                                        <c:otherwise>--</c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 50px 0">
+                                <ul>
+                                    <li>The maximum file size per document is 10 MB.</li>
+                                    <li>Acceptable file formats: JPG, PNG, PDF, CSV, DOCX, JPEG, XLS, DOC and XLSX</li>
+                                    <li>Please ensure that the corresponding Document Type is selected for each document uploaded under Others.</li>
+                                </ul>
                             </div>
                             <div id="attachmentUploadDiv" class="document-upload-gp">
                                 <div class="document-upload-list">
-                                    <h3>Attachment</h3>
+                                    <h3>Attachments</h3>
                                     <div class="file-upload-gp">
                                         <c:if test="${newSavedDoc ne null}">
                                             <c:forEach var="info" items="${newSavedDoc}">
@@ -79,9 +95,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <h3>Remarks</h3>
+                            <h4 style="font-weight: 700">Remarks</h4>
                             <div class="form-group">
-                                <div class="col-md-12 col-sm-12">
+                                <div class="col-md-10 col-sm-12">
                                     <label for="remarks"></label><textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"><c:out value="${rectifyItemSaveDto.remarks}"/></textarea>
                                     <span data-err-ind="remarks" class="error-msg"></span>
                                 </div>

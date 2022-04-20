@@ -109,14 +109,6 @@
                                                             </div>
 
                                                             <div class="form-group">
-                                                                <label class="col-xs-12 col-md-4 control-label">Current Status</label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${decision}"/></p>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
-
-                                                            <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"></textarea>
@@ -129,9 +121,8 @@
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision" class="pd-drop-down" id="processingDecision">
-                                                                        <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
-                                                                        <option value="MOHPRO027" <c:if test="${insDecision.decision eq 'MOHPRO027'}">selected="selected"</c:if>>Accept Rectifications</option>
-                                                                        <option value="MOHPRO028" <c:if test="${insDecision.decision eq 'MOHPRO028'}">selected="selected"</c:if>>Reject Rectifications</option>
+                                                                        <option value="MOHPRO026" <c:if test="${insDecision.decision eq 'MOHPRO026'}">selected="selected"</c:if>>Reject and Route to DO for Revision</option>
+                                                                        <option value="MOHPRO027" <c:if test="${insDecision.decision eq 'MOHPRO027'}">selected="selected"</c:if>>Accept</option>
                                                                         <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>

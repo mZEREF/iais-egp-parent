@@ -41,13 +41,12 @@ public class INTRANET___MohBsbInspectionNCsAOReview___1 extends BaseProcessClass
 		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
-	public void requestForInformation_OnStepProcess_0() throws Exception {
-	// 		RequestForInformation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "requestForInformationToDO", this);
+	public void rejectAndRouteToDO_OnStepProcess_0() throws Exception {
+		// 		RejectAndRouteToDO->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rejectAndRouteToDO", this);
 	}
 
-	public void finalize_OnStepProcess_0() throws Exception {
-	// 		Finalize->OnStepProcess
+	public void accept_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "finalizeProcess", this);
 	}
 
