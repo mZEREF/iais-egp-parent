@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;

@@ -1,4 +1,3 @@
-<%--@elvariable id="insInfo" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsInfoDto"--%>
 <%--@elvariable id="iais_Audit_Trail_dto_Attr" type="com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto"--%>
 <div class="col-xs-12">
     <div class="table-gp">

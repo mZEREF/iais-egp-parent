@@ -25,7 +25,9 @@ import java.util.List;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
-
+/**
+ * DO inspection report
+ */
 @Slf4j
 @Delegator("bsbSubmitInspectionReport")
 public class BsbSubmitInspectionReportDelegator {
@@ -51,7 +53,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
         session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
-        session.removeAttribute(KEY_INS_INFO);
+        session.removeAttribute(KEY_INS_REPORT);
         session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_DECISION);
@@ -66,7 +68,7 @@ public class BsbSubmitInspectionReportDelegator {
         // facility details
         ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
         // inspection report
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, initDataDto.getInsFacInfoDto());
+        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, initDataDto.getReportDto());
         // show route to moh selection list
         ParamUtil.setRequestAttr(request, KEY_SELECT_ROUTE_TO_MOH, initDataDto.getSelectRouteToMoh());
         // show routingHistory list

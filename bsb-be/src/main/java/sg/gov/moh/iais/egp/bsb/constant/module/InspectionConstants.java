@@ -25,6 +25,7 @@ public class InspectionConstants {
     public static final String KEY_INS_OUTCOME = "insOutcome";
     public static final String KEY_INS_CHK_LST = "bsbInspectionChecklist";
     public static final String KEY_INS_CHKL_ANSWER_MAP = "bsbInspectionChecklistAnswerMap";
+    public static final String KEY_INS_REPORT = "reportDto";
     public static final String KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP = "insRecordInfoSubTypeMap";
 
     public static final String KEY_CHKL_ITEM_SELECTION = "itemSelection";
@@ -58,15 +59,6 @@ public class InspectionConstants {
 
     public static final String VALUE_FINDING_TYPE_NC = "Non-compliance";
     public static final String VALUE_FINDING_TYPE_FOLLOW_UP = "Follow-up";
-
-    public static final String VALUE_OUTCOME_DEFICIENCY_MAJOR = "Major";
-    public static final String VALUE_OUTCOME_DEFICIENCY_MINOR = "Minor";
-    public static final String VALUE_OUTCOME_DEFICIENCY_NIL = "NIL";
-    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES = "Yes";
-    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO = "No";
-    public static final String VALUE_OUTCOME_OUTCOME_PASS = "Pass";
-    public static final String VALUE_OUTCOME_OUTCOME_PASS_WITH_CONDITION = "Pass with condition(s)";
-    public static final String VALUE_OUTCOME_OUTCOME_FAIL = "Fail";
 
     public static final String KEY_ROUTE = "route";
 

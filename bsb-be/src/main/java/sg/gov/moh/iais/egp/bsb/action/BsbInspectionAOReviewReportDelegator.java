@@ -27,6 +27,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
+/**
+ * AO inspection report
+ */
 @Slf4j
 @Delegator("bsbAOReviewInspectionReport")
 public class BsbInspectionAOReviewReportDelegator {
@@ -51,7 +54,7 @@ public class BsbInspectionAOReviewReportDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
         session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
-        session.removeAttribute(KEY_INS_INFO);
+        session.removeAttribute(KEY_INS_REPORT);
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_DECISION);
 
@@ -65,7 +68,7 @@ public class BsbInspectionAOReviewReportDelegator {
         // facility details
         ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
         // inspection report
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, initDataDto.getInsFacInfoDto());
+        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, initDataDto.getReportDto());
         // show routingHistory list
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, initDataDto.getProcessHistoryDtoList());
 
