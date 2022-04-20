@@ -300,4 +300,13 @@ public class MasterCodeConstants {
     // Bsb moh processing approval status
     public static final String PROCESSING_STATUS_APPROVAL = "BSBMPAS001";
     public static final String PROCESSING_STATUS_REJECT = "BSBMPAS002";
+
+    // Inspection report Deficiency
+    public static final String VALUE_DEFICIENCY_MAJOR = "BSBIRD001";
+    public static final String VALUE_DEFICIENCY_MINOR = "BSBIRD002";
+    public static final String VALUE_DEFICIENCY_NIL = "BSBIRD003";
+    // Inspection report Outcome
+    public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
+    public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
+    public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
 }
