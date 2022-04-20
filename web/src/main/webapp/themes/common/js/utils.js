@@ -649,7 +649,12 @@ function refreshIndex(targetSelector) {
     }
     $(targetSelector).each(function (k,v) {
         var $ele = $(v);
-        var $selector = $ele.find(':input');
+        var $selector;
+        if ($ele.is(':input')) {
+            $selector = $ele;
+        } else {
+            $selector = $ele.find(':input')
+        }
         if ($selector.length == 0) {
             return;
         }
