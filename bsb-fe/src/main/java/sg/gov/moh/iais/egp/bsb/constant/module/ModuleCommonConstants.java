@@ -29,4 +29,6 @@ public class ModuleCommonConstants {
     public static final String KEY_IND_AFTER_SAVE_AS_DRAFT          = "AFTER_SAVE_AS_DRAFT";
 
     public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
+
+    public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
 }

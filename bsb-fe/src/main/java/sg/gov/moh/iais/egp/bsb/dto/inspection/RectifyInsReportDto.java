@@ -226,7 +226,6 @@ public class RectifyInsReportDto implements Serializable {
     public void reqObjMapping(HttpServletRequest request,String docType,String docSubType) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Assert.hasLength(docType,"key docType is null");
-        Assert.hasLength(docSubType,"key docSubType is null");
 
         String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
         if (log.isInfoEnabled()) {

@@ -10,6 +10,7 @@ public class InspectionConstants {
     public static final String KEY_REPORT_REPO_ID = "reportRepoId";
 
     public static final String KEY_ROUTE = "route";
+    public static final String KEY_ACK_MSG = "ackMsg";
 
     //NC Rectification and Follow-up items
     public static final String KEY_NCS_RECTIFICATION_DISPLAY_DATA = "ncsPreData";
@@ -25,6 +26,7 @@ public class InspectionConstants {
     public static final String KEY_REASON_FOR_EXTENSION = "reasonForExtension";
     public static final String KEY_NEW_SAVED_DOCUMENT = "newSavedDoc";
     public static final String KEY_SAVED_DOCUMENT = "oldSavedDoc";
+    public static final String KEY_FOLLOW_UP_VIEW_DTO = "followUpViewDto";
 
     //Reschedule Appointment
     public static final String MODULE_NAME = "Inbox";

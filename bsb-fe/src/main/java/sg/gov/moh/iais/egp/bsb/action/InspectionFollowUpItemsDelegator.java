@@ -2,24 +2,25 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyFindingFormDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
+import sg.gov.moh.iais.egp.bsb.service.ProcessHistoryService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,155 +28,110 @@ import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
-/**
- * @author : LiRan
- * @date : 2022/2/21
- */
 @Slf4j
 @Delegator("followUpItemsDelegator")
 public class InspectionFollowUpItemsDelegator {
+    private static final String PARAM_FOLLOW_UP_APP_ID = "followUpAppId";
+    private static final String PARAM_FOLLOW_UP_APP_NO = "followUpAppNo";
+    private static final String PARAM_PREPARE = "prepare";
+    private static final String PARAM_NEXT = "next";
+
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
+    private final ProcessHistoryService processHistoryService;
 
     @Autowired
-    public InspectionFollowUpItemsDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
+    public InspectionFollowUpItemsDelegator(InspectionClient inspectionClient, InspectionService inspectionService, ProcessHistoryService processHistoryService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
+        this.processHistoryService = processHistoryService;
     }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_RECTIFY_SAVED_REMARK_MAP);
-        session.removeAttribute(KEY_RECTIFY_FINDING_FORM);
+        session.removeAttribute(KEY_FOLLOW_UP_VIEW_DTO);
         session.removeAttribute(KEY_RECTIFY_SAVED_DOC_DTO);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Applicant send follow-up items");
     }
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        //TODO get mask application id from menu
-        //search inspection follow-up items finding list
-        RectifyFindingFormDto rectifyFindingFormDto = inspectionClient.getFollowUpItemsFindingFormDtoByAppId("2BAF80B5-5F61-EC11-BE74-000C298D317C").getEntity();
-        //save basic info such as appId and config id
-        if(rectifyFindingFormDto != null){
-            RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-
-            if(!rectifyFindingFormDto.getDocDtoList().isEmpty()){
-                reportDto.setSavedDocMap(rectifyFindingFormDto.getDocDtoList().stream().collect(Collectors.toMap(DocRecordInfo::getRepoId, Function.identity())));
-                ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, reportDto);
+        FollowUpViewDto dto = getDisplayDto(request);
+        if (!StringUtils.hasLength(dto.getAppId())) {
+            String maskedAppId = request.getParameter(PARAM_FOLLOW_UP_APP_ID);
+            String maskedAppNo = request.getParameter(PARAM_FOLLOW_UP_APP_NO);
+            String applicationId = MaskUtil.unMaskValue(PARAM_FOLLOW_UP_APP_ID, maskedAppId);
+            String applicationNo = MaskUtil.unMaskValue(PARAM_FOLLOW_UP_APP_NO, maskedAppNo);
+            if (maskedAppId == null || applicationId == null || maskedAppId.equals(applicationId)) {
+                throw new IaisRuntimeException("Invalid Application ID");
             }
-
-            //load origin icon status
-            inspectionService.loadOriginIconStatus(rectifyFindingFormDto.getItemDtoList(), reportDto, request);
-            //data->session
-            ParamUtil.setSessionAttr(request, KEY_RECTIFY_FINDING_FORM, rectifyFindingFormDto);
-            //pay attention to clear session
-        }
-    }
-
-    public void prepareData(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        //judge if all items is rectified
-        boolean isAllRectified = true;
-        Map<String,String> itemRectifyMap = inspectionService.getItemRectifyMap(request);
-        for (Map.Entry<String, String> entry : itemRectifyMap.entrySet()) {
-            if (MasterCodeConstants.NO.equals(entry.getValue())) {
-                isAllRectified = false;
-                break;
+            if (maskedAppNo == null || applicationNo == null || maskedAppNo.equals(applicationNo)) {
+                throw new IaisRuntimeException("Invalid Application NO.");
+            }
+            //search inspection follow-up items finding list
+            ResponseDto<FollowUpViewDto> responseDto = inspectionClient.getFollowUpShowDtoByAppId(applicationId);
+            if (responseDto.ok()) {
+                dto = responseDto.getEntity();
+                //data->session
+                ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
+                //show routingHistory list
+                processHistoryService.getAndSetHistoryInRequest(applicationNo, request);
+            } else {
+                log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
+                ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, new RectifyFindingFormDto());
             }
         }
-        ParamUtil.setSessionAttr(request, KEY_ALL_ITEM_RECTIFY, isAllRectified);
     }
 
-    public void doPrepareData(BaseProcessClass bpc) {
+    public void validate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String maskedItemValue = ParamUtil.getString(request, KEY_ITEM_VALUE);
-        String itemValue = MaskUtil.unMaskValue(KEY_MASKED_ITEM_VALUE, maskedItemValue);
-        ParamUtil.setSessionAttr(request, KEY_ITEM_VALUE, itemValue);
-        actionJumpHandler(request);
+        FollowUpViewDto dto = getDisplayDto(request);
+        bindParam(request, dto);
+        RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
+        docDto.reqObjMapping(request,DocConstants.DOC_TYPE_FOLLOW_UP,null);
+        List<DocMeta> docMetas = docDto.convertToDocMetaList();
+        dto.setDocMetas(docMetas);
+
+        String actionType;
+        ValidationResultDto validationResultDto = inspectionClient.validateFollowUpItems(dto);
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            actionType = PARAM_PREPARE;
+        }else {
+            actionType = PARAM_NEXT;
+        }
+        ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_TYPE, actionType);
+        ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
+        ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, docDto);
     }
 
-    public void prepareFollowUpItems(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String itemValue = (String) ParamUtil.getSessionAttr(request, KEY_ITEM_VALUE);
-        RectifyFindingFormDto findingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
-        Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> saveMapDto = inspectionService.getRectifyNCsSavedRemarkMap(request);
-        RectifyInsReportDto reportDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        //Prepare the data pre-displayed on the Rectify page
-        if(!saveMapDto.isEmpty()){
-            //show info save before
-            RectifyInsReportSaveDto.RectifyItemSaveDto saveDto = saveMapDto.get(itemValue);
-            ParamUtil.setRequestAttr(request,KEY_RECTIFY_ITEM_SAVE_DTO,saveDto);
-        }
-        //new saved document
-        if(!reportDto.getNewDocMap().isEmpty()){
-            Map<String,List<NewDocInfo>> newDocSubTypeMap = reportDto.getNewDocSubTypeMap();
-            List<NewDocInfo> newDocInfos = newDocSubTypeMap.get(itemValue);
-            ParamUtil.setRequestAttr(request, KEY_NEW_SAVED_DOCUMENT, newDocInfos);
-        }
-        //document search from database
-        if(!reportDto.getSavedDocMap().isEmpty()){
-            Map<String,List<DocRecordInfo>> savedDocSubTypeMap = reportDto.getSavedDocSubTypeMap();
-            List<DocRecordInfo> savedDocInfos = savedDocSubTypeMap.get(itemValue);
-            ParamUtil.setRequestAttr(request, KEY_SAVED_DOCUMENT, savedDocInfos);
-        }
-        //show info search from database
-        RectifyFindingFormDto.RectifyFindingItemDto itemDto = findingFormDto.getRectifyFindingItemDtoByItemValue(itemValue);
-        ParamUtil.setRequestAttr(request,"rectifyItemDto", itemDto);
-    }
-
-    public void doFollowUpItems(BaseProcessClass bpc) {
-        //request mapping item doc and item remarks info
-        HttpServletRequest request = bpc.request;
-        String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
-        if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
-            RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-            Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
-            String itemValue = (String) ParamUtil.getSessionAttr(request, KEY_ITEM_VALUE);
-            Assert.hasLength(itemValue,"item value -sectionId +'--v--'+configId is null");
-            docDto.reqObjMapping(request, DocConstants.DOC_TYPE_INSPECTION_NON_COMPLIANCE, itemValue);
-            log.info(LogUtil.escapeCrlf(docDto.toString()));
-            log.info(LogUtil.escapeCrlf(savedDtoMap.toString()));
-            inspectionService.putItemRemarkValue(request,itemValue,savedDtoMap);
-            //icon status
-            Map<String, String> itemRectifyMap = inspectionService.getItemRectifyMap(request);
-            inspectionService.turnCurrentIconStatus(request, docDto, itemValue, itemRectifyMap);
-            ParamUtil.setSessionAttr(request, KEY_RECTIFY_SAVED_DOC_DTO, docDto);
-        }
-        actionJumpHandler(request);
-    }
-
-    public void doSubmit(BaseProcessClass bpc) {
+    public void submitFormData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         //do doc sync
         RectifyInsReportDto docDto = inspectionService.getRectifyNcsSavedDocDto(request);
-        RectifyInsReportSaveDto savedDto = new RectifyInsReportSaveDto();
-
-        RectifyFindingFormDto rectifyFindingFormDto = (RectifyFindingFormDto) ParamUtil.getSessionAttr(request,KEY_RECTIFY_FINDING_FORM);
-        //set application id and config id
-        savedDto.setConfigId(rectifyFindingFormDto.getConfigId());
-        savedDto.setAppId(rectifyFindingFormDto.getAppId());
-
-        //set remarks or other info
-        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>  saveDtoMap = inspectionService.getRectifyNCsSavedRemarkMap(request);
-        savedDto.setItemSaveDtoList(new ArrayList<>(saveDtoMap.values()));
-
+        FollowUpSaveDto followUpSaveDto = new FollowUpSaveDto();
+        FollowUpViewDto displayDto = getDisplayDto(request);
+        followUpSaveDto.setRemarks(displayDto.getRemarks());
+        followUpSaveDto.setRequestExtension(displayDto.getRequestExtension());
+        followUpSaveDto.setAppId(displayDto.getAppId());
+        followUpSaveDto.setReasonForExtension(displayDto.getReasonForExtension());
         //set doc
         List<NewFileSyncDto> newFilesToSync = inspectionService.saveNewUploadedDoc(docDto);
-        if(!docDto.getSavedDocMap().isEmpty()){
-            savedDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
-            savedDto.setToBeDeletedDocIds(docDto.getToBeDeletedDocIds());
+        if (!docDto.getSavedDocMap().isEmpty()) {
+            followUpSaveDto.setAttachmentList(new ArrayList<>(docDto.getSavedDocMap().values()));
         }
-        inspectionClient.saveFollowUpItemsData(savedDto);
-        //save all info into database
+        ResponseDto<String> responseDto = inspectionClient.saveFollowUpData(followUpSaveDto);
+        if (responseDto.ok()) {
+            ParamUtil.setRequestAttr(request,KEY_ACK_MSG,"You have successfully submitted the data");
+        } else {
+            ParamUtil.setRequestAttr(request,KEY_ACK_MSG,"Failed to submit the data");
+        }
         try {
             // delete docs
             List<String> toBeDeletedRepoIds = inspectionService.deleteUnwantedDoc(docDto);
@@ -186,18 +142,20 @@ public class InspectionFollowUpItemsDelegator {
         }
     }
 
-    private void actionJumpHandler(HttpServletRequest request){
-        String actionType = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_TYPE);
-        String actionValue = ParamUtil.getString(request, ModuleCommonConstants.KEY_ACTION_VALUE);
-        if(ModuleCommonConstants.KEY_NAV_FOLLOW_UP_ITEMS.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_FOLLOW_UP_ITEMS);
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_ACTION_VALUE, actionValue);
-        } else if(ModuleCommonConstants.KEY_SUBMIT.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_SUBMIT);
-        } else if(ModuleCommonConstants.KEY_SAVE.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_PREPARE);
-        } else if(ModuleCommonConstants.KEY_NAV_BACK.equals(actionType)){
-            ParamUtil.setRequestAttr(request, ModuleCommonConstants.KEY_INDEED_ACTION_TYPE, ModuleCommonConstants.KEY_NAV_PREPARE);
+    private FollowUpViewDto getDisplayDto(HttpServletRequest request) {
+        FollowUpViewDto dto = (FollowUpViewDto) ParamUtil.getSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO);
+        if (dto == null) {
+            dto = new FollowUpViewDto();
         }
+        return dto;
+    }
+
+    private void bindParam(HttpServletRequest request, FollowUpViewDto dto) {
+        String requestExtension = ParamUtil.getString(request, "requestExtension");
+        String reason = ParamUtil.getString(request, "reasonForExtension");
+        String remarks = ParamUtil.getString(request, "remarks");
+        dto.setRequestExtension(requestExtension);
+        dto.setReasonForExtension(reason);
+        dto.setRemarks(remarks);
     }
 }
