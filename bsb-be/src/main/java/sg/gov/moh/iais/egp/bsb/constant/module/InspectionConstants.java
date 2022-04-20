@@ -16,6 +16,7 @@ public class InspectionConstants {
     public static final String KEY_ANSWER_MAP = "answerMap";
     public static final String KEY_EDITABLE = "editable";
     public static final String KEY_SELF_ASSESSMENT_AVAILABLE = "selfAssessmentAvailable";
+    public static final String KEY_CAN_RFI = "canRfi";
 
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
@@ -68,4 +69,8 @@ public class InspectionConstants {
     public static final String VALUE_OUTCOME_OUTCOME_FAIL = "Fail";
 
     public static final String KEY_ROUTE = "route";
+
+    public static final int VALUE_RFI_FLAG_SELF = 0;
+    public static final int VALUE_RFI_FLAG_APPLICATION = 1;
+    public static final int VALUE_RFI_FLAG_SELF_APPLICATION = 2;
 }

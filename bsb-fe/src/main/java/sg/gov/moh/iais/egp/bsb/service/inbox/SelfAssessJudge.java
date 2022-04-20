@@ -16,7 +16,6 @@ public class SelfAssessJudge implements AppActionJudge {
     public boolean judge() {
         return Arrays.asList(
                 MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT,
-                MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS,
                 MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION).contains(appStatus);
     }
 }
