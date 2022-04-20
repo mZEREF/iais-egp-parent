@@ -123,9 +123,11 @@
                             <span data-err-ind="observationRemarks" class="error-msg"></span>
                         </td>
                     </tr>
+                    <c:if test="${(reportDto.checkListItemGeneralList ne null && reportDto.checkListItemGeneralList.size() > 0) || (reportDto.checkListItemBsbList ne null && reportDto.checkListItemBsbList.size() > 0)}">
                     <tr>
-                        <td rowspan="2" style="vertical-align: top">Checklist Item</td>
+                        <td>Checklist Item</td>
                         <td>
+                            <c:if test="${reportDto.checkListItemGeneralList ne null && reportDto.checkListItemGeneralList.size() > 0}">
                             <div class="table-gp">
                                 <p>General Regulation</p>
                                 <table aria-describedby="" class="table">
@@ -141,45 +143,6 @@
                                     </tr>
                                     </thead>
                                     <c:forEach var="checkList" items="${reportDto.checkListItemGeneralList}" varStatus="status">
-                                    <tr>
-                                        <td>1.${status.count}</td>
-                                        <td><c:out value="${checkList.itemDescription}"/></td>
-                                        <td>
-                                            <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.finding}"/></textarea>
-                                            <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
-                                        </td>
-                                        <td>
-                                            <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.actionRequired}"/></textarea>
-                                            <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
-                                        </td>
-                                        <td><c:out value="${checkList.rectified}"/></td>
-                                        <td><c:out value="${checkList.applicantInput}"/></td>
-                                        <td>
-                                            <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if>>
-                                        </td>
-                                    </tr>
-                                    </c:forEach>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="table-gp">
-                                <p>BSB Regulation</p>
-                                <table aria-describedby="" class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" style="width:5%">S/N</th>
-                                        <th scope="col" style="width:15%">Item Description</th>
-                                        <th scope="col" style="width:15%">Findings/Non-Compliance</th>
-                                        <th scope="col" style="width:15%">Action Required</th>
-                                        <th scope="col" style="width:15%">Rectified?</th>
-                                        <th scope="col" style="width:15%">Applicant's Input</th>
-                                        <th scope="col" style="width:20%">Exclude from Applicant Version</th>
-                                    </tr>
-                                    </thead>
-                                    <c:forEach var="checkList" items="${reportDto.checkListItemBsbList}" varStatus="status">
                                         <tr>
                                             <td>1.${status.count}</td>
                                             <td><c:out value="${checkList.itemDescription}"/></td>
@@ -200,13 +163,53 @@
                                     </c:forEach>
                                 </table>
                             </div>
+                            </c:if>
+                            <c:if test="${reportDto.checkListItemBsbList ne null && reportDto.checkListItemBsbList.size() > 0}">
+                            <div class="table-gp">
+                                <p>BSB Regulation</p>
+                                    <table aria-describedby="" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" style="width:5%">S/N</th>
+                                            <th scope="col" style="width:15%">Item Description</th>
+                                            <th scope="col" style="width:15%">Findings/Non-Compliance</th>
+                                            <th scope="col" style="width:15%">Action Required</th>
+                                            <th scope="col" style="width:15%">Rectified?</th>
+                                            <th scope="col" style="width:15%">Applicant's Input</th>
+                                            <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                        </tr>
+                                        </thead>
+                                        <c:forEach var="checkList" items="${reportDto.checkListItemBsbList}" varStatus="status">
+                                            <tr>
+                                                <td>1.${status.count}</td>
+                                                <td><c:out value="${checkList.itemDescription}"/></td>
+                                                <td>
+                                                    <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.finding}"/></textarea>
+                                                    <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
+                                                </td>
+                                                <td>
+                                                    <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.actionRequired}"/></textarea>
+                                                    <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
+                                                </td>
+                                                <td><c:out value="${checkList.rectified}"/></td>
+                                                <td><c:out value="${checkList.applicantInput}"/></td>
+                                                <td>
+                                                    <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if>>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </table>
+                            </div>
+                            </c:if>
                         </td>
                     </tr>
+                    </c:if>
+                    <c:if test="${reportDto.followUpItemGeneralList ne null && reportDto.followUpItemGeneralList.size() > 0}">
                     <tr>
                         <td colspan="2" style="font-weight:bold">Part III: Follow-Up Item</td>
                     </tr>
                     <tr>
-                        <td>Checklist Used</td>
+                        <td>Follow-up Items</td>
                         <td>
                             <div class="table-gp">
                                 <p>General Regulation</p>
@@ -239,6 +242,7 @@
                             </div>
                         </td>
                     </tr>
+                    </c:if>
                 </table>
             </div>
         </div>
@@ -257,39 +261,50 @@
                     </tr>
                     </thead>
                     <tr>
-                        <td class="col-4">Deficiency</td>
+                        <td class="col-4">Deficiency <span style="color: red">*</span></td>
                         <td>
-                            <label>
-                                <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency eq MasterCodeConstants.VALUE_DEFICIENCY_MAJOR}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MAJOR}"/>
-                            </label>
-                            <span class="check-square">Major</span>
-                            <label>
-                                <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency eq MasterCodeConstants.VALUE_DEFICIENCY_MINOR}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MINOR}"/>
-                            </label>
-                            <span class="check-square">Minor</span>
-                            <label>
-                                <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency eq MasterCodeConstants.VALUE_DEFICIENCY_NIL}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_NIL}"/>
-                            </label>
-                            <span class="check-square">NIL</span>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MAJOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MAJOR}"/>
+                                </label>
+                                <span class="check-square">Major</span>
+                                <label>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MINOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MINOR}"/>
+                                </label>
+                                <span class="check-square">Minor</span>
+                                <label>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_NIL)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_NIL}"/>
+                                </label>
+                                <span class="check-square">NIL</span>
+                            </div>
+                            <span data-err-ind="deficiency" class="error-msg"></span>
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="outcome"></label>Outcome</td>
+                        <td><label for="outcome"></label>Outcome <span style="color: red">*</span></td>
                         <td>
                             <select name="outcome" id="outcome">
+                                <option value="">Please Select</option>
                                 <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS}">selected="selected"</c:if>>Pass</option>
                                 <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}">selected="selected"</c:if>>Pass with condition</option>
                                 <option value="${MasterCodeConstants.VALUE_OUTCOME_FAIL}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_FAIL}">selected="selected"</c:if>>Fail</option>
                             </select>
+                            <span data-err-ind="outcome" class="error-msg"></span>
                         </td>
                     </tr>
                     <tr>
-                        <td>Remarks</td>
-                        <td><c:out value="${reportDto.recommendationRemarks}"/></td>
+                        <td><label for="recommendationRemarks"></label>Remarks</td>
+                        <td>
+                            <textarea id="recommendationRemarks" name="recommendationRemarks" cols="200" rows="5" maxlength="300"><c:out value="${reportDto.recommendationRemarks}"/></textarea>
+                            <span data-err-ind="recommendationRemarks" class="error-msg"></span>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Facility Validity Date</td>
-                        <td><c:out value="${reportDto.facilityValidityDate}"/></td>
+                        <td>Facility Validity Date <span style="color: red">*</span></td>
+                        <td>
+                            <input type="text" autocomplete="off" name="facilityValidityDate" id="facilityValidityDate" data-date-start-date="01/01/1900" value="<c:out value="${reportDto.facilityValidityDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                            <span data-err-ind="facilityValidityDate" class="error-msg"></span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -298,5 +313,5 @@
 </div>
 <div style="text-align: right">
     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
-    <button name="saveBtn" id="saveBtn" type="button" class="btn btn-default">Save</button>
+    <button name="saveReportBtn" id="saveReportBtn" type="button" class="btn btn-default">Save</button>
 </div>

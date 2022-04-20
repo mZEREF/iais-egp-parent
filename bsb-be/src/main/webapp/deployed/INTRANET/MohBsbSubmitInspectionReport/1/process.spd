@@ -65,6 +65,13 @@
     <JavaCode defClass="" executor="" methodName="skip_OnStepProcess_0" name="skip_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleSaveReport" x="540" y="380">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleSaveReport_OnStepProcess_0" name="handleSaveReport_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page" stageIndicator="" x="550" y="100">
@@ -97,7 +104,7 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Pre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
    <position>{(270,120)(430,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Pre" style="rectanular">
+  <SynchronousLink destinationName="/Pages/WebPage/Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Pre" style="oblique">
    <position>{(430,120)(570,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Pre" linkstyle="Direct" name="" sourceName="/Merges/Merge/BackMerge" style="oblique">
@@ -133,14 +140,20 @@
   <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
    <position>{(720,260)(430,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/DecisionSwitch" style="rectanular">
+  <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Direct" name="" sourceName="/Switches/Switch/DecisionSwitch" style="oblique">
    <position>{(720,540)(439,541)(430,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Skip" linkstyle="Direct" name="" sourceName="/Switches/Switch/DecisionSwitch" style="oblique">
    <position>{(720,540)(510,670)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Skip" style="rectanular">
+  <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Skip" style="oblique">
    <position>{(510,670)(490,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSaveReport" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(720,260)(560,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleSaveReport" style="oblique">
+   <position>{(560,400)(430,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
@@ -157,6 +170,7 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/HandleSubmit" value="&quot;submit&quot;" />
    <SwitchCase component="/Merges/Merge/BackMerge" value="&quot;back&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/HandleSaveReport" value="&quot;saveReport&quot;" />
   </Switch>
  </Switches>
  <Branches />

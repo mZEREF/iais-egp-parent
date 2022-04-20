@@ -12,12 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 
@@ -87,6 +82,9 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/ao-review-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionAOReviewDecision(@RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/validate/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionReport(@RequestBody ReportDto reportDto);
+
     @PostMapping(value = "/inspection/actual/validate/officer-review-non-compliance", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualOfficerReviewNCDecision(@RequestBody InsProcessDto processDto);
 
@@ -109,6 +107,9 @@ public interface InspectionClient {
     void skipInspection(@RequestParam("appId") String appId,
                         @RequestParam("taskId") String taskId,
                         @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/report/report-dto", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveInspectionReportDto(@RequestParam("appId") String appId, @RequestBody ReportDto reportDto);
 
     @PostMapping(value = "/inspection/actual/report/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
     void finalizeInspectionReport(@RequestParam("appId") String appId,
