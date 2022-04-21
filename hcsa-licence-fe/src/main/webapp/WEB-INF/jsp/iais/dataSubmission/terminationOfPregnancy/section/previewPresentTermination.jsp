@@ -126,7 +126,13 @@
                 <iais:row>
                     <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${terminationDto.topDrugPlace}"/>
+                        <iais:code code="${terminationDto.topDrugPlace}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${terminationDto.otherTopDrugPlace}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

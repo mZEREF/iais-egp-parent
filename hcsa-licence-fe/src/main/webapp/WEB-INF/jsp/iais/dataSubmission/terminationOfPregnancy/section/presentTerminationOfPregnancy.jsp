@@ -147,7 +147,7 @@
             </iais:value>
         </iais:row>
     </div>
-<%--<div id="topPlacelaceLabel" <c:if test="${terminationDto.performedOwn == null}">style="display: none"</c:if>>--%>
+<div id="topPlacelaceLabel" <c:if test="${(terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP003') || terminationDto.performedOwn==null}">style="display: none"</c:if>>
         <div id="topPlaceYes" <c:if test="${terminationDto.performedOwn == null || terminationDto.performedOwn == false}">style="display: none"</c:if>>
             <iais:row cssClass="topPlace">
                 <iais:field width="5" value="Place of Termination of Pregnancy by Surgery" mandatory="true"/>
@@ -165,7 +165,7 @@
                 <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_topPlace"></span>
             </iais:row>
         </div>
-    <%--</div>--%>
+    </div>
     <div id="pregnancyOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Is Drug prescribed for Termination of Pregnancy in own premises?" mandatory="true"/>
@@ -311,9 +311,9 @@
         $('#topType').change(function () {
             performedOwns();
         });
-        /*$('input[name=performedOwn]').change(function () {
+        $('input[name=performedOwn]').change(function () {
             topPlacelaceLabel();
-        });*/
+        });
         $('#topType').change(function () {
             pregnancyOwns();
         });
@@ -369,15 +369,16 @@
             $('#performedOwns').show();
         }else {
             $('#performedOwns').hide();
-        }
-    }
-    /*function topPlacelaceLabel() {
-        if ($('input[name=performedOwn]').prop('checked')) {
-            $('#topPlacelaceLabel').show();
-        }else {
             $('#topPlacelaceLabel').hide();
         }
-    }*/
+    }
+    function topPlacelaceLabel() {
+        if ($('input[name=performedOwn]').prop('checked')) {
+            $('#topPlacelaceLabel').show();
+        }/*else {
+            $('#topPlacelaceLabel').hide();
+        }*/
+    }
     function pregnancyOwns() {
         var topType= $('#topType').val();
         if(topType == "TOPTTP001" || topType == "TOPTTP002" ){

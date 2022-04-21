@@ -58,10 +58,12 @@ public class TerminationValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
         }
-        if(!StringUtil.isEmpty(terminationDto.getPerformedOwn())){
-            if(terminationDto.getPerformedOwn() == false){
-                if(StringUtil.isEmpty(terminationDto.getTopPlace())){
-                    errorMap.put("topPlace", "GENERAL_ERR0006");
+        if("TOPTTP001".equals(terminationDto.getTopType()) || "TOPTTP003".equals(terminationDto.getTopType()) ) {
+            if (!StringUtil.isEmpty(terminationDto.getPerformedOwn())) {
+                if (terminationDto.getPerformedOwn() == false) {
+                    if (StringUtil.isEmpty(terminationDto.getTopPlace())) {
+                        errorMap.put("topPlace", "GENERAL_ERR0006");
+                    }
                 }
             }
         }

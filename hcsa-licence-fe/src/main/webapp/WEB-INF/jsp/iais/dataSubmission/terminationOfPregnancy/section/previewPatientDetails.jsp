@@ -100,7 +100,7 @@
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <%--<c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders">--%>
                                 <iais:code code="${patientInformationDto.livingChildrenGenders}"/>
-
+                            <%--</c:forEach>--%>
                         </iais:value>
                     </iais:row>
             </div>

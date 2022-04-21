@@ -1,6 +1,4 @@
-<c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
-<c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
-            <div class="panel-main-content form-horizontal">
+<div class="panel-main-content form-horizontal">
                <%-- <iais:row>
                     <iais:value width="6" cssClass="col-md-6">
                         &lt;%&ndash;<strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
@@ -12,6 +10,8 @@
                         </p>
                     </iais:value>
                 </iais:row>--%>
+                   <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
+                   <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
                     <iais:row>
                         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
                         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
@@ -150,8 +150,8 @@
                                     <iais:row>
                                         <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
                                             <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
-                                                    <iais:select name="livingChildrenGenders${idxStatus.index}" firstOption="Please Select" id="livingChildrenGenders" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
-                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders"/>
+                                                    <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
                                                     <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                             </div>
                                         </iais:value>
@@ -229,6 +229,7 @@
                     "</div>\n";
                 $("#genders").append(input);
             }
+            refreshIndex($('#genders').find('select'));
         });
     });
     $(document).ready(function () {
@@ -275,9 +276,99 @@
         }
         callCommonAjax(options, validatePatientName);
     }
+    function callCommonAjax(options, callback) {
+        if (isEmpty(options)) {
+            options = {};
+        }
+        var url = '';
+        if (!isEmpty(options.url)) {
+            url = options.url;
+        }
+        var type = 'POST';
+        if (!isEmpty(options.type)) {
+            type = options.type;
+        }
+        var async = true;
+        if (!isEmpty(options.async)) {
+            async = options.async;
+        }
+        var data = options.data;
+        if (isEmpty(data)) {
+            data = options;
+        }
+        console.log(url);
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            data: data,
+            async: async,
+            type: type,
+            success: function (data) {
+                if (typeof callback === 'function') {
+                    callback(data);
+                } else if (!isEmpty(callback)) {
+                    callFunc(callback, data);
+                }
+                dismissWaiting();
+            },
+            error: function (data) {
+                console.log("err");
+                console.log(data);
+                dismissWaiting();
+            }
+        });
+    }
+    function refreshIndex(targetSelector) {
+        if (isEmpty(targetSelector)) {
+            return;
+        }
+        if ($(targetSelector).length == 0) {
+            return;
+        }
+        $(targetSelector).each(function (k,v) {
+            var $ele = $(v);
+            var $selector;
+            if ($ele.is(':input')) {
+                $selector = $ele;
+            } else {
+                $selector = $ele.find(':input')
+            }
+            if ($selector.length == 0) {
+                return;
+            }
+            $selector.each(function () {
+                if ($(this).hasClass('not-refresh')) {
+                    return;
+                }
+                var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+                var orgName = $input.attr('name');
+                var orgId = $input.attr('id');
+                if (isEmpty(orgName)) {
+                    orgName = orgId;
+                }
+                if (isEmpty(orgName)) {
+                    return;
+                }
+                var result = /([a-zA-Z_]*)/g.exec(orgName);
+                var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+                $input.prop('name', name + k);
+                if (orgName == orgId) {
+                    $input.prop('id', name + k);
+                }
+                var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+                if ($errorSpan.length > 0) {
+                    $errorSpan.prop('id', 'error_' + name + k);
+                }
+                if (tag == 'select') {
+                    $input.niceSelect("update");
+                }
+            });
+        });
+    }
     function validatePatientName(data){
+        console.log("validatePatientName!")
         clearErrorMsg();
-        clearSelection();
+        /*clearSelection();*/
         if (isEmpty(data) || isEmpty(data.selection) || isEmpty(data.selection.patientName)
             || isEmpty(data.selection.birthData)
             || isEmpty(data.selection.nationality)
@@ -328,11 +419,22 @@
             $('#otherOccupations').show();
             fillValue($('#otherOccupation'),data.selection.otherOccupation);
         }
+        if(!isEmpty(data.selection.livingChildrenNo)){
+            $('#childrenNum').trigger('keyup');
+
+        }
+        if(data.selection.livingChildrenNo>0){
+            var livingChildrenGenders=data.selection.livingChildrenGenders;
+            for(var i=0;i<livingChildrenGenders.length;i++){
+                console.log(i)
+                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
+            }
+        }
     }
-    function clearSelection(){
+    /*function clearSelection(){
         console.log("clearSelection!")
         clearErrorMsg();
         $('#name').find('p').text('');
         clearFields('.selectionHidden');
-    }
+    }*/
 </script>
