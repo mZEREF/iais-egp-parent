@@ -5,24 +5,27 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiViewDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDocDto;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -50,12 +53,17 @@ public class BsbAdhocRfiDelegator {
     private  AdhocRfiClient adhocRfiClient;
     @Autowired
     private OrgUserManageService orgUserManageService;
-
+    @Autowired
+    private  FileRepoClient fileRepoClient;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-
+        String facilityNo="LFA0408FSF02";
+        AdhocRfiQueryDto dto = new AdhocRfiQueryDto();
+        dto.defaultPaging();
+        dto.setFacilityNo(facilityNo);
+        ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
 
     }
 
@@ -72,9 +80,7 @@ public class BsbAdhocRfiDelegator {
 
             for (AdhocRfiDto adRfi:reqForInfos
                  ) {
-                ApplicationDto applicationDto=adhocRfiClient.getApplicationDtoByAppId(adRfi.getApplicationId()).getEntity();
-                adRfi.setApplication(MiscUtil.transferEntityDto(applicationDto, Application.class));
-                FeUserDto orgUserDto=orgUserManageService.getUserAccount(adRfi.getId());
+                FeUserDto orgUserDto=orgUserManageService.getUserAccount(adRfi.getRequestor());
                 adRfi.setRequestor(orgUserDto.getDisplayName());
             }
             ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, (Serializable) reqForInfos);
@@ -88,15 +94,18 @@ public class BsbAdhocRfiDelegator {
 
     public void preAdhocRfiDetail(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AdhocRfiDto adhocRfiDto= (AdhocRfiDto) ParamUtil.getSessionAttr(request,"adhocReqForInfoDto");
+        AdhocRfiViewDto adhocRfiViewDto= (AdhocRfiViewDto) ParamUtil.getSessionAttr(request,"adhocReqForInfoDto");
         try {
+            if(adhocRfiViewDto==null){
+                adhocRfiViewDto=new AdhocRfiViewDto();
+            }
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if(!StringUtil.isEmpty(id)){
                 List<AdhocRfiDto> reqForInfos = (List<AdhocRfiDto>) ParamUtil.getSessionAttr(request, KEY_ADHOC_RFI_LIST);
                 for (AdhocRfiDto rfi:reqForInfos
                      ) {
                     if(rfi.getId().equals(id)){
-                        adhocRfiDto=rfi;
+                        adhocRfiViewDto.setAdhocRfiDto(rfi);
                         break;
                     }
                 }
@@ -105,7 +114,7 @@ public class BsbAdhocRfiDelegator {
         }catch (Exception e){
             log.error("not mask id");
         }
-        ParamUtil.setSessionAttr(request,"adhocReqForInfoDto",adhocRfiDto);
+        ParamUtil.setSessionAttr(request,"adhocReqForInfoDto", (Serializable) adhocRfiViewDto);
 
 
     }
@@ -126,11 +135,9 @@ public class BsbAdhocRfiDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
 
-        AdhocRfiDto adhocRfiDto=(AdhocRfiDto) ParamUtil.getSessionAttr(bpc.request,"adhocReqForInfoDto");
-
-
-        ParamUtil.setSessionAttr(bpc.request,"adhocReqForInfoDto",adhocRfiDto);
-
+        AdhocRfiViewDto adhocRfiViewDto=(AdhocRfiViewDto) ParamUtil.getSessionAttr(bpc.request,"adhocReqForInfoDto");
+        
+        AdhocRfiDto adhocRfiDto=adhocRfiViewDto.getAdhocRfiDto();
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if(adhocRfiDto.getInformationRequired()){
@@ -147,8 +154,23 @@ public class BsbAdhocRfiDelegator {
             }
         }
         if(adhocRfiDto.getSupportingDocRequired()){
+            List<MultipartFile> mulReqFile= mulReq.getFiles("upload");
+            adhocRfiViewDto.setApplicationDocDtos(IaisCommonUtils.genNewArrayList());
+            if(IaisCommonUtils.isNotEmpty(mulReqFile)){
+                for (MultipartFile file:mulReqFile
+                     ) {
+                    ApplicationDocDto applicationDocDto=new ApplicationDocDto();
+                    applicationDocDto.setDocName(file.getOriginalFilename());
+                    applicationDocDto.setDocSize(file.getSize());
+                    List<String> repoIds = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity();
+                    applicationDocDto.setFileRepoId(repoIds.get(0));
+
+                    adhocRfiViewDto.getApplicationDocDtos().add(applicationDocDto);
+                }
+            }
 
         }
+        ParamUtil.setSessionAttr(bpc.request,"adhocReqForInfoDto",adhocRfiViewDto);
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -175,4 +197,33 @@ public class BsbAdhocRfiDelegator {
         dto.defaultPaging();
         return dto;
     }
+
+
+    
+
+    public static boolean validateFile(HttpServletRequest request, MultipartFile file){
+        if (file != null){
+            String originalFileName = file.getOriginalFilename();
+            if (!FileUtils.isExcel(originalFileName)){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", "CHKL_ERR040"));
+                return true;
+            }
+        }
+
+        if (file == null || file.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", "GENERAL_ERR0020"));
+            return true;
+        }
+
+        if (FileUtils.outFileSize(file.getSize())){
+            int maxSize = SystemParamUtil.getFileMaxLimit();
+            String replaceMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxSize),"sizeMax");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("fileUploadError", replaceMsg));
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

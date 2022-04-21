@@ -5,7 +5,6 @@ import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
 
 import java.time.LocalDate;
 
@@ -18,6 +17,8 @@ public class AdhocRfiDto extends BaseEntityDto {
     private String id;
 
     private String facilityNo;
+
+    private String approveNo;
 
     private String submissionType;
 
@@ -40,8 +41,6 @@ public class AdhocRfiDto extends BaseEntityDto {
     private String titleOfSupportingDocRequired;
 
     private String suppliedInformation;
-
-    private Application application;
 
     private String requestor;
 
