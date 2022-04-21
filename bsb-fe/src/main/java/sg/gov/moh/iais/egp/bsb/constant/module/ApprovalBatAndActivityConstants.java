@@ -1,10 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.constant.module;
 
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
 public class ApprovalBatAndActivityConstants {
     private ApprovalBatAndActivityConstants() {
     }
@@ -60,7 +56,12 @@ public class ApprovalBatAndActivityConstants {
     public static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     public static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
+    public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
+    public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
+
     public static final String KEY_COUNTRY_OPTIONS = "countryOps";
+    public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
+    public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
 
     //RFC
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)

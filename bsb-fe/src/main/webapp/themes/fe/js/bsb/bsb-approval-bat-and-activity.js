@@ -33,6 +33,14 @@ $(function () {
         }
     });
 
+    $("select[data-cascade-dropdown=schedule-bat]").each(function () {
+        var id = $(this).attr("id");
+        var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
+        registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
+            $("#"+batDropdownId).niceSelect("update");
+        });
+    });
+
     $(".removeBtn").click(removeBtnEventHandler);
 
     $("#addNewBatSection").click(function () {
@@ -69,8 +77,22 @@ $(function () {
         /* Reset all checkbox to unchecked */
         newSectionDivJqObj.find(":checkbox:checked").prop("checked", false);
         $("#batOtherSampleTypeDiv" + meta.separator +  nextIdx).hide();
+
+        // set schedule-bat on change event
+        newSectionDivJqObj.find("select[data-cascade-dropdown=schedule-bat]").each(function () {
+            var id = $(this).attr("id");
+            var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
+            registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
+                $("#"+batDropdownId).niceSelect("update");
+            });
+        });
     });
 });
+
+function computeBatDropdownIdByScheduleDropdownId(scheduleDropdownId) {
+    var idx = scheduleDropdownId.substring("schedule".length, scheduleDropdownId.length);
+    return "batName" + idx;
+}
 
 function readSectionRepeatMetaData() {
     return {

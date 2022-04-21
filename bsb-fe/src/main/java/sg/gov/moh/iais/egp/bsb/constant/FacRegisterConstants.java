@@ -49,6 +49,9 @@ public class FacRegisterConstants {
     public static final String KEY_DATA_LIST               = "DATA_LIST";
     public static final String KEY_SOURCE_NODE_PATH        = "srcNodePath";
 
+    public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
+    public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
+
     public static final String KEY_NAV_NEXT                = "next";
     public static final String KEY_NAV_PREVIOUS            = "previous";
 
@@ -76,6 +79,8 @@ public class FacRegisterConstants {
     public static final String KEY_OPTIONS_FAC_TYPE        = "facTypeOps";
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
     public static final String KEY_OPTIONS_AFC             = "afcOps";
+    public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
+    public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";
 
     public static final String KEY_DECLARATION_CONFIG      = "configList";
     public static final String KEY_DECLARATION_ANSWER_MAP  = "answerMap";

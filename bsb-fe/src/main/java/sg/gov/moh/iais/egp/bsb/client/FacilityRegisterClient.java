@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationAnswerDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.AppMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
@@ -20,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.FileDataValidationResultDto;
 
 import java.util.List;
+import java.util.Map;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
@@ -54,6 +56,9 @@ public interface FacilityRegisterClient {
 
     @PostMapping(path = "/register/facility/validation/data-file", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateUploadedDataFileMeta(@RequestBody DocMeta meta);
+
+    @GetMapping(path = "/bat-info/dropdown/schedule-bat/activity", produces = MediaType.APPLICATION_JSON_VALUE)
+    Map<String, List<BatBasicInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity);
 
     @PostMapping(path = "/register/facility/form-validation/bat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityBiologicalAgentToxin(@RequestBody BiologicalAgentToxinDto dto);

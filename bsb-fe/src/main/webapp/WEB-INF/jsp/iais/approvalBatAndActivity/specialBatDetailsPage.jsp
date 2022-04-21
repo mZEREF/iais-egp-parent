@@ -14,8 +14,18 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-cascade-dropdown.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-bat-and-activity.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-biological-agent-toxin.js"></script>
+
+<script>
+    <% String jsonStr = (String) request.getAttribute("scheduleBatMapJson");
+        if (jsonStr == null || "".equals(jsonStr)) {
+            jsonStr = "undefined";
+        }
+    %>
+    var scheduleBatDataJson = <%=jsonStr%>;
+</script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <%@include file="dashboard.jsp"%>
@@ -53,8 +63,8 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="schedule" class="scheduleDropdown" id="schedule">
-                                                                    <c:forEach items="${ScheduleOps}" var="schedule">
+                                                                <select name="schedule" class="scheduleDropdown" id="schedule" data-cascade-dropdown="schedule-bat">
+                                                                    <c:forEach items="${scheduleOps}" var="schedule">
                                                                         <option value="${schedule.value}" <c:if test="${batInfo.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                     </c:forEach>
                                                                 </select>
@@ -68,6 +78,7 @@
                                                             </div>
                                                             <div class="col-sm-6">
                                                                 <select name="batName"  class="batNDropdown" id="batName">
+                                                                    <c:set var="batNameOps" value="${scheduleBatMap.get(info.schedule == null ? firstScheduleOp : info.schedule)}"/>
                                                                     <c:forEach items="${batNameOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                     </c:forEach>

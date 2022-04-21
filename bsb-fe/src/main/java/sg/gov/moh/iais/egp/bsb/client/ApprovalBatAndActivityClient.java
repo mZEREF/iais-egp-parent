@@ -5,16 +5,15 @@ import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.facility.FacilityBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
+import java.util.Map;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
+
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "approvalBatAndActivity")
 public interface ApprovalBatAndActivityClient {
     @GetMapping(value = "/facility-info/approved-facility/basic", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,6 +21,9 @@ public interface ApprovalBatAndActivityClient {
 
     @GetMapping(path = "/register/bat-approval/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalBatAndActivityDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);
+
+    @GetMapping(path = "/bat-info/dropdown/schedule-bat/activity", produces = MediaType.APPLICATION_JSON_VALUE)
+    Map<String, List<BatBasicInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("activity") String activity);
 
     @PostMapping(path = "/register/bat-and-activity-approval/form-validation/approval-selection", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateApprovalSelectionDto(@RequestBody ApprovalSelectionDto dto);
