@@ -29,6 +29,9 @@
     <c:if test="${StringUtil.stringContain(privilege.id,'HALP_MOH_DS_')}">
         <c:set var="msgTab" value="1"/>
         <c:set var="dssTab" value="1"/>
+        <c:if test="${privilege.id == 'HALP_MOH_DS_ART'}">
+            <c:set var="dataSubARTPrivilege" value="1"/>
+        </c:if>
     </c:if>
 </c:forEach>
 <c:set var="roleMenuForEServices" value="${appTab == 1 && dssTab == 1 ? 2 : (appTab == 1 ? 1 : 0)}" />
