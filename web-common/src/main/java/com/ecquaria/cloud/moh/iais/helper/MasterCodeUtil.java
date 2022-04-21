@@ -228,6 +228,7 @@ public final class MasterCodeUtil {
     public static final String VSS_OCCUPATION                       ="7A6E622A-F986-45E2-AD3F-13C3B5639702";
     //Termination of Pregnancy
     //Patient Information
+    public static final String TOP_EDUCATION_LEVEL                       ="B0CDD9CD-8716-4867-89D0-00F31B86FD17";
     public static final String TOP_RESIDENCE_STATUS                      ="61EBD041-A0A5-42E6-9E8D-58506EC47008";
     public static final String TOP_MARITAL_STATUS                        ="2E43DE70-7859-4573-8BE6-5E79D5FF662E";
     public static final String TOP_ACTIVITY_STATUS                       ="D085416D-2B29-424C-A6BE-98B9821CC763";

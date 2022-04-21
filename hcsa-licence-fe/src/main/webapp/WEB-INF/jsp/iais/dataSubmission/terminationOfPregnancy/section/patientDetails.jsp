@@ -100,7 +100,7 @@
                         <iais:field width="5" value="Education Level" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="educationLevel" name="educationLevel" id="educationLevel" firstOption="Please Select"
-                                         codeCategory="VSS_EDUCATION_LEVEL" value="${patientInformationDto.educationLevel}"/>
+                                         codeCategory="TOP_EDUCATION_LEVEL" value="${patientInformationDto.educationLevel}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -330,7 +330,7 @@
     function validatePatientName(data){
         console.log("validatePatientName!")
         clearErrorMsg();
-        /*clearSelection();*/
+        clearSelection();
         if (isEmpty(data) || isEmpty(data.selection) || isEmpty(data.selection.patientName)
             || isEmpty(data.selection.birthData)
             || isEmpty(data.selection.nationality)
@@ -342,11 +342,12 @@
             || isEmpty(data.selection.educationLevel)
             || isEmpty(data.selection.livingChildrenNo)
             || isEmpty(data.selection.activityStatus)
-            || isEmpty(data.selection.occupation)
+            /*|| isEmpty(data.selection.occupation)*/
             /*|| isEmpty(data.selection.otherOccupation)*/ || !isEmpty(data.errorMsg)) {
             if (!isEmpty(data.errorMsg)) {
                 doValidationParse(data.errorMsg);
             } else {
+                console.log("shibai")
                 $('#noFoundDiv').modal('show');
             }
             return;
@@ -393,10 +394,10 @@
             }
         }
     }
-    /*function clearSelection(){
+    function clearSelection(){
         console.log("clearSelection!")
         clearErrorMsg();
         $('#name').find('p').text('');
         clearFields('.selectionHidden');
-    }*/
+    }
 </script>

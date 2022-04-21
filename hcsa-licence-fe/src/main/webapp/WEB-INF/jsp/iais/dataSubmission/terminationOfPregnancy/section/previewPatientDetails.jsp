@@ -98,9 +98,9 @@
                     <iais:row>
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <%--<c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders">--%>
-                                <iais:code code="${patientInformationDto.livingChildrenGenders}"/>
-                            <%--</c:forEach>--%>
+                            <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders"  begin="0" varStatus="index">
+                                <iais:code code="${livingChildrenGenders}"/>&nbsp;&nbsp;
+                            </c:forEach>
                         </iais:value>
                     </iais:row>
             </div>
