@@ -229,7 +229,7 @@
                     "</div>\n";
                 $("#genders").append(input);
             }
-            refreshIndex($('#genders').find('select'));
+            refreshId($('#genders').find('select'));
         });
     });
     $(document).ready(function () {
@@ -318,51 +318,13 @@
             }
         });
     }
-    function refreshIndex(targetSelector) {
-        if (isEmpty(targetSelector)) {
-            return;
-        }
-        if ($(targetSelector).length == 0) {
-            return;
-        }
+    function refreshId(targetSelector) {
         $(targetSelector).each(function (k,v) {
-            var $ele = $(v);
-            var $selector;
-            if ($ele.is(':input')) {
-                $selector = $ele;
-            } else {
-                $selector = $ele.find(':input')
-            }
-            if ($selector.length == 0) {
-                return;
-            }
-            $selector.each(function () {
-                if ($(this).hasClass('not-refresh')) {
-                    return;
-                }
-                var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
-                var orgName = $input.attr('name');
-                var orgId = $input.attr('id');
-                if (isEmpty(orgName)) {
-                    orgName = orgId;
-                }
-                if (isEmpty(orgName)) {
-                    return;
-                }
-                var result = /([a-zA-Z_]*)/g.exec(orgName);
-                var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-                $input.prop('name', name + k);
-                if (orgName == orgId) {
-                    $input.prop('id', name + k);
-                }
-                var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
-                if ($errorSpan.length > 0) {
-                    $errorSpan.prop('id', 'error_' + name + k);
-                }
-                if (tag == 'select') {
-                    $input.niceSelect("update");
-                }
-            });
+            var $input = $(v);
+            var orgId = $input.attr('id');
+            var result = /([a-zA-Z_]*)/g.exec(orgId);
+            var id = !isEmpty(result) && result.length > 0 ? result[0] : orgId;
+            $input.prop('id', id + k);
         });
     }
     function validatePatientName(data){
