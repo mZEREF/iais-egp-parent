@@ -18,4 +18,5 @@ import java.io.Serializable;
 public class AdhocRfiQueryDto extends PagingAndSortingDto implements Serializable {
     private String facilityNo;
     private String status;
+    private String approvalNo;
 }

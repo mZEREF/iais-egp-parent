@@ -68,14 +68,14 @@ public class BsbAdhocRfiDelegator {
         dto.defaultPaging();
         dto.setFacilityNo(facilityNo);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
-        request.removeAttribute("adhocReqForInfoDto");
+
 
     }
 
     public void preRfiList(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
-
+        request.removeAttribute("adhocReqForInfoDto");
         AdhocRfiQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
         ResponseDto<AdhocRfiQueryResultDto> resultDto = adhocRfiClient.queryAdhocRfi(searchDto);
@@ -110,16 +110,16 @@ public class BsbAdhocRfiDelegator {
                 for (AdhocRfiDto rfi:reqForInfos
                      ) {
                     if(rfi.getId().equals(id)){
-                        adhocRfiViewDto.setAdhocRfiDto(rfi);
+                        adhocRfiViewDto=adhocRfiClient.getAdhocRfiById(rfi.getId()).getEntity();
                         break;
                     }
                 }
 
             }
         }catch (Exception e){
-            log.error("not mask id");
+            log.error(e.getMessage(),e);
         }
-        ParamUtil.setSessionAttr(request,"adhocReqForInfoDto", (Serializable) adhocRfiViewDto);
+        ParamUtil.setSessionAttr(request,"adhocReqForInfoDto",  adhocRfiViewDto);
 
 
     }
