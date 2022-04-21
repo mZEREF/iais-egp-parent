@@ -278,7 +278,6 @@ public final class DataSubmissionHelper {
             lastStage = additionalStage;
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
-        result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         if (StringUtil.isEmpty(lastCycle)) {
             addStartStages(result);
         } else if (StringUtil.isEmpty(lastStage)
