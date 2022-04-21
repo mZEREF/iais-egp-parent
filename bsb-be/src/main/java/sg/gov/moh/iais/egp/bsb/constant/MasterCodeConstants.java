@@ -251,6 +251,7 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_ACCEPT = "MOHPRO027";
     public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
     public static final String MOH_PROCESSING_DECISION_SKIP_INSPECTION = "MOHPRO029";
+    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_AO = "MOHPRO030";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";

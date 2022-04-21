@@ -20,6 +20,7 @@ public class InspectionConstants {
 
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
+    public static final String KEY_INS_DTO_INS_LETTER = "letterDto";
     public static final String KEY_INS_FINDING = "insFindingList";
     public static final String KEY_INS_NON_COMPLIANCE = "insRectificationList";
     public static final String KEY_INS_OUTCOME = "insOutcome";
@@ -38,7 +39,7 @@ public class InspectionConstants {
     public static final String TAB_FAC_INFO = "tabInfo";
     public static final String TAB_INS_FINDING = "tabInsFinding";
     public static final String TAB_RECTIFICATION = "tabRectification";
-    public static final String TAB_EMAIL = "tabEmail";
+    public static final String TAB_APPROVAL_LETTER = "tabApprovalLetter";
     public static final String TAB_PROCESSING = "tabProcessing";
     public static final String TAB_INS_REPORT = "tabInsReport";
     public static final String TAB_SUBMIT_INTO = "sumissionInfo";

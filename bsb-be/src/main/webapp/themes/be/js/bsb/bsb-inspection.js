@@ -68,6 +68,12 @@ $(function () {
             $("#selectMohUserDiv").hide();
         }
     })
+
+    $("#previewBtn").click(function (){
+        showWaiting();
+        $("input[name='action_type']").val('preview');
+        $("#mainForm").submit();
+    });
 })
 
 // inspection findings' sections

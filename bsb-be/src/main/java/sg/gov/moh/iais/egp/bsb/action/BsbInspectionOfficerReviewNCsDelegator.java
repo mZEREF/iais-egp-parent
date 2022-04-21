@@ -62,6 +62,10 @@ public class BsbInspectionOfficerReviewNCsDelegator {
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
+        session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
+        session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
+        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
+        session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
         session.removeAttribute(KEY_INS_INFO);
         session.removeAttribute(KEY_INS_NON_COMPLIANCE);
         session.removeAttribute(KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP);
