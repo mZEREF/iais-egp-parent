@@ -341,11 +341,12 @@ public class MohDsActionDelegator {
         if (topSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
+            /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/PatientInformation";
             } else if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
-            }
+            }*/
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch";
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(topSuper));
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
