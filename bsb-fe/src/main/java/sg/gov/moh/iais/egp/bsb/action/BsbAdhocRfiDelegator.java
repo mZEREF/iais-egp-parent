@@ -67,6 +67,7 @@ public class BsbAdhocRfiDelegator {
         AdhocRfiQueryDto dto = new AdhocRfiQueryDto();
         dto.defaultPaging();
         dto.setFacilityNo(facilityNo);
+        dto.setStatus("RFIST001");
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
 
 
