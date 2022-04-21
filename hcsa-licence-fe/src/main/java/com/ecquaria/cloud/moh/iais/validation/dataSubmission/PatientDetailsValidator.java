@@ -72,6 +72,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if (StringUtil.isEmpty(livingChildrenNo)) {
             errorMap.put("livingChildrenNo","GENERAL_ERR0006");
         }
+        int m=0;
         if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             if (Integer.valueOf(livingChildrenNo) > 10) {
                 errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
@@ -81,6 +82,8 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 repMap.put("field", "No. of Living Children");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("livingChildrenNo", errMsg);
+            }else if(Integer.valueOf(livingChildrenNo)<m){
+                errorMap.put("livingChildrenNo", "Negative numbers are not allowed on this field.");
             }
         }
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){
