@@ -73,6 +73,9 @@
                             <iais:value width="4" cssClass="col-md-4" display="true">
                                 <c:out value="${transferInOutStageDto.oocyteNum}"/>
                             </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:out value="${transferInOutStageDtoVersion.oocyteNum}"/>
+                            </iais:value>
                         </iais:row>
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_002'}">
@@ -88,6 +91,9 @@
                             <iais:value width="4" cssClass="col-md-4" display="true">
                                 <c:out value="${transferInOutStageDto.embryoNum}"/>
                             </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:out value="${transferInOutStageDtoVersion.embryoNum}"/>
+                            </iais:value>
                         </iais:row>
                     </c:if>
                     <c:if test="${transferredObj =='AR_WWT_003'}">
@@ -102,6 +108,9 @@
                             </label>
                             <iais:value width="4" cssClass="col-md-4" display="true">
                                 <c:out value="${transferInOutStageDto.spermVialsNum}"/>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:out value="${transferInOutStageDtoVersion.spermVialsNum}"/>
                             </iais:value>
                         </iais:row>
                     </c:if>
