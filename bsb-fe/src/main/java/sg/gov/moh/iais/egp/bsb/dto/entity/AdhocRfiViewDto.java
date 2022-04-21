@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdhocRfiViewDto implements Serializable {
     private AdhocRfiDto adhocRfiDto;
-    private List<ApplicationDocDto> applicationDocDtos;
+    private List<DocRecordInfo> applicationDocDtos;
 
 
 }

@@ -18,7 +18,7 @@ public class AdhocRfiDto extends BaseEntityDto {
 
     private String facilityNo;
 
-    private String approveNo;
+    private String approvalNo;
 
     private String submissionType;
 

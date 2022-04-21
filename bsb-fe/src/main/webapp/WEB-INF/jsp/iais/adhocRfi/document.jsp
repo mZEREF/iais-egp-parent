@@ -11,9 +11,9 @@
                         <div class="file-upload-gp">
                             <c:if test="${newFiles ne null}">
                                 <c:forEach var="info" items="${newFiles}">
-                                    <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.fileRepoId)}"/>
+                                    <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
                                     <div id="${tmpId}FileDiv">
-                                        <span id="${tmpId}Span">${info.docName}(${String.format("%.1f", info.docSize/1024.0)}KB)</span>
+                                        <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span>
                                         <button type="button" class="btn btn-secondary btn-sm"
                                                 onclick="deleteNewFile('${tmpId}')">Delete
                                         </button>
@@ -23,10 +23,10 @@
                                         </button>
 
                                         <button type="button" class="btn btn-secondary btn-sm"
-                                                onclick="downloadFile('${tmpId}','${info.docName}')">
+                                                onclick="downloadFile('${tmpId}','${info.filename}')">
                                             Download
                                         </button>
-                                        <span data-err-ind="${info.fileRepoId}" class="error-msg"></span>
+                                        <span data-err-ind="${info.repoId}" class="error-msg"></span>
                                     </div>
                                 </c:forEach>
                             </c:if>

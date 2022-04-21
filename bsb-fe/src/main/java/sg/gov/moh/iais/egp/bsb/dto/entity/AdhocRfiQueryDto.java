@@ -17,4 +17,5 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AdhocRfiQueryDto extends PagingAndSortingDto implements Serializable {
     private String facilityNo;
+    private String status;
 }

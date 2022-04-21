@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 
 /**
@@ -33,5 +34,5 @@ public interface AdhocRfiClient {
     ResponseDto<AdhocRfiDto> getAdhocRfiById(@PathVariable("adhocRfiId") String id);
 
     @PostMapping(path = "/adhoc-rfi/adhocRfi", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveAdhocRfi(@RequestBody AdhocRfiDto dto);
+    ResponseDto<AdhocRfiViewDto> saveAdhocRfi(@RequestBody AdhocRfiViewDto dto);
 }

@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -8,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -19,19 +21,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiViewDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +68,7 @@ public class BsbAdhocRfiDelegator {
         dto.defaultPaging();
         dto.setFacilityNo(facilityNo);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
+        request.removeAttribute("adhocReqForInfoDto");
 
     }
 
@@ -153,18 +158,22 @@ public class BsbAdhocRfiDelegator {
 
             }
         }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(adhocRfiDto.getSupportingDocRequired()){
             List<MultipartFile> mulReqFile= mulReq.getFiles("upload");
             adhocRfiViewDto.setApplicationDocDtos(IaisCommonUtils.genNewArrayList());
             if(IaisCommonUtils.isNotEmpty(mulReqFile)){
                 for (MultipartFile file:mulReqFile
                      ) {
-                    ApplicationDocDto applicationDocDto=new ApplicationDocDto();
-                    applicationDocDto.setDocName(file.getOriginalFilename());
-                    applicationDocDto.setDocSize(file.getSize());
+                    DocRecordInfo applicationDocDto=new DocRecordInfo();
+                    applicationDocDto.setFilename(file.getOriginalFilename());
+                    applicationDocDto.setSize(file.getSize());
                     List<String> repoIds = fileRepoClient.saveFiles(new MultipartFile[]{file}).getEntity();
-                    applicationDocDto.setFileRepoId(repoIds.get(0));
-
+                    applicationDocDto.setRepoId(repoIds.get(0));
+                    applicationDocDto.setDocType(DocConstants.DOC_TYPE_ADHOC_RFI_UP);
+                    applicationDocDto.setDocSubType(adhocRfiDto.getId());
+                    applicationDocDto.setSubmitBy(loginContext.getUserId());
+                    applicationDocDto.setSubmitDate(new Date());
                     adhocRfiViewDto.getApplicationDocDtos().add(applicationDocDto);
                 }
             }
@@ -179,7 +188,8 @@ public class BsbAdhocRfiDelegator {
             return;
         }
         adhocRfiDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
-        adhocRfiClient.saveAdhocRfi(adhocRfiDto);
+        AdhocRfiViewDto adhocRfiViewDto1=adhocRfiClient.saveAdhocRfi(adhocRfiViewDto).getEntity();
+
     }
 
     public void backList(BaseProcessClass bpc) {
