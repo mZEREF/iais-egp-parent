@@ -109,6 +109,8 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_FOLLOW_UP_REPORT_1A = "PROTYPE010";
     public static final String PROCESS_TYPE_FOLLOW_UP_REPORT_1B = "PROTYPE011";
     public static final String PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE = "PROTYPE012";
+    public static final String PROCESS_TYPE_ADHOC_RFI = "PROTYPE013";
+    public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
 
     static {

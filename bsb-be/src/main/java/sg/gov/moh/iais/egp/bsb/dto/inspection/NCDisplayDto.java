@@ -10,7 +10,7 @@ public class NCDisplayDto implements Serializable {
     private String itemDescription;
     private String finding;
     private String actionRequired;
-    private Boolean rectified;
+    private String rectified;
     private String applicantInput;
-    private Boolean excludeFromApplicantVersion;
+    private String excludeFromApplicantVersion;
 }

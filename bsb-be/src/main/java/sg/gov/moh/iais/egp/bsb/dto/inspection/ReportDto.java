@@ -3,6 +3,9 @@ package sg.gov.moh.iais.egp.bsb.dto.inspection;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -48,13 +51,21 @@ public class ReportDto implements Serializable {
     private String recommendationRemarks;
     private String facilityValidityDate;
     // Attachments
+    private List<DocRecordInfo> docRecordInfo;
+    private List<DocMeta> docMeta;
 
+
+    private static final String SEPARATOR                               = "--v--";
     private static final String KEY_OBSERVATION                         = "observation";
     private static final String KEY_OBSERVATION_REMARKS                 = "observationRemarks";
+    private static final String KEY_FINDING                             = "finding";
+    private static final String KEY_ACTION_REQUIRED                     = "actionRequired";
+    private static final String KEY_EXCLUDE_FROM_APPLICANT_VERSION      = "excludeFromApplicantVersion";
     private static final String KEY_DEFICIENCY                          = "deficiency";
     private static final String KEY_OUTCOME                             = "outcome";
     private static final String KEY_RECOMMENDATION_REMARKS              = "recommendationRemarks";
     private static final String KEY_FACILITY_VALIDITY_DATE              = "facilityValidityDate";
+
 
     public void reqObjMapping(HttpServletRequest request) {
         this.observation = ParamUtil.getString(request, KEY_OBSERVATION);
@@ -65,6 +76,32 @@ public class ReportDto implements Serializable {
             this.deficiency = new ArrayList<>(Arrays.asList(deficiencyArray));
         } else {
             this.deficiency = new ArrayList<>(0);
+        }
+
+        if (!CollectionUtils.isEmpty(checkListItemGeneralList)) {
+            for (NCDisplayDto ncDisplayDto : checkListItemGeneralList) {
+                String id = ncDisplayDto.getId();
+                ncDisplayDto.setFinding(ParamUtil.getString(request, KEY_FINDING + SEPARATOR + id));
+                ncDisplayDto.setActionRequired(ParamUtil.getString(request, KEY_ACTION_REQUIRED + SEPARATOR + id));
+                ncDisplayDto.setExcludeFromApplicantVersion(ParamUtil.getString(request, KEY_EXCLUDE_FROM_APPLICANT_VERSION + SEPARATOR + id));
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(checkListItemGeneralList)) {
+            for (NCDisplayDto ncDisplayDto : checkListItemGeneralList) {
+                String id = ncDisplayDto.getId();
+                ncDisplayDto.setFinding(ParamUtil.getString(request, KEY_FINDING + SEPARATOR + id));
+                ncDisplayDto.setActionRequired(ParamUtil.getString(request, KEY_ACTION_REQUIRED + SEPARATOR + id));
+                ncDisplayDto.setExcludeFromApplicantVersion(ParamUtil.getString(request, KEY_EXCLUDE_FROM_APPLICANT_VERSION + SEPARATOR + id));
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(followUpItemGeneralList)) {
+            for (FollowUpDisplayDto followUpDisplayDto : followUpItemGeneralList) {
+                String id = followUpDisplayDto.getId();
+                followUpDisplayDto.setObservation(ParamUtil.getString(request, KEY_OBSERVATION + SEPARATOR + id));
+                followUpDisplayDto.setActionRequired(ParamUtil.getString(request, KEY_ACTION_REQUIRED + SEPARATOR + id));
+            }
         }
 
         this.outcome = ParamUtil.getString(request, KEY_OUTCOME);

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -147,7 +148,7 @@ public class BsbSubmitInspectionReportDelegator {
         ParamUtil.setSessionAttr(request, KEY_INS_REPORT, reportDto);
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReport(reportDto);
         if (validationResultDto.isPass()) {
-            inspectionClient.saveInspectionReportDto(appId, reportDto);
+            inspectionClient.saveInspectionReportDto(appId, StageConstants.ROLE_DO, reportDto);
         } else {
             log.error("Validation inspection report failure info: {}", validationResultDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
