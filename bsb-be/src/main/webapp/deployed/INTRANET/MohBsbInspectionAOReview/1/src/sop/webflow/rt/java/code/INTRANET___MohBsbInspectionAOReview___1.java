@@ -50,4 +50,7 @@ public class INTRANET___MohBsbInspectionAOReview___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "skip", this);
 	}
 
+	public void handleSaveReport_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "handleSaveReport", this);
+	}
 }

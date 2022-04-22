@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -144,5 +146,27 @@ public class BsbInspectionAOReviewReportDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.skipInspection(appId, taskId, processDto);
+    }
+
+    public void handleSaveReport(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        processDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
+
+        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INS_REPORT);
+        reportDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, reportDto);
+        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReport(reportDto);
+        if (validationResultDto.isPass()) {
+            inspectionClient.saveInspectionReportDto(appId, StageConstants.ROLE_DO, reportDto);
+            ParamUtil.setRequestAttr(request, KEY_AFTER_SAVE_REPORT, Boolean.TRUE);
+        } else {
+            log.error("Validation inspection report failure info: {}", validationResultDto.toErrorMsg());
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+        }
+        ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_INS_REPORT);
     }
 }

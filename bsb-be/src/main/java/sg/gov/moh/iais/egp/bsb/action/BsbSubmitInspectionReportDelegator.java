@@ -96,7 +96,6 @@ public class BsbSubmitInspectionReportDelegator {
         // do nothing now
     }
 
-
     public void handleSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
@@ -149,6 +148,7 @@ public class BsbSubmitInspectionReportDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReport(reportDto);
         if (validationResultDto.isPass()) {
             inspectionClient.saveInspectionReportDto(appId, StageConstants.ROLE_DO, reportDto);
+            ParamUtil.setRequestAttr(request, KEY_AFTER_SAVE_REPORT, Boolean.TRUE);
         } else {
             log.error("Validation inspection report failure info: {}", validationResultDto.toErrorMsg());
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());

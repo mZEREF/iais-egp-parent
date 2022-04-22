@@ -66,4 +66,6 @@ public class InspectionConstants {
     public static final int VALUE_RFI_FLAG_SELF = 0;
     public static final int VALUE_RFI_FLAG_APPLICATION = 1;
     public static final int VALUE_RFI_FLAG_SELF_APPLICATION = 2;
+
+    public static final String KEY_AFTER_SAVE_REPORT          = "AFTER_SAVE_REPORT";
 }

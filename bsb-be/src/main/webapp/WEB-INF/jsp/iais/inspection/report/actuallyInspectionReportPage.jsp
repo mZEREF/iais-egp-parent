@@ -15,7 +15,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection-report.js"></script>
 
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>

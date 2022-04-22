@@ -17,12 +17,6 @@ $(function () {
         $("#mainForm").submit();
     });
 
-    $("#saveReportBtn").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("saveReport");
-        $("#mainForm").submit();
-    });
-
     $("#viewSelfAssessmt").click(function () {
         showWaiting();
         $("input[name='action_type']").val('viewSelfAssessment');
