@@ -58,6 +58,13 @@
     <JavaCode defClass="" executor="" methodName="skip_OnStepProcess_0" name="skip_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="560" y="400">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DOReviewFollowUpItemsPage" stageIndicator="" x="324" y="24">
@@ -129,6 +136,12 @@
   <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Skip" style="rectanular">
    <position>{(340,420)(320,510)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/DicisionSwitch" style="rectanular">
+   <position>{(560,332)(580,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Reject" style="rectanular">
+   <position>{(580,420)(548,512)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -143,6 +156,7 @@
    <SwitchCase component="/Steps/AutomaticStep/AcceptResponse" value="&quot;acceptResponse&quot;" />
    <SwitchCase component="/Merges/Merge/BackMerge" value="" />
    <SwitchCase component="/Steps/AutomaticStep/Skip" value="&quot;skip&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;reject&quot;" />
   </Switch>
  </Switches>
  <Branches />

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%--@elvariable id="facilityDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo"--%>
 <div class="panel panel-default">
     <div class="panel-heading" style="text-align: center"><strong>Facility Details</strong></div>
@@ -60,11 +61,11 @@
                                     <div class="col-md-3">
                                         <div class="row">
                                             <label>
-                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001" disabled="disabled"/>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityYes" <c:if test="${facilityActivityInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">Yes</span>
                                             <label>
-                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq 'BSBMPAS002' or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002" disabled="disabled"/>
+                                                <input type="radio" name="${facilityActivityInfo.id}" data-radio-type="facilityActivityNo" <c:if test="${facilityActivityInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or facilityActivityInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">No</span>
                                         </div>
@@ -96,11 +97,11 @@
                                     <div class="col-md-3">
                                         <div class="row">
                                             <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS001'}">checked="checked"</c:if> value="BSBMPAS001" disabled="disabled"/>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq MasterCodeConstants.PROCESSING_STATUS_APPROVAL}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_APPROVAL}" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">Yes</span>
                                             <label>
-                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq 'BSBMPAS002' or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="BSBMPAS002" disabled="disabled"/>
+                                                <input type="radio" name="${facilityBiologicalAgentInfo.id}" data-bat-activityId="${facilityBiologicalAgentInfo.facilityActivityId}" <c:if test="${facilityBiologicalAgentInfo.status eq MasterCodeConstants.PROCESSING_STATUS_REJECT or facilityBiologicalAgentInfo.status eq null}">checked="checked"</c:if> value="${MasterCodeConstants.PROCESSING_STATUS_REJECT}" disabled="disabled"/>
                                             </label>
                                             <span class="check-circle">No</span>
                                         </div>

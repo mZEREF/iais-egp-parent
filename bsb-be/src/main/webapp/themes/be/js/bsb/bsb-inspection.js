@@ -17,12 +17,6 @@ $(function () {
         $("#mainForm").submit();
     });
 
-    $("#saveReportBtn").click(function () {
-        showWaiting();
-        $("input[name='action_type']").val("saveReport");
-        $("#mainForm").submit();
-    });
-
     $("#viewSelfAssessmt").click(function () {
         showWaiting();
         $("input[name='action_type']").val('viewSelfAssessment');
@@ -62,7 +56,7 @@ $(function () {
 
     $("#processingDecision").change(function () {
         var selectValue = $(this).val();
-        if (selectValue === "MOHPRO022" || selectValue === "MOHPRO025") {
+        if (selectValue === "MOHPRO022" || selectValue === "MOHPRO025" || selectValue === "MOHPRO030") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();
@@ -229,4 +223,15 @@ function skipValidate(){
     $("[name='action_type']").val("submit");
     $("[name='action_value']").val("noValidate");
     $("#mainForm").submit();
+}
+
+function judgeDisplay(data) {
+    if (data === 'Y') {
+        $("#reviewExtensionTable").show();
+        $("#extensionDecisionDiv").show();
+        $("#reasonMandatory").show();
+    } else {
+        $("#reviewSubmitTable").show();
+        $("#submitDecisionDiv").show();
+    }
 }

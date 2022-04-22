@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 
@@ -177,4 +178,6 @@ public interface InspectionClient {
     @GetMapping(value = "/inspection/actual/approval-letter/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsApprovalLetterInitDataDto getInitInsApprovalLetterData(@RequestParam("appId") String appId);
 
+    @GetMapping(value = "/inspection/actual/do-review-follow-up-items/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    ReviewInsFollowUpDto getInitInsFollowUpData(@RequestParam("appId") String appId);
 }

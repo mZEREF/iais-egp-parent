@@ -24,9 +24,9 @@
                         </div>
 
                         <iais:row>
-                            <iais:field value="Facility No." width="15" required="false"/>
+                            <iais:field value="Approval No." width="15" required="false"/>
                             <iais:value width="10">
-                                <c:out value="${newReqInfo.facilityNo}" />
+                                <c:out value="${newReqInfo.approveNo}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>

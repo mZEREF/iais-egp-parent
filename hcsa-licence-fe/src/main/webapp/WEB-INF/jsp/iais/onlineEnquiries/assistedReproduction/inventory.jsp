@@ -154,13 +154,13 @@
                                                  value="Cycle"/>
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FROZEN_OOCY_NUM"
-                                                 value="Frozen Oocyte"/>
+                                                 value="Frozen Oocytes"/>
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="THAWED_OOCY_NUM"
-                                                 value="Thawed Oocyte"/>
+                                                 value="Thawed Oocytes"/>
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FRESH_OOCY_NUM"
-                                                 value="Fresh Oocyte"/>
+                                                 value="Fresh Oocytes"/>
                             <iais:sortableHeader needSort="true" style="white-space: nowrap;"
                                                  field="FROZEN_EMBR_NUM"
                                                  value="Frozen Embryos"/>

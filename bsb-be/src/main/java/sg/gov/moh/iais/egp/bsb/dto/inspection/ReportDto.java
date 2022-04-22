@@ -50,6 +50,7 @@ public class ReportDto implements Serializable {
     private String outcome;
     private String recommendationRemarks;
     private String facilityValidityDate;
+    private String applicantRemarks;
     // Attachments
     private List<DocRecordInfo> docRecordInfo;
     private List<DocMeta> docMeta;

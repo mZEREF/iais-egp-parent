@@ -112,14 +112,14 @@
                     <tr>
                         <td><label for="observation"></label>Observation</td>
                         <td>
-                            <textarea id="observation" name="observation" cols="200" rows="5" maxlength="300"><c:out value="${reportDto.observation}"/></textarea>
+                            <textarea id="observation" name="observation" cols="200" rows="5" maxlength="300" data-type="reportInput" disabled="disabled"><c:out value="${reportDto.observation}"/></textarea>
                             <span data-err-ind="observation" class="error-msg"></span>
                         </td>
                     </tr>
                     <tr>
                         <td><label for="observationRemarks"></label>Remarks</td>
                         <td>
-                            <textarea id="observationRemarks" name="observationRemarks" cols="200" rows="5" maxlength="300"><c:out value="${reportDto.observationRemarks}"/></textarea>
+                            <textarea id="observationRemarks" name="observationRemarks" cols="200" rows="5" maxlength="300" data-type="reportInput" disabled="disabled"><c:out value="${reportDto.observationRemarks}"/></textarea>
                             <span data-err-ind="observationRemarks" class="error-msg"></span>
                         </td>
                     </tr>
@@ -147,17 +147,22 @@
                                             <td>1.${status.count}</td>
                                             <td><c:out value="${checkList.itemDescription}"/></td>
                                             <td>
-                                                <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.finding}"/></textarea>
+                                                <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
                                                 <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
                                             </td>
                                             <td>
-                                                <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.actionRequired}"/></textarea>
+                                                <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
                                                 <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
                                             </td>
-                                            <td><c:out value="${checkList.rectified}"/></td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
+                                                    <c:otherwise>No</c:otherwise>
+                                                </c:choose>
+                                            </td>
                                             <td><c:out value="${checkList.applicantInput}"/></td>
                                             <td>
-                                                <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if>>
+                                                <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if> data-type="reportInput" disabled="disabled">
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -184,17 +189,22 @@
                                                 <td>1.${status.count}</td>
                                                 <td><c:out value="${checkList.itemDescription}"/></td>
                                                 <td>
-                                                    <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.finding}"/></textarea>
+                                                    <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
                                                     <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
                                                 </td>
                                                 <td>
-                                                    <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500"><c:out value="${checkList.actionRequired}"/></textarea>
+                                                    <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
                                                     <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
                                                 </td>
-                                                <td><c:out value="${checkList.rectified}"/></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
+                                                        <c:otherwise>No</c:otherwise>
+                                                    </c:choose>
+                                                </td>
                                                 <td><c:out value="${checkList.applicantInput}"/></td>
                                                 <td>
-                                                    <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if>>
+                                                    <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if> data-type="reportInput" disabled="disabled"/>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -228,11 +238,11 @@
                                             <td>1.${status.count}</td>
                                             <td><c:out value="${followUp.itemDescription}"/></td>
                                             <td>
-                                                <textarea id="observation--v--${followUp.id}" name="observation--v--${followUp.id}" cols="20" rows="5" maxlength="500"><c:out value="${followUp.observation}"/></textarea>
+                                                <textarea id="observation--v--${followUp.id}" name="observation--v--${followUp.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${followUp.observation}"/></textarea>
                                                 <span data-err-ind="observation--v--${followUp.id}" class="error-msg"></span>
                                             </td>
                                             <td>
-                                                <textarea id="actionRequired--v--${followUp.id}" name="actionRequired--v--${followUp.id}" cols="20" rows="5" maxlength="500"><c:out value="${followUp.actionRequired}"/></textarea>
+                                                <textarea id="actionRequired--v--${followUp.id}" name="actionRequired--v--${followUp.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${followUp.actionRequired}"/></textarea>
                                                 <span data-err-ind="actionRequired--v--${followUp.id}" class="error-msg"></span>
                                             </td>
                                             <td><c:out value="${followUp.dueDate}"/></td>
@@ -265,15 +275,15 @@
                         <td>
                             <div>
                                 <label>
-                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MAJOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MAJOR}"/>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MAJOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MAJOR}" data-type="reportInput" disabled="disabled"/>
                                 </label>
                                 <span class="check-square">Major</span>
                                 <label>
-                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MINOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MINOR}"/>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_MINOR)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_MINOR}" data-type="reportInput" disabled="disabled"/>
                                 </label>
                                 <span class="check-square">Minor</span>
                                 <label>
-                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_NIL)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_NIL}"/>
+                                    <input type="checkbox" name="deficiency" <c:if test="${reportDto.deficiency.contains(MasterCodeConstants.VALUE_DEFICIENCY_NIL)}">checked="checked"</c:if> value="${MasterCodeConstants.VALUE_DEFICIENCY_NIL}" data-type="reportInput" disabled="disabled"/>
                                 </label>
                                 <span class="check-square">NIL</span>
                             </div>
@@ -283,7 +293,7 @@
                     <tr>
                         <td><label for="outcome"></label>Outcome <span style="color: red">*</span></td>
                         <td>
-                            <select name="outcome" id="outcome">
+                            <select name="outcome" id="outcome" data-type="reportInput" disabled="disabled">
                                 <option value="">Please Select</option>
                                 <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS}">selected="selected"</c:if>>Pass</option>
                                 <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}">selected="selected"</c:if>>Pass with condition</option>
@@ -295,14 +305,14 @@
                     <tr>
                         <td><label for="recommendationRemarks"></label>Remarks</td>
                         <td>
-                            <textarea id="recommendationRemarks" name="recommendationRemarks" cols="200" rows="5" maxlength="300"><c:out value="${reportDto.recommendationRemarks}"/></textarea>
+                            <textarea id="recommendationRemarks" name="recommendationRemarks" cols="200" rows="5" maxlength="300" data-type="reportInput" disabled="disabled"><c:out value="${reportDto.recommendationRemarks}"/></textarea>
                             <span data-err-ind="recommendationRemarks" class="error-msg"></span>
                         </td>
                     </tr>
                     <tr>
                         <td>Facility Validity Date <span style="color: red">*</span></td>
                         <td>
-                            <input type="text" autocomplete="off" name="facilityValidityDate" id="facilityValidityDate" data-date-start-date="01/01/1900" value="<c:out value="${reportDto.facilityValidityDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                            <input type="text" autocomplete="off" name="facilityValidityDate" id="facilityValidityDate" data-date-start-date="01/01/1900" value="<c:out value="${reportDto.facilityValidityDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control" data-type="reportInput" disabled="disabled"/>
                             <span data-err-ind="facilityValidityDate" class="error-msg"></span>
                         </td>
                     </tr>
@@ -315,3 +325,4 @@
     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
     <button name="saveReportBtn" id="saveReportBtn" type="button" class="btn btn-default">Save</button>
 </div>
+<%@include file="jumpAfterReport.jsp"%>

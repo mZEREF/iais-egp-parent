@@ -54,7 +54,7 @@
                                     <tr>
                                         <th scope="col" style="display: none"></th>
                                         <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                        <iais:sortableHeader needSort="false"  field="FACILITY_NO" value="Facility No."></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="false"  field="APPROVAL_NO" value="Approval No."></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="Email" value="Email"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="CREATED_DT" value="Start Date"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="false"  field="DUE_DATE" value="Due Date"></iais:sortableHeader>
@@ -74,7 +74,7 @@
                                             <c:forEach var="info" items="${infoList}" varStatus="status">
                                                 <tr>
                                                     <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                                    <td><c:out value="${info.facilityNo}"/></td>
+                                                    <td><c:out value="${info.approvalNo}"/></td>
                                                     <td><c:out value="${info.email}"/></td>
                                                     <td><iais-bsb:format-LocalDate localDate='${info.startDate}'/></td>
                                                     <td><iais-bsb:format-LocalDate localDate='${info.dueDate}'/></td>

@@ -37,11 +37,12 @@
                         <div class="intranet-content">
                             <div class="row" style="padding: 30px 30px 30px 30px;">
                                 <h2>
-                                    <span>${subject}</span>
+                                    <span><c:out value="${letterDto.letterTitle}"/></span>
                                 </h2>
                                 <div>
-                                    <span>${messageContent}</span>
+                                    <span><c:out value="${letterDto.letterContent}" escapeXml="false"/></span>
                                 </div>
+                                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
                             </div>
                         </div>
                     </div>

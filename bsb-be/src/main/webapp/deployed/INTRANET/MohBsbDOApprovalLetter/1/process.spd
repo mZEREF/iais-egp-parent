@@ -135,6 +135,12 @@
   <SynchronousLink destinationName="/Pages/WebPage/PreviewApprovalLetter" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrePreviewApprovalLetter" style="rectanular">
    <position>{(620,250)(630,330)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Pre" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(680,430)(779,430)(300,25)(300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PreviewApprovalLetter" style="rectanular">
+   <position>{(630,330)(680,430)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -149,6 +155,10 @@
    <SwitchCase component="/Steps/AutomaticStep/Skip" value="&quot;skip&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/SubmitToAO" value="&quot;ao&quot;" />
    <SwitchCase component="/Merges/Merge/Merge1" value="" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="660" y="410">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Pre" value="&quot;back&quot;" />
   </Switch>
  </Switches>
  <Branches />

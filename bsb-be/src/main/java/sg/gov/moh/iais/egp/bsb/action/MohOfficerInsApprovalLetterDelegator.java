@@ -97,8 +97,7 @@ public class MohOfficerInsApprovalLetterDelegator {
     }
 
     public void prePreviewApprovalLetter(BaseProcessClass bpc){
-        HttpServletRequest request =  bpc.request;
-        InsApprovalLetterDto letterDto = (InsApprovalLetterDto) ParamUtil.getSessionAttr(request,KEY_INS_DTO_INS_LETTER);
+        //do noting now
     }
 
     public void bindAction(BaseProcessClass bpc) {

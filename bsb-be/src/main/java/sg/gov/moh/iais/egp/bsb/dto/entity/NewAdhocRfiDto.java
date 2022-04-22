@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.entity;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -36,5 +37,7 @@ public class NewAdhocRfiDto implements Serializable {
     private String suppliedInformation;
 
     private ApplicationDto applicationDto;
+
+    private AuditTrailDto auditTrailDto;
 
 }

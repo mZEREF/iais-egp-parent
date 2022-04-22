@@ -251,8 +251,6 @@ public class MohDsActionDelegator {
             uri = prepareDpRfc(submissionNo, bpc.request);
         } else if (DataSubmissionConsts.DS_LDT.equals(dsType)) {
             uri = prepareLdtRfc(submissionNo, bpc.request);
-        }else if (DataSubmissionConsts.DS_VSS.equals(dsType)) {
-            uri = prepareVssRfc(submissionNo, bpc.request);
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             uri = prepareTopRfc(submissionNo, bpc.request);
         }
@@ -318,24 +316,6 @@ public class MohDsActionDelegator {
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
         return uri;
     }
-
-    private String prepareVssRfc(String submissionNo, HttpServletRequest request) {
-        String uri = "";
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDto(submissionNo);
-        if (vssSuperDataSubmissionDto == null) {
-            uri = DEFAULT_URI;
-        } else {
-            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission/PrepareSwitch";
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION,
-                    CopyUtil.copyMutableObject(vssSuperDataSubmissionDto));
-            vssSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            vssSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            vssSuperDataSubmissionDto.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-        }
-        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, request);
-        return uri;
-    }
-
     private String prepareTopRfc(String submissionNo, HttpServletRequest request) {
         String uri = "";
         TopSuperDataSubmissionDto topSuper = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);

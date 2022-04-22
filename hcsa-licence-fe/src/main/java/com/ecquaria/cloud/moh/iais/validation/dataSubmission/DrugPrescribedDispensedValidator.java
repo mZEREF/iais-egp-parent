@@ -180,7 +180,7 @@ if(!StringUtil.isEmpty(doctorReignNo)){
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos preCount-->:"+preCount));
                    log.info(StringUtil.changeForLog("The DrugPrescribedDispensedValidator drugMedicationDtos nowCount-->:"+nowCount));
                    if(preCount ==  null || nowCount > preCount){
-                       errorMap.put("quantity"+i, "The number must less or equal than prescribed input.");
+                       errorMap.put("quantity"+i, "DS_ERR062");
                    }
 
                }

@@ -1,6 +1,6 @@
 <%--@elvariable id="serviceSelection" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto"--%>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
-<p class="assessment-title">Facility Classification</p>
+<p class="assessment-title" style="padding-left: 1.25rem">Facility Classification</p>
 <div class="form-check-gp">
     <div class="form-check">
         <input type="radio" class="form-check-input" name="facClassification" id="bsl3Radio" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3}">checked="checked"</c:if> value="${MasterCodeConstants.FAC_CLASSIFICATION_BSL3}"/>
@@ -22,9 +22,10 @@
         <input type="radio" class="form-check-input" name="facClassification" id="rfRadio" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_RF}">checked="checked"</c:if> value="${MasterCodeConstants.FAC_CLASSIFICATION_RF}"/>
         <label for="rfRadio" class="form-check-label"><span class="check-circle"></span>Registered Facility</label>
     </div>
+    <span data-err-ind="facClassification" class="error-msg" style="padding-left: 1.25rem;"></span>
 </div>
 
-<p id="activityTypeP" class="assessment-title" <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">style="display: none"</c:if>>Activity Type</p>
+<p id="activityTypeP" class="assessment-title" style="padding-left: 1.25rem; <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">display: none;</c:if>">Activity Type</p>
 <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_BSL3}">style="display: none"</c:if>>
     <div class="form-check">
         <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE}"/>
@@ -115,3 +116,4 @@
         <label for="rfhfstep" class="form-check-label"><span class="check-circle"></span>Handling of Fifth Schedule Toxin for Exempted Purposes</label>
     </div>
 </div>
+<span data-err-ind="activityTypes" class="error-msg" style="padding-left: 1.25rem;"></span>

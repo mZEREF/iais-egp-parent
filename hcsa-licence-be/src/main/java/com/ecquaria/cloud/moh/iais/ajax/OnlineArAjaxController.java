@@ -231,6 +231,7 @@ public class OnlineArAjaxController {
         }else if(searchParam.getSortMap().containsKey("NATIONALITY_DESC")){
             HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"dpi.NATIONALITY","NATIONALITY_DESC",MasterCodeUtil.CATE_ID_NATIONALITY);
         }
+        searchParam.addSort("ID",SearchParam.DESCENDING);
         log.debug("indicates that a record has been selected ");
 
         QueryHelp.setMainSql("onlineEnquiry", "advancedSearchPatientByAssistedReproduction",searchParam);

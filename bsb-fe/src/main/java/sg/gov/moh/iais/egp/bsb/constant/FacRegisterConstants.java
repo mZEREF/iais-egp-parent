@@ -37,6 +37,7 @@ public class FacRegisterConstants {
     public static final String STEP_NAME_AUTHORISER_PREVIEW= "authoriserPreview";
 
     public static final String KEY_IS_CF                   = "isCertifiedFacility";
+    public static final String KEY_IS_UCF                  = "isUncertifiedFacility";
 
     public static final String KEY_EDIT_APP_ID             = "editId";
     public static final String KEY_ACTION_TYPE             = "action_type";

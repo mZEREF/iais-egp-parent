@@ -11,7 +11,7 @@
                     <fac:preview compProfile="${organizationAddress}" facProfile="${facProfile}" facOperator="${facOperator}"
                                  facAuth="${facAuth}" facAdminOfficer="${facAdminOfficer}" facCommittee="${facCommittee}"
                                  batList="${batList}" afc="${afc}" declarationConfigList="${configList}" declarationAnswerMap="${answerMap}"
-                                 containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${!isCertifiedFacility}">
+                                 containsAfcJudge="${isCertifiedFacility}" containsBatListJudge="${isUncertifiedFacility}">
                         <jsp:attribute name="editFrag"/>
                         <jsp:attribute name="docFrag">
                             <fac:doc-preview docSettings="${docSettings}" savedFiles="${savedFiles}" newFiles="${newFiles}"/>

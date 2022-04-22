@@ -63,10 +63,10 @@ public class BsbAdhocRfiDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-        String facilityNo="LFA0408FSF02";
+        String approvalNo=ParamUtil.getMaskedString(request,"approvalNo");
         AdhocRfiQueryDto dto = new AdhocRfiQueryDto();
         dto.defaultPaging();
-        dto.setFacilityNo(facilityNo);
+        dto.setApprovalNo(approvalNo);
         dto.setStatus("RFIST001");
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, dto);
 

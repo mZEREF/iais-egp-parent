@@ -21,13 +21,13 @@ public class ProcessHistoryService {
         this.routingHistoryClient = routingHistoryClient;
     }
 
-    public void getAndSetHistoryInRequest(String applicationNo, HttpServletRequest request){
-        List<ProcessHistoryDto> processHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(applicationNo).getEntity();
+    public void getAndSetHistoryInRequest(String applicationNo, List<String> roleIds, HttpServletRequest request){
+        List<ProcessHistoryDto> processHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(applicationNo, roleIds).getEntity();
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, processHistoryDtoList);
     }
 
-    public void getAndSetHistoryInSession(String applicationNo, HttpServletRequest request){
-        List<ProcessHistoryDto> processHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(applicationNo).getEntity();
+    public void getAndSetHistoryInSession(String applicationNo, List<String> roleIds, HttpServletRequest request){
+        List<ProcessHistoryDto> processHistoryDtoList = routingHistoryClient.getRoutingHistoryListByAppNo(applicationNo, roleIds).getEntity();
         ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, (Serializable) processHistoryDtoList);
     }
 }

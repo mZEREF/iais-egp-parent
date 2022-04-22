@@ -8,6 +8,7 @@ public class InspectionConstants {
 
     public static final String KEY_COMMENT_REPORT_DATA = "commentInsReportDTO";
     public static final String KEY_REPORT_REPO_ID = "reportRepoId";
+    public static final String KEY_INSPECTION_REPORT_DTO = "reportDto";
 
     public static final String KEY_ROUTE = "route";
     public static final String KEY_ACK_MSG = "ackMsg";
