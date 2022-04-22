@@ -916,6 +916,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 if(searchBy.equals(arFilterDto.getSearchBy())){
                     CrudHelper.doPaging(patientParam,bpc.request);
                 }
+                patientParam.addSort("ID",SearchParam.DESCENDING);
                 QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
 
                 SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
@@ -1079,7 +1080,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 patientParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(patientParam,bpc.request);
-
+            patientParam.addSort("ID",SearchParam.DESCENDING);
             QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
             SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
             ParamUtil.setRequestAttr(request,"patientResult",patientResult);
