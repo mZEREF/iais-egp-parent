@@ -40,15 +40,6 @@
                 <div class="col-xs-12 col-md-1">
                 </div>
                 <div class="col-xs-12 col-md-10">
-                    <span data-err-ind="facClassification" class="error-msg"></span>
-                    <br/>
-                    <span data-err-ind="activityTypes" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-1">
-                </div>
-                <div class="col-xs-12 col-md-10">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <%@include file="../../mainAppCommon/facRegistration/facilitySelection.jsp"%>
                     </div>
