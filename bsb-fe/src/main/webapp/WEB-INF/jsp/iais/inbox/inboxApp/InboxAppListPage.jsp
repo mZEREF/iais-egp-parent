@@ -226,6 +226,9 @@
                                                                         <c:if test="${InsAppointmentJudge}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Indicate Preferred Inspection Date</option>
                                                                         </c:if>
+                                                                        <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq 'BSBAPST033'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
+                                                                        </c:if>
                                                                         </select>
                                                                     </c:otherwise>
                                                                 </c:choose>

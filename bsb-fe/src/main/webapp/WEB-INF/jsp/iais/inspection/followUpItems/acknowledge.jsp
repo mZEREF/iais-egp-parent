@@ -19,8 +19,7 @@
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
-            <p>
-                Your Submission is successfully uploaded.</p>
+            <p>${ackMsg}</p>
             <br/>
             <div class="row">
                 <div class="col-xs-12 col-md-2"></div>

@@ -65,7 +65,7 @@ public class DataSubmissionConstant {
     public static String DS_TITLE_DRP                       = "Drug Practices";
     public static String DS_TITLE_LDT                       = "Laboratory Developed Test";
     public static String DS_TITLE_PATIENT                   = "Patient Information";
-    public static String DS_TITLE_DONOR_SAMPLE              = "Donor Sample";
+    public static String DS_TITLE_DONOR_SAMPLE              = "Donor Samples";
     public static String DS_TITLE_CYCEL_STAGE               = "Cycle Stages";
 
     public static String DS_SHOW_PATIENT                    = "Patient";
@@ -75,6 +75,7 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_PTART                   = "PTART";
     public static String PRINT_FLAG_PTDRP                   = "PTDRP";
     public static String PRINT_FLAG_PTVSS                   = "PTVSS";
+    public static String PRINT_FLAG_PTTOP                   = "PTTOP";
     public static String PRINT_FLAG_ART                     = "ART";
     public static String PRINT_FLAG_DRP                     = "DRP";
     public static String PRINT_FLAG_LDT                     = "LDT";

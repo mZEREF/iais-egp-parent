@@ -59,6 +59,7 @@ public class TransferInOutDelegator extends CommonDelegator {
     public static final String WHAT_WAS_TRANSFERREDS = "transferreds";
     public static final String TRANSFER_TYPE_IN = "in";
     public static final String TRANSFER_TYPE_OUT = "out";
+    private static final String PAGE_INVALID = "invalid";
 
     @Autowired
     RequestForChangeService requestForChangeService;
@@ -354,8 +355,9 @@ public class TransferInOutDelegator extends CommonDelegator {
             if (arSuperDataSubmissionDto == null) {
                 initArSuper(request, bindStageArSuperDto, bindStageDsId);
                 hasDraft(request);
-                bindStageIsInaction(request, bindStageArSuperDto);
-                hasConfirmationStage(request, bindStageDsId);
+                if(bindStageIsInaction(request, bindStageArSuperDto) || hasConfirmationStage(request, bindStageDsId)){
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, PAGE_INVALID);
+                }
             }
         }
     }
@@ -514,17 +516,19 @@ public class TransferInOutDelegator extends CommonDelegator {
         }
     }
 
-    private void bindStageIsInaction(HttpServletRequest request, ArSuperDataSubmissionDto bindStageArSuperDto) {
+    private boolean bindStageIsInaction(HttpServletRequest request, ArSuperDataSubmissionDto bindStageArSuperDto) {
         List<String> inactionStatus = Arrays.asList(DataSubmissionConsts.DS_STATUS_INACTIVE, DataSubmissionConsts.DS_STATUS_WITHDRAW);
         if (inactionStatus.contains(bindStageArSuperDto.getDataSubmissionDto().getStatus())) {
             Map<String, String> repMap = IaisCommonUtils.genNewHashMap(1);
             repMap.put("centerName", bindStageArSuperDto.getPremisesDto().getPremiseLabel());
             String message = MessageUtil.getMessageDesc("DS_MSG021", repMap);
             ParamUtil.setRequestAttr(request, "bindStageIsRfc", message);
+            return true;
         }
+        return false;
     }
 
-    private void hasConfirmationStage(HttpServletRequest request, String bindStageDsId) {
+    private boolean hasConfirmationStage(HttpServletRequest request, String bindStageDsId) {
         ArSuperDataSubmissionDto currentArSuperDataSubmssionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         String transferConfirmationDsNo = arDataSubmissionService.getTransferConfirmationDsNoByBaseDsId(currentArSuperDataSubmssionDto.getPatientInfoDto().getPatient().getPatientCode(),
                 currentArSuperDataSubmssionDto.getHciCode(),
@@ -536,7 +540,9 @@ public class TransferInOutDelegator extends CommonDelegator {
             repMap.put("submissionID", transferConfirmationDsNo);
             String message = MessageUtil.getMessageDesc("DS_MSG020", repMap);
             ParamUtil.setRequestAttr(request, "hasConfirmationStage", message);
+            return true;
         }
+        return false;
     }
 
     private String getTransferTypeDes(ArSuperDataSubmissionDto currentArSuperDataSubmssionDto) {

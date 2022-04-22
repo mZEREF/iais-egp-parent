@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -9,17 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.TopPatientSelectService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 public class PatientDetailsValidator implements CustomizeValidator {
@@ -27,19 +23,22 @@ public class PatientDetailsValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
-        PatientInformationDto patientInformationDto=topSuperDataSubmissionDto.getPatientInformationDto();
+        TerminationOfPregnancyDto terminationOfPregnancyDto= topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        if(terminationOfPregnancyDto==null){
+            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
+        }
+        PatientInformationDto patientInformationDto=terminationOfPregnancyDto.getPatientInformationDto();
         if(patientInformationDto==null){
             patientInformationDto = new PatientInformationDto();
         }
 
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        /*LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         TopPatientSelectService topPatientSelectService = SpringContextHelper.getContext().getBean(TopPatientSelectService.class);
-        PatientInformationDto patientInformation=topPatientSelectService.getTopPatientSelect(patientInformationDto.getIdType(), patientInformationDto.getIdNumber(),
-                patientInformationDto.getNationality(), orgId);
+        PatientInformationDto patientInformation=topPatientSelectService.getTopPatientSelect(patientInformationDto.getIdType(), patientInformationDto.getIdNumber(), orgId);
         if (patientInformation != null && (StringUtil.isEmpty(patientInformationDto.getId()) || !Objects.equals(patientInformationDto.getId(), patientInformationDto.getId()))) {
             errorMap.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-        }
+        }*/
         String birthDate = patientInformationDto.getBirthData();
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {
@@ -61,8 +60,10 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 errorMap.put("residenceStatus", "GENERAL_ERR0006");
             }
         }
-        if("ETHG005".equals(patientInformationDto.getEthnicGroup()) && StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
-            errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
+        if("ECGP004".equals(patientInformationDto.getEthnicGroup())){
+            if(StringUtil.isEmpty(patientInformationDto.getOtherEthnicGroup())){
+                errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
+            }
         }
         if(!StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
@@ -71,6 +72,7 @@ public class PatientDetailsValidator implements CustomizeValidator {
         if (StringUtil.isEmpty(livingChildrenNo)) {
             errorMap.put("livingChildrenNo","GENERAL_ERR0006");
         }
+        int m=0;
         if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo())){
             if (Integer.valueOf(livingChildrenNo) > 10) {
                 errorMap.put("livingChildrenNo", "Up to the value of 10 are allowed to be entered.");
@@ -80,6 +82,8 @@ public class PatientDetailsValidator implements CustomizeValidator {
                 repMap.put("field", "No. of Living Children");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("livingChildrenNo", errMsg);
+            }else if(Integer.valueOf(livingChildrenNo)<m){
+                errorMap.put("livingChildrenNo", "Negative numbers are not allowed on this field.");
             }
         }
         if("TOPOCC014".equals(patientInformationDto.getOccupation()) && StringUtil.isEmpty(patientInformationDto.getOtherOccupation())){

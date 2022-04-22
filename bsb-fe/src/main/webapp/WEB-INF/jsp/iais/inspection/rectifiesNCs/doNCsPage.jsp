@@ -30,17 +30,19 @@
 
     <div class="main-content">
         <div class="container">
-            <div class="row">
+            <div class="row" style="margin: 0 auto">
                 <div class="col-xs-12">
                     <div class="form-horizontal">
-                        <h3 style="margin-bottom: 50px">List of Rectifications</h3>
+                        <h3 style="margin: 50px 0">List of Rectifications</h3>
                         <div class="row" style="font-weight: 700;text-align: center">
                             <div class="col-md-1">S/N</div>
-                            <div class="col-md-4">Item Description</div>
+                            <div class="col-md-2">Item Description</div>
+                            <div class="col-md-2">Findings/Non-Compliance</div>
+                            <div class="col-md-2">Action Required</div>
                             <div class="col-md-2">MOH Remarks</div>
                             <div class="col-md-1">Actions</div>
-                            <div class="col-md-2">Rectification uploaded?</div>
-                            <div class="col-md-2">Status</div>
+                            <div class="col-md-1">Rectification uploaded?</div>
+                            <div class="col-md-1">Status</div>
                         </div>
                         <c:choose>
                             <c:when test="${empty ncsPreData.itemDtoList}">
@@ -50,10 +52,17 @@
                                 <c:forEach var="item" items="${ncsPreData.itemDtoList}" varStatus="status">
                                     <div class="row" style="text-align: center;border-top:1px solid #D1D1D1;padding: 10px 0 ">
                                         <div class="col-md-1"><c:out value="${status.index+1}"/></div>
-                                        <div class="col-md-4"><c:out value="${item.itemText}"/></div>
-                                        <div class="col-md-2"><c:out value="${item.remarks}"/></div>
-                                        <div class="col-md-1"><button type="button" class="btn btn-default btn-sm" onclick="rectifyItem('<iais:mask name="itemVal" value="${item.itemValue}"/>')">Rectify</button></div>
+                                        <div class="col-md-2"><c:out value="${item.itemText}"/></div>
+                                        <div class="col-md-2"><c:out value="${item.finding}"/></div>
+                                        <div class="col-md-2"><c:out value="${item.actionRequired}"/></div>
                                         <div class="col-md-2">
+                                            <c:choose>
+                                                <c:when test="${item.remark ne null}"><c:out value="${item.remark}"/><</c:when>
+                                                <c:otherwise>--</c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <div class="col-md-1"><button type="button" class="btn btn-default btn-sm" onclick="rectifyItem('<iais:mask name="itemVal" value="${item.itemValue}"/>')">Rectify</button></div>
+                                        <div class="col-md-1">
                                             <c:if test="${rectifyMap.get(item.itemValue) eq null or rectifyMap.get(item.itemValue) eq 'N'}">
                                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4>
                                             </c:if>
@@ -61,7 +70,7 @@
                                                 <h4 class="text-success"><em class="fa fa-check-circle del-size-36"></em></h4>
                                             </c:if>
                                         </div>
-                                        <div class="col-md-2">Pending Inspection/ Certification</div>
+                                        <div class="col-md-1"><c:out value="${item.status}"/></div>
                                     </div>
                                 </c:forEach>
                             </c:otherwise>

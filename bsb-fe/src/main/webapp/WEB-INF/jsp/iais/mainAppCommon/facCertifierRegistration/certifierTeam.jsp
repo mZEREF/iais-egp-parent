@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="table-gp">
-                                <table class="table" aria-describedb="">
+                                <table class="table" aria-describedby="">
                                     <thead>
                                     <tr style="font-weight: bold">
                                         <th style="width: 15%" id="no">S/N</th>

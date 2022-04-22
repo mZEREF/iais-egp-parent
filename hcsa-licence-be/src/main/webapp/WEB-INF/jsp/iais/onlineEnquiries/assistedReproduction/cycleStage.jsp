@@ -4,9 +4,9 @@
 
             <iais:pagination param="cycleStageParam" result="cycleStageResult"/>
             <div class="row">
-                <b class="col-md-12" style="font-size:2.0rem">
+                <strong class="col-md-12" style="font-size:2.0rem">
                     Cycles
-                </b>
+                </strong>
             </div>
             <div class="table-responsive">
                 <div class="table-gp">
@@ -77,9 +77,9 @@
             </div>
             <br>
             <div class="row">
-                <b class="col-md-12" style="font-size:2.0rem">
+                <strong class="col-md-12" style="font-size:2.0rem">
                     Non Cycles
-                </b>
+                </strong>
             </div>
             <div class="table-responsive">
                 <div class="table-gp">

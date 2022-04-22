@@ -234,9 +234,9 @@ public class ArWithdrawalDelegator {
                 ) {
                     String dataSubNo=arSuperDataSubmission.getDataSubmissionDto().getSubmissionNo();
                     if(dataSubNo.contains("-01")||!dataSubNo.contains("-")){
-                        cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),true);
+                        cycleWd.put(arSuperDataSubmission.getCycleDto().getId(), Boolean.TRUE);
                     }else if(!cycleWd.containsKey(arSuperDataSubmission.getCycleDto().getId()) || !cycleWd.get(arSuperDataSubmission.getCycleDto().getId())){
-                        cycleWd.put(arSuperDataSubmission.getCycleDto().getId(),false);
+                        cycleWd.put(arSuperDataSubmission.getCycleDto().getId(), Boolean.FALSE);
                     }
                 }
                 for (ArSuperDataSubmissionDto arSuperDataSubmission:addWithdrawnDtoList

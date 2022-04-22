@@ -1,6 +1,6 @@
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
-<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
+<c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="form-horizontal patientPatails">
     <iais:row>
@@ -19,6 +19,7 @@
             </iais:value>
         </iais:row>
     </div>
+        <div id="otherContraMethods" <c:if test="${familyPlanDto.mostRecentContraMethod!='TOPMRC007'}">style="display: none"</c:if>>
         <iais:row>
             <label class="col-xs-5 col-md-4 control-label">Other Contraceptive Method Used
                 <span id="otherContraMethod" class="mandatory">
@@ -31,6 +32,7 @@
                 <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
         </iais:row>
+        </div>
     <iais:row>
         <iais:field width="5" value="No. of Previous Termination of Pregnancy" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
@@ -44,12 +46,12 @@
             <iais:datePicker name="firstDayOfLastMenstPer" value="${familyPlanDto.firstDayOfLastMenstPer}"/>
         </iais:value>
     </iais:row>
-    <iais:row>
+    <%--<iais:row>
         <iais:field width="5" value="Patient Age(Years)"/>
         <iais:value width="7" cssClass="col-md-7" display="true" id="age">
             ${patientInformationDto.patientAge}
         </iais:value>
-    </iais:row>
+    </iais:row>--%>
 
     <iais:row>
         <iais:field width="5" value="Gestation Age based on Ultrasound"/>
@@ -171,6 +173,9 @@
 <script>
     $(document).ready(function() {
         otherContraMethod();
+        $('#contraMethod').change(function () {
+            contraMethod();
+        });
         $('#subRopReason').change(function () {
             subRopReason();
         });
@@ -183,6 +188,15 @@
         gestAgeBaseOnUltrWeek();
         contraHistory();
     });
+    function contraMethod(){
+        var mostRecentContraMethod= $('#contraMethod').val();
+        if(mostRecentContraMethod == "TOPMRC007"){
+            $('#otherContraMethods').show();
+        }else{
+            $('#otherContraMethods').hide();
+        }
+    }
+
     function otherContraMethod(){
         $('#contraMethod,#contraHistorys').change(function () {
             var contraHistory = $('#contraHistorys').val();
@@ -271,6 +285,7 @@
                 $('#mostRecentContraMethods').show();
             }else {
                 $('#mostRecentContraMethods').hide();
+                $('#otherContraMethods').hide();
             }
         });
     }

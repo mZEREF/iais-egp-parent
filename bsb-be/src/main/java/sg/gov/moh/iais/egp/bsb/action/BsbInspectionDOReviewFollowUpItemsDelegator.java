@@ -13,8 +13,6 @@ import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFacInfoDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
@@ -25,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
@@ -69,8 +66,8 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         // submission details info
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_INFO, initDataDto.getSubmissionDetailsInfo());
         // inspection findings
-        ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
-        ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
+//        ArrayList<InsFindingDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getFindingDtoList());
+//        ParamUtil.setSessionAttr(request, KEY_INS_FINDING, findingDisplayDtoList);
         // DO review inspection follow-up items
         InsProcessDto insProcessDto = new InsProcessDto();
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, insProcessDto);

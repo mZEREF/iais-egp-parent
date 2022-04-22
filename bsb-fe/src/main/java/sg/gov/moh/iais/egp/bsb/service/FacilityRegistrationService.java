@@ -4,7 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
@@ -115,7 +119,7 @@ public class FacilityRegistrationService {
                     changeRootNodeGroup(facRegRoot, selectionDto);
 
                     // change BAT node group if necessary
-                    if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
+                    if (!MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
                         NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
                         changeBatNodeGroup(batGroup, selectionDto);
                     }
@@ -451,6 +455,7 @@ public class FacilityRegistrationService {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
+    @SneakyThrows(JsonProcessingException.class)
     public void preBAToxin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
@@ -470,13 +475,27 @@ public class FacilityRegistrationService {
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         ParamUtil.setRequestAttr(request, "activityTypes", selectionDto.getActivityTypes());
 
-        List<SelectOption> scheduleOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
-        ParamUtil.setRequestAttr(request, "ScheduleOps", scheduleOps);
+        Map<String, List<BatBasicInfo>> scheduleBatMap = facRegClient.queryScheduleBasedBatBasicInfo(batDto.getActivityType());
+        List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
 
-        List<SelectOption> batNameOps = new ArrayList<>(2);
-        batNameOps.add(new SelectOption("AEE1CC32-46F0-EB11-8B7D-000C293F0C99", "BRUCELLA CANIS"));
-        batNameOps.add(new SelectOption("A4A0E7C9-46F0-EB11-8B7D-000C293F0C99", "CHLAMUDIA PSTTACI"));
-        ParamUtil.setRequestAttr(request, "batNameOps", batNameOps);
+        // convert BatBasicInfo to SelectOption object
+        Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
+        for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
+            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
+            for (BatBasicInfo info : entry.getValue()) {
+                SelectOption option = new SelectOption();
+                option.setText(info.getName());
+                option.setValue(info.getId());
+                optionList.add(option);
+            }
+            scheduleBatOptionMap.put(entry.getKey(), optionList);
+        }
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP, scheduleBatOptionMap);
+        ObjectMapper mapper = new ObjectMapper();
+        String scheduleBatMapJson = mapper.writeValueAsString(scheduleBatOptionMap);
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP_JSON, scheduleBatMapJson);
 
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
     }

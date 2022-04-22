@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
@@ -42,15 +44,18 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveCommentReportForm(CommentInsReportSaveDto saveDto);
 
-    @GetMapping(path = "/inspection/followUpItems/{appId}")
-    ResponseDto<RectifyFindingFormDto> getFollowUpItemsFindingFormDtoByAppId(@PathVariable("appId") String appId);
-
-    @PostMapping(value = "/inspection/followUpItems", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void saveFollowUpItemsData(@RequestBody RectifyInsReportSaveDto saveDto);
-
     @GetMapping(path = "/inspection/non-compliance/items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<RectifyFindingFormDto> getNonComplianceFindingFormDtoByAppId(@PathVariable("appId") String appId);
+    ResponseDto<InsRectificationDisplayDto> getNonComplianceFindingFormDtoByAppId(@PathVariable("appId") String appId);
 
     @PostMapping(value = "/inspection/non-compliance/report", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveInsNonComplianceReport(@RequestBody RectifyInsReportSaveDto saveDto);
+
+    @GetMapping(path = "/inspection/followUpItems/appId", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FollowUpViewDto> getFollowUpShowDtoByAppId(@RequestParam("appId") String applicationId);
+
+    @PostMapping(value = "/inspection/followUpItems/form-validation/main", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateFollowUpItems(@RequestBody FollowUpViewDto dto);
+
+    @PostMapping(value = "/inspection/followUpItems", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveFollowUpData(@RequestBody FollowUpSaveDto dto);
 }

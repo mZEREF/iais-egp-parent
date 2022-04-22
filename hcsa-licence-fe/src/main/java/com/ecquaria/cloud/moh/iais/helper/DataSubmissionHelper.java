@@ -278,7 +278,6 @@ public final class DataSubmissionHelper {
             lastStage = additionalStage;
         }
         List<String> result = IaisCommonUtils.genNewArrayList();
-        result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         if (StringUtil.isEmpty(lastCycle)) {
             addStartStages(result);
         } else if (StringUtil.isEmpty(lastStage)
@@ -562,9 +561,10 @@ public final class DataSubmissionHelper {
         cycleDto.setHciCode(topSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_TOP);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+        /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_TOP;
-        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+        }else*/
+        if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
             cycleType = DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP;
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {

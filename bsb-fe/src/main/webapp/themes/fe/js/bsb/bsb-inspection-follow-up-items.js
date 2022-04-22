@@ -29,4 +29,13 @@ $(function (){
         $("[name='action_type']").val("back");
         $("#mainForm").submit();
     });
+
+    $("#requestExtension").change(function (){
+        var inputEl = document.getElementById("requestExtension");
+        if (inputEl.checked) {
+            $("#reasonMandatory").show();
+        }else {
+            $("#reasonMandatory").hide();
+        }
+    });
 })

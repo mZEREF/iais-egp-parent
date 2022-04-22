@@ -1,10 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.inspection;
 
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +24,7 @@ public class RectifyInsReportSaveDto implements Serializable{
     public static class RectifyItemSaveDto implements Serializable {
         private String itemValue;
         private String remarks;
-        //follow-up items special field
-        private String requestExtensionOfDueDate;
-        private String reasonForExtension;
+        private String rectified;
     }
 
     public RectifyInsReportSaveDto() {
@@ -75,9 +71,4 @@ public class RectifyInsReportSaveDto implements Serializable{
     public void setToBeDeletedDocIds(Set<String> toBeDeletedDocIds) {
         this.toBeDeletedDocIds = toBeDeletedDocIds;
     }
-
-
-    private static final String KEY_REMARKS = "remarks";
-    private static final String KEY_REQUEST_EXTENSION_OF_DUE_DATE = "requestExtensionOfDueDate";
-    private static final String KEY_REASON_FOR_EXTENSION = "reasonForExtension";
 }

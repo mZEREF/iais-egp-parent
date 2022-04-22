@@ -518,7 +518,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("arOrIui",arDto.getArOrIuiCycle());
             }
             if(arDto.getIVM()!=null){//bit
-                filter.put("ivm",Integer.parseInt(arDto.getIVM()));
+                filter.put("ivm",Integer.valueOf(arDto.getIVM()));
             }
             if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
                 filter.put("cart_fcn",1);
@@ -555,14 +555,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
 
             if(arDto.getAbandonedCycle()!=null){//bit
-                filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
+                filter.put("abandonedCycle", Integer.valueOf(arDto.getAbandonedCycle()));
             }
 
             if(arDto.getDonorGameteUsed()!=null){
-                if(Integer.parseInt(arDto.getDonorGameteUsed())==1){
-                    filter.put("donorUsedYes",Integer.parseInt(arDto.getDonorGameteUsed()));
-                }else {
-                    filter.put("donorUsedNo",Integer.parseInt(arDto.getDonorGameteUsed()));
+                if (Integer.parseInt(arDto.getDonorGameteUsed()) == 1) {
+                    filter.put("donorUsedYes", Integer.valueOf(arDto.getDonorGameteUsed()));
+                } else {
+                    filter.put("donorUsedNo", Integer.valueOf(arDto.getDonorGameteUsed()));
                 }
             }
             if(arDto.getDonorName()!=null){
@@ -1235,6 +1235,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
                 if(arDto.getIncludeTransfers()!=null) {
                     filter.put("transfers", 1);
+                }else {
+                    filter.put("transfersNotIn", 1);
                 }
                 if(arDto.getCycleNumber()!=null) {
                     filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
@@ -1377,7 +1379,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             initDataForView(arSuper, bpc.request);
             arSuper.setDonorSampleDto(setflagMsg(arSuper.getDonorSampleDto()));
             if(IaisCommonUtils.isNotEmpty(arSuper.getOldArSuperDataSubmissionDto())){
-                ArSuperDataSubmissionDto arSuperOld=arSuper.getOldArSuperDataSubmissionDto().get(0);
+                ArSuperDataSubmissionDto arSuperOld = null;
                 List<SelectOption> versionOptions= IaisCommonUtils.genNewArrayList();
                 for (ArSuperDataSubmissionDto arSdOld:arSuper.getOldArSuperDataSubmissionDto()
                 ) {
@@ -1387,6 +1389,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         arSdOld.setDonorSampleDto(setflagMsg(arSdOld.getDonorSampleDto()));
                         arSuperOld=arSdOld;
                     }
+                }
+                if (arSuperOld == null) {
+                    arSuperOld = arSuper.getOldArSuperDataSubmissionDto().get(0);
                 }
                 if(StringUtil.isEmpty(oldId)){
                     initDataForView(arSuperOld, bpc.request);
@@ -1485,7 +1490,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     }
                 }
                 if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMEbt()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0 &&arSuper.getPgtStageDto().getIsPgtCoFunding()==1){
-                    ParamUtil.setRequestAttr(request, "appealDisplayShow",true);
+                    ParamUtil.setRequestAttr(request, "appealDisplayShow",Boolean.TRUE);
                 }
             }
             List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode("null","null").getEntity();

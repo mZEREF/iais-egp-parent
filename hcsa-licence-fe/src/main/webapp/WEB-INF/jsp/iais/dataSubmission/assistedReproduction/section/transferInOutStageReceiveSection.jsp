@@ -180,15 +180,3 @@
             cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
             cancelBtnDesc="Continue" cancelFunc="mySubmit('delete')"/>
 </c:if>
-<c:if test="${not empty bindStageIsRfc}">
-    <iais:confirm
-            msg="${bindStageIsRfc}"
-            callBack="#inactionModal').modal('hide');submit('return');" popupOrder="inactionModal" yesBtnDesc="Ok"
-            yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-            needCancel="false"/>
-</c:if>
-<c:if test="${not empty hasConfirmationStage}">
-    <iais:confirm msg="${hasConfirmationStage}"
-                  callBack="#hasConfirmationModal').modal('hide');submit('return');" popupOrder="hasConfirmationModal" yesBtnDesc="Ok"
-                  yesBtnCls="btn btn-secondary" needFungDuoJi="true" needCancel="false"/>
-</c:if>

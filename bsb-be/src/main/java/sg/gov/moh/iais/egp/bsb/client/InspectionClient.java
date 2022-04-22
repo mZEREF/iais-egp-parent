@@ -4,21 +4,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
 public interface InspectionClient {
     @GetMapping(value = "/inspection/pre/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     PreInspectionDataDto getPreInspectionDataDto(@RequestParam("appId") String appId);
-
-    @GetMapping(value = "/inspection/pre/facInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    InsFacInfoDto getInsFacInfo(@RequestParam("appId") String appId);
 
     @GetMapping(value = "/inspection/actual/submit-findings/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     InsSubmitFindingDataDto getInitInsFindingData(@RequestParam("appId") String appId);
@@ -48,6 +49,12 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
 
+    @PostMapping(value = "/inspection/pre/rfi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void changeInspectionStatusToRfi(@RequestParam("appId") String appId,
+                                     @RequestParam("taskId") String taskId,
+                                     @RequestParam("rfiFlag") int rfiFlag,
+                                     @RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changeInspectionStatusToReady(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
@@ -75,8 +82,14 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/ao-review-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionAOReviewDecision(@RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/actual/validate/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionReport(@RequestBody ReportDto reportDto);
+
     @PostMapping(value = "/inspection/actual/validate/officer-review-non-compliance", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualOfficerReviewNCDecision(@RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/validate/approval-letter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateInsApprovalLetter(@RequestBody InsApprovalLetterDto dto);
 
     @PostMapping(value = "/inspection/actual/process/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
     void submitInspectionReportToAO(@RequestParam("appId") String appId,
@@ -97,6 +110,9 @@ public interface InspectionClient {
     void skipInspection(@RequestParam("appId") String appId,
                         @RequestParam("taskId") String taskId,
                         @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/report/report-dto", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void saveInspectionReportDto(@RequestParam("appId") String appId, @RequestParam("roleId") String roleId, @RequestBody ReportDto reportDto);
 
     @PostMapping(value = "/inspection/actual/report/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
     void finalizeInspectionReport(@RequestParam("appId") String appId,
@@ -140,5 +156,25 @@ public interface InspectionClient {
     void reviewInspectionNCDORequestForInformation(@RequestParam("appId") String appId,
                                                    @RequestParam("taskId") String taskId,
                                                    @RequestBody InsProcessDto processDto);
+
+    //new
+    @PostMapping(value = "/inspection/actual/approval-letter/do/submit-to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionApprovalLetterDOSubmitToAO(@RequestParam("appId") String appId,
+                                              @RequestParam("taskId") String taskId,
+                                              @RequestBody InsApprovalLetterDto letterDto);
+
+    @PostMapping(value = "/inspection/actual/approval-letter/ao/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionApprovalLetterAOApprove(@RequestParam("appId") String appId,
+                                           @RequestParam("taskId") String taskId,
+                                           @RequestBody InsApprovalLetterDto letterDto);
+
+    @PostMapping(value = "/inspection/actual/approval-letter/ao/route-back-to-do", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void inspectionApprovalLetterAORouteBackToDO(@RequestParam("appId") String appId,
+                                                 @RequestParam("taskId") String taskId,
+                                                 @RequestBody InsApprovalLetterDto letterDto);
+
+
+    @GetMapping(value = "/inspection/actual/approval-letter/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
+    InsApprovalLetterInitDataDto getInitInsApprovalLetterData(@RequestParam("appId") String appId);
 
 }

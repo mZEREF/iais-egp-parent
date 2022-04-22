@@ -53,6 +53,8 @@ public class Application implements Serializable {
 
     private String hmUserId;
 
+    private int selfAssessmentFlag;
+
     private LocalDate prefInspectionStart;
 
     private LocalDate prefInspectionEnd;

@@ -21,13 +21,12 @@ public class TopPatientSelectServiceImpl implements TopPatientSelectService {
     private TopFeClient topFeClient;
 
     @Override
-    public PatientInformationDto getTopPatientSelect(String idType, String idNumber, String nationality, String orgId) {
+    public PatientInformationDto getTopPatientSelect(String idType, String idNumber , String orgId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + idType
-                + " : " + idNumber + " : " + nationality + " -----"));
-        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality)
-                || StringUtil.isEmpty(orgId)) {
+                + " : " + idNumber + "  -----"));
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return topFeClient.getTopPatientSelect(idType, idNumber, nationality, orgId).getEntity();
+        return topFeClient.getTopPatientSelect(idType, idNumber, orgId).getEntity();
     }
 }

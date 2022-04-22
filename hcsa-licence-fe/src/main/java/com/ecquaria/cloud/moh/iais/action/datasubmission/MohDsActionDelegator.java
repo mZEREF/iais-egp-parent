@@ -284,7 +284,7 @@ public class MohDsActionDelegator {
             dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DataSubmissionDto dataSubmissionDto = dpSuper.getDataSubmissionDto();
             if(dataSubmissionDto ==null){
-                new DataSubmissionDto();
+                dataSubmissionDto = new DataSubmissionDto();
             }
             if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
                 dataSubmissionDto.setAmendReason(null);
@@ -308,6 +308,7 @@ public class MohDsActionDelegator {
             ldtSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             if (ldtSuperDataSubmissionDto.getDataSubmissionDto() != null) {
                 DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+                dataSubmissionDto.setDeclaration(null);
                 dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);
@@ -340,11 +341,12 @@ public class MohDsActionDelegator {
         if (topSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
+            /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/PatientInformation";
             } else if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
-            }
+            }*/
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch";
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(topSuper));
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -358,17 +360,18 @@ public class MohDsActionDelegator {
     private String prepareArRfc(String submissionNo, HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                 submissionNo);
-        arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
         String uri;
         if (arSuper == null) {
             uri = DEFAULT_URI;
         } else {
+            arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(arSuper));
             arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             if (arSuper.getDataSubmissionDto() != null) {
                 DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
+                dataSubmissionDto.setDeclaration(null);
                 dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 dataSubmissionDto.setAmendReason(null);
                 dataSubmissionDto.setAmendReasonOther(null);

@@ -204,6 +204,15 @@ $(function () {
 
 
         $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
+
+        // set schedule-bat on change event
+        newSectionDivJqObj.find("select[data-cascade-dropdown=schedule-bat]").each(function () {
+            var id = $(this).attr("id");
+            var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
+            registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
+                $("#"+batDropdownId).niceSelect("update");
+            });
+        });
     });
 
 
@@ -216,7 +225,7 @@ $(function () {
             type:"GET",
             url:"/bsb-fe/address-info/" + postalCode,
             dataType: 'json',
-            error:function(data){
+            error:function(){
                 $("#invalidPostalCodeModal").modal('show');
             },
             success:function(data) {

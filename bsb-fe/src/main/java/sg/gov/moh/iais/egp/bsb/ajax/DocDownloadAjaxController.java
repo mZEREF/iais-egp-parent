@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,11 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ConsumeNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.DisposalNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ExportNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ReceiptNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -205,6 +210,53 @@ public class DocDownloadAjaxController {
     @GetMapping("/facCertifierReg/repo/{id}")
     public void downloadCertSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegCertGetSavedFile);
+    }
+
+    @GetMapping("/adhocRfi/repo/{id}/{docName}")
+    public void downloadAdhocRfiFile(@PathVariable("id") String maskedRepoId,@PathVariable("docName") String fileRepoName, HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
+
+        String fileRepoId = MaskUtil.unMaskValue("file", maskedRepoId);
+
+        if (StringUtil.isEmpty(fileRepoId)) {
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
+        byte[] fileData = fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+
+
+        long length = 0;
+        byte[] data = fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+
+        try {
+
+
+            length = fileData.length;
+
+        } catch (Exception e) {
+            log.error("Fail to download file", e);
+        } finally {
+            OutputStream ops = null;
+            try {
+                response.addHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(fileRepoName, StandardCharsets.UTF_8.name()) + "\"");
+                response.addHeader("Content-Length", "" + length);
+                response.setContentType("application/x-octet-stream");
+                ops = response.getOutputStream();
+                ops.write(data);
+                ops.flush();
+                ops.close();
+            } catch (IOException e) {
+                log.error("Fail to write file to response", e);
+            } finally {
+                if (ops != null) {
+                    try {
+                        ops.close();
+                    } catch (IOException e) {
+                        log.error("Fail to close response output stream", e);
+                    }
+                }
+            }
+        }
     }
 
     @GetMapping("/dataSub/new/{id}")

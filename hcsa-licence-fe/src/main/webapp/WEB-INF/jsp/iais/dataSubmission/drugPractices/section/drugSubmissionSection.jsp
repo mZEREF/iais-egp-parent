@@ -175,8 +175,10 @@
         var medication= $('#medication').val();
         if('MED001' == medication){
             $('label[name="strengthlabel"]').html("Strength (&micro;g/hr)&nbsp;<span class=\"mandatory\">*</span>");
-        }else{
+        }else if('MED002' == medication){
             $('label[name="strengthlabel"]').html("Strength (mg)&nbsp;<span class=\"mandatory\">*</span>");
+        }else{
+            $('label[name="strengthlabel"]').html("Strength (pg)&nbsp;<span class=\"mandatory\">*</span>");
         }
     }
 

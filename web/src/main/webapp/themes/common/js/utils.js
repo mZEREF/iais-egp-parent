@@ -649,7 +649,12 @@ function refreshIndex(targetSelector) {
     }
     $(targetSelector).each(function (k,v) {
         var $ele = $(v);
-        var $selector = $ele.find(':input');
+        var $selector;
+        if ($ele.is(':input')) {
+            $selector = $ele;
+        } else {
+            $selector = $ele.find(':input')
+        }
         if ($selector.length == 0) {
             return;
         }
@@ -695,11 +700,20 @@ function callCommonAjax(options, callback) {
     if (!isEmpty(options.type)) {
         type = options.type;
     }
+    var async = true;
+    if (!isEmpty(options.async)) {
+        async = options.async;
+    }
+    var data = options.data;
+    if (isEmpty(data)) {
+        data = options;
+    }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
-        data: options,
+        data: data,
+        async: async,
         type: type,
         success: function (data) {
             if (typeof callback === 'function') {
@@ -723,6 +737,13 @@ function callFunc(func) {
     } catch (e) {
         console.log(e);
     }
+}
+
+function getContextPath() {
+    var pathName = document.location.pathname;
+    var index = pathName.substr(1).indexOf("/");
+    var result = pathName.substr(0,index+1);
+    return result;
 }
 
 

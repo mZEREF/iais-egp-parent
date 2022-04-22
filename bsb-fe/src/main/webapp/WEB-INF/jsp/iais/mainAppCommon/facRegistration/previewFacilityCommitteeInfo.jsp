@@ -1,21 +1,21 @@
 <div>
-    <table class="table">
+    <table class="table" aria-describedby="">
         <thead>
         <tr>
-            <th>S/N</th>
-            <th>Salutation</th>
-            <th>Name</th>
-            <th>ID Type</th>
-            <th>ID Number</th>
-            <th>Nationality</th>
-            <th>Contact No.</th>
-            <th>Email</th>
-            <th>Employment Start Date</th>
-            <th>Designation</th>
-            <th>Area of Expertise</th>
-            <th>Role</th>
-            <th>Is This Person an Employee of This Company</th>
-            <th>Company Name</th>
+            <th scope="col">S/N</th>
+            <th scope="col">Salutation</th>
+            <th scope="col">Name</th>
+            <th scope="col">ID Type</th>
+            <th scope="col">ID Number</th>
+            <th scope="col">Nationality</th>
+            <th scope="col">Contact No.</th>
+            <th scope="col">Email</th>
+            <th scope="col">Employment Start Date</th>
+            <th scope="col">Designation</th>
+            <th scope="col">Area of Expertise</th>
+            <th scope="col">Role</th>
+            <th scope="col">Is This Person an Employee of This Company</th>
+            <th scope="col">Company Name</th>
         </tr>
         </thead>
         <%--@elvariable id="DATA_LIST" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto>"--%>

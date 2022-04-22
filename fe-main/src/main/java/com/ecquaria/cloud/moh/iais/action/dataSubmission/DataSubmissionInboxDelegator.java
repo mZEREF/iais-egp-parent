@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -103,7 +104,7 @@ public class DataSubmissionInboxDelegator {
 		stringBuilder.append("----------------- ");
 		if(StringUtil.isEmpty(stepName)){
 			if(IaisCommonUtils.isNotEmpty(linkMap)){
-				linkMap.forEach((key,value) -> stringBuilder.append(key).append(" : ").append(value).append(" "));
+				linkMap.forEach((key,value) -> stringBuilder.append(key).append(" : ").append(value).append(' '));
 				stringBuilder.append("----------------- ");
 			}
 		}else {
@@ -231,9 +232,9 @@ public class DataSubmissionInboxDelegator {
 		HttpServletRequest request = bpc.request;
 		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doSort(request,searchParam);
-		if(searchParam.getSortMap().containsKey("typeDesc".toUpperCase())){
+		if(searchParam.getSortMap().containsKey("TYPEDESC")){
 			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"type","typeDesc",MasterCodeUtil.DATA_SUBMISSION_TYPE);
-		}else if(searchParam.getSortMap().containsKey("statusDesc".toUpperCase())){
+		}else if(searchParam.getSortMap().containsKey("STATUSDESC")){
 			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"status","statusDesc",MasterCodeUtil.DATA_SUBMISSION_STATUS);
 		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
@@ -516,13 +517,14 @@ public class DataSubmissionInboxDelegator {
 					) {
 						addWithdrawnDtoList.add(dataSubmissionDtoEntry.getValue());
 					}
-					for (ArSuperDataSubmissionDto arWd:addWithdrawnDtoList
-					) {
+					Iterator<ArSuperDataSubmissionDto> iterator = addWithdrawnDtoList.iterator();
+					while (iterator.hasNext()) {
+						ArSuperDataSubmissionDto arWd = iterator.next();
 						if(DsHelper.isCycleFinalStatus(arWd.getCycleDto().getStatus())&&arWd.getCycleDto().getDsType().equals(DataSubmissionConsts.DS_AR)){
 							return 3;
 						}
 						if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
-							addWithdrawnDtoList.remove(arWd);
+							iterator.remove();
 						}
 						if(arWd.getDataSubmissionDto().getStatus().equals(DataSubmissionConsts.DS_STATUS_LOCKED)){
 							return 4;

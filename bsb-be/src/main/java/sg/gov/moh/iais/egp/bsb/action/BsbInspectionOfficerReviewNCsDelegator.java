@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -10,6 +11,7 @@ import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
@@ -60,6 +62,10 @@ public class BsbInspectionOfficerReviewNCsDelegator {
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
+        session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
+        session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
+        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
+        session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
         session.removeAttribute(KEY_INS_INFO);
         session.removeAttribute(KEY_INS_NON_COMPLIANCE);
         session.removeAttribute(KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP);
@@ -80,6 +86,12 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         ArrayList<InsRectificationDisplayDto> findingDisplayDtoList = new ArrayList<>(initDataDto.getRectificationDisplayDtoList());
         ParamUtil.setSessionAttr(request, KEY_INS_NON_COMPLIANCE, findingDisplayDtoList);
 
+        ArrayList<ProcessHistoryDto> processHistoryDtoList = new ArrayList<>(initDataDto.getProcessHistoryDtoList());
+        ParamUtil.setSessionAttr(request, KEY_ROUTING_HISTORY_LIST, processHistoryDtoList);
+
+        ArrayList<SelectOption> selectRouteToMoh = new ArrayList<>(initDataDto.getSelectRouteToMoh());
+        ParamUtil.setSessionAttr(request,KEY_SELECT_ROUTE_TO_MOH,selectRouteToMoh);
+
         //inspection NCs Document
         // TODO temporary allow empty map
         List<DocRecordInfo> rectificationDocs = initDataDto.getRectificationDoc();
@@ -87,7 +99,6 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         if (rectificationDocs.isEmpty()) {
             docSubTypeDocRecordInfoMap = new HashMap<>();
         } else {
-//            Assert.notEmpty(rectificationDocs,"inspection non-compliance rectification document is null");
             docSubTypeDocRecordInfoMap = (HashMap<String, List<DocRecordInfo>>) CollectionUtils.groupCollectionToMap(rectificationDocs,DocRecordInfo::getDocSubType);
         }
         ParamUtil.setSessionAttr(request,KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP, docSubTypeDocRecordInfoMap);
@@ -117,12 +128,14 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validateActualOfficerReviewNCDecision(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_RECOMMEND_ACCEPTANCE_OF_NC_RECTIFICATIONS.equals(processDto.getDecision()) || MasterCodeConstants.MOH_PROCESSING_DECISION_RECOMMEND_REJECTION_OF_NC_RECTIFICATIONS.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPTS_RECTIFICATIONS_AND_ROUTE_TO_AO.equals(processDto.getDecision())) {
                 validateResult = "ao";
             }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())){
                 validateResult = "rfi";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPT_RECTIFICATIONS.equals(processDto.getDecision())|| MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS.equals(processDto.getDecision())){
-                validateResult = "finalize";
+            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT_AND_ROUTE_TO_DO_FOR_REVISION.equals(processDto.getDecision())){
+                validateResult = "reject";
+            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPT.equals(processDto.getDecision())){
+                validateResult = "accept";
             }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
                 validateResult = "skip";
             }else {
@@ -156,7 +169,7 @@ public class BsbInspectionOfficerReviewNCsDelegator {
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully route to applicant for information.");
     }
 
-    public void requestForInformationToDO(BaseProcessClass bpc) {
+    public void rejectAndRouteToDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);

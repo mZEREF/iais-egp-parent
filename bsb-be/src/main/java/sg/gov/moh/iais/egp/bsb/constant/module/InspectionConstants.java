@@ -16,14 +16,17 @@ public class InspectionConstants {
     public static final String KEY_ANSWER_MAP = "answerMap";
     public static final String KEY_EDITABLE = "editable";
     public static final String KEY_SELF_ASSESSMENT_AVAILABLE = "selfAssessmentAvailable";
+    public static final String KEY_CAN_RFI = "canRfi";
 
     public static final String KEY_INS_DECISION = "insDecision";
     public static final String KEY_INS_INFO = "insInfo";
+    public static final String KEY_INS_DTO_INS_LETTER = "letterDto";
     public static final String KEY_INS_FINDING = "insFindingList";
     public static final String KEY_INS_NON_COMPLIANCE = "insRectificationList";
     public static final String KEY_INS_OUTCOME = "insOutcome";
     public static final String KEY_INS_CHK_LST = "bsbInspectionChecklist";
     public static final String KEY_INS_CHKL_ANSWER_MAP = "bsbInspectionChecklistAnswerMap";
+    public static final String KEY_INS_REPORT = "reportDto";
     public static final String KEY_INS_DOC_RECORD_INFO_SUB_TYPE_MAP = "insRecordInfoSubTypeMap";
 
     public static final String KEY_CHKL_ITEM_SELECTION = "itemSelection";
@@ -36,6 +39,7 @@ public class InspectionConstants {
     public static final String TAB_FAC_INFO = "tabInfo";
     public static final String TAB_INS_FINDING = "tabInsFinding";
     public static final String TAB_RECTIFICATION = "tabRectification";
+    public static final String TAB_APPROVAL_LETTER = "tabApprovalLetter";
     public static final String TAB_PROCESSING = "tabProcessing";
     public static final String TAB_INS_REPORT = "tabInsReport";
     public static final String TAB_SUBMIT_INTO = "sumissionInfo";
@@ -57,14 +61,9 @@ public class InspectionConstants {
     public static final String VALUE_FINDING_TYPE_NC = "Non-compliance";
     public static final String VALUE_FINDING_TYPE_FOLLOW_UP = "Follow-up";
 
-    public static final String VALUE_OUTCOME_DEFICIENCY_MAJOR = "Major";
-    public static final String VALUE_OUTCOME_DEFICIENCY_MINOR = "Minor";
-    public static final String VALUE_OUTCOME_DEFICIENCY_NIL = "NIL";
-    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_YES = "Yes";
-    public static final String VALUE_OUTCOME_FOLLOW_UP_REQUIRED_NO = "No";
-    public static final String VALUE_OUTCOME_OUTCOME_PASS = "Pass";
-    public static final String VALUE_OUTCOME_OUTCOME_PASS_WITH_CONDITION = "Pass with condition(s)";
-    public static final String VALUE_OUTCOME_OUTCOME_FAIL = "Fail";
-
     public static final String KEY_ROUTE = "route";
+
+    public static final int VALUE_RFI_FLAG_SELF = 0;
+    public static final int VALUE_RFI_FLAG_APPLICATION = 1;
+    public static final int VALUE_RFI_FLAG_SELF_APPLICATION = 2;
 }

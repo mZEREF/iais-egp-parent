@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohBsbInspectionNCsDOReview___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbInspectionOfficerReviewNCs";
+	private static final String DELEGATOR = "bsbInspectionOfficerReviewNCs";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess

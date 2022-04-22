@@ -74,4 +74,6 @@ public class DocConstants {
     public static final String DOC_TYPE_INSPECTION_REPORT = "inspectionReport";
     public static final String DOC_TYPE_APPLICANT_COMMENT_REPORT = "commentedInsReport";
     public static final String DOC_TYPE_INSPECTION_NON_COMPLIANCE = "nonComplianceReport";
+    public static final String DOC_TYPE_FOLLOW_UP = "insFollowUp";
+    public static final String DOC_TYPE_ADHOC_RFI_UP = "adhocRfiUp";
 }

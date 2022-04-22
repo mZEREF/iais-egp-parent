@@ -130,9 +130,9 @@
                                     <br>
 
                                     <div class="row">
-                                        <b class="col-md-12" style="font-size:2.0rem">
+                                        <strong class="col-md-12" style="font-size:2.0rem">
                                             Donor Samples
-                                        </b>
+                                        </strong>
                                     </div>
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">

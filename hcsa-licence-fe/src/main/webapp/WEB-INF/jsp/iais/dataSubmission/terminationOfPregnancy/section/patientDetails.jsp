@@ -1,15 +1,4 @@
-<c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
-<div class="panel panel-default">
-    <div class="panel-heading" style="padding-left: 95px";>
-        <h4 class="panel-title">
-            <strong>
-                Patient Information
-            </strong>
-        </h4>
-    </div>
-    <div class="panel-collapse collapse in">
-        <div class="panel-body">
-            <div class="panel-main-content form-horizontal">
+<div class="panel-main-content form-horizontal">
                <%-- <iais:row>
                     <iais:value width="6" cssClass="col-md-6">
                         &lt;%&ndash;<strong class="app-font-size-22 premHeader">title</strong>&ndash;%&gt;
@@ -21,35 +10,42 @@
                         </p>
                     </iais:value>
                 </iais:row>--%>
-                <div class="cleanpage">
-                    <iais:row>
-                        <iais:field width="5" value="Name of Patient" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="66" type="text" name="patientName" value="${patientInformationDto.patientName}"/>
-                        </iais:value>
-                    </iais:row>
+                   <c:set var="patientInformationDto" value="${terminationOfPregnancyDto.patientInformationDto}"/>
+                   <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
                     <iais:row>
                         <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="patient"/></c:set>
                         <iais:field width="5" value="ID No." mandatory="true" info="${toolMsg}"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                         value="${patientInformationDto.idType}" cssClass="idType"/>
+                                         value="${patientInformationDto.idType}" onchange="clearSelection()" cssClass="idType"/>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-4">
-                            <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}"/>
+                        <iais:value width="4" cssClass="col-md-4" style="width: 180px;">
+                            <iais:input maxLength="20" type="text" name="idNumber" value="${patientInformationDto.idNumber}" onchange="clearSelection()"/>
+                        </iais:value>
+                        <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
+                            <a class="retrieveIdentification" onclick="retrieveValidateTop()">
+                                Validate Patient
+                            </a>
+                            <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrieveData"></span>
                         </iais:value>
                     </iais:row>
+                   <iais:row>
+                       <iais:field width="5" value="Name of Patient" mandatory="true"/>
+                       <iais:value width="7" cssClass="col-md-7">
+                           <iais:input maxLength="66" type="text" name="patientName" id="patientName" value="${patientInformationDto.patientName}"/>
+                       </iais:value>
+                   </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Date of Birth" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="birthData" value="${patientInformationDto.birthData}"/>
+                            <iais:datePicker name="birthData" id="birthData" value="${patientInformationDto.birthData}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Nationality" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="nationality" firstOption="Please Select" id="nationality" codeCategory="CATE_ID_NATIONALITY"
-                                         value="${patientInformationDto.nationality}" cssClass="nationality"/>
+                                         value="${patientInformationDto.nationality}"  cssClass="nationality"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_nationality"></span>
                         </iais:value>
                     </iais:row>
@@ -60,7 +56,7 @@
                             </span>
                         </label>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:datePicker name="commResidenceInSgDate" value="${patientInformationDto.commResidenceInSgDate}"/>
+                            <iais:datePicker name="commResidenceInSgDate" id="commResidenceInSgDates" value="${patientInformationDto.commResidenceInSgDate}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_commResidenceInSgDate"></span>
                         </iais:value>
                     </iais:row>
@@ -72,23 +68,22 @@
                         </label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select cssClass="residenceStatus" name="residenceStatus" firstOption="Please Select"
-                                         codeCategory="TOP_RESIDENCE_STATUS" value="${patientInformationDto.residenceStatus}"/>
+                                         codeCategory="TOP_RESIDENCE_STATUS" id="residenceStatu" value="${patientInformationDto.residenceStatus}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_residenceStatus"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
+                        <iais:field width="5" value="Ethnic Group" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroup" firstOption="Please Select"
+                            <iais:select cssClass="ethnicGroup" name="ethnicGroup" id="ethnicGroups" firstOption="Please Select"
                                          codeCategory="VSS_ETHNIC_GROUP" value="${patientInformationDto.ethnicGroup}"/>
                         </iais:value>
                     </iais:row>
-                    <div id="otherEthnicGroups"
-                         <c:if test="${patientInformationDto.ethnicGroup!='ETHG005'}">style="display: none"</c:if>>
+                    <div id="otherEthnicGroups" <c:if test="${patientInformationDto.ethnicGroup!='ECGP004'}">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="5" value="Other Ethnic Group" mandatory="true"/>
+                            <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="200" type="text" name="otherEthnicGroup"
+                                <iais:input maxLength="200" type="text" id="otherEthnicGroup" name="otherEthnicGroup"
                                             value="${patientInformationDto.otherEthnicGroup}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherEthnicGroup"></span>
                             </iais:value>
@@ -97,15 +92,15 @@
                     <iais:row>
                         <iais:field width="5" value="Marital Status" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="maritalStatus" name="maritalStatus" firstOption="Please Select"
+                            <iais:select cssClass="maritalStatus" name="maritalStatus" id="maritalStatus" firstOption="Please Select"
                                          codeCategory="TOP_MARITAL_STATUS" value="${patientInformationDto.maritalStatus}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Education Level" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="educationLevel" name="educationLevel" firstOption="Please Select"
-                                         codeCategory="VSS_EDUCATION_LEVEL" value="${patientInformationDto.educationLevel}"/>
+                            <iais:select cssClass="educationLevel" name="educationLevel" id="educationLevel" firstOption="Please Select"
+                                         codeCategory="TOP_EDUCATION_LEVEL" value="${patientInformationDto.educationLevel}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -120,7 +115,7 @@
                     <iais:row>
                         <iais:field width="5" value="Activity Status" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="activityStatus" name="activityStatus" firstOption="Please Select"
+                            <iais:select cssClass="activityStatus" name="activityStatus" id="activityStatus" firstOption="Please Select"
                                          codeCategory="TOP_ACTIVITY_STATUS" value="${patientInformationDto.activityStatus}"/>
                         </iais:value>
                     </iais:row>
@@ -129,18 +124,18 @@
                         <iais:row>
                             <iais:field width="5" value="Occupation" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select cssClass="occupation" name="occupation" firstOption="Please Select"
+                                <iais:select cssClass="occupation" name="occupation" id="occupation" firstOption="Please Select"
                                              codeCategory="TOP_OCCUPATION" value="${patientInformationDto.occupation}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_occupation"></span>
                             </iais:value>
                         </iais:row>
                     </div>
-                    <div id="otherOccupation"
+                    <div id="otherOccupations"
                          <c:if test="${patientInformationDto.occupation!='TOPOCC014'}">style="display: none"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Other Occupation" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="otherOccupation"
+                                <iais:input maxLength="20" type="text" id="otherOccupation" name="otherOccupation"
                                             value="${patientInformationDto.otherOccupation}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
                             </iais:value>
@@ -155,8 +150,8 @@
                                     <iais:row>
                                         <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
                                             <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
-                                                    <iais:select name="livingChildrenGenders${idxStatus.index}" firstOption="Please Select" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
-                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders"/>
+                                                    <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
                                                     <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                             </div>
                                         </iais:value>
@@ -166,10 +161,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-            </div>
-            </div>
-        </div>
-</div>
 <c:if test="${hasDraft}">
     <iais:confirm
             msg="DS_MSG010"
@@ -180,11 +171,11 @@
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
-        $('#ethnicGroup').change(function () {
+        $('#ethnicGroups').change(function () {
 
-            var ethnicGroup = $('#ethnicGroup').val();
+            var ethnicGroup = $('#ethnicGroups').val();
 
-            if (ethnicGroup == "ETHG005") {
+            if (ethnicGroup == "ECGP004") {
                 $('#otherEthnicGroups').show();
             } else {
                 $('#otherEthnicGroups').hide();
@@ -197,9 +188,9 @@
             var activityStatus = $('#activityStatus option:selected').val();
 
             if (activityStatus == "TOPAS001") {
-                $('#occupations').attr("style", "display: block");
+                $('#occupations').show();
             } else {
-                $('#occupations').attr("style", "display: none");
+                $('#occupations').hide();
             }
         });
     });
@@ -209,9 +200,9 @@
             var occupation = $('#occupation option:selected').val();
 
             if (occupation == "TOPOCC014") {
-                $('#otherOccupation').attr("style", "display: block");
+                $('#otherOccupations').show();
             } else {
-                $('#otherOccupation').attr("style", "display: none");
+                $('#otherOccupations').hide();
             }
         });
     });
@@ -238,6 +229,7 @@
                     "</div>\n";
                 $("#genders").append(input);
             }
+            refreshId($('#genders').find('select'));
         });
     });
     $(document).ready(function () {
@@ -260,4 +252,152 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        console.log("showValidatePT!")
+        if ("1" == $('#showValidatePT').val()) {
+            console.log("PT!")
+            $('#validatePT').modal('show');
+        } else if ("1" == $('#showValidatePT').val()) {
+            console.log("no!")
+            $('#noFoundDiv').modal('show');
+        }
+    });
+
+    function retrieveValidateTop() {
+        showWaiting();
+        var idType = $('#idType').val();
+        var idNo = $('input[name="idNumber"]').val();
+        var url = $('#_contextPath').val() + '/top/retrieve-identification';
+        var options = {
+            idType: idType,
+            idNo: idNo,
+            url: url
+        }
+        callCommonAjax(options, validatePatientName);
+    }
+    function callCommonAjax(options, callback) {
+        if (isEmpty(options)) {
+            options = {};
+        }
+        var url = '';
+        if (!isEmpty(options.url)) {
+            url = options.url;
+        }
+        var type = 'POST';
+        if (!isEmpty(options.type)) {
+            type = options.type;
+        }
+        var async = true;
+        if (!isEmpty(options.async)) {
+            async = options.async;
+        }
+        var data = options.data;
+        if (isEmpty(data)) {
+            data = options;
+        }
+        console.log(url);
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            data: data,
+            async: async,
+            type: type,
+            success: function (data) {
+                if (typeof callback === 'function') {
+                    callback(data);
+                } else if (!isEmpty(callback)) {
+                    callFunc(callback, data);
+                }
+                dismissWaiting();
+            },
+            error: function (data) {
+                console.log("err");
+                console.log(data);
+                dismissWaiting();
+            }
+        });
+    }
+    function refreshId(targetSelector) {
+        $(targetSelector).each(function (k,v) {
+            var $input = $(v);
+            var orgId = $input.attr('id');
+            var result = /([a-zA-Z_]*)/g.exec(orgId);
+            var id = !isEmpty(result) && result.length > 0 ? result[0] : orgId;
+            $input.prop('id', id + k);
+        });
+    }
+    function validatePatientName(data){
+        console.log("validatePatientName!")
+        clearErrorMsg();
+        clearSelection();
+        if (isEmpty(data) || isEmpty(data.selection) || isEmpty(data.selection.patientName)
+            || isEmpty(data.selection.birthData)
+            || isEmpty(data.selection.nationality)
+            /*|| isEmpty(data.selection.commResidenceInSgDate)
+            || isEmpty(data.selection.residenceStatus)*/
+            || isEmpty(data.selection.ethnicGroup)
+            /*|| isEmpty(data.selection.otherEthnicGroup)*/
+            || isEmpty(data.selection.maritalStatus)
+            || isEmpty(data.selection.educationLevel)
+            || isEmpty(data.selection.livingChildrenNo)
+            || isEmpty(data.selection.activityStatus)
+            /*|| isEmpty(data.selection.occupation)*/
+            /*|| isEmpty(data.selection.otherOccupation)*/ || !isEmpty(data.errorMsg)) {
+            if (!isEmpty(data.errorMsg)) {
+                doValidationParse(data.errorMsg);
+            } else {
+                console.log("shibai")
+                $('#noFoundDiv').modal('show');
+            }
+            return;
+        }
+        clearSelection();
+        $('#patientName').val(data.selection.patientName);
+
+        $('#birthData').val(data.selection.birthData);
+
+        fillValue($('#nationality'),data.selection.nationality);
+        if(!isEmpty(data.selection.commResidenceInSgDate)){
+            $('#commResidenceInSgDates').val(data.selection.commResidenceInSgDate);
+        }
+        if(!isEmpty(data.selection.residenceStatus)){
+            console.log("residenceStatus!")
+            fillValue($('#residenceStatu'),data.selection.residenceStatus);
+        }
+        fillValue($('#ethnicGroups'),data.selection.ethnicGroup);
+        if(!isEmpty(data.selection.otherEthnicGroup)){
+            $('#otherEthnicGroups').show();
+            fillValue($('#otherEthnicGroup'),data.selection.otherEthnicGroup);
+        }
+        fillValue($('#maritalStatus'),data.selection.maritalStatus);
+        fillValue($('#educationLevel'),data.selection.educationLevel);
+        $('#childrenNum').val(data.selection.livingChildrenNo);
+        fillValue($('#activityStatus'),data.selection.activityStatus);
+        if(!isEmpty(data.selection.occupation)){
+            $('#occupations').show();
+            fillValue($('#occupation'),data.selection.occupation);
+        }
+        if(!isEmpty(data.selection.otherOccupation)){
+            $('#otherOccupations').show();
+            fillValue($('#otherOccupation'),data.selection.otherOccupation);
+        }
+        if(!isEmpty(data.selection.livingChildrenNo)){
+            $('#childrenNum').trigger('keyup');
+
+        }
+        if(data.selection.livingChildrenNo>0){
+            var livingChildrenGenders=data.selection.livingChildrenGenders;
+            for(var i=0;i<livingChildrenGenders.length;i++){
+                console.log(i)
+                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
+            }
+        }
+    }
+    function clearSelection(){
+        console.log("clearSelection!")
+        clearErrorMsg();
+        $('#name').find('p').text('');
+        clearFields('.selectionHidden');
+    }
 </script>

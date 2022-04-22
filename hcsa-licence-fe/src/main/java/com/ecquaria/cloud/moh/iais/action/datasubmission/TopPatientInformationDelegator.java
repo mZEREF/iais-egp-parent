@@ -77,9 +77,9 @@ public class TopPatientInformationDelegator {
         ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_PI, currentStage);
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto != null) {
-            if (StringUtil.isEmpty(topSuperDataSubmissionDto.getDraftNo())) {
+            /*if (StringUtil.isEmpty(topSuperDataSubmissionDto.getDraftNo())) {
                 topSuperDataSubmissionDto.setDraftNo(topDataSubmissionService.getDraftNo());
-            }
+            }*/
             topSuperDataSubmissionDto = topDataSubmissionService.saveDataSubmissionDraft(topSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

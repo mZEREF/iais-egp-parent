@@ -1,8 +1,14 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +29,9 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.*;
+import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,10 +114,12 @@ public class ApprovalBatAndActivityService {
                 appInfoNodeGroup = newApprovalActivityAppInfoNodeGroup(new Node[0]);
                 break;
             default:
-                log.info("no such processType {}", StringUtils.normalizeSpace(processType));
+                log.info(StringUtil.changeForLog("no such processType " + StringUtils.normalizeSpace(processType)));
                 break;
         }
-
+        if (appInfoNodeGroup == null) {
+            return null;
+        }
         SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{appInfoNodeGroup});
         SimpleNode previewNode = new SimpleNode(new PreviewDto(), NODE_NAME_PREVIEW, new Node[]{appInfoNodeGroup, primaryDocNode});
 
@@ -387,5 +397,31 @@ public class ApprovalBatAndActivityService {
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+    }
+
+
+    @SneakyThrows(JsonProcessingException.class)
+    public void loadAllowedScheduleAndBatOptions(HttpServletRequest request, String activityType) {
+        Map<String, List<BatBasicInfo>> scheduleBatMap = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(activityType);
+        List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
+
+        // convert BatBasicInfo to SelectOption object
+        Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
+        for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
+            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
+            for (BatBasicInfo info : entry.getValue()) {
+                SelectOption option = new SelectOption();
+                option.setText(info.getName());
+                option.setValue(info.getId());
+                optionList.add(option);
+            }
+            scheduleBatOptionMap.put(entry.getKey(), optionList);
+        }
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP, scheduleBatOptionMap);
+        ObjectMapper mapper = new ObjectMapper();
+        String scheduleBatMapJson = mapper.writeValueAsString(scheduleBatOptionMap);
+        ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP_JSON, scheduleBatMapJson);
     }
 }

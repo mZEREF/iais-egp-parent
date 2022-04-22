@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -37,10 +36,7 @@ import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.*;
 
-/**
- * @author : LiRan
- * @date : 2022/3/17
- */
+
 @Slf4j
 @Delegator("approvalBatAndActivityDelegator")
 public class ApprovalBatAndActivityDelegator {
@@ -229,15 +225,7 @@ public class ApprovalBatAndActivityDelegator {
         }
         Nodes.needValidation(approvalAppRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToPossessDto);
-
-        List<SelectOption> scheduleOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
-        ParamUtil.setRequestAttr(request, "ScheduleOps", scheduleOps);
-
-        List<SelectOption> batNameOps = new ArrayList<>(2);
-        batNameOps.add(new SelectOption("AEE1CC32-46F0-EB11-8B7D-000C293F0C99", "BRUCELLA CANIS"));
-        batNameOps.add(new SelectOption("A4A0E7C9-46F0-EB11-8B7D-000C293F0C99", "CHLAMUDIA PSTTACI"));
-        ParamUtil.setRequestAttr(request, "batNameOps", batNameOps);
-
+        approvalBatAndActivityService.loadAllowedScheduleAndBatOptions(request, approvalToPossessDto.getActivityType());
         ParamUtil.setRequestAttr(request, "addressTypeOps", MasterCodeHolder.ADDRESS_TYPE.allOptions());
     }
 
@@ -273,6 +261,7 @@ public class ApprovalBatAndActivityDelegator {
         }
         Nodes.needValidation(approvalAppRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToLargeDto);
+        approvalBatAndActivityService.loadAllowedScheduleAndBatOptions(request, approvalToLargeDto.getActivityType());
     }
 
     public void handleLargeBatDetails(BaseProcessClass bpc){
@@ -307,6 +296,7 @@ public class ApprovalBatAndActivityDelegator {
         }
         Nodes.needValidation(approvalAppRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_BAT_INFO, approvalToSpecialDto);
+        approvalBatAndActivityService.loadAllowedScheduleAndBatOptions(request, approvalToSpecialDto.getActivityType());
     }
 
     public void handleSpecialBatDetails(BaseProcessClass bpc){

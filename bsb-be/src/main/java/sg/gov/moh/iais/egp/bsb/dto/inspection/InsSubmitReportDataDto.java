@@ -9,14 +9,15 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 
 import java.util.List;
 
-
+/**
+ * Load inspection report data dto
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InsSubmitReportDataDto {
     private SubmissionDetailsInfo submissionDetailsInfo;
     private FacilityDetailsInfo facilityDetailsInfo;
-    private List<InsFindingDisplayDto> findingDtoList;
-    private InsFacInfoDto insFacInfoDto;
+    private ReportDto reportDto;
     private List<ProcessHistoryDto> processHistoryDtoList;
     private List<SelectOption> selectRouteToMoh;
 }

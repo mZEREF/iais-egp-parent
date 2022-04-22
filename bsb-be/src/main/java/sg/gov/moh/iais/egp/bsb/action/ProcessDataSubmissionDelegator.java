@@ -54,7 +54,7 @@ public class ProcessDataSubmissionDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MohReviewDataSubmissionDto dto = getProcessDto(request);
-        ParamUtil.setRequestAttr(request, "canNotUploadInternalDoc", true);
+        ParamUtil.setRequestAttr(request, "canNotUploadInternalDoc", Boolean.TRUE);
         ParamUtil.setSessionAttr(request, DATA_SUBMISSION_PROCESS_DTO, dto);
         if (StringUtils.isEmpty(dto.getApplicationId())) {
             String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);

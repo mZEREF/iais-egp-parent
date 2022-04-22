@@ -22,16 +22,17 @@
                         <div class="bg-title">
                             <h2>Request For Information List</h2>
                         </div>
+
                         <iais:row>
                             <iais:field value="Facility No." width="15" required="false"/>
                             <iais:value width="10">
-                                <c:out value="LFA210707UCF001" />
+                                <c:out value="${newReqInfo.facilityNo}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Submission Type" width="15" required="false"/>
                             <iais:value width="10">
-                                <c:out value="Facility Registration" />
+                                <iais:code code="${newReqInfo.submissionType}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -43,36 +44,97 @@
                                           maxlength="500"
                                           rows="8"
                                           cols="64"
-                                          name="rfiTitle" >
-                                </textarea>
+                                          name="rfiTitle" >${newReqInfo.title}</textarea>
+                                <span data-err-ind="title" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Due Date" width="15" required="false"/>
                             <iais:value width="10">
-                                <iais:datePicker value="" name="DueDate"></iais:datePicker>
+                                <iais:datePicker value="${newReqInfo.dueDate}" name="dueDate"></iais:datePicker>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Status" width="15" required="false"/>
                             <iais:value width="10">
-                                <iais:select cssClass="statusDropdown" id="rfiStatus" name="status" firstOption="please Select" ></iais:select>
+                                <iais:select cssClass="statusDropdown" id="rfiStatus" value="${newReqInfo.dueDate}" name="status" options="statusList"></iais:select>
                             </iais:value>
                         </iais:row>
-                        <div class="row">
+                        <div class="row" >
                             <label class="col-xs-9 col-md-3 control-label">
-                                <input type="checkbox"  value="information" name = "info" />&nbsp;Information
+                                <input type="checkbox"
+                                       <c:if test="${newReqInfo.informationRequired==true}">checked</c:if>
+                                       onchange="checkTitleInfo()"
+                                       value = "0"
+                                       name = "info" />&nbsp;Information
                             </label>
                         </div>
                         <div class="row">
                             <label class="col-xs-9 col-md-3 control-label">
-                                <input type="checkbox" value="documents" name ="doc" />&nbsp;Supporting Documents
+                                <input type="checkbox"
+                                       <c:if test="${newReqInfo.supportingDocRequired==true}">checked</c:if>
+                                       onchange="checkTitleDoc()"
+                                       value = "0"
+                                       name ="doc" />&nbsp;Supporting Documents
                             </label>
                         </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div id="information" <c:if test="${newReqInfo.informationRequired ==null||newReqInfo.informationRequired ==false}">style="display: none"</c:if>>
+                            <div class="row" >
+                                <div class="col-sm-12 col-md-9 col-xs-12" style="margin-left: 15px;border: 1px solid #6c6c6c; padding-left: 30px; padding-top: 15px; border-radius: 10px;">
+                                    <iais:row>
+                                        <label class="col-xs-9 col-md-6 control-label" >
+                                            <div class="infoTitIndex">
+                                                1. Title of Information Required
+                                                <strong style="color:#ff0000;">&nbsp;*</strong>
+                                            </div>
+                                        </label>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
+                                            <textarea  name="information" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfInformationRequired}</textarea>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <span id="errorMsg" data-err-ind="titleOfInformationRequired" class="error-msg"></span>
+                                    </iais:row>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div id="stDoc"  <c:if test="${newReqInfo.supportingDocRequired ==null||newReqInfo.supportingDocRequired ==false}">style="display: none"</c:if>>
+                            <div class="row" >
+                                <div class="col-sm-12 col-md-9 col-xs-12" style="margin-left: 15px;border: 1px solid #6c6c6c; padding-left: 30px; padding-top: 15px; border-radius: 10px;">
+                                    <iais:row>
+                                        <label class="col-xs-9 col-md-6 control-label" >
+                                            <div class="documents">
+                                                2. Title of Supporting Documents
+                                                <strong style="color:#ff0000;">&nbsp;*</strong>
+                                            </div>
+                                        </label>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
+                                            <textarea  name="documentsTitle" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfSupportingDocRequired}</textarea>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
+                                    </iais:row>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
                         <iais:row>
                             <iais:action style="text-align:right;">
                                 <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                                <button class="btn btn-primary" type="button"   onclick="javascript:doSubmit()  ">Submit</button>
+                                <button class="btn btn-primary" type="button" style="margin-left: 50px"  onclick="javascript:doSubmit()  ">Submit</button>
                             </iais:action>
                         </iais:row>
                     </div>
@@ -90,7 +152,25 @@
     }
     function doSubmit(){
         showWaiting();
-        $("[name='action_type']").val("submit");
+        $("[name='action_type']").val("validate");
         $("#mainForm").submit();
+    }
+    function checkTitleInfo(){
+        if($('input[type = checkbox][name="info"]').prop('checked')){
+            $('#information').attr("style","display: block");
+            $('input[type = checkbox][name="info"]').attr("value","1");
+        }else {
+            $("#information").attr("style","display: none");
+            $('input[type = checkbox][name="info"]').attr("value","0");
+        }
+    }
+    function checkTitleDoc(){
+        if($('input[type = checkbox][name="doc"]').prop('checked')){
+            $('#stDoc').attr("style","display: block");
+            $('input[type = checkbox][name="doc"]').attr("value","1");
+        }else {
+            $('#stDoc').attr("style","display: none");
+            $('input[type = checkbox][name="doc"]').attr("value","0");
+        }
     }
 </script>

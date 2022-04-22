@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -122,7 +123,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     }
 
     public Map<String,CertTeamSavedDoc> getExistCertTeamKeyMap(){
-        Map<String,CertTeamSavedDoc> certTeamSavedKeyMap = new HashMap<>(this.certTeamSavedDocMap.size());
+        Map<String,CertTeamSavedDoc> certTeamSavedKeyMap = IaisCommonUtils.genNewHashMap(this.certTeamSavedDocMap.size());
         for (CertTeamSavedDoc doc : this.certTeamSavedDocMap.values()) {
             certTeamSavedKeyMap.put(doc.getMemberIdNo()+KEY_HYPHEN+doc.getDocType(),doc);
         }

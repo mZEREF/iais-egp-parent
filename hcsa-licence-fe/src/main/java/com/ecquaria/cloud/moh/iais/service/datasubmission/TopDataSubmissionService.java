@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
@@ -32,7 +33,9 @@ public interface TopDataSubmissionService {
 
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo);
 
-    String getDraftNo();
+    PatientInformationDto getTopPatientSelect(String idType, String idNumber, String orgId);
 
-    String getSubmissionNo();
+//    String getDraftNo();
+
+ //   String getSubmissionNo();
 }

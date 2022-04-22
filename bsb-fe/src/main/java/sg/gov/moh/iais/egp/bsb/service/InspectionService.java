@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -15,7 +14,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyFindingFormDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsRectificationDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
 
@@ -44,18 +43,17 @@ public class InspectionService {
      * @param itemDtoList document search from database contain docSubType
      * @param request HttpServletRequest
      * */
-    public void loadOriginIconStatus(List<RectifyFindingFormDto.RectifyFindingItemDto> itemDtoList, RectifyInsReportDto reportDto, HttpServletRequest request){
+    public void loadOriginIconStatus(List<InsRectificationDisplayDto.RectificationItemDto> itemDtoList, RectifyInsReportDto reportDto, HttpServletRequest request){
         //docSubType that is item value -- section id + --v-- +config id
-        Map<String,String> itemRectifyMap = Maps.newHashMapWithExpectedSize(itemDtoList.size());
         if(!itemDtoList.isEmpty()){
-            for (RectifyFindingFormDto.RectifyFindingItemDto itemDto : itemDtoList) {
-                turnCurrentIconStatus(request,reportDto,itemDto.getItemValue(),itemRectifyMap);
+            for (InsRectificationDisplayDto.RectificationItemDto itemDto : itemDtoList) {
+                turnCurrentIconStatus(request,reportDto,itemDto.getItemValue());
             }
         }
-        ParamUtil.setSessionAttr(request,KEY_ITEM_RECTIFY_MAP,new HashMap<>(itemRectifyMap));
     }
 
-    public void turnCurrentIconStatus(HttpServletRequest request,RectifyInsReportDto docDto,String itemValue,Map<String,String> itemRectifyMap){
+    public void turnCurrentIconStatus(HttpServletRequest request,RectifyInsReportDto docDto,String itemValue){
+        Map<String,String> itemRectifyMap = getItemRectifyMap(request);
         //turn rectify icon to Y
         //saved doc dto is null and new doc dto is null turn rectify icon to N
         Assert.hasLength(itemValue,"itemValue is null");
@@ -86,7 +84,7 @@ public class InspectionService {
 //    }
 
     public Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto> getRectifyNCsSavedRemarkMap(HttpServletRequest request){
-        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto> map = (Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>) ParamUtil.getSessionAttr(request,KEY_RECTIFY_SAVED_REMARK_MAP);
+        Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto> map = (Map<String, RectifyInsReportSaveDto.RectifyItemSaveDto>) ParamUtil.getSessionAttr(request,KEY_RECTIFY_SAVED_DATA_MAP);
         return map == null?new HashMap<>():map;
     }
 
@@ -138,14 +136,14 @@ public class InspectionService {
         }
     }
 
-    public void putItemRemarkValue(HttpServletRequest request,String itemValue,Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap ){
+    public void putItemDataNeedSave(HttpServletRequest request,String itemValue,Map<String,RectifyInsReportSaveDto.RectifyItemSaveDto> savedDtoMap){
         Assert.hasLength(itemValue,"key itemValue is null");
+        Map<String,String> rectifyMap =  getItemRectifyMap(request);
         RectifyInsReportSaveDto.RectifyItemSaveDto dto = new RectifyInsReportSaveDto.RectifyItemSaveDto();
         dto.setItemValue(itemValue);
         dto.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
-        dto.setRequestExtensionOfDueDate(ParamUtil.getString(request, KEY_REQUEST_EXTENSION_OF_DUE_DATE));
-        dto.setReasonForExtension(ParamUtil.getString(request, KEY_REASON_FOR_EXTENSION));
+        dto.setRectified(rectifyMap.get(itemValue));
         savedDtoMap.put(itemValue,dto);
-        ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_REMARK_MAP,new HashMap<>(savedDtoMap));
+        ParamUtil.setSessionAttr(request,KEY_RECTIFY_SAVED_DATA_MAP,new HashMap<>(savedDtoMap));
     }
 }

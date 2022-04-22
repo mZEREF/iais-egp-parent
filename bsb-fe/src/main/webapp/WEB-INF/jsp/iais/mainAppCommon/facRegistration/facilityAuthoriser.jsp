@@ -25,12 +25,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="table-gp">
-                                <table class="table">
+                                <table class="table" aria-describedby="">
                                     <thead>
                                     <tr style="font-weight: bold">
-                                        <th style="width: 15%">S/N</th>
-                                        <th style="width: 35%">Filed Name (Column)</th>
-                                        <th style="width: 50%">Error Message</th>
+                                        <th scope="col" style="width: 15%">S/N</th>
+                                        <th scope="col" style="width: 35%">Filed Name (Column)</th>
+                                        <th scope="col" style="width: 50%">Error Message</th>
                                     </tr>
                                     </thead>
                                         <%--@elvariable id="DATA_ERRORS" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit>"--%>

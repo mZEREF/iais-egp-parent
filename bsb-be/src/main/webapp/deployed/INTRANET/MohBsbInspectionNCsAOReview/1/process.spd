@@ -37,25 +37,25 @@
     <JavaCode defClass="" executor="" methodName="handleSubmit_OnStepProcess_0" name="handleSubmit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="RequestForInformation" x="400" y="500">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="requestForInformation_OnStepProcess_0" name="requestForInformation_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Finalize" x="600" y="500">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="finalize_OnStepProcess_0" name="finalize_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Skip" x="320" y="500">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="skip_OnStepProcess_0" name="skip_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="RejectAndRouteToDO" x="380" y="500">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="rejectAndRouteToDO_OnStepProcess_0" name="rejectAndRouteToDO_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Accept" x="590" y="500">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="accept_OnStepProcess_0" name="accept_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -102,18 +102,6 @@
   <SynchronousLink destinationName="/Switches/Switch/DicisionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleSubmit" style="rectanular">
    <position>{(500,320)(500,430)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/RequestForInformation" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
-   <position>{(500,430)(420,520)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Finalize" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
-   <position>{(500,430)(620,520)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Ackonwledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RequestForInformation" style="oblique">
-   <position>{(420,520)(520,620)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Ackonwledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Finalize" style="oblique">
-   <position>{(620,520)(520,620)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/DicisionSwitch" style="rectanular">
    <position>{(500,430)(312,432)(310,310)}</position>
   </SynchronousLink>
@@ -129,6 +117,18 @@
   <SynchronousLink destinationName="/Pages/WebPage/AfterSkipPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Skip" style="rectanular">
    <position>{(340,520)(320,620)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/RejectAndRouteToDO" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
+   <position>{(500,430)(400,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ackonwledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RejectAndRouteToDO" style="oblique">
+   <position>{(400,520)(520,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Accept" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
+   <position>{(500,430)(610,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ackonwledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Accept" style="oblique">
+   <position>{(610,520)(520,620)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -139,10 +139,10 @@
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="route" name="DicisionSwitch" x="480" y="410">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;rfi&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/Finalize" value="&quot;finalize&quot;" />
    <SwitchCase component="/Merges/Merge/Merge1" value="" />
    <SwitchCase component="/Steps/AutomaticStep/Skip" value="&quot;skip&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/RejectAndRouteToDO" value="&quot;reject&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Accept" value="&quot;accept&quot;" />
   </Switch>
  </Switches>
  <Branches />

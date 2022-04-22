@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.report.notification;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -53,7 +54,7 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        log.info("-----personInvolvedInfoDto validation"+this);
+        log.info(StringUtil.changeForLog("-----personInvolvedInfoDto validation"+this));
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("reportableEventFeignClient", "validatePersonInvolvedInfo", new Object[]{this});
         return validationResultDto.isPass();
     }

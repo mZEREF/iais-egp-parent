@@ -60,6 +60,8 @@ public class ApplicationDto extends BaseEntityDto {
 
     private String hmUserId;
 
+    private int selfAssessmentFlag;
+
     private LocalDate prefInspectionStart;
 
     private LocalDate prefInspectionEnd;

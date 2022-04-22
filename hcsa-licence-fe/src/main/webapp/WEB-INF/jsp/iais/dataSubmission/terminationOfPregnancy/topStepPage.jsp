@@ -33,6 +33,9 @@
                                 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
                                 <%--------------------${currCode}----------------%>
                                 <c:choose>
+                                    <c:when test="${currCode == 'TOPT001'}">
+                                        <%@ include file="section/patientDetails.jsp" %>
+                                    </c:when>
                                     <c:when test="${currCode == 'TOPT002'}">
                                         <%@ include file="section/familyPlanning.jsp" %>
                                     </c:when>
@@ -61,6 +64,7 @@
                                             </div>
                                         </div>
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                            <%@ include file="section/previewPatientDetails.jsp" %>
                                             <%@ include file="section/previewFamilyPlanning.jsp" %>
                                             <%@ include file="section/previewPreTermination.jsp" %>
                                             <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
@@ -89,4 +93,8 @@
             cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
             cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
 </c:if>
+<iais:confirm msg="Patient does not exist in the system. Please enter the patient information manually." callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close" yesBtnCls="btn btn-secondary"
+              needFungDuoJi="false" needCancel="false"/>
+<iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
 <input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>

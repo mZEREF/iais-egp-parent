@@ -14,8 +14,19 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-cascade-dropdown.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-bat-and-activity.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-biological-agent-toxin.js"></script>
+
+<script>
+    <% String jsonStr = (String) request.getAttribute("scheduleBatMapJson");
+        if (jsonStr == null || "".equals(jsonStr)) {
+            jsonStr = "undefined";
+        }
+    %>
+    var scheduleBatDataJson = <%=jsonStr%>;
+</script>
+
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <%@include file="dashboard.jsp"%>
@@ -49,7 +60,7 @@
                                                         <div id="sectionGroup">
                                                             <c:forEach var="info" items="${batInfo.batInfos}" varStatus="status">
                                                                 <section id="batInfoSection--v--${status.index}">
-                                                                    <%--@elvariable id="ScheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                                                    <%--@elvariable id="scheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                                     <%--@elvariable id="batNameOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                                     <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                                     <p class="assessment-title" style="border-bottom: 1px solid black; font-size:18px; padding-bottom: 10px; font-weight: bold">Details of Biological Agent</p>
@@ -58,8 +69,8 @@
                                                                             <label for="schedule--v--${status.index}">Schedule <span class="mandatory otherQualificationSpan">*</span></label>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 30;">
-                                                                            <select name="schedule--v--${status.index}" class="schedule-v-Dropdown" id="schedule--v--${status.index}">
-                                                                                <c:forEach items="${ScheduleOps}" var="schedule">
+                                                                            <select name="schedule--v--${status.index}" class="schedule-v-Dropdown" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
+                                                                                <c:forEach items="${scheduleOps}" var="schedule">
                                                                                     <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                                 </c:forEach>
                                                                             </select>
@@ -76,6 +87,7 @@
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 20;">
                                                                             <select name="batName--v--${status.index}" class="batName-v-Dropdown" id="batName--v--${status.index}">
+                                                                                <c:set var="batNameOps" value="${scheduleBatMap.get(info.schedule == null ? firstScheduleOp : info.schedule)}"/>
                                                                                 <c:forEach items="${batNameOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                                 </c:forEach>

@@ -109,6 +109,8 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_FOLLOW_UP_REPORT_1A = "PROTYPE010";
     public static final String PROCESS_TYPE_FOLLOW_UP_REPORT_1B = "PROTYPE011";
     public static final String PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE = "PROTYPE012";
+    public static final String PROCESS_TYPE_ADHOC_RFI = "PROTYPE013";
+    public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
 
     static {
@@ -246,11 +248,12 @@ public class MasterCodeConstants {
     public static final String MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW = "MOHPRO022";
     public static final String MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT = "MOHPRO023";
     public static final String MOH_PROCESSING_DECISION_MARK_AS_FINAL = "MOHPRO024";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_ACCEPTANCE_OF_NC_RECTIFICATIONS = "MOHPRO025";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_REJECTION_OF_NC_RECTIFICATIONS = "MOHPRO026";
-    public static final String MOH_PROCESSING_DECISION_ACCEPT_RECTIFICATIONS  = "MOHPRO027";
+    public static final String MOH_PROCESSING_DECISION_ACCEPTS_RECTIFICATIONS_AND_ROUTE_TO_AO = "MOHPRO025";
+    public static final String MOH_PROCESSING_DECISION_REJECT_AND_ROUTE_TO_DO_FOR_REVISION = "MOHPRO026";
+    public static final String MOH_PROCESSING_DECISION_ACCEPT = "MOHPRO027";
     public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
     public static final String MOH_PROCESSING_DECISION_SKIP_INSPECTION = "MOHPRO029";
+    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_AO = "MOHPRO030";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";
@@ -300,4 +303,13 @@ public class MasterCodeConstants {
     // Bsb moh processing approval status
     public static final String PROCESSING_STATUS_APPROVAL = "BSBMPAS001";
     public static final String PROCESSING_STATUS_REJECT = "BSBMPAS002";
+
+    // Inspection report Deficiency
+    public static final String VALUE_DEFICIENCY_MAJOR = "BSBIRD001";
+    public static final String VALUE_DEFICIENCY_MINOR = "BSBIRD002";
+    public static final String VALUE_DEFICIENCY_NIL = "BSBIRD003";
+    // Inspection report Outcome
+    public static final String VALUE_OUTCOME_PASS = "BSBIRO001";
+    public static final String VALUE_OUTCOME_PASS_WITH_CONDITION = "BSBIRO002";
+    public static final String VALUE_OUTCOME_FAIL = "BSBIRO003";
 }

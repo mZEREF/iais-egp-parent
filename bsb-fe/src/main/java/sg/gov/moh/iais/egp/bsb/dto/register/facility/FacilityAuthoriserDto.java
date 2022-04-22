@@ -1,7 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.shaded.com.google.common.collect.Maps;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
@@ -140,7 +138,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
      */
     public boolean validateDataFile() {
         if (this.newFile == null) {
-            Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
             errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "This document is mandatory");
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);
             return false;
@@ -176,7 +174,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
             return true;
         } catch (IOException e) {
             log.error("Fail to convert EXCEL/CSV to DTOs", e);
-            Map<String, String> errorMap = Maps.newHashMapWithExpectedSize(1);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
             errorMap.put(DocConstants.DOC_TYPE_DATA_AUTHORISER, "Could not parse file content.");
             this.newFile = null;
             this.validationResultDto = FileDataValidationResultDto.of(false, errorMap, null);

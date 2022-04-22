@@ -57,15 +57,15 @@ public class CsvConvertUtil {
          * set of speech marks. Thus, "Yes" he said would become """Yes"" he said" */
         if(field.contains("\"")) {
             buffer = new StringBuilder(field.replace("\"", "\\\"\\\""));
-            buffer.insert(0, "\"");
-            buffer.append("\"");
+            buffer.insert(0, '"');
+            buffer.append('"');
         } else {
             /* If the field contains either embedded separator or EOL characters, then escape the whole field
              * by surrounding it with speech marks. */
             buffer = new StringBuilder(field);
             if((buffer.indexOf(",")) > -1 || (buffer.indexOf("\n")) > -1) {
-                buffer.insert(0, "\"");
-                buffer.append("\"");
+                buffer.insert(0, '"');
+                buffer.append('"');
             }
         }
         return(buffer.toString().trim());

@@ -3,9 +3,12 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.appointment.AppointmentReviewDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -30,18 +32,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.AppointmentConstants.APPOINTMENT_REVIEW_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_CAN_RFI;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_CHKL_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_EDITABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SELF_ASSESSMENT_AVAILABLE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SEPARATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_APPLICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_SELF;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.VALUE_RFI_FLAG_SELF_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
@@ -54,6 +58,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbPreInspection")
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
+
+    private final static String RFI_APPLICATION = "AppPreInspRfiCheck";
+    private final static String RFI_SELF = "SelfPreInspRfiCheck";
 
     @Autowired
     public PreInspectionDelegator(InspectionClient inspectionClient) {
@@ -70,11 +77,9 @@ public class PreInspectionDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpSession session = bpc.request.getSession();
-        session.removeAttribute(KEY_INS_INFO);
         session.removeAttribute(KEY_INS_DECISION);
-        session.removeAttribute(APPOINTMENT_REVIEW_DATA);
-        session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
-        session.removeAttribute(KEY_INSPECTION_CONFIG);
+        session.removeAttribute(RFI_APPLICATION);
+        session.removeAttribute(RFI_SELF);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -93,6 +98,11 @@ public class PreInspectionDelegator {
             ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
         } else {
             ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
+        }
+        if (MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS.equals(submissionDetailsInfo.getApplicationStatus())) {
+            ParamUtil.setRequestAttr(request, KEY_CAN_RFI, Boolean.TRUE);
+        } else {
+            ParamUtil.setRequestAttr(request, KEY_CAN_RFI, Boolean.FALSE);
         }
 
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
@@ -133,21 +143,24 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         processDto.reqObjMapping(request);
+        setRfiFromPage(request, processDto);
+        Map<String, String> errorMap = validateRfi(request, processDto);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         ValidationResultDto validationResultDto = inspectionClient.validatePreInsSubmission(processDto);
         String validateResult;
-        if (validationResultDto.isPass()) {
+        if (validationResultDto.isPass() && errorMap.isEmpty()) {
             if (MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_READY.equals(processDto.getDecision())) {
                 validateResult = "ready";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())) {
                 validateResult = "rfi";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())) {
                 validateResult = "skip";
             } else {
                 validateResult = "unknown";
             }
         } else {
             validateResult = "invalid";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         }
         if (log.isInfoEnabled()) {
             log.info("Officer submit decision [{}] for pre-inspection, route result [{}]", LogUtil.escapeCrlf(processDto.getDecision()), validateResult);
@@ -168,19 +181,54 @@ public class PreInspectionDelegator {
 
 
     public void rfi(BaseProcessClass bpc) {
-        throw new UnsupportedOperationException("To be implemented in the future");
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        int rfiFlag = getRfiFlag(request);
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
+        inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiFlag, processDto);
+        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
     }
 
-    public void skip(BaseProcessClass bpc){
+    public void skip(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        inspectionClient.skipInspection(appId,taskId,processDto);
+        inspectionClient.skipInspection(appId, taskId, processDto);
     }
 
-    private AppointmentReviewDataDto getReviewDataDto(HttpServletRequest request) {
-        AppointmentReviewDataDto appointmentReviewDataDto = (AppointmentReviewDataDto) ParamUtil.getSessionAttr(request, APPOINTMENT_REVIEW_DATA);
-        return appointmentReviewDataDto == null ? new AppointmentReviewDataDto() : appointmentReviewDataDto;
+    private Map<String, String> validateRfi(HttpServletRequest request, InsProcessDto processDto) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if ("MOHPRO002".equals(processDto.getDecision())) {
+            Boolean rfiApp = (Boolean) ParamUtil.getSessionAttr(request, RFI_APPLICATION);
+            Boolean rfiSelf = (Boolean) ParamUtil.getSessionAttr(request, RFI_SELF);
+            if (!(rfiApp || rfiSelf)) {
+                errorMap.put("preInspRfiCheck", "GENERAL_ERR0006");
+            }
+        }
+        return errorMap;
+    }
+
+    private void setRfiFromPage(HttpServletRequest request, InsProcessDto processDto) {
+        if ("MOHPRO002".equals(processDto.getDecision())) {
+            Boolean rfiApp = "true".equals(ParamUtil.getString(request, RFI_APPLICATION));
+            Boolean rfiSelf = "true".equals(ParamUtil.getString(request, RFI_SELF));
+            ParamUtil.setSessionAttr(request, RFI_APPLICATION, rfiApp);
+            ParamUtil.setSessionAttr(request, RFI_SELF, rfiSelf);
+        }
+    }
+
+    private int getRfiFlag(HttpServletRequest request) {
+        Boolean rfiApp = (Boolean) ParamUtil.getSessionAttr(request, RFI_APPLICATION);
+        Boolean rfiSelf = (Boolean) ParamUtil.getSessionAttr(request, RFI_SELF);
+        if (rfiSelf && rfiApp) {
+            return VALUE_RFI_FLAG_SELF_APPLICATION;
+        } else if (rfiApp) {
+            return VALUE_RFI_FLAG_APPLICATION;
+        } else {
+            return VALUE_RFI_FLAG_SELF;
+        }
     }
 }

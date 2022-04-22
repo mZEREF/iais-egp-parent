@@ -109,17 +109,9 @@
 
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks</label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" style="width: 100%"></textarea>
+                                                                <div class="col-sm-7 col-md-6 col-xs-10">
+                                                                    <textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" rows="4"></textarea>
                                                                     <span data-err-ind="remarks" class="error-msg"></span>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
-
-                                                            <div class="form-group">
-                                                                <label class="col-xs-12 col-md-4 control-label"> Duty Officer’s Recommendation</label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <p><iais:code code="${submissionDetailsInfo.applicationStatus}"/></p>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
@@ -129,8 +121,7 @@
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
                                                                         <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
-                                                                        <option value="MOHPRO025" <c:if test="${insDecision.decision eq 'MOHPRO025'}">selected="selected"</c:if>>Recommend acceptance of NC rectifications</option>
-                                                                        <option value="MOHPRO026" <c:if test="${insDecision.decision eq 'MOHPRO026'}">selected="selected"</c:if>>Recommend rejection of NC rectifications</option>
+                                                                        <option value="MOHPRO025" <c:if test="${insDecision.decision eq 'MOHPRO025'}">selected="selected"</c:if>>Accepts Rectification and Route to AO</option>
                                                                         <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>
@@ -139,6 +130,21 @@
 
                                                             <span data-err-ind="decision" class="error-msg" ></span>
 
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${insDecision.decision ne 'MOHPRO025'}">style="display: none;"</c:if>>
+                                                                <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <div class="input-group">
+                                                                        <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
+                                                                            <option value="">Please Select</option>
+                                                                            <c:forEach var="selection" items="${selectRouteToMoh}">
+                                                                                <option value="${selection.value}" <c:if test="${insDecision.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                        <span data-err-ind="selectMohUser" class="error-msg" ></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
                                                         </div>
                                                         <div style="text-align: right">
                                                             <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
@@ -146,6 +152,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                         </div>
                                     </div>
                                 </div>

@@ -5,9 +5,9 @@
             <thead>
             <tr >
                 <th scope="col">AR Centre</th>
-                <th scope="col">Frozen Oocyte</th>
-                <th scope="col">Thawed Oocyte</th>
-                <th scope="col">Fresh Oocyte</th>
+                <th scope="col">Frozen Oocytes</th>
+                <th scope="col">Thawed Oocytes</th>
+                <th scope="col">Fresh Oocytes</th>
                 <th scope="col">Frozen Embryos</th>
                 <th scope="col">Thawed Embryos</th>
                 <th scope="col">Fresh Embryos</th>

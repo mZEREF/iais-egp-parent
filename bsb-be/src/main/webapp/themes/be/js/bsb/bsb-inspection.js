@@ -17,6 +17,12 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#saveReportBtn").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val("saveReport");
+        $("#mainForm").submit();
+    });
+
     $("#viewSelfAssessmt").click(function () {
         showWaiting();
         $("input[name='action_type']").val('viewSelfAssessment');
@@ -56,12 +62,18 @@ $(function () {
 
     $("#processingDecision").change(function () {
         var selectValue = $(this).val();
-        if (selectValue === "MOHPRO022") {
+        if (selectValue === "MOHPRO022" || selectValue === "MOHPRO025") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();
         }
     })
+
+    $("#previewBtn").click(function (){
+        showWaiting();
+        $("input[name='action_type']").val('preview');
+        $("#mainForm").submit();
+    });
 })
 
 // inspection findings' sections

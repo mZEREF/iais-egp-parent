@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -25,7 +27,9 @@ import java.util.List;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
-
+/**
+ * DO inspection report
+ */
 @Slf4j
 @Delegator("bsbSubmitInspectionReport")
 public class BsbSubmitInspectionReportDelegator {
@@ -51,7 +55,7 @@ public class BsbSubmitInspectionReportDelegator {
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_SUBMISSION_DETAILS_INFO);
         session.removeAttribute(KEY_FACILITY_DETAILS_INFO);
-        session.removeAttribute(KEY_INS_INFO);
+        session.removeAttribute(KEY_INS_REPORT);
         session.removeAttribute(KEY_SELECT_ROUTE_TO_MOH);
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_DECISION);
@@ -66,7 +70,7 @@ public class BsbSubmitInspectionReportDelegator {
         // facility details
         ParamUtil.setSessionAttr(request, KEY_FACILITY_DETAILS_INFO, initDataDto.getFacilityDetailsInfo());
         // inspection report
-        ParamUtil.setSessionAttr(request, KEY_INS_INFO, initDataDto.getInsFacInfoDto());
+        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, initDataDto.getReportDto());
         // show route to moh selection list
         ParamUtil.setRequestAttr(request, KEY_SELECT_ROUTE_TO_MOH, initDataDto.getSelectRouteToMoh());
         // show routingHistory list
@@ -129,6 +133,27 @@ public class BsbSubmitInspectionReportDelegator {
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         inspectionClient.skipInspection(appId,taskId,processDto);
+    }
+
+    public void handleSaveReport(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+
+        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
+        processDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
+
+        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INS_REPORT);
+        reportDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, reportDto);
+        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReport(reportDto);
+        if (validationResultDto.isPass()) {
+            inspectionClient.saveInspectionReportDto(appId, StageConstants.ROLE_DO, reportDto);
+        } else {
+            log.error("Validation inspection report failure info: {}", validationResultDto.toErrorMsg());
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+        }
+        ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_INS_REPORT);
     }
 
     public void submitToAo(BaseProcessClass bpc) {

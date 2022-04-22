@@ -172,9 +172,11 @@ public class LdtDataSubmissionDelegator {
         cycle.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
 
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        String licenseeId = null;
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
             dataSubmissionDto.setSubmitDt(new Date());
+            licenseeId = loginContext.getLicenseeId();
         }
         ldtSuperDataSubmissionDto = ldtDataSubmissionService.saveLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto);
         try {
@@ -186,7 +188,6 @@ public class LdtDataSubmissionDelegator {
             ldtDataSubmissionService.updateDataSubmissionDraftStatus(ldtSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
-        String licenseeId = loginContext.getLicenseeId();
 
         LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
         String licenseeDtoName = licenseeDto.getName();

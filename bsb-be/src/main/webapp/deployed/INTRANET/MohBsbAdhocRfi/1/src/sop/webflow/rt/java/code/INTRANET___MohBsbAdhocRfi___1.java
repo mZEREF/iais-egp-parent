@@ -67,4 +67,9 @@ public class INTRANET___MohBsbAdhocRfi___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doSort", this);
 	}
 
+	public void validate_OnStepProcess_0() throws Exception {
+	// 		Validate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
+	}
+
 }
