@@ -58,4 +58,13 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/followUpItems", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveFollowUpData(@RequestBody FollowUpSaveDto dto);
+
+    @GetMapping(path = "/inspection/submit-report/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    ReportDto getInsReportDto(@RequestParam("appId") String appId);
+
+    @PostMapping(value = "/inspection/submit-report/report/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateReportDto(ReportDto reportDto);
+
+    @PostMapping(value = "/inspection/submit-report/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    void saveInspectionReport(@RequestBody ReportDto reportDto, @RequestParam("appId") String appId);
 }

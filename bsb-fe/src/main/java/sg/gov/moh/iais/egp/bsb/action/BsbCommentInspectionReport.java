@@ -8,24 +8,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportSaveDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsCommentReportDataDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
@@ -34,15 +25,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Slf4j
 @Delegator("bsbCommentInspectionReport")
 public class BsbCommentInspectionReport {
-    private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
     private final InspectionClient inspectionClient;
 
     @Autowired
-    public BsbCommentInspectionReport(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
-                                      InspectionClient inspectionClient) {
-        this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
+    public BsbCommentInspectionReport(InspectionClient inspectionClient) {
         this.inspectionClient = inspectionClient;
     }
 
@@ -50,7 +36,8 @@ public class BsbCommentInspectionReport {
         HttpServletRequest request = bpc.request;
         HttpSession session = request.getSession();
         session.removeAttribute(KEY_APP_ID);
-        session.removeAttribute(KEY_COMMENT_REPORT_DATA);
+        session.removeAttribute(KEY_INSPECTION_REPORT_DTO);
+        session.removeAttribute(DocConstants.KEY_COMMON_DOC_DTO);
 
         // get app ID from request parameter
         String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
@@ -59,41 +46,33 @@ public class BsbCommentInspectionReport {
             throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
         }
         ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
-
-
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
     }
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        // retrieve inspection report file-repository ID
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        InsCommentReportDataDto dto = inspectionClient.retrieveInspectionReport(appId);
-        ParamUtil.setSessionAttr(request, KEY_REPORT_REPO_ID, dto.getRepoId());
+        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
+        if (reportDto == null) {
+            reportDto = inspectionClient.getInsReportDto(appId);
+        }
+        ParamUtil.setSessionAttr(request, KEY_INSPECTION_REPORT_DTO, reportDto);
     }
 
     public void pre(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, KEY_COMMENT_REPORT_DATA);
-        if (dto == null) {
-            dto = new CommentInsReportDto();
-            ParamUtil.setSessionAttr(request, KEY_COMMENT_REPORT_DATA, dto);
-        }
+        // do nothinf now
     }
 
     public void validateSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, KEY_COMMENT_REPORT_DATA);
-        dto.reqObjMapping(request);
-        ParamUtil.setSessionAttr(request, KEY_COMMENT_REPORT_DATA, dto);
+        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
+        reportDto.reqObjMapping(request);
+        ParamUtil.setSessionAttr(request, KEY_INSPECTION_REPORT_DTO, reportDto);
 
-        CommentInsReportDto.CommentInsReportValidateDto validateDto = dto.toValidateDto();
-        ValidationResultDto validationResultDto = inspectionClient.validateCommentReportForm(validateDto);
-        if (validationResultDto.isPass()) {
-            log.info("Validation pass for submission");
+        ValidationResultDto validationResultDto = inspectionClient.validateReportDto(reportDto);
+        if (validationResultDto.isPass()){
             ParamUtil.setRequestAttr(request, KEY_ROUTE, "save");
         } else {
-            log.info("Validation fail for submission");
             ParamUtil.setRequestAttr(request, KEY_ROUTE, "back");
             String errorMsg = validationResultDto.toErrorMsg();
             log.info("Error msg is [{}]", errorMsg);
@@ -102,33 +81,10 @@ public class BsbCommentInspectionReport {
     }
 
     public void save(BaseProcessClass bpc) {
-        log.info("Start to save submission of inspection report comment");
         HttpServletRequest request = bpc.request;
-        CommentInsReportDto dto = (CommentInsReportDto) ParamUtil.getSessionAttr(request, KEY_COMMENT_REPORT_DATA);
-
-        if (MasterCodeConstants.YES.equals(dto.getUpload()) && !dto.getNewDocMap().isEmpty()) {
-            // save new uploaded files at local and sync
-            // save at local
-            log.info("Save attachment into file-repo");
-            MultipartFile[] files = dto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-            List<NewFileSyncDto> newFilesToSync = dto.newFileSaved(repoIds);
-            if (!newFilesToSync.isEmpty()) {
-                // sync files to BE
-                log.info("Sync attachment to BE");
-                FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                syncDto.setNewFiles(newFilesToSync);
-                bsbFileClient.saveFiles(syncDto);
-            }
-
-            // save app doc if any
-            log.info("Save application, routing history and bsb_application_doc if any");
-            CommentInsReportSaveDto saveDto = new CommentInsReportSaveDto();
-            String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-            saveDto.setAppId(appId);
-            saveDto.setUpload(dto.getUpload());
-            saveDto.setAttachmentList(dto.getSavedDocList());
-            inspectionClient.saveCommentReportForm(saveDto);
-        }
+        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INSPECTION_REPORT_DTO);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        //save data
+        inspectionClient.saveInspectionReport(reportDto, appId);
     }
 }

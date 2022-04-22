@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>Upload Inspection/Certification Report</h1>
+                    <h1>Inspection Report Review</h1>
                 </div>
             </div>
         </div>

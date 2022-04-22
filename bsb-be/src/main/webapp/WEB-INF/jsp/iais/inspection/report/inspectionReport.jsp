@@ -238,11 +238,11 @@
                                             <td>1.${status.count}</td>
                                             <td><c:out value="${followUp.itemDescription}"/></td>
                                             <td>
-                                                <textarea id="observation--v--${followUp.id}" name="observation--v--${followUp.id}" cols="20" rows="5" maxlength="500"><c:out value="${followUp.observation}"/></textarea>
+                                                <textarea id="observation--v--${followUp.id}" name="observation--v--${followUp.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${followUp.observation}"/></textarea>
                                                 <span data-err-ind="observation--v--${followUp.id}" class="error-msg"></span>
                                             </td>
                                             <td>
-                                                <textarea id="actionRequired--v--${followUp.id}" name="actionRequired--v--${followUp.id}" cols="20" rows="5" maxlength="500"><c:out value="${followUp.actionRequired}"/></textarea>
+                                                <textarea id="actionRequired--v--${followUp.id}" name="actionRequired--v--${followUp.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${followUp.actionRequired}"/></textarea>
                                                 <span data-err-ind="actionRequired--v--${followUp.id}" class="error-msg"></span>
                                             </td>
                                             <td><c:out value="${followUp.dueDate}"/></td>
