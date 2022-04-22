@@ -349,7 +349,7 @@
                         <span class="mandatory otherQualificationSpan">*</span>
                     </div>
                     <div class="col-sm-6">
-                        <select name="countryE" class="countryEDropdown" id="countryE">
+                        <select name="countryE--v--${status.index}" id="countryE--v--${status.index}" class="countryEDropdown--v--${status.index}">
                             <option value="">Please Select</option>
                             <c:forEach items="${nationalityOps}" var="na">
                                 <option value="${na.value}" <c:if test="${info.countryE eq na.value}">selected="selected"</c:if>>${na.text}</option>
@@ -429,7 +429,7 @@
                         <span class="mandatory otherQualificationSpan">*</span>
                     </div>
                     <div class="col-sm-6">
-                        <input maxlength="250" type="text" autocomplete="off" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" value='<c:out value="${info.remarksE}"/>'/>
+                        <textarea maxLength="250" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${info.remarksE}"/></textarea>
                         <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
                     </div>
                 </div>

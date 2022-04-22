@@ -126,7 +126,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Address Type</label>
-                                        <div class="col-xs-6"><p>${facProfile.addressType}</p></div>
+                                        <div class="col-xs-6"><p><iais:code code="${facProfile.addressType}"/></p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">

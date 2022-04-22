@@ -72,7 +72,7 @@ public class FacilityRegisterDto implements Serializable{
 
         if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(dto.getFacilitySelectionDto().getFacClassification())) {
             dto.setAfcDto((FacilityAfcDto) ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else {
+        } else if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(dto.getFacilitySelectionDto().getFacClassification())) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);
             dto.setBiologicalAgentToxinMap(batInfoMap);
@@ -141,8 +141,9 @@ public class FacilityRegisterDto implements Serializable{
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
         primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(primaryDocs, DocRecordInfo::getRepoId));
 
-        boolean certifiedFacility = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facilitySelectionDto.getFacClassification());
-        if (certifiedFacility) {
+        boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facilitySelectionDto.getFacClassification());
+        boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(facilitySelectionDto.getFacClassification());
+        if (isCf) {
             SimpleNode otherAppInfoNode = new SimpleNode(otherAppInfoDto, NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
             SimpleNode supportingDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
             SimpleNode afcNode = new SimpleNode(this.afcDto, NODE_NAME_AFC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
@@ -157,7 +158,7 @@ public class FacilityRegisterDto implements Serializable{
                     .addNode(afcNode)
                     .addNode(previewSubmitNode)
                     .build();
-        } else {
+        } else if (isUcf) {
             NodeGroup.Builder batInfoNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
                     .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup});
             for (Map.Entry<String, BiologicalAgentToxinDto> entry : biologicalAgentToxinMap.entrySet()) {
@@ -176,6 +177,20 @@ public class FacilityRegisterDto implements Serializable{
                     .addNode(companyInfoNode)
                     .addNode(facInfoNodeGroup)
                     .addNode(batInfoNodeGroup)
+                    .addNode(otherAppInfoNode)
+                    .addNode(supportingDocNode)
+                    .addNode(previewSubmitNode)
+                    .build();
+        } else {
+            SimpleNode otherAppInfoNode = new SimpleNode(otherAppInfoDto, NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
+            SimpleNode supportingDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
+            SimpleNode previewSubmitNode = new SimpleNode(this.previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
+
+            return new NodeGroup.Builder().name(name)
+                    .addNode(beforeBeginNode)
+                    .addNode(facSelectionNode)
+                    .addNode(companyInfoNode)
+                    .addNode(facInfoNodeGroup)
                     .addNode(otherAppInfoNode)
                     .addNode(supportingDocNode)
                     .addNode(previewSubmitNode)

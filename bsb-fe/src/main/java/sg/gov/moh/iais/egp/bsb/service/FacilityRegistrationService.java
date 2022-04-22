@@ -109,17 +109,16 @@ public class FacilityRegistrationService {
                 if (currentLetGo) {
                     Nodes.passValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
 
-                    if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
-                        ParamUtil.setSessionAttr(request, KEY_IS_CF, Boolean.TRUE);
-                    } else{
-                        ParamUtil.setSessionAttr(request, KEY_IS_CF, Boolean.FALSE);
-                    }
+                    boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+                    ParamUtil.setSessionAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
+                    boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+                    ParamUtil.setSessionAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
 
                     // change root node group
-                    changeRootNodeGroup(facRegRoot, selectionDto);
+                    changeRootNodeGroup(facRegRoot, isCf, isUcf);
 
-                    // change BAT node group if necessary
-                    if (!MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
+                    // change BAT node group
+                    if (isUcf) {
                         NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
                         changeBatNodeGroup(batGroup, selectionDto);
                     }
@@ -652,9 +651,6 @@ public class FacilityRegistrationService {
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         preparePreviewData(request);
-
-        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
-        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
     }
 
     public void preparePreviewData(HttpServletRequest request) {
@@ -675,9 +671,10 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
         boolean isCf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_CF);
+        boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
         if (isCf) {
             ParamUtil.setRequestAttr(request, NODE_NAME_AFC, ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-        } else {
+        } else if (isUcf) {
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
             List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
@@ -1059,17 +1056,37 @@ public class FacilityRegistrationService {
                 .build();
     }
 
-    public static void changeRootNodeGroup(NodeGroup facRegRoot, FacilitySelectionDto selectionDto) {
+    public static NodeGroup registeredFacilityNodeGroup(String name) {
+        Node beforeBeginNode = new Node(NODE_NAME_BEFORE_BEGIN, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
+        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup});
+        SimpleNode supportingDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, otherAppInfoNode, supportingDocNode});
+
+        return new NodeGroup.Builder().name(name)
+                .addNode(beforeBeginNode)
+                .addNode(facSelectionNode)
+                .addNode(companyInfoNode)
+                .addNode(facInfoNodeGroup)
+                .addNode(otherAppInfoNode)
+                .addNode(supportingDocNode)
+                .addNode(previewSubmitNode)
+                .build();
+    }
+
+    public static void changeRootNodeGroup(NodeGroup facRegRoot, boolean isCf, boolean isUcf) {
         Assert.notNull(facRegRoot, ERR_MSG_BAT_NOT_NULL);
-        String classification = selectionDto.getFacClassification();
-        Node[] subNodes;
-        if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(classification)) {
-            NodeGroup certifiedNodeGroup = certifiedFacilityNodeGroup(facRegRoot.getName());
-            subNodes = certifiedNodeGroup.getAllNodes().toArray(new Node[0]);
-        } else {
-            NodeGroup uncertifiedNodeGroup = uncertifiedFacilityNodeGroup(facRegRoot.getName());
-            subNodes = uncertifiedNodeGroup.getAllNodes().toArray(new Node[0]);
+        NodeGroup newNodeGroup;
+        if (isCf) {
+            newNodeGroup = certifiedFacilityNodeGroup(facRegRoot.getName());
+        } else if (isUcf) {
+            newNodeGroup = uncertifiedFacilityNodeGroup(facRegRoot.getName());
+        } else {  // RF
+            newNodeGroup = registeredFacilityNodeGroup(facRegRoot.getName());
         }
+        Node[] subNodes = newNodeGroup.getAllNodes().toArray(new Node[0]);
         facRegRoot.reorganizeNodes(subNodes, NODE_NAME_FAC_SELECTION);
     }
 

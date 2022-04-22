@@ -100,21 +100,21 @@ public class ViewFacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
             FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue();
-            if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification())) {
-                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.TRUE);
 
+            boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_IS_CF, isCf ? Boolean.TRUE : Boolean.FALSE);
+            boolean isUcf = MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());
+            ParamUtil.setRequestAttr(request, KEY_IS_UCF, isUcf ? Boolean.TRUE : Boolean.FALSE);
+            if (isCf) {
                 ParamUtil.setRequestAttr(request, NODE_NAME_AFC, ((SimpleNode) facRegRoot.at(NODE_NAME_AFC)).getValue());
-            } else {
-                ParamUtil.setRequestAttr(request, KEY_IS_CF, Boolean.FALSE);
-
+            } else if (isUcf) {
                 NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
                 List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
                 ParamUtil.setRequestAttr(request, "batList", batList);
             }
 
             OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) ((SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO)).getValue();
-            // TODO after we save the declaration data into app misc, remove the hardcode
-            List<DeclarationItemMainInfo> config = facRegClient.getDeclarationConfigInfoById("B95B8F95-62B1-EC11-BE76-000C298D317C");
+            List<DeclarationItemMainInfo> config = facRegClient.getDeclarationConfigInfoById(otherAppInfoDto.getDeclarationId());
             otherAppInfoDto.setDeclarationConfig(config);
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
