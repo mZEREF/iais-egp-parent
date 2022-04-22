@@ -202,6 +202,8 @@ $(function () {
         /* Set date picker */
         setupAllDatePickers(newSectionDivJqObj);
 
+        /* Set current idx */
+        setupCurrentIndexInd(newSectionDivJqObj, nextIdx, "data-current-idx")
 
         $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
 
@@ -209,6 +211,7 @@ $(function () {
         newSectionDivJqObj.find("select[data-cascade-dropdown=schedule-bat]").each(function () {
             var id = $(this).attr("id");
             var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
+            $("#"+id).unbind("change");
             registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
                 $("#"+batDropdownId).niceSelect("update");
             });

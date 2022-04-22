@@ -481,9 +481,11 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
 
         // convert BatBasicInfo to SelectOption object
+        SelectOption pleaseSelect = new SelectOption("", "Please Select");
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
         for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
             List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
+            optionList.add(pleaseSelect);
             for (BatBasicInfo info : entry.getValue()) {
                 SelectOption option = new SelectOption();
                 option.setText(info.getName());
@@ -498,6 +500,7 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP_JSON, scheduleBatMapJson);
 
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
     }
 
     public void handleBAToxin(BaseProcessClass bpc) {

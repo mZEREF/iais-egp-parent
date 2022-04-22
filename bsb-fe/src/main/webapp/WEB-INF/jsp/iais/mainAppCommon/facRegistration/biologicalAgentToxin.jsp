@@ -6,6 +6,7 @@
     %>
     var scheduleBatDataJson = <%=jsonStr%>;
 </script>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <div id="sectionGroup">
     <c:forEach var="info" items="${batInfo.batInfos}" varStatus="status">
         <section id="batInfoSection--v--${status.index}" style="margin-bottom: 100px">
@@ -16,6 +17,7 @@
                 </div>
                 <div class="col-sm-6" style="z-index: 30;">
                     <select name="schedule--v--${status.index}" class="schedule-v-Select" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
+                        <option value="">Please Select</option>
                         <c:forEach items="${scheduleOps}" var="schedule">
                             <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                         </c:forEach>
@@ -28,12 +30,13 @@
             </div>
             <div class="form-group ">
                 <div class="col-sm-5 control-label">
-                    <label for="batName--v--${status.index}">Name of Biological Agent/Toxin</label>
+                    <label for="batName--v--${status.index}">Name of ${(empty info.schedule and firstScheduleOp eq MasterCodeConstants.FIFTH_SCHEDULE) or (info.schedule eq MasterCodeConstants.FIFTH_SCHEDULE) ? "Toxin" : "Biological Agent"}</label>
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6" style="z-index: 20;">
                     <select name="batName--v--${status.index}"  class="batName-v-Dropdown" id="batName--v--${status.index}">
-                        <c:set var="batNameOps" value="${scheduleBatMap.get(info.schedule == null ? firstScheduleOp : info.schedule)}"/>
+                        <option value="">Please Select</option>
+                        <c:set var="batNameOps" value="${scheduleBatMap.get(empty info.schedule ? firstScheduleOp : info.schedule)}"/>
                         <c:forEach items="${batNameOps}" var="name">
                             <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
                         </c:forEach>
@@ -48,31 +51,31 @@
                 <div class="col-sm-6" style="z-index: 10;">
                     <div class="self-assessment-checkbox-gp">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleCultureIsolate--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS001')}">checked="checked"</c:if> value="BNOTS001"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleCultureIsolate--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_CULTURE_ISOLATE)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_CULTURE_ISOLATE}"/>
                             <label for="sampleCultureIsolate--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culture/isolate of biological agent</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="samplePureToxin--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS002')}">checked="checked"</c:if> value="BNOTS002"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="samplePureToxin--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_PURE_TOXIN)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_PURE_TOXIN}"/>
                             <label for="samplePureToxin--v--${status.index}" class="form-check-label"><span class="check-square"></span>Pure toxin</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleClinical--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS003')}">checked="checked"</c:if> value="BNOTS003"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleClinical--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_CLINICAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_CLINICAL}"/>
                             <label for="sampleClinical--v--${status.index}" class="form-check-label"><span class="check-square"></span>Clinical sample e.g. blood, serum, respiratory swab, containing biological agent or toxin</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleAnimal--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS004')}">checked="checked"</c:if> value="BNOTS004"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleAnimal--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_ANIMAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_ANIMAL}"/>
                             <label for="sampleAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal sample containing biological agent or toxin</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleEnv--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS005')}">checked="checked"</c:if> value="BNOTS005"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleEnv--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_ENVIRONMENTAL}"/>
                             <label for="sampleEnv--v--${status.index}" class="form-check-label"><span class="check-square"></span>Environmental samples containing biological agent or toxin</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleFood--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS006')}">checked="checked"</c:if> value="BNOTS006"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleFood--v--${status.index}" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_FOOD)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_FOOD}"/>
                             <label for="sampleFood--v--${status.index}" class="form-check-label"><span class="check-square"></span>Food sample containing biological agent or toxin</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleOthers--v--${status.index}" data-custom-ind="batOthersSampleType" <c:if test="${info.sampleType.contains('BNOTS007')}">checked="checked"</c:if> value="BNOTS007"/>
+                            <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleOthers--v--${status.index}" data-custom-ind="batOthersSampleType" <c:if test="${info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_OTHER)}">checked="checked"</c:if> value="${MasterCodeConstants.SAMPLE_NATURE_OTHER}"/>
                             <label for="sampleOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details</label>
                         </div>
                     </div>
@@ -81,45 +84,45 @@
             </div>
             <div class="form-group ">
                 <div class="col-sm-5 control-label">
-                    <label>Type of work that will be carried out involving the biological agent/toxin <span class="mandatory otherQualificationSpan">*</span></label>
+                    <label>Type of work that will be carried out involving the ${(empty info.schedule and firstScheduleOp eq MasterCodeConstants.FIFTH_SCHEDULE) or (info.schedule eq MasterCodeConstants.FIFTH_SCHEDULE) ? "Toxin" : "Biological Agent"} <span class="mandatory otherQualificationSpan">*</span></label>
                 </div>
                 <div class="col-sm-6" style="z-index: 10;">
                     <div class="self-assessment-checkbox-gp">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workCultureIsolation--v--${status.index}" <c:if test="${info.workType.contains('BNOTW001')}">checked="checked"</c:if> value="BNOTW001"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workCultureIsolation--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_CULTURING_ISOLATION_BAT}"/>
                             <label for="workCultureIsolation--v--${status.index}" class="form-check-label"><span class="check-square"></span>Culturing/isolation of biological agent</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workSerological--v--${status.index}" <c:if test="${info.workType.contains('BNOTW002')}">checked="checked"</c:if> value="BNOTW002"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workSerological--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_SEROLOGICAL_TEST}"/>
                             <label for="workSerological--v--${status.index}" class="form-check-label"><span class="check-square"></span>Serological test</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workMolecular--v--${status.index}" <c:if test="${info.workType.contains('BNOTW003')}">checked="checked"</c:if> value="BNOTW003"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workMolecular--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_MOLECULAR_TEST)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_MOLECULAR_TEST}"/>
                             <label for="workMolecular--v--${status.index}" class="form-check-label"><span class="check-square"></span>Molecular test</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" <c:if test="${info.workType.contains('BNOTW004')}">checked="checked"</c:if> value="BNOTW004"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workAnimal--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_ANIMAL_STUDIES)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_ANIMAL_STUDIES}"/>
                             <label for="workAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal studies (specify the type of animal under details)</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" <c:if test="${info.workType.contains('BNOTW005')}">checked="checked"</c:if> value="BNOTW005"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT}"/>
                             <label for="workBiomanufacturing--v--${status.index}" class="form-check-label"><span class="check-square"></span>Biomanufacturing involving biological agent. Please specify expected maximum handling volume under details</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" data-custom-ind="batOthersWorkType" <c:if test="${info.workType.contains('BNOTW006')}">checked="checked"</c:if> value="BNOTW006"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workOthers--v--${status.index}" data-custom-ind="batOthersWorkType" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_OTHERS)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_OTHERS}"/>
                             <label for="workOthers--v--${status.index}" class="form-check-label"><span class="check-square"></span>Others. Please specify under details.</label>
                         </div>
                     </div>
                     <span data-err-ind="workType--v--${status.index}" class="error-msg"></span>
                 </div>
             </div>
-            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains('BNOTS007') && !info.workType.contains('BNOTW006')}">style="display: none"</c:if>>
+            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_OTHER) && !info.workType.contains(MasterCodeConstants.WORK_TYPE_OTHERS)}">style="display: none"</c:if>>
                 <div class="col-sm-5 control-label">
                     <label for="sampleWorkDetail--v--${status.index}">Details regarding the type of sample that will be handled and the intended work <span class="mandatory otherQualificationSpan">*</span></label>
                 </div>
                 <div class="col-sm-6">
                     <textarea maxLength="250" class="col-xs-12" name="sampleWorkDetail--v--${status.index}" id="sampleWorkDetail--v--${status.index}" rows="3"><c:out value="${info.sampleWorkDetail}"/></textarea>
-                    <span data-err-ind="remarks--v--${status.index}" class="error-msg"></span>
+                    <span data-err-ind="sampleWorkDetail--v--${status.index}" class="error-msg"></span>
                 </div>
             </div>
             <div class="form-group ">
@@ -128,155 +131,316 @@
                     <span class="mandatory otherQualificationSpan">*</span>
                 </div>
                 <div class="col-sm-6">
-                    <div class="col-sm-4" style="margin-top: 8px">
-                        <label for="procurementModeLocalTransfer--v--${status.index}">Yes</label>
-                        <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" value="BMOP001" <c:if test="${info.procurementMode eq 'BMOP001'}">checked="checked"</c:if> />
+                    <div class="col-sm-4" style="margin-top: 8px; padding-left:0; padding-right:0">
+                        <label for="procurementModeLocalTransfer--v--${status.index}">Local Transfer</label>
+                        <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" data-custom-ind="batProcurementModeLocal" value="${MasterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}" <c:if test="${info.procurementMode eq MasterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">checked="checked"</c:if> />
                     </div>
-                    <div class="col-sm-4" style="margin-top: 8px">
-                        <label for="procurementModeImport--v--${status.index}">No</label>
-                        <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" value="BMOP002" <c:if test="${info.procurementMode eq 'BMOP002'}">checked="checked"</c:if> />
+                    <div class="col-sm-4" style="margin-top: 8px; padding-left:0; padding-right:0">
+                        <label for="procurementModeImport--v--${status.index}">Import</label>
+                        <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" data-custom-ind="batProcurementModeImport" value="${MasterCodeConstants.PROCUREMENT_MODE_IMPORT}" <c:if test="${info.procurementMode eq MasterCodeConstants.PROCUREMENT_MODE_IMPORT}">checked="checked"</c:if> />
                     </div>
                     <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
                 </div>
             </div>
-            <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="postalCode--v--${status.index}">Postal Code</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
+            <div id="transferringFacilityDiv--v--${status.index}" <c:if test="${info.procurementMode ne null and info.procurementMode ne MasterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">style="display: none;"</c:if>>
+                <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="postalCodeT--v--${status.index}">Postal Code</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-5">
+                        <input maxlength="250" type="text" autocomplete="off" name="postalCodeT--v--${status.index}" id="postalCodeT--v--${status.index}" value='<c:out value="${info.postalCodeT}"/>'/>
+                        <span data-err-ind="postalCodeT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                    <div class="col-sm-2">
+                        <a id="localTransferRetrieveAddressBtn" href="javascript:void(0)" data-current-idx="${status.index}" data-section-separator="--v--">Retrieve your address</a>
+                    </div>
                 </div>
-                <div class="col-sm-5">
-                    <input maxlength="250" type="text" autocomplete="off" name="postalCode--v--${status.index}" id="postalCode--v--${status.index}" value='<c:out value="${info.postalCode}"/>'/>
-                    <span data-err-ind="postalCode--v--${status.index}" class="error-msg"></span>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="addressTypeT--v--${status.index}">Address Type</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select name="addressTypeT--v--${status.index}" id="addressTypeT--v--${status.index}">
+                            <option value="">Please Select</option>
+                            <c:forEach items="${addressTypeOps}" var="name">
+                                <option value="${name.value}" <c:if test="${info.addressTypeT eq name.value}">selected="selected"</c:if>>${name.text}</option>
+                            </c:forEach>
+                        </select>
+                        <span data-err-ind="addressTypeT--v--${status.index}" class="error-msg"></span>
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <a href="#">Retrieve your address</a>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="blockNoT--v--${status.index}">Block / House No.</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="blockNoT--v--${status.index}" id="blockNoT--v--${status.index}" value='<c:out value="${info.blockNoT}"/>'/>
+                        <span data-err-ind="blockNoT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="floorNoT--v--${status.index}">Floor / Unit No.</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" autocomplete="off" name="floorNoT--v--${status.index}" id="floorNoT--v--${status.index}" value='${info.floorNoT}' maxlength="250"/>
+                        <span data-err-ind="floorNoT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                    <div class="hidden-xs col-sm-1" style="text-align: center">
+                        <p>-</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" autocomplete="off" name="unitNoT--v--${status.index}" id="unitNoT--v--${status.index}" value='${info.unitNoT}' maxlength="250"/>
+                        <span data-err-ind="unitNoT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="streetNameT--v--${status.index}">Street Name</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="streetNameT--v--${status.index}" id="streetNameT--v--${status.index}" value='<c:out value="${info.streetNameT}"/>'/>
+                        <span data-err-ind="streetNameT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="buildingNameT--v--${status.index}">Building Name</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="buildingNameT--v--${status.index}" id="buildingNameT--v--${status.index}" value='<c:out value="${info.buildingNameT}"/>'/>
+                        <span data-err-ind="buildingNameT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Contact Person from Transferring Facility:</p>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="contactPersonNameT--v--${status.index}">Name</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="contactPersonNameT--v--${status.index}" id="contactPersonNameT--v--${status.index}" value='<c:out value="${info.contactPersonNameT}"/>'/>
+                        <span data-err-ind="contactPersonNameT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="emailAddressT--v--${status.index}">Email address</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="emailAddressT--v--${status.index}" id="emailAddressT--v--${status.index}" value='<c:out value="${info.emailAddressT}"/>'/>
+                        <span data-err-ind="emailAddressT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="contactNoT--v--${status.index}">Contact No.</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="contactNoT--v--${status.index}" id="contactNoT--v--${status.index}" value='<c:out value="${info.contactNoT}"/>'/>
+                        <span data-err-ind="contactNoT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-5 control-label">
+                        <label for="expectedDateT--v--${status.index}">Expected Date of Transfer</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" autocomplete="off" name="expectedDateT--v--${status.index}" id="expectedDateT--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${info.expectedDateT}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                        <span data-err-ind="expectedDateT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="courierServiceProviderNameT--v--${status.index}">Name of Courier Service Provider</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="courierServiceProviderNameT--v--${status.index}" id="courierServiceProviderNameT--v--${status.index}" value='<c:out value="${info.courierServiceProviderNameT}"/>'/>
+                        <span data-err-ind="courierServiceProviderNameT--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label style="font-size: 10px">Note: The driver of the conveyance must have a valid Hazardous Materials Transport Driver Permit, where applicable, in accordance with BATA Transportation Regulations.</label>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="remarksT--v--${status.index}">Remarks</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea maxLength="250" class="col-xs-12" name="remarksT--v--${status.index}" id="remarksT--v--${status.index}" rows="3"><c:out value="${info.remarksT}"/></textarea>
+                        <span data-err-ind="remarksT--v--${status.index}" class="error-msg"></span>
+                    </div>
                 </div>
             </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="addressType--v--${status.index}">Address Type</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
+            <div id="exportingFacilityDiv--v--${status.index}" <c:if test="${info.procurementMode ne MasterCodeConstants.PROCUREMENT_MODE_IMPORT}">style="display: none;"</c:if>>
+                <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Exporting Facility:</p>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="facNameE--v--${status.index}">Facility Name</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="facNameE--v--${status.index}" id="facNameE--v--${status.index}" value='<c:out value="${info.facNameE}"/>'/>
+                        <span data-err-ind="facNameE--v--${status.index}" class="error-msg"></span>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <select name="addressType--v--${status.index}" id="addressType--v--${status.index}">
-                        <option value="">Please Select</option>
-                        <c:forEach items="${addressTypeOps}" var="name">
-                            <option value="${name.value}" <c:if test="${info.addressType eq name.value}">selected="selected"</c:if>>${name.text}</option>
-                        </c:forEach>
-                    </select>
-                    <span data-err-ind="addressType--v--${status.index}" class="error-msg"></span>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="blockNoE--v--${status.index}">Block No.</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="blockNoE--v--${status.index}" id="blockNoE--v--${status.index}" value='<c:out value="${info.blockNoE}"/>'/>
+                        <span data-err-ind="blockNoE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="floorNoE--v--${status.index}">Floor / Unit</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" autocomplete="off" name="floorNoE--v--${status.index}" id="floorNoE--v--${status.index}" value='${info.floorNoE}' maxlength="250"/>
+                        <span data-err-ind="floorNoE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                    <div class="hidden-xs col-sm-1" style="text-align: center">
+                        <p>-</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" autocomplete="off" name="unitNoE--v--${status.index}" id="unitNoE--v--${status.index}" value='${info.unitNoE}' maxlength="250"/>
+                        <span data-err-ind="unitNoE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="streetNameE--v--${status.index}">Street</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="streetNameE--v--${status.index}" id="streetNameE--v--${status.index}" value='<c:out value="${info.streetNameE}"/>'/>
+                        <span data-err-ind="streetNameE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="postalCodeE--v--${status.index}">Postal Code</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="postalCodeE--v--${status.index}" id="postalCodeE--v--${status.index}" value='<c:out value="${info.postalCodeE}"/>'/>
+                        <span data-err-ind="postalCodeE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="countryE--v--${status.index}">Country</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select name="countryE" class="countryEDropdown" id="countryE">
+                            <option value="">Please Select</option>
+                            <c:forEach items="${nationalityOps}" var="na">
+                                <option value="${na.value}" <c:if test="${info.countryE eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                            </c:forEach>
+                        </select>
+                        <span data-err-ind="countryE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="stateE--v--${status.index}">State</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="stateE--v--${status.index}" id="stateE--v--${status.index}" value='<c:out value="${info.stateE}"/>'/>
+                        <span data-err-ind="stateE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Contact Person from Exporting Facility:</p>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="contactPersonNameE--v--${status.index}">Name</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="contactPersonNameE--v--${status.index}" id="contactPersonNameE--v--${status.index}" value='<c:out value="${info.contactPersonNameE}"/>'/>
+                        <span data-err-ind="contactPersonNameE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="emailAddressE--v--${status.index}">Email address</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="emailAddressE--v--${status.index}" id="emailAddressE--v--${status.index}" value='<c:out value="${info.emailAddressE}"/>'/>
+                        <span data-err-ind="emailAddressE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="contactNoE--v--${status.index}">Contact No.</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="contactNoE--v--${status.index}" id="contactNoE--v--${status.index}" value='<c:out value="${info.contactNoE}"/>'/>
+                        <span data-err-ind="contactNoE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-5 control-label">
+                        <label for="expectedDateE--v--${status.index}">Expected Date of Import</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" autocomplete="off" name="expectedDateE--v--${status.index}" id="expectedDateE--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${info.expectedDateE}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
+                        <span data-err-ind="expectedDateE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="courierServiceProviderNameE--v--${status.index}">Name of Courier Service Provider</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="courierServiceProviderNameE--v--${status.index}" id="courierServiceProviderNameE--v--${status.index}" value='<c:out value="${info.courierServiceProviderNameE}"/>'/>
+                        <span data-err-ind="courierServiceProviderNameE--v--${status.index}" class="error-msg"></span>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label style="font-size: 10px">Note: The driver of the conveyance must have a valid Hazardous Materials Transport Driver Permit, where applicable, in accordance with BATA Transportation Regulations.</label>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-sm-5 control-label">
+                        <label for="remarksE--v--${status.index}">Remarks</label>
+                        <span class="mandatory otherQualificationSpan">*</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input maxlength="250" type="text" autocomplete="off" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" value='<c:out value="${info.remarksE}"/>'/>
+                        <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
+                    </div>
                 </div>
             </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="blockNo--v--${status.index}">Block / House No.</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
+            <div class="form-group " <c:if test="${firstScheduleOp ne MasterCodeConstants.FIFTH_SCHEDULE}">style="display: none"</c:if>>
+                <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                    <input type="checkbox" name="toxinRegulationDeclare--v--${status.index}" id="toxinRegulationDeclare--v--${status.index}" value="Y" <c:if test="${info.toxinRegulationDeclare eq 'Y'}">checked="checked"</c:if> />
                 </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="blockNo--v--${status.index}" id="blockNo--v--${status.index}" value='<c:out value="${info.blockNo}"/>'/>
-                    <span data-err-ind="blockNo--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="floorNo--v--${status.index}">Floor / Unit No.</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-2">
-                    <input type="text" autocomplete="off" name="floorNo--v--${status.index}" id="floorNo--v--${status.index}" value='${info.floorNo}' maxlength="250"/>
-                    <span data-err-ind="floorNo" class="error-msg"></span>
-                </div>
-                <div class="hidden-xs col-sm-1" style="text-align: center">
-                    <p>-</p>
-                </div>
-                <div class="col-sm-3">
-                    <input type="text" autocomplete="off" name="unitNo--v--${status.index}" id="unitNo--v--${status.index}" value='${info.unitNo}' maxlength="250"/>
-                    <span data-err-ind="unitNo" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="facilityName--v--${status.index}">Street Name</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="streetName--v--${status.index}" id="streetName--v--${status.index}" value='<c:out value="${info.streetName}"/>'/>
-                    <span data-err-ind="streetName--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="buildingName--v--${status.index}">Building Name</label>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="buildingName--v--${status.index}" id="buildingName--v--${status.index}" value='<c:out value="${info.buildingName}"/>'/>
-                    <span data-err-ind="buildingName--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Contact Person from Transferring Facility:</p>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="contactPersonName--v--${status.index}">Name</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="contactPersonName--v--${status.index}" id="contactPersonName--v--${status.index}" value='<c:out value="${info.contactPersonName}"/>'/>
-                    <span data-err-ind="contactPersonName--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="emailAddress--v--${status.index}">Email address</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="emailAddress--v--${status.index}" id="emailAddress--v--${status.index}" value='<c:out value="${info.emailAddress}"/>'/>
-                    <span data-err-ind="emailAddress--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="contactNo--v--${status.index}">Contact No.</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="contactNo--v--${status.index}" id="contactNo--v--${status.index}" value='<c:out value="${info.contactNo}"/>'/>
-                    <span data-err-ind="contactNo--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-5 control-label">
-                    <label for="expectedDate--v--${status.index}">Expected Date of Transfer</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <input type="text" autocomplete="off" name="expectedDate--v--${status.index}" id="expectedDate--v--${status.index}" data-date-start-date="01/01/1900" value="<c:out value="${info.expectedDate}"/>" placeholder="dd/mm/yyyy" maxlength="250" class="date_picker form-control"/>
-                    <span data-err-ind="expectedDate--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="courierServiceProviderName--v--${status.index}">Name of Courier Service Provider</label>
-                </div>
-                <div class="col-sm-6">
-                    <input maxlength="250" type="text" autocomplete="off" name="courierServiceProviderName--v--${status.index}" id="courierServiceProviderName--v--${status.index}" value='<c:out value="${info.courierServiceProviderName}"/>'/>
-                    <span data-err-ind="courierServiceProviderName--v--${status.index}" class="error-msg"></span>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label style="font-size: 10px">Note: The driver of the conveyance must have a valid Hazardous Materials Transport Driver Permit, where applicable, in accordance with BATA Transportation Regulations.</label>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-sm-5 control-label">
-                    <label for="remarks--v--${status.index}">Remarks</label>
-                    <span class="mandatory otherQualificationSpan">*</span>
-                </div>
-                <div class="col-sm-6">
-                    <textarea maxLength="250" class="col-xs-12" name="remarks--v--${status.index}" id="remarks--v--${status.index}" rows="3"><c:out value="${info.remarks}"/></textarea>
-                    <span data-err-ind="remarks--v--${status.index}" class="error-msg"></span>
+                <div class="col-xs-10 control-label">
+                    <label for="toxinRegulationDeclare--v--${status.index}">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
+                    <span data-err-ind="toxinRegulationDeclare--v--${status.index}" class="error-msg"></span>
                 </div>
             </div>
         </section>
@@ -284,6 +448,22 @@
 </div>
 <div class="form-group">
     <div class="col-12">
-        <a id="addNewBatSection" style="text-decoration: none" href="javascript:void(0)">+ Add New Biological Agent/Toxins</a>
+        <a id="addNewBatSection" style="text-decoration: none" href="javascript:void(0)">+ Add New ${(empty info.schedule and firstScheduleOp eq MasterCodeConstants.FIFTH_SCHEDULE) or (info.schedule eq MasterCodeConstants.FIFTH_SCHEDULE) ? "Toxin" : "Biological Agent"}</a>
+    </div>
+</div>
+
+
+<div class="modal fade" id="invalidPostalCodeModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12"><span>The postal code is invalid</span></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center">
+                <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal">OK</button>
+            </div>
+        </div>
     </div>
 </div>

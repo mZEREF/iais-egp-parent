@@ -150,6 +150,15 @@ function newToolTip(oldEl) {
     return newElJq;
 }
 
+/* Set up all custom index attribute to current index.
+ * idx is new index,
+ * 'parentEl' is a jQuery object */
+function setupCurrentIndexInd(parentEl, idx, attr) {
+    parentEl.find("[" + attr + "]").each(function () {
+        $(this).attr(attr, idx);
+    });
+}
+
 
 /* remove a section in DOM according to sectionIdPrefix, separator and index */
 function deleteSection(sectionIdPrefix, separator, idx) {
