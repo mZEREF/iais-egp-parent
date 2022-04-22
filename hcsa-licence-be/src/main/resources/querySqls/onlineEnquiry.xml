@@ -880,7 +880,7 @@
                   else ', '+dds2p.POSTAL_CODE end
               ) end
              AS SAMPLE_FROM_HCI_CODE ,
-           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+           		dds2.DONOR_NAME , dds2.LIVE_BIRTH_NUM age_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID and dc.HCI_CODE not in (select ar_cen.HCI_CODE from ds_center ar_cen where ar_cen.CENTER_TYPE ='ART')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
@@ -897,7 +897,7 @@
             <#if sampleHciCode??> AND dds2.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
-            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A') in( :birthEventsTotalList) </#if>
+            <#if birthEventsTotalList??> AND dds2.LIVE_BIRTH_NUM  in( :birthEventsTotalList) </#if>
             <#if dc_licenseeId??> AND  :dc_licenseeId = dc.LICENSEE_ID</#if>
 
 
@@ -938,7 +938,7 @@
                   else ', '+dcen2.POSTAL_CODE end
               ) end
              AS SAMPLE_FROM_HCI_CODE ,
-           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY and ddsa.STATUS !='DAS_A')  age_no
+           		dds2.DONOR_NAME ,dds2.LIVE_BIRTH_NUM   age_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join ds_center dcen on dcen.HCI_CODE =dc.HCI_CODE and dcen.CENTER_TYPE ='ART'
