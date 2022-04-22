@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/inspection/review/doReviewFollowUpItemsPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inspection/followup/doReviewFollowUpItemsPage.jsp"%>

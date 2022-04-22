@@ -23,7 +23,6 @@ public class INTRANET___MohDOReviewFollowUpItems___1 extends BaseProcessClass {
 
 	public void init_OnStepProcess_0() throws Exception {
 	// 		Init->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void prepare_OnStepProcess_0() throws Exception {
@@ -55,4 +54,7 @@ public class INTRANET___MohDOReviewFollowUpItems___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "skip", this);
 	}
 
+	public void reject_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "rejectAction", this);
+	}
 }

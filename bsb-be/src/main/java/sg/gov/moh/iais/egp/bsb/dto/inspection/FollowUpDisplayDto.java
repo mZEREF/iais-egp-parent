@@ -12,4 +12,5 @@ public class FollowUpDisplayDto implements Serializable {
     private String actionRequired;
     private String dueDate;
     private String mohRemarks;
+    private String applicantRemarks;
 }

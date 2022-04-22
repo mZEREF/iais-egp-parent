@@ -230,3 +230,14 @@ function skipValidate(){
     $("[name='action_value']").val("noValidate");
     $("#mainForm").submit();
 }
+
+function judgeDisplay(data) {
+    if (data === 'Y') {
+        $("#reviewExtensionTable").show();
+        $("#extensionDecisionDiv").show();
+        $("#reasonMandatory").show();
+    } else {
+        $("#reviewSubmitTable").show();
+        $("#submitDecisionDiv").show();
+    }
+}

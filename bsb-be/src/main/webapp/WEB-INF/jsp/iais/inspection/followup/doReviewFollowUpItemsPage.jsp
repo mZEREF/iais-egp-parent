@@ -13,8 +13,10 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
-<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
-
+<%--@elvariable id="reviewFollowUpDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto"--%>
+<%--@elvariable id="insDecision" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inspection/followup/judgePageDisplay.jsp"%>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="action_type" value="">
@@ -30,13 +32,16 @@
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
-                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
+                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                             </li>
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
-                                            <li id="rectification" role="presentation">
-                                                <a href="#tabRectification" id="doRectification" aria-controls="tabRectification" role="tab" data-toggle="tab">Rectification</a>
+                                            <li id="facilityDetail" role="presentation">
+                                                <a href="#tabFacilityDetail" id="doFacilityDetail" aria-controls="tabFacilityDetail" role="tab" data-toggle="tab">Facility Details</a>
+                                            </li>
+                                            <li id="followUpLi" role="presentation">
+                                                <a href="#tabFollowUp" id="doFollowUp" aria-controls="tabFollowUp" role="tab" data-toggle="tab">Follow-Up</a>
                                             </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -45,13 +50,16 @@
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
                                                 <div class="swiper-slide">
-                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Facility Info</a>
+                                                    <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabRectification" aria-controls="tabRectification" role="tab" data-toggle="tab">Rectification</a>
+                                                    <a href="#tabFacilityDetail" aria-controls="tabFacilityDetail" role="tab" data-toggle="tab">Facility Details</a>
+                                                </div>
+                                                <div class="swiper-slide">
+                                                    <a href="#tabFollowUp" aria-controls="tabFollowUp" role="tab" data-toggle="tab">Follow-Up</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -60,18 +68,21 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-<%--                                                <%@include file="../actual/facilityInfo.jsp" %>--%>
+                                                <%@include file="/WEB-INF/jsp/iais/common/submissionDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
-                                            <div class="tab-pane" id="tabRectification" role="tabpanel">
-                                                <%@include file="../nc/rectification.jsp"%>
+                                            <div class="tab-pane" id="tabFacilityDetail" role="tabpanel">
+                                                <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp" %>
+                                            </div>
+                                            <div class="tab-pane" id="tabFollowUp" role="tabpanel">
+                                                <%@include file="followUpPage.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <h4>Review Follow Up item</h4>
+                                                    <h4>Processing Status Update</h4>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
@@ -80,37 +91,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-12 col-md-4 control-label">Current Status</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><iais:code code="${insInfo.appStatus}"/></p>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">MOH Remarks</label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><c:out value=""/></p>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">User Remarks</label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <p><c:out value=""/></p>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <div class="input-group">
-                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
-                                                                                <option value="">Please Select</option>
-                                                                                <option value="MOHPRO023" <c:if test="${insDecision.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route back to applicant</option>
-                                                                                <option value="MOHPRO010" <c:if test="${insDecision.decision eq 'MOHPRO010'}">selected="selected"</c:if>>Accept response to follow-up items</option>
-                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
-                                                                            </select>
-                                                                            <span data-err-ind="decision" class="error-msg" ></span>
-                                                                        </div>
+                                                                        <p><iais:code code="${reviewFollowUpDto.currentStatus}"/></p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -124,13 +105,51 @@
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
+
+
+                                                                <div class="form-group" id="submitDecisionDiv" style="display: none">
+                                                                    <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision/Recommendation <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
+                                                                                <option value="">Please Select</option>
+                                                                                <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="MOHPRO003" <c:if test="${insDecision.decision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                                <option value="MOHPRO023" <c:if test="${insDecision.decision eq 'MOHPRO023'}">selected="selected"</c:if>>Route back to applicant</option>
+                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                            </select>
+                                                                            <span data-err-ind="decision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+
+                                                                <div class="form-group" id="extensionDecisionDiv" style="display: none">
+                                                                    <label for="processingExtensionDecision" class="col-xs-12 col-md-4 control-label">Processing Decision/Recommendation <span style="color: red">*</span></label>
+                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                        <div class="input-group">
+                                                                            <select name="processingExtensionDecision" class="pro-select" id="processingExtensionDecision">
+                                                                                <option value="">Please Select</option>
+                                                                                <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="MOHPRO003" <c:if test="${insDecision.decision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
+                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                            </select>
+                                                                            <span data-err-ind="decision" class="error-msg" ></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+
                                                             </div>
+                                                            <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Previous</a>
                                                             <div style="text-align: right">
                                                                 <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <br>
+                                                <%@include file="/WEB-INF/jsp/iais/common/processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

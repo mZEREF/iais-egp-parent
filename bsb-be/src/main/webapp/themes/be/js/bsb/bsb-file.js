@@ -91,3 +91,8 @@ function downloadSavedSuspensionFile(id) {
     var url = "/bsb-be/ajax/doc/download/suspension/repo/" + id;
     window.open(url);
 }
+
+function downloadSupportDocument(appId, repoId, docName) {
+    var url = "/bsb-be/ajax/doc/download/applicationDoc/" + repoId;
+    window.open(url);
+}

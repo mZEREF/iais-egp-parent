@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.RoleConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
@@ -81,7 +82,7 @@ public class InspectionFollowUpItemsDelegator {
                 //data->session
                 ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, dto);
                 //show routingHistory list
-                processHistoryService.getAndSetHistoryInRequest(applicationNo, request);
+                processHistoryService.getAndSetHistoryInRequest(applicationNo, new ArrayList<>(RoleConstants.MOH_OFFICER), request);
             } else {
                 log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
                 ParamUtil.setSessionAttr(request, KEY_FOLLOW_UP_VIEW_DTO, new RectifyFindingFormDto());
