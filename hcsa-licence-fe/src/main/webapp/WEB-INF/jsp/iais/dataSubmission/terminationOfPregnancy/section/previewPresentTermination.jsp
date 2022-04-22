@@ -113,7 +113,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Is Termination of Pregnancy Drug taken in own premises?"/>
+                    <iais:field width="6" value="Is Termination of Pregnancy Drug used in own premises?"/>
                     <iais:value width="6" display="true">
                         <c:if test="${terminationDto.takenOwn == true }">
                             Yes
@@ -124,9 +124,9 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Place of Drug taken for Termination of Pregnancy"/>
+                    <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
-                        <iais:code code="${terminationDto.topDrugPlace}"/>
+                        <c:out value="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

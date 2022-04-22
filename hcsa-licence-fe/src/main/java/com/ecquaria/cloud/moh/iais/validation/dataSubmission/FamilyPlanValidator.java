@@ -36,19 +36,19 @@ public class FamilyPlanValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherMainTopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP006".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP004".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topRiskCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP003".equals(familyPlanDto.getMainTopReason()) || "TOPRTP004".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP006".equals(familyPlanDto.getMainTopReason()) || "TOPRTP005".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"topMedCondition");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP003".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"subRopReason");
             errorMap.putAll(result.retrieveAll());
         }
-        if("TOPRTP005".equals(familyPlanDto.getMainTopReason()) || "TOPRTP003".equals(familyPlanDto.getMainTopReason())){
+        if("TOPRTP003".equals(familyPlanDto.getMainTopReason()) || "TOPRTP006".equals(familyPlanDto.getMainTopReason())){
             if("TOPSCTP003".equals(familyPlanDto.getSubRopReason()) || "TOPSCTP006".equals(familyPlanDto.getSubRopReason())){
                 ValidationResult result = WebValidationHelper.validateProperty(familyPlanDto,"otherSubTopReason");
                 errorMap.putAll(result.retrieveAll());

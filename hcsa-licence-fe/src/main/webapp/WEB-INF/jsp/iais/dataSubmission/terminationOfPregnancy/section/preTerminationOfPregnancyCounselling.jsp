@@ -317,6 +317,9 @@
                 $('#patientAppointments').hide();
                 $('#secCounsellingDates').hide();
                 $('#secCounsellingResults').hide();
+                fillValue($('#patientAppointments'),null);
+                $('#secCounsellingDates').val(null);
+                fillValue($('#secCounsellingResults'),null);
             }
         }
         function counsellingPlace() {

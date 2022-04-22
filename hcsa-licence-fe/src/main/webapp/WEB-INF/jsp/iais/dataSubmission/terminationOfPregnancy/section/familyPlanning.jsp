@@ -108,7 +108,7 @@
                          value="${familyPlanDto.mainTopReason}" cssClass="mainTopReason"/>
         </iais:value>
     </iais:row>
-    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP006' && familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
+    <div id="topRiskConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -116,7 +116,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if> >
+    <div id="topMedConditions" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP006' && familyPlanDto.mainTopReason!='TOPRTP005'}">style="display: none"</c:if> >
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -132,7 +132,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
+    <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Type of Fetal Anomalies" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -141,7 +141,7 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP005' && familyPlanDto.mainTopReason!='TOPRTP003') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
+    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
@@ -231,7 +231,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP006" || mainTopReason=="TOPRTP003"){
+            if(mainTopReason == "TOPRTP004" || mainTopReason=="TOPRTP006"){
                 $('#topRiskConditions').show();
             }else {
                 $('#topRiskConditions').hide();
@@ -243,7 +243,7 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP003" || mainTopReason == "TOPRTP004"){
+            if(mainTopReason == "TOPRTP006" || mainTopReason == "TOPRTP005"){
                 $('#topMedConditions').show();
             }else {
                 $('#topMedConditions').hide();
@@ -256,11 +256,13 @@
 
             var mainTopReason= $('#mainTopReason').val();
 
-            if(mainTopReason == "TOPRTP005" || mainTopReason == 'TOPRTP003'){
+            if(mainTopReason == "TOPRTP003" || mainTopReason == 'TOPRTP006'){
                 $('#subRopReasons').show();
             }else {
                 $('#subRopReasons').hide();
                 $('#otherSubTopReasons').hide();
+                fillValue($('#subRopReasons'),null);
+                $('#otherSubTopReasons').val(null);
             }
         });
     }
@@ -286,6 +288,8 @@
             }else {
                 $('#mostRecentContraMethods').hide();
                 $('#otherContraMethods').hide();
+                fillValue($('#mostRecentContraMethods'),null);
+                $('#otherContraMethods').val(null);
             }
         });
     }
