@@ -56,7 +56,7 @@ $(function () {
 
     $("#processingDecision").change(function () {
         var selectValue = $(this).val();
-        if (selectValue === "MOHPRO022" || selectValue === "MOHPRO025") {
+        if (selectValue === "MOHPRO022" || selectValue === "MOHPRO025" || selectValue === "MOHPRO030") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();

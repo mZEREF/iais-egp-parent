@@ -14,19 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class InsApprovalLetterDto extends InsProcessDto {
-    private String emailTitle;
-    private String emailContent;
+    private String letterTitle;
+    private String letterContent;
 
-    private static final String KEY_EMAIL_TITLE = "emailTitle";
-    private static final String KEY_EMAIL_CONTENT = "emailContent";
+    private static final String KEY_EMAIL_TITLE = "letterTitle";
+    private static final String KEY_EMAIL_CONTENT = "letterContent";
     private static final String KEY_DECISION            = "processingDecision";
     private static final String KEY_REMARK              = "remarks";
     private static final String KEY_SELECT_MOH_USER     = "selectMohUser";
 
     @Override
     public void reqObjMapping(HttpServletRequest request){
-        this.setEmailTitle(ParamUtil.getString(request,KEY_EMAIL_TITLE));
-        this.setEmailContent(ParamUtil.getString(request,KEY_EMAIL_CONTENT));
+        this.setLetterTitle(ParamUtil.getString(request,KEY_EMAIL_TITLE));
+        this.setLetterContent(ParamUtil.getString(request,KEY_EMAIL_CONTENT));
         this.setDecision(ParamUtil.getString(request, KEY_DECISION));
         this.setRemark(ParamUtil.getString(request, KEY_REMARK));
         this.setSelectMohUser(ParamUtil.getString(request, KEY_SELECT_MOH_USER));

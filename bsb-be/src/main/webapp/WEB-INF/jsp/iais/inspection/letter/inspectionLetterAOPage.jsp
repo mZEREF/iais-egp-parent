@@ -104,6 +104,19 @@
                                                             </div>
 
                                                             <div class="form-group">
+                                                                <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
+                                                                        <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
+                                                                        <option value="MOHPRO007" <c:if test="${letterDto.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
+                                                                        <option value="MOHPRO008" <c:if test="${letterDto.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to DO</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <span data-err-ind="decision" class="error-msg" ></span>
+
+                                                            <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks </label>
                                                                 <div class="col-sm-7 col-md-6 col-xs-10">
                                                                     <textarea autocomplete="off" class="col-xs-12" name="remarks" id="remarks" maxlength="1000" rows="4"><c:out value="${letterDto.remark}"/></textarea>
@@ -112,35 +125,6 @@
                                                                 <div class="clear"></div>
                                                             </div>
 
-                                                            <div class="form-group">
-                                                                <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
-                                                                        <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
-                                                                        <option value="MOHPRO030" <c:if test="${letterDto.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Submit to AO</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
-                                                            <span data-err-ind="decision" class="error-msg" ></span>
-
-
-
-                                                            <div class="form-group" id="selectMohUserDiv">
-                                                                <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <div class="input-group">
-                                                                        <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
-                                                                            <option value="">Please Select</option>
-                                                                            <c:forEach var="selection" items="${selectRouteToMoh}">
-                                                                                <option value="${selection.value}" <c:if test="${letterDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>
-                                                                            </c:forEach>
-                                                                        </select>
-                                                                        <span data-err-ind="selectMohUser" class="error-msg" ></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
                                                         </div>
                                                         <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
                                                         <div style="text-align: right">
