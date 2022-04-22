@@ -1,7 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,10 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.NewAdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -34,6 +33,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -92,8 +92,7 @@ public class BsbAdhocRfiDelegator {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>bsbAdhocRfiDelegator");
         String actionType =  ParamUtil.getRequestString(bpc.request, ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
-        String id =  ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
-        log.info(StringUtil.changeForLog("----- Action Type: " + id + " -----"));
+
 
     }
     /**
@@ -101,6 +100,29 @@ public class BsbAdhocRfiDelegator {
      */
     public void preViewAdhocRfi(BaseProcessClass bpc){
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>preViewAdhocRfi");
+        HttpServletRequest request = bpc.request;
+        String id =  ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
+        log.info(StringUtil.changeForLog("----- Action value: " + id + " -----"));
+        ViewAdhocRfiDto viewAdhocRfiDto = adhocRfiClient.findAdhocRfiById(id).getEntity();
+
+        ParamUtil.setSessionAttr(request, "viewReqInfo", viewAdhocRfiDto);
+
+        String[] status=new String[]{viewAdhocRfiDto.getStatus()};
+        if(viewAdhocRfiDto.getStatus().equals("RFIST002")){
+            status=new String[]{"RFIST004","RFIST003"};
+        }
+        if(viewAdhocRfiDto.getStatus().equals("RFIST004")){
+            status=new String[]{"RFIST004"};
+        }
+        List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
+    }
+    /**
+     * doUpdate
+     */
+    public void doUpdate(BaseProcessClass bpc){
+        log.info("=======>>>>>start>>>>>>>>>>>>>>>>preViewAdhocRfi");
+
     }
     /**
      * doPaging
@@ -160,19 +182,24 @@ public class BsbAdhocRfiDelegator {
             newAdhocRfiDto = new NewAdhocRfiDto();
         }
         String rfiTitle = ParamUtil.getString(request,"rfiTitle");
-        String dueDate = ParamUtil.getString(request,"dueDate");
+        String date = ParamUtil.getString(request,"dueDate");
         String status = ParamUtil.getString(request,"status");
         String info = ParamUtil.getString(request,"info");
         String doc = ParamUtil.getString(request,"doc");
         String information = ParamUtil.getString(request,"information");
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
-        if(CommonValidator.isDate(dueDate)& dueDate !=null){
-           Date dueDt = Formatter.parseDate(dueDate);
-           Instant instant = dueDt.toInstant();
-           ZonedDateTime zone = instant.atZone(ZoneId.systemDefault());
-           newAdhocRfiDto.setDueDate(zone.toLocalDate());
+        Date dueDate;
+        Calendar calendar = Calendar.getInstance();
+        if(!StringUtil.isEmpty(date)){
+            dueDate = Formatter.parseDate(date);
+        }else {
+            calendar.add(Calendar.DATE,14);
+            dueDate =calendar.getTime();
         }
+        Instant instant = dueDate.toInstant();
+        ZonedDateTime zone = instant.atZone(ZoneId.systemDefault());
+        newAdhocRfiDto.setDueDate(zone.toLocalDate());
         newAdhocRfiDto.setStatus(status);
         if(info ==null){
             newAdhocRfiDto.setInformationRequired(null);
@@ -193,20 +220,15 @@ public class BsbAdhocRfiDelegator {
     public void doGreateRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NewAdhocRfiDto newAdhocRfiDto = (NewAdhocRfiDto) ParamUtil.getSessionAttr(request,"newReqInfo");
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        newAdhocRfiDto.setAuditTrailDto(auditTrailDto);
         adhocRfiClient.saveAdhocRfi(newAdhocRfiDto);
-
-    }
-    /**
-     * doUpdate
-     */
-    public void doUpdate(BaseProcessClass bpc){
-        log.info("=======>>>>>start>>>>>>>>>>>>>>>>preViewAdhocRfi");
     }
     /**
      * doCancel
      */
     public void doCancel(BaseProcessClass bpc){
-        log.info("=======>>>>>start>>>>>>>>>>>>>>>>preViewAdhocRfi");
+        log.info("=======>>>>>start>>>>>>>>>>>>>>>>doCancel");
     }
 
     private void validateData(NewAdhocRfiDto dto, HttpServletRequest request){

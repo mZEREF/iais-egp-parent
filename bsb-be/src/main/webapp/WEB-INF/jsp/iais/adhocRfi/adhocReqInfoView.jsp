@@ -2,7 +2,11 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -32,49 +36,55 @@
                                                     <br><br><br>
                                                     <iais:section title="" >
                                                         <iais:row>
-                                                            <iais:field value="Reference No."/>
+                                                            <iais:field value="Approval No."/>
                                                             <iais:value width="18">
-                                                                sadfsdfsdf
+                                                                <c:out value="${viewReqInfo.approveNo}"/>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>
                                                             <iais:field value="Submission Type"/>
                                                             <iais:value width="18">
-                                                                sdfsdfsdfd
+                                                                <iais:code code="${viewReqInfo.submissionType}"/>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>
                                                             <iais:field value="Title"/>
                                                             <iais:value width="18">
-                                                                asdfsdfsdf
+                                                                <c:out value="${viewReqInfo.title}"/>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>
                                                             <iais:field value="Due Date" />
-                                                            <iais:value width="18">
-                                                                <iais:datePicker value="${newReqInfo.dueDate}" name="dueDate"></iais:datePicker>
-                                                            </iais:value>
+                                                            <c:choose>
+                                                                <c:when test="${viewReqInfo.status=='RFIST004'}">
+                                                                    <iais:value width="18">
+                                                                        <label class="control-label">
+                                                                            <iais-bsb:format-LocalDate localDate='${viewReqInfo.dueDate}'/></label>
+                                                                    </iais:value>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                                                        <iais:datePicker value="${viewReqInfo.dueDate}" name="dueDate"></iais:datePicker>
+                                                                    </div>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </iais:row>
                                                         <iais:row>
                                                             <iais:field value="Status"/>
-                                                            <iais:value width="18">
-                                                                <iais:select cssClass="statusDropdown" id="rfiStatus"  name="status" firstOption="Please Select"></iais:select>
-                                                            </iais:value>
+                                                            <div class="col-sm-7 col-md-4 col-xs-10">
+                                                                <iais:select cssClass="statusDropdown" id="rfiStatus"  name="status" options="${salutationStatusList}"></iais:select>
+                                                            </div>
                                                         </iais:row>
                                                         <div class="row" >
                                                             <label class="col-xs-9 col-md-3 control-label">
-                                                                <input type="checkbox" disabled checked
-                                                                       onchange="checkTitleInfo()"
-                                                                       value = "0"
-                                                                       name = "info" />&nbsp;Information
+                                                                <input type="checkbox" disabled <c:if test="${viewReqInfo.informationRequired==true}">checked</c:if>
+                                                                />&nbsp;Information
                                                             </label>
                                                         </div>
                                                         <div class="row">
                                                             <label class="col-xs-9 col-md-3 control-label">
-                                                                <input type="checkbox" disabled checked
-                                                                       onchange="checkTitleDoc()"
-                                                                       value = "0"
-                                                                       name ="doc" />&nbsp;Supporting Documents
+                                                                <input type="checkbox" disabled <c:if test="${viewReqInfo.supportingDocRequired==true}">checked</c:if>
+                                                                />&nbsp;Supporting Documents
                                                             </label>
                                                         </div>
                                                         <br/>
@@ -105,7 +115,7 @@
                                                                 </iais:row>
                                                                 <iais:row>
                                                                     <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
-                                                                        dsfsdfsdf
+
                                                                     </iais:value>
                                                                 </iais:row>
                                                             </div>
@@ -115,7 +125,7 @@
                                                         <iais:row>
                                                             <iais:action style="text-align:right;">
                                                                 <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                                                                <button class="btn btn-primary" type="button" style="margin-left: 50px"  onclick="javascript:doSubmit()  ">Submit</button>
+                                                                <button class="btn btn-primary" type="button" style="margin-left: 50px"  onclick="javascript:doSubmit()">Submit</button>
                                                             </iais:action>
                                                         </iais:row>
                                                     </iais:section>
@@ -136,6 +146,11 @@
     function doBack(){
         showWaiting();
         $("[name='action_type']").val("cancel");
+        $("#mainForm").submit();
+    }
+    function doSubmit(){
+        showWaiting();
+        $("[name='action_type']").val("update");
         $("#mainForm").submit();
     }
 </script>
