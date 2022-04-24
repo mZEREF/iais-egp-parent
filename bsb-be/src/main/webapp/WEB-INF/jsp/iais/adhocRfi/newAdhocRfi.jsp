@@ -52,12 +52,13 @@
                             <iais:field value="Due Date" width="15" required="false"/>
                             <iais:value width="10">
                                 <iais:datePicker value="${newReqInfo.dueDate}" name="dueDate"></iais:datePicker>
+                                <span data-err-ind="dueDate" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Status" width="15" required="false"/>
                             <iais:value width="10">
-                                <iais:select cssClass="statusDropdown" id="rfiStatus" value="${newReqInfo.dueDate}" name="status" options="statusList"></iais:select>
+                                <iais:select cssClass="statusDropdown" id="rfiStatus" value="${newReqInfo.status}" name="status" options="statusList"></iais:select>
                             </iais:value>
                         </iais:row>
                         <div class="row" >

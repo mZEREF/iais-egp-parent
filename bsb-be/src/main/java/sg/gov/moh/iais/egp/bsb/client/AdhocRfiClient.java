@@ -22,8 +22,11 @@ public interface AdhocRfiClient {
     @GetMapping(value = "/adhoc-rfi", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AdhocRfiQueryResultDto> queryAdhocRfi(@SpringQueryMap AdhocRfiQueryDto adhocRfiQueryDto);
 
-    @GetMapping(value = "/adhoc-rfi/pre-reqInfo/{approvalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/adhoc-rfi/pre-newRfi/{approvalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<NewAdhocRfiDto> queryPreNewData(@PathVariable("approvalId") String approvalId);
+
+    @PostMapping(path = "/adhoc-rfi/update",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveAdhocRfiView(@RequestBody ViewAdhocRfiDto viewAdhocRfiDto);
 
     @PostMapping(path = "/adhoc-rfi/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAdhocRfi(@RequestBody NewAdhocRfiDto newAdhocRfiDto);
@@ -31,7 +34,10 @@ public interface AdhocRfiClient {
     @PostMapping(path = "/adhoc-rfi/validate/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateManualAdhocRfi(@RequestBody NewAdhocRfiDto newAdhocRfiDto);
 
-    @GetMapping(value = "/adhoc-rfi/pre-reqInfo/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/adhoc-rfi/validate/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateManualAdhocRfiUpdate(@RequestBody ViewAdhocRfiDto viewAdhocRfiDto);
+
+    @GetMapping(value = "/adhoc-rfi/pre-viewRfi/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ViewAdhocRfiDto> findAdhocRfiById(@PathVariable("id") String id);
 
 }
