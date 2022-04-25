@@ -1,7 +1,8 @@
-package sg.gov.moh.iais.egp.bsb.dto.entity;
+package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocRfiDto;
 
 import java.util.List;
 

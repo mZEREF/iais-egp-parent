@@ -2,46 +2,36 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
-import sg.gov.moh.iais.egp.bsb.client.ApplicationDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.NewAdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.ViewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
-import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
 
 @Slf4j
 @Delegator("bsbAdhocRfiDelegator")

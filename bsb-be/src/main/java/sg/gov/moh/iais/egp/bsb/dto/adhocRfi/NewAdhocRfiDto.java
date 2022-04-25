@@ -1,16 +1,14 @@
-package sg.gov.moh.iais.egp.bsb.dto.entity;
-
+package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
 
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
-public class ViewAdhocRfiDto implements Serializable {
+public class NewAdhocRfiDto implements Serializable {
     private String id;
 
     private String facilityNo;
@@ -41,7 +39,6 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private ApplicationDto applicationDto;
 
-    private List<DocRecordInfo> applicationDocDtos;
-
     private AuditTrailDto auditTrailDto;
+
 }
