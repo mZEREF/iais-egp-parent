@@ -19,7 +19,7 @@ public class ChklstItemAnswerDto implements Serializable {
     private String remarks;
     private String findings;
     private String actionRequired;
-    private boolean rectified;
+    private Boolean rectified;
     private String followupItem;
     private String observeFollowup;
     private String followupAction;
