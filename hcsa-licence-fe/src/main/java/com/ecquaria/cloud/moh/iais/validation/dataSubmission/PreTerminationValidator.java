@@ -87,7 +87,7 @@ public class PreTerminationValidator implements CustomizeValidator {
         }
         if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
             if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
-                if(patientInformationDto.getPatientAge()<=16){
+                if(patientInformationDto.getPatientAge()<16){
                     if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
                         errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
                     }
