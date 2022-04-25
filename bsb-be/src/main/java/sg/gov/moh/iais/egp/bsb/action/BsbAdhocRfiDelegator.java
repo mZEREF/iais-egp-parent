@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
 
 @Slf4j
 @Delegator("bsbAdhocRfiDelegator")
@@ -54,6 +56,8 @@ public class BsbAdhocRfiDelegator {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>bsbAdhocRfiDelegator");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, null);
+        ParamUtil.setSessionAttr(request, "newReqInfo", null);
+        ParamUtil.setSessionAttr(request, "viewReqInfo", null);
 
     }
     /**
@@ -63,6 +67,8 @@ public class BsbAdhocRfiDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
         String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
+       /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
+        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
         AdhocRfiQueryDto searchDto = getSearchDto(request);
         searchDto.setApprovalId(approvalId);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
@@ -109,8 +115,8 @@ public class BsbAdhocRfiDelegator {
         if(viewAdhocRfiDto.getStatus().equals("RFIST004")){
             status=new String[]{"RFIST004"};
         }
-        List<SelectOption> statusList= MasterCodeUtil.retrieveOptionsByCodes(status);
-        ParamUtil.setSessionAttr(bpc.request, "statusList", (Serializable) statusList);
+        List<SelectOption> statusLists= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "statusLists", (Serializable) statusLists);
     }
     /**
      * doUpdate
@@ -182,6 +188,8 @@ public class BsbAdhocRfiDelegator {
     public void preNewAdhocRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
+          /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
+        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
         NewAdhocRfiDto newAdhocRfiDto = adhocRfiClient.queryPreNewData(approvalId).getEntity();
         String isValidate = (String) ParamUtil.getRequestAttr(request,IS_VALIDATE);
         if(isValidate !=null && !isValidate.equals("true")){

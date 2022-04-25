@@ -75,7 +75,7 @@
                                                         <iais:row>
                                                             <iais:field value="Status"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                <iais:select cssClass="statusDrop"  value="${viewReqInfo.status}" name="status"  options="statusList"></iais:select>
+                                                                <iais:select cssClass="statusDrop"  value="${viewReqInfo.status}" name="status"  options="statusLists"></iais:select>
                                                             </div>
                                                         </iais:row>
                                                         <div class="row" >
