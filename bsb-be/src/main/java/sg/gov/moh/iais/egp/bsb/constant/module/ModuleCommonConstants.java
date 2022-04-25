@@ -10,6 +10,7 @@ public class ModuleCommonConstants {
     public static final String KEY_CRUD_ACTION_TYPE                 = "crud_action_type";
 
     public static final String KEY_NAV_NEXT                         = "next";
+    public static final String KEY_NAV_PAGE                         = "page";
     public static final String KEY_NAV_BACK                         = "back";
 
     public static final String KEY_SUBMIT                           = "submit";

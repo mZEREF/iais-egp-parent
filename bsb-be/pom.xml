@@ -13,8 +13,6 @@
   <version>0.2</version>
   <packaging>war</packaging>
 
-
-
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -120,5 +118,17 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <!--you should hold the properties and xlsx files in separate directories.-->
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

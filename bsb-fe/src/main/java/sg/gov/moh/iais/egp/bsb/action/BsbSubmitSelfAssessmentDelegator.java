@@ -415,7 +415,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             errorMap.put("selfAssessmentData", "Could not parse file content.");
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
-            List<ChklstItemAnswerDto> commonData = result.get(SHEET_NAME_COMMON);
+            /*List<ChklstItemAnswerDto> commonData = result.get(SHEET_NAME_COMMON);
             Boolean isValid = validateChklItemExcelDto(commonData, SHEET_NAME_COMMON, answerRecordDto.getCommonChkLstConfigId(),
                     errorMsgs);
             if (isValid != null && isValid) {
@@ -428,6 +428,12 @@ public class BsbSubmitSelfAssessmentDelegator {
                 if (isValid != null && isValid) {
                     answerDtos.addAll(bsbData);
                 }
+            }*/
+            List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
+            Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
+                    errorMsgs);
+            if (isValid != null && isValid) {
+                answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
                 errorMap.put("selfAssessmentData", "Could not parse file content.");
@@ -475,7 +481,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         Map<String, List<ChklstItemAnswerDto>> resultMap = IaisCommonUtils.genNewHashMap();
         try {
             File file = fileInfo.getFile();
-            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(new ChecklistConfigDto(), new ChecklistConfigDto(), null, false);
+            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, false);
             Map<String, List<SelfAssChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (data != null && !data.isEmpty()) {
                 for (Map.Entry<String, List<SelfAssChklItemExcelDto>> entry : data.entrySet()) {
@@ -524,10 +530,9 @@ public class BsbSubmitSelfAssessmentDelegator {
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String maskedAppId = request.getParameter(KEY_APP_ID);
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
-        //SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
         ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-        ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
-        exportExcel(commonConfigDto, configDto, null, response);
+        //ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
+        exportExcel(null, configDto, null, response);
     }
 
     @ResponseBody
@@ -537,14 +542,14 @@ public class BsbSubmitSelfAssessmentDelegator {
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
         SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
         ChecklistConfigDto configDto;
-        ChecklistConfigDto commonConfigDto;
+        ChecklistConfigDto commonConfigDto = null;
         Map<String, ChklstItemAnswerDto> answerMap = null;
         if (answerRecordDto == null) {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-            commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
+            //commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
         } else {
             configDto = inspectionClient.getChecklistConfigById(answerRecordDto.getChkLstConfigId());
-            commonConfigDto = inspectionClient.getChecklistConfigById(answerRecordDto.getCommonChkLstConfigId());
+            //commonConfigDto = inspectionClient.getChecklistConfigById(answerRecordDto.getCommonChkLstConfigId());
             if (!StringUtils.isEmpty(answerRecordDto.getAnswer())) {
                 List<ChklstItemAnswerDto> answerDtoList = JsonUtil.parseToList(answerRecordDto.getAnswer(), ChklstItemAnswerDto.class);
                 if (answerDtoList != null) {
@@ -580,12 +585,13 @@ public class BsbSubmitSelfAssessmentDelegator {
     private List<ExcelSheetDto> getExcelSheetDtos(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
             Map<String, ChklstItemAnswerDto> answerMap, boolean withData) {
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
+        int sheetAt = 1;
         if (commonConfigDto != null) {
             List<SelfAssChklItemExcelDto> data = null;
             if (withData) {
                 data = getChklItemExcelDtos(commonConfigDto, answerMap);
             }
-            excelSheetDtos.add(getExcelSheetDto(1, SHEET_NAME_COMMON, data));
+            excelSheetDtos.add(getExcelSheetDto(sheetAt++, SHEET_NAME_COMMON, data));
         }
 
         if (configDto != null) {
@@ -593,7 +599,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             if (withData) {
                 data = getChklItemExcelDtos(configDto, answerMap);
             }
-            excelSheetDtos.add(getExcelSheetDto(2, SHEET_NAME_BSB, data));
+            excelSheetDtos.add(getExcelSheetDto(sheetAt++, SHEET_NAME_BSB, data));
         }
         return excelSheetDtos;
     }

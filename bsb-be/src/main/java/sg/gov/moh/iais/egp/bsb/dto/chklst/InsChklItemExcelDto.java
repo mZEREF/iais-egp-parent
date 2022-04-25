@@ -1,0 +1,87 @@
+package sg.gov.moh.iais.egp.bsb.dto.chklst;
+
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+/**
+ * @Auther chenlei on 4/25/2022.
+ */
+@Setter
+@Getter
+public class InsChklItemExcelDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @ExcelProperty(
+            cellIndex = 0,
+            cellName = "S/N",
+            readOnly = true
+    )
+    private String snNo;
+
+    @ExcelProperty(
+            cellIndex = 1,
+            cellName = "Item Description",
+            readOnly = true
+    )
+    private String checklistItem;
+
+    @ExcelProperty(
+            cellIndex = 2,
+            cellName = "Compliance"
+    )
+    private String answer;
+
+    @ExcelProperty(
+            cellIndex = 3,
+            cellName = "Findings/Non-Compliance"
+    )
+    private String findings;
+
+    @ExcelProperty(
+            cellIndex = 4,
+            cellName = "Actions Required"
+    )
+    private String actionRequired;
+
+    @ExcelProperty(
+            cellIndex = 5,
+            cellName = "Rectified"
+    )
+    private String rectified;
+
+    @ExcelProperty(
+            cellIndex = 6,
+            cellName = "Follow-Up Item"
+    )
+    private String followupItem;
+
+    @ExcelProperty(
+            cellIndex = 7,
+            cellName = "Observations for Follow-up"
+    )
+    private String observeFollowup;
+
+    @ExcelProperty(
+            cellIndex = 8,
+            cellName = "Action Required"
+    )
+    private String followupAction;
+
+    @ExcelProperty(
+            cellIndex = 9,
+            cellName = "Due Date"
+    )
+    private String dueDate;
+
+    @ExcelProperty(
+            cellIndex = 15,
+            readOnly = true,
+            hidden = true
+    )
+    private String itemKey;
+
+}

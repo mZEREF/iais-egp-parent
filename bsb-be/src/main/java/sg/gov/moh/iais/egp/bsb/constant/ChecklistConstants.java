@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.collect.Sets;
 
 import java.util.Collections;
@@ -16,6 +17,10 @@ public class ChecklistConstants {
     public static final String ANSWER_YES_DISPLAY = "Yes";
     public static final String ANSWER_NO_DISPLAY = "No";
     public static final String ANSWER_NA_DISPLAY = "N/A";
+
+    // rectified
+    public static final String RECTIFIED_YES_DISPLAY = "Yes";
+    public static final String RECTIFIED_NO_DISPLAY = "No";
 
     static {
         Set<String> validAnswers = Sets.newHashSetWithExpectedSize(3);
@@ -43,4 +48,43 @@ public class ChecklistConstants {
         }
         return display;
     }
+
+    public static String getAnswer(String displayAnswer) {
+        String result;
+        if (StringUtil.isEmpty(displayAnswer)) {
+            result = null;
+        } else {
+            switch (displayAnswer) {
+                case ANSWER_YES_DISPLAY:
+                    result = ANSWER_YES;
+                    break;
+                case ANSWER_NO_DISPLAY:
+                    result = ANSWER_NO;
+                    break;
+                case ANSWER_NA_DISPLAY:
+                    result = ANSWER_NA;
+                    break;
+                default:
+                    result = "";
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    public static String getRectified(Boolean rectified) {
+        if (rectified == null) {
+            return "";
+        }
+        return rectified ? RECTIFIED_YES_DISPLAY : RECTIFIED_NO_DISPLAY;
+    }
+
+    public static Boolean getRectified(String rectified) {
+        if (StringUtil.isEmpty(rectified)) {
+            return null;
+        }
+        return RECTIFIED_YES_DISPLAY.equals(rectified);
+    }
+
 }
