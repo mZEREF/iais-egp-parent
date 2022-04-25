@@ -4,7 +4,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#terminationDetails">
-                Present Termination of Pregnancy
+                Termination Of Pregnancy
             </a>
         </h4>
     </div>

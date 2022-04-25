@@ -2,7 +2,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#patientDetails">
-                Patient Details
+                Patient Information
             </a>
         </h4>
     </div>
@@ -47,18 +47,21 @@
                             <iais:code code="${patientInformationDto.residenceStatus}"/>
                         </iais:value>
                     </iais:row>
+
                 <iais:row>
                     <iais:field width="5" value="Ethnic Group" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.ethnicGroup}"/>
                     </iais:value>
                 </iais:row>
+                <div <c:if test="${patientInformationDto.ethnicGroup!='ECGP004'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Ethnic Group (Others)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.otherEthnicGroup}"/>
                         </iais:value>
                     </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Marital Status"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -83,18 +86,22 @@
                         <iais:code code="${patientInformationDto.activityStatus}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Occupation" />
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <iais:code code="${patientInformationDto.occupation}"/>
-                    </iais:value>
-                </iais:row>
+                <div <c:if test="${patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Occupation" />
+                        <iais:value width="7" display="true" cssClass="col-md-7">
+                            <iais:code code="${patientInformationDto.occupation}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${patientInformationDto.occupation!='TOPOCC014' || patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Occupation"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${patientInformationDto.otherOccupation}"/>
                         </iais:value>
                     </iais:row>
+                </div>
                     <iais:row>
                         <iais:field width="5" value="Gender of Living Children (By Order)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">

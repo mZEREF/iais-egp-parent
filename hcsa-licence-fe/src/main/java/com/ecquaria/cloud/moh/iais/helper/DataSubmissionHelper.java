@@ -1,32 +1,16 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
@@ -39,13 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Description Data Submission Helper
@@ -584,9 +562,10 @@ public final class DataSubmissionHelper {
         }
         dataSubmission.setSubmissionType(topSuperDataSubmissionDto.getSubmissionType());
         String cycleStage = null;
-        if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
+        /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOPPATIENT;
-        }else if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+        }else */
+        if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TERMINATION;
         }
         dataSubmission.setCycleStage(cycleStage);
@@ -802,6 +781,9 @@ public final class DataSubmissionHelper {
                 break;
             case DataSubmissionConsts.DS_LDT:
                 title.append(DataSubmissionConstant.DS_TITLE_LDT);
+                break;
+            case DataSubmissionConsts.DS_TOP:
+                title.append(DataSubmissionConstant.DS_TITLE_TOP);
                 break;
         }
         title.append("</strong>");

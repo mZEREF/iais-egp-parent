@@ -2,7 +2,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#familyDetails">
-                Family Planning
+                Family Planning/Pregnancy
             </a>
         </h4>
     </div>

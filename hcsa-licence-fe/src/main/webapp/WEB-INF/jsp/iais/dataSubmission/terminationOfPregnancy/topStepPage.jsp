@@ -73,6 +73,7 @@
                                             <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                                 <%@ include file="section/previewPostTermination.jsp" %>
                                             </c:if>
+                                            <%@ include file="common/topDsAmendment.jsp" %>
                                             <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
                                     </c:when>
@@ -87,7 +88,7 @@
     </div>
 </form>
 <c:if test="${hasDraft}">
-    <iais:confirm msg="There is an existing draft for Termination Of Pregnancy. Please either resume from draft or continue to submit a new Laboratory Developed Test." callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+    <iais:confirm msg="There is an existing draft for Termination Of Pregnancy. Please either resume from draft or continue to submit a new Termination Of Pregnancy." callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>
