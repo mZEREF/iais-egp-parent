@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -31,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 /**
  * @author yi chen
@@ -80,51 +79,6 @@ public final class ExcelReader {
         List<List<String>> result = sequentialParse(sheet, startCellIndex);
 
         return (List<T>) result.stream().map(x -> setField(clz, x, defaultValueNull)).collect(Collectors.toList());
-    }
-
-    public static <T> Map<String, List<T>> readerToBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
-        if (file == null || !file.exists()) {
-            throw new IaisRuntimeException("Please check excel source is exists");
-        }
-
-        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
-            throw new IaisRuntimeException("excel sheet dot error");
-        }
-
-        Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
-        Workbook workBook = null;
-        try (InputStream in = Files.newInputStream(file.toPath())) {
-            workBook = new XSSFWorkbook(in);
-            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
-                int startCellIndex = excelSheetDto.getStartRowIndex() - 1;
-                int sheetAt = excelSheetDto.getSheetAt();
-                Sheet sheet = workBook.getSheetAt(sheetAt);
-                if (sheet == null) {
-                    log.info(StringUtil.changeForLog("excel sheet name error"));
-                    continue;
-                }
-                String sheetName = sheet.getSheetName();
-                String name = excelSheetDto.getSheetName();
-                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
-                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
-                    continue;
-                }
-                List<List<String>> result = sequentialParse(sheet, startCellIndex);
-                List<T> list = (List<T>) result.stream().map(x -> setField(excelSheetDto.getSourceClass(), x,
-                        excelSheetDto.isDefaultValueNull()))
-                        .collect(Collectors.toList());
-                data.put(excelSheetDto.getSheetName(), list);
-            }
-            return data;
-        } finally {
-            try {
-                if (workBook != null) {
-                    workBook.close();
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
     }
 
     public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {
@@ -202,9 +156,9 @@ public final class ExcelReader {
         }
     }
 
-    private static Object setField(final Class<?> clazz, final List<String> rowData, boolean defaultValueNull) {
+    private static <T> T setField(final Class<T> clazz, final List<String> rowData, boolean defaultValueNull) {
         try {
-            Object obj = clazz.newInstance();
+            T obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 // Use iais project folder ExcelProperty Annotation Class
@@ -213,9 +167,8 @@ public final class ExcelReader {
                     int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowData.get(index), format, defaultValueNull);
-                    Method setMed = null;
                     try {
-                        setMed = clazz.getMethod("set" + StringUtil.capitalize(field.getName()), field.getType());
+                        Method setMed = clazz.getMethod("set" + StringUtil.capitalize(field.getName()), field.getType());
                         setMed.invoke(obj, value);
                     } catch (NoSuchMethodException | InvocationTargetException e) {
                         throw new IaisRuntimeException(e);
@@ -240,8 +193,8 @@ public final class ExcelReader {
                     if (DateUtil.isCellDateFormatted(cell)) {
                         cellValue = Formatter.formatDateTime(cell.getDateCellValue());
                     } else {
-                        cell.setCellType(STRING);
-                        cellValue = cell.getStringCellValue();
+                        //cell.setCellType(STRING);
+                        cellValue = String.valueOf(cell.getNumericCellValue());
                     }
                     break;
                 case STRING:
@@ -293,6 +246,70 @@ public final class ExcelReader {
         return val;
     }
 
+    public static <T> Map<String, List<T>> readerToBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
+        if (file == null || !file.exists()) {
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
 
+        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
+            throw new IaisRuntimeException("excel sheet dot error");
+        }
+        Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
+        Workbook workBook = null;
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            workBook = new XSSFWorkbook(in);
+            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
+                int sheetAt = excelSheetDto.getSheetAt();
+                Sheet sheet = workBook.getSheetAt(sheetAt);
+                if (sheet == null) {
+                    log.info(StringUtil.changeForLog("excel sheet name error"));
+                    continue;
+                }
+                String sheetName = sheet.getSheetName();
+                String name = excelSheetDto.getSheetName();
+                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
+                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
+                    continue;
+                }
+                List<T> ans = parseSheetToList(sheet, excelSheetDto);
+                data.put(excelSheetDto.getSheetName(), ans);
+
+            }
+            return data;
+        } finally {
+            try {
+                if (workBook != null) {
+                    workBook.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private static <T> List<T> parseSheetToList(Sheet sheet, ExcelSheetDto excelSheetDto) throws Exception {
+        int startRowIndex = excelSheetDto.getStartRowIndex();
+        boolean defaultValueNull = excelSheetDto.isDefaultValueNull();
+        Class<T> clazz = (Class<T>) excelSheetDto.getSourceClass();
+        Field[] fields = clazz.getDeclaredFields();
+        List<T> ans = IaisCommonUtils.genNewArrayList();
+        int rowCount = sheet.getLastRowNum();
+        for (int i = startRowIndex; i <= rowCount; i++) {
+            Row row = sheet.getRow(i);
+            T o = clazz.newInstance();
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(ExcelProperty.class)) {
+                    ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                    int index = excelProperty.cellIndex();
+                    String format = excelProperty.format();
+                    String cellValue = getCellValue(row.getCell(index));
+                    Object value = getFieldValue(field, cellValue, format, defaultValueNull);
+                    ReflectionUtil.setPropertyObj(field, value, o);
+                }
+            }
+            ans.add(o);
+        }
+        return ans;
+    }
 
 }

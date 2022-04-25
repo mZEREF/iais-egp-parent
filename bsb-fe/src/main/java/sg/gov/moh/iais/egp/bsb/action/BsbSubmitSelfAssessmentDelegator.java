@@ -42,7 +42,7 @@ import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.ChklItemExcelDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.SelfAssChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -51,7 +51,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -465,7 +464,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             return null;
         }
         errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, null, START_ROW,
-                ChklItemExcelDto.class));
+                SelfAssChklItemExcelDto.class));
         return errorMsgs.isEmpty();
     }
 
@@ -477,21 +476,23 @@ public class BsbSubmitSelfAssessmentDelegator {
         try {
             File file = fileInfo.getFile();
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(new ChecklistConfigDto(), new ChecklistConfigDto(), null, false);
-            Map<String, List<ChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
+            Map<String, List<SelfAssChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (data != null && !data.isEmpty()) {
-                for (Map.Entry<String, List<ChklItemExcelDto>> entry : data.entrySet()) {
-                    List<ChklstItemAnswerDto> collect = entry.getValue().stream().map(dto -> {
-                        String itemKey = dto.getItemKey();
-                        if (StringUtil.isEmpty(itemKey)) {
-                            return new ChklstItemAnswerDto();
-                        }
-                        String[] keys = itemKey.split(KEY_SEPARATOR);
-                        if (keys.length != 3) {
-                            return new ChklstItemAnswerDto();
-                        }
-                        return new ChklstItemAnswerDto(dto.getSnNo(),keys[0], keys[1], keys[2],
-                                ChecklistConstants.getAnswer(dto.getAnswer()), dto.getRemarks());
-                    }).collect(Collectors.toList());
+                for (Map.Entry<String, List<SelfAssChklItemExcelDto>> entry : data.entrySet()) {
+                    List<ChklstItemAnswerDto> collect = entry.getValue().stream()
+                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()))
+                            .map(dto -> {
+                                String itemKey = dto.getItemKey();
+                                if (StringUtil.isEmpty(itemKey)) {
+                                    return new ChklstItemAnswerDto();
+                                }
+                                String[] keys = itemKey.split(KEY_SEPARATOR);
+                                if (keys.length != 3) {
+                                    return new ChklstItemAnswerDto();
+                                }
+                                return new ChklstItemAnswerDto(dto.getSnNo(), keys[0], keys[1], keys[2],
+                                        ChecklistConstants.getAnswer(dto.getAnswer()), dto.getRemarks());
+                            }).collect(Collectors.toList());
                     resultMap.put(entry.getKey(), collect);
                 }
             }
@@ -580,7 +581,7 @@ public class BsbSubmitSelfAssessmentDelegator {
             Map<String, ChklstItemAnswerDto> answerMap, boolean withData) {
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
         if (commonConfigDto != null) {
-            List<ChklItemExcelDto> data = null;
+            List<SelfAssChklItemExcelDto> data = null;
             if (withData) {
                 data = getChklItemExcelDtos(commonConfigDto, answerMap);
             }
@@ -588,7 +589,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         }
 
         if (configDto != null) {
-            List<ChklItemExcelDto> data = null;
+            List<SelfAssChklItemExcelDto> data = null;
             if (withData) {
                 data = getChklItemExcelDtos(configDto, answerMap);
             }
@@ -597,32 +598,32 @@ public class BsbSubmitSelfAssessmentDelegator {
         return excelSheetDtos;
     }
 
-    private ExcelSheetDto getExcelSheetDto(int sheetAt, String sheetName, List<ChklItemExcelDto> data) {
+    private ExcelSheetDto getExcelSheetDto(int sheetAt, String sheetName, List<SelfAssChklItemExcelDto> data) {
         ExcelSheetDto excelSheetDto = new ExcelSheetDto();
         excelSheetDto.setSheetAt(sheetAt);
         excelSheetDto.setSheetName(sheetName);
         excelSheetDto.setBlock(true);
         excelSheetDto.setStartRowIndex(START_ROW);
         excelSheetDto.setSource(data);
-        excelSheetDto.setSourceClass(ChklItemExcelDto.class);
+        excelSheetDto.setSourceClass(SelfAssChklItemExcelDto.class);
         excelSheetDto.setDefaultRowHeight((short) 500);
         excelSheetDto.setChangeHeight(true);
         excelSheetDto.setWidthMap(getWidthMap());
         return excelSheetDto;
     }
 
-    private List<ChklItemExcelDto> getChklItemExcelDtos(ChecklistConfigDto configDto, Map<String, ChklstItemAnswerDto> answerMap) {
+    private List<SelfAssChklItemExcelDto> getChklItemExcelDtos(ChecklistConfigDto configDto, Map<String, ChklstItemAnswerDto> answerMap) {
         if (configDto == null || configDto.getSectionDtos() == null) {
             return IaisCommonUtils.genNewArrayList();
         }
-        List<ChklItemExcelDto> result = IaisCommonUtils.genNewArrayList();
+        List<SelfAssChklItemExcelDto> result = IaisCommonUtils.genNewArrayList();
         List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
         for (int i = 0, m = sectionDtos.size(); i < m; i++) {
             ChecklistSectionDto sectionDto = sectionDtos.get(i);
             List<ChecklistItemDto> checklistItemDtos = sectionDto.getChecklistItemDtos();
             for (int j = 0, n = checklistItemDtos.size(); j < n; j++) {
                 ChecklistItemDto itemDto = checklistItemDtos.get(j);
-                ChklItemExcelDto excelDto = new ChklItemExcelDto();
+                SelfAssChklItemExcelDto excelDto = new SelfAssChklItemExcelDto();
                 excelDto.setSnNo((i+1) + "." + (j+1));
                 excelDto.setSection(sectionDto.getSection());
                 excelDto.setChecklistItem(itemDto.getChecklistItem());
@@ -647,24 +648,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         }
         return result;
     }
-
-    /*public void convertToUploadTemplateByConfig(List<ChecklistConfigExcel> configExcelList, ChecklistConfigDto config) {
-        if (Optional.ofNullable(config).isPresent()){
-            List<ChecklistSectionDto> section = config.getSectionDtos();
-            for (ChecklistSectionDto i : section){
-                List<ChecklistItemDto> item = i.getChecklistItemDtos();
-                for (ChecklistItemDto j : item){
-                    ChecklistConfigExcel excelItemDto = new ChecklistConfigExcel();
-                    excelItemDto.setChecklistItem(j.getChecklistItem());
-                    excelItemDto.setItemDisplayOrder(j.getSectionItemOrder().toString());
-                    excelItemDto.setItemId(j.getItemId());
-                    excelItemDto.setSectionDisplayOrder(i.getOrder().toString());
-                    excelItemDto.setSectionName(i.getSection());
-                    configExcelList.add(excelItemDto);
-                }
-            }
-        }
-    }*/
 
     private static Map<Integer, Integer> widthMap;
 

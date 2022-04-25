@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.entity;
+package sg.gov.moh.iais.egp.bsb.dto.chklst.assessment;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class ChklItemExcelDto implements Serializable {
+public class SelfAssChklItemExcelDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
