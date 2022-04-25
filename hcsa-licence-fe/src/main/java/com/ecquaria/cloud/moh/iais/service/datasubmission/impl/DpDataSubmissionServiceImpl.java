@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -90,20 +91,30 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     public DpSuperDataSubmissionDto saveDpSuperDataSubmissionDtoToBE(DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE start ..."));
         dpSuperDataSubmissionDto.setFe(false);
-        dpSuperDataSubmissionDto = saveBeArSuperDataSubmissionDto(dpSuperDataSubmissionDto);
-
         DataSubmissionDto dataSubmission = dpSuperDataSubmissionDto.getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         if (eicRequestTrackingDto != null) {
+            Date now = new Date();
+            eicRequestTrackingDto.setFirstActionAt(now);
+            eicRequestTrackingDto.setLastActionAt(now);
             eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            licEicClient.saveEicTrack(eicRequestTrackingDto);
+            try {
+                dpSuperDataSubmissionDto = saveBeArSuperDataSubmissionDto(dpSuperDataSubmissionDto);
+                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+            } catch (Throwable e) {
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+            }
         } else {
             log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
         }
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE end ..."));
+
+
+
+
         return dpSuperDataSubmissionDto;
     }
 
