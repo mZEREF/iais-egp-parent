@@ -17,7 +17,6 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
                     <div class="bg-title">
                         <h2>
                             <span>${ackMsg}</span>

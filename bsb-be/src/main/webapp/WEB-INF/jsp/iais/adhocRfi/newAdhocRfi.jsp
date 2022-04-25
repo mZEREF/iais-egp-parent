@@ -9,6 +9,8 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -97,10 +99,8 @@
                                     <iais:row>
                                         <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
                                             <textarea  name="information" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfInformationRequired}</textarea>
+                                            <span data-err-ind="titleOfInformationRequired" class="error-msg"></span>
                                         </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <span id="errorMsg" data-err-ind="titleOfInformationRequired" class="error-msg"></span>
                                     </iais:row>
                                 </div>
                             </div>
@@ -122,10 +122,8 @@
                                     <iais:row>
                                         <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
                                             <textarea  name="documentsTitle" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfSupportingDocRequired}</textarea>
+                                            <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                         </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                     </iais:row>
                                 </div>
                             </div>

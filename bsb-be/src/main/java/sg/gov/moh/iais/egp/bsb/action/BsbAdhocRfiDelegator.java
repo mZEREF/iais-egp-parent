@@ -119,8 +119,8 @@ public class BsbAdhocRfiDelegator {
         if(viewAdhocRfiDto.getStatus().equals("RFIST004")){
             status=new String[]{"RFIST004"};
         }
-        List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
-        ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
+        List<SelectOption> statusList= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "statusList", (Serializable) statusList);
     }
     /**
      * doUpdate
@@ -131,17 +131,9 @@ public class BsbAdhocRfiDelegator {
         ViewAdhocRfiDto viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
         String date = ParamUtil.getString(request,"dueDate");
         String status = ParamUtil.getString(request,"status");
-        Date dueDate;
-        Calendar calendar = Calendar.getInstance();
-        if(!StringUtil.isEmpty(date)){
-            dueDate = Formatter.parseDate(date);
-        }else {
-            calendar.add(Calendar.DATE,14);
-            dueDate =calendar.getTime();
+        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+            viewAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
-        Instant instant = dueDate.toInstant();
-        ZonedDateTime zone = instant.atZone(ZoneId.systemDefault());
-        viewAdhocRfiDto.setDueDate(zone.toLocalDate());
         viewAdhocRfiDto.setStatus(status);
         ValidationResultDto validationResultDto = adhocRfiClient.validateManualAdhocRfiUpdate(viewAdhocRfiDto);
         String isValidate;
@@ -225,17 +217,9 @@ public class BsbAdhocRfiDelegator {
         String information = ParamUtil.getString(request,"information");
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
-        Date dueDate;
-        Calendar calendar = Calendar.getInstance();
-        if(!StringUtil.isEmpty(date)){
-            dueDate = Formatter.parseDate(date);
-        }else {
-            calendar.add(Calendar.DATE,14);
-            dueDate =calendar.getTime();
+        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+            newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
-        Instant instant = dueDate.toInstant();
-        ZonedDateTime zone = instant.atZone(ZoneId.systemDefault());
-        newAdhocRfiDto.setDueDate(zone.toLocalDate());
         newAdhocRfiDto.setStatus(status);
         if(info ==null){
             newAdhocRfiDto.setInformationRequired(null);
@@ -266,6 +250,8 @@ public class BsbAdhocRfiDelegator {
      */
     public void doCancel(BaseProcessClass bpc){
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>doCancel");
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request, IS_VALIDATE, "Y");
     }
 
     private void validateData(NewAdhocRfiDto dto, HttpServletRequest request){
