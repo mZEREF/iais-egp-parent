@@ -130,14 +130,37 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <excludes><exclude>template</exclude></excludes>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/template</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
+                <excludes><exclude>template</exclude></excludes>
                 <filtering>true</filtering>
             </testResource>
+            <testResource>
+                <directory>src/main/resources/template</directory>
+                <filtering>false</filtering>
+            </testResource>
         </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <!--you should hold the properties and xlsx files in separate directories.-->
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

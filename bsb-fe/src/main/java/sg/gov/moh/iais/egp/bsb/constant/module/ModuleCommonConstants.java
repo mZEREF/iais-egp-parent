@@ -9,6 +9,7 @@ public class ModuleCommonConstants {
     public static final String KEY_ACTION_ADDITIONAL                = "action_additional";
 
     public static final String KEY_NAV_NEXT                         = "next";
+    public static final String KEY_NAV_PAGE                         = "page";
     public static final String KEY_NAV_BACK                         = "back";
     public static final String KEY_NAV_PREPARE                      = "prepare";
     public static final String KEY_NAV_DRAFT                        = "draft";

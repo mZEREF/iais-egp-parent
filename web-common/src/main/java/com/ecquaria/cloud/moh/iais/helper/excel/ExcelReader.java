@@ -6,9 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -22,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +82,51 @@ public final class ExcelReader {
         return (List<T>) result.stream().map(x -> setField(clz, x, defaultValueNull)).collect(Collectors.toList());
     }
 
+    public static <T> Map<String, List<T>> readerToBeans(final File file, final List<ExcelSheetDto> excelSheetDtos) throws Exception {
+        if (file == null || !file.exists()) {
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
+
+        if (excelSheetDtos == null || excelSheetDtos.isEmpty()) {
+            throw new IaisRuntimeException("excel sheet dot error");
+        }
+
+        Map<String, List<T>> data = IaisCommonUtils.genNewHashMap();
+        Workbook workBook = null;
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            workBook = new XSSFWorkbook(in);
+            for (ExcelSheetDto excelSheetDto : excelSheetDtos) {
+                int startCellIndex = excelSheetDto.getStartRowIndex() - 1;
+                int sheetAt = excelSheetDto.getSheetAt();
+                Sheet sheet = workBook.getSheetAt(sheetAt);
+                if (sheet == null) {
+                    log.info(StringUtil.changeForLog("excel sheet name error"));
+                    continue;
+                }
+                String sheetName = sheet.getSheetName();
+                String name = excelSheetDto.getSheetName();
+                if (!StringUtil.isEmpty(name) && !name.equals(sheetName)) {
+                    log.info(StringUtil.changeForLog("excel sheet name error" + sheetName + " : " + name));
+                    continue;
+                }
+                List<List<String>> result = sequentialParse(sheet, startCellIndex);
+                List<T> list = (List<T>) result.stream().map(x -> setField(excelSheetDto.getSourceClass(), x,
+                        excelSheetDto.isDefaultValueNull()))
+                        .collect(Collectors.toList());
+                data.put(excelSheetDto.getSheetName(), list);
+            }
+            return data;
+        } finally {
+            try {
+                if (workBook != null) {
+                    workBook.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
     public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {
         if (file == null || !file.exists()){
             throw new IaisRuntimeException("Please check excel source is exists");
@@ -107,7 +153,10 @@ public final class ExcelReader {
     private static List<List<String>> sequentialParse(final Sheet sheet, final int startCellIndex) {
         int rowCount = sheet.getLastRowNum();
         //int realRowCount = sheet.getPhysicalNumberOfRows();
-        int realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
+        int realCellCount = sheet.getRow(startCellIndex + 1).getLastCellNum();
+        if (startCellIndex >= 0) {
+            realCellCount = Math.max(realCellCount, sheet.getRow(startCellIndex).getLastCellNum());
+        }
 
         List<List<String>> result = IaisCommonUtils.genNewArrayList();
         for (int i =  startCellIndex + 1; i <= rowCount; i++) {

@@ -27,9 +27,9 @@ function initFileData(data) {
         return;
     }
     console.log("init file data");
-    $('fileMaxSize').val(data.fileMaxSize);
-    $('fileMaxMBMessage').val(data.fileMaxMBMessage);
-    $('_fileType').val(data.type);
+    $('#fileMaxSize').val(data.fileMaxSize);
+    $('#fileMaxMBMessage').val(data.fileMaxMBMessage);
+    $('#_fileType').val(data.type);
 }
 
 function deleteFileFeAjax(id, fileIndex) {
@@ -74,6 +74,7 @@ function ajaxCallUploadForMax(idForm, fileAppendId, needMaxGlobalIndex) {
     }
     $("#needGlobalMaxIndex").val(needMaxGlobalIndex);
     fileAppendId = $("#fileAppendId").val();
+    $("#error_" + fileAppendId + "Error").html("");
     $("#uploadFormId").val(idForm);
     var form = new FormData($("#" + idForm)[0]);
     var maxFileSize = $("#fileMaxSize").val();
@@ -133,8 +134,9 @@ function clearFlagValueFEFile() {
 
 function validateFileSizeMaxOrEmpty(maxSize) {
     var fileId = $("#fileAppendId").val();
-    var fileV = $(fileId).val();
-    var file = $(fileId).get(0).files[0];
+    var $file = $('#' + fileId);
+    var fileV = $file.val();
+    var file = $file.get(0).files[0];
     if (fileV == null || fileV == "" || file == null || file == undefined) {
         return "E";
     }
@@ -143,8 +145,8 @@ function validateFileSizeMaxOrEmpty(maxSize) {
     //alert('maxSize:'+maxSize);
     fileSize = parseInt(fileSize);
     if (fileSize >= maxSize) {
-        $(fileId).after($(fileId).clone().val(""));
-        $(fileId).eq('0').remove();
+        $file.after($file.clone().val(""));
+        $file.eq('0').remove();
         return "N";
     }
     return "Y";
@@ -152,8 +154,9 @@ function validateFileSizeMaxOrEmpty(maxSize) {
 
 function cloneUploadFile() {
     var fileId = $("#fileAppendId").val();
-    $(fileId).after($(fileId).clone().val(""));
-    $(fileId).remove();
+    var $file = $('#' + fileId);
+    $file.after($file.clone().val(""));
+    $file.remove();
 }
 
 function doActionWhenError(data) {

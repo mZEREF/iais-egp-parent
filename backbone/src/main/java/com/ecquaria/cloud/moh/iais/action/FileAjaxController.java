@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,10 +59,6 @@ public class FileAjaxController {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    public static final String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
-    public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
-    public static final String GLOBAL_MAX_INDEX_SESSION_ATTR = "sessIon_GlObal__MaxINdex_Attr";
-
     @ResponseBody
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String ajaxUpload(HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile,
@@ -68,16 +66,17 @@ public class FileAjaxController {
             @RequestParam("reloadIndex") int reloadIndex,
             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal) {
         log.info("-----------ajax-upload-file start------------");
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId);
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX
+                        + fileAppendId);
         int size = 0;
-        if (needMaxGlobal && ParamUtil.getSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
-            size = (int) ParamUtil.getSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if (needMaxGlobal && ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            size = (int) ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
         if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
         } else if (size <= 0) {
-            size = (Integer) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX
-                    + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
+            size = (Integer) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX
+                    + fileAppendId + IaisEGPConstant.SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
         String needReUpload = ParamUtil.getString(request, "_needReUpload");
         String fileType = ParamUtil.getString(request, "_fileType");
@@ -100,9 +99,10 @@ public class FileAjaxController {
         try {
             String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
             if (reloadIndex == -1) {
-                ParamUtil.setSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX, size + 1);
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId
+                        + IaisEGPConstant.SEESION_FILES_MAP_AJAX_MAX_INDEX, size + 1);
                 if (needMaxGlobal) {
-                    ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
+                    ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                 }
                 tempFolder = request.getSession().getId() + fileAppendId + size;
                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
@@ -120,9 +120,9 @@ public class FileAjaxController {
             return "";
         }
         // Save File to other nodes
-        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+        //saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
-        ParamUtil.setSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
+        ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
 
         StringBuilder stringBuilder = new StringBuilder();
         String suffix = "Div" + size;
@@ -159,6 +159,26 @@ public class FileAjaxController {
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.parseToJson(messageCode);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
+    public String deleteFeCallFile(HttpServletRequest request) {
+        log.info("-----------deleteFeCallFile start------------");
+        String fileAppendId = ParamUtil.getString(request, "fileAppendId");
+        String index = ParamUtil.getString(request, "fileIndex");
+        if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
+            if (!IaisCommonUtils.isEmpty(map)) {
+                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
+                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
+                map.remove(fileAppendId + index);
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
+            }
+        }
+        log.info("-----------deleteFeCallFile end------------");
+
+        return AppConsts.YES;
     }
 
     private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
@@ -198,36 +218,16 @@ public class FileAjaxController {
         return "";
     }
 
-    @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteFeCallFile(HttpServletRequest request) {
-        log.info("-----------deleteFeCallFile start------------");
-        String fileAppendId = ParamUtil.getString(request, "fileAppendId");
-        String index = ParamUtil.getString(request, "fileIndex");
-        if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId);
-            if (!IaisCommonUtils.isEmpty(map)) {
-                log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
-                log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
-                map.remove(fileAppendId + index);
-                ParamUtil.setSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
-            }
-        }
-        log.info("-----------deleteFeCallFile end------------");
-
-        return AppConsts.YES;
-    }
-
     @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
-    public @ResponseBody
-    void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
 
         String fileAppendId = ParamUtil.getString(request, "fileAppendIdDown");
         String index = ParamUtil.getString(request, "fileIndexDown");
 
         if (!StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)) {
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId);
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
             if (!IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " + fileAppendId + "-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " + index + "-----------"));
@@ -261,7 +261,7 @@ public class FileAjaxController {
                 } else {
                     log.info(StringUtil.changeForLog("------no find file :" + fileAppendId + index + " parh -----------"));
                 }
-                ParamUtil.setSessionAttr(request, SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
+                ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
             }
         }
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
@@ -315,7 +315,8 @@ public class FileAjaxController {
         }
     }
 
-    @RequestMapping("/init")
+    @ResponseBody
+    @PostMapping("/init")
     public String initFileData(HttpServletRequest request) {
         Map<String, String> data = new HashMap<>();
         String fileMaxSize = String.valueOf(SystemParamUtil.getSystemParamConfig().getUploadFileLimit());

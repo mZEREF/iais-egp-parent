@@ -67,6 +67,21 @@ public final class CellStyleHelper {
         return lockStyle;
     }
 
+//    public static XSSFCellStyle getLockStyle(int x) {
+//        if (workbook!= null) {
+//            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+//            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//            xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//            xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+//            xssfCellStyle.set
+//            xssfCellStyle.setLocked(true);
+//            xssfCellStyle.setHidden(true);
+//            xssfCellStyle.setWrapText(true);
+//            lockStyle = xssfCellStyle;
+//        }
+//    }
+
     public static XSSFCellStyle getUnlockStyle() {
         return unlockStyle;
     }

@@ -640,6 +640,17 @@ function unDisableContent(targetSelector) {
     });
 }
 
+function refreshId(targetSelector) {
+    $(targetSelector).each(function (k,v) {
+        var $input = $(v);
+        var orgId = $input.attr('id');
+        var result = /([a-zA-Z_]*)/g.exec(orgId);
+        var id = !isEmpty(result) && result.length > 0 ? result[0] : orgId;
+        $input.prop('id', id + k);
+    });
+}
+
+
 function refreshIndex(targetSelector) {
     if (isEmpty(targetSelector)) {
         return;

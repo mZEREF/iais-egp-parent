@@ -1,5 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.constant.module;
 
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+
 public class SelfAssessmentConstants {
     private SelfAssessmentConstants() {}
 
@@ -31,4 +33,13 @@ public class SelfAssessmentConstants {
     // key separator
     public static final String KEY_SEPARATOR = "--";
     public static final String KEY_REMARKS = "-remarks";
+
+    public static final String ACTION_UPLOAD_TYPE           = "act_upload_type";
+    public static final String FILE_APPEND_ID               = "uploadFile";
+    public static final String SEESION_FILES_MAP_AJAX       = IaisEGPConstant.SEESION_FILES_MAP_AJAX + FILE_APPEND_ID;
+    public static final int START_ROW                       = 1;
+    public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
+    public static String SHEET_NAME_COMMON                  = "General Regulation";
+    public static String SHEET_NAME_BSB                     = "BSB Regulation";
+
 }
