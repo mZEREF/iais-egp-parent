@@ -173,37 +173,35 @@
                                                                                     <thead>
                                                                                     <tr>
                                                                                         <th scope="col" style="width:5%">S/N</th>
-                                                                                        <th scope="col" style="width:15%">Item Description</th>
-                                                                                        <th scope="col" style="width:15%">Findings/Non-Compliance</th>
-                                                                                        <th scope="col" style="width:15%">Action Required</th>
+                                                                                        <th scope="col" style="width:20%">Item Description</th>
+                                                                                        <th scope="col" style="width:20%">Findings/Non-Compliance</th>
+                                                                                        <th scope="col" style="width:20%">Action Required</th>
                                                                                         <th scope="col" style="width:15%">Rectified?</th>
-                                                                                        <th scope="col" style="width:15%">Applicant's Input</th>
-                                                                                        <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                                                                        <th scope="col" style="width:20%">Applicant's Input</th>
                                                                                     </tr>
                                                                                     </thead>
                                                                                     <c:forEach var="checkList" items="${reportDto.checkListItemGeneralList}" varStatus="status">
-                                                                                        <tr>
-                                                                                            <td>1.${status.count}</td>
-                                                                                            <td><c:out value="${checkList.itemDescription}"/></td>
-                                                                                            <td>
-                                                                                                <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
-                                                                                                <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
-                                                                                                <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <c:choose>
-                                                                                                    <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
-                                                                                                    <c:otherwise>No</c:otherwise>
-                                                                                                </c:choose>
-                                                                                            </td>
-                                                                                            <td><c:out value="${checkList.applicantInput}"/></td>
-                                                                                            <td>
-                                                                                                <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if> data-type="reportInput" disabled="disabled">
-                                                                                            </td>
-                                                                                        </tr>
+                                                                                        <c:if test="${checkList.excludeFromApplicantVersion ne 'true'}">
+                                                                                            <tr>
+                                                                                                <td>1.${status.count}</td>
+                                                                                                <td><c:out value="${checkList.itemDescription}"/></td>
+                                                                                                <td>
+                                                                                                    <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
+                                                                                                    <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
+                                                                                                    <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <c:choose>
+                                                                                                        <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
+                                                                                                        <c:otherwise>No</c:otherwise>
+                                                                                                    </c:choose>
+                                                                                                </td>
+                                                                                                <td><c:out value="${checkList.applicantInput}"/></td>
+                                                                                            </tr>
+                                                                                        </c:if>
                                                                                     </c:forEach>
                                                                                 </table>
                                                                             </div>
@@ -215,37 +213,35 @@
                                                                                     <thead>
                                                                                     <tr>
                                                                                         <th scope="col" style="width:5%">S/N</th>
-                                                                                        <th scope="col" style="width:15%">Item Description</th>
-                                                                                        <th scope="col" style="width:15%">Findings/Non-Compliance</th>
-                                                                                        <th scope="col" style="width:15%">Action Required</th>
+                                                                                        <th scope="col" style="width:20%">Item Description</th>
+                                                                                        <th scope="col" style="width:20%">Findings/Non-Compliance</th>
+                                                                                        <th scope="col" style="width:20%">Action Required</th>
                                                                                         <th scope="col" style="width:15%">Rectified?</th>
-                                                                                        <th scope="col" style="width:15%">Applicant's Input</th>
-                                                                                        <th scope="col" style="width:20%">Exclude from Applicant Version</th>
+                                                                                        <th scope="col" style="width:20%">Applicant's Input</th>
                                                                                     </tr>
                                                                                     </thead>
                                                                                     <c:forEach var="checkList" items="${reportDto.checkListItemBsbList}" varStatus="status">
-                                                                                        <tr>
-                                                                                            <td>1.${status.count}</td>
-                                                                                            <td><c:out value="${checkList.itemDescription}"/></td>
-                                                                                            <td>
-                                                                                                <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
-                                                                                                <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
-                                                                                                <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <c:choose>
-                                                                                                    <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
-                                                                                                    <c:otherwise>No</c:otherwise>
-                                                                                                </c:choose>
-                                                                                            </td>
-                                                                                            <td><c:out value="${checkList.applicantInput}"/></td>
-                                                                                            <td>
-                                                                                                <input id="excludeFromApplicantVersion--v--${checkList.id}" name="excludeFromApplicantVersion--v--${checkList.id}" type="checkbox" <c:if test="${checkList.excludeFromApplicantVersion eq 'true'}">checked="checked"</c:if> data-type="reportInput" disabled="disabled"/>
-                                                                                            </td>
-                                                                                        </tr>
+                                                                                        <c:if test="${checkList.excludeFromApplicantVersion ne 'true'}">
+                                                                                            <tr>
+                                                                                                <td>1.${status.count}</td>
+                                                                                                <td><c:out value="${checkList.itemDescription}"/></td>
+                                                                                                <td>
+                                                                                                    <textarea id="finding--v--${checkList.id}" name="finding--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.finding}"/></textarea>
+                                                                                                    <span data-err-ind="finding--v--${checkList.id}" class="error-msg"></span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <textarea id="actionRequired--v--${checkList.id}" name="actionRequired--v--${checkList.id}" cols="20" rows="5" maxlength="500" data-type="reportInput" disabled="disabled"><c:out value="${checkList.actionRequired}"/></textarea>
+                                                                                                    <span data-err-ind="actionRequired--v--${checkList.id}" class="error-msg"></span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <c:choose>
+                                                                                                        <c:when test="${checkList.rectified eq 'true'}">Yes</c:when>
+                                                                                                        <c:otherwise>No</c:otherwise>
+                                                                                                    </c:choose>
+                                                                                                </td>
+                                                                                                <td><c:out value="${checkList.applicantInput}"/></td>
+                                                                                            </tr>
+                                                                                        </c:if>
                                                                                     </c:forEach>
                                                                                 </table>
                                                                             </div>
