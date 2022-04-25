@@ -169,12 +169,14 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     }
 
     @Override
-    public List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo) {
+    public List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo,String rfcSubmissionNo) {
         log.info(StringUtil.changeForLog("The getDrugMedicationDtoBySubmissionNoForDispensed submissionNo is -->:"+submissionNo));
+        log.info(StringUtil.changeForLog("The submissionNo is -->:"+submissionNo));
+        log.info(StringUtil.changeForLog("The rfcSubmissionNo is -->:"+rfcSubmissionNo));
         if (StringUtil.isEmpty(submissionNo) ) {
             return null;
         }
-        return dpFeClient.getDrugMedicationDtoBySubmissionNoForDispensed(submissionNo).getEntity();
+        return dpFeClient.getDrugMedicationDtoBySubmissionNoForDispensed(submissionNo,rfcSubmissionNo).getEntity();
     }
 
 

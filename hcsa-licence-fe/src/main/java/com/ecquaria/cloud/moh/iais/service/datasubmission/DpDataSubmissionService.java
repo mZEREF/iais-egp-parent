@@ -40,5 +40,5 @@ public interface DpDataSubmissionService {
 
     List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNo(String submissionNo);
 
-    List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo);
+    List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo,String rfcSubmissionNo);
 }

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
@@ -39,6 +41,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        DpSuperDataSubmissionDto currentDpDataSubmission= DataSubmissionHelper.getCurrentDpDataSubmission(request);
 
         DrugPrescribedDispensedDto drugPrescribedDispensed=(DrugPrescribedDispensedDto) obj;
         DrugSubmissionDto drugSubmission = drugPrescribedDispensed.getDrugSubmission();
@@ -67,20 +70,20 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
         }
 
         String doctorReignNo=drugSubmission.getDoctorReignNo();
-if(!StringUtil.isEmpty(doctorReignNo)){
-    ProfessionalResponseDto professionalResponseDto = dpDataSubmissionService.retrievePrsInfo(doctorReignNo);
-    if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
-        log.debug(StringUtil.changeForLog("prs svc down ..."));
-        if (professionalResponseDto.isHasException()) {
-            request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-            errorMap.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-        } else if ("401".equals(professionalResponseDto.getStatusCode())) {
-            errorMap.put("doctorReignNo", "GENERAL_ERR0054");
-        } else {
-            errorMap.put("doctorReignNo", "GENERAL_ERR0042");
+        if(!StringUtil.isEmpty(doctorReignNo)){
+            ProfessionalResponseDto professionalResponseDto = dpDataSubmissionService.retrievePrsInfo(doctorReignNo);
+            if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
+                log.debug(StringUtil.changeForLog("prs svc down ..."));
+                if (professionalResponseDto.isHasException()) {
+                    request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                    errorMap.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                    errorMap.put("doctorReignNo", "GENERAL_ERR0054");
+                } else {
+                    errorMap.put("doctorReignNo", "GENERAL_ERR0042");
+                }
+            }
         }
-    }
-}
         String prescriptionDate = drugSubmission.getPrescriptionDate();
         String dispensingDate = drugSubmission.getDispensingDate();
         String drugType = drugSubmission.getDrugType();
@@ -144,7 +147,8 @@ if(!StringUtil.isEmpty(doctorReignNo)){
         Map<String,Integer> drugMedicationMap = null;
         if(DataSubmissionConsts.DRUG_DISPENSED.equals(drugType)){
             List<DrugMedicationDto> oldDrugMedicationDtos =  dpDataSubmissionService.
-                    getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId());
+                    getDrugMedicationDtoBySubmissionNoForDispensed(drugSubmission.getPrescriptionSubmissionId(),
+                            currentDpDataSubmission.getDataSubmissionDto().getSubmissionNo());
             preDrugMedicationMap = tidyDrugMedicationDto(null,preDrugMedicationDtos);
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,oldDrugMedicationDtos);
             drugMedicationMap = tidyDrugMedicationDto(drugMedicationMap,drugMedicationDtos);

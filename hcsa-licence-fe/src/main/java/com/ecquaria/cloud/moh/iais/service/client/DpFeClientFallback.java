@@ -77,7 +77,8 @@ public class DpFeClientFallback implements DpFeClient {
         return getFeignResponseEntity(submissionNo);
     }
     @Override
-    public FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo) {
-        return getFeignResponseEntity(submissionNo);
+    public FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNoForDispensed(String pSubmissionNo,
+                                                                                                       String dSubmissionNo) {
+        return getFeignResponseEntity(pSubmissionNo,dSubmissionNo);
     }
 }
