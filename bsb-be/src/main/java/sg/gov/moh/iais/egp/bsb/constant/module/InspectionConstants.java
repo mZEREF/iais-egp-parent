@@ -68,4 +68,7 @@ public class InspectionConstants {
     public static final int VALUE_RFI_FLAG_SELF_APPLICATION = 2;
 
     public static final String KEY_AFTER_SAVE_REPORT          = "AFTER_SAVE_REPORT";
+
+    public static final String KEY_REVIEW_FOLLOW_UP_DTO = "reviewFollowUpDto";
+    public static final String KEY_REQUEST_EXTENSION = "requestExtension";
 }

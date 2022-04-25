@@ -9,30 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.time.LocalDate;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 @Slf4j
-@Delegator("mohDOReviewFollowUpItems")
-public class BsbInspectionDOReviewFollowUpItemsDelegator {
+@Delegator("mohDOReviewFollowUpItemsExtension")
+public class BsbInspectionDOReviewFollowUpItemsExtensionDelegator {
     private final InspectionClient inspectionClient;
     private final InspectionService inspectionService;
 
     @Autowired
-    public BsbInspectionDOReviewFollowUpItemsDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
+    public BsbInspectionDOReviewFollowUpItemsExtensionDelegator(InspectionClient inspectionClient, InspectionService inspectionService) {
         this.inspectionClient = inspectionClient;
         this.inspectionService = inspectionService;
     }
@@ -51,7 +48,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         ReviewInsFollowUpDto dto = getDisplayDto(request);
         inspectionService.getInitFollowUpData(request,dto);
         //decide what kind of page you want
-        ParamUtil.setRequestAttr(request, KEY_REQUEST_EXTENSION, NO);
+        ParamUtil.setRequestAttr(request, KEY_REQUEST_EXTENSION, YES);
         ParamUtil.setRequestAttr(request, KEY_CAN_NOT_UPLOAD_DOC, true);
     }
 
@@ -63,17 +60,14 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         HttpServletRequest request = bpc.request;
         InsProcessDto insProcessDto = getInsProcessDto(request);
         //get param from page
-        insProcessDto.reqObjMapping(request);
+        bindParam(request, insProcessDto);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, insProcessDto);
-
         ValidationResultDto validationResultDto = inspectionClient.validatePostInspectionDOReviewFollowUpItems(insProcessDto);
         String validateResult;
         if (validationResultDto.isPass()) {
             String processingDecision = insProcessDto.getDecision();
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT.equals(processingDecision)) {
-                validateResult = "routeBack";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processingDecision)) {
-                validateResult = "acceptResponse";
+            if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processingDecision)) {
+                validateResult = "approve";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
                 validateResult = "skip";
             } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(processingDecision)) {
@@ -90,25 +84,13 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         ParamUtil.setRequestAttr(request, KEY_ROUTE, validateResult);
     }
 
-    public void routeBackToApplicant(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto insProcessDto = getInsProcessDto(request);
-        inspectionClient.doReviewInspectionFollowUpItemsRouteBackToApplicant(appId, taskId, APP_STATUS_PEND_CLARIFICATION, insProcessDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "Your Request for Information has been sent to the Applicant on" + DateUtil.convertToString(LocalDate.now()) + ".");
-    }
-
-    /**
-     * if the task is request extension,update app data and complete task (and save the new due date)
-     * if the task is submit follow up data,update app data and complete task and create new task for Approval Officer
-     */
     public void acceptResponse(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
-        inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
+        //todo specify new due date
+        inspectionClient.doReviewInspectionFollowUpItemsRouteBackToApplicant(appId, taskId, APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
     }
 
@@ -121,7 +103,7 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto insProcessDto = getInsProcessDto(request);
-        inspectionClient.doReviewInspectionFollowUpItemsAcceptResponse(appId, taskId, insProcessDto);
+        inspectionClient.doReviewInspectionFollowUpItemsRouteBackToApplicant(appId, taskId, APP_STATUS_PEND_SUBMIT_FOLLOW_UP_ITEMS, insProcessDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully follow-up item Verified.");
     }
 

@@ -1,5 +1,8 @@
 <%--@elvariable id="reviewFollowUpDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto"--%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<div class="alert alert-info" role="alert">
+    <strong><h4>Inspection Follow-up Verification</h4></strong>
+</div>
 <div class="table-gp">
     <table aria-describedby="" class="table" id="reviewSubmitTable" style="display: none">
         <thead>
@@ -68,7 +71,6 @@
                                 <c:forEach items="${reviewFollowUpDto.followUpDocDisplayDtoList}" var="doc">
                                     <c:set var="maskedRepoId" value="${MaskUtil.maskValue('file', doc.fileRepoId)}"/>
                                     <a href="javascript:void(0)" onclick="downloadSupportDocument('${maskedAppId}', '${maskedRepoId}', '${doc.docName}')">${doc.docName}</a>
-                                    &nbsp;
                                 </c:forEach>
                             </c:if>
                         </td>

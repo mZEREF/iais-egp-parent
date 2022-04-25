@@ -39,4 +39,6 @@ public class ModuleCommonConstants {
     public static final String KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP = "docDisplayDtoRepoIdNameMap";
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
     public static final String KEY_SELECT_ROUTE_TO_MOH              = "selectRouteToMoh";
+
+    public static final String KEY_CAN_NOT_UPLOAD_DOC               = "canNotUploadInternalDoc";
 }

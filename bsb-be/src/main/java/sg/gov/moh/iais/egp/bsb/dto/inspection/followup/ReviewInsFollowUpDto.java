@@ -19,6 +19,7 @@ public class ReviewInsFollowUpDto implements Serializable {
     private String currentStatus;
     private String requestExtension;
     private String reasonForExtension;
+    private String doDecision;
     //info page
     private SubmissionDetailsInfo submissionDetailsInfo;
     //document page
