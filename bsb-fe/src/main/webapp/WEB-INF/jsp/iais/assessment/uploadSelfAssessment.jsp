@@ -14,9 +14,10 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<script type="text/javascript" src="<%=webroot1%>js/file-upload.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-assessment.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<%--<script type="text/javascript" src="<%=webroot1%>js/file-upload.js"></script>--%>
+
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -97,27 +98,6 @@
                                        onclick="fileClicked(event)"
                                        onchange="ajaxCallUploadForMax('mainForm', 'uploadFile', false);"/>
                                 <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
-                                <%--<c:if test="${facCommittee.savedFile ne null}">
-                                    <c:set var="repoId"><iais:mask name="file" value="${facCommittee.savedFile.repoId}"/></c:set>
-                                    <div id="${repoId}FileDiv">
-                                        <a href="/bsb-fe/ajax/doc/download/facReg/committee/repo/${repoId}" style="text-decoration: underline"><span id="${repoId}Span">${facCommittee.savedFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.savedFile.size/1024.0}" type="number" pattern="0.0"/>KB)
-                                        <button type="button" class="btn btn-secondary btn-sm"
-                                                onclick="deleteDataFile('${repoId}')">Delete</button>
-                                        <span data-err-ind="${facCommittee.savedFile.repoId}" class="error-msg"></span>
-                                    </div>
-                                </c:if>
-                                <c:if test="${facCommittee.newFile ne null}">
-                                    <c:set var="tmpId"><iais:mask name="file" value="${facCommittee.newFile.tmpId}"/></c:set>
-                                    <div id="${tmpId}FileDiv">
-                                        <a href="/bsb-fe/ajax/doc/download/facReg/committee/new/${tmpId}" style="text-decoration: underline"><span id="${tmpId}Span">${facCommittee.newFile.filename}</span></a>(<fmt:formatNumber value="${facCommittee.newFile.size/1024.0}" type="number" pattern="0.0"/>KB)
-                                        <button type="button" class="btn btn-secondary btn-sm"
-                                                onclick="delete1DataFile('${tmpId}')">Delete</button>
-                                        <span data-err-ind="${facCommittee.newFile.tmpId}" class="error-msg"></span>
-                                    </div>
-                                </c:if>
-
-                                <div><a class="btn file-upload btn-secondary" data-upload-data-file="committeeData" href="javascript:void(0);">Upload</a></div>
-                                <input type="file" id="committeeData" name="committeeData" data-data-file-input="committeeData" style="display: none">--%>
                             </div>
                         </div>
                     </div>

@@ -46,7 +46,18 @@ $(function () {
         $("input[name='action_type']").val("save");
         $("#mainForm").submit();
     });
-})
+
+    $('#_needReUpload').val(0);
+    $('#_fileType').val("XLSX");
+});
+
+function clearFlagValueFEFile() {
+    $("#reloadIndex").val(-1);
+    $("#fileAppendId").val("");
+    $("#uploadFormId").val("");
+    $('.itemErrorTableDiv').hide();
+    dismissWaiting();
+}
 
 function switchNextStep(index) {
     $('.config').hide();
