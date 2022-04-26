@@ -44,6 +44,8 @@ public class DocConstants {
     public static final String DOC_TYPE_INVENTORY_AGENT   = "inventoryBat";
     public static final String DOC_TYPE_INVENTORY_TOXIN   = "inventoryToxins";
 
+    public static final String DOC_TYPE_SELF_ASSESSMENT   = "selfAssessment";
+
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
             DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, DOC_TYPE_INVENTORY_FILE, DOC_TYPE_GMAC_ENDORSEMENT,

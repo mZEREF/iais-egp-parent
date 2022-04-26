@@ -142,6 +142,8 @@
             } else {
                 $('#counsellingRslts').hide();
                 $('#otherCounsellingRslts').hide();
+                fillValue($('#counsellingRslts'),null);
+                $('#otherCounsellingRslts').val(null);
             }
         });
     }

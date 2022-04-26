@@ -191,6 +191,9 @@
                 $('#occupations').show();
             } else {
                 $('#occupations').hide();
+                $('#otherOccupations').hide();
+                fillValue($('#occupations'),null);
+                $('#otherOccupations').val(null);
             }
         });
     });

@@ -2,43 +2,37 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.client.AdhocRfiClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.AdhocRfiQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.NewAdhocRfiDto;
+import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.ViewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_SEARCH;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPROVAL_ID;
 
 @Slf4j
@@ -62,6 +56,8 @@ public class BsbAdhocRfiDelegator {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>bsbAdhocRfiDelegator");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, null);
+        ParamUtil.setSessionAttr(request, "newReqInfo", null);
+        ParamUtil.setSessionAttr(request, "viewReqInfo", null);
 
     }
     /**
@@ -71,6 +67,8 @@ public class BsbAdhocRfiDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
         String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
+       /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
+        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
         AdhocRfiQueryDto searchDto = getSearchDto(request);
         searchDto.setApprovalId(approvalId);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
@@ -104,9 +102,12 @@ public class BsbAdhocRfiDelegator {
         String id =  ParamUtil.getRequestString(bpc.request, ACTION_VALUE);
         log.info(StringUtil.changeForLog("----- Action value: " + id + " -----"));
         ViewAdhocRfiDto viewAdhocRfiDto = adhocRfiClient.findAdhocRfiById(id).getEntity();
+        String isValidate = (String) ParamUtil.getRequestAttr(request,IS_VALIDATE);
+        if(isValidate !=null && !isValidate.equals("true")){
+            viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
+        }
 
         ParamUtil.setSessionAttr(request, "viewReqInfo", viewAdhocRfiDto);
-
         String[] status=new String[]{viewAdhocRfiDto.getStatus()};
         if(viewAdhocRfiDto.getStatus().equals("RFIST002")){
             status=new String[]{"RFIST004","RFIST003"};
@@ -114,15 +115,38 @@ public class BsbAdhocRfiDelegator {
         if(viewAdhocRfiDto.getStatus().equals("RFIST004")){
             status=new String[]{"RFIST004"};
         }
-        List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
-        ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
+        List<SelectOption> statusLists= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "statusLists", (Serializable) statusLists);
     }
     /**
      * doUpdate
      */
-    public void doUpdate(BaseProcessClass bpc){
-        log.info("=======>>>>>start>>>>>>>>>>>>>>>>preViewAdhocRfi");
-
+    public void doUpdate(BaseProcessClass bpc) throws ParseException {
+        log.info("=======>>>>>start>>>>>>>>>>>>>>>>doUpdate");
+        HttpServletRequest request = bpc.request;
+        ViewAdhocRfiDto viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
+        String date = ParamUtil.getString(request,"dueDate");
+        String status = ParamUtil.getString(request,"status");
+        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+            viewAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        }
+        viewAdhocRfiDto.setStatus(status);
+        ValidationResultDto validationResultDto = adhocRfiClient.validateManualAdhocRfiUpdate(viewAdhocRfiDto);
+        String isValidate;
+        if (!validationResultDto.isPass()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
+            isValidate = "N";
+        }else {
+            isValidate = "Y";
+        }
+        ParamUtil.setRequestAttr(request, IS_VALIDATE, isValidate);
+        ParamUtil.setSessionAttr(request, "viewReqInfo", viewAdhocRfiDto);
+        if(isValidate.equals("N")){
+            return;
+        }
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        viewAdhocRfiDto.setAuditTrailDto(auditTrailDto);
+        adhocRfiClient.saveAdhocRfiView(viewAdhocRfiDto);
     }
     /**
      * doPaging
@@ -164,6 +188,8 @@ public class BsbAdhocRfiDelegator {
     public void preNewAdhocRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
+          /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
+        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
         NewAdhocRfiDto newAdhocRfiDto = adhocRfiClient.queryPreNewData(approvalId).getEntity();
         String isValidate = (String) ParamUtil.getRequestAttr(request,IS_VALIDATE);
         if(isValidate !=null && !isValidate.equals("true")){
@@ -189,17 +215,9 @@ public class BsbAdhocRfiDelegator {
         String information = ParamUtil.getString(request,"information");
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
-        Date dueDate;
-        Calendar calendar = Calendar.getInstance();
-        if(!StringUtil.isEmpty(date)){
-            dueDate = Formatter.parseDate(date);
-        }else {
-            calendar.add(Calendar.DATE,14);
-            dueDate =calendar.getTime();
+        if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
+            newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
-        Instant instant = dueDate.toInstant();
-        ZonedDateTime zone = instant.atZone(ZoneId.systemDefault());
-        newAdhocRfiDto.setDueDate(zone.toLocalDate());
         newAdhocRfiDto.setStatus(status);
         if(info ==null){
             newAdhocRfiDto.setInformationRequired(null);
@@ -223,12 +241,15 @@ public class BsbAdhocRfiDelegator {
         AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         newAdhocRfiDto.setAuditTrailDto(auditTrailDto);
         adhocRfiClient.saveAdhocRfi(newAdhocRfiDto);
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("RFI_ACK001"));
     }
     /**
      * doCancel
      */
     public void doCancel(BaseProcessClass bpc){
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>doCancel");
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request, IS_VALIDATE, "Y");
     }
 
     private void validateData(NewAdhocRfiDto dto, HttpServletRequest request){

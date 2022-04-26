@@ -10,6 +10,7 @@ public class ModuleCommonConstants {
     public static final String KEY_CRUD_ACTION_TYPE                 = "crud_action_type";
 
     public static final String KEY_NAV_NEXT                         = "next";
+    public static final String KEY_NAV_PAGE                         = "page";
     public static final String KEY_NAV_BACK                         = "back";
 
     public static final String KEY_SUBMIT                           = "submit";
@@ -39,4 +40,6 @@ public class ModuleCommonConstants {
     public static final String KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP = "docDisplayDtoRepoIdNameMap";
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
     public static final String KEY_SELECT_ROUTE_TO_MOH              = "selectRouteToMoh";
+
+    public static final String KEY_CAN_NOT_UPLOAD_DOC               = "canNotUploadInternalDoc";
 }

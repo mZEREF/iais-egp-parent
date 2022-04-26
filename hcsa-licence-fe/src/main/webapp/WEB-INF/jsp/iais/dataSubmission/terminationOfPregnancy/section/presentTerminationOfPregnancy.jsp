@@ -361,6 +361,8 @@
         }else {
             $('#spTypes').hide();
             $('#otherSpTypes').hide();
+            fillValue($('#spTypes'),null);
+            $('#otherSpTypes').val(null);
         }
     }
     function performedOwns() {
@@ -434,6 +436,8 @@
         }else {
             $('#anTypes').hide();
             $('#otherAnTypes').hide();
+            fillValue($('#anTypes'),null);
+            $('#otherAnTypes').val(null);
         }
     }
     function topType() {
@@ -443,6 +447,8 @@
         }else {
             $('#drugTypes').hide();
             $('#otherDrugTypes').hide();
+            fillValue($('#drugTypes'),null);
+            $('#otherDrugTypes').val(null);
         }
     }
     function drugType() {

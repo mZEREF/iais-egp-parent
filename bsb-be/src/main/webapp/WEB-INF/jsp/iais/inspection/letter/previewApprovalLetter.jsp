@@ -13,7 +13,6 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -28,7 +27,6 @@
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
 
         <div class="main-content">
             <div class="row">
@@ -42,7 +40,7 @@
                                 <div>
                                     <span><c:out value="${letterDto.letterContent}" escapeXml="false"/></span>
                                 </div>
-                                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
+                                <a style="float:left;padding-top: 1.1%;" id="back" class="back" href="#"><em class="fa fa-angle-left"></em> Previous</a>
                             </div>
                         </div>
                     </div>

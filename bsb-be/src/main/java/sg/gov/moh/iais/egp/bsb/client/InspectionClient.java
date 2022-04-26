@@ -128,13 +128,27 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/post/validate/do-review-follow-up-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePostInspectionDOReviewFollowUpItems(@RequestBody InsProcessDto processDto);
 
+    @PostMapping(value = "/inspection/post/validate/ao-review-follow-up-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validatePostInspectionAOReviewFollowUpItems(@RequestBody InsProcessDto processDto);
+
     @PostMapping(value = "/inspection/post/do-review-follow-up-items/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
     void doReviewInspectionFollowUpItemsRouteBackToApplicant(@RequestParam("appId") String appId,
                                                              @RequestParam("taskId") String taskId,
+                                                             @RequestParam("appStatus") String appStatus,
                                                              @RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/post/do-review-follow-up-items/accept-response", consumes = MediaType.APPLICATION_JSON_VALUE)
     void doReviewInspectionFollowUpItemsAcceptResponse(@RequestParam("appId") String appId,
+                                                       @RequestParam("taskId") String taskId,
+                                                       @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/ao-review-follow-up-items/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void aoReviewInspectionFollowUpItemsRouteBackToDO(@RequestParam("appId") String appId,
+                                                      @RequestParam("taskId") String taskId,
+                                                      @RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/post/ao-review-follow-up-items/accept-response", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void aoReviewInspectionFollowUpItemsAcceptResponse(@RequestParam("appId") String appId,
                                                        @RequestParam("taskId") String taskId,
                                                        @RequestBody InsProcessDto processDto);
 

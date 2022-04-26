@@ -49,12 +49,19 @@
                             <td>${dataDto.classification}</td>
                             <td>
                                 <c:forEach var="action" items="${actions}" varStatus="status">
+                                    <c:set var="maskApp"><iais:mask name="selfAssessAppId" value="${dataDto.appId}"/></c:set>
                                     <c:choose>
-                                        <c:when test="${action ne 'Print'}">
-                                            <button type="button" id="selfAssessment${status.index}" data-custom-ind="processSelfAssessment" data-custom-app="<iais:mask name="selfAssessAppId" value="${dataDto.appId}"/>" value="${action}" class="btn btn-default btn-md" >${action}</button>
+                                        <c:when test="${action eq 'Print'}">
+                                            <button type="button" id="printSelfAssessment${status.index}" data-custom-ind="printSelfAssessment" value="${maskApp}" class="btn btn-default btn-md" >Print</button>
+                                        </c:when>
+                                        <c:when test="${action eq 'Download'}">
+                                            <button type="button" id="selfAssessment${status.index}" data-custom-ind="downloadSelfAssessment" data-custom-app="${maskApp}" value="${action}" class="btn btn-default btn-md" >${action}</button>
+                                        </c:when>
+                                        <c:when test="${action eq 'Upload'}">
+                                            <button type="button" id="selfAssessment${status.index}" data-custom-ind="uploadSelfAssessment" data-custom-app="${maskApp}" value="${action}" class="btn btn-default btn-md" >${action}</button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="button" id="printSelfAssessment${status.index}" data-custom-ind="printSelfAssessment" value="<iais:mask name="selfAssessAppId" value="${dataDto.appId}"/>" class="btn btn-default btn-md" >Print</button>
+                                            <button type="button" id="selfAssessment${status.index}" data-custom-ind="processSelfAssessment" data-custom-app="${maskApp}" value="${action}" class="btn btn-default btn-md" >${action}</button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>

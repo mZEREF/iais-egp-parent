@@ -4,7 +4,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#postDetails">
-                Post-Termination of Pregnancy Counselling
+                Post-Termination Of Pregnancy Counselling
             </a>
         </h4>
     </div>

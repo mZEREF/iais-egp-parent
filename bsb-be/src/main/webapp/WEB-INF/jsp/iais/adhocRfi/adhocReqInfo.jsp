@@ -34,7 +34,7 @@
                                         <button class="btn btn-primary" type="button" id="newBtn">New</button>
                                     </label>
                                     <label class="col-xs-9 col-md-4">
-                                        <input type="text"  style=" font-weight:normal;" name="searchNo" maxlength="100" value="${adhocSearchDto.facilityNo}" />
+                                        <input type="text"  style=" font-weight:normal;" name="searchNo" maxlength="100" value="" />
                                     </label>
                                     <label class="col-xs-9 col-md-2">
                                         <button class="btn btn-primary" id="searchBtn" type="button">Search</button>

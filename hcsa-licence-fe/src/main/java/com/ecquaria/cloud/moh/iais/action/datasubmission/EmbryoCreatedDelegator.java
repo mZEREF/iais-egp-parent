@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,24 +63,33 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
         int totalThawedMax =0;
         int totalFreshMax =0;
+        List<DataSubmissionDto> dataSubmissionDtoList=arFeClient.getAllDataSubmissionByCycleId(arSuperDataSubmissionDto.getDataSubmissionDto().getCycleId()).getEntity();
 
-        ArSuperDataSubmissionDto arSuperFertilisationDto =arFeClient.getArSuperDataSubmissionDto(arSuperDataSubmissionDto.getSelectionDto().getLastDataSubmission().getSubmissionNo()).getEntity();
-        if(arSuperFertilisationDto.getFertilisationDto().isGiftUsed()){
-            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesGiftNum());
-            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesGiftNum());
+        for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+        ) {
+            if(dataSubmissionDto.getCycleStage().equals(DataSubmissionConsts.AR_STAGE_FERTILISATION)){
+                ArSuperDataSubmissionDto arSuperFertilisationDto =arFeClient.getArSuperDataSubmissionDto(dataSubmissionDto.getSubmissionNo()).getEntity();
+
+                if(arSuperFertilisationDto.getFertilisationDto().isGiftUsed()){
+                    totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesGiftNum());
+                    totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesGiftNum());
+                }
+                if(arSuperFertilisationDto.getFertilisationDto().isIcsiUsed()){
+                    totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesMicroInjectedNum());
+                    totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesMicroinjectedNum());
+                }
+                if(arSuperFertilisationDto.getFertilisationDto().isIvfUsed()){
+                    totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesInseminatedNum());
+                    totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesInseminatedNum());
+                }
+                if(arSuperFertilisationDto.getFertilisationDto().isZiftUsed()){
+                    totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesZiftNum());
+                    totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesZiftNum());
+                }
+              break;
+            }
         }
-        if(arSuperFertilisationDto.getFertilisationDto().isIcsiUsed()){
-            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesMicroInjectedNum());
-            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesMicroinjectedNum());
-        }
-        if(arSuperFertilisationDto.getFertilisationDto().isIvfUsed()){
-            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesInseminatedNum());
-            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesInseminatedNum());
-        }
-        if(arSuperFertilisationDto.getFertilisationDto().isZiftUsed()){
-            totalFreshMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getFreshOocytesZiftNum());
-            totalThawedMax+=Integer.parseInt(arSuperFertilisationDto.getFertilisationDto().getThawedOocytesZiftNum());
-        }
+
         ParamUtil.setSessionAttr(bpc.request, "totalFreshMax",totalFreshMax);
         ParamUtil.setSessionAttr(bpc.request, "totalThawedMax",totalThawedMax);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();

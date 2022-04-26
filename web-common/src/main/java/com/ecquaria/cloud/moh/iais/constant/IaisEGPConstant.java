@@ -9,7 +9,6 @@ package com.ecquaria.cloud.moh.iais.constant;
 public class IaisEGPConstant {
 
     private IaisEGPConstant(){
-
     }
 
     public static final String CRUD_TYPE                           = "crud_type";
@@ -44,5 +43,8 @@ public class IaisEGPConstant {
 
     public static final String SESSION_NAME_ROLES                  = "SESSION_NAME_ROLES";
 
-
+    // Upload file constants
+    public static final String SEESION_FILES_MAP_AJAX              = "seesion_files_map_ajax_fe";
+    public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX    = "_MaxIndex";
+    public static final String GLOBAL_MAX_INDEX_SESSION_ATTR       = "sessIon_GlObal__MaxINdex_Attr";
 }

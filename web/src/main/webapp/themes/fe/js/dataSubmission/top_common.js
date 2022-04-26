@@ -9,6 +9,9 @@ $(document).ready(function() {
             $tarSel.removeClass("complete");
         }
     }
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
+
     $('#nav-tabs-ul a').on('click', function() {
         var $target = $(this);
         var currId = $target.attr('id');

@@ -49,15 +49,29 @@ public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "saveInsOutcome", this);
 	}
 
-	public void clearData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "clearData", this);
-	}
-
 	public void handleSubmit_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "handleSubmit", this);
 	}
 
 	public void skip_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "skip", this);
+	// 		Skip->OnStepProcess
 	}
+
+	public void changeTab_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "changeTab", this);// 		changeTab->OnStepProcess
+	}
+
+	public void saveDraft_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "saveDraft", this);// 		saveDraft->OnStepProcess
+	}
+
+    public void prepareUpload_OnStepProcess_0() throws Exception {
+    // 		PrepareUpload->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareUpload", this);
+    }
+
+    public void doUpload_OnStepProcess_0() throws Exception {
+    // 		DoUpload->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doUpload", this);
+    }
 }

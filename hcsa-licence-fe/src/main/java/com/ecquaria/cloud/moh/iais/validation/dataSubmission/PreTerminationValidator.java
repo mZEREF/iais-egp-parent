@@ -1,9 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -19,9 +16,13 @@ public class PreTerminationValidator implements CustomizeValidator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto();
+        PatientInformationDto patientInformationDto=terminationOfPregnancyDto.getPatientInformationDto();
         FamilyPlanDto familyPlanDto=terminationOfPregnancyDto.getFamilyPlanDto();
         if(StringUtil.isEmpty(preTerminationDto)){
             preTerminationDto=new PreTerminationDto();
+        }
+        if(StringUtil.isEmpty(patientInformationDto)){
+            patientInformationDto =new PatientInformationDto();
         }
         if (!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven()) && preTerminationDto.getCounsellingGiven()==true) {
            /* if(StringUtil.isEmpty(preTerminationDto.getPatientSign())){
@@ -85,9 +86,14 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
         if(!"AR_SC_001".equals(preTerminationDto.getCounsellingPlace())){
-            if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
-                errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+            if(!"TOPMS002".equals(patientInformationDto.getMaritalStatus())){
+                if(patientInformationDto.getPatientAge()<16){
+                    if(StringUtil.isEmpty(preTerminationDto.getPreCounsNoCondReason())){
+                        errorMap.put("preCounsNoCondReason", "GENERAL_ERR0006");
+                    }
+                }
             }
+
         }
         return errorMap;
     }

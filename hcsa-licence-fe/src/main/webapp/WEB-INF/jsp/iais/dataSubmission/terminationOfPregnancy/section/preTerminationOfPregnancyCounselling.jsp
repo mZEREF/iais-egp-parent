@@ -194,7 +194,7 @@
     </iais:value>
     </iais:row>
         </div>
-        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
+        <div id="preCounsNoCondReasons" <c:if test="${patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
             <iais:row>
                 <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
@@ -317,6 +317,9 @@
                 $('#patientAppointments').hide();
                 $('#secCounsellingDates').hide();
                 $('#secCounsellingResults').hide();
+                fillValue($('#patientAppointments'),null);
+                $('#secCounsellingDates').val(null);
+                fillValue($('#secCounsellingResults'),null);
             }
         }
         function counsellingPlace() {

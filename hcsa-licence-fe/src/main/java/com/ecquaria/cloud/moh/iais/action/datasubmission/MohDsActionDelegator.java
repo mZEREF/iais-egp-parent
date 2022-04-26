@@ -328,7 +328,7 @@ public class MohDsActionDelegator {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohNewTOPDataSubmission/TerminationOfPregnancy";
             }*/
             DsConfigHelper.initTopConfig(request);
-            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch";
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTOPDataSubmission/PrepareSwitch?crud_type=" + DataSubmissionConstant.CRUD_TYPE_RFC;
             ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION,
                     CopyUtil.copyMutableObject(topSuper));
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

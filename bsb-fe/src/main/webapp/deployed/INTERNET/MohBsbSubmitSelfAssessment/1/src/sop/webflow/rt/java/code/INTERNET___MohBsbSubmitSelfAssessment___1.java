@@ -53,4 +53,14 @@ public class INTERNET___MohBsbSubmitSelfAssessment___1 extends BaseProcessClass 
 	public void print_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "print", this);
 	}
+
+    public void doUpload_OnStepProcess_0() throws Exception {
+    // 		DoUpload->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doUpload", this);
+    }
+
+    public void prepareUpload_OnStepProcess_0() throws Exception {
+    // 		PrepareUpload->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareUpload", this);
+    }
 }

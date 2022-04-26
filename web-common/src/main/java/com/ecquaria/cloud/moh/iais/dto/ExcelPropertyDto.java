@@ -19,6 +19,8 @@ public class ExcelPropertyDto implements Serializable {
 
     private String fieldName;
 
+    private boolean indicator;
+
     public ExcelPropertyDto() {
     }
 
@@ -26,6 +28,13 @@ public class ExcelPropertyDto implements Serializable {
         this.cellIndex = cellIndex;
         this.cellName = cellName;
         this.fieldName = fieldName;
+    }
+
+    public ExcelPropertyDto(int cellIndex, String cellName, String fieldName, boolean indicator) {
+        this.cellIndex = cellIndex;
+        this.cellName = cellName;
+        this.fieldName = fieldName;
+        this.indicator = indicator;
     }
 
 }

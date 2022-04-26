@@ -30,7 +30,9 @@ public class FileErrorMsg implements Serializable {
 
     private String cellName;
 
-    //private String fieldName;
+    private String sheetName;
+
+    private String indicator;
 
     private String message;
 
@@ -43,6 +45,18 @@ public class FileErrorMsg implements Serializable {
     public FileErrorMsg(int row, ExcelPropertyDto excelPropertyDto, String message) {
         this();
         this.row = row;
+        if (excelPropertyDto != null) {
+            this.col = excelPropertyDto.getCellIndex();
+            this.cellName = excelPropertyDto.getCellName();
+        }
+        this.message = message;
+    }
+
+    public FileErrorMsg(String sheetName, int row, String indicator, ExcelPropertyDto excelPropertyDto, String message) {
+        this();
+        this.sheetName = sheetName;
+        this.row = row;
+        this.indicator = indicator;
         if (excelPropertyDto != null) {
             this.col = excelPropertyDto.getCellIndex();
             this.cellName = excelPropertyDto.getCellName();

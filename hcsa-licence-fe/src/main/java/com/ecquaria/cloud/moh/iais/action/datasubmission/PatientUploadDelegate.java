@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -175,7 +176,7 @@ public class PatientUploadDelegate {
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
-                    Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
+                    Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(PatientInfoExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
                     List<PatientDto> patientDtos = patientInfoList.stream()
                             .map(PatientInfoDto::getPatient)

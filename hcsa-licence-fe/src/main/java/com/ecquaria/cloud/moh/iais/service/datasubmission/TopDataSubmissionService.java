@@ -29,7 +29,7 @@ public interface TopDataSubmissionService {
 
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
-    void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+    void deleteTopSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo);
 

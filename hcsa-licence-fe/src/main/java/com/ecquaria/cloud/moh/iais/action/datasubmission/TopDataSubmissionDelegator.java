@@ -62,6 +62,13 @@ public class TopDataSubmissionDelegator {
         DsConfigHelper.initTopConfig(bpc.request);
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
+
+        String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                .map(LoginContext::getOrgId).orElse("");
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+        if (topSuperDataSubmissionDto != null) {
+            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+        }
     }
 
     /**
@@ -71,22 +78,26 @@ public class TopDataSubmissionDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(" ----- PrepareSwitch ------ ");
-        DsConfigHelper.initVssConfig(bpc.request);
+        DsConfigHelper.initTopConfig(bpc.request);
         String actionType = getActionType(bpc.request);
+
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, actionType);
-        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
+
         DsConfig config = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_TOP, bpc.request);
         String smallTitle = "";
         if (config != null) {
             smallTitle = config.getText();
         }
+
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) getSourseLists(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) getSourseListsDrug(bpc.request));
-        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
-        topSuperDataSubmissionDto = topSuperDataSubmissionDto  == null ? new TopSuperDataSubmissionDto() : topSuperDataSubmissionDto;
+        if(topSuperDataSubmissionDto==null){
+            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
+        }
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
@@ -106,7 +117,10 @@ public class TopDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "showPatientAgePT", AppConsts.YES);
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + "Termination Of Pregnancy" + "</strong>");
+        TopSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(superDto.getAppType()));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_TOP,
+                superDto.getAppType(), superDto.getSubmissionType()));
     }
     private String getActionType(HttpServletRequest request) {
         String actionType = (String) ParamUtil.getRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
@@ -163,7 +177,25 @@ public class TopDataSubmissionDelegator {
         log.info(" -----PrepareStepData ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto =DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto == null) {
-            topSuperDataSubmissionDto =initTopSuperDataSubmissionDto(bpc.request);
+            topSuperDataSubmissionDto =new TopSuperDataSubmissionDto();
+        }
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP);
+        if (StringUtil.isEmpty(crud_action_type)){
+            crud_action_type="";
+        }
+        //draft
+        if (crud_action_type.equals("resume")) {
+            topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(),topSuperDataSubmissionDto.getSubmissionType());
+            if (topSuperDataSubmissionDto == null) {
+                log.warn("Can't resume data!");
+                topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+            }
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+        } else if (crud_action_type.equals("delete")) {
+            topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
+            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
@@ -234,6 +266,26 @@ public class TopDataSubmissionDelegator {
     private void preparePatientInformation(HttpServletRequest request) {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
+        if (topSuperDataSubmissionDto == null) {
+            topSuperDataSubmissionDto =new TopSuperDataSubmissionDto();
+        }
+        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        if(terminationOfPregnancyDto==null){
+            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
+        }
+        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+        if(terminationDto==null){
+            terminationDto=new TerminationDto();
+        }
+        if(StringUtil.isEmpty(terminationDto.getPregnancyOwn())){
+            terminationDto.setPregnancyOwn(true);
+        }
+        if(StringUtil.isEmpty(terminationDto.getTakenOwn())){
+            terminationDto.setTakenOwn(true);
+        }
+        terminationOfPregnancyDto.setTerminationDto(terminationDto);
+        topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
+        DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
     }
 
     private void prepareFamilyPlanning(HttpServletRequest request) {
@@ -256,7 +308,7 @@ public class TopDataSubmissionDelegator {
 
     private int doPreview(HttpServletRequest request) {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
-        TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        /*TerminationOfPregnancyDto terminationOfPregnancyDto = topSuperDataSubmissionDto.getTerminationOfPregnancyDto();*/
         DataSubmissionDto dataSubmissionDto = topSuperDataSubmissionDto.getDataSubmissionDto();
         String[] declaration = ParamUtil.getStrings(request, "declaration");
         if(declaration != null && declaration.length >0){
@@ -264,8 +316,17 @@ public class TopDataSubmissionDelegator {
         }else{
             dataSubmissionDto.setDeclaration(null);
         }
+        if(isRfc(request)){
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
+            if(isOthers(dataSubmissionDto.getAmendReason())){
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+            }else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
-        if(terminationOfPregnancyDto==null){
+        /*if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto = new TerminationOfPregnancyDto();
         }
         FamilyPlanDto familyPlanDto = terminationOfPregnancyDto.getFamilyPlanDto();
@@ -283,21 +344,27 @@ public class TopDataSubmissionDelegator {
         PostTerminationDto postTerminationDto = terminationOfPregnancyDto.getPostTerminationDto();
         if(postTerminationDto==null){
             postTerminationDto = new PostTerminationDto();
-        }
+        }*/
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         if(declaration == null || declaration.length == 0){
             errMap.put("declaration", "GENERAL_ERR0006");
         }
-
-        ValidationResult result2 = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
+        if(isRfc(request)){
+            if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
+                errMap.put("amendReason","GENERAL_ERR0006");
+            }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+                errMap.put("amendReasonOther","GENERAL_ERR0006");
+            }
+        }
+       /* ValidationResult result2 = WebValidationHelper.validateProperty(familyPlanDto,"TOP");
         if(result2 !=null){
             errMap.putAll(result2.retrieveAll());
-        }
-        ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
+        }*/
+       /* ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOP");
         if(result3 !=null){
             errMap.putAll(result3.retrieveAll());
-        }
-        if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
+        }*/
+       /* if(!"TOPPCR002".equals(preTerminationDto.getCounsellingResult())) {
             if (!"TOPPCR001".equals(preTerminationDto.getCounsellingResult())) {
                 ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                 if (result4 != null) {
@@ -340,7 +407,7 @@ public class TopDataSubmissionDelegator {
                     }
                 }
             }
-        }
+        }*/
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
@@ -702,7 +769,7 @@ public class TopDataSubmissionDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
     private TopSuperDataSubmissionDto initTopSuperDataSubmissionDto(HttpServletRequest request) {
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
+            TopSuperDataSubmissionDto topSuperDataSubmissionDto=new TopSuperDataSubmissionDto();
 
         String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(request))
                 .map(LoginContext::getOrgId).orElse("");
@@ -724,4 +791,7 @@ public class TopDataSubmissionDelegator {
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(request);
         return topSuperDataSubmissionDto != null && topSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
+    protected boolean isOthers(String others){
+        return StringUtil.isIn(others,DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS);
     }
+}

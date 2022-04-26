@@ -6,6 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -217,9 +218,6 @@
                                                                         <c:if test="${SelfAssessJudge}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
                                                                         </c:if>
-                                                                        <c:if test="${InsReportJudge}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohBsbCommentInspectionReport?appId=<iais:mask name='commentInsReportAppId' value='${app.id}'/>">Comment Inspection Report</option>
-                                                                        </c:if>
                                                                         <c:if test="${AppWithdrawableJudge}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdraw</option>
                                                                         </c:if>
@@ -228,6 +226,10 @@
                                                                         </c:if>
                                                                         <c:if test="${app.appType eq 'BSBAPTY001' and app.status eq 'BSBAPST033'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/InspectionFollowUpItemsFE?followUpAppId=<iais:mask name='followUpAppId' value='${app.id}'/>&followUpAppNo=<iais:mask name='followUpAppNo' value='${app.appNo}'/>">Submit follow-up action</option>
+                                                                        </c:if>
+                                                                        <%--todo: will update for all rfi module--%>
+                                                                        <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohBsbCommentInspectionReport?appId=<iais:mask name='commentInsReportAppId' value='${app.id}'/>">Comment Inspection Report</option>
                                                                         </c:if>
                                                                         </select>
                                                                     </c:otherwise>

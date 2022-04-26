@@ -73,6 +73,7 @@
                                             <c:if test="${preTerminationDto.counsellingResult !='TOPPCR002'}">
                                                 <%@ include file="section/previewPostTermination.jsp" %>
                                             </c:if>
+                                            <%@ include file="common/topDsAmendment.jsp" %>
                                             <%@ include file="common/topDeclaration.jsp" %>
                                         </div>
                                     </c:when>
@@ -87,11 +88,9 @@
     </div>
 </form>
 <c:if test="${hasDraft}">
-    <iais:confirm
-            msg="There is an existing draft for the Laboratory Developed Test. Please either continue the draft submission or delete the draft if you wish to submit a different patient"
-            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Continue"
-            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-            cancelBtnDesc="Delete" cancelFunc="submit('delete')"/>
+    <iais:confirm msg="There is an existing draft for Termination Of Pregnancy. Please either resume from draft or continue to submit a new Termination Of Pregnancy." callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>
 <iais:confirm msg="Patient does not exist in the system. Please enter the patient information manually." callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close" yesBtnCls="btn btn-secondary"
               needFungDuoJi="false" needCancel="false"/>

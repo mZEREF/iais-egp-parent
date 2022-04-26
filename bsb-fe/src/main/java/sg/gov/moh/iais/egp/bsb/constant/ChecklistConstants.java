@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.collect.Sets;
 
 import java.util.Collections;
@@ -42,5 +43,29 @@ public class ChecklistConstants {
                 break;
         }
         return display;
+    }
+
+    public static String getAnswer(String displayAnswer) {
+        String result;
+        if (StringUtil.isEmpty(displayAnswer)) {
+            result = null;
+        } else {
+            switch (displayAnswer) {
+                case ANSWER_YES_DISPLAY:
+                    result = ANSWER_YES;
+                    break;
+                case ANSWER_NO_DISPLAY:
+                    result = ANSWER_NO;
+                    break;
+                case ANSWER_NA_DISPLAY:
+                    result = ANSWER_NA;
+                    break;
+                default:
+                    result = "";
+                    break;
+            }
+        }
+
+        return result;
     }
 }

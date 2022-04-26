@@ -1,7 +1,8 @@
-package sg.gov.moh.iais.egp.bsb.dto.entity;
+package sg.gov.moh.iais.egp.bsb.dto.adhocRfi;
 
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 
 import java.io.Serializable;
 import java.time.LocalDate;

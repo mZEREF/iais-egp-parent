@@ -34,9 +34,8 @@ public interface TopFeClient {
 
 
     @DeleteMapping(value = "/data-submission/draft-top-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void deleteTopSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-                                                     @RequestParam(name = "submissionType") String submissionType,
-                                                     @RequestParam(name = "hciCode") String hciCode);
+    FeignResponseEntity<Void> deleteTopSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
+                                                     @RequestParam(name = "submissionType") String submissionType);
 
     @DeleteMapping(value = "/data-submission/draft/{draftId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteTopSuperDataSubmissionDraftById(@PathVariable("draftId") String draftId);

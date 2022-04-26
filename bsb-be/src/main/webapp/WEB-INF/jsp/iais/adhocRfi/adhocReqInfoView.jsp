@@ -14,12 +14,13 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="dashboard" >
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -58,21 +59,23 @@
                                                             <c:choose>
                                                                 <c:when test="${viewReqInfo.status=='RFIST004'}">
                                                                     <iais:value width="18">
-                                                                        <label class="control-label">
-                                                                            <iais-bsb:format-LocalDate localDate='${viewReqInfo.dueDate}'/></label>
+                                                                            <iais-bsb:format-LocalDate localDate='${viewReqInfo.dueDate}'/>
+                                                                        <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                                                     </iais:value>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                                                         <iais:datePicker value="${viewReqInfo.dueDate}" name="dueDate"></iais:datePicker>
+                                                                        <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                                                     </div>
                                                                 </c:otherwise>
+
                                                             </c:choose>
                                                         </iais:row>
                                                         <iais:row>
                                                             <iais:field value="Status"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                <iais:select cssClass="statusDropdown" id="rfiStatus"  name="status" options="${salutationStatusList}"></iais:select>
+                                                                <iais:select cssClass="statusDrop"  value="${viewReqInfo.status}" name="status"  options="statusLists"></iais:select>
                                                             </div>
                                                         </iais:row>
                                                         <div class="row" >
@@ -93,21 +96,18 @@
                                                         <br/>
                                                         <div class="row" >
                                                             <div class="col-sm-12 col-md-11 col-xs-12" style="margin-left: 15px;padding-left: 30px;">
-                                                                <iais:row>
-                                                                    <label class="col-xs-9 col-md-6 control-label" >
-                                                                        <div class="infoTitIndex">
-                                                                            More info title
-                                                                        </div>
+                                                                <iais:row >
+                                                                    <div class="field col-sm-11 control-label formtext">
+                                                                        <label>More info title</label>
+                                                                    </div>
+                                                                    <label class="field col-sm-11 control-label formtext">
+                                                                                <textarea  disabled rows="5" style=" font-weight:normal;"
+                                                                                          cols="120">${viewReqInfo.suppliedInformation}</textarea>
                                                                     </label>
-                                                                </iais:row>
-                                                                <iais:row>
-                                                                    <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
-                                                                        <textarea  rows="8" maxlength="500" class="form-control"></textarea>
-                                                                    </iais:value>
                                                                 </iais:row>
                                                                 <br/>
                                                                 <iais:row>
-                                                                    <label class="col-xs-9 col-md-6 control-label" >
+                                                                    <label class="col-xs-9 col-md-6 control-label formtext" >
                                                                         <div class="infoTitIndex">
                                                                             More info Supp Doc
                                                                         </div>
@@ -115,7 +115,11 @@
                                                                 </iais:row>
                                                                 <iais:row>
                                                                     <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
-
+                                                                        <c:forEach items="${viewReqInfo.applicationDocDtos}" var="appDoc" varStatus="ind">
+                                                                            <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                                                                                    ${appDoc.filename}
+                                                                            </span>
+                                                                        </c:forEach>
                                                                     </iais:value>
                                                                 </iais:row>
                                                             </div>
@@ -125,7 +129,9 @@
                                                         <iais:row>
                                                             <iais:action style="text-align:right;">
                                                                 <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                                                                <button class="btn btn-primary" type="button" style="margin-left: 50px"  onclick="javascript:doSubmit()">Submit</button>
+                                                                <c:if test="${viewReqInfo.status=='RFIST002'}">
+                                                                    <button class="btn btn-primary" type="button" style="margin-left: 50px"  onclick="javascript:doSubmit()">Submit</button>
+                                                                </c:if>
                                                             </iais:action>
                                                         </iais:row>
                                                     </iais:section>
