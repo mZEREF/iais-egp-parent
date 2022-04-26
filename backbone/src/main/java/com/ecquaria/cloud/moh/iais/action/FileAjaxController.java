@@ -120,7 +120,7 @@ public class FileAjaxController {
             return "";
         }
         // Save File to other nodes
-        //saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request, IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, (Serializable) map);
 
