@@ -159,7 +159,7 @@ function cloneUploadFile() {
     var $file = $('#' + fileId);
     $file.after($file.clone().val(""));
     $file.remove();
-    if ('1' == $('_singleUpload').val()) {
+    if ('1' == $('#_singleUpload').val()) {
         var $btns = $('#' + fileId + 'ShowId').find('button');
         if ($btns.length >= 2) {
             $btns.not(':last').trigger('click');

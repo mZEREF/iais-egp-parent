@@ -47,9 +47,13 @@ $(function () {
         $("#mainForm").submit();
     });
 
+});
+
+function initUploadFileData() {
     $('#_needReUpload').val(0);
     $('#_fileType').val("XLSX");
-});
+    $('#_singleUpload').val("1");
+}
 
 function clearFlagValueFEFile() {
     $("#reloadIndex").val(-1);

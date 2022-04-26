@@ -370,7 +370,8 @@ public class BsbSubmitSelfAssessmentDelegator {
         clearData(bpc);
         HttpServletRequest request = bpc.request;
         SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
-        if (answerRecordDto != null) {
+        if (answerRecordDto != null && !StringUtil.isEmpty(answerRecordDto.getApplicationId())
+                && !StringUtil.isEmpty(answerRecordDto.getChkLstConfigId())) {
             ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
             return;
         }
@@ -384,9 +385,9 @@ public class BsbSubmitSelfAssessmentDelegator {
             answerRecordDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-            ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
+            //ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
             answerRecordDto.setChkLstConfigId(configDto.getId());
-            answerRecordDto.setCommonChkLstConfigId(commonConfigDto.getId());
+            //answerRecordDto.setCommonChkLstConfigId(commonConfigDto.getId());
         }
         ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
@@ -413,6 +414,8 @@ public class BsbSubmitSelfAssessmentDelegator {
             errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
         } else if (fileInfo.getSize() == 0) {
             errorMap.put("selfAssessmentData", "Could not parse file content.");
+        } else if (!FileUtils.isExcel(fileInfo.getFilename())) {
+            errorMap.put("selfAssessmentData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
             /*List<ChklstItemAnswerDto> commonData = result.get(SHEET_NAME_COMMON);
@@ -463,10 +466,12 @@ public class BsbSubmitSelfAssessmentDelegator {
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
             List<FileErrorMsg> errorMsgs) {
         if (data == null || data.isEmpty()) {
+            log.info("No data found!");
             return null;
         }
         String item = data.get(0).getConfigId();
         if (StringUtil.isEmpty(item) || !item.equals(chkLstConfigId)) {
+            log.info(StringUtil.changeForLog("Wrong configId: " + item + " | " + chkLstConfigId));
             return null;
         }
         errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, null, START_ROW,
@@ -512,6 +517,7 @@ public class BsbSubmitSelfAssessmentDelegator {
     private NewDocInfo getFileInfo(HttpServletRequest request) {
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
         if (fileMap == null || fileMap.isEmpty()) {
+            log.info("No file found!");
             return null;
         }
         // only one
