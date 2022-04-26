@@ -4,7 +4,6 @@ $(document).ready(function () {
         $form = $(form);
     }
     $form.append('<input type="hidden" name="uploadFormId" id="uploadFormId" value="">');
-    $form.append('<input type="hidden" name="uploadFormId" id="uploadFormId" value="">');
     $form.append('<input type="hidden" name="fileAppendId" id="fileAppendId" value="">');
     $form.append('<input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">');
     $form.append('<input type="hidden" name="_needReUpload" id="_needReUpload" value="1">');
@@ -19,17 +18,20 @@ $(document).ready(function () {
         async: false
     };
     options.data = {};
-    callCommonAjax(options, 'initFileData');
+    callCommonAjax(options, '_initFileData');
 });
 
-function initFileData(data) {
+function _initFileData(data) {
     if (isEmpty(data)) {
         return;
     }
     console.log("init file data");
     $('#fileMaxSize').val(data.fileMaxSize);
     $('#fileMaxMBMessage').val(data.fileMaxMBMessage);
-    $('#_fileType').val(data.type);
+    $('#_fileType').val(data.fileType);
+    if (typeof initUploadFileData === 'function') {
+        initUploadFileData(data);
+    }
 }
 
 function deleteFileFeAjax(id, fileIndex) {
@@ -157,6 +159,12 @@ function cloneUploadFile() {
     var $file = $('#' + fileId);
     $file.after($file.clone().val(""));
     $file.remove();
+    if ('1' == $('_singleUpload').val()) {
+        var $btns = $('#' + fileId + 'ShowId').find('button');
+        if ($btns.length >= 2) {
+            $btns.not(':last').trigger('click');
+        }
+    }
 }
 
 function doActionWhenError(data) {
