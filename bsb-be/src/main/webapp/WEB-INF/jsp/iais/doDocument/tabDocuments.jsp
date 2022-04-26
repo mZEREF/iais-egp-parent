@@ -6,7 +6,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-officer-doc-tab.js"></script>
-
+<br/><br/>
 <div class="alert alert-info" role="alert">
     <h4>Supporting Document</h4>
 </div>

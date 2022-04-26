@@ -2,6 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%--@elvariable id="facilityDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo"--%>
+<br/><br/>
 <div class="panel panel-default">
     <div class="panel-heading" style="text-align: center"><strong>Facility Details</strong></div>
     <div class="row">
