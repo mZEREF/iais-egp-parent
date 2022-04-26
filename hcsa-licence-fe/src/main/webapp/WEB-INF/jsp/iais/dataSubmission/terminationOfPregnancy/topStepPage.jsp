@@ -87,8 +87,8 @@
         </div>
     </div>
 </form>
-<c:if test="${hasDraft}">
-    <iais:confirm msg="There is an existing draft for Termination Of Pregnancy. Please either resume from draft or continue to submit a new Termination Of Pregnancy." callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+<c:if test="${hasDrafts}">
+    <iais:confirm msg="DS_MSG023" callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>

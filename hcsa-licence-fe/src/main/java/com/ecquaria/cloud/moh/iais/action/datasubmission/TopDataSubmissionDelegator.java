@@ -67,7 +67,7 @@ public class TopDataSubmissionDelegator {
                 .map(LoginContext::getOrgId).orElse("");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE);
         if (topSuperDataSubmissionDto != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+            ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
         }
     }
 
