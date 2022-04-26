@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="AdHocCheckList" processname="" project="" version="-1" x="410" y="470">
+  <InvokeStep defClass="" executor="" icon="" name="AdHocCheckList" processname="MohBsbAdhocChecklist" project="INTRANET" version="-1" x="410" y="470">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />

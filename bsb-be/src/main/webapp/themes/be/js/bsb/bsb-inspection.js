@@ -23,6 +23,12 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#adhocBth").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val('adhoc');
+        $("#mainForm").submit();
+    });
+
     $("#viewChecklist").click(function () {
         showWaiting();
         $("input[name='action_type']").val('viewChecklist');

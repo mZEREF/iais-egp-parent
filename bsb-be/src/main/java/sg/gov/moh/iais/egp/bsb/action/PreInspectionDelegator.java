@@ -92,7 +92,7 @@ public class PreInspectionDelegator {
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST, preInspectionDataDto.getSupportDocDisplayDtoList());
         ParamUtil.setRequestAttr(request, KEY_FACILITY_DETAILS_INFO, preInspectionDataDto.getFacilityDetailsInfo());
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, preInspectionDataDto.getProcessHistoryDtoList());
-        ParamUtil.setRequestAttr(request, KEY_INSPECTION_CONFIG, Arrays.asList(preInspectionDataDto.getCommonChecklistConfigDto(), preInspectionDataDto.getBsbChecklistConfigDto()));
+        ParamUtil.setRequestAttr(request, KEY_INSPECTION_CONFIG, preInspectionDataDto.getBsbChecklistConfigDto());
 
         if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(submissionDetailsInfo.getApplicationStatus())) {
             ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);

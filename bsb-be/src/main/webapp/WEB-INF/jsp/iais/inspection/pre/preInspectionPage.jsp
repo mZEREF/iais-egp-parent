@@ -89,7 +89,27 @@
                                                 <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabChecklist" role="tabpanel">
-                                                <%@include file="./checkListTab.jsp" %>
+                                                <%@include file="../../common/checklistInfo.jsp" %>
+                                                <iais:action>
+                                                    <c:choose>
+                                                        <%--@elvariable id="goBackUrl" type="java.lang.String"--%>
+                                                        <c:when test="${goBackUrl ne null}">
+                                                            <a class="back" href="${goBackUrl}" style="float:left"><em class="fa fa-angle-left"></em> Previous</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList" style="float:left"><em
+                                                                    class="fa fa-angle-left"></em> Previous</a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <div style="float:right">
+                                                        <button type="button" class="btn btn-primary">
+                                                            DOWNLOAD
+                                                        </button>
+                                                        <button id="adhocBth" type="button" style="float:right" class="btn btn-primary" >
+                                                            EDIT
+                                                        </button>
+                                                    </div>
+                                                </iais:action>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>

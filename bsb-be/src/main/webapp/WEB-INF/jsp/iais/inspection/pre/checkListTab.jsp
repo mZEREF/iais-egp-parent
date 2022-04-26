@@ -68,8 +68,7 @@
         <button type="button" class="btn btn-primary">
             DOWNLOAD
         </button>
-        <%--TODO AdHocCheckList is no exits--%>
-        <button type="button" style="float:right" class="btn btn-primary" >
+        <button id="adhocBth" type="button" style="float:right" class="btn btn-primary" >
             EDIT
         </button>
     </div>
