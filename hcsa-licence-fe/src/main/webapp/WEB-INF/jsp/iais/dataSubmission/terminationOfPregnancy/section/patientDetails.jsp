@@ -92,8 +92,7 @@
                     <iais:row>
                         <iais:field width="5" value="Marital Status" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="maritalStatus" name="maritalStatus" id="maritalStatus" firstOption="Please Select"
-                                         codeCategory="TOP_MARITAL_STATUS" value="${patientInformationDto.maritalStatus}"/>
+                            <iais:select cssClass="maritalStatus" name="maritalStatus" id="maritalStatus" firstOption="Please Select" codeCategory="TOP_MARITAL_STATUS" value="${patientInformationDto.maritalStatus}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
