@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -156,10 +157,11 @@
                                 <label class="col-md-2 control-label" >No</label>
                             </div>
                         </iais:row>
-                        <iais:row>
+                        <c:set var="serviceAccess" value="${ConfigHelper.getString('service.access.matrix.enable','0')}" />
+                        <iais:row style="${serviceAccess == 0 ?  'display:none;' : ''}">
                             <iais:field value="Service" width="5" required="false" />
                             <iais:value width="7" cssClass="col-md-7">
-                                <c:set var="selectServices" value="${inter_user_attr.selectServices}"/>
+                                <c:set var="selectServices" value="${serviceAccess == 0 ? 'All_Services' : inter_user_attr.selectServices}"/>
                                 <c:set var="serviceSize" value="${AllServicesForHcsaRole.size()}"/>
                                 <c:set var="allServicesSelect" value="${selectServices == 'All_Services'}"/>
                                 <c:forEach var="service" items="${AllServicesForHcsaRole}" varStatus="status">
