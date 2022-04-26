@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -107,20 +108,28 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
     public VssSuperDataSubmissionDto saveVssSuperDataSubmissionDtoToBE(VssSuperDataSubmissionDto vssSuperDataSubmissionDto) {
         log.info(StringUtil.changeForLog(" the saveVssSuperDataSubmissionDtoToBE start ..."));
         vssSuperDataSubmissionDto.setFe(false);
-        vssSuperDataSubmissionDto = saveBeVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
-
         DataSubmissionDto dataSubmission = vssSuperDataSubmissionDto.getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
         log.info(StringUtil.changeForLog(" the saveVssSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         if (eicRequestTrackingDto != null) {
+            Date now = new Date();
+            eicRequestTrackingDto.setFirstActionAt(now);
+            eicRequestTrackingDto.setLastActionAt(now);
             eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            licEicClient.saveEicTrack(eicRequestTrackingDto);
+            try {
+                vssSuperDataSubmissionDto = saveBeVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
+                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+            } catch (Throwable e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+            }
         } else {
             log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
         }
         log.info(StringUtil.changeForLog(" the saveVssSuperDataSubmissionDtoToBE end ..."));
+
         return vssSuperDataSubmissionDto;
     }
 
