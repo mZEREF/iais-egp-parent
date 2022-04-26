@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -40,7 +39,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InsChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -48,7 +46,6 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.FacilityDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,17 +61,16 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_CHECKLIST_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_CHECKLIST_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_SEPARATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.SHEET_NAME_COMMON;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.SHEET_NAME_BSB;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.SHEET_NAME_COMMON;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_ACTIVE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
@@ -90,7 +86,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class InspectionDODelegator {
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
-
+    private static final String SERLISTDTO="serListDto";
+    private static final String COMMONDTO="commonDto";
+    private static final String ADHOCLDTO="adchklDto";
+    private static final String TASKDTO="taskDto";
+    private static final String APPLICATIONVIEWDTO = "applicationViewDto";
+    private static final String TASKDTOLIST = "InspectionNcCheckListDelegator_taskDtoList";
+    private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
+    private static final String INSPECTION_USERS = "inspectorsParticipant";
+    private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
+    private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
+    private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
+    private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
     @Autowired
     public InspectionDODelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
         this.inspectionClient = inspectionClient;
@@ -99,7 +106,7 @@ public class InspectionDODelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
+        //MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST);
     }
@@ -132,6 +139,9 @@ public class InspectionDODelegator {
 
         List<ProcessHistoryDto> processHistoryDtoList = initDataDto.getProcessHistoryDtoList();
         ParamUtil.setSessionAttr(request,KEY_ROUTING_HISTORY_LIST,new ArrayList<>(processHistoryDtoList));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        InspectionChecklistDto inspectionChecklistDto=inspectionClient.getChkListDraft(loginContext.getUserId(),appId).getBody();
+
     }
 
     public void pre(BaseProcessClass bpc) {
