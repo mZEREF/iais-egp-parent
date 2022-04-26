@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterInitDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
@@ -194,4 +203,10 @@ public interface InspectionClient {
 
     @GetMapping(value = "/inspection/actual/do-review-follow-up-items/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     ReviewInsFollowUpDto getInitInsFollowUpData(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/inspection/chkListAnswerDraft/{userId}/{applicationid}")
+    ResponseEntity<InspectionChecklistDto> getChkListDraft(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
+
+    @PostMapping(value = "/inspection/chkListAnswerDraft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> saveChkListDraft(@RequestBody InspectionChecklistDto chkList);
 }
