@@ -238,18 +238,18 @@
         $('#nationality').change(function () {
 
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#commResidenceInSgDate').text('*');
-            } else if(nationality==null || nationality == "NAT0001"){
+            } else {
                 $('#commResidenceInSgDate').text('');
             }
         });
         $('#nationality').change(function () {
 
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#residenceStatus').text('*');
-            } else if(nationality==null || nationality == "NAT0001"){
+            } else {
                 $('#residenceStatus').text('');
             }
         });

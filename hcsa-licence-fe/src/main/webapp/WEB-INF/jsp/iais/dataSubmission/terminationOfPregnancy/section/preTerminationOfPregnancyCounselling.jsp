@@ -287,6 +287,7 @@
                 if ($('#counsellingNo').prop('checked')) {
                     $('#noCounsReason').show();
                     $('#numCounsellingGiven').hide();
+                    fillValue($('#counsellingPlaces'),null);
                 }
                 if ($('#counsellingYes').prop('checked')) {
                     $('#noCounsReason').hide();
