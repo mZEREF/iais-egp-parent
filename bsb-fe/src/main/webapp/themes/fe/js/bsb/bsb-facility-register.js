@@ -96,6 +96,17 @@ $(function () {
         }
     })
 
+    $("#addressType").change(function () {
+        var addressType = $(this).val();
+        if(addressType === 'ADDTY001') {
+            $("#aptMandatoryBlk").show();
+            $("#aptMandatoryFloorUnit").show();
+        } else {
+            $("#aptMandatoryBlk").hide();
+            $("#aptMandatoryFloorUnit").hide();
+        }
+    });
+
     $("input[name=appointed]").change(function (){
         var id = $(this).attr("id");
         if(id === 'hasAppointedCertifier'){
@@ -114,29 +125,6 @@ $(function () {
         } else if (id.startsWith('notAnEmployee')) {
             idx = id.substring('notAnEmployee'.length, id.length);
             $("#committeeExternalCompNameDiv" + idx).show();
-        }
-    });
-
-    $("input[data-custom-ind=batOthersSampleType]").change(function () {
-        var id = $(this).attr("id");
-        var idx = id.substring('sampleOthers'.length, id.length);
-        if ($(this).is(":checked")) {
-            $("#sampleWorkDetailDiv" + idx).show();
-        } else {
-            if(!$("#workOthers" + idx).is(":checked")) {
-                $("#sampleWorkDetailDiv" + idx).hide();
-            }
-        }
-    });
-    $("input[data-custom-ind=batOthersWorkType]").change(function () {
-        var id = $(this).attr("id");
-        var idx = id.substring('workOthers'.length, id.length);
-        if ($(this).is(":checked")) {
-            $("#sampleWorkDetailDiv" + idx).show();
-        } else {
-            if(!$("#sampleOthers" + idx).is(":checked")) {
-                $("#sampleWorkDetailDiv" + idx).hide();
-            }
         }
     });
 

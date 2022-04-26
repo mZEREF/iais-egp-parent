@@ -46,12 +46,12 @@ public class FacilityProfileDto extends ValidatableNodeValue {
         private String facName;
         private String facType;
         private String sameAddress;
-        private String block;
+        private String postalCode;
         private String addressType;
-        private String streetName;
+        private String block;
         private String floor;
         private String unitNo;
-        private String postalCode;
+        private String streetName;
         private String building;
         private String facilityProtected;
         private List<DocMeta> metaList;

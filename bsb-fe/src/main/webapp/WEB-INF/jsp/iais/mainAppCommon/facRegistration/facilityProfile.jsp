@@ -145,6 +145,7 @@
         <div class="form-group ">
             <div class="col-sm-5 control-label">
                 <label for="blockN">Block / House No.</label>
+                <span id="aptMandatoryBlk" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
             </div>
             <div class="col-sm-6 col-md-7">
                 <input maxLength="10" type="text" autocomplete="off" name="block" id="blockN" value='<c:out value="${facProfile.block}"/>'/>
@@ -155,6 +156,7 @@
         <div class="form-group ">
             <div class="col-sm-5 control-label">
                 <label for="floorN">Floor and Unit No.</label>
+                <span id="aptMandatoryFloorUnit" class="mandatory otherQualificationSpan" <c:if test="${facProfile.addressType ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
             </div>
             <div class="col-sm-2">
                 <input maxLength="4" type="text" autocomplete="off" name="floor" id="floorN" value='<c:out value="${facProfile.floor}"/>'/>

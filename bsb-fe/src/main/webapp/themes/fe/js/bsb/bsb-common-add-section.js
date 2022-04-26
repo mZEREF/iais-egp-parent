@@ -210,6 +210,7 @@ function modifyClonedNode(node, idx, separator) {
     } else if (node.nodeName === 'LABEL') {
         replaceNodeAttributeSuffixNum(node, 'for', idx, separator);
     } else if (node.nodeName === 'SPAN') {
+        replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'data-err-ind', idx, separator);
     } else if (node.nodeName === 'INPUT') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);

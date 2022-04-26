@@ -105,7 +105,7 @@
                             <label for="workAnimal--v--${status.index}" class="form-check-label"><span class="check-square"></span>Animal studies (specify the type of animal under details)</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT}"/>
+                            <input type="checkbox" class="form-check-input" name="workType--v--${status.index}" id="workBiomanufacturing--v--${status.index}" data-custom-ind="batBmfWorkType" <c:if test="${info.workType.contains(MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT)}">checked="checked"</c:if> value="${MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT}"/>
                             <label for="workBiomanufacturing--v--${status.index}" class="form-check-label"><span class="check-square"></span>Biomanufacturing involving biological agent. Please specify expected maximum handling volume under details</label>
                         </div>
                         <div class="form-check">
@@ -116,7 +116,7 @@
                     <span data-err-ind="workType--v--${status.index}" class="error-msg"></span>
                 </div>
             </div>
-            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_OTHER) && !info.workType.contains(MasterCodeConstants.WORK_TYPE_OTHERS)}">style="display: none"</c:if>>
+            <div id="sampleWorkDetailDiv--v--${status.index}" class="form-group" <c:if test="${!info.sampleType.contains(MasterCodeConstants.SAMPLE_NATURE_OTHER) && !info.workType.contains(MasterCodeConstants.WORK_TYPE_BIOMANUFACTURING_INVOLVING_BAT) && !info.workType.contains(MasterCodeConstants.WORK_TYPE_OTHERS)}">style="display: none"</c:if>>
                 <div class="col-sm-5 control-label">
                     <label for="sampleWorkDetail--v--${status.index}">Details regarding the type of sample that will be handled and the intended work <span class="mandatory otherQualificationSpan">*</span></label>
                 </div>
@@ -163,7 +163,7 @@
                         <span class="mandatory otherQualificationSpan">*</span>
                     </div>
                     <div class="col-sm-6">
-                        <select name="addressTypeT--v--${status.index}" id="addressTypeT--v--${status.index}">
+                        <select name="addressTypeT--v--${status.index}" id="addressTypeT--v--${status.index}" data-custom-ind="addressTypeT">
                             <option value="">Please Select</option>
                             <c:forEach items="${addressTypeOps}" var="name">
                                 <option value="${name.value}" <c:if test="${info.addressTypeT eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -175,7 +175,7 @@
                 <div class="form-group ">
                     <div class="col-sm-5 control-label">
                         <label for="blockNoT--v--${status.index}">Block / House No.</label>
-                        <span class="mandatory otherQualificationSpan">*</span>
+                        <span id="aptMandatoryBlkT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
                     </div>
                     <div class="col-sm-6">
                         <input maxlength="250" type="text" autocomplete="off" name="blockNoT--v--${status.index}" id="blockNoT--v--${status.index}" value='<c:out value="${info.blockNoT}"/>'/>
@@ -185,7 +185,7 @@
                 <div class="form-group ">
                     <div class="col-sm-5 control-label">
                         <label for="floorNoT--v--${status.index}">Floor / Unit No.</label>
-                        <span class="mandatory otherQualificationSpan">*</span>
+                        <span id="aptMandatoryFloorUnitT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
                     </div>
                     <div class="col-sm-2">
                         <input type="text" autocomplete="off" name="floorNoT--v--${status.index}" id="floorNoT--v--${status.index}" value='${info.floorNoT}' maxlength="250"/>

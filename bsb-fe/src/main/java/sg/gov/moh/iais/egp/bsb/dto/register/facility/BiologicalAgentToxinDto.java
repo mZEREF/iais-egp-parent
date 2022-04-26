@@ -212,10 +212,7 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
             } else {
                 info.setWorkType(new ArrayList<>(0));
             }
-            if (info.getSampleType().contains(MasterCodeConstants.SAMPLE_NATURE_OTHER) ||
-                    info.getWorkType().contains(MasterCodeConstants.WORK_TYPE_OTHERS)) {
-                info.setSampleWorkDetail(ParamUtil.getString(request, KEY_PREFIX_SAMPLE_WORK_DETAIL + SEPARATOR +idx));
-            }
+            info.setSampleWorkDetail(ParamUtil.getString(request, KEY_PREFIX_SAMPLE_WORK_DETAIL + SEPARATOR +idx));
             info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +idx));
             if (MasterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER.equals(info.getProcurementMode())) {
                 info.setPostalCodeT(ParamUtil.getString(request, KEY_PREFIX_TRANSFERRING_POSTAL_CODE + SEPARATOR +idx));
