@@ -29,7 +29,7 @@
             <%--<iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
                         mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>--%>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
+                <iais:input maxLength="66" type="text" name="otherContraMethod"  id="otherContraMethodText" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
         </iais:row>
         </div>
@@ -112,7 +112,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topRiskCondition"/>
+                <iais:input maxLength="66" type="text" name="topRiskCondition" value="${familyPlanDto.topRiskCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -120,7 +120,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topMedCondition"/>
+                <iais:input maxLength="66" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -141,11 +141,11 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
+    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}"/>
+                <iais:input maxLength="66" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -262,7 +262,7 @@
                 $('#subRopReasons').hide();
                 $('#otherSubTopReasons').hide();
                 fillValue($('#subRopReasons'),null);
-                $('#otherSubTopReasons').val(null);
+                $('#otherSubTopReasonsText').val(null);
             }
         });
     }
@@ -289,7 +289,7 @@
                 $('#mostRecentContraMethods').hide();
                 $('#otherContraMethods').hide();
                 fillValue($('#mostRecentContraMethods'),null);
-                $('#otherContraMethods').val(null);
+                $('#otherContraMethodText').val(null);
             }
         });
     }
