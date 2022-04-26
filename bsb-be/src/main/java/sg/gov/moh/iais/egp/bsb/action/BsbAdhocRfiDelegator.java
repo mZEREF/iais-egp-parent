@@ -21,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.NewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.adhocRfi.ViewAdhocRfiDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.*;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -216,7 +217,7 @@ public class BsbAdhocRfiDelegator {
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
         if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
-            newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
         newAdhocRfiDto.setStatus(status);
         if(info ==null){
