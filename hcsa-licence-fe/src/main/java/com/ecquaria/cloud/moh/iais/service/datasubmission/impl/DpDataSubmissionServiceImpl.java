@@ -105,6 +105,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
                 eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 licEicClient.saveEicTrack(eicRequestTrackingDto);
             } catch (Throwable e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
                 licEicClient.saveEicTrack(eicRequestTrackingDto);
             }
         } else {
