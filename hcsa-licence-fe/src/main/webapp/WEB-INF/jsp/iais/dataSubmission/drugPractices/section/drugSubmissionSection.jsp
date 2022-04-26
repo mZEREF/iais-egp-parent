@@ -292,6 +292,11 @@
                 }
                 dismissWaiting();
             },
+            'error': function () {
+                console.log('error');
+                clearPrsInfo;
+                dismissWaiting();
+            },
         });
     }
 
