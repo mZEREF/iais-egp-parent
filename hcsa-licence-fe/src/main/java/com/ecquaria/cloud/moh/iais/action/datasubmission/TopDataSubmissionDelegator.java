@@ -625,6 +625,11 @@ public class TopDataSubmissionDelegator {
             String submissionNo = topDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_TOP);
             dataSubmissionDto.setSubmissionNo(submissionNo);
         }
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
@@ -643,7 +648,6 @@ public class TopDataSubmissionDelegator {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-
         topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
         try {
             topSuperDataSubmissionDto = topDataSubmissionService.saveTopSuperDataSubmissionDtoToBE(topSuperDataSubmissionDto);
