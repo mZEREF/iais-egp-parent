@@ -67,7 +67,7 @@
                                             <thead>
                                             <tr>
                                                 <th scope="col" >Row (S/N)</th>
-                                                <th scope="col" >Field Name (Column)</th>
+                                                <th scope="col" >Field Name (Sheet Name)</th>
                                                 <th scope="col" >Error Message</th>
                                             </tr>
                                             </thead>

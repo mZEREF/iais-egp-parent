@@ -13,8 +13,9 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
     String webroot1= IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<webui:setLayout name="iais-internet"/>
+<webui:setLayout name="iais-intranet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=webroot1%>js/file-upload.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
@@ -23,7 +24,7 @@
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <div class="main-content">
-    <div class="container">
+    <div class="center-content">
         <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="action_type" value="">
@@ -57,7 +58,7 @@
                         <div class="document-upload-list">
                             <h3>Inspection Checklist Information (${facCommittee.amount} records uploaded)</h3>
                             <div class="file-upload-gp">
-                                <span data-err-ind="selfAssessmentData" id="error_uploadFileError" class="error-msg"></span>
+                                <span data-err-ind="checklistData" id="error_uploadFileError" class="error-msg"></span>
                                 <c:if test="${not empty fileItemErrorMsgs}">
                                     <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
                                         <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
@@ -65,7 +66,7 @@
                                             <thead>
                                             <tr>
                                                 <th scope="col" >Row (S/N)</th>
-                                                <th scope="col" >Field Name (Column)</th>
+                                                <th scope="col" >Field Name (Sheet Name)</th>
                                                 <th scope="col" >Error Message</th>
                                             </tr>
                                             </thead>
@@ -124,4 +125,5 @@
         $('.itemErrorTableDiv').hide();
         dismissWaiting();
     }
+
 </script>

@@ -74,6 +74,16 @@ $(function () {
         $("input[name='action_type']").val('preview');
         $("#mainForm").submit();
     });
+
+    $("#uploadChecklist").click(function (){
+        showWaiting();
+        $("input[name='action_type']").val('upload');
+        $("#mainForm").submit();
+    });
+
+    $("#downloadChecklist").click(function () {
+        showPopupWindow(BASE_CONTEXT_PATH + '/inspection/checklist/exporting-data?stamp=" + new Date().getTime()');
+    });
 })
 
 // inspection findings' sections

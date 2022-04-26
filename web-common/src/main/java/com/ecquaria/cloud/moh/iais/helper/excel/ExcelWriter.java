@@ -241,12 +241,16 @@ public final class ExcelWriter {
                             StringUtils.capitalize(field.getName())).invoke(t);
 
                     String str;
-                    if (objectType == Date.class){
+                    if (objectType == Date.class) {
                         //Set to text format to avoid errors caused by date modification in different systems
                         String format = annotation.format();
-                        str = DateUtil.formatDateTime((Date) val, format);
+                        if (Date.class.isAssignableFrom(field.getType())) {
+                            str = DateUtil.formatDateTime((Date) val, format);
+                        } else {
+                            str = getValue(val);
+                        }
                         cell.setCellStyle(CellStyleHelper.getTextStyle());
-                    }else {
+                    } else {
                         str = getValue(val);
                     }
                     cell.setCellValue(str);
@@ -432,8 +436,12 @@ public final class ExcelWriter {
                         if (objectType == Date.class) {
                             //Set to text format to avoid errors caused by date modification in different systems
                             String format = annotation.format();
-                            str = DateUtil.formatDateTime((Date) val, format);
-                            cell.setCellStyle(CellStyleHelper.getTextStyle());
+                            if (Date.class.isAssignableFrom(field.getType())) {
+                                str = DateUtil.formatDateTime((Date) val, format);
+                            } else {
+                                str = getValue(val);
+                            }
+                            cell.setCellStyle(CellStyleHelper.getXSSFCellStyle(sheetRow, readOnly, hidden));
                         } else {
                             str = getValue(val);
                         }

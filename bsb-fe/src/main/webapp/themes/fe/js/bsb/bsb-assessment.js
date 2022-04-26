@@ -26,7 +26,7 @@ $(function () {
 
     $("button[data-custom-ind=downloadSelfAssessment]").click(function () {
         var appId = $(this).attr("data-custom-app");
-        showPopupWindow('/bsb-fe/self-assessment/exporting-data?appId=' + appId + '&stamp=" + new Date().getTime()');
+        showPopupWindow(BASE_CONTEXT_PATH + '/self-assessment/exporting-data?appId=' + appId + '&stamp=" + new Date().getTime()');
     });
 
     $("#back").click(function () {

@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -67,20 +68,6 @@ public final class CellStyleHelper {
         return lockStyle;
     }
 
-//    public static XSSFCellStyle getLockStyle(int x) {
-//        if (workbook!= null) {
-//            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-//            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
-//            xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-//            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-//            xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-//            xssfCellStyle.set
-//            xssfCellStyle.setLocked(true);
-//            xssfCellStyle.setHidden(true);
-//            xssfCellStyle.setWrapText(true);
-//            lockStyle = xssfCellStyle;
-//        }
-//    }
 
     public static XSSFCellStyle getUnlockStyle() {
         return unlockStyle;
@@ -90,4 +77,16 @@ public final class CellStyleHelper {
         return textStyle;
     }
 
+    public static XSSFCellStyle getXSSFCellStyle(XSSFRow sheetRow, boolean readonly, boolean hidden) {
+        XSSFWorkbook workbook = sheetRow.getSheet().getWorkbook();
+        XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+        xssfCellStyle.setLocked(readonly);
+        xssfCellStyle.setHidden(hidden);
+        xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        xssfCellStyle.setWrapText(true);
+        XSSFDataFormat format = workbook.createDataFormat();
+        xssfCellStyle.setDataFormat(format.getFormat("@"));
+        return xssfCellStyle;
+    }
 }

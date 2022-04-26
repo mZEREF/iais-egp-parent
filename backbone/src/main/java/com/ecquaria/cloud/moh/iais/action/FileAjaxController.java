@@ -142,10 +142,11 @@ public class FileAjaxController {
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
             String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+            String url = "<a href=\"pageContext.request.contextPath/file/download-session-file?fileAppendIdDown" +
+                    "=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
             fileName = url + fileName + "</a>";
             stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                    append(fileName.replace("pageContext.request.contextPath", request.getContextPath())
                             .replace("replaceFileAppendIdDown", fileAppendId)
                             .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
                     .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).

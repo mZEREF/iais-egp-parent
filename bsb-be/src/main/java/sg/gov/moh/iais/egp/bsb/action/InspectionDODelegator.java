@@ -242,6 +242,7 @@ public class InspectionDODelegator {
         checklistDto.setVersion(1);
         checklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         ParamUtil.setSessionAttr(request, KEY_INS_CHECKLIST_DTO, checklistDto);
+        ParamUtil.clearSession(request, InspectionConstants.SEESION_FILES_MAP_AJAX);
     }
 
     /**
@@ -258,14 +259,16 @@ public class InspectionDODelegator {
         }
         InspectionChecklistDto checklistDto = (InspectionChecklistDto) ParamUtil.getSessionAttr(request, KEY_INS_CHECKLIST_DTO);
 
-        List<ChklstItemAnswerDto> answerDtos = IaisCommonUtils.genNewArrayList();
+        ArrayList<ChklstItemAnswerDto> answerDtos = IaisCommonUtils.genNewArrayList();
         List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         NewDocInfo fileInfo = getFileInfo(request);
         if (fileInfo == null) {
-            errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            errorMap.put("checklistData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
         } else if (fileInfo.getSize() == 0) {
-            errorMap.put("selfAssessmentData", "Could not parse file content.");
+            errorMap.put("checklistData", "Could not parse file content.");
+        }  else if (!FileUtils.isExcel(fileInfo.getFilename())) {
+            errorMap.put("checklistData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
             List<ChklstItemAnswerDto> bsbData = result.get(InspectionConstants.SHEET_NAME_BSB);
@@ -275,7 +278,7 @@ public class InspectionDODelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put("selfAssessmentData", "Could not parse file content.");
+                errorMap.put("checklistData", "Could not parse file content. Please download new template to do this.");
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {
@@ -292,6 +295,7 @@ public class InspectionDODelegator {
             nextType = ModuleCommonConstants.KEY_NAV_PAGE;
         } else {
             // save
+            checklistDto.setAnswer(answerDtos);
             //answerRecordDto.setAnswer(JsonUtil.parseToJson(answerDtos));
             //inspectionClient.save
         }
@@ -302,13 +306,15 @@ public class InspectionDODelegator {
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
             List<FileErrorMsg> errorMsgs) {
         if (data == null || data.isEmpty()) {
+            log.info("No data found!");
             return null;
         }
         String item = data.get(0).getConfigId();
         if (StringUtil.isEmpty(item) || !item.equals(chkLstConfigId)) {
+            log.info(StringUtil.changeForLog("Wrong configId: " + item + " | " + chkLstConfigId));
             return null;
         }
-        errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, null,
+        errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, "file",
                 InspectionConstants.START_ROW, InsChklItemExcelDto.class));
         return errorMsgs.isEmpty();
     }
@@ -320,7 +326,7 @@ public class InspectionDODelegator {
         Map<String, List<ChklstItemAnswerDto>> resultMap = IaisCommonUtils.genNewHashMap();
         try {
             File file = fileInfo.getFile();
-            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(new ChecklistConfigDto(), new ChecklistConfigDto(), null, false);
+            List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, false);
             Map<String, List<InsChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (data != null && !data.isEmpty()) {
                 for (Map.Entry<String, List<InsChklItemExcelDto>> entry : data.entrySet()) {
