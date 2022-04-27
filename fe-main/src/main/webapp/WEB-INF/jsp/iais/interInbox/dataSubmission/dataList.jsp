@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
 <form class="" method="post" id="dataForm" action=<%=process.runtime.continueURL()%>>
     <%-- validation --%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -109,8 +110,9 @@
                                         <c:set var="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}"/>
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
+                                            <c:set  var="typeForWithdraw" value="${StringUtil.stringsContainKey(inboxDataSubmissionQuery.type,DataSubmissionConsts.AR_CYCLE_AR,DataSubmissionConsts.AR_CYCLE_EFO,DataSubmissionConsts.AR_CYCLE_IUI) ? 'sameType' : inboxDataSubmissionQuery.type}"/>
                                             <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${inboxDataSubmissionQuery.type}')">
+                                                   name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
@@ -121,7 +123,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
-                                        <input type="hidden" value="${inboxDataSubmissionQuery.type}" id="typeValue${submissionNo}" name="typeValue${submissionNo}">
+                                        <input type="hidden" value="${typeForWithdraw}" id="typeValue${submissionNo}" name="typeValue${submissionNo}">
                                        <iais:code code="${inboxDataSubmissionQuery.type}"/>
                                     </td>
                                     <td>
