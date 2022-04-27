@@ -16,8 +16,6 @@ import java.io.Serializable;
 public class ChklstItemAnswerDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String userId;
-
     @NotBlank(message = "Invlid value", profiles = {"file", "page"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"file", "page"})
     private String snNo;
