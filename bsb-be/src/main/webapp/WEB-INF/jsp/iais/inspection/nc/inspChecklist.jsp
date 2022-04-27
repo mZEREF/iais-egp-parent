@@ -3,7 +3,7 @@
         <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
             <div class="col-xs-8 col-sm-6 col-md-5">
-                <p> <c:out value="${commonDto.draftRemarkMaps[inspector.id]}"/>
+                <p> <c:out value="${serListDto.fdtoList.get(0).draftRemarkMaps[inspector.id]}"/>
                     <c:if test="${not empty serListDto.fdtoList}">
                         <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
                             <c:if test="${not empty cdto.draftRemarkMaps[inspector.id]}">
@@ -16,7 +16,7 @@
             </div>
         </div>
 <div class="table-gp">
-    <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
+    <c:forEach var ="section" items ="${serListDto.fdtoList.get(0).sectionDtoList}" varStatus="one">
         <br/>
         <h4><c:out value="${section.sectionName}"></c:out></h4>
         <table aria-describedby="" class="table">

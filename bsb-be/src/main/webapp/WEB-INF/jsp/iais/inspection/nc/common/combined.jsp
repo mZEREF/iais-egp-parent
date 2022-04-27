@@ -1,6 +1,6 @@
 <div ${((nowComTabIn == null || nowComTabIn== 'General') && ( nowTabIn == null ||  nowTabIn == 'Combined')) ? '' : 'hidden'}>
                                     <div class="table-gp">
-                                        <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
+                                        <c:forEach var ="section" items ="${serListDto.fdtoList.get(0).sectionDtoList}" varStatus="one">
                                             <br/>
                                             <h4><c:out value="${section.sectionName}"></c:out></h4>
                                             <table aria-describedby="" class="table">

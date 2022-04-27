@@ -370,13 +370,10 @@ public class InspectionService {
 
         return Boolean.FALSE;
     }
-    public void getRateOfCheckList(InspectionFDtosDto serListDto,  InspectionFillCheckListDto commonDto) {
+    public void getRateOfCheckList(InspectionFDtosDto serListDto) {
         if(serListDto == null) return;
         if(serListDto.getFdtoList()!=null){
             getServiceTotalAndNc(serListDto);
-        }
-        if(commonDto!=null){
-            getGeneralTotalAndNc(commonDto,serListDto);
         }
 
         int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
@@ -384,25 +381,7 @@ public class InspectionService {
         serListDto.setTotalNcNum(totalNcNum);
     }
 
-    private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {
-        int totalNum = 0;
-        int ncNum = 0;
-        int doNum = 0;
-        for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
-            totalNum++;
-            if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
-                    if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
-                        ncNum++;
-                    }
-                }
-                doNum++;
-            }
-        }
-        serListDto.setGeneralTotal(totalNum);
-        serListDto.setGeneralDo(doNum);
-        serListDto.setGeneralNc(ncNum);
-    }
+
 
     private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
