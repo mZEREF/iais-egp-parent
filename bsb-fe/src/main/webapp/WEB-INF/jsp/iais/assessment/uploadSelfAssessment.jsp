@@ -47,9 +47,6 @@
                                 <c:set var="maskApp"><iais:mask name="selfAssessAppId" value="${appId}"/></c:set>
                                 <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/self-assessment/exporting-template?appId=${maskApp}">here</a>.</p>
                             </li>
-                            <li>
-                                <p><iais:message key="GENERAL_ERR0052" params="maxCountMap" /></p>
-                            </li>
                         </ul>
                     </div>
                 </div>
