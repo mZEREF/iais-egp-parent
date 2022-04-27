@@ -110,7 +110,7 @@
                                         <c:set var="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}"/>
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
-                                            <c:set  var="typeForWithdraw" value="${StringUtil.stringsContainKey(inboxDataSubmissionQuery.type,DataSubmissionConsts.AR_CYCLE_AR,DataSubmissionConsts.AR_CYCLE_EFO,DataSubmissionConsts.AR_CYCLE_IUI) ? 'sameType' : inboxDataSubmissionQuery.type}"/>
+                                            <c:set  var="typeForWithdraw" value="${StringUtil.stringsContainKey(inboxDataSubmissionQuery.type,DataSubmissionConsts.DS_CYCLE_AR,DataSubmissionConsts.DS_CYCLE_IUI,DataSubmissionConsts.DS_CYCLE_EFO) ? 'sameType' : inboxDataSubmissionQuery.type}"/>
                                             <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
                                                    name="submissionNo" value="${submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
