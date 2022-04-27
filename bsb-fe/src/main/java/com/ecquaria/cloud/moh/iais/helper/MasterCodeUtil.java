@@ -188,6 +188,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_IS_THE_COMPANY_REGISTERED_IN_LOCAL_OR_OVERSEAS = "82C27D1E-9C5A-44EC-8A91-F07F8D7FC462";
     public static final String CATE_ID_BSB_ROLE                                           = "C5446D8E-A31F-4174-9E55-BD616F5B5FB8";
 
+    public static final String CATE_ID_BSB_ROLE_IN_FACILITY                             = "56F494C2-5836-40AA-938D-3C98EC0F146C";
+
 
 
     /**

@@ -10,6 +10,7 @@ public class FeInboxConstants {
 
     public static final String KEY_INBOX_MSG_SEARCH_DTO = "inboxMsgSearchDto";
     public static final String KEY_INBOX_APP_SEARCH_DTO = "inboxAppSearchDto";
+    public static final String KEY_INBOX_FAC_SEARCH_DTO = "InboxFacSearchDto";
 
     public static final String KEY_INBOX_DATA_LIST = "dataList";
 
