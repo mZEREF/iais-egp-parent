@@ -77,9 +77,6 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/outcome", consumes = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto saveInspectionOutcome(@RequestBody InspectionOutcomeDto outcomeDto);
 
-    @PostMapping(value = "/inspection/actual", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void submitInspectionChecklist(@RequestBody InspectionChecklistDto checklistDto);
-
     @PostMapping(value = "/inspection/actual/validate/submit-findings", produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionFindings(@RequestParam("appId") String appId);
 
