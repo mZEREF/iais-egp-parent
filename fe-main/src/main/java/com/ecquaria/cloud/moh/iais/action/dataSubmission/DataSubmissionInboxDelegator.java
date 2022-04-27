@@ -555,14 +555,18 @@ public class DataSubmissionInboxDelegator {
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
 							return 12;
 						}
-					}else{
-						List<DrugSubmissionDto> drugSubmissionDtos = licenceInboxClient.getDrugSubmissionDtosBySubmissionNo(submissionNo).getEntity();
-						if(IaisCommonUtils.isNotEmpty(drugSubmissionDtos)){
-                           return 13;
-						}
 					}
 				}
-			}
+			}else if(actionValue.equals(AMENDED)){
+                if(inboxDataSubmissionQueryDto.getDsType().equals(DataSubmissionConsts.DS_DRP)){
+                    log.info(StringUtil.changeForLog("Drug Prescribed"));
+                    List<DrugSubmissionDto> drugSubmissionDtos = licenceInboxClient.getDrugSubmissionDtosBySubmissionNo(submissionNo).getEntity();
+                    if(IaisCommonUtils.isNotEmpty(drugSubmissionDtos)){
+                        log.info(StringUtil.changeForLog("Drug Prescribed 13"));
+                        return 13;
+                    }
+                }
+            }
 
 			//check x times,change check status is locked
 			switch (inboxDataSubmissionQueryDto.getLockStatus()){
