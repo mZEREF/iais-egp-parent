@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
@@ -32,12 +33,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +40,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -421,6 +421,9 @@ public class DataSubmissionInboxDelegator {
 								case 12:
 									////Withdraw.Patient Information (Dp)
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+								case 13:
+									//DP change the Prescribed  81503 2)
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
 								default:
 							}
 							break;
@@ -551,6 +554,11 @@ public class DataSubmissionInboxDelegator {
 						List<CycleDto> cycleDtoList=licenceInboxClient.cycleByPatientCode(patientDto.getPatientCode()).getEntity();
 						if(IaisCommonUtils.isNotEmpty(cycleDtoList)){
 							return 12;
+						}
+					}else{
+						List<DrugSubmissionDto> drugSubmissionDtos = licenceInboxClient.getDrugSubmissionDtosBySubmissionNo(submissionNo).getEntity();
+						if(IaisCommonUtils.isNotEmpty(drugSubmissionDtos)){
+                           return 13;
 						}
 					}
 				}
