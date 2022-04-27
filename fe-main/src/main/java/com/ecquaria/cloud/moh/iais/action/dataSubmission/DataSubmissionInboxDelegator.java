@@ -423,7 +423,7 @@ public class DataSubmissionInboxDelegator {
 									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
 								case 13:
 									//DP change the Prescribed  81503 2)
-									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR051");break;
+									ParamUtil.setRequestAttr(request,"showPopFailMsg","DS_ERR063");break;
 								default:
 							}
 							break;
