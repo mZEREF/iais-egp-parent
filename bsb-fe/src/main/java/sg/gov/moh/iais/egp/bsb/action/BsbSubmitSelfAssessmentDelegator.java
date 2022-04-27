@@ -441,7 +441,7 @@ public class BsbSubmitSelfAssessmentDelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put("selfAssessmentData", "Could not parse file content.");
+                errorMap.put("selfAssessmentData", "Could not parse file content. Please download new template to do this.");
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {

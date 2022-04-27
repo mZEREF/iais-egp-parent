@@ -148,6 +148,7 @@ public final class DataSubmissionHelper {
         currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return newDto;
     }
+
     public static DpSuperDataSubmissionDto dpReNew(DpSuperDataSubmissionDto currentSuper) {
         DpSuperDataSubmissionDto newDto = new DpSuperDataSubmissionDto();
         newDto.setAppType(currentSuper.getAppType());
@@ -165,7 +166,7 @@ public final class DataSubmissionHelper {
         }
         dataSubmissionDto.setDeclaration(null);
         newDto.setDataSubmissionDto(dataSubmissionDto);
-        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto,currentSuper.getCycleDto().getLicenseeId(), true));
+        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, currentSuper.getCycleDto().getLicenseeId(), true));
         return newDto;
     }
 
@@ -195,8 +196,8 @@ public final class DataSubmissionHelper {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
     }
 
-    public static TopSuperDataSubmissionDto getCurrentTopDataSubmission(HttpServletRequest request){
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto=(TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+    public static TopSuperDataSubmissionDto getCurrentTopDataSubmission(HttpServletRequest request) {
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
                 DataSubmissionConstant.TOP_DATA_SUBMISSION);
         if (topSuperDataSubmissionDto == null) {
             log.info("------------------------------------TOP_SUPER_DATA_SUBMISSION_DTO is null-----------------");
@@ -209,33 +210,40 @@ public final class DataSubmissionHelper {
     }
 
     public static LdtSuperDataSubmissionDto getCurrentLdtSuperDataSubmissionDto(HttpServletRequest request) {
-        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
+        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
         if (LdtSuperDataSubmissionDto == null) {
             log.info("------------------------------------LdtSuperDataSubmissionDto is null-----------------");
         }
         return LdtSuperDataSubmissionDto;
     }
 
-    public static void setCurrentLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto, HttpServletRequest request) {
+    public static void setCurrentLdtSuperDataSubmissionDto(LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto,
+            HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION, LdtSuperDataSubmissionDto);
     }
 
     public static LdtSuperDataSubmissionDto getOldLdtSuperDataSubmissionDto(HttpServletRequest request) {
-        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
+        LdtSuperDataSubmissionDto LdtSuperDataSubmissionDto = (LdtSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
         if (LdtSuperDataSubmissionDto == null) {
             log.info("------------------------------------getOldLdtSuperDataSubmissionDto is null-----------------");
         }
         return LdtSuperDataSubmissionDto;
     }
+
     public static DpSuperDataSubmissionDto getOldDpSuperDataSubmissionDto(HttpServletRequest request) {
-        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = (DpSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = (DpSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
         if (dpSuperDataSubmissionDto == null) {
             log.info("------------------------------------getOldDpSuperDataSubmissionDto is null-----------------");
         }
         return dpSuperDataSubmissionDto;
     }
+
     public static VssSuperDataSubmissionDto getOldVssSuperDataSubmissionDto(HttpServletRequest request) {
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION);
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION);
         if (vssSuperDataSubmissionDto == null) {
             log.info("------------------------------------getOldDpSuperDataSubmissionDto is null-----------------");
         }
@@ -243,7 +251,8 @@ public final class DataSubmissionHelper {
     }
 
     public static TopSuperDataSubmissionDto getOldTopSuperDataSubmissionDto(HttpServletRequest request) {
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
         if (topSuperDataSubmissionDto == null) {
             log.info("------------------------------------getOldTopSuperDataSubmissionDto is null-----------------");
         }
@@ -252,7 +261,7 @@ public final class DataSubmissionHelper {
 
     /**
      * Cycle Stages
-     *
+     * <p>
      * Spec: 3.3.3 Stage Selection Business Rules
      *
      * @param selectionDto
@@ -565,7 +574,7 @@ public final class DataSubmissionHelper {
         /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_TOP;
         }else*/
-        if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+        if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_ERMINATION_TOP;
         }
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
@@ -587,7 +596,7 @@ public final class DataSubmissionHelper {
         /*if (DataSubmissionConsts.TOP_TYPE_SBT_PATIENT_INFO.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TOPPATIENT;
         }else */
-        if(DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())){
+        if (DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE.equals(topSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_TERMINATION;
         }
         dataSubmission.setCycleStage(cycleStage);
@@ -734,14 +743,14 @@ public final class DataSubmissionHelper {
     }
 
     public static ArCurrentInventoryDto getCurrentArCurrentInventoryDto(HttpServletRequest request) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
-        return  arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;
     }
 
     public static ArChangeInventoryDto getCurrentArChangeInventoryDto(HttpServletRequest request) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto =  getCurrentArDataSubmission(request);
-        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto !=null ? arSuperDataSubmissionDto.getArChangeInventoryDto() : new ArChangeInventoryDto();
-        if (arChangeInventoryDto == null){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArChangeInventoryDto() : new ArChangeInventoryDto();
+        if (arChangeInventoryDto == null) {
             arChangeInventoryDto = new ArChangeInventoryDto();
             arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
         }
@@ -866,12 +875,14 @@ public final class DataSubmissionHelper {
         return i + 2;
     }
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, ExcelPropertyDto> fieldCellMap) {
-        return validateExcelList(objList, profile, getRow(0), fieldCellMap);
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile,
+            Map<String, ExcelPropertyDto> fieldCellMap) {
+        return validateExcelList(objList, profile, getRow(0) - 1, fieldCellMap);
     }
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow, Map<String, ExcelPropertyDto> fieldCellMap) {
-        return ExcelValidatorHelper.validateExcelList(objList, profile, startRow, fieldCellMap);
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRowIndex,
+            Map<String, ExcelPropertyDto> fieldCellMap) {
+        return ExcelValidatorHelper.validateExcelList(objList, profile, startRowIndex, fieldCellMap);
     }
 
     public static String initAction(String dsType, String defaultAction, HttpServletRequest request) {
@@ -942,13 +953,14 @@ public final class DataSubmissionHelper {
         }
     }
 
-    public static Map<String, PremisesDto> setArPremisesMap(HttpServletRequest request){
-        Map<String, PremisesDto> premisesMap = ( Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP);
-        if(IaisCommonUtils.isEmpty(premisesMap)){
+    public static Map<String, PremisesDto> setArPremisesMap(HttpServletRequest request) {
+        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.AR_PREMISES_MAP);
+        if (IaisCommonUtils.isEmpty(premisesMap)) {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-            String licenseeId =  loginContext != null ? loginContext.getLicenseeId() : null;
-            premisesMap = SpringContextHelper.getContext().getBean( ArDataSubmissionService.class).getArCenterPremises(licenseeId);
-            ParamUtil.setSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP, (Serializable) premisesMap);
+            String licenseeId = loginContext != null ? loginContext.getLicenseeId() : null;
+            premisesMap = SpringContextHelper.getContext().getBean(ArDataSubmissionService.class).getArCenterPremises(licenseeId);
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP, (Serializable) premisesMap);
         }
         return premisesMap;
     }
@@ -982,4 +994,5 @@ public final class DataSubmissionHelper {
         }
         return dataSubmission;
     }
+
 }

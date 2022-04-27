@@ -17,27 +17,27 @@ import java.util.function.Function;
  */
 public class ExcelValidatorHelper {
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow, Class<?> excelClass) {
-        return validateExcelList(objList, null, null, profile, startRow, getFieldCellMap(excelClass));
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRowIndex, Class<?> excelClass) {
+        return validateExcelList(objList, null, null, profile, startRowIndex, getFieldCellMap(excelClass));
     }
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow,
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRowIndex,
             Map<String, ExcelPropertyDto> fieldCellMap) {
-        return validateExcelList(objList, null, null, profile, startRow, fieldCellMap);
+        return validateExcelList(objList, null, null, profile, startRowIndex, fieldCellMap);
     }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String sheetName, Function<T, String> indicator,
-            String profile, int startRow, Class<?> excelClass) {
-        return validateExcelList(objList, sheetName, indicator, profile, startRow, getFieldCellMap(excelClass));
+            String profile, int startRowIndex, Class<?> excelClass) {
+        return validateExcelList(objList, sheetName, indicator, profile, startRowIndex, getFieldCellMap(excelClass));
     }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String sheetName, Function<T, String> indicator,
-            String profile, int startRow, Map<String, ExcelPropertyDto> fieldCellMap) {
+            String profile, int startRowIndex, Map<String, ExcelPropertyDto> fieldCellMap) {
         if (objList == null || objList.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
         List<FileErrorMsg> result = IaisCommonUtils.genNewArrayList();
-        int row = startRow;
+        int row = startRowIndex + 1;
         if (fieldCellMap == null) {
             fieldCellMap = getFieldCellMap(objList.get(0).getClass());
         }
