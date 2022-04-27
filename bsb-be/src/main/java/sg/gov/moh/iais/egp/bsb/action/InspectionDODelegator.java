@@ -144,7 +144,7 @@ public class InspectionDODelegator {
         List<ProcessHistoryDto> processHistoryDtoList = initDataDto.getProcessHistoryDtoList();
         ParamUtil.setSessionAttr(request,KEY_ROUTING_HISTORY_LIST,new ArrayList<>(processHistoryDtoList));
 
-        //setCheckListUnFinishedTask(request,appId);
+        setCheckListUnFinishedTask(request,appId);
 
     }
 
