@@ -19,7 +19,6 @@ import sg.gov.moh.iais.egp.bsb.client.BsbHcsaChklClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
-import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
@@ -32,8 +31,12 @@ import java.util.Map;
 import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.MODULE_VIEW_NEW_FACILITY;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_REVIEW_FOLLOW_UP_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ROUTING_HISTORY_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_SUBMISSION_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 @Service
 @Slf4j
@@ -77,26 +80,22 @@ public class InspectionService {
         ParamUtil.setRequestAttr(request, KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST, internalDocDisplayDto);
     }
 
-    public List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(InspectionChecklistDto temp, String conifgType, boolean needVehicleSeparation) {
+    public List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(String appId, String conifgType, boolean needVehicleSeparation) {
         List<InspectionFillCheckListDto> chkDtoList = IaisCommonUtils.genNewArrayList();
-        String configId  = temp.getChkLstConfigId();
-        ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
+
+        ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
+
         InspectionFillCheckListDto fDto;
-        if("common".equals(conifgType)&&dto.isCommon()){
-            fDto = transferToInspectionCheckListDto(dto, temp.getApplicationId());
-            fDto.setConfigId(temp.getChkLstConfigId());
-            fDto.setPreCheckId(temp.getId());
-            chkDtoList.add(fDto);
-        }else if("service".equals(conifgType)&&!dto.isCommon()) {
+        if("service".equals(conifgType)&&!dto.isCommon()) {
             if (!((!needVehicleSeparation && StringUtil.isEmpty(dto.getInspectionEntity())) || (needVehicleSeparation && HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE.equalsIgnoreCase(dto.getInspectionEntity())))) {
                 return null;
             }
-            fDto = transferToInspectionCheckListDto(dto, temp.getApplicationId());
+            fDto = transferToInspectionCheckListDto(dto, appId);
 
             if (!StringUtil.isEmpty(dto.getSvcName())) {
                 fDto.setSvcName(dto.getSvcName());
             }
-            fDto.setConfigId(temp.getChkLstConfigId());
+            fDto.setConfigId(dto.getId());
             fDto.setSvcCode(dto.getSvcCode());
             if (dto.getSvcSubType() != null) {
                 fDto.setSubName(dto.getSvcSubType().replace(" ", ""));
@@ -104,7 +103,6 @@ public class InspectionService {
             } else {
                 fDto.setSubName(dto.getSvcCode());
             }
-            fDto.setPreCheckId(temp.getId());
             chkDtoList.add(fDto);
         }
         return chkDtoList;

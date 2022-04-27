@@ -150,17 +150,12 @@ public class InspectionDODelegator {
 
 
         //get  commonDto draft
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        InspectionChecklistDto temp=inspectionClient.getChkListDraft(loginContext.getUserId(),appId).getBody();
-        List<InspectionFillCheckListDto> cDtoList =  inspectionService.getServiceChkDtoListByAppPremId(temp,"service",false);
-        List<InspectionFillCheckListDto> commonList = inspectionService.getServiceChkDtoListByAppPremId(temp,"common",false);
+
+
+        List<InspectionFillCheckListDto> cDtoList =  inspectionService.getServiceChkDtoListByAppPremId(appId,"service",false);
         ParamUtil.setSessionAttr(request, INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        InspectionFillCheckListDto commonDto = null;
-        if(IaisCommonUtils.isNotEmpty(commonList)){
-            commonDto = commonList.get(0);
-        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,cDtoList.get(0));
-        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+
 
     }
 
