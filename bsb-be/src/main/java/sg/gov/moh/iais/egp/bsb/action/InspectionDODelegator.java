@@ -169,6 +169,7 @@ public class InspectionDODelegator {
         inspectionFDtosDto.setFdtoList(cDtoList);
 
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
+        inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
         ParamUtil.setSessionAttr(request, INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         ParamUtil.setSessionAttr(request,SERLISTDTO,inspectionFDtosDto);
         ParamUtil.setSessionAttr(request,INSPECTION_USERS, (Serializable) orgUserDtoUsers);
@@ -296,7 +297,7 @@ public class InspectionDODelegator {
         }
 
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         InspectionChecklistDto checklistDto= (InspectionChecklistDto) ParamUtil.getSessionAttr(request,KEY_INS_CHECKLIST_DTO);
 
 
