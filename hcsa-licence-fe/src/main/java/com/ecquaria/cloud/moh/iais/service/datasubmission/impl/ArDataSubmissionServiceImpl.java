@@ -709,50 +709,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arFeClient.getTransferConfirmationDsNo(patientCode, hciCode, svcName, submissionId).getEntity();
     }
 
-    @Override
-    public void sendIncompleteCycleNotificationPeriod() {
-        int firstDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSARICN001"));
-        int perDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSARICN002"));
-
-        List<CycleDto> overDayCycleDtos = arFeClient.getOverDayNotCompletedCycleDto(firstDays).getEntity();
-        List<String> overDayLicenseeId = getLicenseeList(overDayCycleDtos);
-
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
-                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
-        String msgSubject = msgTemplateDto.getTemplateName();
-
-        MsgTemplateDto perMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
-                MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
-        String perMsgSubject = perMsgTemplateDto.getTemplateName();
-
-
-        List<Date> firstDates = feMessageClient.getLastSubjectDate(overDayLicenseeId, msgSubject).getEntity();
-        List<Date> perDates = feMessageClient.getLastSubjectDate(overDayLicenseeId, perMsgSubject).getEntity();
-
-        if (IaisCommonUtils.isEmpty(firstDates)) {
-            return;
-        }
-        for (int i = 0; i < overDayCycleDtos.size(); i++) {
-            if (firstDates.get(i) == null) {
-                log.info("need send first {}", overDayCycleDtos.get(i).getId());
-//                sendFirstNotification(overDayLicenseeId.get(i));
-            } else {
-                Date lastSeedDate = null;
-                if (perDates.get(i) == null) {
-                    lastSeedDate = firstDates.get(i);
-                } else {
-                    lastSeedDate = perDates.get(i);
-                }
-                Date needSendDate = new Date(lastSeedDate.getTime() + 1000 * 60 * 60 * 24L * perDays);
-                Date today = new Date();
-                if (needSendDate.before(today)) {
-                    log.info("need send per {}", overDayCycleDtos.get(i).getId());
-//                    sendPerNotification(overDayLicenseeId.get(i));
-                }
-            }
-        }
-    }
-
     private List<String> getLicenseeList(List<CycleDto> overDayCycleDtos) {
         List<String> overDayLicenseeId = IaisCommonUtils.genNewArrayList();
         for (CycleDto overDayCycleDto : overDayCycleDtos) {

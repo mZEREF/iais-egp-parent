@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDevelopTestEnquiryResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IncompleteCycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -149,5 +150,10 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public List<ArCurrentInventoryDto> arCurrentInventoryDtosByPatientCode(String patientCode) {
         return assistedReproductionClient.getArCurrentInventoryDtosByPatientCode(patientCode).getEntity();
+    }
+
+    @Override
+    public List<IncompleteCycleDto> getOverDayNotCompletedCycleDto(int day) {
+        return assistedReproductionClient.getOverDayNotCompletedCycleDto(day).getEntity();
     }
 }

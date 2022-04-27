@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = ArFeClientFallback.class)
 public interface ArFeClient {
@@ -192,9 +193,6 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/have-stimulation-cycles", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> haveStimulationCycles(@RequestParam(name = "patientCode") String patientCode);
-
-    @GetMapping(value = "/ar-common/over-day-not-completed-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(@RequestParam(name = "day") Integer day);
 
     @GetMapping(value = "/ar-common/has-transfer-confirmation-stage", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getTransferConfirmationDsNo(@RequestParam(name = "patientCode") String patientCode,

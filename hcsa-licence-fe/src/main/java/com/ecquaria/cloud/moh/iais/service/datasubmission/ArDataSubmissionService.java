@@ -124,8 +124,6 @@ public interface ArDataSubmissionService {
 
     String getTransferConfirmationDsNoByBaseDsId(String patientCode, String hciCode, String svcName, String submissionId);
 
-    void sendIncompleteCycleNotificationPeriod();
-
     int getArCycleStageCountByIdTypeAndIdNoAndNationality(PatientDto patientDto);
 
     ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName);
