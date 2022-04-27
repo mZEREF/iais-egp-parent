@@ -30,16 +30,14 @@
                     <div class="tab-gp dashboard-tab">
                         <div class="tab-content">
                         </div>
-                        <div class="tab-pane  <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
+                        <div class="tab-pane " id="tabPayment" role="tabpanel">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('General')"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
-                                <li class="complete ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('ServiceInfo')"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
-                                                                            data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
+                                <li class="complete active" role="presentation" onclick="javascript:doChangeTab('ServiceInfo')"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
+                                                                            data-toggle="tab"><c:out value="BSB Regulations"/></a></li>
                             </ul>
 
                             <div class="tab-nav-mobile visible-xs visible-sm">
                                 <div class="swiper-wrapper" role="tablist">
-                                    <div class="swiper-slide"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></div>
                                     <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab">ServiceInfo</a></div>
                                     <div class="swiper-slide"><a href="#chkInfo" aria-controls="chkInfo" role="tab" data-toggle="tab">chkInfo</a></div>
                                 </div>
@@ -56,17 +54,7 @@
                                     <%@ include file="common/combined.jsp" %>
                                     <%@ include file="inspChecklist.jsp" %>
                                   </div>
-                                  <div class="tab-pane  ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
-                                      <c:if test="${not empty serListDto.fdtoList ||  adchklDto.adItemList != null}">
-                                          <c:if test="${not empty serListDto.fdtoList}">
-                                          <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
-                                          <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
-                                          </c:if>
-                                          <%@ include file="TabsForMoreIns.jsp" %>
-                                              <%@ include file="common/combinedService.jsp" %>
-                                              <%@ include file="inspChecklistService.jsp" %>
-                                      </c:if>
-                                </div>
+
                             </div>
                             <%@ include file="common/submitMoreInsChecklist.jsp" %>
                         </div>

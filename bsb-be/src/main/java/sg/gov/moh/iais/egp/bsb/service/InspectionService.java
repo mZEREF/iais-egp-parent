@@ -5,17 +5,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.BsbHcsaChklClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
@@ -25,6 +28,7 @@ import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,12 +47,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class InspectionService {
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
-    private final BsbHcsaChklClient hcsaChklClient;
 
-    public InspectionService(InspectionClient inspectionClient, InternalDocClient internalDocClient, BsbHcsaChklClient hcsaChklClient) {
+
+    public InspectionService(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
-        this.hcsaChklClient = hcsaChklClient;
+
     }
 
     public void getInitFollowUpData(HttpServletRequest request,ReviewInsFollowUpDto dto){
@@ -228,5 +232,200 @@ public class InspectionService {
             }
         }
         return infillCheckListDto;
+    }
+
+    public void getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, List<OrgUserDto> orgUserDtos) {
+        if(inspectionFillCheckListDto == null){
+            return ;
+        }
+        Map<String, String> draftRemarkMaps = IaisCommonUtils.genNewHashMap();
+        inspectionFillCheckListDto.setDraftRemarkMaps(draftRemarkMaps);
+        int userNum = orgUserDtos.size();
+        if(userNum > 1){
+            inspectionFillCheckListDto.setMoreOneDraft(true);
+        }
+
+        List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos = inspectionFillCheckListDto.getCheckList();
+        if(IaisCommonUtils.isEmpty( inspectionCheckQuestionDtos)){
+            return ;
+        }
+
+        for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
+            List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
+            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
+            for (OrgUserDto entry : orgUserDtos) {
+                AnswerForDifDto answerForDifDto = new AnswerForDifDto();
+                answerForDifDto.setSubmitId(entry.getId());
+                answerForDifDto.setSubmitName(entry.getUserId());
+                answerForDifDtos.add(answerForDifDto);
+                answerForDifDtoMaps.put(entry.getId(),answerForDifDto);
+            }
+            inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
+            inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
+        }
+
+
+    }
+
+    public void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
+        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
+        inspectionCheckQuestionDto.setSameAnswer(answerForSame.isSameAnswer());
+        getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
+        if(!inspectionCheckQuestionDto.isSameAnswer()){
+            inspectionCheckQuestionDto.setDeconflict(deconflict);
+            if( !StringUtil.isEmpty(deconflict)){
+                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                    if(deconflict.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                        getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForDifDto);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    private AnswerForDifDto getAnswerForDifDtoByAnswerForDifDtos( List<AnswerForDifDto> adhocAnswerForDifDtos){
+        List<AnswerForDifDto> answerForDifDtoCopys = copyAnswerForDifDtos(adhocAnswerForDifDtos);
+        AnswerForDifDto  answerForSame = new AnswerForDifDto();
+        AnswerForDifDto answerForDifDto = adhocAnswerForDifDtos.get(0);
+        Boolean recSame = Boolean.TRUE;
+        Boolean answerSame = Boolean.TRUE;
+        Boolean remarkSame = Boolean.TRUE;
+        Boolean ncsSame = Boolean.TRUE;
+        for(AnswerForDifDto answerForDifDtoCopy :  answerForDifDtoCopys){
+            Boolean isSameSubmit = isSameByStrings(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
+            if(StringUtil.isEmpty( answerForDifDtoCopy.getAnswer()) || (answerSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer(),answerForDifDto.getAnswer()))){
+                answerSame = Boolean.FALSE;
+            }
+            if( recSame && !isSameSubmit &&  !isSameByStrings( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
+                recSame = Boolean.FALSE;
+            }
+            if( remarkSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark(),answerForDifDto.getAnswer())){
+                remarkSame = Boolean.FALSE;
+            }
+            if(  ncsSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getNcs(),answerForDifDto.getNcs(),answerForDifDto.getAnswer())){
+                ncsSame = Boolean.FALSE;
+            }
+        }
+
+        if(answerSame && recSame && remarkSame && ncsSame){
+            answerForSame.setIsRec(answerForDifDto.getIsRec());
+            answerForSame.setAnswer( answerForDifDto.getAnswer());
+            answerForSame.setRemark(answerForDifDto.getRemark());
+            answerForSame.setNcs(answerForDifDto.getNcs());
+            answerForSame.setSameAnswer(true);
+        }else {
+            answerForSame.setIsRec( null);
+            answerForSame.setAnswer( null);
+            answerForSame.setRemark(null);
+            answerForSame.setSameAnswer(false);
+        }
+
+        return answerForSame;
+    }
+
+    private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,AnswerForDifDto answerForDifDto){
+        inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
+        inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
+        inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
+        inspectionCheckQuestionDto.setNcs(answerForDifDto.getNcs());
+        return  inspectionCheckQuestionDto;
+    }
+    private List<AnswerForDifDto> copyAnswerForDifDtos(List<AnswerForDifDto> adhocAnswerForDifDtos){
+        List<AnswerForDifDto> answerForDifDtoCopys = new ArrayList<>(adhocAnswerForDifDtos.size());
+        for(AnswerForDifDto answerForDifDto : adhocAnswerForDifDtos){
+            AnswerForDifDto answerForDifDtoCopy = new AnswerForDifDto();
+            answerForDifDtoCopy .setRemark( answerForDifDto.getRemark());
+            answerForDifDtoCopy .setAnswer( answerForDifDto.getAnswer());
+            answerForDifDtoCopy .setIsRec( answerForDifDto.getIsRec());
+            answerForDifDtoCopy .setSubmitName( answerForDifDto.getSubmitName());
+            answerForDifDtoCopy.setNcs(answerForDifDto.getNcs());
+            answerForDifDtoCopys.add(answerForDifDtoCopy);
+        }
+        return answerForDifDtoCopys;
+    }
+    private Boolean isSameByStrings(String s1,String s2,String answer){
+        if("No".equalsIgnoreCase(answer)){
+            if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
+                return Boolean.FALSE;
+            }
+        }
+        return isSameByStrings(s1, s2);
+    }
+    private Boolean isSameByStrings(String s1,String s2){
+        if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
+            return Boolean.TRUE;
+        }
+        if(!StringUtil.isEmpty(s1)){
+            if( StringUtil.isEmpty(s2)){
+                return Boolean.FALSE;
+            }else {
+                if(s1.equalsIgnoreCase(s2)){
+                    return Boolean.TRUE;
+                }else {
+                    return Boolean.FALSE;
+                }
+            }
+
+        }
+
+        return Boolean.FALSE;
+    }
+    public void getRateOfCheckList(InspectionFDtosDto serListDto,  InspectionFillCheckListDto commonDto) {
+        if(serListDto == null) return;
+        if(serListDto.getFdtoList()!=null){
+            getServiceTotalAndNc(serListDto);
+        }
+        if(commonDto!=null){
+            getGeneralTotalAndNc(commonDto,serListDto);
+        }
+
+        int totalNcNum = serListDto.getGeneralNc()+serListDto.getServiceNc()+serListDto.getAdhocNc();
+
+        serListDto.setTotalNcNum(totalNcNum);
+    }
+
+    private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                    if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
+                        ncNum++;
+                    }
+                }
+                doNum++;
+            }
+        }
+        serListDto.setGeneralTotal(totalNum);
+        serListDto.setGeneralDo(doNum);
+        serListDto.setGeneralNc(ncNum);
+    }
+
+    private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
+        List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
+        int totalNum = 0;
+        int doNum = 0;
+        int ncNum = 0;
+        for(InspectionFillCheckListDto temp:dtoList){
+            if(!IaisCommonUtils.isEmpty(temp.getCheckList())){
+                for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
+                    totalNum++;
+                    if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                        if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                            if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
+                                ncNum++;
+                            }
+                        }
+                        doNum++;
+                    }
+                }
+            }
+        }
+        serListDto.setServiceDo(doNum);
+        serListDto.setServiceTotal(totalNum);
+        serListDto.setServiceNc(ncNum);
     }
 }

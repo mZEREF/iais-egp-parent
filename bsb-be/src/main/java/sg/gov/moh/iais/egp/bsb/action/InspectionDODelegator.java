@@ -7,13 +7,18 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ExcelSheetDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -32,6 +37,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ChecklistConstants;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
@@ -57,6 +63,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -92,7 +99,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 public class InspectionDODelegator {
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
-
+    private final OrganizationClient organizationClient;
     private final InspectionService inspectionService;
     private static final String SERLISTDTO="serListDto";
     private static final String COMMONDTO="commonDto";
@@ -102,9 +109,10 @@ public class InspectionDODelegator {
     private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
     private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
     @Autowired
-    public InspectionDODelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient,  InspectionService inspectionService) {
+    public InspectionDODelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient, OrganizationClient organizationClient, InspectionService inspectionService) {
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
+        this.organizationClient = organizationClient;
         this.inspectionService = inspectionService;
     }
 
@@ -152,12 +160,19 @@ public class InspectionDODelegator {
 
 
         //get  commonDto draft
-
-
+        List<String> ids=IaisCommonUtils.genNewArrayList();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        ids.add(loginContext.getUserId());
+        List<OrgUserDto> orgUserDtoUsers = organizationClient.retrieveOrgUserAccount(ids).getEntity();
         List<InspectionFillCheckListDto> cDtoList =  inspectionService.getServiceChkDtoListByAppPremId(appId,"service",false);
+        InspectionFDtosDto inspectionFDtosDto=new InspectionFDtosDto();
+        inspectionFDtosDto.setFdtoList(cDtoList);
+        //get  commonDto draft
+        inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         ParamUtil.setSessionAttr(request, INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        ParamUtil.setSessionAttr(request,SERLISTDTO,cDtoList.get(0));
-
+        ParamUtil.setSessionAttr(request,SERLISTDTO,inspectionFDtosDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,cDtoList.get(0));
+        ParamUtil.setSessionAttr(request,INSPECTION_USERS, (Serializable) orgUserDtoUsers);
 
     }
 
@@ -177,14 +192,110 @@ public class InspectionDODelegator {
     }
 
     public void changeTab(BaseProcessClass bpc) {
-        // do nothing now
+        HttpServletRequest request = bpc.request;
+        log.info("----------changeTab --");
+        String nowTabIn = ParamUtil.getString(request,"nowTabIn");
+        ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
+        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
+        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+        changeDataForCheckList(request);
+    }
+    public void changeDataForCheckList(HttpServletRequest request){
+        getCommonCheckListMoreData(request);
+        getServiceCheckListMoreData(request);
+
+        setRate(request);
     }
 
+    public void getCommonCheckListMoreData(HttpServletRequest request){
+        InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
+        String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
+        if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
+            for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
+                String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
+
+                List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
+                int index = 0;
+                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                    if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                        String answer =  ParamUtil.getString(request,prefix +"comradIns" + index);
+                        String remark = ParamUtil.getString(request,prefix +"comremarkIns" + index);
+                        String raf =  ParamUtil.getString(request,prefix +"comrecIns" + index);
+                        String ncs  = ParamUtil.getString(request,prefix +"comFindNcsIns" + index);
+                        answerForDifDto.setNcs(ncs);
+                        answerForDifDto.setAnswer(answer);
+                        answerForDifDto.setRemark(remark);
+                        if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
+                            answerForDifDto.setIsRec("1");
+                        }else {
+                            answerForDifDto.setIsRec("0");
+                        }
+                        break;
+                    }
+                    index++;
+                }
+                inspectionService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
+            }
+            ParamUtil.setSessionAttr(request,COMMONDTO,comDto);
+        }
+    }
+    public void setRate(HttpServletRequest request){
+        InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
+
+        inspectionService.getRateOfCheckList(serListDto,commonDto);
+
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+    }
+
+    public void getServiceCheckListMoreData(HttpServletRequest request){
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
+        List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+        if(fdtoList != null && fdtoList.size() >0){
+            getOneServiceMoreData( request,fdtoList,userId);
+            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        }
+    }
+    public void getOneServiceMoreData(HttpServletRequest request,List<InspectionFillCheckListDto> inspectionFillCheckListDtos,String userId){
+        if(!IaisCommonUtils.isEmpty(inspectionFillCheckListDtos)){
+            for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
+                List<InspectionCheckQuestionDto> checkList = inspectionFillCheckListDto.getCheckList();
+                for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
+                    String prefix = inspectionFillCheckListDto.getSubName()+ StringUtil.getNonNull(inspectionCheckQuestionDto.getSectionNameShow())+inspectionCheckQuestionDto.getItemId();
+                    List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
+                    int index = 0;
+                    for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                        if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                            String answer =  ParamUtil.getString(request,prefix +"radIns" + index);
+                            String remark = ParamUtil.getString(request,prefix +"remarkIns" + index);
+                            String raf =  ParamUtil.getString(request,prefix +"recIns" + index);
+                            String ncs = ParamUtil.getString(request,prefix +"FindNcsIns" + index);
+                            answerForDifDto.setNcs(ncs);
+                            answerForDifDto.setAnswer(answer);
+                            answerForDifDto.setRemark(remark);
+                            if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
+                                answerForDifDto.setIsRec("1");
+                            }else {
+                                answerForDifDto.setIsRec("0");
+                            }
+                            break;
+                        }
+                        index++;
+                    }
+                    inspectionService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
+                }
+            }
+        }
+    }
     public void saveDraft(BaseProcessClass bpc) {
         // do nothing now
     }
 
     public void validateAndSaveChecklist(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         // do nothing now
     }
 

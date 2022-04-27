@@ -1,14 +1,9 @@
 <div class="row">
     <div class="col-xs-12">
         <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
-        <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
-            <div style="float:right">
-                <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
-                    <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
-                    <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
-                </c:if>
-            </div>
-        </c:if>
+        <div style="float:right">
+            <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
