@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -59,6 +60,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -142,7 +144,7 @@ public class InspectionDODelegator {
         List<ProcessHistoryDto> processHistoryDtoList = initDataDto.getProcessHistoryDtoList();
         ParamUtil.setSessionAttr(request,KEY_ROUTING_HISTORY_LIST,new ArrayList<>(processHistoryDtoList));
 
-        setCheckListUnFinishedTask(request,appId);
+        //setCheckListUnFinishedTask(request,appId);
 
     }
 
@@ -236,6 +238,8 @@ public class InspectionDODelegator {
         checklistDto.setChkLstConfigId(configDto.getId());
         checklistDto.setVersion(1);
         checklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        checklistDto.setUserId(loginContext.getUserId());
         ParamUtil.setSessionAttr(request, KEY_INS_CHECKLIST_DTO, checklistDto);
         ParamUtil.clearSession(request, InspectionConstants.SEESION_FILES_MAP_AJAX);
     }
@@ -291,8 +295,7 @@ public class InspectionDODelegator {
         } else {
             // save
             checklistDto.setAnswer(answerDtos);
-            //answerRecordDto.setAnswer(JsonUtil.parseToJson(answerDtos));
-            //inspectionClient.save
+            inspectionClient.saveChkListDraft(checklistDto);
         }
         ParamUtil.setRequestAttr(bpc.request, InspectionConstants.ACTION_UPLOAD_TYPE, nextType);
         ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
@@ -383,7 +386,8 @@ public class InspectionDODelegator {
     @GetMapping(value = "/inspection/checklist/exporting-data")
     public void exportData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        InspectionChecklistDto checklistDto = new InspectionChecklistDto();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        InspectionChecklistDto checklistDto = inspectionClient.getChkListDraft(loginContext.getUserId(),appId).getBody();
         ChecklistConfigDto configDto;
         Map<String, ChklstItemAnswerDto> answerMap = null;
         if (checklistDto == null) {
@@ -412,7 +416,6 @@ public class InspectionDODelegator {
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, answerMap, true);
             File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, "Inspection_Checklist_Template");
             FileUtils.writeFileResponseContent(response, inputFile);
-            //FileUtils.deleteTempFile(configInfoTemplate);
             FileUtils.deleteTempFile(inputFile);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
@@ -447,12 +450,14 @@ public class InspectionDODelegator {
         excelSheetDto.setSheetAt(sheetAt);
         excelSheetDto.setSheetName(sheetName);
         excelSheetDto.setBlock(true);
+        excelSheetDto.setPwd(Formatter.formatDateTime(new Date(), "yyyyMMdd"));
         excelSheetDto.setStartRowIndex(InspectionConstants.START_ROW);
         excelSheetDto.setSource(data);
         excelSheetDto.setSourceClass(InsChklItemExcelDto.class);
         excelSheetDto.setDefaultRowHeight((short) 500);
         excelSheetDto.setChangeHeight(true);
         excelSheetDto.setWidthMap(getWidthMap());
+
         return excelSheetDto;
     }
 
@@ -513,14 +518,14 @@ public class InspectionDODelegator {
         widthMap = IaisCommonUtils.genNewHashMap(5);
         widthMap.put(0, 9);
         widthMap.put(1, 25);
-        widthMap.put(2, 9);
+        widthMap.put(2, 12);
         widthMap.put(3, 25);
         widthMap.put(4, 25);
         widthMap.put(5, 9);
-        widthMap.put(6, 9);
+        widthMap.put(6, 15);
         widthMap.put(7, 25);
         widthMap.put(8, 25);
-        widthMap.put(9, 10);
+        widthMap.put(9, 12);
         return widthMap;
     }
 }
