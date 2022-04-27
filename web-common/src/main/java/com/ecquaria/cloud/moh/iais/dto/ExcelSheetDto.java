@@ -26,7 +26,7 @@ public class ExcelSheetDto implements Serializable {
     private Map<Integer, Integer> widthMap;
 
     private boolean needFiled;
-    private int[] filedRows;
+    private List<Integer> filedRowIndexes;
 
     private Class<?> sourceClass;
     // write

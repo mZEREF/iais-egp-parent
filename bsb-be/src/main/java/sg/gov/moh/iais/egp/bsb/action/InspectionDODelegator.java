@@ -574,7 +574,6 @@ public class InspectionDODelegator {
         excelSheetDto.setDefaultRowHeight((short) 500);
         excelSheetDto.setChangeHeight(true);
         excelSheetDto.setWidthMap(getWidthMap());
-
         return excelSheetDto;
     }
 
@@ -638,11 +637,11 @@ public class InspectionDODelegator {
         widthMap.put(2, 12);
         widthMap.put(3, 25);
         widthMap.put(4, 25);
-        widthMap.put(5, 9);
-        widthMap.put(6, 15);
+        widthMap.put(5, 10);
+        widthMap.put(6, 12);
         widthMap.put(7, 25);
         widthMap.put(8, 25);
-        widthMap.put(9, 12);
+        widthMap.put(9, 15);
         return widthMap;
     }
 }

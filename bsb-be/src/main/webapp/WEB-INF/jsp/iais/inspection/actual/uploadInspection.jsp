@@ -46,9 +46,6 @@
                             <li>
                                 <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/inspection/checklist/exporting-template">here</a>.</p>
                             </li>
-                            <li>
-                                <p><iais:message key="GENERAL_ERR0052" params="maxCountMap" /></p>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -56,7 +53,7 @@
                 <div class="document-content">
                     <div class="document-upload-gp">
                         <div class="document-upload-list">
-                            <h3>Inspection Checklist Information (${facCommittee.amount} records uploaded)</h3>
+                            <h3>Inspection Checklist Information</h3>
                             <div class="file-upload-gp">
                                 <span data-err-ind="checklistData" id="error_uploadFileError" class="error-msg"></span>
                                 <c:if test="${not empty fileItemErrorMsgs}">
@@ -65,16 +62,18 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
+                                                <th scope="col" >Sheet Name</th>
                                                 <th scope="col" >Row (S/N)</th>
-                                                <th scope="col" >Field Name (Sheet Name)</th>
+                                                <th scope="col" >Field Name (Column)</th>
                                                 <th scope="col" >Error Message</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="item" items="${fileItemErrorMsgs}">
                                                 <tr>
+                                                    <td>${item.sheetName}</td>
                                                     <td>${item.row} (${item.indicator})</td>
-                                                    <td>${item.cellName} (${item.sheetName})</td>
+                                                    <td>${item.cellName} (${item.colHeader})</td>
                                                     <td>${item.message}</td>
                                                 </tr>
                                             </c:forEach>

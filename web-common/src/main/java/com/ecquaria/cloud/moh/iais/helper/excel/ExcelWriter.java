@@ -383,8 +383,8 @@ public final class ExcelWriter {
         }
         List<?> source = excelSheetDto.getSource();
         Class<?> sourceClass = excelSheetDto.getSourceClass();
-        if (excelSheetDto.isNeedFiled() && excelSheetDto.getFiledRows() != null) {
-            for (int row : excelSheetDto.getFiledRows()) {
+        if (excelSheetDto.isNeedFiled() && excelSheetDto.getFiledRowIndexes() != null) {
+            for (int row : excelSheetDto.getFiledRowIndexes()) {
                 setFieldName(sourceClass, sheet, row, false);
             }
         }
@@ -469,6 +469,6 @@ public final class ExcelWriter {
         if (stringNeedsRows < 1) {
             stringNeedsRows = 1;
         }
-        return fontHeight * (stringNeedsRows + 1);
+        return (fontHeight + 50) * (stringNeedsRows + 1);
     }
 }

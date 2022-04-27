@@ -28,7 +28,7 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
         ChklstItemAnswerDto answerDto = (ChklstItemAnswerDto) obj;
         try {
             String dueDate = answerDto.getDueDate();
-            if (!CommonValidator.isDate(dueDate)) {
+            if (!CommonValidator.isDate(dueDate) || !CommonValidator.isFileDate(dueDate)) {
                 errorMap.put("dueDate", MessageUtil.getMessageDesc("GENERAL_ERR0033"));
             } else if (!StringUtil.isEmpty(dueDate) && Formatter.compareDateByDay(dueDate) <= 0) {
                 errorMap.put("dueDate", MessageUtil.replaceMessage("GENERAL_ERR0026", "Due Date", "field"));

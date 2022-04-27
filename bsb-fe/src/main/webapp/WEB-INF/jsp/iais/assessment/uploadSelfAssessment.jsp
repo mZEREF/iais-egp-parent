@@ -63,16 +63,18 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
+                                                <th scope="col" >Sheet Name</th>
                                                 <th scope="col" >Row (S/N)</th>
-                                                <th scope="col" >Field Name (Sheet Name)</th>
+                                                <th scope="col" >Field Name (Column)</th>
                                                 <th scope="col" >Error Message</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="item" items="${fileItemErrorMsgs}">
                                                 <tr>
+                                                    <td>${item.sheetName}</td>
                                                     <td>${item.row} (${item.indicator})</td>
-                                                    <td>${item.cellName} (${item.sheetName})</td>
+                                                    <td>${item.cellName} (${item.colHeader})</td>
                                                     <td>${item.message}</td>
                                                 </tr>
                                             </c:forEach>

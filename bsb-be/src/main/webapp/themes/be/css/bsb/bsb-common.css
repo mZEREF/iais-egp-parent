@@ -61,3 +61,7 @@ label.label-bold {
         margin-bottom: 50px;
     }
 }
+
+.document-info-list ul li:before {
+    background-color: #333333;
+}
