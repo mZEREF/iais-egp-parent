@@ -54,7 +54,7 @@
                 <div class="document-content">
                     <div class="document-upload-gp">
                         <div class="document-upload-list">
-                            <h3>Self Assessment Information (${facCommittee.amount} records uploaded)</h3>
+                            <h3>Self Assessment Information</h3>
                             <div class="file-upload-gp">
                                 <span data-err-ind="selfAssessmentData" id="error_uploadFileError" class="error-msg"></span>
                                 <c:if test="${not empty fileItemErrorMsgs}">
