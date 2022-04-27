@@ -141,7 +141,9 @@
                         </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        <div id="gender" <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
+                                <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        </div>
                         <iais:value width="7" cssClass="col-md-7">
                             <div id="genders">
                                <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
@@ -160,13 +162,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-<c:if test="${hasDraft}">
-    <iais:confirm
-            msg="DS_MSG010"
-            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
-            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-            cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
-</c:if>
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
@@ -205,6 +200,15 @@
                 $('#otherOccupations').show();
             } else {
                 $('#otherOccupations').hide();
+            }
+        });
+
+        $('#childrenNum').keyup(function () {
+            var childrenNum = $('#childrenNum').val();
+            if (childrenNum!=null && childrenNum>0) {
+                $('#gender').show();
+            } else {
+                $('#gender').hide();
             }
         });
     });
@@ -342,22 +346,20 @@
             $('#otherOccupations').show();
             fillValue($('#otherOccupation'),data.selection.otherOccupation);
         }
-        if(!isEmpty(data.selection.livingChildrenNo)){
-            $('#childrenNum').trigger('keyup');
-
-        }
         if(data.selection.livingChildrenNo>0){
+            $('#childrenNum').trigger('keyup');
             var livingChildrenGenders=data.selection.livingChildrenGenders;
             for(var i=0;i<livingChildrenGenders.length;i++){
                 console.log(i)
                 fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
             }
         }
+        if(data.selection.livingChildrenNo=0){
+            $('#gender').hide();
+        }
     }
     function clearSelection(){
         console.log("clearSelection!")
         clearErrorMsg();
-        $('#name').find('p').text('');
-        clearFields('.selectionHidden');
     }
 </script>

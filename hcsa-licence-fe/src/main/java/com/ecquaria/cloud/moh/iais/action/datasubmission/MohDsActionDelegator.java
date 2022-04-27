@@ -334,6 +334,7 @@ public class MohDsActionDelegator {
             topSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             topSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            DsConfigHelper.clearTopSession(request);
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;

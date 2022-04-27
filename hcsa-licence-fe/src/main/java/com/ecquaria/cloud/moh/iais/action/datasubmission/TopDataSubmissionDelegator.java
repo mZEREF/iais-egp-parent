@@ -78,6 +78,17 @@ public class TopDataSubmissionDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(" ----- PrepareSwitch ------ ");
+        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        if(topSuperDataSubmissionDto==null){
+            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
+            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
+        }
+        if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration())){
+                topSuperDataSubmissionDto.getDataSubmissionDto().getDeclaration();
+            }
+        }
+
         DsConfigHelper.initTopConfig(bpc.request);
         String actionType = getActionType(bpc.request);
 
@@ -93,11 +104,8 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) getSourseLists(bpc.request));
         ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) getSourseListsDrug(bpc.request));
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
-        if(topSuperDataSubmissionDto==null){
-            topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
-            DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
-        }
+
+
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
