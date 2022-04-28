@@ -61,6 +61,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -420,20 +422,6 @@ public class BsbSubmitSelfAssessmentDelegator {
             errorMap.put("selfAssessmentData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
-            /*List<ChklstItemAnswerDto> commonData = result.get(SHEET_NAME_COMMON);
-            Boolean isValid = validateChklItemExcelDto(commonData, SHEET_NAME_COMMON, answerRecordDto.getCommonChkLstConfigId(),
-                    errorMsgs);
-            if (isValid != null && isValid) {
-                answerDtos.addAll(commonData);
-            }
-            if (isValid != null) {
-                List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
-                isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
-                        errorMsgs);
-                if (isValid != null && isValid) {
-                    answerDtos.addAll(bsbData);
-                }
-            }*/
             List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
             Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
                     errorMsgs);
@@ -462,7 +450,8 @@ public class BsbSubmitSelfAssessmentDelegator {
             inspectionClient.submitSelfAssessment(answerRecordDto);
         }
         ParamUtil.setRequestAttr(bpc.request, ACTION_UPLOAD_TYPE, nextType);
-        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
+        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.replaceMessage("GENERAL_ERR0058",
+                "Self Assessment Checklist", "data"));
     }
 
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
@@ -471,9 +460,13 @@ public class BsbSubmitSelfAssessmentDelegator {
             log.info("No data found!");
             return null;
         }
-        String item = data.get(0).getConfigId();
-        if (StringUtil.isEmpty(item) || !item.equals(chkLstConfigId)) {
-            log.info(StringUtil.changeForLog("Wrong configId: " + item + " | " + chkLstConfigId));
+        Optional<ChklstItemAnswerDto> optional = data.stream()
+                .filter(dto -> !Objects.equals(chkLstConfigId, dto.getConfigId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getSectionId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getItemId()))
+                .findAny();
+        if (optional.isPresent()) {
+            log.info(StringUtil.changeForLog("Wrong Data: " + JsonUtil.parseToJson(optional.get()) + " | " + chkLstConfigId));
             return null;
         }
         errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, null, START_ROW,

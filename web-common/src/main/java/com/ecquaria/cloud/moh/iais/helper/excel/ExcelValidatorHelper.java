@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -86,4 +88,15 @@ public class ExcelValidatorHelper {
         return fieldCellMap.getOrDefault(k, new ExcelPropertyDto());
     }
 
+    public static boolean isValidUuid(String uuid) {
+        if (StringUtil.isEmpty(uuid)) {
+            return false;
+        }
+        try {
+            UUID.fromString(uuid).toString();
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
+    }
 }

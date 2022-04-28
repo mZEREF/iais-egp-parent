@@ -71,6 +71,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -416,7 +418,8 @@ public class InspectionDODelegator {
             inspectionClient.saveChkListDraft(checklistDto);
         }
         ParamUtil.setRequestAttr(bpc.request, InspectionConstants.ACTION_UPLOAD_TYPE, nextType);
-        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
+        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.replaceMessage("GENERAL_ERR0058",
+                "Inspection Checklist", "data"));
     }
 
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
@@ -425,9 +428,13 @@ public class InspectionDODelegator {
             log.info("No data found!");
             return null;
         }
-        String item = data.get(0).getConfigId();
-        if (StringUtil.isEmpty(item) || !item.equals(chkLstConfigId)) {
-            log.info(StringUtil.changeForLog("Wrong configId: " + item + " | " + chkLstConfigId));
+        Optional<ChklstItemAnswerDto> optional = data.stream()
+                .filter(dto -> !Objects.equals(chkLstConfigId, dto.getConfigId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getSectionId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getItemId()))
+                .findAny();
+        if (optional.isPresent()) {
+            log.info(StringUtil.changeForLog("Wrong Data: " + JsonUtil.parseToJson(optional.get()) + " | " + chkLstConfigId));
             return null;
         }
         errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, "file",
@@ -447,7 +454,7 @@ public class InspectionDODelegator {
             if (data != null && !data.isEmpty()) {
                 for (Map.Entry<String, List<InsChklItemExcelDto>> entry : data.entrySet()) {
                     List<ChklstItemAnswerDto> collect = entry.getValue().stream()
-                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()))
+                            .filter(dto -> !StringUtil.isEmpty(dto.getSnNo()) && !StringUtil.isEmpty(dto.getChecklistItem()))
                             .map(dto -> {
                                 ChklstItemAnswerDto answerDto = MiscUtil.transferEntityDto(dto, ChklstItemAnswerDto.class);
                                 String itemKey = dto.getItemKey();
@@ -458,6 +465,7 @@ public class InspectionDODelegator {
                                 if (keys.length != 3) {
                                     return new ChklstItemAnswerDto();
                                 }
+
                                 answerDto.setConfigId(keys[0]);
                                 answerDto.setSectionId(keys[1]);
                                 answerDto.setItemId(keys[2]);
@@ -572,7 +580,7 @@ public class InspectionDODelegator {
         excelSheetDto.setStartRowIndex(InspectionConstants.START_ROW);
         excelSheetDto.setSource(data);
         excelSheetDto.setSourceClass(InsChklItemExcelDto.class);
-        excelSheetDto.setDefaultRowHeight((short) 500);
+        excelSheetDto.setDefaultRowHeight((short) 600);
         excelSheetDto.setChangeHeight(true);
         excelSheetDto.setWidthMap(getWidthMap());
         return excelSheetDto;
