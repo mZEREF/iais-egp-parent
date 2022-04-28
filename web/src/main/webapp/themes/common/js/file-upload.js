@@ -131,6 +131,9 @@ function clearFlagValueFEFile() {
     $("#reloadIndex").val(-1);
     $("#fileAppendId").val("");
     $("#uploadFormId").val("");
+    if (typeof clearOtherDataOnClickingUpload === 'function') {
+        clearOtherDataOnClickingUpload();
+    }
     dismissWaiting();
 }
 

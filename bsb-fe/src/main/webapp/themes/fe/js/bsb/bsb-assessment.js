@@ -49,19 +49,17 @@ $(function () {
 
 });
 
+/* file upload start */
 function initUploadFileData() {
     $('#_needReUpload').val(0);
     $('#_fileType').val("XLSX");
     $('#_singleUpload').val("1");
 }
 
-function clearFlagValueFEFile() {
-    $("#reloadIndex").val(-1);
-    $("#fileAppendId").val("");
-    $("#uploadFormId").val("");
+function clearOtherDataOnClickingUpload() {
     $('.itemErrorTableDiv').hide();
-    dismissWaiting();
 }
+/* file upload end */
 
 function switchNextStep(index) {
     $('.config').hide();
