@@ -1,21 +1,20 @@
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*" %>
 <%
-  String currentNode = (String) request.getSession().getAttribute(KEY_JUMP_DEST_NODE);
+  String currentNode = (String) request.getSession().getAttribute(sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_JUMP_DEST_NODE);
   int order;
   switch (currentNode) {
-    case NODE_PATH_FAC_PROFILE:
+    case sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_PROFILE:
       order = 1;
       break;
-    case NODE_PATH_FAC_OPERATOR:
+    case sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_OPERATOR:
       order = 2;
       break;
-    case NODE_PATH_FAC_ADMIN_OFFICER:
+    case sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_ADMIN_OFFICER:
       order = 3;
       break;
-    case NODE_PATH_FAC_COMMITTEE:
+    case sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_COMMITTEE:
       order = 4;
       break;
-    case NODE_PATH_FAC_AUTH:
+    case sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_AUTH:
       order = 5;
       break;
     default:

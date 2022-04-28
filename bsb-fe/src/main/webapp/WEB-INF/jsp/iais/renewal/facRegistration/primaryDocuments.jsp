@@ -53,7 +53,6 @@
                                             </ul>
                                         </div>
                                         <div class="text-right"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
-                                        <%@ include file="../../mainAppCommon/facRegistration/primaryDocuments.jsp" %>
                                     </div>
                                 </div>
                                 <%@ include file="../common/InnerFooter.jsp" %>

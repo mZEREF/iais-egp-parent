@@ -23,7 +23,6 @@
     <input type="hidden" name="action_value" value="">
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
-            <%@ include file="../../mainAppCommon/facRegistration/companyInfo.jsp" %>
             <div class="row">
                 <div class="col-xs-12 col-md-3">
                     <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Previous</a>

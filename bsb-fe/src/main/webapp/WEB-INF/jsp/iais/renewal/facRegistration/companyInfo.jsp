@@ -23,7 +23,6 @@
     <input type="hidden" name="action_value" value="">
     <div class="container">
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
-            <%@ include file="../../mainAppCommon/facRegistration/companyInfo.jsp" %>
             <div class="row">
                 <div class="col-xs-12 col-md-12">
                     <div class="text-right text-center-mobile">

@@ -45,7 +45,6 @@
 
                                     <div class="form-horizontal">
                                         <div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
-                                        <%@include file="../../mainAppCommon/facRegistration/facilityProfile.jsp"%>
                                     </div>
                                 </div>
 
