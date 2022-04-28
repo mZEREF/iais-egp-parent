@@ -76,7 +76,7 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
                             addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
                         } else {
                             Date date = new Date(new Date().getTime() - 1000 * 60 * 60 * 24L * preDays);
-                            if (dataSubmissionDto.getSubmitDt().before(date)) {
+                            if (jobRemindMsgTrackingDto.getCreateTime().before(date)) {
                                 // send pre
                                 sendPertNotification(LicenseeId, submissionerName, patientName, submissionNo);
                                 addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
