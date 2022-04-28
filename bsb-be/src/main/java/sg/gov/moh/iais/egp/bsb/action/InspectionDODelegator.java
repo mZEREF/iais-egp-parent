@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
@@ -105,11 +106,10 @@ public class InspectionDODelegator {
     private final InspectionService inspectionService;
     private static final String SERLISTDTO="serListDto";
 
-    private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
+
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
-    private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
-    private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
+
     @Autowired
     public InspectionDODelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient, OrganizationClient organizationClient, InspectionService inspectionService) {
         this.inspectionClient = inspectionClient;
@@ -134,6 +134,7 @@ public class InspectionDODelegator {
         session.removeAttribute(KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST);
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_CHECKLIST_DTO);
+        session.removeAttribute(SERLISTDTO);
 
 
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
@@ -172,9 +173,7 @@ public class InspectionDODelegator {
 
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
-        ParamUtil.setSessionAttr(request, INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        ParamUtil.setSessionAttr(request,SERLISTDTO,inspectionFDtosDto);
-        ParamUtil.setSessionAttr(request,INSPECTION_USERS, (Serializable) orgUserDtoUsers);
+
         InspectionChecklistDto inspectionChecklistDto=inspectionClient.getCombinedChkList(appId).getBody();
         if(inspectionChecklistDto==null){
             ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
@@ -185,9 +184,47 @@ public class InspectionDODelegator {
             inspectionChecklistDto.setVersion(1);
             inspectionChecklistDto.setChkLstConfigId(dto.getId());
 
+        }else {
+            List<ChklstItemAnswerDto> answerDtos=inspectionChecklistDto.getAnswer();
+
+
+            InspectionFillCheckListDto comDto = inspectionFDtosDto.getFdtoList().get(0);
+            if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
+                List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
+                for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
+
+                    if(IaisCommonUtils.isNotEmpty(answerDtos)){
+                        String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
+                        List<AnswerForDifDto> answerForDifDtos = IaisCommonUtils.genNewArrayList();
+                        Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
+                        for (ChklstItemAnswerDto answer: answerDtos
+                        ) {
+                            if(answer.getSnNo()!=null&&answer.getSnNo().equals(prefix)){
+                                AnswerForDifDto answerForDifDto=new AnswerForDifDto();
+                                answerForDifDto.setAnswer(answer.getAnswer());
+                                answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
+                                answerForDifDto.setNcs(answer.getFindings());
+                                answerForDifDto.setSubmitId(orgUserDtoUsers.get(0).getId());
+                                answerForDifDto.setRemark(answer.getRemarks());
+                                answerForDifDto.setSameAnswer(false);
+                                answerForDifDto.setSubmitName(orgUserDtoUsers.get(0).getUserId());
+                                answerForDifDtos.add(answerForDifDto);
+                                answerForDifDtoMaps.put(orgUserDtoUsers.get(0).getId(),answerForDifDto);
+                            }
+                        }
+
+                        inspectionService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
+                        inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
+                        inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
+                    }
+                }
+            }
+
         }
         ParamUtil.setSessionAttr(request, KEY_INS_CHECKLIST_DTO, inspectionChecklistDto);
-
+        ParamUtil.setSessionAttr(request, INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        ParamUtil.setSessionAttr(request,SERLISTDTO,inspectionFDtosDto);
+        ParamUtil.setSessionAttr(request,INSPECTION_USERS, (Serializable) orgUserDtoUsers);
     }
 
     public void pre(BaseProcessClass bpc) {
@@ -283,6 +320,7 @@ public class InspectionDODelegator {
                 for(AnswerForDifDto answerForDifDto : answerForDifDtos){
                     if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
+                        answerDto.setSnNo(inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId());
                         answerDto.setAnswer(answerForDifDto.getAnswer());
                         answerDto.setFindings(answerForDifDto.getNcs());
                         answerDto.setActionRequired(answerForDifDto.getRemark());
@@ -304,7 +342,7 @@ public class InspectionDODelegator {
 
 
         checklistDto.setAnswer(answerDtos);
-        //inspectionClient.saveCombinedChkList(checklistDto);
+        inspectionClient.saveCombinedChkList(checklistDto);
         // do nothing now
     }
 
