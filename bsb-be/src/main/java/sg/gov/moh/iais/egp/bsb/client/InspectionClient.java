@@ -54,9 +54,6 @@ public interface InspectionClient {
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/checklist/common-config", produces = MediaType.APPLICATION_JSON_VALUE)
-    ChecklistConfigDto getMaxVersionCommonConfig();
-
     @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
 

@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
@@ -28,7 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -122,7 +123,6 @@ public class PreInspectionDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
         ChecklistConfigDto configDto = inspectionClient.getChecklistConfigById(answerRecordDto.getChkLstConfigId());
-        ChecklistConfigDto commonConfigDto = inspectionClient.getChecklistConfigById(answerRecordDto.getCommonChkLstConfigId());
 
         String answerJson = answerRecordDto.getAnswer();
         ObjectMapper mapper = new ObjectMapper();
@@ -133,7 +133,7 @@ public class PreInspectionDelegator {
             answerMap.put(answerDto.getConfigId() + KEY_SEPARATOR + answerDto.getSectionId() + KEY_SEPARATOR + answerDto.getItemId(), answerDto);
         }
 
-        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, Arrays.asList(commonConfigDto, configDto));
+        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, configDto);
         ParamUtil.setRequestAttr(request, KEY_ANSWER_MAP, answerMap);
         ParamUtil.setRequestAttr(request, KEY_EDITABLE, Boolean.FALSE);
     }
@@ -173,6 +173,7 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        saveAdhocChecklistCOnfig(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} TaskId {} Inspection mark as ready", appId, taskId);
         inspectionClient.changeInspectionStatusToReady(appId, taskId, processDto);
@@ -184,6 +185,7 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        saveAdhocChecklistCOnfig(request);
         int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
@@ -196,6 +198,7 @@ public class PreInspectionDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
+        saveAdhocChecklistCOnfig(request);
         inspectionClient.skipInspection(appId, taskId, processDto);
     }
 
@@ -229,6 +232,13 @@ public class PreInspectionDelegator {
             return VALUE_RFI_FLAG_APPLICATION;
         } else {
             return VALUE_RFI_FLAG_SELF;
+        }
+    }
+
+    private void saveAdhocChecklistCOnfig(HttpServletRequest request) {
+        AdhocChecklistConfigDto adhocConfig = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        if (adhocConfig != null) {
+            inspectionClient.saveAdhocChecklistConfig(adhocConfig);
         }
     }
 }

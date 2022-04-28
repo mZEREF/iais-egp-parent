@@ -71,8 +71,6 @@ public class MohBsbAdhocChecklistDelegator {
         ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.YES);
 
         HttpSession session = request.getSession();
-        //TODO need remove
-        session.removeAttribute(KEY_INSPECTION_CONFIG);
     }
 
     public void prepareDisplay(BaseProcessClass bpc) {
@@ -136,8 +134,8 @@ public class MohBsbAdhocChecklistDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
             adhocConfig.setApplicationId(appId);
-            // should move to Pre
-            inspectionClient.saveAdhocChecklistConfig(adhocConfig);
+            // Waiting super process save
+            // inspectionClient.saveAdhocChecklistConfig(adhocConfig);
             ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, adhocConfig);
             ParamUtil.setSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.NO);
         }
