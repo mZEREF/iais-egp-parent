@@ -259,7 +259,7 @@ function initUploadFileData() {
     $('#_singleUpload').val("1");
 }
 
-function clearOtherDataOnClickingUpload() {
+function handleOnClickingUploadBtn() {
     $('.itemErrorTableDiv').hide();
 }
 /* file upload end */

@@ -111,9 +111,11 @@ function ajaxCallUploadForMax(idForm, fileAppendId, needMaxGlobalIndex) {
                         $("#error_" + fileAppendId + "Error").html("");
                         cloneUploadFile();
                     } else {
-                        doActionWhenError(data);
                         $("#error_" + fileAppendId + "Error").html(data.description);
                     }
+                }
+                if (typeof doActionAfterUploading === 'function') {
+                    doActionAfterUploading(data, fileAppendId);
                 }
                 dismissWaiting();
             },
@@ -129,10 +131,10 @@ function ajaxCallUploadForMax(idForm, fileAppendId, needMaxGlobalIndex) {
 
 function clearFlagValueFEFile() {
     $("#reloadIndex").val(-1);
-    $("#fileAppendId").val("");
+    //$("#fileAppendId").val("");
     $("#uploadFormId").val("");
-    if (typeof clearOtherDataOnClickingUpload === 'function') {
-        clearOtherDataOnClickingUpload();
+    if (typeof handleOnClickingUploadBtn === 'function') {
+        handleOnClickingUploadBtn($("#fileAppendId").val());
     }
     dismissWaiting();
 }
@@ -168,8 +170,4 @@ function cloneUploadFile() {
             $btns.not(':last').trigger('click');
         }
     }
-}
-
-function doActionWhenError(data) {
-    //nothing now
 }
