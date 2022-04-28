@@ -210,6 +210,9 @@ public interface InspectionClient {
     @PostMapping(value = "/adhoc-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<AdhocChecklistConfigDto> saveAdhocChecklistConfig(@RequestBody AdhocChecklistConfigDto adhocChecklistConfigDto);
 
+    @GetMapping(value = "/adhoc-checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<AdhocChecklistConfigDto> getAdhocChecklistConfigDaoByAppid(@RequestParam("appId") String appId);
+
     @GetMapping(value = "/inspection/comBinedchkListAnswer/{applicationid}")
     ResponseEntity<InspectionChecklistDto> getCombinedChkList(@PathVariable("applicationid") String appId);
 
