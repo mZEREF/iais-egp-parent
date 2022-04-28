@@ -50,6 +50,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InsChklItemExcelDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
@@ -426,8 +427,15 @@ public class InspectionDODelegator {
         InspectionChecklistDto checklistDto = new InspectionChecklistDto();
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         checklistDto.setApplicationId(appId);
-        ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
-        checklistDto.setChkLstConfigId(configDto.getId());
+        InspectionInfoDto inspectionInfoDto = inspectionClient.getInspectionInfoDto(appId).getBody();
+        String chkLstConfigId;
+        if (inspectionInfoDto != null) {
+            chkLstConfigId = inspectionInfoDto.getCheckListConfigId();
+        } else {
+            ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
+            chkLstConfigId = configDto.getId();
+        }
+        checklistDto.setChkLstConfigId(chkLstConfigId);
         checklistDto.setVersion(1);
         checklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -576,7 +584,13 @@ public class InspectionDODelegator {
     @GetMapping(value = "/inspection/checklist/exporting-template")
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
+        ChecklistConfigDto configDto;
+        InspectionInfoDto inspectionInfoDto = inspectionClient.getInspectionInfoDto(appId).getBody();
+        if (inspectionInfoDto != null) {
+            configDto = inspectionClient.getChecklistConfigById(inspectionInfoDto.getCheckListConfigId());
+        } else {
+            configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
+        }
         exportExcel(null, configDto, null, response);
     }
 
@@ -585,13 +599,9 @@ public class InspectionDODelegator {
     public void exportData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        InspectionChecklistDto checklistDto = inspectionClient.getChkListDraft(loginContext.getUserId(),appId).getBody();
-        ChecklistConfigDto configDto;
+        InspectionChecklistDto checklistDto = inspectionClient.getChkListDraft(loginContext.getUserId(), appId).getBody();
         Map<String, ChklstItemAnswerDto> answerMap = null;
-        if (checklistDto == null) {
-            configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
-        } else {
-            configDto = inspectionClient.getChecklistConfigById(checklistDto.getChkLstConfigId());
+        if (checklistDto != null) {
             List<ChklstItemAnswerDto> answerDtoList = checklistDto.getAnswer();
             if (answerDtoList != null) {
                 answerMap = answerDtoList.stream()
@@ -603,6 +613,13 @@ public class InspectionDODelegator {
                                 .append(t.getItemId())
                                 .toString(), Function.identity()));
             }
+        }
+        ChecklistConfigDto configDto;
+        InspectionInfoDto inspectionInfoDto = inspectionClient.getInspectionInfoDto(appId).getBody();
+        if (inspectionInfoDto != null) {
+            configDto = inspectionClient.getChecklistConfigById(inspectionInfoDto.getCheckListConfigId());
+        } else {
+            configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
         exportExcel(null, configDto, answerMap, response);
     }
