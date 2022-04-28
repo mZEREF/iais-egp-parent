@@ -182,7 +182,7 @@ public class InspectionDODelegator {
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
 
-        InspectionChecklistDto inspectionChecklistDto=inspectionClient.getCombinedChkList(appId).getBody();
+        InspectionChecklistDto inspectionChecklistDto=inspectionClient.getOfficerChkList(loginContext.getUserId(),appId).getBody();
         if(inspectionChecklistDto==null){
             ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
             inspectionChecklistDto=new InspectionChecklistDto();
@@ -373,7 +373,7 @@ public class InspectionDODelegator {
                 serListDto.setCheckListTab("chkList");
 
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                inspectionClient.saveCombinedChkList(checklistDto);
+                inspectionClient.saveOfficerChkList(checklistDto);
             }
 //            setChangeTabForChecklist(request);
         }else {

@@ -221,4 +221,10 @@ public interface InspectionClient {
 
     @GetMapping(value = "/inspection/inspection-info/{applicationid}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<InspectionInfoDto> getInspectionInfoDto(@PathVariable("applicationid") String appId);
+
+    @GetMapping(value = "/inspection/chkListAnswerOfficer/{userId}/{applicationid}")
+    ResponseEntity<InspectionChecklistDto> getOfficerChkList(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
+
+    @PostMapping(value = "/inspection/officerChkListAnswer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> saveOfficerChkList(@RequestBody InspectionChecklistDto chkList);
 }
