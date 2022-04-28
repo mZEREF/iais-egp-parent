@@ -21,11 +21,11 @@ public class INTERNET___InspectionFollowUpItemsFE___1 extends BaseProcessClass {
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "init", this);
+//		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "prepareData", this);
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void validate_OnStepProcess_0() throws Exception {

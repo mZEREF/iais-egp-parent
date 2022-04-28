@@ -231,6 +231,13 @@
                                                                         <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbCommentInspectionReport?appId=<iais:mask name='commentInsReportAppId' value='${app.id}'/>">Comment Inspection Report</option>
                                                                         </c:if>
+                                                                        <c:if test="${AFCUploadReportJudge}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/InsAfcCertification?appId=<iais:mask name='afcCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
+                                                                        </c:if>
+                                                                        <c:if test="${ApplicantUploadCertReportJudge}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/InsApplicantCertification?appId=<iais:mask name='applicantCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
+                                                                        </c:if>
+
                                                                         </select>
                                                                     </c:otherwise>
                                                                 </c:choose>

@@ -61,7 +61,7 @@ public class InspectionFollowUpItemsDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, "Applicant send follow-up items");
     }
 
-    public void init(BaseProcessClass bpc) {
+    public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FollowUpViewDto dto = getDisplayDto(request);
         if (!StringUtils.hasLength(dto.getAppId())) {
