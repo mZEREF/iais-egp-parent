@@ -111,18 +111,3 @@
         </form>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX");
-    });
-
-    function clearFlagValueFEFile() {
-        $("#reloadIndex").val(-1);
-        $("#fileAppendId").val("");
-        $("#uploadFormId").val("");
-        $('.itemErrorTableDiv').hide();
-        dismissWaiting();
-    }
-
-</script>
