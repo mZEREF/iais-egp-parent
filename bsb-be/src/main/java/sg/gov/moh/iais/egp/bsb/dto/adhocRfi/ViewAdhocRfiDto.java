@@ -41,7 +41,7 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private String suppliedInformation;
 
-    private Application application;
+    private ApplicationDto application;
 
     private List<DocRecordInfo> applicationDocDtos;
 

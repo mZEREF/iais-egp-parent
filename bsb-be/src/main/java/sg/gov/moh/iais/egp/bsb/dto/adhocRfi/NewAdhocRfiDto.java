@@ -38,6 +38,6 @@ public class NewAdhocRfiDto implements Serializable {
 
     private String suppliedInformation;
 
-    private Application application;
+    private ApplicationDto application;
 
 }
