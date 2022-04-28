@@ -145,8 +145,6 @@ public class BsbAdhocRfiDelegator {
         if(isValidate.equals("N")){
             return;
         }
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        viewAdhocRfiDto.setAuditTrailDto(auditTrailDto);
         adhocRfiClient.saveAdhocRfiView(viewAdhocRfiDto);
     }
     /**
@@ -220,16 +218,8 @@ public class BsbAdhocRfiDelegator {
             newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
         newAdhocRfiDto.setStatus(status);
-        if(info ==null){
-            newAdhocRfiDto.setInformationRequired(null);
-        }else {
-            newAdhocRfiDto.setInformationRequired(info.equals("1"));
-        }
-        if(doc ==null){
-            newAdhocRfiDto.setSupportingDocRequired(null);
-        }else {
-            newAdhocRfiDto.setSupportingDocRequired(doc.equals("1"));
-        }
+        newAdhocRfiDto.setInformationRequired("1".equals(info));
+        newAdhocRfiDto.setSupportingDocRequired("1".equals(doc));
         newAdhocRfiDto.setTitleOfInformationRequired(information);
         newAdhocRfiDto.setTitleOfSupportingDocRequired(documentsTitle);
         validateData(newAdhocRfiDto,request);
@@ -239,8 +229,6 @@ public class BsbAdhocRfiDelegator {
     public void doGreateRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NewAdhocRfiDto newAdhocRfiDto = (NewAdhocRfiDto) ParamUtil.getSessionAttr(request,"newReqInfo");
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        newAdhocRfiDto.setAuditTrailDto(auditTrailDto);
         adhocRfiClient.saveAdhocRfi(newAdhocRfiDto);
         ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("RFI_ACK001"));
     }
