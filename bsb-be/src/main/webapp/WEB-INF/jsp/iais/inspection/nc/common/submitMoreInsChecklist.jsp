@@ -23,25 +23,7 @@
         SOP.Crud.cfxSubmit("mainForm", "saveDraft");
     }
 
-    $(document).ready(function (){
-        readOnlyAllForCheckList('${applicationViewDto.applicationDto.status}');
-        var beforeFinishCheck = ${(inspectionNcCheckListDelegator_before_finish_check_list == null || inspectionNcCheckListDelegator_before_finish_check_list == "0") ? '0' : '1'};
-        if( beforeFinishCheck == '1'){
-            readOnlyAllForCheckListOnly();
-        }
-    });
 
-    function readOnlyAllForCheckList(status) {
-        if (status == 'APST032') {
-            readOnlyAllForCheckListOnly();
-        }
-    }
-    function readOnlyAllForCheckListOnly() {
-        $("#checkLsitItemArea textarea").attr('readonly','readonly');
-        $("#checkLsitItemArea textarea").attr('Enabled',false);
-        $("#checkLsitItemArea input[type='checkbox']").attr("disabled",true);
-        $("#checkLsitItemArea  input[type='radio']").attr("disabled",true);
-    }
 
 
     function showCheckBox(str,indexIns){

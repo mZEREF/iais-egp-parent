@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -58,6 +59,7 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
+import sg.gov.moh.iais.egp.bsb.validation.CheckListCommonValidate;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -180,7 +182,7 @@ public class InspectionDODelegator {
             inspectionChecklistDto=new InspectionChecklistDto();
             inspectionChecklistDto.setApplicationId(appId);
             inspectionChecklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            inspectionChecklistDto.setUserId(loginContext.getLoginId());
+            inspectionChecklistDto.setUserId(loginContext.getUserId());
             inspectionChecklistDto.setVersion(1);
             inspectionChecklistDto.setChkLstConfigId(dto.getId());
 
@@ -199,7 +201,7 @@ public class InspectionDODelegator {
                         Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
                         for (ChklstItemAnswerDto answer: answerDtos
                         ) {
-                            if(answer.getSnNo()!=null&&answer.getSnNo().equals(prefix)){
+                            if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())){
                                 AnswerForDifDto answerForDifDto=new AnswerForDifDto();
                                 answerForDifDto.setAnswer(answer.getAnswer());
                                 answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
@@ -312,6 +314,9 @@ public class InspectionDODelegator {
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionFillCheckListDto comDto = serListDto.getFdtoList().get(0);
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
+        String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+        boolean isError = true;
+        Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
         if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
@@ -320,7 +325,6 @@ public class InspectionDODelegator {
                 for(AnswerForDifDto answerForDifDto : answerForDifDtos){
                     if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
                         ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
-                        answerDto.setSnNo(inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId());
                         answerDto.setAnswer(answerForDifDto.getAnswer());
                         answerDto.setFindings(answerForDifDto.getNcs());
                         answerDto.setActionRequired(answerForDifDto.getRemark());
@@ -334,6 +338,14 @@ public class InspectionDODelegator {
                     }
                 }
             }
+
+            if(!IaisCommonUtils.isEmpty(checkList)){
+
+                for(InspectionCheckQuestionDto temp:checkList){
+                    isError = CheckListCommonValidate.verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+userId,errMap);
+                }
+
+            }
         }
 
 
@@ -342,7 +354,29 @@ public class InspectionDODelegator {
 
 
         checklistDto.setAnswer(answerDtos);
-        inspectionClient.saveCombinedChkList(checklistDto);
+        if("next".equalsIgnoreCase(doSubmitAction)) {
+
+            if (!errMap.isEmpty()) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                serListDto.setCheckListTab("chkList");
+                ParamUtil.setRequestAttr(request, "nowTabIn",  userId);
+                String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
+                ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            } else {
+                serListDto.setCheckListTab("chkList");
+
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                inspectionClient.saveCombinedChkList(checklistDto);
+            }
+//            setChangeTabForChecklist(request);
+        }else {
+            serListDto.setCheckListTab("chkList");
+
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+
+        ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
         // do nothing now
     }
 

@@ -81,13 +81,13 @@
                     <td>
                         <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcsIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcsIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.ncs}"/></textarea>
                         <br/>
-                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}DraftcomFindNcs" var = "err"/>
+                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}FindNcs" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td>
                         <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremarkIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.remark}"/></textarea>
                         <br/>
-                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}DraftcomRemark" var = "err"/>
+                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}Remark" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td class="text-center">
@@ -98,7 +98,7 @@
                         </div>
                     </td>
                     <td>
-                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}Draftcom" var = "err"/>
+                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                 </tr>
