@@ -27,7 +27,7 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private LocalDate startDate;
 
-    private String approveNo;
+    private String approvalNo;
 
     private String status;
 
