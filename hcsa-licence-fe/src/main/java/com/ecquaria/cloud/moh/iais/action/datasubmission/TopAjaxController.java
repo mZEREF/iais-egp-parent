@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -76,6 +79,22 @@ public class TopAjaxController {
             }*/
 
             result.put("selection", patientInformation);
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/patient-age")
+    public Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
+        String birthDate = (String) ParamUtil.getSessionAttr(request, "birthDate");
+        String counsellingGiven = ParamUtil.getString(request, "counsellingGiven");
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
+        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
+            return result;
+        }
+        int age = -Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
+        if(age<=16 || age>=65){
+            result.put("showAge", Boolean.TRUE);
         }
         return result;
     }

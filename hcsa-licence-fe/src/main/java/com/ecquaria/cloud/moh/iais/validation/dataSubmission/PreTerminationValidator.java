@@ -69,7 +69,7 @@ public class PreTerminationValidator implements CustomizeValidator {
         if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
                 if("TOPPCR001".equals(preTerminationDto.getCounsellingResult()) && preTerminationDto.getCounsellingGiven() == true){
-                    if ("GAZAREA001".equals(preTerminationDto.getPatientAppointment())) {
+                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                         if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
                             errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
                         }

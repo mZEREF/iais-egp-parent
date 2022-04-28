@@ -9,8 +9,8 @@ $(document).ready(function() {
             $tarSel.removeClass("complete");
         }
     }
-    /*// rfc
-    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);*/
+    // rfc
+    showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
 
     $('#nav-tabs-ul a').on('click', function() {
         var $target = $(this);
@@ -141,5 +141,17 @@ function printData() {
             printflag = '';
         }
         return {declaration: declaration, printflag: printflag};
+    }
+
+    function showPopCommon(controlId,showPopId,val){
+        if($(controlId).length == 0){
+            controlId = '#'+controlId;
+        }
+        if($(showPopId).length == 0){
+            showPopId = '#' + showPopId;
+        }
+        if($(controlId).val() == val){
+            $(showPopId).modal('show');
+        }
     }
 }

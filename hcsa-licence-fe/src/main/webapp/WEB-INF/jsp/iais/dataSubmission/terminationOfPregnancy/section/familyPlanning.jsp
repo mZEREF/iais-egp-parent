@@ -151,25 +151,6 @@
     </div>
 </div>
 <input type="hidden" value="${showPatientAgePT}" id="showPatientAgePts" >
-<div class="modal fade" id="showPatientAgePT" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body" >
-                <div class="row">
-                    <div class="col-md-12">
-            <span style="font-size: 2rem;" id="prsErrorMsg">
-              <%--<iais:message key="GENERAL_ERR0057" escape="false" />--%>
-                <p>The patient age to the date of counselling is within the range of <=16 or >=65. Please check that the details have been accurately entered.</p>
-            </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function() {
         otherContraMethod();

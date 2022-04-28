@@ -330,7 +330,7 @@ public class TopTerminationOfPregnancyDelegator {
                     errMap.putAll(result4.retrieveAll());
                 }
             } else {
-                if ("GAZAREA001".equals(preTerminationDto.getPatientAppointment())) {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                     if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
                         if (result4 != null) {
@@ -352,7 +352,7 @@ public class TopTerminationOfPregnancyDelegator {
                     errMap.putAll(result5.retrieveAll());
                 }
             } else {
-                if ("GAZAREA001".equals(preTerminationDto.getPatientAppointment())) {
+                if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                     if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                         ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
                         if (result5 != null) {
@@ -453,7 +453,7 @@ public class TopTerminationOfPregnancyDelegator {
                         errMap.putAll(result.retrieveAll());
                     }
                 } else {
-                    if ("GAZAREA001".equals(preTerminationDto.getPatientAppointment())) {
+                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                         if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                             ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
                             if (result != null) {
@@ -500,7 +500,7 @@ public class TopTerminationOfPregnancyDelegator {
                         errMap.putAll(result.retrieveAll());
                     }
                 } else {
-                    if ("GAZAREA001".equals(preTerminationDto.getPatientAppointment())) {
+                    if ("Yes".equals(preTerminationDto.getPatientAppointment())) {
                         if (!"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP002".equals(preTerminationDto.getSecCounsellingResult())) {
                             ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
                             if(result !=null){
