@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -27,10 +28,10 @@ import sg.gov.moh.iais.egp.bsb.client.HcsaChecklistClient;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
+import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +41,15 @@ import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_ACTION_FLAG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INSPECTION_CONFIG;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
 
 @Slf4j
 @Delegator(value = "MohBsbAdhocChecklistDelegator")
 public class MohBsbAdhocChecklistDelegator {
     private final InspectionClient inspectionClient;
+    private final InspectionService inspectionService;
     private final HcsaChecklistClient hcsaChecklistClient;
 
     private final FilterParameter filterParameter = new FilterParameter.Builder()
@@ -57,20 +59,21 @@ public class MohBsbAdhocChecklistDelegator {
             .sortField("item_id").build();
 
     @Autowired
-    public MohBsbAdhocChecklistDelegator(InspectionClient inspectionClient, HcsaChecklistClient hcsaChecklistClient) {
+    public MohBsbAdhocChecklistDelegator(InspectionClient inspectionClient, InspectionService inspectionService, HcsaChecklistClient hcsaChecklistClient) {
         this.inspectionClient = inspectionClient;
+        this.inspectionService = inspectionService;
         this.hcsaChecklistClient = hcsaChecklistClient;
     }
 
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-//        MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_ADHOC_CHECKLIST);
+        bpc.getSession().removeAttribute(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
 
         ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.YES);
-
-        HttpSession session = request.getSession();
+        AdhocChecklistConfigDto adhocChecklistConfigDto = getAdhocChecklistConfigInSession(request);
+        ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR, CopyUtil.copyMutableObject(adhocChecklistConfigDto));
     }
 
     public void prepareDisplay(BaseProcessClass bpc) {
@@ -120,7 +123,10 @@ public class MohBsbAdhocChecklistDelegator {
     }
 
     public void cancel(BaseProcessClass bpc) {
+        AdhocChecklistConfigDto oldAdhocChecklistConfigDto = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
+        ParamUtil.setSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_LIST_ATTR, oldAdhocChecklistConfigDto);
         ParamUtil.setSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.NO);
+        bpc.getSession().removeAttribute(KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
     }
 
     public void saveAdhocItem(BaseProcessClass bpc) {
@@ -131,13 +137,15 @@ public class MohBsbAdhocChecklistDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("checklistItem", MessageUtil.getMessageDesc("CHKL_ERR047")));
         } else {
+            // start save
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             String appId = (String) ParamUtil.getSessionAttr(bpc.request, KEY_APP_ID);
             adhocConfig.setApplicationId(appId);
-            // Waiting super process save
-            // inspectionClient.saveAdhocChecklistConfig(adhocConfig);
+            AdhocChecklistConfigDto oldAdhocChecklistConfigDto = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
+            inspectionService.saveAdhocChecklistConfig(adhocConfig, oldAdhocChecklistConfigDto);
             ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, adhocConfig);
             ParamUtil.setSessionAttr(bpc.request, KEY_ADHOC_CHECKLIST_ACTION_FLAG, IaisEGPConstant.NO);
+            bpc.getSession().removeAttribute(KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
         }
     }
 
@@ -213,9 +221,21 @@ public class MohBsbAdhocChecklistDelegator {
     private AdhocChecklistConfigDto getAdhocChecklistConfigInSession(HttpServletRequest request) {
         AdhocChecklistConfigDto obj = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR);
         if (obj == null) {
-            obj = new AdhocChecklistConfigDto();
-            List<AdhocChecklistItemDto> allAdhocItem = IaisCommonUtils.genNewArrayList();
-            obj.setAdhocChecklistItemList(allAdhocItem);
+            String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+            if (StringUtil.isNotEmpty(appId)) {
+                obj = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+                ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, obj);
+            } else {
+                log.info("-----------application id is null-------");
+            }
+
+            if (obj == null) {
+                obj = new AdhocChecklistConfigDto();
+                List<AdhocChecklistItemDto> allAdhocItem = IaisCommonUtils.genNewArrayList();
+                obj.setAdhocChecklistItemList(allAdhocItem);
+            }
+
+            ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, obj);
             return obj;
         } else {
             return obj;

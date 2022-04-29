@@ -22,6 +22,8 @@ import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFillCheckListDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.SectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
@@ -414,15 +416,63 @@ public class InspectionService {
             List<SectionDto> sectionDtos = inspectionFillCheckListDto.getSectionDtoList();
             if(sectionDtos != null && sectionDtos.size() > 0){
                 for(SectionDto sectionDto : sectionDtos){
-                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0){
+                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0) {
                         List<ItemDto> itemDtoList = sectionDto.getItemDtoList();
-                        for(ItemDto itemDto : itemDtoList){
-                            if(itemDto.getIncqDto() != null)
+                        for (ItemDto itemDto : itemDtoList) {
+                            if (itemDto.getIncqDto() != null)
                                 itemDto.getIncqDto().setSectionNameShow(StringUtil.getFilterSpecialCharacter(itemDto.getIncqDto().getSectionNameSub()));
                         }
                     }
                 }
             }
         }
+    }
+
+    public AdhocChecklistConfigDto saveAdhocChecklistConfig(AdhocChecklistConfigDto currentAdhocChecklistConfig, AdhocChecklistConfigDto oldAdhocChecklistConfig) {
+        if (isEditAdhocCheckListConfig(currentAdhocChecklistConfig, oldAdhocChecklistConfig)) {
+            return inspectionClient.saveAdhocChecklistConfig(currentAdhocChecklistConfig).getBody();
+        }
+        return currentAdhocChecklistConfig;
+    }
+
+    /**
+     * jude AdhocCheckListConfig is change
+     *
+     * @param adhocChecklistConfigDto    current AdhocChecklistConfig
+     * @param adhocChecklistConfigDtoOld old AdhocChecklistConfig
+     * @return
+     */
+    private boolean isEditAdhocCheckListConfig(AdhocChecklistConfigDto adhocChecklistConfigDto, AdhocChecklistConfigDto adhocChecklistConfigDtoOld) {
+        if (adhocChecklistConfigDto == null && adhocChecklistConfigDtoOld == null) {
+            return false;
+        }
+        if (adhocChecklistConfigDto == null || adhocChecklistConfigDtoOld == null) {
+            return true;
+        }
+        List<AdhocChecklistItemDto> allAdhocItem = adhocChecklistConfigDto.getAdhocChecklistItemList();
+        List<AdhocChecklistItemDto> oldAdhocItems = adhocChecklistConfigDtoOld.getAdhocChecklistItemList();
+        if (IaisCommonUtils.isEmpty(allAdhocItem) && IaisCommonUtils.isEmpty(oldAdhocItems)) {
+            return false;
+        }
+        if (IaisCommonUtils.isEmpty(allAdhocItem) || IaisCommonUtils.isEmpty(oldAdhocItems)) {
+            return true;
+        }
+
+        if (allAdhocItem.size() != oldAdhocItems.size()) {
+            return true;
+        }
+        for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem) {
+            boolean haveAhoc = false;
+            for (AdhocChecklistItemDto adhocChecklistItemDtoOld : oldAdhocItems) {
+                if (adhocChecklistItemDtoOld.getId().equalsIgnoreCase(adhocChecklistItemDto.getId())) {
+                    haveAhoc = true;
+                    break;
+                }
+            }
+            if (!haveAhoc) {
+                return true;
+            }
+        }
+        return false;
     }
 }
