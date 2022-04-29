@@ -68,7 +68,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -83,11 +82,11 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -139,7 +138,7 @@ public class LicenceApproveBatchjob {
     @Autowired
     private EmailClient emailClient;
     @Autowired
-    private AcraUenBeClient acraUenBeClient;
+    private GenerateIdClient generateIdClient;
     @Autowired
     FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
@@ -223,9 +222,12 @@ public class LicenceApproveBatchjob {
                         //add the originLicenceLicBaseSpecifiedCorrelationDtos
                         setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
 
+                        //
+                        String eventBusSubmissionId = generateIdClient.getSeqId().getEntity();
                         EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
                         String evenRefNum = String.valueOf(System.currentTimeMillis());
                         eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
+                        eventBusLicenceGroupDtos.setEventBusSubmissionId(eventBusSubmissionId);
                         eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
                         eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
 
@@ -237,6 +239,7 @@ public class LicenceApproveBatchjob {
                         //
                         EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
                         eventApplicationGroupDto.setEventRefNo(evenRefNum);
+                        eventApplicationGroupDto.setEventBusSubmissionId(eventBusSubmissionId);
                         eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
                         eventApplicationGroupDto.setApplicationGroupDtos(updateStatusToGenerated(success));
                         eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
