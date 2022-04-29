@@ -335,7 +335,16 @@ public class MohDsActionDelegator {
             topSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             topSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
             DsConfigHelper.clearTopSession(request);
+            DataSubmissionDto dataSubmissionDto = topSuper.getDataSubmissionDto();
+            if(dataSubmissionDto ==null){
+                dataSubmissionDto = new DataSubmissionDto();
+            }
+            if(dataSubmissionDto.getStatus().equals(DataSubmissionConsts.DS_STATUS_AMENDED)){
+                dataSubmissionDto.setAmendReason(null);
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
         }
+
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
     }

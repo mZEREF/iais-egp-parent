@@ -32,6 +32,7 @@
     <%@include file="../terminationOfPregnancy/section/previewPreTermination.jsp" %>
     <%@include file="../terminationOfPregnancy/section/previewPresentTermination.jsp" %>
     <%@include file="../terminationOfPregnancy/section/previewPostTermination.jsp" %>
+    <%@include file="../terminationOfPregnancy/common/topDsAmendment.jsp" %>
     <%@include file="../terminationOfPregnancy/common/topDeclaration.jsp" %>
 <%--
 <script>
