@@ -56,7 +56,7 @@ public class InsChklItemExcelDto implements Serializable {
 
     @ExcelProperty(
             cellIndex = 6,
-            cellName = "Follow-Up Item"
+            cellName = "Follow-up Item"
     )
     private String followupItem;
 
