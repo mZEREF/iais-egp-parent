@@ -32,9 +32,6 @@ public interface InspectionClient {
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/checklist/common-config", produces = MediaType.APPLICATION_JSON_VALUE)
-    ChecklistConfigDto getMaxVersionCommonConfig();
-
     @GetMapping("/inspection/report/{appId}")
     InsCommentReportDataDto retrieveInspectionReport(@PathVariable("appId") String appId);
 

@@ -82,8 +82,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.FI
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ACTIONS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_APP_ID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CHKL_CONFIGS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_COMMON_SELF_ASSESSMENT_CONFIG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CHKL_CONFIG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_CURRENT_ACTION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_DATA_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.KEY_EDITABLE;
@@ -121,7 +120,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         session.removeAttribute(KEY_CURRENT_ACTION);
         session.removeAttribute(KEY_EDITABLE);
         session.removeAttribute(KEY_SELF_ASSESSMENT_CONFIG);
-        session.removeAttribute(KEY_COMMON_SELF_ASSESSMENT_CONFIG);
         session.removeAttribute(KEY_SELF_ASSESSMENT_CHK_LST);
         session.removeAttribute(KEY_SELF_ASSESSMENT_ANSWER_MAP);
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
@@ -230,25 +228,16 @@ public class BsbSubmitSelfAssessmentDelegator {
             answerRecordDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-            ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
             answerRecordDto.setChkLstConfigId(configDto.getId());
-            answerRecordDto.setCommonChkLstConfigId(commonConfigDto.getId());
 
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG, configDto);
-            ParamUtil.setSessionAttr(request, KEY_COMMON_SELF_ASSESSMENT_CONFIG, commonConfigDto);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
         }
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG);
-        ChecklistConfigDto commonConfigDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_COMMON_SELF_ASSESSMENT_CONFIG);
         if (configDto == null) {
             String configId = answerRecordDto.getChkLstConfigId();
             configDto = inspectionClient.getChecklistConfigById(configId);
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG, configDto);
-        }
-        if (commonConfigDto == null) {
-            String commonConfigId = answerRecordDto.getCommonChkLstConfigId();
-            commonConfigDto = inspectionClient.getChecklistConfigById(commonConfigId);
-            ParamUtil.setSessionAttr(request, KEY_COMMON_SELF_ASSESSMENT_CONFIG, commonConfigDto);
         }
         Map<String, ChklstItemAnswerDto> answerMap = (Map<String, ChklstItemAnswerDto>) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP);
         if (answerMap == null) {
@@ -268,16 +257,13 @@ public class BsbSubmitSelfAssessmentDelegator {
                 for (ChecklistSectionDto sectionDto : configDto.getSectionDtos()) {
                     amt = amt + sectionDto.getChecklistItemDtos().size();
                 }
-                for (ChecklistSectionDto sectionDto : commonConfigDto.getSectionDtos()) {
-                    amt = amt + sectionDto.getChecklistItemDtos().size();
-                }
                 answerMap = Maps.newHashMapWithExpectedSize(amt);
             }
             ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, ChklstItemAnswerDto>) answerMap);
         }
 
         // set DTOs needed by checklist page
-        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIGS, Arrays.asList(commonConfigDto, configDto));
+        ParamUtil.setRequestAttr(request, KEY_CHKL_CONFIG, configDto);
         ParamUtil.setRequestAttr(request, KEY_ANSWER_MAP, answerMap);
     }
 
@@ -289,24 +275,22 @@ public class BsbSubmitSelfAssessmentDelegator {
         }
         /* For each sectionId--itemId, retrieve value, put into the answerMap.
          * Check if all questions are answered, if not, route back. */
-        ChecklistConfigDto commonConfigDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_COMMON_SELF_ASSESSMENT_CONFIG);
-        ChecklistConfigDto bsbConfigDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG);
+        ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CONFIG);
         Map<String, ChklstItemAnswerDto> answerMap = (Map<String, ChklstItemAnswerDto>) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP);
         boolean allFilled = true;
-        for (ChecklistConfigDto configDto : Arrays.asList(commonConfigDto, bsbConfigDto)) {
-            for (ChecklistSectionDto sectionDto : configDto.getSectionDtos()) {
-                for (ChecklistItemDto itemDto : sectionDto.getChecklistItemDtos()) {
-                    String key = configDto.getId() + KEY_SEPARATOR + sectionDto.getId() + KEY_SEPARATOR + itemDto.getItemId();
-                    String remarksKey = configDto.getId() + KEY_SEPARATOR + sectionDto.getId() + KEY_SEPARATOR + itemDto.getItemId() + KEY_REMARKS;
-                    String value = ParamUtil.getString(request, key);
-                    String remarks = ParamUtil.getString(request, remarksKey);
-                    answerMap.put(key, new ChklstItemAnswerDto(configDto.getId(), sectionDto.getId(), itemDto.getItemId(), value, remarks));
-                    if (!ChecklistConstants.VALID_ANSWERS.contains(value)) {
-                        allFilled = false;
-                    }
+        for (ChecklistSectionDto sectionDto : configDto.getSectionDtos()) {
+            for (ChecklistItemDto itemDto : sectionDto.getChecklistItemDtos()) {
+                String key = configDto.getId() + KEY_SEPARATOR + sectionDto.getId() + KEY_SEPARATOR + itemDto.getItemId();
+                String remarksKey = configDto.getId() + KEY_SEPARATOR + sectionDto.getId() + KEY_SEPARATOR + itemDto.getItemId() + KEY_REMARKS;
+                String value = ParamUtil.getString(request, key);
+                String remarks = ParamUtil.getString(request, remarksKey);
+                answerMap.put(key, new ChklstItemAnswerDto(configDto.getId(), sectionDto.getId(), itemDto.getItemId(), value, remarks));
+                if (!ChecklistConstants.VALID_ANSWERS.contains(value)) {
+                    allFilled = false;
                 }
             }
         }
+
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, ChklstItemAnswerDto>) answerMap);
         ParamUtil.setRequestAttr(request, KEY_VALID, allFilled);
         if (!allFilled) {
