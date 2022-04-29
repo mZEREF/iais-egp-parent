@@ -59,10 +59,10 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
             }
         } else if (!StringUtil.isEmpty(answerDto.getFollowupItem())) {
             if (!StringUtil.isEmpty(answerDto.getObserveFollowup())) {
-                errorMap.put("observeFollowup", "The feild must be empty when the Follow-Up Item is Yes or N/A.");
+                errorMap.put("observeFollowup", "The field must be empty when the Follow-Up Item is Yes or N/A.");
             }
             if (!StringUtil.isEmpty(answerDto.getFollowupAction())) {
-                errorMap.put("followupAction", "The feild must be empty when the Follow-Up Item is Yes or N/A.");
+                errorMap.put("followupAction", "The field must be empty when the Follow-Up Item is Yes or N/A.");
             }
         }
         return errorMap;
