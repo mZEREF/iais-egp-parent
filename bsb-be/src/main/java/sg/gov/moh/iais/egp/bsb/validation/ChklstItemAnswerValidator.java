@@ -50,12 +50,19 @@ public class ChklstItemAnswerValidator implements CustomizeValidator {
                 errorMap.put("rectified", "Invalid value.");
             }
         }
-        if (ChecklistConstants.ANSWER_NO.equals(answerDto.getFollowupItem())) {
+        if (ChecklistConstants.ANSWER_YES.equals(answerDto.getFollowupItem())) {
             if (StringUtil.isEmpty(answerDto.getObserveFollowup())) {
                 errorMap.put("observeFollowup", messageCommon);
             }
             if (StringUtil.isEmpty(answerDto.getFollowupAction())) {
                 errorMap.put("followupAction", messageCommon);
+            }
+        } else if (!StringUtil.isEmpty(answerDto.getFollowupItem())) {
+            if (!StringUtil.isEmpty(answerDto.getObserveFollowup())) {
+                errorMap.put("observeFollowup", "The feild must be empty when the Follow-Up Item is Yes or N/A.");
+            }
+            if (!StringUtil.isEmpty(answerDto.getFollowupAction())) {
+                errorMap.put("followupAction", "The feild must be empty when the Follow-Up Item is Yes or N/A.");
             }
         }
         return errorMap;
