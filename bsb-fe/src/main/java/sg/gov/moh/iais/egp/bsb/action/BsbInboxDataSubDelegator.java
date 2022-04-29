@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDataSubResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDataSubSearchDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,10 +38,12 @@ public class BsbInboxDataSubDelegator {
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final BsbInboxClient inboxClient;
+    private final BsbInboxService inboxService;
 
     @Autowired
-    public BsbInboxDataSubDelegator(BsbInboxClient inboxClient) {
+    public BsbInboxDataSubDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
+        this.inboxService = inboxService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -58,11 +61,7 @@ public class BsbInboxDataSubDelegator {
         ParamUtil.setSessionAttr(request, KEY_INBOX_DATA_SUB_SEARCH_DTO, searchDto);
 
         // call API to get dashboard data
-        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
+        inboxService.retrieveDashboardData(request);
 
         // call API to get searched data
         ResponseDto<InboxDataSubResultDto> resultDto = inboxClient.getInboxDataSubmission(searchDto);

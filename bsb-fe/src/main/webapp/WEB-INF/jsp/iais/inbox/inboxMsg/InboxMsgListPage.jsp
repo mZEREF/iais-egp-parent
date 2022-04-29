@@ -42,14 +42,14 @@
 
                                 <%--@elvariable id="inboxMsgSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto"--%>
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label class="col-md-3 control-label" for="searchMsgType" style="margin-top:5%;">Type</label>
                                         <div class="col-md-8">
                                             <iais:select name="searchMsgType" id="searchMsgType" cssClass="msgTypeSearchDropDown" options="msgTypeOps" value="${inboxMsgSearchDto.searchMsgType}" firstOption="Please Select"/>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
-                                        <label class="col-md-5 control-label" for="searchAppType" style="margin-top:3%;">Application Type</label>
+                                    <div class="col-md-4">
+                                        <label class="col-md-4 control-label" for="searchAppType" style="margin-top:3%;">Application Type</label>
                                         <div class="col-md-7">
                                             <iais:select name="searchAppType" cssClass="searchAppTypeDrop" id="searchAppType" options="msgAppTypeOps" value="${inboxMsgSearchDto.searchAppType}" firstOption="Please Select"/>
                                         </div>
@@ -73,6 +73,22 @@
                                         </div>
                                     </div>
                                 </div>
+<%--                                <div class="row">--%>
+<%--                                    <div class="col-xs-12 col-sm-6">--%>
+<%--                                        <label class="col-xs-12 col-sm-4 control-label" style="padding-left: 0">Date From:</label>--%>
+<%--                                        <div class="col-xs-12 col-sm-8">--%>
+<%--                                            <iais:datePicker id="searchMsgDateFrom" name="searchMsgDateFrom" value="${inboxMsgSearchDto.searchMsgDateFrom}"/>--%>
+<%--                                        </div>--%>
+<%--                                        <span data-err-ind="searchMsgDateFrom" class="error-msg"></span>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-xs-12 col-sm-6">--%>
+<%--                                        <label class="col-xs-2 col-sm-2 control-label" style="padding-left: 0">Date To:</label>--%>
+<%--                                        <div class="col-xs-12 col-sm-8">--%>
+<%--                                            <iais:datePicker id="searchMsgDateTo" name="searchMsgDateTo" value="${inboxMsgSearchDto.searchMsgDateTo}"/>--%>
+<%--                                        </div>--%>
+<%--                                        <span data-err-ind="searchMsgDateTo" class="error-msg"></span>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
                                 <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
                                 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                             </div>

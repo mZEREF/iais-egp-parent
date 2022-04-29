@@ -6,10 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.constant.OptionsConstants;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxFacPageInfoResultInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxFacSearchDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -31,9 +33,11 @@ public class BsbInboxFacilityDelegator {
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final BsbInboxClient inboxClient;
+    private final BsbInboxService inboxService;
 
-    public BsbInboxFacilityDelegator(BsbInboxClient inboxClient) {
+    public BsbInboxFacilityDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
+        this.inboxService = inboxService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -51,10 +55,16 @@ public class BsbInboxFacilityDelegator {
 
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        inboxService.retrieveDashboardData(request);
         InboxFacSearchDto searchDto = getSearchDto(request);
+        String facilityStatus = request.getParameter("facilityStatus");
+        if(StringUtils.hasLength(facilityStatus)){
+            searchDto.setFacilityStatus(facilityStatus);
+        }
         InboxFacPageInfoResultInfo pageInfoResultInfo =  inboxClient.searchInboxFacility(searchDto).getEntity();
         ParamUtil.setRequestAttr(request,KEY_INBOX_FAC_PAGE_INFO,pageInfoResultInfo.getPageInfo());
         ParamUtil.setRequestAttr(request,KEY_INBOX_FAC_RESULT,pageInfoResultInfo.getFacResultDtoList());
+        ParamUtil.setSessionAttr(request,KEY_INBOX_FAC_SEARCH_DTO,searchDto);
     }
 
     public void search(BaseProcessClass bpc){
