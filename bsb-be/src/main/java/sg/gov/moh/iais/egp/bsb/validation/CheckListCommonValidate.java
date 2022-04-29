@@ -26,7 +26,7 @@ public class CheckListCommonValidate {
                         isError = false;
                     }
                 }
-            }else if("No".equalsIgnoreCase(answer)){
+            }else if("NO".equalsIgnoreCase(answer)){
                 boolean needShowAllErrMsg = true;
                 if(StringUtil.isEmpty(remark)){
                     errMap.put(prefix+"Remark",messageCommon);

@@ -37,7 +37,7 @@
                                                             <td>        <div class="form-check">${answerForDifDto.ncs}</div></td>
                                                             <td> <div class="form-check">${answerForDifDto.remark}</div></td>
                                                             <td class="text-center">
-                                                                <c:if test="${'No'== answerForDifDto.answer}">
+                                                                <c:if test="${'NO'== answerForDifDto.answer}">
                                                                     <div class="form-check">
                                                                 <input  disabled type="checkbox" ${answerForDifDto.isRec == '1' ? 'checked' : null} />
                                                                     </div>

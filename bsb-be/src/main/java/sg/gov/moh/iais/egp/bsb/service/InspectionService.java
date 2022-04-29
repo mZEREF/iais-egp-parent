@@ -346,7 +346,7 @@ public class InspectionService {
         return answerForDifDtoCopys;
     }
     private Boolean isSameByStrings(String s1,String s2,String answer){
-        if("No".equalsIgnoreCase(answer)){
+        if("NO".equalsIgnoreCase(answer)){
             if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
                 return Boolean.FALSE;
             }
@@ -395,7 +395,7 @@ public class InspectionService {
                 for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
                     totalNum++;
                     if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                        if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                        if( "NO".equalsIgnoreCase(cqDto.getChkanswer())){
                             if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
                                 ncNum++;
                             }

@@ -288,7 +288,7 @@ public class InspectionDODelegator {
                         answerForDifDto.setNcs(ncs);
                         answerForDifDto.setAnswer(answer);
                         answerForDifDto.setRemark(remark);
-                        if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
+                        if("NO".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
                             answerForDifDto.setIsRec("1");
                         }else {
                             answerForDifDto.setIsRec("0");
