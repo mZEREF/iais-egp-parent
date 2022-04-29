@@ -8,12 +8,16 @@
                                                 <tr>
                                                     <th scope="col" >No.</th>
                                                     <th scope="col" >Item Description</th>
-                                                    <th scope="col" width="30%">Item</th>
+                                                    <th scope="col" >Item</th>
                                                     <th scope="col" >Inspector</th>
-                                                    <th scope="col" >Yes/No/NA</th>
-                                                    <th scope="col" >Findings/NCs</th>
+                                                    <th scope="col" >Compliance</th>
+                                                    <th scope="col" >Findings/Non-Compliance</th>
                                                     <th scope="col" >Actions Required</th>
                                                     <th scope="col" >Rectified</th>
+                                                    <th scope="col" class="text-center">Follow-Up Item</th>
+                                                    <th scope="col" >Observations for Follow-up</th>
+                                                    <th scope="col" >Action Required</th>
+                                                    <th scope="col" class="text-center">Due Date</th>
                                                     <th scope="col" >Deconflict</th>
                                                     <th scope="col" ></th>
                                                 </tr>
@@ -39,6 +43,10 @@
                                                                     </div>
                                                                 </c:if>
                                                             </td>
+                                                            <td>        <div class="form-check">${answerForDifDto.followupItem}</div></td>
+                                                            <td>        <div class="form-check">${answerForDifDto.observeFollowup}</div></td>
+                                                            <td> <div class="form-check">${answerForDifDto.followupAction}</div></td>
+                                                            <td> <div class="form-check">${answerForDifDto.dueDate}</div></td>
                                                             <td class="text-center">
                                                                 <c:if test="${!item.incqDto.sameAnswer}">
                                                                     <div class="form-check">

@@ -20,4 +20,9 @@ public class AnswerForDifDto  implements Serializable {
     private String isRec;
     private String ncs;
     private boolean sameAnswer;
+    private String actionRequired;
+    private String followupItem;
+    private String observeFollowup;
+    private String followupAction;
+    private String dueDate;
 }
