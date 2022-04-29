@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
@@ -100,6 +101,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private DsLicenceService dsLicenceService;
+    @Autowired
+    private LicenseeService licenseeService;
 
     @Override
     public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
@@ -819,7 +822,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG).getEntity();
             dataSubmissionDraftDtos.stream().forEach( dataSubmissionDraftDto -> {
                  if( StringUtil.isNotEmpty( dataSubmissionDraftDto.getLicenseeId())){
-                     Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("draftNumber","date"),Arrays.asList(dataSubmissionDraftDto.getDraftNo(),expDateString));
+                     Map<String,Object> map = MasterCodeUtil.listKeyAndValueMap(Arrays.asList("ApplicantName","draftNumber","date","MOH_AGENCY_NAME"),Arrays.asList(licenseeService.getLicenseeDtoById(dataSubmissionDraftDto.getLicenseeId()).getName(),dataSubmissionDraftDto.getDraftNo(),expDateString,AppConsts.MOH_AGENCY_NAME));
                      try {
                          EmailParam emailParam = new EmailParam();
                          emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DRAFT_REMIND_MSG);
