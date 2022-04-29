@@ -397,7 +397,7 @@ public class InspectionDODelegator {
         HttpServletRequest request = bpc.request;
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionFindings(appId);
+        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionCombineCheckList(appId);
         String route;
         if (validationResultDto.isPass() || (StringUtils.hasLength(actionValue) && "noValidate".equals(actionValue))) {
             String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);

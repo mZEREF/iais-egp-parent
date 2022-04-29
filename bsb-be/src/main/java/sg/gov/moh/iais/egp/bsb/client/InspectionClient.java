@@ -75,8 +75,8 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/outcome", consumes = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto saveInspectionOutcome(@RequestBody InspectionOutcomeDto outcomeDto);
 
-    @PostMapping(value = "/inspection/actual/validate/submit-findings", produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateActualInspectionFindings(@RequestParam("appId") String appId);
+    @PostMapping(value = "/inspection/actual/validate/submit-combine-chk-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionCombineCheckList(@RequestParam("appId") String appId);
 
     @PostMapping(value = "/inspection/actual/process/to-report")
     void submitInspectionFindingChangeStatusToReport(@RequestParam("appId") String appId,
@@ -224,5 +224,4 @@ public interface InspectionClient {
 
     @GetMapping(value = "/inspection/chkListAnswerOfficer/{userId}/{applicationid}")
     ResponseEntity<InspectionChecklistDto> getOfficerChkList(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
-
 }
