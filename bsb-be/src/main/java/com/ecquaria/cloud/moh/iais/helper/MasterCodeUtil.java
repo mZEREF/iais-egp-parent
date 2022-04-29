@@ -138,15 +138,12 @@ public final class MasterCodeUtil {
 
     //FacilityInfo
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
-    public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
     //AO Processing Decision
     public static final String CATE_ID_BSB_PROCESSING_DECISION = "3AF18C9A-9C45-4C59-96D4-419847F51CA7";
-    public static final String CATE_ID_BSB_REASON_TYPE = "FF506BE0-75EF-EB11-8B4D-000C293F0C91";
 
     //process
     public static final String CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION = "CCF9305C-34A5-4BBC-9DD0-30E3557A9B08";
-    public static final String CATE_ID_BSB_SELECTED_APPROVED_FACILITY_CERTIFIER = "17996E55-AA7A-4642-8E89-79A051126138";
     public static final String CATE_ID_BSB_AO_SCREENING_PROCESSING_DECISION = "21DAC692-DFEF-4301-8736-1A3473D55BC2";
     public static final String CATE_ID_BSB_HM_SCREENING_PROCESSING_DECISION = "89A6D6F1-100F-4C4E-B0FB-3FD874435C0B";
     public static final String CATE_ID_BSB_DO_PROCESSING_PROCESSING_DECISION = "0B90D53E-212E-44F5-8C37-8FF4079163DA";
@@ -156,12 +153,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_SCHEDULE_TYPE                = "D0B94AC3-1FA4-4087-AFCC-C82622A77B80";
     public static final String CATE_ID_BSB_NATURE_OF_TTE_SAMPLE         = "0C3D0BC3-E2A5-4BAE-B0F5-8D5BC4231B17";
     public static final String CATE_ID_BSB_MODE_OF_PROCUREMENT          = "F68EC8C9-EA59-48A7-8F9F-88E927FDD3DA";
-    public static final String CATE_ID_BSB_COUNTRY                      = "AF33EFBD-ED2E-41CD-97E1-400829723635";
 
     //Audit
-    public static final String CATE_ID_BSB_CHANGE_DATE_DO               = "FF506BE2-73EF-EB12-8B7D-000C293F0C92";
-    public static final String CATE_ID_BSB_CHANGE_DATE_AO               = "FF506BE2-73EF-EB12-8B7D-000C293F0C51";
-    public static final String CATE_ID_BSB_SCENARIO_CATEGORY            = "FF506BE2-73EF-EB12-8B7D-000C396F0C55";
     public static final String CATE_ID_BSB_DO_AUDIT_DO                  = "FF506BE2-43EF-EB32-3B7D-000C336F0C35";
     public static final String CATE_ID_BSB_DO_AUDIT_AO                  = "FF506BE2-43EF-EB32-2B7D-000C336F0C25";
     public static final String CATE_ID_BSB_AUDIT_TYPE                   = "FF506BE2-43E2-EB32-2B7D-000C336F0C25";

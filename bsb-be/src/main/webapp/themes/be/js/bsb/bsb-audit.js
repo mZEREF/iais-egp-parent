@@ -23,7 +23,7 @@ function submitReport(id) {
 function decisionChange(obj) {
     var id = $(obj).attr("id");
     var option = $("#" + id).val();
-    if (option == "AUDTDO002" || option == "AUDTAO002") {
+    if (option == "AUDTDO002" || option == "AUDTAO002") {// DOTO  the master code is deleted
         $("#rejectReason").show();
     } else {
         $("#rejectReason").hide();
@@ -33,7 +33,7 @@ function decisionChange(obj) {
 function isHidden() {
     var option1 = $("#doDecision").val();
     var option2 = $("#aoDecision").val();
-    if (option1 == "AUDTDO002" || option2 == "AUDTAO002") {
+    if (option1 == "AUDTDO002" || option2 == "AUDTAO002") {// DOTO  the master code is deleted
         $("#rejectReason").show();
     } else {
         $("#rejectReason").hide();
@@ -114,12 +114,12 @@ $(function () {
     //AO And DO Process Audit Date
     $("#submitButton").click(function () {
         var optionValue = $("#decision").val();
-        if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") {
+        if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") {// DOTO  the master code is deleted
             showWaiting();
             $("[name='action_type']").val("doApprove");
             $("#mainForm").submit();
         }
-        if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {
+        if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {// DOTO  the master code is deleted
             showWaiting();
             $("[name='action_type']").val("doReject");
             $("#mainForm").submit();
@@ -138,6 +138,7 @@ $(function () {
         }
     })
 
+    // TODO master code has been removed, remove this js
     //DO decision self-audit
     $("#doProcessButton").click(function () {
         var optionValue = $("#decision").val();
@@ -158,6 +159,7 @@ $(function () {
         }
     })
 
+    // TODO master code has been removed, remove this js
     //AO decision self-audit
     $("#aoProcessButton").click(function () {
         var optionValue = $("#decision").val();
