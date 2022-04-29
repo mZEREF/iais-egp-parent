@@ -509,6 +509,7 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isEmpty(status)) {
             status = DataSubmissionConsts.DS_STATUS_ACTIVE;
         }
+
         cycle.setStatus(status);
         vssSuperDataSubmissionDto.setCycleDto(cycle);
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
@@ -531,7 +532,7 @@ public class VssDataSubmissionDelegator {
         }
         vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
-
+        vssSuperDataSubmissionDto.setFe(true);
         vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
         try {
              vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);

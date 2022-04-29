@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDashboardDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAfcResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalSearchDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +40,12 @@ public class BsbInboxApprovalAfcDelegator {
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private final BsbInboxClient inboxClient;
+    private final BsbInboxService inboxService;
 
     @Autowired
-    public BsbInboxApprovalAfcDelegator(BsbInboxClient inboxClient) {
+    public BsbInboxApprovalAfcDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
+        this.inboxService = inboxService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -64,11 +67,8 @@ public class BsbInboxApprovalAfcDelegator {
         ParamUtil.setSessionAttr(request, KEY_INBOX_APPROVAL_SEARCH_DTO, searchDto);
 
         // call API to get dashboard data
-        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
+
+        inboxService.retrieveDashboardData(request);
 
         ResponseDto<InboxApprovalAfcResultDto> resultDto = inboxClient.getInboxApprovalForAfcAdmin(searchDto);
         if (resultDto.ok()) {

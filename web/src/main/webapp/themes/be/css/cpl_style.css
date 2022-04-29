@@ -2412,6 +2412,7 @@ span.error-msg {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  z-index: 9999;
 }
 .nice-select.open:after {
   -webkit-transform: none;

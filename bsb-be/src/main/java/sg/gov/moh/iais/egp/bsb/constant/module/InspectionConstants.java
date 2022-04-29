@@ -66,6 +66,10 @@ public class InspectionConstants {
 
     public static final String KEY_ROUTE = "route";
 
+    public static final String KEY_ADHOC_CHECKLIST_ACTION_FLAG = "adhocActionFlag";
+    public static final String KEY_ADHOC_CHECKLIST_LIST_ATTR = "adhocCheckListAttr";
+    public static final String KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR = "adhocCheckListAttrOld";
+
     public static final int VALUE_RFI_FLAG_SELF = 0;
     public static final int VALUE_RFI_FLAG_APPLICATION = 1;
     public static final int VALUE_RFI_FLAG_SELF_APPLICATION = 2;

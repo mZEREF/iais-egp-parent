@@ -23,6 +23,12 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#adhocBth").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val('adhoc');
+        $("#mainForm").submit();
+    });
+
     $("#viewChecklist").click(function () {
         showWaiting();
         $("input[name='action_type']").val('viewChecklist');
@@ -66,6 +72,34 @@ $(function () {
     $("#previewBtn").click(function (){
         showWaiting();
         $("input[name='action_type']").val('preview');
+        $("#mainForm").submit();
+    });
+
+    $("#uploadChecklist").click(function (){
+        showWaiting();
+        $("input[name='action_type']").val('upload');
+        $("#mainForm").submit();
+    });
+
+    $("#downloadChecklist").click(function () {
+        showPopupWindow(BASE_CONTEXT_PATH + '/inspection/checklist/exporting-data?stamp=" + new Date().getTime()');
+    });
+
+    $("#listAdhoc").click(function () {
+        showWaiting();
+        $("input[name='action_type']").val('listAdhoc');
+        $("#mainForm").submit();
+    });
+
+    $("#editAdhocBtn").click(function () {
+        showWaiting();
+        $("input[name='crud_action_type']").val('addAdhoc');
+        $("#mainForm").submit();
+    });
+
+    $("#backAdhocBtn").click(function () {
+        showWaiting();
+        $("input[name='crud_action_type']").val('saveAdhoc');
         $("#mainForm").submit();
     });
 })
@@ -235,3 +269,15 @@ function judgeDisplay(data) {
         $("#submitDecisionDiv").show();
     }
 }
+
+/* file upload start */
+function initUploadFileData() {
+    $('#_needReUpload').val(0);
+    $('#_fileType').val("XLSX");
+    $('#_singleUpload').val("1");
+}
+
+function handleOnClickingUploadBtn() {
+    $('.itemErrorTableDiv').hide();
+}
+/* file upload end */

@@ -22,7 +22,9 @@ public class AppActionTag extends SimpleTagSupport {
                 new SelfAssessJudge(info.getStatus()),
                 new InsReportJudge(info.getStatus()),
                 new AppWithdrawableJudge(info.getAppType(), info.getStatus()),
-                new InsAppointmentJudge(info.getAppType(), info.getStatus()));
+                new InsAppointmentJudge(info.getAppType(), info.getStatus()),
+                new AFCUploadReportJudge(info.getAppType(), info.getStatus()),
+                new ApplicantUploadCertReportJudge(info.getAppType(), info.getStatus()));
         boolean actionAvailable = false;
         JspContext context = getJspContext();
         for (AppActionJudge judge : judgeList) {

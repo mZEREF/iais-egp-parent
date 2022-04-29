@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private LocalDate startDate;
 
-    private String approveNo;
+    private String approvalNo;
 
     private String status;
 
@@ -40,9 +41,8 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private String suppliedInformation;
 
-    private ApplicationDto applicationDto;
+    private ApplicationDto application;
 
     private List<DocRecordInfo> applicationDocDtos;
 
-    private AuditTrailDto auditTrailDto;
 }

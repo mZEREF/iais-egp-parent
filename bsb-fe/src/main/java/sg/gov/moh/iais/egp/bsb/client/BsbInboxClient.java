@@ -46,4 +46,8 @@ public interface BsbInboxClient {
 
     @PostMapping(value = "/fe-inbox/status/read", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> updateInboxMsgStatusRead(@RequestParam("msgId") String msgId);
+
+    @GetMapping(value = "/fe-inbox/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<InboxFacPageInfoResultInfo> searchInboxFacility(@SpringQueryMap InboxFacSearchDto dto);
+
 }

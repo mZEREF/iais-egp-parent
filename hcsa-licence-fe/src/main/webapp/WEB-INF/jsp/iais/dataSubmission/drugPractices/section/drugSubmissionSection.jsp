@@ -61,13 +61,14 @@
                         ${drugSubmission.doctorName}
                     </iais:value>
                 </iais:row>
-
+              <div class="drugType">
                 <iais:row>
                     <iais:field width="5" value="Drug Prescribed or Dispensed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="drugType"  name="drugType" firstOption="Please Select" codeCategory="DP_DRUG_PRESCRIBED_OR_DISPENSED" value="${drugSubmission.drugType}"/>
                     </iais:value>
                 </iais:row>
+                </div>
                 <div  id="prescriptionDate" <c:if test="${drugSubmission.drugType!='DPD001'}">style="display: none"</c:if> >
                 <iais:row>
                     <iais:field width="5" value="Date of Prescription" mandatory="true"/>
@@ -169,6 +170,10 @@
             changeStrength();
         });
         changeStrength();
+        <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+        disableContent('div.drugType');
+        </c:if>
+
     });
 
     function changeStrength(){
@@ -290,6 +295,11 @@
                 } else {
                     loadingSp(data);
                 }
+                dismissWaiting();
+            },
+            'error': function () {
+                console.log('error');
+                clearPrsInfo;
                 dismissWaiting();
             },
         });

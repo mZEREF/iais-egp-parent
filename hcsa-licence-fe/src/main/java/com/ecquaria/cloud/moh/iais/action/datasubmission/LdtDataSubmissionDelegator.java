@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -193,13 +194,14 @@ public class LdtDataSubmissionDelegator {
         String licenseeDtoName = licenseeDto.getName();
         String submissionNo = ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         String licenceId = "";
+        String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");
         List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByHciCode(dsLaboratoryDevelopTestDto.getHciCode(), licenseeId).getEntity();
         if (!IaisCommonUtils.isEmpty(licenceDtoList)) {
             LicenceDto licenceDto = licenceDtoList.get(0);
             licenceId = licenceDto.getId();
         }
         try {
-            sendNotification(licenseeDtoName, submissionNo, licenceId);
+            sendNotification(licenseeDtoName, submissionNo, licenceId, dateStr);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
@@ -479,25 +481,34 @@ public class LdtDataSubmissionDelegator {
         return result;
     }
 
-    private void sendNotification(String applicantName, String LDTId, String licenceId) throws IOException, TemplateException {
+    private void sendNotification(String applicantName, String LDTId, String licenceId, String dateStr) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("ApplicantName", applicantName);
         msgContentMap.put("LDTId", LDTId);
         msgContentMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        msgContentMap.put("date",dateStr);
+
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
         msgSubjectMap.put("LDTId", LDTId);
         String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG);
-        emailParam.setTemplateContent(msgContentMap);
-        emailParam.setQueryCode(LDTId);
-        emailParam.setReqRefNum(LDTId);
-        emailParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
-        emailParam.setRefId(licenceId);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setSubject(subject);
-        notificationHelper.sendNotification(emailParam);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(LDTId);
+        msgParam.setReqRefNum(LDTId);
+        msgParam.setServiceTypes(DataSubmissionConsts.DS_LDT);
+        msgParam.setRefId(licenceId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setSubject(subject);
+        notificationHelper.sendNotification(msgParam);
         log.info(StringUtil.changeForLog("***************** send LDT Notification  end *****************"));
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LDT_EMAIL);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
+        log.info(StringUtil.changeForLog("***************** send LDT Email  end *****************"));
     }
 }

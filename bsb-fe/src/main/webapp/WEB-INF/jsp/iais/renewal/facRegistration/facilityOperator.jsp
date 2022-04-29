@@ -39,7 +39,6 @@
                                     <%@include file="../../mainAppCommon/facRegistration/subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <%@include file="../../mainAppCommon/facRegistration/facilityOperator.jsp"%>
                                     </div>
                                 </div>
                                 <div class="application-tab-footer">

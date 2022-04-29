@@ -69,7 +69,7 @@
     </div>
 </form>
 <c:if test="${hasDraft}">
-    <iais:confirm msg="DS_MSG002" callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
+    <iais:confirm msg="DS_MSG022" callBack="submit('resume');" popupOrder="_draftModal"  yesBtnDesc="Resume from draft"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Continue" cancelFunc="submit('delete');" />
 </c:if>

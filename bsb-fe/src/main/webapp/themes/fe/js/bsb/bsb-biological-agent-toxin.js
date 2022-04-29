@@ -5,7 +5,7 @@ $(function () {
         if ($(this).is(":checked")) {
             $("#sampleWorkDetailDiv" + idx).show();
         } else {
-            if(!$("#workOthers" + idx).is(":checked")) {
+            if(!$("#workOthers" + idx).is(":checked") && !$("#workBiomanufacturing" + idx).is(":checked")) {
                 $("#sampleWorkDetailDiv" + idx).hide();
             }
         }
@@ -17,7 +17,19 @@ $(function () {
         if ($(this).is(":checked")) {
             $("#sampleWorkDetailDiv" + idx).show();
         } else {
-            if(!$("#sampleOthers" + idx).is(":checked")) {
+            if(!$("#sampleOthers" + idx).is(":checked") && !$("#workBiomanufacturing" + idx).is(":checked")) {
+                $("#sampleWorkDetailDiv" + idx).hide();
+            }
+        }
+    });
+
+    $("input[data-custom-ind=batBmfWorkType]").change(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('workBiomanufacturing'.length, id.length);
+        if ($(this).is(":checked")) {
+            $("#sampleWorkDetailDiv" + idx).show();
+        } else {
+            if(!$("#sampleOthers" + idx).is(":checked") && !$("#workOthers" + idx).is(":checked")) {
                 $("#sampleWorkDetailDiv" + idx).hide();
             }
         }
@@ -71,6 +83,20 @@ $(function () {
                 $("#buildingNameT" + separator + idx).val(data.building);
             }
         });
+    });
+
+
+    $("select[data-custom-ind=addressTypeT]").change(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('addressTypeT'.length, id.length);
+        var addressType = $(this).val();
+        if(addressType === 'ADDTY001') {
+            $("#aptMandatoryBlkT" + idx).show();
+            $("#aptMandatoryFloorUnitT" + idx).show();
+        } else {
+            $("#aptMandatoryBlkT" + idx).hide();
+            $("#aptMandatoryFloorUnitT" + idx).hide();
+        }
     });
 
 

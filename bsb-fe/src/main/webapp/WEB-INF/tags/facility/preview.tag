@@ -136,7 +136,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-xs-6 control-label">Floor and Unit No.</label>
-                                        <div class="col-xs-6"><p>${facProfile.floor}</p></div>
+                                        <div class="col-xs-6"><p>${facProfile.floor} - ${facProfile.unitNo}</p></div>
                                         <div class="clear"></div>
                                     </div>
                                     <div class="form-group">
@@ -394,26 +394,182 @@
                             <c:if test="${batListEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "batInfo")}</div></c:if>
                             <c:forEach var="bat" items="${batList}">
                                 <div class="panel-main-content form-horizontal min-row">
-                                    <div class="form-group">
+                                    <div class="form-group" style="margin-top: 10px">
                                         <div class="col-10"><strong><iais:code code="${bat.activityType}"/></strong></div>
                                         <div class="clear"></div>
                                     </div>
                                     <c:forEach var="info" items="${bat.batInfos}">
+                                        <c:set var="BAorT" value='${"SCHTYPE006" eq info.schedule ? "Toxin" : "Biological Agent"}'/>
                                         <div>
                                             <div class="form-group">
-                                                <label class="col-xs-6 control-label"><iais:code code="${info.schedule}"/></label>
+                                                <label class="col-xs-6 control-label">Schedule</label>
+                                                <div class="col-xs-6"><p><iais:code code="${info.schedule}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-xs-6 control-label">Name of Biological Agent/Toxin</label>
+                                                <label class="col-xs-6 control-label">Name of ${BAorT}</label>
                                                 <div class="col-xs-6"><p>${info.batName}</p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Types of samples that will be handled</label>
-                                                <div class="col-xs-6"><p>${info.sampleType}</p></div>
+                                                <div class="col-xs-6">
+                                                    <c:forEach var="oneSampleType" items="${info.sampleType}">
+                                                    <p><iais:code code="${oneSampleType}"/></p>
+                                                    </c:forEach>
+                                                </div>
                                                 <div class="clear"></div>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Type of work that will be carried out involving the ${fn:toLowerCase(BAorT)}</label>
+                                                <div class="col-xs-6">
+                                                    <c:forEach var="oneWorkType" items="${info.workType}">
+                                                        <p><iais:code code="${oneWorkType}"/></p>
+                                                    </c:forEach>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test='${info.sampleType.contains("BNOTS007") or info.workType.contains("BSBWT005") or info.workType.contains("BSBWT006")}'>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Details regarding the type of samples that will be handled and the intended work</label>
+                                                <div class="col-xs-6"><p>${info.sampleWorkDetail}</p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Mode of Procurement</label>
+                                                <div class="col-xs-6"><p><iais:code code="${info.procurementMode}"/></p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${'BMOP001' eq info.procurementMode}">
+                                            <div id="transferringFacilityDetailsInfo">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label" style="font-weight: bold">Details of Transferring Facility</label>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Block No.</label>
+                                                    <div class="col-xs-6"><p>${info.blockNoT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Floor & Unit</label>
+                                                    <div class="col-xs-6"><p>${info.floorNoT}-${info.unitNoT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Street</label>
+                                                    <div class="col-xs-6"><p>${info.streetNameT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Postal Code</label>
+                                                    <div class="col-xs-6"><p>${info.postalCodeT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label" style="font-weight: bold">Details of Contact Person from Transferring Facility</label>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Name</label>
+                                                    <div class="col-xs-6"><p>${info.contactPersonNameT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Email address</label>
+                                                    <div class="col-xs-6"><p>${info.emailAddressT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Contact No.</label>
+                                                    <div class="col-xs-6"><p>${info.contactNoT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Expected Date of Transfer</label>
+                                                    <div class="col-xs-6"><p>${info.expectedDateT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
+                                                    <div class="col-xs-6"><p>${info.courierServiceProviderNameT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Remarks</label>
+                                                    <div class="col-xs-6"><p>${info.remarksT}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </div>
+                                            </c:if>
+                                            <c:if test="${'BMOP002' eq info.procurementMode}">
+                                            <div id="exportingFacilityDetailsInfo">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label" style="font-weight: bold">Details of Exporting Facility</label>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Facility Name</label>
+                                                    <div class="col-xs-6"><p>${info.facNameE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Block No.</label>
+                                                    <div class="col-xs-6"><p>${info.blockNoE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Floor & Unit</label>
+                                                    <div class="col-xs-6"><p>${info.floorNoE}-${info.unitNoE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Street</label>
+                                                    <div class="col-xs-6"><p>${info.streetNameE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Postal Code</label>
+                                                    <div class="col-xs-6"><p>${info.postalCodeE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label" style="font-weight: bold">Details of Contact Person from Exporting Facility</label>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Name</label>
+                                                    <div class="col-xs-6"><p>${info.contactPersonNameE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Email address</label>
+                                                    <div class="col-xs-6"><p>${info.emailAddressE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Contact No.</label>
+                                                    <div class="col-xs-6"><p>${info.contactNoE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Expected Date of Export</label>
+                                                    <div class="col-xs-6"><p>${info.expectedDateE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Name of Courier Service Provider</label>
+                                                    <div class="col-xs-6"><p>${info.courierServiceProviderNameE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Remarks</label>
+                                                    <div class="col-xs-6"><p>${info.remarksE}</p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </div>
+                                            </c:if>
                                         </div>
                                     </c:forEach>
                                 </div>

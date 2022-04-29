@@ -273,7 +273,6 @@ public final class ExcelReader {
                 }
                 List<T> ans = parseSheetToList(sheet, excelSheetDto);
                 data.put(excelSheetDto.getSheetName(), ans);
-
             }
             return data;
         } finally {

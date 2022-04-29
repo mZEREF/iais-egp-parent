@@ -92,8 +92,7 @@
                     <iais:row>
                         <iais:field width="5" value="Marital Status" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="maritalStatus" name="maritalStatus" id="maritalStatus" firstOption="Please Select"
-                                         codeCategory="TOP_MARITAL_STATUS" value="${patientInformationDto.maritalStatus}"/>
+                            <iais:select cssClass="maritalStatus" name="maritalStatus" id="maritalStatus" firstOption="Please Select" codeCategory="TOP_MARITAL_STATUS" value="${patientInformationDto.maritalStatus}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -142,7 +141,9 @@
                         </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        <div id="gender" <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
+                                <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        </div>
                         <iais:value width="7" cssClass="col-md-7">
                             <div id="genders">
                                <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
@@ -161,13 +162,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-<c:if test="${hasDraft}">
-    <iais:confirm
-            msg="DS_MSG010"
-            callBack="submit('resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
-            cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
-            cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
-</c:if>
 <input type="hidden" id="genderCount" value="${genderCount}"/>
 <script>
     $(document).ready(function () {
@@ -208,6 +202,15 @@
                 $('#otherOccupations').hide();
             }
         });
+
+        $('#childrenNum').keyup(function () {
+            var childrenNum = $('#childrenNum').val();
+            if (childrenNum!=null && childrenNum>0) {
+                $('#gender').show();
+            } else {
+                $('#gender').hide();
+            }
+        });
     });
     $(function () {
         $("#childrenNum").keyup(function () {
@@ -239,18 +242,18 @@
         $('#nationality').change(function () {
 
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#commResidenceInSgDate').text('*');
-            } else if(nationality==null || nationality == "NAT0001"){
+            } else {
                 $('#commResidenceInSgDate').text('');
             }
         });
         $('#nationality').change(function () {
 
             var nationality = $('#nationality').val();
-            if (nationality != "NAT0001") {
+            if (nationality != "NAT0001" && nationality !=null && nationality !='') {
                 $('#residenceStatus').text('*');
-            } else if(nationality==null || nationality == "NAT0001"){
+            } else {
                 $('#residenceStatus').text('');
             }
         });
@@ -278,48 +281,6 @@
             url: url
         }
         callCommonAjax(options, validatePatientName);
-    }
-    function callCommonAjax(options, callback) {
-        if (isEmpty(options)) {
-            options = {};
-        }
-        var url = '';
-        if (!isEmpty(options.url)) {
-            url = options.url;
-        }
-        var type = 'POST';
-        if (!isEmpty(options.type)) {
-            type = options.type;
-        }
-        var async = true;
-        if (!isEmpty(options.async)) {
-            async = options.async;
-        }
-        var data = options.data;
-        if (isEmpty(data)) {
-            data = options;
-        }
-        console.log(url);
-        $.ajax({
-            url: url,
-            dataType: 'json',
-            data: data,
-            async: async,
-            type: type,
-            success: function (data) {
-                if (typeof callback === 'function') {
-                    callback(data);
-                } else if (!isEmpty(callback)) {
-                    callFunc(callback, data);
-                }
-                dismissWaiting();
-            },
-            error: function (data) {
-                console.log("err");
-                console.log(data);
-                dismissWaiting();
-            }
-        });
     }
     function refreshId(targetSelector) {
         $(targetSelector).each(function (k,v) {
@@ -385,22 +346,20 @@
             $('#otherOccupations').show();
             fillValue($('#otherOccupation'),data.selection.otherOccupation);
         }
-        if(!isEmpty(data.selection.livingChildrenNo)){
-            $('#childrenNum').trigger('keyup');
-
-        }
         if(data.selection.livingChildrenNo>0){
+            $('#childrenNum').trigger('keyup');
             var livingChildrenGenders=data.selection.livingChildrenGenders;
             for(var i=0;i<livingChildrenGenders.length;i++){
                 console.log(i)
                 fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
             }
         }
+        if(data.selection.livingChildrenNo=0){
+            $('#gender').hide();
+        }
     }
     function clearSelection(){
         console.log("clearSelection!")
         clearErrorMsg();
-        $('#name').find('p').text('');
-        clearFields('.selectionHidden');
     }
 </script>

@@ -31,7 +31,4 @@ public interface FeMessageClient {
 
     @GetMapping(value = "/iais-inter-inbox/inter-msgIds-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInterMsgIdsBySubjectLike(@RequestParam("subject") String subject, @RequestParam("status") String status);
-
-    @PostMapping(value = "/iais-inter-inbox/dates-by-subject-and-user-id", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<Date>> getLastSubjectDate(@RequestBody List<String> userIds, @RequestParam("subject") String subject);
 }

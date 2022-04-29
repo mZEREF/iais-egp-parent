@@ -12,6 +12,18 @@ $(document).ready(function() {
     // rfc
     showPopCommon('#rfcNoChangeShow','#rfcNoChangeModal',1);
 
+    function showPopCommon(controlId,showPopId,val){
+        if($(controlId).length == 0){
+            controlId = '#'+controlId;
+        }
+        if($(showPopId).length == 0){
+            showPopId = '#' + showPopId;
+        }
+        if($(controlId).val() == val){
+            $(showPopId).modal('show');
+        }
+    }
+
     $('#nav-tabs-ul a').on('click', function() {
         var $target = $(this);
         var currId = $target.attr('id');
@@ -142,4 +154,5 @@ function printData() {
         }
         return {declaration: declaration, printflag: printflag};
     }
+
 }

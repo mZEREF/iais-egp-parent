@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgContentDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxMsgSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.MsgMaskParam;
+import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -36,6 +37,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 @Delegator("bsbInboxMsgDelegator")
 public class BsbInboxMsgDelegator {
     private static final String KEY_INBOX_MSG_PAGE_INFO = "pageInfo";
+    private static final String KEY_MESSAGE_STATUS = "msgStatus";
 
     private static final String KEY_SEARCH_MSG_TYPE = "searchMsgType";
     private static final String KEY_SEARCH_APP_TYPE = "searchAppType";
@@ -46,10 +48,12 @@ public class BsbInboxMsgDelegator {
     private static final String KEY_SIGN_EQUAL = "=";
 
     private final BsbInboxClient inboxClient;
+    private final BsbInboxService inboxService;
 
     @Autowired
-    public BsbInboxMsgDelegator(BsbInboxClient bsbInboxClient) {
+    public BsbInboxMsgDelegator(BsbInboxClient bsbInboxClient, BsbInboxService inboxService) {
         this.inboxClient = bsbInboxClient;
+        this.inboxService = inboxService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -67,13 +71,10 @@ public class BsbInboxMsgDelegator {
         ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
 
         // call API to get dashboard data
-        InboxDashboardDto dashboardDto = inboxClient.retrieveDashboardData();
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_UNREAD_MSG_AMT, dashboardDto.getNewMsgAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_DRAFT_APP_AMT, dashboardDto.getDraftAppAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_FACILITY_AMT, dashboardDto.getActiveFacilityAmt());
-        ParamUtil.setRequestAttr(request, KEY_DASHBOARD_ACTIVE_APPROVAL_AMT, dashboardDto.getActiveApprovalsAmt());
-
+        inboxService.retrieveDashboardData(request);
         // call API to get searched data
+        String msgStatus = request.getParameter(KEY_MESSAGE_STATUS);
+        searchDto.setMsgStatus(msgStatus);
         ResponseDto<InboxMsgSearchResultDto> resultDto = inboxClient.getInboxMsg(searchDto);
 
         if (resultDto.ok()) {

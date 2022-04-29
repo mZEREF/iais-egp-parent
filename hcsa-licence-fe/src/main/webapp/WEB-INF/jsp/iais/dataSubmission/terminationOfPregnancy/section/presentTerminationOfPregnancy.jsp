@@ -220,10 +220,6 @@
             </iais:row>
         </div>
     </div>
-
-
-
-
     <div id="takenOwns" <c:if test="${terminationDto.topType !='TOPTTP001' && terminationDto.topType !='TOPTTP002'}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Is Termination of Pregnancy Drug used in own premises?" mandatory="true"/>
@@ -282,7 +278,7 @@
         <iais:row>
             <iais:field width="5" value="Other Places where Drug for Termination of Pregnancy is used" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherTopDrugPlace" value="${terminationDto.otherTopDrugPlace}"/>
+                <iais:input maxLength="66" type="text" name="otherTopDrugPlace" id="otherTopDrugPlaceText" value="${terminationDto.otherTopDrugPlace}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -371,15 +367,20 @@
             $('#performedOwns').show();
         }else {
             $('#performedOwns').hide();
+            fillValue($('input[name=performedOwn]').removeAttr('checked'));
             $('#topPlacelaceLabel').hide();
         }
     }
     function topPlacelaceLabel() {
-        if ($('input[name=performedOwn]').prop('checked')) {
+        /*if ($('input[name=performedOwn]').prop('checked')) {
             $('#topPlacelaceLabel').show();
-        }/*else {
-            $('#topPlacelaceLabel').hide();
         }*/
+        if($('#performedOwnYes').prop('checked')) {
+            $('#topPlacelaceLabel').show();
+        }else if($('#performedOwnNo').prop('checked')) {
+            $('#topPlacelaceLabel').show();
+        }
+
     }
     function pregnancyOwns() {
         var topType= $('#topType').val();
@@ -411,6 +412,9 @@
             $('#takenOwnLabel').show();
         }else {
             $('#takenOwnLabel').hide();
+            $('#otherTopDrugPlaces').hide();
+            $('#otherTopDrugPlaceText').val(null);
+            fillValue($('#otherTopDrugPlace'),null);
         }
     }
     function anType() {
@@ -476,6 +480,7 @@
             $('#topPlaceYes').hide();
         }
         if($('#performedOwnNo').prop('checked')) {
+            console.log("no");
             $('#topPlaceNo').show();
         }else {
             $('#topPlaceNo').hide();
@@ -495,6 +500,10 @@
         if($('#takenOwnYes').prop('checked')) {
             $('#topDrugPlace').show();
             $('#topDrugPlaces').hide();
+            $('#otherTopDrugPlaces').hide();
+            fillValue($('#otherTopDrugPlace'),null);
+            $('#otherTopDrugPlaceText').val(null);
+
         }
         if($('#takenOwnNo').prop('checked')) {
             $('#topDrugPlaces').show();

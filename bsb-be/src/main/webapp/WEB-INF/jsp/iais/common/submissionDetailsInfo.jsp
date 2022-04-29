@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<br/><br/>
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <div class="panel panel-default">
     <div class="panel-heading" style="text-align: center"><strong>Submission Details</strong></div>

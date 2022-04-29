@@ -4,15 +4,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionOutcomeDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsApprovalLetterInitDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsFindingFormDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
@@ -44,9 +55,6 @@ public interface InspectionClient {
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/checklist/common-config", produces = MediaType.APPLICATION_JSON_VALUE)
-    ChecklistConfigDto getMaxVersionCommonConfig();
-
     @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreInsSubmission(@RequestBody InsProcessDto dto);
 
@@ -66,9 +74,6 @@ public interface InspectionClient {
 
     @PostMapping(value = "/inspection/actual/outcome", consumes = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto saveInspectionOutcome(@RequestBody InspectionOutcomeDto outcomeDto);
-
-    @PostMapping(value = "/inspection/actual", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void submitInspectionChecklist(@RequestBody InspectionChecklistDto checklistDto);
 
     @PostMapping(value = "/inspection/actual/validate/submit-findings", produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionFindings(@RequestParam("appId") String appId);
@@ -194,4 +199,32 @@ public interface InspectionClient {
 
     @GetMapping(value = "/inspection/actual/do-review-follow-up-items/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
     ReviewInsFollowUpDto getInitInsFollowUpData(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/inspection/chkListAnswerDraft/{userId}/{applicationid}")
+    ResponseEntity<InspectionChecklistDto> getChkListDraft(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
+
+    @PostMapping(value = "/inspection/chkListAnswerDraft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> saveChkListDraft(@RequestBody InspectionChecklistDto chkList);
+
+
+    @PostMapping(value = "/adhoc-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<AdhocChecklistConfigDto> saveAdhocChecklistConfig(@RequestBody AdhocChecklistConfigDto adhocChecklistConfigDto);
+
+    @GetMapping(value = "/adhoc-checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<AdhocChecklistConfigDto> getAdhocChecklistConfigDaoByAppid(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/inspection/comBinedchkListAnswer/{applicationid}")
+    ResponseEntity<InspectionChecklistDto> getCombinedChkList(@PathVariable("applicationid") String appId);
+
+    @PostMapping(value = "/inspection/comBinedchkListAnswer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> saveCombinedChkList(@RequestBody InspectionChecklistDto chkList);
+
+    @GetMapping(value = "/inspection/inspection-info/{applicationid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<InspectionInfoDto> getInspectionInfoDto(@PathVariable("applicationid") String appId);
+
+    @GetMapping(value = "/inspection/chkListAnswerOfficer/{userId}/{applicationid}")
+    ResponseEntity<InspectionChecklistDto> getOfficerChkList(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
+
+    @PostMapping(value = "/inspection/officerChkListAnswer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Void> saveOfficerChkList(@RequestBody InspectionChecklistDto chkList);
 }

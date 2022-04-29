@@ -103,7 +103,9 @@
                     </iais:row>
                 </div>
                     <iais:row>
-                        <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        <div <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
+                            <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                        </div>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders"  begin="0" varStatus="index">
                                 <iais:code code="${livingChildrenGenders}"/>&nbsp;&nbsp;

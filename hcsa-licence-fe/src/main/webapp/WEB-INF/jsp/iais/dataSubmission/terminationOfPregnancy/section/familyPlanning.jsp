@@ -29,7 +29,7 @@
             <%--<iais:field width="5" id="otherContraMethodLabel" value="Other Contraceptive Method Used"
                         mandatory="${familyPlanDto.mostRecentContraMethod eq 'TOPMRC007' ? true : false}"/>--%>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherContraMethod" value="${familyPlanDto.otherContraMethod}"/>
+                <iais:input maxLength="66" type="text" name="otherContraMethod"  id="otherContraMethodText" value="${familyPlanDto.otherContraMethod}"/>
             </iais:value>
         </iais:row>
         </div>
@@ -112,7 +112,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topRiskCondition"/>
+                <iais:input maxLength="66" type="text" name="topRiskCondition" value="${familyPlanDto.topRiskCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -120,7 +120,7 @@
         <iais:row>
             <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="topMedCondition"/>
+                <iais:input maxLength="66" type="text" name="topMedCondition" value="${familyPlanDto.topMedCondition}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -141,35 +141,16 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP004' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
+    <div id="otherSubTopReasons" <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP003' && familyPlanDto.subRopReason != 'TOPSCTP006')}">style="display: none"</c:if>>
         <iais:row>
             <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="66" type="text" name="otherSubTopReason" value="${familyPlanDto.otherSubTopReason}"/>
+                <iais:input maxLength="66" type="text" name="otherSubTopReason" id="otherSubTopReasonsText" value="${familyPlanDto.otherSubTopReason}"/>
             </iais:value>
         </iais:row>
     </div>
 </div>
 <input type="hidden" value="${showPatientAgePT}" id="showPatientAgePts" >
-<div class="modal fade" id="showPatientAgePT" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body" >
-                <div class="row">
-                    <div class="col-md-12">
-            <span style="font-size: 2rem;" id="prsErrorMsg">
-              <%--<iais:message key="GENERAL_ERR0057" escape="false" />--%>
-                <p>The patient age to the date of counselling is within the range of <=16 or >=65. Please check that the details have been accurately entered.</p>
-            </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function() {
         otherContraMethod();
@@ -262,7 +243,7 @@
                 $('#subRopReasons').hide();
                 $('#otherSubTopReasons').hide();
                 fillValue($('#subRopReasons'),null);
-                $('#otherSubTopReasons').val(null);
+                $('#otherSubTopReasonsText').val(null);
             }
         });
     }
@@ -289,7 +270,7 @@
                 $('#mostRecentContraMethods').hide();
                 $('#otherContraMethods').hide();
                 fillValue($('#mostRecentContraMethods'),null);
-                $('#otherContraMethods').val(null);
+                $('#otherContraMethodText').val(null);
             }
         });
     }

@@ -74,4 +74,19 @@ public class INTRANET___MohBsbInspectionDO___1 extends BaseProcessClass {
     // 		DoUpload->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "doUpload", this);
     }
+
+	public void preListAdhoc_OnStepProcess_0() throws Exception {
+		// 		preListAdhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preListAdhoc", this);
+	}
+
+	public void addAdhoc_OnStepProcess_0() throws Exception {
+		// 		addAdhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "addAdhoc", this);
+	}
+
+	public void saveAdhoc_OnStepProcess_0() throws Exception {
+		// 		saveAdhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAdhoc", this);
+	}
 }

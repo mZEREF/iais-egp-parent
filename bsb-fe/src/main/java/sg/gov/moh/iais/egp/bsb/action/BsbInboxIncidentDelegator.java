@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inbox.InboxRepSearchDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbInboxService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,9 +20,11 @@ public class BsbInboxIncidentDelegator {
     private static final String KEY_REPORTABLE_EVENT_RESULT_DTO = "inboxResultDto";
     private static final String KEY_PAGE_INFO = "pageInfo";
     private final BsbInboxClient inboxClient;
+    private final BsbInboxService inboxService;
 
-    public BsbInboxIncidentDelegator(BsbInboxClient inboxClient) {
+    public BsbInboxIncidentDelegator(BsbInboxClient inboxClient, BsbInboxService inboxService) {
         this.inboxClient = inboxClient;
+        this.inboxService = inboxService;
     }
 
 
@@ -34,6 +37,7 @@ public class BsbInboxIncidentDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        inboxService.retrieveDashboardData(request);
         //do search
         InboxRepSearchDto inboxRepSearchDto = getInboxRepSearchDto(request);
         InboxRepResultDto resultDto = inboxClient.searchInboxReportableEvent(inboxRepSearchDto).getEntity();

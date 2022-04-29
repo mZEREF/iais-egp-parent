@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
@@ -55,10 +56,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -370,7 +374,8 @@ public class BsbSubmitSelfAssessmentDelegator {
         clearData(bpc);
         HttpServletRequest request = bpc.request;
         SelfAssessmtChklDto answerRecordDto = (SelfAssessmtChklDto) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST);
-        if (answerRecordDto != null) {
+        if (answerRecordDto != null && !StringUtil.isEmpty(answerRecordDto.getApplicationId())
+                && !StringUtil.isEmpty(answerRecordDto.getChkLstConfigId())) {
             ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
             return;
         }
@@ -384,9 +389,9 @@ public class BsbSubmitSelfAssessmentDelegator {
             answerRecordDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-            ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
+            //ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
             answerRecordDto.setChkLstConfigId(configDto.getId());
-            answerRecordDto.setCommonChkLstConfigId(commonConfigDto.getId());
+            //answerRecordDto.setCommonChkLstConfigId(commonConfigDto.getId());
         }
         ParamUtil.setRequestAttr(request, KEY_APP_ID, answerRecordDto.getApplicationId());
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
@@ -413,22 +418,10 @@ public class BsbSubmitSelfAssessmentDelegator {
             errorMap.put("selfAssessmentData", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
         } else if (fileInfo.getSize() == 0) {
             errorMap.put("selfAssessmentData", "Could not parse file content.");
+        } else if (!FileUtils.isExcel(fileInfo.getFilename())) {
+            errorMap.put("selfAssessmentData", MessageUtil.replaceMessage("GENERAL_ERR0018", "XLSX", "fileType"));
         } else {
             Map<String, List<ChklstItemAnswerDto>> result = transformToChklstItemAnswerDtos(fileInfo);
-            /*List<ChklstItemAnswerDto> commonData = result.get(SHEET_NAME_COMMON);
-            Boolean isValid = validateChklItemExcelDto(commonData, SHEET_NAME_COMMON, answerRecordDto.getCommonChkLstConfigId(),
-                    errorMsgs);
-            if (isValid != null && isValid) {
-                answerDtos.addAll(commonData);
-            }
-            if (isValid != null) {
-                List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
-                isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
-                        errorMsgs);
-                if (isValid != null && isValid) {
-                    answerDtos.addAll(bsbData);
-                }
-            }*/
             List<ChklstItemAnswerDto> bsbData = result.get(SHEET_NAME_BSB);
             Boolean isValid = validateChklItemExcelDto(bsbData, SHEET_NAME_BSB, answerRecordDto.getChkLstConfigId(),
                     errorMsgs);
@@ -436,7 +429,7 @@ public class BsbSubmitSelfAssessmentDelegator {
                 answerDtos.addAll(bsbData);
             }
             if (isValid == null) {
-                errorMap.put("selfAssessmentData", "Could not parse file content.");
+                errorMap.put("selfAssessmentData", "Could not parse file content. Please download new template to do this.");
                 errorMsgs.clear();
             }
             if (!errorMsgs.isEmpty()) {
@@ -457,16 +450,23 @@ public class BsbSubmitSelfAssessmentDelegator {
             inspectionClient.submitSelfAssessment(answerRecordDto);
         }
         ParamUtil.setRequestAttr(bpc.request, ACTION_UPLOAD_TYPE, nextType);
-        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("GENERAL_ERR0038"));
+        ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.replaceMessage("GENERAL_ERR0058",
+                "Self Assessment Checklist", "data"));
     }
 
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
             List<FileErrorMsg> errorMsgs) {
         if (data == null || data.isEmpty()) {
+            log.info("No data found!");
             return null;
         }
-        String item = data.get(0).getConfigId();
-        if (StringUtil.isEmpty(item) || !item.equals(chkLstConfigId)) {
+        Optional<ChklstItemAnswerDto> optional = data.stream()
+                .filter(dto -> !Objects.equals(chkLstConfigId, dto.getConfigId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getSectionId())
+                        || !ExcelValidatorHelper.isValidUuid(dto.getItemId()))
+                .findAny();
+        if (optional.isPresent()) {
+            log.info(StringUtil.changeForLog("Wrong Data: " + JsonUtil.parseToJson(optional.get()) + " | " + chkLstConfigId));
             return null;
         }
         errorMsgs.addAll(ExcelValidatorHelper.validateExcelList(data, sheetName, ChklstItemAnswerDto::getSnNo, null, START_ROW,
@@ -512,6 +512,7 @@ public class BsbSubmitSelfAssessmentDelegator {
     private NewDocInfo getFileInfo(HttpServletRequest request) {
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, SEESION_FILES_MAP_AJAX);
         if (fileMap == null || fileMap.isEmpty()) {
+            log.info("No file found!");
             return null;
         }
         // only one
@@ -609,6 +610,7 @@ public class BsbSubmitSelfAssessmentDelegator {
         excelSheetDto.setSheetAt(sheetAt);
         excelSheetDto.setSheetName(sheetName);
         excelSheetDto.setBlock(true);
+        excelSheetDto.setPwd(Formatter.formatDateTime(new Date(), "yyyyMMdd"));
         excelSheetDto.setStartRowIndex(START_ROW);
         excelSheetDto.setSource(data);
         excelSheetDto.setSourceClass(SelfAssChklItemExcelDto.class);

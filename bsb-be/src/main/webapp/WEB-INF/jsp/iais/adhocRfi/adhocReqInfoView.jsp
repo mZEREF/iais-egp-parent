@@ -39,7 +39,7 @@
                                                         <iais:row>
                                                             <iais:field value="Approval No."/>
                                                             <iais:value width="18">
-                                                                <c:out value="${viewReqInfo.approveNo}"/>
+                                                                <c:out value="${viewReqInfo.approvalNo}"/>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>

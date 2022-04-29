@@ -47,12 +47,4 @@ public class FeMessageClientFallback implements FeMessageClient{
         entity.setHeaders(headers);
         return entity;
     }
-
-    @Override
-    public FeignResponseEntity<List<Date>> getLastSubjectDate(List<String> userIds, String subject) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 }

@@ -5,9 +5,9 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-internet"/>
+<webui:setLayout name="iais-intranet"/>
 
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-assessment.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
 
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -17,6 +17,8 @@
 
             <p><c:out value="${ackMsg}"/></p>
 
+            <br/>
+            <br/>
             <div class="text-right text-center-mobile">
                 <a id="back" class="btn btn-primary" href="javascript:void(0)">Done</a>
             </div>

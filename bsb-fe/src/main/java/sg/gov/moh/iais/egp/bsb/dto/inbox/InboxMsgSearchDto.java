@@ -20,6 +20,7 @@ public class InboxMsgSearchDto extends PagingAndSortingDto {
     private String searchSubject;
     private String dateFrom;
     private String dateTo;
+    private String msgStatus;
 
 
     /**
@@ -31,5 +32,6 @@ public class InboxMsgSearchDto extends PagingAndSortingDto {
         searchSubject = "";
         dateFrom = "";
         dateTo = "";
+        msgStatus = "";
     }
 }

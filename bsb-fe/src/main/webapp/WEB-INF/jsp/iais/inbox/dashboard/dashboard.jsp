@@ -31,26 +31,26 @@
             <div class="col-xs-12">
                 <div class="dashboard-gp">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#" onclick="licToMsgPage()">
+                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg?msgStatus=MSGRS001" onclick="licToMsgPage()">
                             <p class="dashboard-txt">New Messages</p>
                             <h1 class="dashboard-count">${unreadMsgAmt}</h1>
                         </a>
                         </div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#" onclick="licToAppPage()">
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp?searchStatus=BSBAPST011" onclick="licToAppPage()">
                             <p class="dashboard-txt">Application Drafts</p>
                             <h1 class="dashboard-count">${draftAppAmt}</h1>
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#">
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="/bsb-fe/eservice/INTERNET/MohBSBInboxFac?facilityStatus=APPRSTA001">
                             <p class="dashboard-txt">Active Facilities</p>
                             <h1 class="dashboard-count">${activeFacilityAmt}</h1>
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#">
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovalFacAdmin?searchStatus=APPRSTA001">
                             <p class="dashboard-txt">Active Approvals</p>
                             <h1 class="dashboard-count">${activeApprovalAmt}</h1>
                         </a></div>

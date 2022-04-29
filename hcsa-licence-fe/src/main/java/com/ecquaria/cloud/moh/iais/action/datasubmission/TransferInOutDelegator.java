@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -39,12 +41,14 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -182,7 +186,6 @@ public class TransferInOutDelegator extends CommonDelegator {
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
 
         if (isNeedEmail(transferInOutStageDto)) {
-//            TODO fill email
             if (TRANSFER_TYPE_OUT.equals(transferInOutStageDto.getTransferType())) {
                 sendTransferOutNotification(arSuperDataSubmissionDto);
             } else {
@@ -259,69 +262,55 @@ public class TransferInOutDelegator extends CommonDelegator {
 
     @SneakyThrows
     private void sendTransferOutNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
-        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        LicenseeDto receiveLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(transferInOutStageDto.getTransOutToLicenseeId());
-        String receiveOrgId = receiveLicenseeDto.getOrganizationId();
-        PremisesDto receivePremises = dsLicenceService.getArPremisesDto(receiveOrgId, transferInOutStageDto.getTransOutToHciCode());
-        String licenseeId = transferInOutStageDto.getTransOutToLicenseeId();
-        String hciCode = arSuperDataSubmissionDto.getHciCode();
-        String submissionId = arSuperDataSubmissionDto.getDataSubmissionDto().getId();
-        String submitterName = receiveLicenseeDto.getName();
-        String transferCenter = arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel();
-        String receivingCenter = receivePremises.getPremiseLabel();
-        String templateId = "67F85A8B-3E74-EC11-BE6B-000C29FAAE4D";
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(templateId).getEntity();
-        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgSubjectMap.put("HciCode", hciCode);
-        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
-        EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(templateId);
-        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
-        String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
-                + submissionId;
-        msgContentMap.put("submissionerName", submitterName);
-        msgContentMap.put("transferringCenter", transferCenter);
-        msgContentMap.put("receivingCenter", receivingCenter);
-        msgContentMap.put("systemLink", uri);
-        msgContentMap.put("date", Formatter.formatDate(new Date()));
-        msgParam.setTemplateContent(msgContentMap);
-        msgParam.setSubject(msgSubject);
-        msgParam.setQueryCode(licenseeId);
-        msgParam.setReqRefNum(licenseeId);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        msgParam.setRefId(licenseeId);
-        notificationHelper.sendNotification(msgParam);
+        TransferInOutStageDto transferringDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_EMAIL, transferringDto.getTransOutToLicenseeId(), transferringDto.getTransOutToHciCode());
     }
 
     @SneakyThrows
     private void sendTransferInNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
-        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        LicenseeDto transferringLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(transferInOutStageDto.getTransInFromLicenseeId());
-        String transferringOrgId = transferringLicenseeDto.getOrganizationId();
-        PremisesDto transferringPremises = dsLicenceService.getArPremisesDto(transferringOrgId, transferInOutStageDto.getTransInFromHciCode());
-        String licenseeId = transferInOutStageDto.getTransInFromLicenseeId();
-        String templateId = "67F85A8B-3E74-EC11-BE6B-000C29FAAE4D";
-        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(templateId).getEntity();
+        TransferInOutStageDto transferringDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
+        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_EMAIL, transferringDto.getTransInFromLicenseeId(), transferringDto.getTransInFromHciCode());
+    }
+
+    private void sendNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto, String msgTemplateId, String emaillTemplateId, String receiveLicenseeId, String receiveHciCode) throws IOException, TemplateException {
+        LicenseeDto receiveLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(receiveLicenseeId);
+        PremisesDto receivePremises = dsLicenceService.getArPremisesDto(receiveLicenseeDto.getOrganizationId(), receiveHciCode);
+
+        String currentSubmissionId = arSuperDataSubmissionDto.getDataSubmissionDto().getId();
+        String currentSubmissionNo = arSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
+        String submitterName = receiveLicenseeDto.getName();
+        String transferringCenter = arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel();
+        String receivingCenter = receivePremises.getPremiseLabel();
+
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(msgTemplateId).getEntity();
         Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
-        msgSubjectMap.put("HciCode", arSuperDataSubmissionDto.getHciCode());
+        msgSubjectMap.put("receivingCenter", receivingCenter);
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
-        EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(templateId);
+
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
-                + arSuperDataSubmissionDto.getDataSubmissionDto().getId();
-        msgContentMap.put("submissionerName", transferringLicenseeDto.getName());
-        msgContentMap.put("transferringCenter", transferringPremises.getPremiseLabel());
-        msgContentMap.put("receivingCenter", arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
+                + currentSubmissionId;
+        msgContentMap.put("submissionerName", submitterName);
+        msgContentMap.put("transferringCenter", transferringCenter);
+        msgContentMap.put("receivingCenter", receivingCenter);
         msgContentMap.put("systemLink", uri);
         msgContentMap.put("date", Formatter.formatDate(new Date()));
-        msgParam.setTemplateContent(msgContentMap);
+
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(msgTemplateId);
         msgParam.setSubject(msgSubject);
-        msgParam.setQueryCode(licenseeId);
-        msgParam.setReqRefNum(licenseeId);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setQueryCode(currentSubmissionNo);
+        msgParam.setReqRefNum(currentSubmissionNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        msgParam.setRefId(licenseeId);
+        msgParam.setRefId(receiveLicenseeId);
         notificationHelper.sendNotification(msgParam);
+
+        //send email
+        EmailParam emailParamEmail = MiscUtil.transferEntityDto(msgParam, EmailParam.class);
+        emailParamEmail.setTemplateId(emaillTemplateId);
+        emailParamEmail.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        notificationHelper.sendNotification(emailParamEmail);
     }
 
     private boolean isNeedEmail(TransferInOutStageDto transferInOutStageDto) {

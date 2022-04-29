@@ -218,11 +218,6 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(Integer day) {
-        return getFeignResponseEntity();
-    }
-
-    @Override
     public FeignResponseEntity<String> getTransferConfirmationDsNo(String patientCode, String hciCode, String svcName, String submissionId) {
         return getFeignResponseEntity(patientCode, hciCode, svcName, submissionId);
     }

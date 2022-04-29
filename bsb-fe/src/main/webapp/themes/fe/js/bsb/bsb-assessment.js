@@ -26,7 +26,7 @@ $(function () {
 
     $("button[data-custom-ind=downloadSelfAssessment]").click(function () {
         var appId = $(this).attr("data-custom-app");
-        showPopupWindow('/bsb-fe/self-assessment/exporting-data?appId=' + appId + '&stamp=" + new Date().getTime()');
+        showPopupWindow(BASE_CONTEXT_PATH + '/self-assessment/exporting-data?appId=' + appId + '&stamp=" + new Date().getTime()');
     });
 
     $("#back").click(function () {
@@ -47,17 +47,19 @@ $(function () {
         $("#mainForm").submit();
     });
 
-    $('#_needReUpload').val(0);
-    $('#_fileType').val("XLSX");
 });
 
-function clearFlagValueFEFile() {
-    $("#reloadIndex").val(-1);
-    $("#fileAppendId").val("");
-    $("#uploadFormId").val("");
-    $('.itemErrorTableDiv').hide();
-    dismissWaiting();
+/* file upload start */
+function initUploadFileData() {
+    $('#_needReUpload').val(0);
+    $('#_fileType').val("XLSX");
+    $('#_singleUpload').val("1");
 }
+
+function handleOnClickingUploadBtn() {
+    $('.itemErrorTableDiv').hide();
+}
+/* file upload end */
 
 function switchNextStep(index) {
     $('.config').hide();

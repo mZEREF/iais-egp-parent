@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Auther chenlei on 4/25/2022.
@@ -73,7 +74,8 @@ public class InsChklItemExcelDto implements Serializable {
 
     @ExcelProperty(
             cellIndex = 9,
-            cellName = "Due Date"
+            cellName = "Due Date",
+            objectType = Date.class
     )
     private String dueDate;
 
