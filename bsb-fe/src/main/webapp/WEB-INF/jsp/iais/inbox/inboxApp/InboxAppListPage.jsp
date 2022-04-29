@@ -162,7 +162,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <iais-bsb:app-action info="${app}"/>
+                                                                <iais-bsb:app-action info="${app}" attributeKey="actionAvailable"/>
                                                                 <c:choose>
                                                                     <c:when test="${not actionAvailable}">
                                                                         <select  class="naDropdown" disabled="disabled">

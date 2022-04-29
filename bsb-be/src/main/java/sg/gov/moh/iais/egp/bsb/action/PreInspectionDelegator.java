@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_CAN_RFI;
@@ -81,6 +83,7 @@ public class PreInspectionDelegator {
         session.removeAttribute(KEY_INS_DECISION);
         session.removeAttribute(RFI_APPLICATION);
         session.removeAttribute(RFI_SELF);
+        session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -110,6 +113,16 @@ public class PreInspectionDelegator {
         if (processDto == null) {
             processDto = new InsProcessDto();
             ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
+        }
+
+        AdhocChecklistConfigDto adhocChecklistConfigDto = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR);
+        if (adhocChecklistConfigDto == null) {
+            if (StringUtil.isNotEmpty(appId)) {
+                adhocChecklistConfigDto = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
+                ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, adhocChecklistConfigDto);
+            } else {
+                log.info("-----------application id is null-------");
+            }
         }
     }
 
@@ -173,7 +186,6 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        saveAdhocChecklistCOnfig(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} TaskId {} Inspection mark as ready", appId, taskId);
         inspectionClient.changeInspectionStatusToReady(appId, taskId, processDto);
@@ -185,7 +197,6 @@ public class PreInspectionDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        saveAdhocChecklistCOnfig(request);
         int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
@@ -198,7 +209,6 @@ public class PreInspectionDelegator {
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        saveAdhocChecklistCOnfig(request);
         inspectionClient.skipInspection(appId, taskId, processDto);
     }
 
@@ -232,13 +242,6 @@ public class PreInspectionDelegator {
             return VALUE_RFI_FLAG_APPLICATION;
         } else {
             return VALUE_RFI_FLAG_SELF;
-        }
-    }
-
-    private void saveAdhocChecklistCOnfig(HttpServletRequest request) {
-        AdhocChecklistConfigDto adhocConfig = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
-        if (adhocConfig != null) {
-            inspectionClient.saveAdhocChecklistConfig(adhocConfig);
         }
     }
 }

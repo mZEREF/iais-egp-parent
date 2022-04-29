@@ -2,7 +2,12 @@
     <div class="col-xs-12">
         <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
         <div style="float:right">
-            <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+            <c:if test="${nowTabIn == 'Combined'}">
+                <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+            </c:if>
+            <c:if test="${nowTabIn != 'Combined'}">
+                <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
+            </c:if>
         </div>
     </div>
 </div>

@@ -81,7 +81,7 @@ $(function () {
     $("#rejectReason").hide();
     $("#decision").change(function (){
         var optionValue1 = $("#decision option:selected").val();
-        if (optionValue1 == "AUDTAO002" || optionValue1 == "AUDTDO002") {
+        if (optionValue1 == "AUDTAO002" || optionValue1 == "AUDTDO002") {// DOTO  the master code is deleted
             $("#rejectReason").show();
         }else{
             $("#rejectReason").hide();
@@ -89,13 +89,13 @@ $(function () {
     })
     $("#submitButton").click(function () {
         var optionValue = $("#decision option:selected").val();
-        if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") {
+        if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") { // DOTO  the master code is deleted
             $("#error_decision").html("");
             showWaiting();
             $("[name='action_type']").val("doApprove");
             $("#mainForm").submit();
         }
-        if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {
+        if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {// DOTO  the master code is deleted
             var reasonValue = $("#reason").val();
             if (reasonValue == "" || reasonValue == null) {
                 $("#error_decision").html("");
@@ -125,6 +125,7 @@ $(function () {
         }
     })
 
+    // TODO master code has been removed, remove this js
     //DO decision self-audit
     $("#doProcessButton").click(function (){
         var optionValue = $("#decision option:selected").val();
@@ -148,6 +149,7 @@ $(function () {
         }
     })
 
+    // TODO master code has been removed, remove this js
     //AO decision self-audit
     $("#aoProcessButton").click(function (){
         var optionValue = $("#decision option:selected").val();

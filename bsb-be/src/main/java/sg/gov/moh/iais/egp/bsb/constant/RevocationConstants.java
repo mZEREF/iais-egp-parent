@@ -18,8 +18,6 @@ public final class RevocationConstants {
     public static final String PARAM_AO_REMARKS = "AORemarks";
     public static final String PARAM_AO_DECISION = "aoDecision";
     public static final String PARAM_DO_REMARKS = "DORemarks";
-    public static final String PARAM_REASON_TYPE_AO = "REASON01";
-    public static final String PARAM_REASON_TYPE_DO = "REASON02";
 
     //facility status and approval status
     public static final String PARAM_APPLICATION_TYPE_REVOCATION = "BSBAPTY006";

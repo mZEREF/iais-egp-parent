@@ -347,15 +347,17 @@
             fillValue($('#otherOccupation'),data.selection.otherOccupation);
         }
         if(data.selection.livingChildrenNo>0){
+            console.log("qingchu")
             $('#childrenNum').trigger('keyup');
+            $('#genders').show();
             var livingChildrenGenders=data.selection.livingChildrenGenders;
             for(var i=0;i<livingChildrenGenders.length;i++){
                 console.log(i)
                 fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
             }
-        }
-        if(data.selection.livingChildrenNo=0){
+        }else {
             $('#gender').hide();
+            $('#genders').hide();
         }
     }
     function clearSelection(){

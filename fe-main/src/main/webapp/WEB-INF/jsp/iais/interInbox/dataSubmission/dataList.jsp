@@ -22,7 +22,7 @@
                 <iais:value>
                     <label class="col-xs-3 col-md-3" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type:</label>
                     <div class="col-xs-9 col-md-9">
-                        <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
+                        <iais:select name="typeDataSubmission" id ="typeDataSubmission" options="submissionTypes" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
                     </div>
                 </iais:value>
             </div>

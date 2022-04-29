@@ -59,34 +59,39 @@ public class SendIncompleteCycleMsgJobHandler extends IJobHandler {
             List<IncompleteCycleDto> overDayNotCompletedCycle = assistedReproductionService.getOverDayNotCompletedCycleDto(firstDays);
             if (IaisCommonUtils.isNotEmpty(overDayNotCompletedCycle)) {
                 List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = IaisCommonUtils.genNewArrayList();
-                for (IncompleteCycleDto incompleteCycleDto : overDayNotCompletedCycle) {
-                    String LicenseeId = incompleteCycleDto.getLicenseeId();
-                    DataSubmissionDto dataSubmissionDto = incompleteCycleDto.getDataSubmissionDto();
-                    String cycleId = dataSubmissionDto.getCycleId();
-                    JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(cycleId, INCOMPLETE_CYCLE_MESSAGE_KEY).getEntity();
-                    String submissionerName = licenseeService.getLicenseeDtoById(LicenseeId).getName();
-                    PatientInfoDto patientInfoDto = assistedReproductionService.patientInfoDtoBySubmissionId(dataSubmissionDto.getId());
-                    if (patientInfoDto != null) {
-                        String patientName = patientInfoDto.getPatient().getName();
-                        String submissionNo = dataSubmissionDto.getSubmissionNo();
-                        if (jobRemindMsgTrackingDto == null) {
-                            // send first
-                            String dateStr = Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
-                            sendFirstNotification(LicenseeId, submissionerName, patientName, submissionNo, dateStr);
-                            addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
-                        } else {
-                            Date date = new Date(new Date().getTime() - 1000 * 60 * 60 * 24L * preDays);
-                            if (jobRemindMsgTrackingDto.getCreateTime().before(date)) {
-                                // send pre
-                                sendPertNotification(LicenseeId, submissionerName, patientName, submissionNo);
+                try {
+                    for (IncompleteCycleDto incompleteCycleDto : overDayNotCompletedCycle) {
+                        String LicenseeId = incompleteCycleDto.getLicenseeId();
+                        DataSubmissionDto dataSubmissionDto = incompleteCycleDto.getDataSubmissionDto();
+                        String cycleId = dataSubmissionDto.getCycleId();
+                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(cycleId, INCOMPLETE_CYCLE_MESSAGE_KEY).getEntity();
+                        String submissionerName = licenseeService.getLicenseeDtoById(LicenseeId).getName();
+                        PatientInfoDto patientInfoDto = assistedReproductionService.patientInfoDtoBySubmissionId(dataSubmissionDto.getId());
+                        if (patientInfoDto != null) {
+                            String patientName = patientInfoDto.getPatient().getName();
+                            String submissionNo = dataSubmissionDto.getSubmissionNo();
+                            if (jobRemindMsgTrackingDto == null) {
+                                // send first
+                                String dateStr = Formatter.formatDateTime(dataSubmissionDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss");
+                                sendFirstNotification(LicenseeId, submissionerName, patientName, submissionNo, dateStr);
                                 addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
+                            } else {
+                                Date date = new Date(new Date().getTime() - 1000 * 60 * 60 * 24L * preDays);
+                                if (jobRemindMsgTrackingDto.getCreateTime().before(date)) {
+                                    // send pre
+                                    sendPertNotification(LicenseeId, submissionerName, patientName, submissionNo);
+                                    addJobRemindMsgTrack(jobRemindMsgTrackingDtos, cycleId);
+                                }
                             }
+                        } else {
+                            log.warn("sendIncompleteCycleMsg no find patientInfoDto, submission id is {}", dataSubmissionDto.getId());
                         }
-                    } else {
-                        log.warn("sendIncompleteCycleMsg no find patientInfoDto, submission id is {}", dataSubmissionDto.getId());
+                    }
+                } finally {
+                    if (IaisCommonUtils.isNotEmpty(jobRemindMsgTrackingDtos)) {
+                        systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
                     }
                 }
-                systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
             }
 
             JobLogger.log(StringUtil.changeForLog("SendIncompleteCycleMsgJobHandler end ..."));

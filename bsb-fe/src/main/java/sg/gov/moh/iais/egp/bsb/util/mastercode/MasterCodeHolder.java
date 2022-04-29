@@ -21,7 +21,6 @@ public class MasterCodeHolder {
     public static final MasterCodeWrapper THE_COMPANY_REGISTER = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_IS_THE_COMPANY_REGISTERED_IN_LOCAL_OR_OVERSEAS);
     public static final MasterCodeWrapper ROLE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_ROLE);
 
-    public static final MasterCodeWrapper FACILITY_STATUS = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_FACILITY_STATUS);
     public static final MasterCodeWrapper ROLE_IN_FACILITY = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_ROLE_IN_FACILITY);
     public static final MasterCodeWrapper APPROVAL_STATUS = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
 }

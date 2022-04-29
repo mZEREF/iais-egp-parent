@@ -94,6 +94,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="Patient Age(Years)"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true" id="age">
+                        ${patientInformationDto.patientAge}
+                    </iais:value>
+                </iais:row>
                 <div <c:if test="${patientInformationDto.patientAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"/>

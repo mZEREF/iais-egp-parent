@@ -69,7 +69,7 @@ public class SubmitRevokeDto implements Serializable {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         this.setLoginUser(loginContext.getUserName());
         this.setApplicationDt(new Date());
-        this.setReason(PARAM_REASON_TYPE_DO);
+//        this.setReason(PARAM_REASON_TYPE_DO);
         this.setReasonContent(doRevokeReason);
         this.setRemarks(doRevokeRemarks);
         this.setModule("doRevoke");
@@ -92,7 +92,7 @@ public class SubmitRevokeDto implements Serializable {
         boolean contains = reason.contains(sb.toString());
         //get user name
         if (!contains) {
-            this.setReason(PARAM_REASON_TYPE_AO);
+//            this.setReason(PARAM_REASON_TYPE_AO);
             this.setReasonContent(aoRevokeReason);
         }
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);

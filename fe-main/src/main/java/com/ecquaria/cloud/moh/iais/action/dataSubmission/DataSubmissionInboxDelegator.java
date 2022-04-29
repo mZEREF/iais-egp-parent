@@ -65,6 +65,7 @@ public class DataSubmissionInboxDelegator {
 	private final static  String DS_TYPES               = "dsTypes";
 	private final static  String DS_STATUSES            = "dsStatuses";
 	private final static  String SORT_INIT              = "UPDATED_DT";
+	private final static String SUBMISSION_TYPES       = "submissionTypes";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
     @Autowired
@@ -87,6 +88,7 @@ public class DataSubmissionInboxDelegator {
 		clearSession(request);
 		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) FeInboxHelper.getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
+		ParamUtil.setSessionAttr(request,SUBMISSION_TYPES,(Serializable) FeInboxHelper.getSubmissionTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 	}
 
 	public void clearSession(HttpServletRequest request){

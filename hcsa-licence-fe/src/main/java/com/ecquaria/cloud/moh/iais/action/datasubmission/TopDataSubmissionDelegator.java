@@ -225,7 +225,17 @@ public class TopDataSubmissionDelegator {
         }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
             preparePostTermination(bpc.request);
         }
-        ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
+        TerminationOfPregnancyDto terminationOfPregnancyDto= topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+        if(StringUtil.isEmpty(terminationOfPregnancyDto)){
+            terminationOfPregnancyDto=new TerminationOfPregnancyDto();
+        }
+        PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
+        if(StringUtil.isEmpty(patientInformationDto)){
+            patientInformationDto=new PatientInformationDto();
+        }
+        if(!StringUtil.isEmpty(patientInformationDto.getBirthData())){
+            ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
+        }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
     }
 

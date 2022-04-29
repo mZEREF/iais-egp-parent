@@ -7,12 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -48,10 +43,13 @@ import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ProcessHistoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.AnswerForDifDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.ChklstItemAnswerDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.InsChklItemExcelDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFillCheckListDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
-import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionChecklistDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
@@ -84,7 +82,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_CHECKLIST_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_RESULT_MSG;
@@ -143,6 +140,7 @@ public class InspectionDODelegator {
         session.removeAttribute(KEY_ROUTING_HISTORY_LIST);
         session.removeAttribute(KEY_INS_CHECKLIST_DTO);
         session.removeAttribute(SERLISTDTO);
+        session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
 
 
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
@@ -182,7 +180,7 @@ public class InspectionDODelegator {
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
 
-        InspectionChecklistDto inspectionChecklistDto=inspectionClient.getOfficerChkList(loginContext.getUserId(),appId).getBody();
+        InspectionChecklistDto inspectionChecklistDto=inspectionClient.getChkListDraft(loginContext.getUserId(),appId).getBody();
         if(inspectionChecklistDto==null){
             ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
             inspectionChecklistDto=new InspectionChecklistDto();
@@ -213,9 +211,13 @@ public class InspectionDODelegator {
                                 answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
                                 answerForDifDto.setNcs(answer.getFindings());
                                 answerForDifDto.setSubmitId(orgUserDtoUsers.get(0).getId());
-                                answerForDifDto.setRemark(answer.getRemarks());
+                                answerForDifDto.setRemark(answer.getActionRequired());
                                 answerForDifDto.setSameAnswer(false);
                                 answerForDifDto.setSubmitName(orgUserDtoUsers.get(0).getUserId());
+                                answerForDifDto.setFollowupItem(answer.getFollowupItem());
+                                answerForDifDto.setFollowupAction(answer.getFollowupAction());
+                                answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
+                                answerForDifDto.setDueDate(answer.getDueDate());
                                 answerForDifDtos.add(answerForDifDto);
                                 answerForDifDtoMaps.put(orgUserDtoUsers.get(0).getId(),answerForDifDto);
                             }
@@ -286,11 +288,19 @@ public class InspectionDODelegator {
                         answerForDifDto.setNcs(ncs);
                         answerForDifDto.setAnswer(answer);
                         answerForDifDto.setRemark(remark);
-                        if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
+                        if("NO".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
                             answerForDifDto.setIsRec("1");
                         }else {
                             answerForDifDto.setIsRec("0");
                         }
+                        String follItem =  ParamUtil.getString(request,prefix +"comradFull" + index);
+                        answerForDifDto.setFollowupItem(follItem);
+                        String observeFoll =  ParamUtil.getString(request,prefix +"comObserveFoll" + index);
+                        answerForDifDto.setObserveFollowup(observeFoll);
+                        String follAction =  ParamUtil.getString(request,prefix +"comFollAction" + index);
+                        answerForDifDto.setFollowupAction(follAction);
+                        String dueDate =  ParamUtil.getString(request,prefix +"comDueDate" + index);
+                        answerForDifDto.setDueDate(dueDate);
                         break;
                     }
                     index++;
@@ -310,17 +320,13 @@ public class InspectionDODelegator {
 
 
     public void saveDraft(BaseProcessClass bpc) {
-        // do nothing now
-    }
-
-    public void validateAndSaveChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArrayList<ChklstItemAnswerDto> answerDtos = IaisCommonUtils.genNewArrayList();
         getCommonCheckListMoreData(request);
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionFillCheckListDto comDto = serListDto.getFdtoList().get(0);
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
-        String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+
         boolean isError = true;
         Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
         if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
@@ -337,7 +343,10 @@ public class InspectionDODelegator {
                         answerDto.setConfigId(inspectionCheckQuestionDto.getConfigId());
                         answerDto.setItemId(inspectionCheckQuestionDto.getItemId());
                         answerDto.setSectionId(inspectionCheckQuestionDto.getSectionId());
-                        answerDto.setRemarks(answerForDifDto.getRemark());
+                        answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
+                        answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
+                        answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
+                        answerDto.setDueDate(answerForDifDto.getDueDate());
                         answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
                         answerDtos.add(answerDto);
                         break;
@@ -358,8 +367,52 @@ public class InspectionDODelegator {
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         InspectionChecklistDto checklistDto= (InspectionChecklistDto) ParamUtil.getSessionAttr(request,KEY_INS_CHECKLIST_DTO);
 
-
+        ParamUtil.setRequestAttr(request, "nowTabIn",  "Combined");
         checklistDto.setAnswer(answerDtos);
+        if (!errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setRequestAttr(request, "nowTabIn",  userId);
+            String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
+            ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        } else {
+            serListDto.setCheckListTab("chkList");
+
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            inspectionClient.saveChkListDraft(checklistDto);
+        }
+        ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
+        // do nothing now
+    }
+
+    public void validateAndSaveChecklist(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+
+
+        InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        InspectionFillCheckListDto comDto = serListDto.getFdtoList().get(0);
+        String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
+        String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+        boolean isError = true;
+        Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
+        if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
+
+            if(!IaisCommonUtils.isEmpty(checkList)){
+
+                for(InspectionCheckQuestionDto temp:checkList){
+                    isError = CheckListCommonValidate.verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+userId,errMap);
+                }
+
+            }
+        }
+
+
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+
+        ParamUtil.setRequestAttr(request, "nowTabIn",  "Combined");
         if("next".equalsIgnoreCase(doSubmitAction)) {
 
             if (!errMap.isEmpty()) {
@@ -373,7 +426,16 @@ public class InspectionDODelegator {
                 serListDto.setCheckListTab("chkList");
 
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                inspectionClient.saveOfficerChkList(checklistDto);
+                ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
+                InspectionChecklistDto draftChecklistDto=inspectionClient.getChkListDraft(userId,appId).getBody();
+                InspectionChecklistDto inspectionChecklistDto=new InspectionChecklistDto();
+                inspectionChecklistDto.setApplicationId(appId);
+                inspectionChecklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                inspectionChecklistDto.setUserId(userId);
+                inspectionChecklistDto.setVersion(1);
+                inspectionChecklistDto.setChkLstConfigId(dto.getId());
+                inspectionChecklistDto.setAnswer(draftChecklistDto.getAnswer());
+                inspectionClient.saveCombinedChkList(inspectionChecklistDto);
             }
 //            setChangeTabForChecklist(request);
         }else {
@@ -399,7 +461,7 @@ public class InspectionDODelegator {
         HttpServletRequest request = bpc.request;
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionFindings(appId);
+        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionCombineCheckList(appId);
         String route;
         if (validationResultDto.isPass() || (StringUtils.hasLength(actionValue) && "noValidate".equals(actionValue))) {
             String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
@@ -520,7 +582,6 @@ public class InspectionDODelegator {
             if (StringUtil.isNotEmpty(appId)) {
                 adhocChecklistConfigDto = inspectionClient.getAdhocChecklistConfigDaoByAppid(appId).getBody();
                 ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR, adhocChecklistConfigDto);
-                ParamUtil.setSessionAttr(request, KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR, CopyUtil.copyMutableObject(adhocChecklistConfigDto));
             } else {
                 log.info("-----------application id is null-------");
             }
@@ -542,15 +603,8 @@ public class InspectionDODelegator {
      * @param bpc
      */
     public void saveAdhoc(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        AdhocChecklistConfigDto adhocChecklistConfigDto = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_ADHOC_CHECKLIST_LIST_ATTR);
-        AdhocChecklistConfigDto oldAdhocChecklistConfigDto = (AdhocChecklistConfigDto) ParamUtil.getSessionAttr(request, KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
-        if (isEditAdhocCheckListConfig(adhocChecklistConfigDto, oldAdhocChecklistConfigDto)) {
-            inspectionClient.saveAdhocChecklistConfig(adhocChecklistConfigDto);
-        }
-        HttpSession session = request.getSession();
-        session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
-        session.removeAttribute(KEY_ADHOC_CHECKLIST_OLD_LIST_ATTR);
+        // save move to adhocChecklistDelegator
+        bpc.getSession().removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
     }
 
     private Boolean validateChklItemExcelDto(List<ChklstItemAnswerDto> data, String sheetName, String chkLstConfigId,
@@ -631,6 +685,13 @@ public class InspectionDODelegator {
         return NewDocInfo.toNewDocInfo(DocConstants.DOC_TYPE_INS_CHECKLIST, loginContext.getUserId(), file);
     }
 
+    /**
+     * Download / export Template
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/inspection/checklist/exporting-template")
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -642,9 +703,16 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, null, response);
+        exportExcel(null, configDto, null, "Inspection_Checklist_Template", response);
     }
 
+    /**
+     * Download / export Data
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/inspection/checklist/exporting-data")
     public void exportData(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -672,15 +740,15 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, answerMap, response);
+        exportExcel(null, configDto, answerMap, "Inspection_Checklist", response);
     }
 
     private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
-            Map<String, ChklstItemAnswerDto> answerMap, HttpServletResponse response) throws Exception {
+            Map<String, ChklstItemAnswerDto> answerMap, String filename, HttpServletResponse response) throws Exception {
         try {
             File configInfoTemplate = ResourceUtils.getFile("classpath:template/Inspection_Checklist_Template.xlsx");
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, answerMap, true);
-            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, "Inspection_Checklist_Template");
+            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, filename);
             FileUtils.writeFileResponseContent(response, inputFile);
             FileUtils.deleteTempFile(inputFile);
         } catch (Exception e) {
@@ -792,46 +860,5 @@ public class InspectionDODelegator {
         widthMap.put(8, 25);
         widthMap.put(9, 15);
         return widthMap;
-    }
-
-    /**
-     * jude AdhocCheckListConfig is change
-     *
-     * @param adhocChecklistConfigDto    current AdhocChecklistConfig
-     * @param adhocChecklistConfigDtoOld old AdhocChecklistConfig
-     * @return
-     */
-    private boolean isEditAdhocCheckListConfig(AdhocChecklistConfigDto adhocChecklistConfigDto, AdhocChecklistConfigDto adhocChecklistConfigDtoOld) {
-        if (adhocChecklistConfigDto == null && adhocChecklistConfigDtoOld == null) {
-            return false;
-        }
-        if (adhocChecklistConfigDto == null || adhocChecklistConfigDtoOld == null) {
-            return true;
-        }
-        List<AdhocChecklistItemDto> allAdhocItem = adhocChecklistConfigDto.getAdhocChecklistItemList();
-        List<AdhocChecklistItemDto> oldAdhocItems = adhocChecklistConfigDtoOld.getAdhocChecklistItemList();
-        if (IaisCommonUtils.isEmpty(allAdhocItem) && IaisCommonUtils.isEmpty(oldAdhocItems)) {
-            return false;
-        }
-        if (IaisCommonUtils.isEmpty(allAdhocItem) || IaisCommonUtils.isEmpty(oldAdhocItems)) {
-            return true;
-        }
-
-        if (allAdhocItem.size() != oldAdhocItems.size()) {
-            return true;
-        }
-        for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem) {
-            boolean haveAhoc = false;
-            for (AdhocChecklistItemDto adhocChecklistItemDtoOld : oldAdhocItems) {
-                if (adhocChecklistItemDtoOld.getId().equalsIgnoreCase(adhocChecklistItemDto.getId())) {
-                    haveAhoc = true;
-                    break;
-                }
-            }
-            if (!haveAhoc) {
-                return true;
-            }
-        }
-        return false;
     }
 }

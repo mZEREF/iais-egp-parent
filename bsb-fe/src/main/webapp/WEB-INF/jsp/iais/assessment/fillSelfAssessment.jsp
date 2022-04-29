@@ -29,23 +29,14 @@
             <input type="hidden" name="action_additional" value="">
             <span class="error-msg"><c:out value="${error_message}"/></span>
             <div class="dashboard-gp" style="margin-top: 30px">
-                <c:forEach var="checklistConfigDto" items="${checklistConfigDtos}" varStatus="status">
-                    <div class="dashboard-tile-item">
-                        <div class="dashboard-tile" id="myBody">
-                            <a data-tab="#tabInbox"
-                               onclick="javascript:switchNextStep('config-${status.index}');">
-                                <c:choose>
-                                    <c:when test="${checklistConfigDto.common eq true}">
-                                        <p class="dashboard-txt">General Regulation</p>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p class="dashboard-txt">BSB Regulation</p>
-                                    </c:otherwise>
-                                </c:choose>
-                            </a>
-                        </div>
+                <div class="dashboard-tile-item">
+                    <div class="dashboard-tile" id="myBody">
+                        <a data-tab="#tabInbox"
+                           onclick="javascript:switchNextStep('config-0');">
+                            <p class="dashboard-txt">BSB Regulation</p>
+                        </a>
                     </div>
-                </c:forEach>
+                </div>
             </div>
             <div>
                 <%@include file="../chklst/checkListAnswer.jsp" %>

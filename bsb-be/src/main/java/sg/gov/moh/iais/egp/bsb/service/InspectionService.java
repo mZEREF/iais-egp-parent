@@ -1,16 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -22,6 +15,15 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.AnswerForDifDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.ChecklistQuestionDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionCheckQuestionDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFDtosDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.InspectionFillCheckListDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.ItemDto;
+import sg.gov.moh.iais.egp.bsb.dto.chklst.SectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistItemDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
@@ -344,7 +346,7 @@ public class InspectionService {
         return answerForDifDtoCopys;
     }
     private Boolean isSameByStrings(String s1,String s2,String answer){
-        if("No".equalsIgnoreCase(answer)){
+        if("NO".equalsIgnoreCase(answer)){
             if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
                 return Boolean.FALSE;
             }
@@ -393,7 +395,7 @@ public class InspectionService {
                 for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
                     totalNum++;
                     if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                        if( "No".equalsIgnoreCase(cqDto.getChkanswer())){
+                        if( "NO".equalsIgnoreCase(cqDto.getChkanswer())){
                             if(StringUtil.isNotEmpty(cqDto.getRemark()) && StringUtil.isNotEmpty(cqDto.getNcs())){
                                 ncNum++;
                             }
@@ -414,15 +416,63 @@ public class InspectionService {
             List<SectionDto> sectionDtos = inspectionFillCheckListDto.getSectionDtoList();
             if(sectionDtos != null && sectionDtos.size() > 0){
                 for(SectionDto sectionDto : sectionDtos){
-                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0){
+                    if(sectionDto != null && sectionDto.getItemDtoList() != null && sectionDto.getItemDtoList().size() > 0) {
                         List<ItemDto> itemDtoList = sectionDto.getItemDtoList();
-                        for(ItemDto itemDto : itemDtoList){
-                            if(itemDto.getIncqDto() != null)
+                        for (ItemDto itemDto : itemDtoList) {
+                            if (itemDto.getIncqDto() != null)
                                 itemDto.getIncqDto().setSectionNameShow(StringUtil.getFilterSpecialCharacter(itemDto.getIncqDto().getSectionNameSub()));
                         }
                     }
                 }
             }
         }
+    }
+
+    public AdhocChecklistConfigDto saveAdhocChecklistConfig(AdhocChecklistConfigDto currentAdhocChecklistConfig, AdhocChecklistConfigDto oldAdhocChecklistConfig) {
+        if (isEditAdhocCheckListConfig(currentAdhocChecklistConfig, oldAdhocChecklistConfig)) {
+            return inspectionClient.saveAdhocChecklistConfig(currentAdhocChecklistConfig).getBody();
+        }
+        return currentAdhocChecklistConfig;
+    }
+
+    /**
+     * jude AdhocCheckListConfig is change
+     *
+     * @param adhocChecklistConfigDto    current AdhocChecklistConfig
+     * @param adhocChecklistConfigDtoOld old AdhocChecklistConfig
+     * @return
+     */
+    private boolean isEditAdhocCheckListConfig(AdhocChecklistConfigDto adhocChecklistConfigDto, AdhocChecklistConfigDto adhocChecklistConfigDtoOld) {
+        if (adhocChecklistConfigDto == null && adhocChecklistConfigDtoOld == null) {
+            return false;
+        }
+        if (adhocChecklistConfigDto == null || adhocChecklistConfigDtoOld == null) {
+            return true;
+        }
+        List<AdhocChecklistItemDto> allAdhocItem = adhocChecklistConfigDto.getAdhocChecklistItemList();
+        List<AdhocChecklistItemDto> oldAdhocItems = adhocChecklistConfigDtoOld.getAdhocChecklistItemList();
+        if (IaisCommonUtils.isEmpty(allAdhocItem) && IaisCommonUtils.isEmpty(oldAdhocItems)) {
+            return false;
+        }
+        if (IaisCommonUtils.isEmpty(allAdhocItem) || IaisCommonUtils.isEmpty(oldAdhocItems)) {
+            return true;
+        }
+
+        if (allAdhocItem.size() != oldAdhocItems.size()) {
+            return true;
+        }
+        for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem) {
+            boolean haveAhoc = false;
+            for (AdhocChecklistItemDto adhocChecklistItemDtoOld : oldAdhocItems) {
+                if (adhocChecklistItemDtoOld.getId().equalsIgnoreCase(adhocChecklistItemDto.getId())) {
+                    haveAhoc = true;
+                    break;
+                }
+            }
+            if (!haveAhoc) {
+                return true;
+            }
+        }
+        return false;
     }
 }

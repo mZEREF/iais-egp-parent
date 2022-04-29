@@ -68,7 +68,6 @@
                                 <input type="checkbox"
                                        <c:if test="${newReqInfo.informationRequired==true}">checked</c:if>
                                        onchange="checkTitleInfo()"
-                                       value = "0"
                                        name = "info" />&nbsp;Information
                             </label>
                         </div>
@@ -77,7 +76,6 @@
                                 <input type="checkbox"
                                        <c:if test="${newReqInfo.supportingDocRequired==true}">checked</c:if>
                                        onchange="checkTitleDoc()"
-                                       value = "0"
                                        name ="doc" />&nbsp;Supporting Documents
                             </label>
                         </div>
