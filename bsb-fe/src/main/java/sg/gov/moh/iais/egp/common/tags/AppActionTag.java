@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AppActionTag extends SimpleTagSupport {
     private AppMainInfo info;
-
+    private String attributeKey;
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -35,12 +35,18 @@ public class AppActionTag extends SimpleTagSupport {
                 context.setAttribute(judge.getClass().getSimpleName(), Boolean.FALSE);
             }
         }
-        context.setAttribute("actionAvailable", actionAvailable);
+        context.setAttribute(this.attributeKey, actionAvailable);
     }
-
-
 
     public void setInfo(AppMainInfo info) {
         this.info = info;
+    }
+
+    public String getAttributeKey() {
+        return attributeKey;
+    }
+
+    public void setAttributeKey(String attributeKey) {
+        this.attributeKey = attributeKey;
     }
 }
