@@ -222,8 +222,9 @@ public class BsbAdhocRfiDelegator {
         newAdhocRfiDto.setSupportingDocRequired("1".equals(doc));
         newAdhocRfiDto.setTitleOfInformationRequired(information);
         newAdhocRfiDto.setTitleOfSupportingDocRequired(documentsTitle);
+        ParamUtil.setRequestAttr(request, "newReqInfo", newAdhocRfiDto);
         validateData(newAdhocRfiDto,request);
-        ParamUtil.setSessionAttr(request, "newReqInfo", newAdhocRfiDto);
+
     }
 
     public void doGreateRfi(BaseProcessClass bpc){
