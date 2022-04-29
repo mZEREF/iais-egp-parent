@@ -7,7 +7,7 @@
                                                 <thead>
                                                 <tr>
                                                     <th scope="col" >No.</th>
-                                                    <th scope="col" >Regulation Clause Number</th>
+                                                    <th scope="col" >Item Description</th>
                                                     <th scope="col" width="30%">Item</th>
                                                     <th scope="col" >Inspector</th>
                                                     <th scope="col" >Yes/No/NA</th>
