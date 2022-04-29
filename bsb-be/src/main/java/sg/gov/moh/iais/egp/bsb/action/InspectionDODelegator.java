@@ -621,6 +621,13 @@ public class InspectionDODelegator {
         return NewDocInfo.toNewDocInfo(DocConstants.DOC_TYPE_INS_CHECKLIST, loginContext.getUserId(), file);
     }
 
+    /**
+     * Download / export Template
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/inspection/checklist/exporting-template")
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -632,9 +639,16 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, null, response);
+        exportExcel(null, configDto, null, "Inspection_Checklist_Template", response);
     }
 
+    /**
+     * Download / export Data
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/inspection/checklist/exporting-data")
     public void exportData(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -662,15 +676,15 @@ public class InspectionDODelegator {
         } else {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
         }
-        exportExcel(null, configDto, answerMap, response);
+        exportExcel(null, configDto, answerMap, "Inspection_Checklist", response);
     }
 
     private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
-            Map<String, ChklstItemAnswerDto> answerMap, HttpServletResponse response) throws Exception {
+            Map<String, ChklstItemAnswerDto> answerMap, String filename, HttpServletResponse response) throws Exception {
         try {
             File configInfoTemplate = ResourceUtils.getFile("classpath:template/Inspection_Checklist_Template.xlsx");
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, answerMap, true);
-            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, "Inspection_Checklist_Template");
+            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, filename);
             FileUtils.writeFileResponseContent(response, inputFile);
             FileUtils.deleteTempFile(inputFile);
         } catch (Exception e) {

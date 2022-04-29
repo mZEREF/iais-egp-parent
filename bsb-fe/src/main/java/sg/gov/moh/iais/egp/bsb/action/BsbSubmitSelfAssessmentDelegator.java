@@ -526,6 +526,13 @@ public class BsbSubmitSelfAssessmentDelegator {
         return NewDocInfo.toNewDocInfo(DocConstants.DOC_TYPE_SELF_ASSESSMENT, loginContext.getUserId(), file);
     }
 
+    /**
+     * Download / export Template
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/self-assessment/exporting-template")
     public void exportTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -533,9 +540,16 @@ public class BsbSubmitSelfAssessmentDelegator {
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
         ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
         //ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
-        exportExcel(null, configDto, null, response);
+        exportExcel(null, configDto, "Self_Assessment_Template", null, response);
     }
 
+    /**
+     * Download / export Data
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
     @GetMapping(value = "/self-assessment/exporting-data")
     public void exportData(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -565,17 +579,16 @@ public class BsbSubmitSelfAssessmentDelegator {
                 }
             }
         }
-        exportExcel(commonConfigDto, configDto, answerMap, response);
+        exportExcel(commonConfigDto, configDto, "Self_Assessment", answerMap, response);
     }
 
-    private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto,
+    private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto, String filename,
             Map<String, ChklstItemAnswerDto> answerMap, HttpServletResponse response) throws Exception {
         try {
             File configInfoTemplate = ResourceUtils.getFile("classpath:template/Self_Assessment_Template.xlsx");
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(commonConfigDto, configDto, answerMap, true);
-            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, "Self_Assessment_Template");
+            File inputFile = ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate, filename);
             FileUtils.writeFileResponseContent(response, inputFile);
-            //FileUtils.deleteTempFile(configInfoTemplate);
             FileUtils.deleteTempFile(inputFile);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
