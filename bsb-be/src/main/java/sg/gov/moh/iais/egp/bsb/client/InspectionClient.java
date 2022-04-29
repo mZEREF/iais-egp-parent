@@ -225,6 +225,4 @@ public interface InspectionClient {
     @GetMapping(value = "/inspection/chkListAnswerOfficer/{userId}/{applicationid}")
     ResponseEntity<InspectionChecklistDto> getOfficerChkList(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
 
-    @PostMapping(value = "/inspection/officerChkListAnswer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> saveOfficerChkList(@RequestBody InspectionChecklistDto chkList);
 }

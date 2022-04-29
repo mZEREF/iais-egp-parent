@@ -371,7 +371,7 @@ public class InspectionDODelegator {
                 serListDto.setCheckListTab("chkList");
 
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                inspectionClient.saveOfficerChkList(checklistDto);
+                inspectionClient.saveCombinedChkList(checklistDto);
             }
 //            setChangeTabForChecklist(request);
         }else {
