@@ -15,7 +15,7 @@
                         <iais:field width="5" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_CYCLE_STAGE_AMENDMENT"
-                                         value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
+                                         value="${dataSubmission.amendReason}" id="amendReason" cssClass="amendReasonSel"
                                          onchange="toggleOnSelect(this, 'PCS_002', 'amendReasonOtherDiv')"/>
                         </iais:value>
                     </iais:row>

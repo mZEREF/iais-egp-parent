@@ -17,10 +17,19 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="dashboard-page-title">
-                        <h1 class="font-weight 0">New Data Submission</h1>
-                        <h3 style="font-weight: normal">You are submitting for <strong>Termination Of Pregnancy</strong></h3>
-                    </div>
+                    <c:if test="${topSuperDataSubmissionDto.dataSubmissionDto.appType eq 'DSTY_005'}">
+                        <div class="dashboard-page-title">
+                            <h1 class="font-weight 0">Amendment</h1>
+                            <h3 style="font-weight: normal">You are amending for <strong>Termination Of Pregnancy</strong></h3>
+                        </div>
+                    </c:if>
+                    <c:if test="${topSuperDataSubmissionDto.dataSubmissionDto.appType ne 'DSTY_005'}">
+                        <div class="dashboard-page-title">
+                            <h1 class="font-weight 0">New Data Submission</h1>
+                            <h3 style="font-weight: normal">You are submitting for <strong>Termination Of Pregnancy</strong></h3>
+                        </div>
+                    </c:if>
+
                 </div>
             </div>
         </div>

@@ -117,6 +117,10 @@ public class MohDsPrintDelegator {
             } else {
                 dataSubmissionDto.setDeclaration(null);
             }
+            String amendReason = ParamUtil.getString(request, "amendReason");
+            String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
+            dataSubmissionDto.setAmendReason(amendReason);
+            dataSubmissionDto.setAmendReasonOther(amendReasonOther);
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
         }
         return AppConsts.YES;

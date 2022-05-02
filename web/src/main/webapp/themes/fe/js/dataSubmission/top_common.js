@@ -152,7 +152,15 @@ function printData() {
         if (isEmpty(printflag)) {
             printflag = '';
         }
-        return {declaration: declaration, printflag: printflag};
+        var amendReason = $('#amendReason').val();
+        if (isEmpty(amendReason)) {
+            amendReason = '';
+        }
+        var amendReasonOther = $('#amendReasonOther').val();
+        if (isEmpty(amendReasonOther)) {
+            amendReasonOther = '';
+        }
+        return {declaration: declaration, printflag: printflag, amendReason:amendReason, amendReasonOther:amendReasonOther};
     }
 
 }

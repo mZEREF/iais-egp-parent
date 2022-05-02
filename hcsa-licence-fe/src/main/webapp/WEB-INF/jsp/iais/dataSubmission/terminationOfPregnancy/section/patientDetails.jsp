@@ -142,7 +142,7 @@
                     </div>
                     <iais:row>
                         <div id="gender" <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
-                                <iais:field width="5" value="Gender of Living Children (By Order)"/>
+                                <iais:field width="5" value="Gender of Living Children (By Order)" mandatory="true"/>
                         </div>
                         <iais:value width="7" cssClass="col-md-7">
                             <div id="genders">
