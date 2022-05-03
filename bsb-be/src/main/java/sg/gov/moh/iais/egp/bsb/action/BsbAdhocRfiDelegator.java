@@ -24,6 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
@@ -59,6 +60,8 @@ public class BsbAdhocRfiDelegator {
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, null);
         ParamUtil.setSessionAttr(request, "newReqInfo", null);
         ParamUtil.setSessionAttr(request, "viewReqInfo", null);
+        String approvalId=ParamUtil.getMaskedString(request,"approvalId");
+        ParamUtil.setSessionAttr(request, "approvalId", approvalId);
 
     }
     /**
@@ -67,9 +70,8 @@ public class BsbAdhocRfiDelegator {
     public void preAdhocRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, KEY_ADHOC_RFI_LIST, null);
-        String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
-       /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
-        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
+
+        String approvalId = (String) ParamUtil.getSessionAttr(request, "approvalId");
         AdhocRfiQueryDto searchDto = getSearchDto(request);
         searchDto.setApprovalId(approvalId);
         ParamUtil.setSessionAttr(request, KEY_ADHOC_LIST_SEARCH_DTO, searchDto);
@@ -107,7 +109,9 @@ public class BsbAdhocRfiDelegator {
         if(isValidate !=null && !isValidate.equals("true")){
             viewAdhocRfiDto = (ViewAdhocRfiDto) ParamUtil.getSessionAttr(request,"viewReqInfo");
         }
-
+        if(!StringUtil.isEmpty(viewAdhocRfiDto.getDueDate())){
+            viewAdhocRfiDto.setDueDateShow(viewAdhocRfiDto.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
         ParamUtil.setSessionAttr(request, "viewReqInfo", viewAdhocRfiDto);
         String[] status=new String[]{viewAdhocRfiDto.getStatus()};
         if(viewAdhocRfiDto.getStatus().equals("RFIST002")){
@@ -129,7 +133,8 @@ public class BsbAdhocRfiDelegator {
         String date = ParamUtil.getString(request,"dueDate");
         String status = ParamUtil.getString(request,"status");
         if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
-            viewAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            viewAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            viewAdhocRfiDto.setDueDateShow(date);
         }
         viewAdhocRfiDto.setStatus(status);
         ValidationResultDto validationResultDto = adhocRfiClient.validateManualAdhocRfiUpdate(viewAdhocRfiDto);
@@ -186,13 +191,14 @@ public class BsbAdhocRfiDelegator {
      */
     public void preNewAdhocRfi(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String approvalId = "A81E0F0E-1DB7-EC11-BE76-000C298D317C";
-          /* String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
-        approvalId = MaskUtil.unMaskValue("id", approvalId);*/
+        String approvalId = (String) ParamUtil.getSessionAttr(request, "approvalId");
         NewAdhocRfiDto newAdhocRfiDto = adhocRfiClient.queryPreNewData(approvalId).getEntity();
         String isValidate = (String) ParamUtil.getRequestAttr(request,IS_VALIDATE);
         if(isValidate !=null && !isValidate.equals("true")){
-            newAdhocRfiDto = (NewAdhocRfiDto) ParamUtil.getSessionAttr(request,"newReqInfo");
+            newAdhocRfiDto = (NewAdhocRfiDto) ParamUtil.getRequestAttr(request,"newReqInfo");
+        }
+        if(!StringUtil.isEmpty(newAdhocRfiDto.getDueDate())){
+            newAdhocRfiDto.setDueDateShow(newAdhocRfiDto.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
         String[] status=new String[]{"RFIST001"};
         List<SelectOption> statusList= MasterCodeUtil.retrieveOptionsByCodes(status);
@@ -211,17 +217,26 @@ public class BsbAdhocRfiDelegator {
         String status = ParamUtil.getString(request,"status");
         String info = ParamUtil.getString(request,"info");
         String doc = ParamUtil.getString(request,"doc");
-        String information = ParamUtil.getString(request,"information");
+        String information = ParamUtil.getString(request,"informationTitle");
         String documentsTitle = ParamUtil.getString(request,"documentsTitle");
         newAdhocRfiDto.setTitle(rfiTitle);
         if(!StringUtil.isEmpty(date)&&CommonValidator.isDate(date)){
             newAdhocRfiDto.setDueDate(LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            newAdhocRfiDto.setDueDateShow(date);
         }
         newAdhocRfiDto.setStatus(status);
-        newAdhocRfiDto.setInformationRequired("1".equals(info));
-        newAdhocRfiDto.setSupportingDocRequired("1".equals(doc));
-        newAdhocRfiDto.setTitleOfInformationRequired(information);
-        newAdhocRfiDto.setTitleOfSupportingDocRequired(documentsTitle);
+        newAdhocRfiDto.setSupportingDocRequired("documents".equals(doc));
+        newAdhocRfiDto.setInformationRequired("information".equals(info));
+        if(!StringUtil.isEmpty(info)&&"information".equals(info)){
+            newAdhocRfiDto.setTitleOfInformationRequired(information);
+        }else {
+            newAdhocRfiDto.setTitleOfInformationRequired(null);
+        }
+        if(!StringUtil.isEmpty(doc)&&"documents".equals(doc)){
+            newAdhocRfiDto.setTitleOfSupportingDocRequired(documentsTitle);
+        }else {
+            newAdhocRfiDto.setTitleOfSupportingDocRequired(null);
+        }
         ParamUtil.setRequestAttr(request, "newReqInfo", newAdhocRfiDto);
         validateData(newAdhocRfiDto,request);
 
