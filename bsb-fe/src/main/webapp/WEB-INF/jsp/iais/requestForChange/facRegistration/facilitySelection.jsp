@@ -56,7 +56,6 @@
                     <%--@elvariable id="serviceSelection" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto"--%>
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
-                        <%@include file="../../mainAppCommon/facRegistration/facilitySelection.jsp"%>
                     </div>
                 </div>
             </div>

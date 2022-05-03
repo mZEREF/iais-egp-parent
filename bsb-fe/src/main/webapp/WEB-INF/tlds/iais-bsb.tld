@@ -119,4 +119,46 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Import all constants of a constant class tag</description>
+        <name>global-constants</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.GlobalConstantsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>classFullName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>attributeKey</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Import a constant of a constant class tag</description>
+        <name>single-constant</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.SingleConstantTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>constantName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>classFullName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>attributeKey</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </taglib>

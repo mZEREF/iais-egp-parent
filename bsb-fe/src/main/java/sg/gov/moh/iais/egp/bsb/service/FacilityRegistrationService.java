@@ -480,11 +480,9 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, scheduleTypeOps.get(0).getValue());
 
         // convert BatBasicInfo to SelectOption object
-        SelectOption pleaseSelect = new SelectOption("", "Please Select");
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
         for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
             List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
-            optionList.add(pleaseSelect);
             for (BatBasicInfo info : entry.getValue()) {
                 SelectOption option = new SelectOption();
                 option.setText(info.getName());
