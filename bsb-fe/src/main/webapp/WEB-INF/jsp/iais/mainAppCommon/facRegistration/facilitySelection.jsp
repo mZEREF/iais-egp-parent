@@ -32,16 +32,12 @@
         <label for="bsl3fssba" class="form-check-label"><span class="check-square"></span>Possession of First and/or Second Schedule Biological Agent</label>
     </div>
     <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3lspfsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}"/>
-        <label for="bsl3lspfsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3lsptsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}"/>
-        <label for="bsl3lsptsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of Third Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
         <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3pfst" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}"/>
         <label for="bsl3pfst" class="form-check-label"><span class="check-square"></span>Possession of Fifth Schedule Toxin</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3lspba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}"/>
+        <label for="bsl3lspba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First and/or Third Schedule Biological Agent</label>
     </div>
     <div class="form-check">
         <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3hnfspim" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL3 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}"/>
@@ -54,16 +50,12 @@
         <label for="bsl4fssba" class="form-check-label"><span class="check-square"></span>Possession of First and/or Second Schedule Biological Agent</label>
     </div>
     <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4lspfsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}"/>
-        <label for="bsl4lspfsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4lsptsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}"/>
-        <label for="bsl4lsptsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of Third Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
         <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4pfst" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}"/>
         <label for="bsl4pfst" class="form-check-label"><span class="check-square"></span>Possession of Fifth Schedule Toxin</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4lspba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}"/>
+        <label for="bsl4lspba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First and/or Third Schedule Biological Agent</label>
     </div>
     <div class="form-check">
         <input type="checkbox" class="form-check-input" name="bsl4ActviTypes" id="bsl4hnfspim" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_BSL4 and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}"/>
@@ -76,16 +68,12 @@
         <label for="uffsba" class="form-check-label"><span class="check-square"></span>Possession of First Schedule Biological Agent</label>
     </div>
     <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="ufActviTypes" id="uflspfsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_UF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}"/>
-        <label for="uflspfsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="ufActviTypes" id="uflsptsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_UF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}"/>
-        <label for="uflsptsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of Third Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
         <input type="checkbox" class="form-check-input" name="ufActviTypes" id="uffst" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_UF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}"/>
         <label for="uffst" class="form-check-label"><span class="check-square"></span>Possession of Fifth Schedule Toxin</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="ufActviTypes" id="uflspba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_UF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}"/>
+        <label for="uflspba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First and/or Third Schedule Biological Agent</label>
     </div>
 </div>
 <div id="lspfTypes" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_LSPF}">style="display: none"</c:if>>
@@ -94,16 +82,12 @@
         <label for="lspffsba" class="form-check-label"><span class="check-square"></span>Possession of First Schedule Biological Agent</label>
     </div>
     <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="lspfActviTypes" id="lspflspfsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_LSPF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}"/>
-        <label for="lspflspfsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="lspfActviTypes" id="lspflsptsba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_LSPF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}"/>
-        <label for="lspflsptsba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of Third Schedule Biological Agent</label>
-    </div>
-    <div class="form-check">
         <input type="checkbox" class="form-check-input" name="lspfActviTypes" id="lspffst" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_LSPF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}"/>
         <label for="lspffst" class="form-check-label"><span class="check-square"></span>Possession of Fifth Schedule Toxin</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="lspfActviTypes" id="lspflspba" <c:if test="${serviceSelection.facClassification eq MasterCodeConstants.FAC_CLASSIFICATION_LSPF and serviceSelection.activityTypes.contains(MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}">checked="checked"</c:if> value="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}"/>
+        <label for="lspflspba" class="form-check-label"><span class="check-square"></span>Large-Scale Production of First and/or Third Schedule Biological Agent</label>
     </div>
 </div>
 <div id="rfTypes" <c:if test="${serviceSelection.facClassification ne MasterCodeConstants.FAC_CLASSIFICATION_RF}">style="display: none"</c:if>>

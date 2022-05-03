@@ -78,6 +78,9 @@
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_THIRD_SCHEDULE}" role="tab">Large-Scale Production of Third Schedule Biological Agent</a></li>
                                                 </c:if>
+                                                <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}'>
+                                                    <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}" role="tab">Large-Scale Production of First and/or Third Schedule Biological Agent</a></li>
+                                                </c:if>
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}" role="tab">Possession of Fifth Schedule Toxin</a></li>
                                                 </c:if>
