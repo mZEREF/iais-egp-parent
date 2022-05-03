@@ -23,7 +23,7 @@ public class ArTreatmentSubsidiesStageDtoValidator implements CustomizeValidator
 //        int freshCount = ParamUtil.getInt(request,"freshCount",0);
 //        int frozenCount = ParamUtil.getInt(request,"frozenCount",0);
 //        if ((freshCount >= 3 || frozenCount >= 3) && !arTreatmentSubsidiesStageDto.getIsThereAppeal()){
-//            errorMap.put("isThereAppealShow","Disallow submission if patient's total AR subsidies entered in the system is 3 Fresh / Frozen and option selected for 'Is there an Appeal?' is 'No'");
+//            errorMap.put("isThereAppealShow","Disallow submission if patient's total AR subsidies entered in the system is 3 Fresh / Frozen and option selected for 'Is there an approved appeal?' is 'No'");
 //        }
         return errorMap;
     }
