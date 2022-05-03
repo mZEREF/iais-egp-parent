@@ -66,7 +66,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <select name="salutation"  class="salutationdd" id="salutation">
+                                                <select name="salutation"  class="salutationDropdwon" id="salutation">
                                                     <option value="">Please Select</option>
                                                     <c:forEach var="item" items="${salutationOps}">
                                                         <option value="${item.value}" <c:if test="${facOperator.salutation eq item.value}">selected="selected"</c:if>>${item.text}</option>
@@ -92,7 +92,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-3">
-                                                <select name="idType" class="idTypedd" id="idType">
+                                                <select name="idType" class="idTypeDropdown" id="idType">
                                                     <option value="IDTYPE001" <c:if test="${facOperator.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                                                     <option value="IDTYPE002" <c:if test="${facOperator.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
                                                 </select>
@@ -109,7 +109,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <select name="nationality" class="nationalitydd" id="nationality">
+                                                <select name="nationality" class="nationalityDropdown" id="nationality">
                                                     <option value="">Please Select</option>
                                                     <c:forEach items="${nationalityOps}" var="na">
                                                         <option value="${na.value}" <c:if test="${facOperator.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>

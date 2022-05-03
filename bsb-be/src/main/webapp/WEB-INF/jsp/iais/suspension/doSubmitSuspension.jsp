@@ -106,7 +106,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Type" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select id="suspensionType" class="suspensionTypeDropDownSelect" name="suspensionType">
+                                                                                <select id="suspensionType" class="suspensionTypeDropdown" name="suspensionType">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="SUSPTY002" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY002'}">selected="selected"</c:if>>Suspended (pending investigation)</option>
                                                                                     <option value="SUSPTY004" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY004'}">selected="selected"</c:if>>Suspended (others)</option>
@@ -121,7 +121,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Suspension Type" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select id="suspensionType"  class="suspensionDropSelectDown" name="suspensionType">
+                                                                                <select id="suspensionType"  class="suspensionTyDropdown" name="suspensionType">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="SUSPTY001" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY001'}">selected="selected"</c:if>>Suspended (NC)</option>
                                                                                     <option value="SUSPTY002" <c:if test="${suspensionReinstatementDto.suspensionType eq 'SUSPTY002'}">selected="selected"</c:if>>Suspended (pending investigation)</option>

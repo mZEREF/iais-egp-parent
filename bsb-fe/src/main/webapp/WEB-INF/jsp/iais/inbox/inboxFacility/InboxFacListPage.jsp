@@ -52,7 +52,7 @@
                                     <div class="col-md-6">
                                         <label for="facilityStatus" class="col-sm-3 col-md-4 control-label">Status:</label>
                                         <div class="col-sm-7 col-md-8">
-                                            <select id="facilityStatus" class="facilityStatusDrop" name="facilityStatus">
+                                            <select id="facilityStatus" class="facilityStatusDropdown" name="facilityStatus">
                                                 <option value='<c:out value=""/>' <c:if test="${InboxFacSearchDto.facilityStatus eq ''}">selected="selected"</c:if>>All</option>
                                                 <%--@elvariable id="facilityStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                 <c:forEach var="item" items="${facilityStatusOps}">
@@ -67,7 +67,7 @@
                                     <div class="col-md-6">
                                         <label for="role" class="col-sm-3 col-md-4 control-label">Role:</label>
                                         <div class="col-sm-7 col-md-8">
-                                            <select id="role" class="roleDrop" name="role">
+                                            <select id="role" class="roleDropdown" name="role">
                                                 <option value='<c:out value=""/>' <c:if test="${InboxFacSearchDto.role eq ''}">selected="selected"</c:if>>All</option>
                                                 <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                                 <c:forEach var="item" items="${roleInFacOps}">
@@ -144,7 +144,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select name="facAction${status.index}" id="facAction${status.index}">
+                                                                <select name="facAction${status.index}" class="facActionDropdown${status.index}" id="facAction${status.index}">
                                                                     <option value="">Select</option>
                                                                     <option value="">Apply for Approval</option>
                                                                     <option value="">Renew</option>

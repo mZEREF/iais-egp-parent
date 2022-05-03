@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}"
-                                                 cssClass="scheduleTDropdown"
+                                                 cssClass="scheduleTDropdown${status.index}"
                                                  id="scheduleType--v--${status.index}"
                                                  value="${item.scheduleType}" onchange="schTypeChange(this)"
                                                  options="scheduleType"
@@ -47,7 +47,7 @@
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <iais:select name="bat--v--${status.index}" cssClass="batvSelect" id="bat--v--${status.index}"
+                                    <iais:select name="bat--v--${status.index}" cssClass="batDropdown${status.index}" id="bat--v--${status.index}"
                                                  options="" firstOption="Please Select"
                                                  value="${item.bat}"/>
                                     <span data-err-ind="bat--v--${status.index}" class="error-msg"></span>
@@ -62,7 +62,7 @@
                                     <div class="col-sm-6 col-md-7">
                                             <%--Displayed for First, Second, Third and Fourth Schedule biological agent--%>
                                         <iais:select name="consumeType--v--${status.index}"
-                                                     cssClass="consumeType-v-select"
+                                                     cssClass="consumeTypeDropdown${status.index}"
                                                      id="consumeType--v--${status.index}"
                                                      value="${item.consumeType}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
@@ -93,7 +93,7 @@
                                         <span class="mandatory otherQualificationSpan">*</span>
                                     </div>
                                     <div class="col-sm-6 col-md-7">
-                                        <iais:select name="meaUnit--v--${status.index}" cssClass="meaUnit--v-Dropdown" id="meaUnit--v--${status.index}"
+                                        <iais:select name="meaUnit--v--${status.index}" cssClass="meaUnitDropdown${status.index}" id="meaUnit--v--${status.index}"
                                                      value="${item.meaUnit}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
                                                      firstOption="Please Select"/>

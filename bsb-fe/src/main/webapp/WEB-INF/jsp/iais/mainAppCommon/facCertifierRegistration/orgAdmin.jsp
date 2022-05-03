@@ -42,7 +42,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="nationalityM" class="nationalityMDrop" id="nationalityM">
+            <select name="nationalityM" class="nationalityMDropdown" id="nationalityM">
                 <c:forEach items="${nationalityOps}" var="naM">
                     <option value="${naM.value}" <c:if test="${companyAdmin.mainAdmin.nationality eq naM.value}">selected="selected"</c:if>>${naM.text}</option>
                 </c:forEach>

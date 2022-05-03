@@ -36,7 +36,7 @@
                                         <label for="refNo">Reference No</label>
                                     </div>
                                     <div class="col-sm-6 col-md-7">
-                                        <select name="refNo" class="refNoSelect" id="refNo">
+                                        <select name="refNo" class="refNoDropdown" id="refNo">
                                             <c:forEach var="item" items="${referNoOps}">
                                                 <option value="${MaskUtil.maskValue('refNo',item.value)}" <c:if test="${followup1B.referenceNo eq item.value}">selected = "selected"</c:if>>${item.text}</option>
                                             </c:forEach>

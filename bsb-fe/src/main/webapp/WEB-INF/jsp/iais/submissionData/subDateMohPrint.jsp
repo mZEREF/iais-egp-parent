@@ -25,7 +25,7 @@
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:select cssClass="Salutation disabled" name="hciCode" id="hciCode"  options="personnelOptions" firstOption="Please Select" value="${laboratoryDevelopTestDto.hciCode}"/>
+                                            <iais:select cssClass="hciCodeDropdown" name="hciCode" id="hciCode"  options="personnelOptions" firstOption="Please Select" value="${laboratoryDevelopTestDto.hciCode}"/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>

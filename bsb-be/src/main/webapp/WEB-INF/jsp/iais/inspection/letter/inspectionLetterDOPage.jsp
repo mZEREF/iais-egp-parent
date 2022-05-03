@@ -115,7 +115,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
+                                                                    <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
                                                                         <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
                                                                         <option value="MOHPRO030" <c:if test="${letterDto.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Submit to AO</option>
                                                                     </select>
@@ -130,7 +130,7 @@
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
+                                                                        <select name="selectMohUser" class="selectMohUserDropdown" id="selectMohUser">
                                                                             <option value="">Please Select</option>
                                                                             <c:forEach var="selection" items="${selectRouteToMoh}">
                                                                                 <option value="${selection.value}" <c:if test="${letterDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>

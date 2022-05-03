@@ -50,7 +50,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchProcessType" class="col-sm-3 col-md-2 control-label">Process Type:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchProcessType" class="searchProcessDrop" name="searchProcessType">
+                                        <select id="searchProcessType" class="searchProcessTypeDropdown" name="searchProcessType">
                                             <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${processTypeOps}">
@@ -63,7 +63,7 @@
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchStatus" class="col-sm-3 col-md-2 control-label">Status:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <select id="searchStatus" class="searchStatusDown" name="searchStatus">
+                                        <select id="searchStatus" class="searchStatusDropdown" name="searchStatus">
                                             <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="appStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${appStatusOps}">
@@ -170,7 +170,7 @@
                                                                         </select>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <select id="appAction${status.index}" class="appAction-drop" name="appAction${status.index}" data-action-select="">
+                                                                        <select id="appAction${status.index}" class="appActionDropdown${status.index}" name="appAction${status.index}" data-action-select="">
                                                                             <option value="#" selected="selected">Select</option>
                                                                         <c:if test="${AppEditableJudge}">
                                                                             <c:choose>

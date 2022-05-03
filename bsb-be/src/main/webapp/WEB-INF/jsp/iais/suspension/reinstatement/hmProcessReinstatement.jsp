@@ -146,7 +146,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" width="15" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="hmDecision" class="hmDecisionDropSelect" id="hmDecision">
+                                                                                <select name="hmDecision" class="hmDecisionDropdown" id="hmDecision">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="MOHPRO007" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
                                                                                     <option value="MOHPRO003" <c:if test="${suspensionReinstatementDto.aoDecision eq 'MOHPRO003'}">selected = 'selected'</c:if>>Reject</option>

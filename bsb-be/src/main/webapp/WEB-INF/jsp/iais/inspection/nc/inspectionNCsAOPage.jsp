@@ -120,7 +120,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="processingDecision" class="pd-drop-down" id="processingDecision">
+                                                                    <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                         <option value="MOHPRO026" <c:if test="${insDecision.decision eq 'MOHPRO026'}">selected="selected"</c:if>>Reject and Route to DO for Revision</option>
                                                                         <option value="MOHPRO027" <c:if test="${insDecision.decision eq 'MOHPRO027'}">selected="selected"</c:if>>Accept</option>
                                                                         <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>

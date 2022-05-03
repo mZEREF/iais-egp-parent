@@ -111,7 +111,7 @@
                                                                         <iais:field value="Adjustment Type"
                                                                                     required="true"/>
                                                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                            <iais:select name="adjustment_type" cssClass="adjustment_type-dropDown" options="adjustmentType"
+                                                                            <iais:select name="adjustment_type" cssClass="adjustmentTypeDropDown" options="adjustmentType"
                                                                                          firstOption="Please Select"></iais:select>
                                                                         </div>
                                                                     </iais:row>
@@ -122,7 +122,7 @@
                                                                         <iais:field value="Type of Transfer"
                                                                                     required="true"/>
                                                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                            <iais:select name="type_of_transfer" cssClass="type_of_transferDropdown" options="typeOfTransfer"
+                                                                            <iais:select name="type_of_transfer" cssClass="typeOfTransferDropdown" options="typeOfTransfer"
                                                                                          firstOption="Please Select"></iais:select>
                                                                         </div>
                                                                     </iais:row>

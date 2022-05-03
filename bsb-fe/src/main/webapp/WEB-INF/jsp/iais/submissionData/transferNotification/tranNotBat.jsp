@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}" id="scheduleType--v--${status.index}"
-                                                 cssClass="scheduleTDropdown"
+                                                 cssClass="scheduleTDropdown${status.index}"
                                                  value="${item.scheduleType}" onchange="stChange(this)"
                                                  options="scheduleType"
                                                  firstOption="Please Select"/>
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="batCode--v--${status.index}" id="batCode--v--${status.index}"
-                                                 cssClass="batCode--v-down"
+                                                 cssClass="batCodeDropdown${status.index}"
                                                  options="" firstOption="Please Select"
                                                  value="${item.batCode}"/>
                                     <span data-err-ind="batCode--v--${status.index}" class="error-msg"></span>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="transferType--v--${status.index}" id="transferType--v--${status.index}"
-                                                 cssClass="transferTyDown"
+                                                 cssClass="transferTypeDropdown${status.index}"
                                                  value="${item.transferType}"
                                                  codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
                                                  firstOption="Please Select"/>
@@ -109,7 +109,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-7">
                                         <iais:select name="mstUnit--v--${status.index}" id="mstUnit--v--${status.index}"
-                                                     cssClass="mstUnit--v-down"
+                                                     cssClass="mstUnitDropdown${status.index}"
                                                      value="${item.mstUnit}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
                                                      firstOption="Please Select"/>

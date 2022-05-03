@@ -106,7 +106,7 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <select name="processingDecision"  class="processingDecision-select" id="processingDecision">
+                                                                    <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
                                                                         <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
                                                                         <option value="MOHPRO007" <c:if test="${letterDto.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
                                                                         <option value="MOHPRO008" <c:if test="${letterDto.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to DO</option>

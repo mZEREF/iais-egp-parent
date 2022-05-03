@@ -106,7 +106,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 30;">
-                                                                            <select name="schedule--v--${status.index}" class="schedule-v-Select" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
+                                                                            <select name="schedule--v--${status.index}" class="scheduleDropdown${status.index}" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
                                                                                 <option value="">Please Select</option>
                                                                                 <c:forEach items="${scheduleOps}" var="schedule">
                                                                                     <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
@@ -124,7 +124,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 20;">
-                                                                            <select name="batName--v--${status.index}"  class="batName-v-Dropdown" id="batName--v--${status.index}">
+                                                                            <select name="batName--v--${status.index}"  class="batNameDropdown${status.index}" id="batName--v--${status.index}">
                                                                                 <option value="">Please Select</option>
                                                                                 <c:set var="batNameOps" value="${scheduleBatMap.get(empty info.schedule ? firstScheduleOp : info.schedule)}"/>
                                                                                 <c:forEach items="${batNameOps}" var="name">
@@ -253,7 +253,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <select name="addressTypeT--v--${status.index}" id="addressTypeT--v--${status.index}" data-custom-ind="addressTypeT">
+                                                                                <select name="addressTypeT--v--${status.index}" class="addressTypeTDropdown${status.index}" id="addressTypeT--v--${status.index}" data-custom-ind="addressTypeT">
                                                                                     <option value="">Please Select</option>
                                                                                     <c:forEach items="${addressTypeOps}" var="name">
                                                                                         <option value="${name.value}" <c:if test="${info.addressTypeT eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -439,7 +439,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <select name="countryE--v--${status.index}" id="countryE--v--${status.index}" class="countryEDropdown--v--${status.index}">
+                                                                                <select name="countryE--v--${status.index}" id="countryE--v--${status.index}" class="countryEDropdown${status.index}">
                                                                                     <option value="">Please Select</option>
                                                                                     <c:forEach items="${nationalityOps}" var="na">
                                                                                         <option value="${na.value}" <c:if test="${info.countryE eq na.value}">selected="selected"</c:if>>${na.text}</option>

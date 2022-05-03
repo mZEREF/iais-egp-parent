@@ -2,7 +2,7 @@
     <label for="facClassification" class="col-sm-5 col-md-5 control-label">Facility Classification</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facClassification" class="error-msg"></span>
-        <select name="facClassification" class="facClassification-select" id="facClassification">
+        <select name="facClassification" class="facClassificationDropDown" id="facClassification">
             <c:forEach var="item" items="${facClassificationOps}">
                 <option value="${item.value}" <c:if test="${facSearchDto.facClassification eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>
@@ -54,7 +54,7 @@
     <label for="facStatus" class="col-sm-5 col-md-5 control-label">Facility Status</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="facStatus" class="error-msg"></span>
-        <select name="facStatus" class="facStatusSelect" id="facStatus">
+        <select name="facStatus" class="facStatusDropdown" id="facStatus">
             <c:forEach var="item" items="${facStatusOps}">
                 <option value="${item.value}" <c:if test="${facSearchDto.facStatus eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>
@@ -64,7 +64,7 @@
     <label for="afcName" class="col-sm-5 col-md-5 control-label">Approved Facility Certifier</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="afcName" class="error-msg"></span>
-        <select name="afcName" class="afcName-select" id="afcName">
+        <select name="afcName" class="afcNameDropDown" id="afcName">
             <c:forEach var="item" items="${afcSelectionOps}">
                 <option value="${item.value}" <c:if test="${facSearchDto.afcName eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>

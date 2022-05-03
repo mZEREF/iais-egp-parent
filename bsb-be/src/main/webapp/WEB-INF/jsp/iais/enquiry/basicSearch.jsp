@@ -71,7 +71,7 @@
                                            name="searchChk"/><label for="onChk">&nbsp;Organisation Name</label>
                                 </iais:value>
                             </iais:row>
-                            <iais:row id="selectSearchChkMsg" cssClass="selectSearchChkMsg-select" style="display: none">
+                            <iais:row id="selectSearchChkMsg" cssClass="selectSearchChkMsgDropdown" style="display: none">
                                 <div class="row" height="1"
                                      style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
                                      id="selectSearchChkMsg">

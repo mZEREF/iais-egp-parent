@@ -117,7 +117,7 @@
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="processingDecision" class="psd-select" id="processingDecision">
+                                                                        <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                             <option value="">Please Select</option>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
                                                                             <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_REPORT_FINALISATION}">
@@ -135,7 +135,7 @@
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="selectMohUser" class="selectMohUserDown" id="selectMohUser">
+                                                                        <select name="selectMohUser" class="selectMohUserDropdown" id="selectMohUser">
                                                                             <option value="">Please Select</option>
                                                                             <c:forEach var="selection" items="${selectRouteToMoh}">
                                                                                 <option value="${selection.value}" <c:if test="${processDto.selectMohUser eq selection.value}">selected="selected"</c:if>>${selection.text}</option>

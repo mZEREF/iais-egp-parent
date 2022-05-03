@@ -117,7 +117,7 @@
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
-                                                                        <select name="processingDecision" class="pro-drop" id="processingDecision">
+                                                                        <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                             <option value="">Please Select</option>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}">selected="selected"</c:if>>Approve Inspection Report</option>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back Draft Report</option>

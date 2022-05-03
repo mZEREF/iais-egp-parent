@@ -38,13 +38,13 @@
                             <iais:row>
                                 <iais:field value="Schedule Type"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="scheduleType" cssClass="stSelectDrop" id="scheduleType" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" value="${inventoryParam.scheduleType}" firstOption="Please Select"></iais:select>
+                                    <iais:select name="scheduleType" cssClass="scheduleTypeDropdown" id="scheduleType" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" value="${inventoryParam.scheduleType}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Biological Agent/Toxin"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="bioName" options="bioName" cssClass="bioNameDrop" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
+                                    <iais:select name="bioName" options="bioName" cssClass="bioNameDropdown" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
@@ -107,13 +107,13 @@
                                 <iais:row>
                                     <iais:field value="Receiving Facility"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="recFacility" cssClass="recFacilityDrop" options="facilityNameOps" value="${inventoryParam.recFacility}" firstOption="Please Select"></iais:select>
+                                        <iais:select name="recFacility" cssClass="recFacilityDropdown" options="facilityNameOps" value="${inventoryParam.recFacility}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Name of Biological Agent/Toxin"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="bioName" options="bioName" cssClass="bioNameSelect" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
+                                        <iais:select name="bioName" options="bioName" cssClass="bioNameDropdown" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                             </iais:section>

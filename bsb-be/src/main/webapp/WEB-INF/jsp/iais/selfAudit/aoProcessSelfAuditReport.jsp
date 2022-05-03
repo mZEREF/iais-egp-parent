@@ -132,7 +132,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="aoDecision" class="aoDeSelectDrop" id="aoDecision">
+                                                                                <select name="aoDecision" class="aoDecisionDropdown" id="aoDecision">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="MOHPRO007" <c:if test="${processData.aoDecision eq 'MOHPRO007'}">selected = 'selected'</c:if>>Approve</option>
                                                                                     <option value="MOHPRO011" <c:if test="${processData.aoDecision eq 'MOHPRO011'}">selected = 'selected'</c:if>>Internal Clarifications</option>

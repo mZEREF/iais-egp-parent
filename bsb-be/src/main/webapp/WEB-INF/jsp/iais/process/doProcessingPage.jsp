@@ -96,7 +96,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" class="proDecDropDown" id="processingDecision">
+                                                                            <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO004" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO004'}">selected="selected"</c:if>>Recommend Approval</option>
                                                                                 <option value="MOHPRO002" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
