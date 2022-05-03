@@ -180,10 +180,10 @@ public class InspectionDODelegator {
         List<OrgUserDto> orgUserDtoUsers = organizationClient.retrieveOrgUserAccount(ids).getEntity();
         List<InspectionFillCheckListDto> cDtoList =  inspectionService.getServiceChkDtoListByAppPremId(appId,"service",false);
         InspectionFDtosDto inspectionFDtosDto=new InspectionFDtosDto();
-        inspectionFDtosDto.setFdtoList(cDtoList);
 
         inspectionService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(cDtoList.get(0),orgUserDtoUsers);
         inspectionService.getInspectionFillCheckListDtoForShow(cDtoList.get(0));
+        inspectionFDtosDto.setFdtoList(cDtoList);
         List<InspectionChecklistDto> inspectionChecklistDtoList=IaisCommonUtils.genNewArrayList();
         for (OrgUserDto officer:orgUserDtoUsers
              ) {
@@ -199,33 +199,27 @@ public class InspectionDODelegator {
 
                         if(IaisCommonUtils.isNotEmpty(answerDtos)){
                             String prefix = inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
-                            List<AnswerForDifDto> answerForDifDtos = IaisCommonUtils.genNewArrayList();
                             Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(orgUserDtoUsers.size());
-                            for (ChklstItemAnswerDto answer: answerDtos
-                            ) {
-                                if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())){
-                                    AnswerForDifDto answerForDifDto=new AnswerForDifDto();
-                                    answerForDifDto.setAnswer(answer.getAnswer());
-                                    answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
-                                    answerForDifDto.setNcs(answer.getFindings());
-                                    answerForDifDto.setSubmitId(inspectionChecklistDto.getUserId());
-                                    answerForDifDto.setRemark(answer.getActionRequired());
-                                    answerForDifDto.setSameAnswer(false);
-                                    OrgUserDto orgUserDtoUser = organizationClient.retrieveOrgUserAccountById(inspectionChecklistDto.getUserId()).getEntity();
-                                    String submitName=orgUserDtoUser.getDisplayName();
-                                    answerForDifDto.setSubmitName(submitName);
-                                    answerForDifDto.setFollowupItem(answer.getFollowupItem());
-                                    answerForDifDto.setFollowupAction(answer.getFollowupAction());
-                                    answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
-                                    answerForDifDto.setDueDate(answer.getDueDate());
-                                    answerForDifDtos.add(answerForDifDto);
-                                    answerForDifDtoMaps.put(orgUserDtoUsers.get(0).getId(),answerForDifDto);
+                            for (AnswerForDifDto answerForDifDto: inspectionCheckQuestionDto.getAnswerForDifDtos()
+                                 ) {
+                                for (ChklstItemAnswerDto answer: answerDtos
+                                ) {
+                                    if(answer.getItemId()!=null&&answer.getItemId().equals(inspectionCheckQuestionDto.getItemId())&&inspectionChecklistDto.getUserId().equals(answerForDifDto.getSubmitId())){
+                                        answerForDifDto.setAnswer(answer.getAnswer());
+                                        answerForDifDto.setIsRec(answer.getRectified()?"1":"0");
+                                        answerForDifDto.setNcs(answer.getFindings());
+                                        answerForDifDto.setRemark(answer.getActionRequired());
+                                        answerForDifDto.setSameAnswer(false);
+                                        answerForDifDto.setFollowupItem(answer.getFollowupItem());
+                                        answerForDifDto.setFollowupAction(answer.getFollowupAction());
+                                        answerForDifDto.setObserveFollowup(answer.getObserveFollowup());
+                                        answerForDifDto.setDueDate(answer.getDueDate());
+                                        answerForDifDtoMaps.put(officer.getId(),answerForDifDto);
+                                    }
                                 }
                             }
 
-                            inspectionService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
-                            inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
-                            inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
+                            inspectionCheckQuestionDto.getAnswerForDifDtoMaps().putAll(answerForDifDtoMaps);
                         }
                     }
                 }
@@ -251,6 +245,7 @@ public class InspectionDODelegator {
     }
 
     public void preChecklist(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, "nowTabIn",  "Combined");
         // do nothing now
     }
 
@@ -309,11 +304,11 @@ public class InspectionDODelegator {
                             answerForDifDto.setFollowupAction(null);
                             answerForDifDto.setDueDate(null);
                         }
+                        inspectionService.getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForDifDto);
                         break;
                     }
                     index++;
                 }
-                inspectionService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,ParamUtil.getString(request,prefix +"Deconflict"));
             }
             ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         }
@@ -385,7 +380,8 @@ public class InspectionDODelegator {
                     checklistDto.setAnswer(answerDtos);
                 }
             }
-        }else {
+        }
+        if(checklistDto==null){
             checklistDto=new InspectionChecklistDto();
             checklistDto.setApplicationId(serListDto.getFdtoList().get(0).getCheckList().get(0).getAppPreCorreId());
             checklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -422,6 +418,8 @@ public class InspectionDODelegator {
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
         boolean isError = true;
         Map<String, String> errMap =IaisCommonUtils.genNewHashMap();
+        Map<String, String> errMapCombined =IaisCommonUtils.genNewHashMap();
+        ArrayList<ChklstItemAnswerDto> answerDtoList=IaisCommonUtils.genNewArrayList();
         if(comDto != null && comDto.getCheckList()!=null&& !comDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkList = comDto.getCheckList();
 
@@ -429,6 +427,28 @@ public class InspectionDODelegator {
 
                 for(InspectionCheckQuestionDto temp:checkList){
                     isError = CheckListCommonValidate.verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),temp.getFollowupItem(),temp.getObserveFollowup(),temp.getFollowupAction(),temp.getDueDate(),isError,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+userId,errMap);
+
+                    String deconflict=ParamUtil.getRequestString(request,StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"Deconflict");
+                    if(deconflict!=null){
+                        temp.setSameAnswer(true);
+                        temp.setDeconflict(deconflict);
+                        AnswerForDifDto answerForDifDto=temp.getAnswerForDifDtoMaps().get(deconflict);
+                        ChklstItemAnswerDto answerDto=new ChklstItemAnswerDto();
+                        answerDto.setAnswer(answerForDifDto.getAnswer());
+                        answerDto.setFindings(answerForDifDto.getNcs());
+                        answerDto.setActionRequired(answerForDifDto.getRemark());
+                        answerDto.setConfigId(temp.getConfigId());
+                        answerDto.setItemId(temp.getItemId());
+                        answerDto.setSectionId(temp.getSectionId());
+                        answerDto.setFollowupItem(answerForDifDto.getFollowupItem());
+                        answerDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
+                        answerDto.setFollowupAction(answerForDifDto.getFollowupAction());
+                        answerDto.setDueDate(answerForDifDto.getDueDate());
+                        answerDto.setRectified(answerForDifDto.getIsRec().equals("1"));
+                        answerDtoList.add(answerDto);
+                    }else {
+                        errMapCombined.put(StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId()+"com",MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                    }
                 }
 
             }
@@ -437,6 +457,14 @@ public class InspectionDODelegator {
 
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
+        InspectionChecklistDto inspectionChecklistDto=new InspectionChecklistDto();
+        inspectionChecklistDto.setApplicationId(appId);
+        inspectionChecklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        inspectionChecklistDto.setUserId(userId);
+        inspectionChecklistDto.setVersion(1);
+        inspectionChecklistDto.setChkLstConfigId(comDto.getConfigId());
+        inspectionChecklistDto.setAnswer( answerDtoList);
+
 
         ParamUtil.setRequestAttr(request, "nowTabIn",  "Combined");
         if("next".equalsIgnoreCase(doSubmitAction)) {
@@ -450,20 +478,13 @@ public class InspectionDODelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
                 serListDto.setCheckListTab("chkList");
-
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                ChecklistConfigDto dto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.INSPECTION);
-                InspectionChecklistDto draftChecklistDto=inspectionClient.getChkListDraft(userId,appId).getBody();
-                InspectionChecklistDto inspectionChecklistDto=new InspectionChecklistDto();
-                inspectionChecklistDto.setApplicationId(appId);
-                inspectionChecklistDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                inspectionChecklistDto.setUserId(userId);
-                inspectionChecklistDto.setVersion(1);
-                inspectionChecklistDto.setChkLstConfigId(dto.getId());
-                inspectionChecklistDto.setAnswer(draftChecklistDto.getAnswer());
-                inspectionClient.saveCombinedChkList(inspectionChecklistDto);
+                if(errMapCombined.isEmpty()){
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                    inspectionClient.saveCombinedChkList(inspectionChecklistDto);
+                }else {
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                }
             }
-//            setChangeTabForChecklist(request);
         }else {
             serListDto.setCheckListTab("chkList");
 
