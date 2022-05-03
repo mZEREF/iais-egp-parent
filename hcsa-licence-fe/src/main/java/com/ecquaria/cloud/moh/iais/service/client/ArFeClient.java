@@ -223,4 +223,7 @@ public interface ArFeClient {
     FeignResponseEntity<List<DataSubmissionDraftDto>> getRemindDraftsByRemindDays(
             @RequestParam(name = "status") String status,
             @RequestParam(name = "remindDays") int remindDays);
+
+    @PutMapping(value = "/data-submission/draft-status-remind-email", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void>  doUpdateDraftRemindEmailStatus(@RequestBody List<String> draftNos);
 }

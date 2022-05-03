@@ -98,12 +98,7 @@ public class InboxServiceImpl implements InboxService {
         for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
             if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_DRAFT_PENDING.equals(inboxAppQueryDto.getStatus())){
                 ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
-                String draftServiceCode = applicationDraftDto.getServiceCode();
-                if (!draftServiceCode.isEmpty()){
-                    inboxAppQueryDto.setServiceId(HalpStringUtils.splitServiceName(draftServiceCode));
-                }else{
-                    inboxAppQueryDto.setServiceId("N/A");
-                }
+                inboxAppQueryDto.setServiceId(HalpStringUtils.splitServiceName(applicationDraftDto.getServiceCode()));
             }else{
                 if(!inboxAppQueryDto.getServiceId().isEmpty()){
                     inboxAppQueryDto.setServiceId(getServiceNameById(inboxAppQueryDto.getServiceId()));
@@ -121,15 +116,7 @@ public class InboxServiceImpl implements InboxService {
         SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
         List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxAppQueryDtoListRows) {
-            if (StringUtils.isEmpty(inboxQueryDto.getServiceCodes())){
-                inboxQueryDto.setServiceCodes("N/A");
-            }else{
-                String serviceCodes = inboxQueryDto.getServiceCodes();
-                inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
-                if(StringUtil.isEmpty(inboxQueryDto.getServiceCodes())){
-                    inboxQueryDto.setServiceCodes(serviceCodes);
-                }
-            }
+            inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
         }
         return inboxQueryDtoSearchResult;
     }
