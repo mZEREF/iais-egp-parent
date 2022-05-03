@@ -89,7 +89,7 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
 
         if ((thawedOocytesSurvivedMatureNumInt + thawedOocytesSurvivedImmatureNumInt
                 + thawedOocytesSurvivedOtherNumInt) > thawedOocytesNumInt) {
-            errorMap.put("thawedOocytesNum", "Total sum of Thawing (Mature),Thawing (Immature),Thawing (Others) cannot be greater than No. Thawed");
+            errorMap.put("thawedOocytesNum", "Total sum of Thawing (Mature), Thawing (Immature), Thawing (Others) cannot be greater than No. Thawed");
         }
         if (thawedEmbryosSurvivedNumInt > hawedEmbryosNumInt) {
             errorMap.put("thawedEmbryosNum", "Survived Thawing cannot be greater than No. Embryo");
