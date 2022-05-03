@@ -263,16 +263,28 @@ public class TransferInOutDelegator extends CommonDelegator {
     @SneakyThrows
     private void sendTransferOutNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         TransferInOutStageDto transferringDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_EMAIL, transferringDto.getTransOutToLicenseeId(), transferringDto.getTransOutToHciCode());
+        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_OUT_RECEIVE_EMAIL, transferringDto.getTransOutToLicenseeId(), transferringDto.getTransOutToHciCode(), true);
     }
 
     @SneakyThrows
     private void sendTransferInNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         TransferInOutStageDto transferringDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
-        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_EMAIL, transferringDto.getTransInFromLicenseeId(), transferringDto.getTransInFromHciCode());
+        sendNotification(arSuperDataSubmissionDto, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_MEG, MsgTemplateConstants.MSG_TEMPLATE_AR_TRANSFER_IN_RECEIVE_EMAIL, transferringDto.getTransInFromLicenseeId(), transferringDto.getTransInFromHciCode(), false);
     }
 
-    private void sendNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto, String msgTemplateId, String emaillTemplateId, String receiveLicenseeId, String receiveHciCode) throws IOException, TemplateException {
+    /**
+     * send notification and email
+     *
+     * @param arSuperDataSubmissionDto current arSuperDataSubmissionDto
+     * @param msgTemplateId            msg template id
+     * @param emaillTemplateId         email template id
+     * @param receiveLicenseeId        msg receiver
+     * @param receiveHciCode           msg receiver
+     * @param isOut                    current is out stage
+     * @throws IOException
+     * @throws TemplateException
+     */
+    private void sendNotification(ArSuperDataSubmissionDto arSuperDataSubmissionDto, String msgTemplateId, String emaillTemplateId, String receiveLicenseeId, String receiveHciCode, Boolean isOut) throws IOException, TemplateException {
         LicenseeDto receiveLicenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(receiveLicenseeId);
         PremisesDto receivePremises = dsLicenceService.getArPremisesDto(receiveLicenseeDto.getOrganizationId(), receiveHciCode);
 
@@ -291,8 +303,14 @@ public class TransferInOutDelegator extends CommonDelegator {
         String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohTransferInOut?bindStageSubmissionId="
                 + currentSubmissionId;
         msgContentMap.put("submissionerName", submitterName);
-        msgContentMap.put("transferringCenter", transferringCenter);
-        msgContentMap.put("receivingCenter", receivingCenter);
+        // template's transferring and receiving is out and in, so need convert
+        if (isOut) {
+            msgContentMap.put("transferringCenter", transferringCenter);
+            msgContentMap.put("receivingCenter", receivingCenter);
+        } else {
+            msgContentMap.put("transferringCenter", receivingCenter);
+            msgContentMap.put("receivingCenter", transferringCenter);
+        }
         msgContentMap.put("systemLink", uri);
         msgContentMap.put("date", Formatter.formatDate(new Date()));
 
