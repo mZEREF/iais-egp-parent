@@ -283,10 +283,15 @@
         </iais:row>
     </div>
     <iais:row>
-        <iais:field width="5" value="Doctor Professional Regn No." mandatory="true"/>
+        <iais:field width="5" value="Professional Registration Number" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" name="doctorRegnNo" value="${terminationDto.doctorRegnNo}" />
+            <iais:input maxLength="20" type="text" name="doctorRegnNo" value="${terminationDto.doctorRegnNo}" onchange="clearDockerSelection();"/>
         </iais:value>
+        <%--<iais:value width="3" cssClass="col-md-3" display="true">
+            <a class="ValidateDoctor" onclick="validateDoctors()">
+                Validate Doctor
+            </a>
+        </iais:value>--%>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Name of Doctor who performed the Termination of Pregnancy" mandatory="true"/>
@@ -296,6 +301,27 @@
     </iais:row>
 </div>
 </c:if>
+<%--<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <span style="font-size: 2rem;" id="prsErrorMsg">
+                            <iais:message key="This Doctor is not authorized to perform Termination of Pregnancy." escape="false" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancels()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="doctorNameSelectionHidden">
+    <input type="hidden" name="names" id="doctorNameHidden" value="${drugSubmission.doctorName}">
+</div>--%>
 <script>
     $(document).ready(function() {
         $('#topType').change(function () {
@@ -519,4 +545,57 @@
             $('#otherTopDrugPlaces').hide();
         }
     }
+    /*function validateDoctors() {
+        console.log('loading info ...');
+        showWaiting();
+        var prgNo =  $('input[name="doctorRegnNo"]').val();
+        if(prgNo == "" || prgNo == null || prgNo == undefined){
+            clearPrsInfo();
+            dismissWaiting();
+            return;
+        }
+        var no = $('input[name="doctorRegnNo"]').val();
+        var jsonData = {
+            'prgNo': no
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/top/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if (isEmpty(data)) {
+                    console.log("The return data is null");
+                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+                    $('#prsErrorMsg').val($('#flagDocMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else if (data.hasException) {
+                    $('#prsErrorMsg').val($('#flagInvaMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else if ('401' == data.statusCode) {
+                    $('#prsErrorMsg').val($('#flagPrnMessage').html());
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo();
+                } else {
+                    loadingSp(data);
+                }
+                dismissWaiting();
+            },
+            'error': function () {
+                console.log('error');
+                clearPrsInfo;
+                dismissWaiting();
+            },
+        });
+    }
+    function cancels() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+    function loadingSp(data) {
+        const name = data.name;
+        $('#names').find('p').text(name);
+        $('#doctorNameHidden').val(name);
+    }*/
 </script>

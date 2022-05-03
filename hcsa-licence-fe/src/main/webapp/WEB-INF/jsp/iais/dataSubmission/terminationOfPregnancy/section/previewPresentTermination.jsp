@@ -110,7 +110,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.topPlace}"/>
+                            <iais:code code="${terminationDto.topPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -132,7 +132,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug Prescribed for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.prescribeTopPlace}"/>
+                            <iais:code code="${terminationDto.prescribeTopPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -153,7 +153,7 @@
                     <iais:row>
                         <iais:field width="5" value="Place of Drug used for Termination of Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
-                            <c:out value="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
+                            <iais:code code="${terminationDto.topDrugPlace == 'AR_SC_001' ? 'Others' : terminationDto.topDrugPlace}"/>
                         </iais:value>
                     </iais:row>
                 </div>

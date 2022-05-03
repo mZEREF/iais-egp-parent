@@ -344,7 +344,10 @@ public class MohDsActionDelegator {
                 dataSubmissionDto.setAmendReasonOther(null);
             }
         }
-
+        String declaration=null;
+        if(!StringUtil.isEmpty(topSuper.getDataSubmissionDto().getDeclaration())){
+            topSuper.getDataSubmissionDto().setDeclaration(declaration);
+        }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuper, request);
         return uri;
     }
