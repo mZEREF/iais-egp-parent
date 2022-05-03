@@ -330,6 +330,10 @@ public class InspectionService {
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
         inspectionCheckQuestionDto.setNcs(answerForDifDto.getNcs());
+        inspectionCheckQuestionDto.setFollowupAction(answerForDifDto.getFollowupAction());
+        inspectionCheckQuestionDto.setFollowupItem(answerForDifDto.getFollowupItem());
+        inspectionCheckQuestionDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
+        inspectionCheckQuestionDto.setDueDate(answerForDifDto.getDueDate());
         return  inspectionCheckQuestionDto;
     }
     private List<AnswerForDifDto> copyAnswerForDifDtos(List<AnswerForDifDto> adhocAnswerForDifDtos){

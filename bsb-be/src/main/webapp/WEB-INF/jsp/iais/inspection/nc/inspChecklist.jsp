@@ -66,19 +66,19 @@
                     <td class="text-center">
                         <div class="form-check">
                         <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'YES'}">checked</c:if> value="YES"  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>Yes</label>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesIns${inspectorsStatus.index}" ><span class="check-circle"></span>Yes</label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
                         <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoIns${inspectorsStatus.index}"  onclick="showCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'NO'}">checked</c:if> value="NO"   ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>No</label>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoIns${inspectorsStatus.index}" ><span class="check-circle"></span>No</label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                        <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'N/A'}">checked</c:if> value='NA'  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>N/A</label>
+                        <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'NA'}">checked</c:if> value='NA'  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaIns${inspectorsStatus.index}" ><span class="check-circle"></span>N/A</label>
                         </div>
                     </td>
                     <td>
@@ -94,7 +94,7 @@
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td class="text-center">
-                        <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comckIns${inspectorsStatus.index}"   <c:if test="${inspComAnswer.answer != 'NO'}">hidden</c:if>>
+                        <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comckIns${inspectorsStatus.index}"   <c:if test="${inspComAnswer.answer != 'NO'}">style="display: none;"</c:if>>
                             <div class="form-check">
                             <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrecIns${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrecIns${inspectorsStatus.index}" type="checkbox" <c:if test="${inspComAnswer.isRec == '1'}">checked</c:if> value="rec"  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/>
                             </div>
@@ -102,36 +102,43 @@
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesFull${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'YES'}">checked</c:if> value="YES"  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesFull${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>Yes</label>
+                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesFull${inspectorsStatus.index}" onclick="showFollUp('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.followupItem eq'YES'}">checked</c:if> value="YES"  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYesFull${inspectorsStatus.index}" ><span class="check-circle"></span>Yes</label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoFull${inspectorsStatus.index}"  onclick="showCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'NO'}">checked</c:if> value="NO"   ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoFull${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>No</label>
+                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoFull${inspectorsStatus.index}" onclick="hideFollUp('${ckkId}','${inspectorsStatus.index}')"  type="radio" <c:if test="${inspComAnswer.followupItem eq'NO'}">checked</c:if> value="NO"   ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNoFull${inspectorsStatus.index}" ><span class="check-circle"></span>No</label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaFull${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.answer eq'N/A'}">checked</c:if> value='NA'  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaFull${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span>N/A</label>
+                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comradFull${inspectorsStatus.index}" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaFull${inspectorsStatus.index}" onclick="hideFollUp('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspComAnswer.followupItem eq'NA'}">checked</c:if> value='NA'  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNaFull${inspectorsStatus.index}" ><span class="check-circle"></span>N/A</label>
                         </div>
                     </td>
                     <td>
-                        <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comObserveFoll${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comObserveFoll${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.observeFollowup}"/></textarea>
-                        <br/>
-                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}observeFoll" var = "err"/>
-                        <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                        <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>observeFollIns${inspectorsStatus.index}" <c:if test="${inspComAnswer.followupItem != 'YES'}">style="display: none;"</c:if>>
+                            <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comObserveFoll${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comObserveFoll${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.observeFollowup}"/></textarea>
+                            <br/>
+                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}observeFoll" var = "err"/>
+                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                        </div>
                     </td>
                     <td>
-                        <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFollAction${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFollAction${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.followupAction}"/></textarea>
-                        <br/>
-                        <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}follAction" var = "err"/>
-                        <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                        <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>follActionIns${inspectorsStatus.index}" <c:if test="${inspComAnswer.followupItem != 'YES'}">style="display: none;"</c:if>>
+                            <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFollAction${inspectorsStatus.index}" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFollAction${inspectorsStatus.index}" maxlength="500"><c:out value="${inspComAnswer.followupAction}"/></textarea>
+                            <br/>
+                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}follAction" var = "err"/>
+                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                        </div>
+
                     </td>
                     <td class="text-center">
-                        <iais:datePicker  id = "${item.incqDto.itemId}${item.incqDto.sectionNameShow}comDueDate${inspectorsStatus.index}" name = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}comDueDate${inspectorsStatus.index}"  value="${inspComAnswer.dueDate}" />
+                        <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comDueDateIns${inspectorsStatus.index}" <c:if test="${inspComAnswer.followupItem != 'YES'}">style="display: none;"</c:if>>
+                            <iais:datePicker  id = "${item.incqDto.itemId}${item.incqDto.sectionNameShow}comDueDate${inspectorsStatus.index}" name = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}comDueDate${inspectorsStatus.index}"  value="${inspComAnswer.dueDate}" />
+                        </div>
                     </td>
                     <td>
                         <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}" var = "err"/>

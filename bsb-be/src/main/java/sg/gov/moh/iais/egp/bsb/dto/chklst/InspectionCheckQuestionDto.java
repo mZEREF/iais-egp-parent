@@ -35,4 +35,8 @@ public class InspectionCheckQuestionDto extends ChecklistQuestionDto implements 
     private String deconflict;
     private String selfAnswer;
     private String ncs;
+    private String followupItem;
+    private String observeFollowup;
+    private String followupAction;
+    private String dueDate;
 }
