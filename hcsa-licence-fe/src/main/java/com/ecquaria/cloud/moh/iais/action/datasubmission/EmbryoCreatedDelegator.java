@@ -162,8 +162,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            }
-            valRFC(bpc.request,embryoCreatedStageDto);
+            }else valRFC(bpc.request,embryoCreatedStageDto);
         }
     }
 
