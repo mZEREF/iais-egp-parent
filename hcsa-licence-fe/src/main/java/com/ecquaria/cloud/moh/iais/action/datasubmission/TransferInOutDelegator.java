@@ -125,6 +125,10 @@ public class TransferInOutDelegator extends CommonDelegator {
                 arChangeInventoryDto.setFrozenSpermNum(num * Integer.parseInt(transferInOutStageDto.getSpermVialsNum()));
             }
         }
+        ArSuperDataSubmissionDto bindArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
+        if (bindArSuperDto != null) {
+            flagInAndOutDiscrepancy(request, transferInOutStageDto, bindArSuperDto);
+        }
         ParamUtil.setRequestAttr(request, WHAT_WAS_TRANSFERREDS, MasterCodeUtil.retrieveByCategory(MasterCodeUtil.WHAT_WAS_TRANSFERRED));
     }
 
@@ -154,8 +158,6 @@ public class TransferInOutDelegator extends CommonDelegator {
             transferInOutStageDto.setOocyteNum(oocyteNum);
             transferInOutStageDto.setEmbryoNum(embryoNum);
             transferInOutStageDto.setSpermVialsNum(spermVialsNum);
-            ArSuperDataSubmissionDto bindArSuperDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
-            flagInAndOutDiscrepancy(request, transferInOutStageDto, bindArSuperDto);
         }
 
         arSuperDataSubmissionDto.setTransferInOutStageDto(transferInOutStageDto);
