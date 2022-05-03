@@ -234,6 +234,12 @@
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <c:out value="${donorSample.ageNumber}"/>
+                                                            <c:if test="${donorSample.ageNumber>donorResultSize}">
+                                                                <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                                   title="<span style='font-size: 2 rem;'>${donorMessageTip}</span>"
+                                                                   style="z-index: 10"
+                                                                   data-original-title="">i</a>
+                                                            </c:if>
                                                         </td>
                                                         <td style="vertical-align:middle;">
                                                             <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}','${donorSample.sampleHciCode}')" class="btn btn-default btn-sm">

@@ -76,6 +76,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Assisted Reproduction Enquiry");
         ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
+        ParamUtil.setSessionAttr(bpc.request, "donorResultSize",Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004")));
+        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
 
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
