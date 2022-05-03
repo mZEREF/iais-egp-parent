@@ -108,9 +108,8 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getTaskList(List<String> taskIds) {
         return taskOrganizationClient.getTaskList(taskIds).getEntity();
     }
-
     @Override
-    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId) throws FeignException {
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId,String workGroupIdAo,String userIdAo) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
         if(applicationDto == null  || StringUtil.isEmpty(statgId)){
@@ -181,15 +180,26 @@ public class TaskServiceImpl implements TaskService {
             if(HcsaConsts.ROUTING_STAGE_INS.equals(statgId)){
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
             }
-             result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                     correlationId,TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
+            log.info(StringUtil.changeForLog("The getRoutingTask workGroupIdAo is -->:"+workGroupIdAo));
+            log.info(StringUtil.changeForLog("The getRoutingTask userIdAo is -->:"+userIdAo));
+            if(StringUtil.isNotEmpty(workGroupIdAo) && StringUtil.isNotEmpty(userIdAo)){
+                workGroupId = workGroupIdAo;
+                userId = userIdAo;
+            }
+            result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
+                    correlationId,TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
                     userId, assignDate,null,score,TaskUrl,roleId,
-                     IaisEGPHelper.getCurrentAuditTrailDto());
+                    IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
         }
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         return result;
+    }
+    @Override
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId) throws FeignException {
+
+        return getRoutingTask(applicationDto,statgId,roleId,correlationId,null,null);
     }
 
     @Override
@@ -403,8 +413,8 @@ public class TaskServiceImpl implements TaskService {
         log.debug(StringUtil.changeForLog("The resultStr is -->:" + resultStr));*/
         return  result;
     }
-
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+    @Override
+    public List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));

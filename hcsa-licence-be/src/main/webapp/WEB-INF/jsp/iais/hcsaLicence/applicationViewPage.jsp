@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -220,9 +221,16 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Assign To" required="false"/>
                                                                                 <iais:value width="10" id="verifyCallAjaxDropDown">
-                                                                                    <iais:select cssClass="verified" name="verified"
+                                                                                    <iais:select cssClass="verified" name="verified" id="verified"
                                                                                                  options="verifiedValues"
                                                                                                  value="${selectVerified}"></iais:select>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                            <iais:row id = "showAoRow">
+                                                                                <iais:field   value=""/>
+                                                                                <iais:value width="10" id = "showAoDiv" cssClass="other-charges-type-div">
+                                                                                    <iais:select name="aoSelect" firstOption="Please Select"
+                                                                                                 value="Assign To"/>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -997,6 +1005,50 @@
         }else{
             $("#tcuLabel").hide();
             $("#tucDate").val("");
+        }
+    }
+
+    $(document).ready(function () {
+        $("#showAoRow").hide();
+        checkAo();
+        $("#verified").change(function () {
+            checkAo();
+        })
+    });
+
+
+    function checkAo(){
+        var verified = $("#verified").val();
+        if(verified != ""){
+            var data = {
+                'verified':verified
+            };
+            showWaiting();
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/check-ao',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                        $("#error_aoSelect").html('');
+                        $("#showAoDiv").html(data.resultJson + '');
+                        $("#aoSelect").niceSelect();
+                        $("#showAoRow").show();
+                    }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                        $("#error_aoSelect").html(data.resultJson + '');
+                        $("#showAoRow").hide();
+                    }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                        $("#error_aoSelect").html('');
+                        $("#showAoRow").hide();
+                    }
+                    // setValue();
+                },
+                'error':function () {
+
+                }
+            });
+            dismissWaiting();
         }
     }
 </script>

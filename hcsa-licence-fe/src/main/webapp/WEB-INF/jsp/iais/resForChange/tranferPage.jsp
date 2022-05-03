@@ -103,9 +103,6 @@
                     overlayCSS: {opacity: 0.2}});
             }
 
-         function checkUEN(uen){
-                alert(uen);
-         }
 
             $(document).ready(function () {
                 $("#subLicenseeRow").hide();
