@@ -38,7 +38,8 @@ public class OocyteRetrievalDtoValidator implements CustomizeValidator {
             errorMap.put("otherRetrievedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
         if (!(oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue()
-                || oocyteRetrievalStageDto.getIsFromDonor() || oocyteRetrievalStageDto.getIsFromDonorTissue())) {
+                || oocyteRetrievalStageDto.getIsFromDonor() || oocyteRetrievalStageDto.getIsFromDonorTissue()
+                || oocyteRetrievalStageDto.getIsNoDirectedDonor() || oocyteRetrievalStageDto.getIsNoDirectedDonorTissue())) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Oocyte(s) was retrieved from", "field");
             errorMap.put("oocyteRetrievalFrom", errMsg);
         }

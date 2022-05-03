@@ -31,6 +31,8 @@
                         <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p>Directed Donor</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p>Directed Donor's Ovarian
                             Tissue</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonor}"><p>Non Directed Donor</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonorTissue}"><p>Non Directed Donor's Ovarian Tissue</p></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>

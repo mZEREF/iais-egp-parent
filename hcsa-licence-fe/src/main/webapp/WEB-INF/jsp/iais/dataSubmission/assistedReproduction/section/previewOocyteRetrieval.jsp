@@ -6,6 +6,7 @@
     ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
     OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
 %>
+<%--@elvariable id="arSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto"--%>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -30,6 +31,9 @@
                             Tissue</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p>Directed Donor</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p>Directed Donor's Ovarian
+                            Tissue</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonor}"><p>Non Directed Donor</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isNoDirectedDonorTissue}"><p>Non Directed Donor's Ovarian
                             Tissue</p></c:if>
                     </iais:value>
                 </iais:row>
