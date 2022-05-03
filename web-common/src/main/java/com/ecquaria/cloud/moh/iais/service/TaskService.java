@@ -30,6 +30,7 @@ public interface TaskService {
     //get Task
     TaskDto getTaskById(String taskId);
     List<TaskDto> getTaskList(List<String> taskIds);
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId,String workGroupIdAo,String userIdAo) throws FeignException;
     public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId) throws FeignException;
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,String createWorkGroupId, boolean isFEActionBy) throws FeignException;
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,String createWorkGroupId) throws FeignException;
@@ -64,6 +65,7 @@ public interface TaskService {
       * @Descripation: 
       */
     int remainDays(TaskDto taskDto);
+    public List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId);
 
     List<TaskEmailDto> getEmailNotifyList();
     List<OrgUserDto> getEmailNotifyLeader(String taskId);

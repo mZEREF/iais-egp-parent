@@ -78,6 +78,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -87,6 +88,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.SelectHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.method.RfiCanCheck;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -132,6 +134,8 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -231,6 +235,93 @@ public class HcsaApplicationDelegator {
     private VehicleCommonController vehicleCommonController;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
+
+
+    @PostMapping(value = "/check-ao")
+    public @ResponseBody
+    AjaxResDto checkAo(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do checkAo start ...."));
+        Map<String,String> roleStage = IaisCommonUtils.genNewHashMap();
+        roleStage.put(RoleConsts.USER_ROLE_AO1,HcsaConsts.ROUTING_STAGE_AO1);
+        roleStage.put(RoleConsts.USER_ROLE_AO2,HcsaConsts.ROUTING_STAGE_AO2);
+        roleStage.put(RoleConsts.USER_ROLE_AO3,HcsaConsts.ROUTING_STAGE_AO3);
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        String verified = ParamUtil.getString(request, "verified");
+        log.info(StringUtil.changeForLog("verified is -->:"+verified));
+
+        Map<String,String> error = IaisCommonUtils.genNewHashMap();
+        if(StringUtil.isEmpty(verified)){
+            String msgGenError006 = MessageUtil.replaceMessage("GENERAL_ERR0006","Assign To","field");
+            error.put("verifiedError",msgGenError006);
+        }
+        if (error.isEmpty()) {
+            String stageId = roleStage.get(verified);
+            log.info(StringUtil.changeForLog("stageId is -->:"+stageId));
+            if(StringUtil.isNotEmpty(stageId)){
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+                Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+                chargesTypeAttr.put("name", "aoSelect");
+                chargesTypeAttr.put("id", "aoSelect");
+
+                List<String> checkedVals = IaisCommonUtils.genNewArrayList();
+                String aoSelect = (String) ParamUtil.getSessionAttr(request, "aoSelect");
+                if(!StringUtil.isEmpty(aoSelect)){
+                    checkedVals.add(aoSelect);
+                }
+                ParamUtil.setSessionAttr(request,"aoSelect",null);
+                log.info(StringUtil.changeForLog("aoSelect is -->:"+aoSelect));
+                String chargeTypeSelHtml = SelectHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(verified,request,stageId),
+                        "Please Select", checkedVals, false,true);
+
+                String aoSelectError = (String) ParamUtil.getSessionAttr(request, "aoSelectError");
+                chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_aoSelect\">";
+                if(!StringUtil.isEmpty(aoSelectError)){
+                    aoSelectError = MessageUtil.getMessageDesc(aoSelectError);
+                    chargeTypeSelHtml = chargeTypeSelHtml +aoSelectError;
+                }
+                ParamUtil.setSessionAttr(request,"aoSelectError",null);
+                log.info(StringUtil.changeForLog("aoSelectError is -->:"+aoSelectError));
+                chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
+                ajaxResDto.setResultJson(chargeTypeSelHtml);
+            }else{
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_ERROR);
+            }
+        }
+        if(!error.isEmpty()){
+            ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
+            ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("verifiedError")));
+        }
+        log.info(StringUtil.changeForLog("the do checkAo end ...."));
+        return ajaxResDto;
+    }
+
+    private List<SelectOption> getSelect(String verified,HttpServletRequest request,String stageId){
+        log.info(StringUtil.changeForLog("the getSelect start ...."));
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(verified)){
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+            applicationDtos.add(applicationDto);
+            List<HcsaSvcStageWorkingGroupDto>  hcsaSvcStageWorkingGroupDtos = taskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
+            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+            if(IaisCommonUtils.isNotEmpty(hcsaSvcStageWorkingGroupDtos)){
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = hcsaSvcStageWorkingGroupDtos.get(0);
+                String workGroupId = hcsaSvcStageWorkingGroupDto.getGroupId();
+                List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupIdExceptLeader(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+                if(IaisCommonUtils.isNotEmpty(orgUserDtos)){
+                   for(OrgUserDto orgUserDto : orgUserDtos){
+                       result.add(new SelectOption(workGroupId + AppConsts.DFT_DELIMITER +orgUserDto.getId(),orgUserDto.getDisplayName()));
+                   }
+                }
+            }
+        }else {
+            log.info(StringUtil.changeForLog("The verified is null"));
+        }
+
+        log.info(StringUtil.changeForLog("the getSelect end ...."));
+        return result;
+    }
     /**
      * StartStep: doStart
      *
@@ -2299,7 +2390,8 @@ public class HcsaApplicationDelegator {
                 } else {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:" + applicationViewDto.getAppPremisesCorrelationId());
                 }
-            } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)) {
+            }
+           /* else if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)) {
                 if (applicationDto.isFastTracking()) {
                     TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                     newTaskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -2339,7 +2431,8 @@ public class HcsaApplicationDelegator {
                         broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                     }
                 }
-            } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)
+            }*/
+            else if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)
                     || ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)) {
                 AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
@@ -2356,17 +2449,30 @@ public class HcsaApplicationDelegator {
                     setInspLeadsInRecommendation(newTaskDto, newTaskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 }
             } else {
-                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
+                String verified = ParamUtil.getRequestString(bpc.request, "verified");
+                String aoWorkGroupId = null;
+                String aoUserId = null;
+                if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
+                    String aoSelect = ParamUtil.getRequestString(bpc.request, "aoSelect");
+                    String[] aoSelects =  aoSelect.split(AppConsts.DFT_DELIMITER);
+                    aoWorkGroupId = aoSelects[0];
+                    aoUserId = aoSelects[1];
+                }
+
+                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId,aoWorkGroupId,aoUserId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-            }
-            //add history for next stage start
-            if (!((ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus))
-                    && !applicationDto.isFastTracking())
-                    && !ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)) {
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
+//            //add history for next stage start
+//            if (!((ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus))
+//                    && !applicationDto.isFastTracking())
+//                    && !ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)) {
+//                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
+//                        taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
+//                broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+//            }
         } else {
             //0065354
             if (!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appStatus)) {
@@ -2515,80 +2621,11 @@ public class HcsaApplicationDelegator {
                         ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                         String applicationNo = oldApplication.getApplicationNo();
                         String applicationType1 = oldApplication.getApplicationType();
-//                        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
-//                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-//                            String licenseeId1 = applicationGroupDto.getLicenseeId();
-//                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId1).getEntity();
-//                            if(licenseeDto != null) {
-//                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-//                                if (licenseeEntityDto != null){
-//                                    charity = "CC".equalsIgnoreCase(licenseeEntityDto.getEntityType());
-//                                }
-//                            }
                         if (orgUserDto != null) {
                             applicantName = orgUserDto.getDisplayName();
                         }
-//                        String paymentMethod = applicationGroupDto.getPayMethod();
-//                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-//                        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
-//                                || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())) {
-//                            Double fee = 0.0;
-//                            applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
-//                            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-//                            applicationDtoList.add(oldApplication);
-//                            String entityType = "";
-//                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-//                            if (licenseeDto != null) {
-//                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-//                                if (licenseeEntityDto != null) {
-//                                    entityType = licenseeEntityDto.getEntityType();
-//                                }
-//                            }
-//                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-//                                isCharity = true;
-//                            }
-//                            for (ApplicationDto applicationDto1 : applicationDtoList) {
-//                                applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-//                                applicationDto1.setIsCharity(isCharity);
-//                            }
-//                            List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
-//                            if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
-//                                fee = applicationDtoList2.get(0).getReturnFee();
-//                            }
-//                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-//                            msgInfoMap.put("Applicant", applicantName);
-//                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-//                            msgInfoMap.put("ApplicationNumber", applicationNo);
-//                            msgInfoMap.put("reqAppNo", applicationNo);
-//                            msgInfoMap.put("S_LName", serviceName);
-//                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-//                            msgInfoMap.put("ApplicationDate", applicationViewDto.getSubmissionDate().split(" ")[0]);
-//                            if (StringUtil.isEmpty(paymentMethod) ||
-//                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
-//                                msgInfoMap.put("paymentType", "2");
-//                                msgInfoMap.put("paymentMode", "");
-//                                msgInfoMap.put("returnMount", 0.0);
-//                            } else {
-//                                msgInfoMap.put("returnMount", fee);
-//                                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
-//                                    msgInfoMap.put("paymentType", "0");
-//                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
-//                                } else {
-//                                    msgInfoMap.put("paymentType", "1");
-//                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
-//                                }
-//                            }
-//                            msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
-//                            msgInfoMap.put("systemLink", loginUrl);
-//                            msgInfoMap.put("emailAddress", systemAddressOne);
-//                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
-//                            sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-//                            /**
-//                             *  Send SMS when withdrawal Application Approve
-//                             */
-//                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
                         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
                             try {
                                 if(!oldApplication.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
@@ -4076,7 +4113,10 @@ public class HcsaApplicationDelegator {
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage : hcsaSvcRoutingStageDtoList) {
                     routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(), hcsaSvcRoutingStage.getStageName()));
                     if (hcsaSvcRoutingStage.isRecommend()) {
-                        ParamUtil.setRequestAttr(request, "selectVerified", hcsaSvcRoutingStage.getStageCode());
+                        ParamUtil.setRequestAttr(request,
+                                "selectVerified",ParamUtil.getString(request, "verified")==null
+                                ? hcsaSvcRoutingStage.getStageCode()
+                                :ParamUtil.getString(request, "verified"));
                         ParamUtil.setSessionAttr(request, "RecommendValue", hcsaSvcRoutingStage.getStageCode());
                     }
                 }
