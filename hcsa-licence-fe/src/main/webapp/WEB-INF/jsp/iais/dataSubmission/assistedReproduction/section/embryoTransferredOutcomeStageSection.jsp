@@ -36,7 +36,7 @@
                                 </label>
                                 <c:if test="${OutcomeEmbryoTransferred.codeValue eq 'Unknown'}">
                                     <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip"
-                                       data-html="true" title="" data-original-title='Unknown outcomes refer to scenarios where no further follow up with patient post-transfer procedure'
+                                       data-html="true" title="" data-original-title='<p>Unknown outcomes refer to scenarios where no further follow up with patient post-transfer procedure</p>'
                                        style="z-index: 999;position: absolute; right: 0px; top: 0px;">!</a>
                                 </c:if>
                             </div>
