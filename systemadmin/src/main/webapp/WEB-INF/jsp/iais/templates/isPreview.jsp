@@ -29,7 +29,7 @@
                                 <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Message Type</span>
                             </div>
                             <div class="col-md-8">
-                            <span style="font-size: 1.5rem;font-weight:600;">
+                            <span style="font-size: 2rem;font-weight:600;">
                                 ${MsgTemplateDto.messageType}
                             </span>
                             </div>
@@ -39,7 +39,7 @@
                                 <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Template Name</span>
                             </div>
                             <div class="col-md-8">
-                            <span style="font-size: 1.5rem;font-weight:600;">
+                            <span style="font-size: 2rem;font-weight:600;">
                                 ${MsgTemplateDto.templateName}
                             </span>
                             </div>
@@ -49,7 +49,7 @@
                                 <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Delivery Mode</span>
                             </div>
                             <div class="col-md-8">
-                            <span style="font-size: 1.5rem;font-weight:600;">
+                            <span style="font-size: 2rem;font-weight:600;">
                                 ${MsgTemplateDto.deliveryMode}
                             </span>
                             </div>
@@ -59,7 +59,7 @@
                                 <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Effective Start Date</span>
                             </div>
                             <div class="col-md-8">
-                            <span style="font-size: 1.5rem;font-weight:600;">
+                            <span style="font-size: 2rem;font-weight:600;">
                                 <fmt:formatDate value="${MsgTemplateDto.effectiveFrom}"
                                                 pattern="MM/dd/yyyy HH:mm:ss"/>
                             </span>
@@ -70,7 +70,7 @@
                                 <span style="font-size: 2rem;font-family: Open Sans, sans-serif;font-weight:600;">Effective End Date</span>
                             </div>
                             <div class="col-md-8">
-                            <span style="font-size: 1.5rem;font-weight:600;">
+                            <span style="font-size: 2rem;font-weight:600;">
                                 <fmt:formatDate value="${MsgTemplateDto.effectiveTo}"
                                                 pattern="MM/dd/yyyy HH:mm:ss"/>
                             </span>
