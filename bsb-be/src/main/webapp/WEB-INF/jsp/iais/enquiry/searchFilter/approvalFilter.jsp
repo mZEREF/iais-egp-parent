@@ -2,7 +2,7 @@
     <label for="approvalFacClassification" class="col-sm-5 col-md-5 control-label">Facility Classification</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="approvalFacClassification" class="error-msg"></span>
-        <select name="approvalFacClassification" class="approvalFacClassification-select" id="approvalFacClassification">
+        <select name="approvalFacClassification" class="approvalFacClassificationDropDown" id="approvalFacClassification">
             <c:forEach var="item" items="${facClassificationOps}">
                 <option value="${item.value}" <c:if test="${approvalSearchDto.facClassification eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>
@@ -18,7 +18,7 @@
     <label for="approvalType" class="col-sm-5 col-md-5 control-label">Approval Type</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="approvalType" class="error-msg"></span>
-        <select name="approvalType" class="approvalType-select" id="approvalType">
+        <select name="approvalType" class="approvalTypeDropdown" id="approvalType">
             <c:forEach var="item" items="${approvalTypeOps}">
                 <option value="${item.value}" <c:if test="${approvalSearchDto.approvalType eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>
@@ -28,7 +28,7 @@
     <label for="approvalStatus" class="col-sm-5 col-md-5 control-label">Approval Status</label>
     <div class="col-sm-7 col-md-5">
         <span data-err-ind="approvalStatus" class="error-msg"></span>
-        <select name="approvalStatus" class="approvalStatus-select" id="approvalStatus">
+        <select name="approvalStatus" class="approvalStatusDropDown" id="approvalStatus">
             <c:forEach var="item" items="${approvalStatusOps}">
                 <option value="${item.value}" <c:if test="${approvalSearchDto.approvalStatus eq item.value}">selected="selected"</c:if>>${item.text}</option>
             </c:forEach>

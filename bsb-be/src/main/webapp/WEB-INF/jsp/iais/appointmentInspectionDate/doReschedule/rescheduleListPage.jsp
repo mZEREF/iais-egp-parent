@@ -45,13 +45,13 @@
                             <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppType" class="error-msg"></span>
-                                <iais:select name="searchAppType" cssClass="searchATyDropReAppt" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
+                                <iais:select name="searchAppType" cssClass="searchATDropdown" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
                                              firstOption="Please Select" value="${searchDto.searchAppType}"/>
                             </div>
                             <label for="searchAppStatus" class="col-sm-5 col-md-5 control-label">Application Status</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppStatus" class="error-msg"></span>
-                                <iais:select name="searchAppStatus" cssClass="searchAppStDropReAppt" id="searchAppStatus" codeCategory="CATE_ID_APP_STATUS"
+                                <iais:select name="searchAppStatus" cssClass="searchAppStatusDropdown" id="searchAppStatus" codeCategory="CATE_ID_APP_STATUS"
                                              firstOption="Please Select" value="${searchDto.searchAppStatus}"/>
                             </div>
                         </div>

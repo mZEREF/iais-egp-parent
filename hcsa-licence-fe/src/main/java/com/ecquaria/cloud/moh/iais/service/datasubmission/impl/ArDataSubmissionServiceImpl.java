@@ -813,8 +813,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     private void sendRemindEmailForDraftOverDueDayNear(int overDueDays,int distanceExpirationDays){
-        List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,overDueDays-distanceExpirationDays).getEntity();
+        List<DataSubmissionDraftDto> dataSubmissionDraftDtos = arFeClient.getRemindDraftsByRemindDays(DataSubmissionConsts.DS_STATUS_DRAFT,overDueDays+1-distanceExpirationDays).getEntity();
         if(IaisCommonUtils.isNotEmpty(dataSubmissionDraftDtos)){
+            List<String> draftNos = IaisCommonUtils.genNewArrayList(dataSubmissionDraftDtos.size());
             Calendar calendarStart = Calendar.getInstance();
             calendarStart.setTime(new Date());
             calendarStart.add(Calendar.DATE,distanceExpirationDays);
@@ -839,6 +840,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                          emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_DS_DRAFT_REMIND_EMAIL);
                          emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
                          notificationHelper.sendNotification(emailParamEmail);
+                         draftNos.add(dataSubmissionDraftDto.getDraftNo());
                          log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  send email end ----------"));
                      } catch (IOException e) {
                          log.error(e.getMessage(),e);
@@ -849,6 +851,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                      log.info(StringUtil.changeForLog("---------------------sub draft no :"+ dataSubmissionDraftDto.getDraftNo() +"  no licenseeId ----------"));
                  }
             });
+
+            arFeClient.doUpdateDraftRemindEmailStatus(draftNos);
         }
     }
 }

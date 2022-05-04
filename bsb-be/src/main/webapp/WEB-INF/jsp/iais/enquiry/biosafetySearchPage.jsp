@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="searchKey" class="col-xs-12 col-md-4 control-label">Search by</label>
                         <div class="col-xs-8 col-sm-6 col-md-6">
-                            <select name="searchKey" class="sk-select" id="searchKey">
+                            <select name="searchKey" class="searchKeyDropdown" id="searchKey">
                                 <option value="app">Application Info</option>
                                 <option value="fac">Facility Info</option>
                                 <option value="approval">Approval Info</option>

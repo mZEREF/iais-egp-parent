@@ -1,4 +1,5 @@
 <%@tag description="Other application info tag of facility registration" %>
+<%@tag description="Other application info tag of facility registration" %>
 <%@taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>

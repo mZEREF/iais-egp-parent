@@ -251,4 +251,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<DataSubmissionDraftDto>> getRemindDraftsByRemindDays(String status, int remindDays) {
         return  getFeignResponseEntity(status,remindDays);
     }
+
+    @Override
+    public FeignResponseEntity<Void> doUpdateDraftRemindEmailStatus(List<String> draftNos) {
+        return  getFeignResponseEntity(draftNos);
+    }
 }

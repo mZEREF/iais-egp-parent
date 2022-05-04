@@ -114,7 +114,7 @@ public class OnlineArAjaxController {
             SearchParam searchParam = new SearchParam(AssistedReproductionEnquiryAjaxPatientResultsDto.class.getName());
             searchParam.setPageSize(Integer.MAX_VALUE);
             searchParam.setPageNo(0);
-            searchParam.setSort("CREATED_DT", SearchParam.ASCENDING);
+            searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
             //set filter
             SearchParam searchParamFather = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
             searchParam.setFilters(searchParamFather.getFilters());

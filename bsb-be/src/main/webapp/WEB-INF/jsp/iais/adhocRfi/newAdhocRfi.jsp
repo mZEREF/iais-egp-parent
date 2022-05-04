@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -46,14 +47,16 @@
                                           maxlength="500"
                                           rows="8"
                                           cols="64"
-                                          name="rfiTitle" >${newReqInfo.title}</textarea>
-                                <span data-err-ind="title" class="error-msg"></span>
+                                          name="rfiTitle" >${newReqInfo.title}</textarea><br>
+                                <div>
+                                    <span data-err-ind="title" style="font-weight:normal;" class="error-msg"></span>
+                                </div>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Due Date" width="15" required="false"/>
                             <iais:value width="10">
-                                <iais:datePicker value="${newReqInfo.dueDate}" name="dueDate"></iais:datePicker>
+                                <iais:datePicker value="${newReqInfo.dueDateShow}" name="dueDate"></iais:datePicker>
                                 <span data-err-ind="dueDate" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
@@ -68,6 +71,7 @@
                                 <input type="checkbox"
                                        <c:if test="${newReqInfo.informationRequired==true}">checked</c:if>
                                        onchange="checkTitleInfo()"
+                                       value="information"
                                        name = "info" />&nbsp;Information
                             </label>
                         </div>
@@ -76,6 +80,7 @@
                                 <input type="checkbox"
                                        <c:if test="${newReqInfo.supportingDocRequired==true}">checked</c:if>
                                        onchange="checkTitleDoc()"
+                                       value="documents"
                                        name ="doc" />&nbsp;Supporting Documents
                             </label>
                         </div>
@@ -96,8 +101,10 @@
                                     </iais:row>
                                     <iais:row>
                                         <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
-                                            <textarea  name="information" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfInformationRequired}</textarea>
-                                            <span data-err-ind="titleOfInformationRequired" class="error-msg"></span>
+                                            <textarea  name="informationTitle" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfInformationRequired}</textarea>
+                                            <div>
+                                                <span data-err-ind="titleOfInformationRequired" style="font-weight:normal;" class="error-msg"></span>
+                                            </div>
                                         </iais:value>
                                     </iais:row>
                                 </div>
@@ -120,7 +127,9 @@
                                     <iais:row>
                                         <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
                                             <textarea  name="documentsTitle" rows="8" style=" font-weight:normal;" maxlength="500" cols="120">${newReqInfo.titleOfSupportingDocRequired}</textarea>
-                                            <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
+                                            <div>
+                                                <span data-err-ind="titleOfSupportingDocRequired" style="font-weight:normal;" class="error-msg"></span>
+                                            </div>
                                         </iais:value>
                                     </iais:row>
                                 </div>
@@ -155,19 +164,15 @@
     function checkTitleInfo(){
         if($('input[type = checkbox][name="info"]').prop('checked')){
             $('#information').attr("style","display: block");
-            $('input[type = checkbox][name="info"]').attr("value","1");
         }else {
             $("#information").attr("style","display: none");
-            $('input[type = checkbox][name="info"]').attr("value","0");
         }
     }
     function checkTitleDoc(){
         if($('input[type = checkbox][name="doc"]').prop('checked')){
             $('#stDoc').attr("style","display: block");
-            $('input[type = checkbox][name="doc"]').attr("value","1");
         }else {
             $('#stDoc').attr("style","display: none");
-            $('input[type = checkbox][name="doc"]').attr("value","0");
         }
     }
 </script>

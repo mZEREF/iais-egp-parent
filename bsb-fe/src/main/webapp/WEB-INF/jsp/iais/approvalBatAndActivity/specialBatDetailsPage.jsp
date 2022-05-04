@@ -77,7 +77,7 @@
                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select name="batName"  class="batNDropdown" id="batName">
+                                                                <select name="batName"  class="batNameDropdown" id="batName">
                                                                     <c:set var="batNameOps" value="${scheduleBatMap.get(info.schedule == null ? firstScheduleOp : info.schedule)}"/>
                                                                     <c:forEach items="${batNameOps}" var="name">
                                                                         <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>

@@ -40,4 +40,6 @@ public class NewAdhocRfiDto implements Serializable {
 
     private ApplicationDto application;
 
+    private String dueDateShow;
+
 }

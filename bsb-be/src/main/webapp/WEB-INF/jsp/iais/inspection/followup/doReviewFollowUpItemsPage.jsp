@@ -111,7 +111,7 @@
                                                                     <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision/Recommendation <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingDecision" class="pro-select" id="processingDecision">
+                                                                            <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
                                                                                 <option value="MOHPRO003" <c:if test="${insDecision.decision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>
@@ -128,7 +128,7 @@
                                                                     <label for="processingExtensionDecision" class="col-xs-12 col-md-4 control-label">Processing Decision/Recommendation <span style="color: red">*</span></label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
-                                                                            <select name="processingExtensionDecision" class="pro-select" id="processingExtensionDecision">
+                                                                            <select name="processingExtensionDecision" class="processingExtensionDecisionDropdown" id="processingExtensionDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO007" <c:if test="${insDecision.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
                                                                                 <option value="MOHPRO003" <c:if test="${insDecision.decision eq 'MOHPRO003'}">selected="selected"</c:if>>Reject</option>

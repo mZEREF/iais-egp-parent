@@ -97,6 +97,8 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         boolean isFromPatientTissue = "true".equals(ParamUtil.getString(request, "isFromPatientTissue"));
         boolean isFromDonor = "true".equals(ParamUtil.getString(request, "isFromDonor"));
         boolean isFromDonorTissue = "true".equals(ParamUtil.getString(request, "isFromDonorTissue"));
+        boolean isNoDirectedDonor = "true".equals(ParamUtil.getString(request, "isNoDirectedDonor"));
+        boolean isNoDirectedDonorTissue = "true".equals(ParamUtil.getString(request, "isNoDirectedDonorTissue"));
         String matureRetrievedNum = ParamUtil.getString(request, "matureRetrievedNum");
         String immatureRetrievedNum = ParamUtil.getString(request, "immatureRetrievedNum");
         String otherRetrievedNum = ParamUtil.getString(request, "otherRetrievedNum");
@@ -106,6 +108,8 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         oocyteRetrievalStageDto.setIsFromPatientTissue(isFromPatientTissue);
         oocyteRetrievalStageDto.setIsFromDonor(isFromDonor);
         oocyteRetrievalStageDto.setIsFromDonorTissue(isFromDonorTissue);
+        oocyteRetrievalStageDto.setIsNoDirectedDonor(isNoDirectedDonor);
+        oocyteRetrievalStageDto.setIsNoDirectedDonorTissue(isNoDirectedDonorTissue);
         oocyteRetrievalStageDto.setMatureRetrievedNum(matureRetrievedNum);
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);

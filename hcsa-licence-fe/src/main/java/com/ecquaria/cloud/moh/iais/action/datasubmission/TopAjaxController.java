@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -11,13 +12,11 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -35,6 +34,9 @@ public class TopAjaxController {
 
     @Autowired
     private TopDataSubmissionService topDataSubmissionService;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
@@ -97,5 +99,13 @@ public class TopAjaxController {
             result.put("showAge", Boolean.TRUE);
         }
         return result;
+    }
+
+    @GetMapping(value = "/prg-input-info")
+    public @ResponseBody
+    ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the prgNo start ...."));
+        String professionRegoNo = ParamUtil.getString(request, "prgNo");
+        return appSubmissionService.retrievePrsInfo(professionRegoNo);
     }
 }

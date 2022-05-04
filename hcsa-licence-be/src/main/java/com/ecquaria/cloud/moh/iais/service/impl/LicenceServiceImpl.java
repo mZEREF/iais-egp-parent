@@ -250,7 +250,7 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBusLicenceGroupDtos,
-                generateIdClient.getSeqId().getEntity(),
+                eventBusLicenceGroupDtos.getEventBusSubmissionId(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
                 eventBusLicenceGroupDtos.getEventRefNo(),

@@ -69,7 +69,7 @@
                                                 <span data-err-ind="specifyEndDate" class="error-msg" ></span>
                                             </div>
                                             <div class="col-xs-12 col-md-3">
-                                                <iais:select name="specifyEndHour" cssClass="specifyEndHourDrop" options="endHoursOption" firstOption="--:--" value="${apptReviewData.specifyEndHour}"/>
+                                                <iais:select name="specifyEndHour" cssClass="specifyEndHourDropdown" options="endHoursOption" firstOption="--:--" value="${apptReviewData.specifyEndHour}"/>
                                                 <span data-err-ind="specifyEndHour" class="error-msg" ></span>
                                             </div>
                                         </div>

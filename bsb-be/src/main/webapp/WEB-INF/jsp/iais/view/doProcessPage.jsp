@@ -140,7 +140,7 @@
                                                                     <label for="approvalOfficer">Select Approval Officer</label>
                                                                 </div>
                                                                 <div class="col-sm-6 col-md-7">
-                                                                    <select name="approvalOfficer"  class="approvalOfficerDropdownSelect" id="approvalOfficer">
+                                                                    <select name="approvalOfficer"  class="approvalOfficerDropdown" id="approvalOfficer">
                                                                         <option>Please Select</option>
                                                                         <option>Alice</option>
                                                                         <option>Bob</option>

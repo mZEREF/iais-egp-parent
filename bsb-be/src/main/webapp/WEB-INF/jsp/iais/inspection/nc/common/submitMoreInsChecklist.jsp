@@ -50,12 +50,45 @@
         }else {
             indexIns = "";
         }
-        var divId = str+'ck'+ indexIns;;
-        var comdivId = str+'comck'+indexIns;;
+        var divId = str+'ck'+ indexIns;
+        var comdivId = str+'comck'+indexIns;
         divId  = divId.replace(/\s*/g,"");
         comdivId = comdivId.replace(/\s*/g,"");
         $("#"+divId).hide();
         $("#"+comdivId).hide();
+    }
+
+    function showFollUp(str,indexIns){
+        if(indexIns != null &&indexIns != "" ){
+            indexIns = "Ins" + indexIns;
+        }else {
+            indexIns = "";
+        }
+        var comIdobserveFoll = str+'observeFoll'+indexIns;
+        comIdobserveFoll = comIdobserveFoll.replace(/\s*/g,"");
+        $("#"+comIdobserveFoll).show();
+        var comIdfollAction = str+'follAction'+indexIns;
+        comIdfollAction = comIdfollAction.replace(/\s*/g,"");
+        $("#"+comIdfollAction).show();
+        var comIdDueDate = str+'comDueDate'+indexIns;
+        comIdDueDate = comIdDueDate.replace(/\s*/g,"");
+        $("#"+comIdDueDate).show();
+    }
+    function hideFollUp(str,indexIns){
+        if(indexIns != null &&indexIns != "" ){
+            indexIns = "Ins" + indexIns;
+        }else {
+            indexIns = "";
+        }
+        var comIdobserveFoll = str+'observeFoll'+ indexIns;
+        comIdobserveFoll  = comIdobserveFoll.replace(/\s*/g,"");
+        $("#"+comIdobserveFoll).hide();
+        var comIdfollAction = str+'follAction'+ indexIns;
+        comIdfollAction  = comIdfollAction.replace(/\s*/g,"");
+        $("#"+comIdfollAction).hide();
+        var comIdDueDate = str+'comDueDate'+ indexIns;
+        comIdDueDate  = comIdDueDate.replace(/\s*/g,"");
+        $("#"+comIdDueDate).hide();
     }
 
     function doChangeDeconflict(index,divId,size){

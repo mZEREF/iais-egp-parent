@@ -27,7 +27,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Please indicate ART Co-funding" cssClass="col-md-4"/>
+                    <iais:field width="4" value="Is the ART cycle being co-funded" cssClass="col-md-4"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <iais:code code="${arTreatmentSubsidiesStageDto.coFunding}"/>
                     </iais:value>
@@ -36,7 +36,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Is there an Appeal?" cssClass="col-md-4"/>
+                    <iais:field width="4" value="Is there an approved appeal?" cssClass="col-md-4"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:out value="${arTreatmentSubsidiesStageDto.isThereAppeal?'Yes':'No'}"/>
                     </iais:value>

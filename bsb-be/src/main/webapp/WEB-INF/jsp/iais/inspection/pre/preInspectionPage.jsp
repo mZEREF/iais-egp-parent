@@ -151,7 +151,7 @@
                                                                     <div class="col-sm-7 col-md-5 col-xs-10">
                                                                         <div class="input-group">
                                                                             <select name="processingDecision"
-                                                                                    class="pd-drop-down"
+                                                                                    class="processingDecisionDropdown"
                                                                                     id="processingDecision">
                                                                                 <option value="">Please Select</option>
                                                                                 <option value="MOHPRO021"

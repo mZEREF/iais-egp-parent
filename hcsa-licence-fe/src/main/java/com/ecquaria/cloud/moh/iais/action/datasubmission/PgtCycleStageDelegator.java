@@ -236,7 +236,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            }
+            }else
             valRFC(bpc.request,pgtStageDto);
         }
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.entity.AdhocChecklistConfigDto;
@@ -25,7 +26,10 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.followup.ReviewInsFollowUpDto;
+import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+
+import java.util.List;
 
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
@@ -222,6 +226,8 @@ public interface InspectionClient {
     @GetMapping(value = "/inspection/inspection-info/{applicationid}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<InspectionInfoDto> getInspectionInfoDto(@PathVariable("applicationid") String appId);
 
-    @GetMapping(value = "/inspection/chkListAnswerOfficer/{userId}/{applicationid}")
-    ResponseEntity<InspectionChecklistDto> getOfficerChkList(@PathVariable("userId") String userId, @PathVariable("applicationid") String appId);
+
+    @PutMapping(value = "/inspection/chkListAnswerOfficer", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<TaskAssignDto>> getOfficerTaskList(@RequestParam("url") String url, @RequestParam("appId") String appId) ;
+
 }

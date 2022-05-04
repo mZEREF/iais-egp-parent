@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -108,9 +109,18 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         log.info(StringUtil.changeForLog(" the saveTopSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         if (eicRequestTrackingDto != null) {
+            Date now = new Date();
+            eicRequestTrackingDto.setFirstActionAt(now);
+            eicRequestTrackingDto.setLastActionAt(now);
             eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
+            try {
+                topSuperDataSubmissionDto = saveBeTopSuperDataSubmissionDto(topSuperDataSubmissionDto);
             eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             licEicClient.saveEicTrack(eicRequestTrackingDto);
+            } catch (Throwable e) {
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+            }
         } else {
             log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
         }

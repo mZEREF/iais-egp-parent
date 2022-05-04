@@ -203,7 +203,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6 col-md-7">
-            <select name="addressType" class="addressTypeSelect" id="addressType">
+            <select name="addressType" class="addressTypeDropdown" id="addressType">
                 <option value="">Please Select</option>
                 <option value="ADDTY001">Apt Blk</option>
                 <option value="ADDTY002">Without Apt</option>

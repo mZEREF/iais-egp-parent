@@ -20,7 +20,7 @@
                 <input name="freshCount" type="hidden" value="${freshCount}"/>
                 <input name="frozenCount" type="hidden" value="${frozenCount}"/>
                 <iais:row>
-                    <iais:field width="6" value="Please indicate ART Co-funding" mandatory="true" cssClass="col-md-6"/>
+                    <iais:field width="6" value="Is the ART cycle being co-funded" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <c:forEach var="artCoFundingItem" items="${artCoFundingOptions}" varStatus="defectTypeStatus">
                             <div class="form-check">
@@ -40,7 +40,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row id="isThereAppealRow">
-                    <iais:field width="6" value="Is there an Appeal?" mandatory="true" cssClass="col-md-6"/>
+                    <iais:field width="6" value="Is there an approved appeal?" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"

@@ -1,4 +1,4 @@
-<c:if test="${topSuperDataSubmissionDto.appType eq 'DSTY_002'}">
+<c:if test="${topSuperDataSubmissionDto.appType eq 'DSTY_005'}">
     <c:set var="dataSubmission" value="${topSuperDataSubmissionDto.dataSubmissionDto}" />
     <div class="panel panel-default">
         <div class="panel-heading">

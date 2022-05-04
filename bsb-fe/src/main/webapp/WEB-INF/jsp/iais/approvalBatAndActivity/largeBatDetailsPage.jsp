@@ -69,7 +69,7 @@
                                                                             <label for="schedule--v--${status.index}">Schedule <span class="mandatory otherQualificationSpan">*</span></label>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 30;">
-                                                                            <select name="schedule--v--${status.index}" class="schedule-v-Dropdown" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
+                                                                            <select name="schedule--v--${status.index}" class="scheduleDropdown${status.index}" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
                                                                                 <c:forEach items="${scheduleOps}" var="schedule">
                                                                                     <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
                                                                                 </c:forEach>
@@ -86,7 +86,7 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 20;">
-                                                                            <select name="batName--v--${status.index}" class="batName-v-Dropdown" id="batName--v--${status.index}">
+                                                                            <select name="batName--v--${status.index}" class="batNameDropdown${status.index}" id="batName--v--${status.index}">
                                                                                 <c:set var="batNameOps" value="${scheduleBatMap.get(info.schedule == null ? firstScheduleOp : info.schedule)}"/>
                                                                                 <c:forEach items="${batNameOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -164,7 +164,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <select name="addressType--v--${status.index}" class="addressType-v-Dropdown" id="addressType--v--${status.index}">
+                                                                                <select name="addressType--v--${status.index}" class="addressTypeDropdown${status.index}" id="addressType--v--${status.index}">
                                                                                     <c:forEach items="${addressTypeOps}" var="name">
                                                                                         <option value="${name.value}" <c:if test="${info.addressType eq name.value}">selected="selected"</c:if>>${name.text}</option>
                                                                                     </c:forEach>

@@ -118,7 +118,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <select name="doDecision" class="doDeciDropDown" id="doDecision">
+                                                                                <select name="doDecision" class="doDecisionDropDown" id="doDecision">
                                                                                     <option value="">Please Select</option>
                                                                                     <option value="MOHPRO010" <c:if test="${processData.doDecision eq 'MOHPRO010'}">selected = 'selected'</c:if>>Verified</option>
                                                                                     <option value="MOHPRO002" <c:if test="${processData.doDecision eq 'MOHPRO002'}">selected = 'selected'</c:if>>Request for Information</option>

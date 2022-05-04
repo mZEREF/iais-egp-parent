@@ -8,7 +8,7 @@
   <label for="appType" class="col-sm-5 col-md-5 control-label">Application Type</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appType" class="error-msg"></span>
-    <select name="appType" class="appType-down" id="appType">
+    <select name="appType" class="appTypeDropDown" id="appType">
       <c:forEach var="item" items="${appTypeOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.appType eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>
@@ -34,7 +34,7 @@
   <label for="appFacClassification" class="col-sm-5 col-md-5 control-label">Facility Classification</label>
   <div class="col-sm-7 col-md-5">
     <span data-err-ind="appFacClassification" class="appFacClassification-msg"></span>
-    <select name="appFacClassification" class="appFacClassification-dropDown" id="appFacClassification">
+    <select name="appFacClassification" class="appFacClassificationDropDown" id="appFacClassification">
       <c:forEach var="item" items="${facClassificationOps}">
         <option value="${item.value}" <c:if test="${appSearchDto.facClassification eq item.value}">selected="selected"</c:if>>${item.text}</option>
       </c:forEach>

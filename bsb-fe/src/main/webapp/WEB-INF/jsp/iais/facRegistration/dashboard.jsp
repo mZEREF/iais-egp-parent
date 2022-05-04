@@ -1,5 +1,5 @@
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%--@elvariable id="SELECTED_CLASSIFICATION" type="java.lang.String"--%>
 <%--@elvariable id="SELECTED_ACTIVITIES" type="java.util.List"--%>
 <common:dashboard>

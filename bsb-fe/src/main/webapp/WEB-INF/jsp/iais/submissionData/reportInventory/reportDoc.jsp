@@ -23,7 +23,7 @@
                                                 <div class="col-sm-6 col-md-7">
                                                     <c:set var="reportDoc" value="${MaskUtil.maskValue('file','report')}"/>
                                                     <c:set var="repType" value="${repReportDto.reportType}"/>
-                                                    <select name="reportType" class="reportTDown" id="reportType">
+                                                    <select name="reportType" class="reportTypeDropdown" id="reportType">
                                                         <option value="">Please Select</option>
                                                         <option value="REPTYPE01" <c:if test="${repType eq 'REPTYPE01'}">selected</c:if>>Red Teaming Report</option>
                                                         <option value="REPTYPE02" <c:if test="${repType eq 'REPTYPE02'}">selected</c:if>>PNEF Inventory Report</option>

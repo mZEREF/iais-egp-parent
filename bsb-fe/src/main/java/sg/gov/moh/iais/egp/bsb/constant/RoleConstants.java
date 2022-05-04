@@ -9,6 +9,7 @@ public class RoleConstants {
     private RoleConstants() {}
 
     // routed by role
+    public static final String ROLE_AFC_ADMIN                = "AFC";
     public static final String ROLE_APPLICANT                = "Applicant";
     public static final String ROLE_DO                       = "DO";
     public static final String ROLE_AO                       = "AO";

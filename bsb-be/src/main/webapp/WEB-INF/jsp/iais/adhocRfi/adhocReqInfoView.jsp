@@ -59,13 +59,13 @@
                                                             <c:choose>
                                                                 <c:when test="${viewReqInfo.status=='RFIST004'}">
                                                                     <iais:value width="18">
-                                                                            <iais-bsb:format-LocalDate localDate='${viewReqInfo.dueDate}'/>
+                                                                        <iais-bsb:format-LocalDate localDate='${viewReqInfo.dueDate}'/>
                                                                         <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                                                     </iais:value>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                        <iais:datePicker value="${viewReqInfo.dueDate}" name="dueDate"></iais:datePicker>
+                                                                        <iais:datePicker value="${viewReqInfo.dueDateShow}" name="dueDate"></iais:datePicker>
                                                                         <span data-err-ind="titleOfSupportingDocRequired" class="error-msg"></span>
                                                                     </div>
                                                                 </c:otherwise>
@@ -75,7 +75,7 @@
                                                         <iais:row>
                                                             <iais:field value="Status"/>
                                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                                <iais:select cssClass="statusDrop"  value="${viewReqInfo.status}" name="status"  options="statusLists"></iais:select>
+                                                                <iais:select cssClass="statusDropDown"  value="${viewReqInfo.status}" name="status"  options="statusLists"></iais:select>
                                                             </div>
                                                         </iais:row>
                                                         <div class="row" >
@@ -107,20 +107,16 @@
                                                                 </iais:row>
                                                                 <br/>
                                                                 <iais:row>
-                                                                    <label class="col-xs-9 col-md-6 control-label formtext" >
-                                                                        <div class="infoTitIndex">
-                                                                            More info Supp Doc
-                                                                        </div>
-                                                                    </label>
-                                                                </iais:row>
-                                                                <iais:row>
-                                                                    <iais:value cssClass="col-sm-12 col-md-12 col-xs-12">
+                                                                    <div class="field col-sm-11 control-label formtext">
+                                                                        <label>More info Supp Doc</label>
+                                                                    </div>
+                                                                    <label class="field col-sm-11 control-label formtext">
                                                                         <c:forEach items="${viewReqInfo.applicationDocDtos}" var="appDoc" varStatus="ind">
                                                                             <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                                                                                     ${appDoc.filename}
                                                                             </span>
                                                                         </c:forEach>
-                                                                    </iais:value>
+                                                                    </label>
                                                                 </iais:row>
                                                             </div>
                                                         </div>

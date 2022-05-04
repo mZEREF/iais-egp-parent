@@ -73,7 +73,8 @@ public class OnlineEnquiryDonorSampleDelegator {
         donorSampleParameter.setSortType(SearchParam.DESCENDING);
         ParamUtil.setSessionAttr(bpc.request,"arEnquiryDonorSampleFilterDto",null);
         ParamUtil.setSessionAttr(bpc.request, "donorSampleParam",null);
-
+        ParamUtil.setSessionAttr(bpc.request, "donorResultSize",MasterCodeUtil.getCodeDesc("DSPC_004"));
+        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
 
     }
     private ArEnquiryDonorSampleFilterDto setArEnquiryDonorSampleFilterDto(HttpServletRequest request)  {
@@ -208,8 +209,8 @@ public class OnlineEnquiryDonorSampleDelegator {
 
     public void perDonorInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request, "donorResultSize",Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004")));
-        ParamUtil.setSessionAttr(request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
+        ParamUtil.setSessionAttr(bpc.request, "donorResultSize",Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004")));
+        ParamUtil.setSessionAttr(bpc.request,"donorMessageTip", MessageUtil.replaceMessage("DS_ERR053",MasterCodeUtil.getCodeDesc("DSPC_004"),"1"));
 
         String submissionNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
         String sampleHciCode = ParamUtil.getString(request,InboxConst.CRUD_ACTION_ADDITIONAL);

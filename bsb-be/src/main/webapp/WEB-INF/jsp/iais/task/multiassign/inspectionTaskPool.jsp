@@ -31,7 +31,7 @@
                     <div class="form-group">
                         <label for="commonRoleId" class="col-xs-12 col-md-4 control-label">Role</label>
                         <div class="col-xs-8 col-sm-6 col-md-6">
-                            <select name="commonRoleId" id="commonRoleId" class="commonRoleDropdownSelect">
+                            <select name="commonRoleId" id="commonRoleId" class="commonRoleDropdown">
                                 <%--@elvariable id="BsbRoleOptions" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                 <%--@elvariable id="bsbCurRole" type="java.lang.String"--%>
                                 <c:forEach var="option" items="${BsbRoleOptions}">
@@ -58,7 +58,7 @@
                             <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchAppType" class="error-msg"></span>
-                                <iais:select name="searchAppType" cssClass="searchATyDrop" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
+                                <iais:select name="searchAppType" cssClass="searchAppTypeDropdown" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
                                              firstOption="Please Select" value=""/>
                             </div>
                             <label for="searchSubmissionType" class="col-sm-5 col-md-5 control-label">Submission Type</label>
@@ -70,7 +70,7 @@
                             <label for="searchAppStatus" class="col-sm-5 col-md-5 control-label">Status</label>
                             <div class="col-sm-7 col-md-5">
                                 <span data-err-ind="searchStatus" class="error-msg"></span>
-                                <iais:select name="searchAppStatus" id="searchAppStatus" cssClass="searchAppStDropdownSelect" options="insAppStatus"
+                                <iais:select name="searchAppStatus" id="searchAppStatus" cssClass="searchAppStDropdown" options="insAppStatus"
                                              firstOption="Please Select" value="${taskListSearchDto.searchAppStatus}"/>
                             </div>
                         </div>

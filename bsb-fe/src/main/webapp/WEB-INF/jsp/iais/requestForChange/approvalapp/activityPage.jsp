@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 20;">
                             <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
-                            <select name="activityId" class="activityIdDown" id="activityId">
+                            <select name="activityId" class="activityIdDropdown" id="activityId">
                                 <option>Please Select</option>
                                 <c:forEach items="${activityIdSelectDto}" var="selectDto">
                                     <c:forEach items="${selectDto.activityIdList}" var="selectList">

@@ -59,6 +59,9 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW = "BSBAPST037";
     public static final String APP_STATUS_PEND_AFC_REPORT_UPLOAD        = "BSBAPST038";
     public static final String APP_STATUS_PEND_AFC_INPUT                = "BSBAPST039";
+    public static final String APP_STATUS_PEND_APPLICANT_REPORT_REVIEW  = "BSBAPST040";
+    public static final String APP_STATUS_PEND_DO_REPORT_REVIEW         = "BSBAPST043";
+    public static final String APP_STATUS_PEND_AO_REPORT_REVIEW         = "BSBAPST044";
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
     public static final Set<String> UNAVAILABLE_APP_STATUS;
@@ -161,6 +164,7 @@ public class MasterCodeConstants {
     public static final String ACTIVITY_POSSESS_FIFTH_SCHEDULE = "ACTVITY005";
     public static final String ACTIVITY_LSP_FIRST_SCHEDULE = "ACTVITY011";
     public static final String ACTIVITY_LSP_THIRD_SCHEDULE = "ACTVITY012";
+    public static final String ACTIVITY_LSP_FIRST_THIRD_SCHEDULE = "ACTVITY013";
     public static final String ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED = "ACTVITY021";
     public static final String ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV = "ACTVITY022";
     public static final String ACTIVITY_SP_HANDLE_PV_POTENTIAL = "ACTVITY023";
@@ -174,18 +178,16 @@ public class MasterCodeConstants {
     static {
         Set<String> bls3And4Set = Sets.newHashSetWithExpectedSize(5);
         bls3And4Set.add(ACTIVITY_POSSESS_FIRST_SECOND_SCHEDULE);
-        bls3And4Set.add(ACTIVITY_LSP_FIRST_SCHEDULE);
-        bls3And4Set.add(ACTIVITY_LSP_THIRD_SCHEDULE);
         bls3And4Set.add(ACTIVITY_POSSESS_FIFTH_SCHEDULE);
+        bls3And4Set.add(ACTIVITY_LSP_FIRST_THIRD_SCHEDULE);
         bls3And4Set.add(ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV);
         VALID_BLS3_ACTIVITIES = Collections.unmodifiableSet(bls3And4Set);
         VALID_BLS4_ACTIVITIES = Collections.unmodifiableSet(bls3And4Set);
 
         Set<String> ufAndLspfSet = Sets.newHashSetWithExpectedSize(3);
         ufAndLspfSet.add(ACTIVITY_POSSESS_FIRST_SCHEDULE);
-        ufAndLspfSet.add(ACTIVITY_LSP_FIRST_SCHEDULE);
-        ufAndLspfSet.add(ACTIVITY_LSP_THIRD_SCHEDULE);
         ufAndLspfSet.add(ACTIVITY_POSSESS_FIFTH_SCHEDULE);
+        ufAndLspfSet.add(ACTIVITY_LSP_FIRST_THIRD_SCHEDULE);
         VALID_UF_ACTIVITIES = Collections.unmodifiableSet(ufAndLspfSet);
         VALID_LSPF_ACTIVITIES = Collections.unmodifiableSet(ufAndLspfSet);
 

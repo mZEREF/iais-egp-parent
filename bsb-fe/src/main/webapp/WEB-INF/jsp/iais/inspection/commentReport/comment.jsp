@@ -328,7 +328,7 @@
                                                             <tr>
                                                                 <td><label for="outcome"></label>Outcome <span style="color: red">*</span></td>
                                                                 <td>
-                                                                    <select name="outcome" id="outcome" data-type="reportInput" disabled="disabled">
+                                                                    <select name="outcome" id="outcome" class="outcomeDropdown" data-type="reportInput" disabled="disabled">
                                                                         <option value="">Please Select</option>
                                                                         <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS}">selected="selected"</c:if>>Pass</option>
                                                                         <option value="${MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}" <c:if test="${reportDto.outcome eq MasterCodeConstants.VALUE_OUTCOME_PASS_WITH_CONDITION}">selected="selected"</c:if>>Pass with condition</option>

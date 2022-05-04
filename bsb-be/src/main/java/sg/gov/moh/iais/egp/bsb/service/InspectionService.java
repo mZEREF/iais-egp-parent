@@ -269,108 +269,18 @@ public class InspectionService {
 
     }
 
-    public void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
-        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-        inspectionCheckQuestionDto.setSameAnswer(answerForSame.isSameAnswer());
-        getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
-        if(!inspectionCheckQuestionDto.isSameAnswer()){
-            inspectionCheckQuestionDto.setDeconflict(deconflict);
-            if( !StringUtil.isEmpty(deconflict)){
-                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
-                    if(deconflict.equalsIgnoreCase(answerForDifDto.getSubmitId())){
-                        getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForDifDto);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    private AnswerForDifDto getAnswerForDifDtoByAnswerForDifDtos( List<AnswerForDifDto> adhocAnswerForDifDtos){
-        List<AnswerForDifDto> answerForDifDtoCopys = copyAnswerForDifDtos(adhocAnswerForDifDtos);
-        AnswerForDifDto  answerForSame = new AnswerForDifDto();
-        AnswerForDifDto answerForDifDto = adhocAnswerForDifDtos.get(0);
-        Boolean recSame = Boolean.TRUE;
-        Boolean answerSame = Boolean.TRUE;
-        Boolean remarkSame = Boolean.TRUE;
-        Boolean ncsSame = Boolean.TRUE;
-        for(AnswerForDifDto answerForDifDtoCopy :  answerForDifDtoCopys){
-            Boolean isSameSubmit = isSameByStrings(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
-            if(StringUtil.isEmpty( answerForDifDtoCopy.getAnswer()) || (answerSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer(),answerForDifDto.getAnswer()))){
-                answerSame = Boolean.FALSE;
-            }
-            if( recSame && !isSameSubmit &&  !isSameByStrings( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
-                recSame = Boolean.FALSE;
-            }
-            if( remarkSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark(),answerForDifDto.getAnswer())){
-                remarkSame = Boolean.FALSE;
-            }
-            if(  ncsSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getNcs(),answerForDifDto.getNcs(),answerForDifDto.getAnswer())){
-                ncsSame = Boolean.FALSE;
-            }
-        }
 
-        if(answerSame && recSame && remarkSame && ncsSame){
-            answerForSame.setIsRec(answerForDifDto.getIsRec());
-            answerForSame.setAnswer( answerForDifDto.getAnswer());
-            answerForSame.setRemark(answerForDifDto.getRemark());
-            answerForSame.setNcs(answerForDifDto.getNcs());
-            answerForSame.setSameAnswer(true);
-        }else {
-            answerForSame.setIsRec( null);
-            answerForSame.setAnswer( null);
-            answerForSame.setRemark(null);
-            answerForSame.setSameAnswer(false);
-        }
 
-        return answerForSame;
-    }
-
-    private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,AnswerForDifDto answerForDifDto){
+    public InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, AnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
         inspectionCheckQuestionDto.setNcs(answerForDifDto.getNcs());
+        inspectionCheckQuestionDto.setFollowupAction(answerForDifDto.getFollowupAction());
+        inspectionCheckQuestionDto.setFollowupItem(answerForDifDto.getFollowupItem());
+        inspectionCheckQuestionDto.setObserveFollowup(answerForDifDto.getObserveFollowup());
+        inspectionCheckQuestionDto.setDueDate(answerForDifDto.getDueDate());
         return  inspectionCheckQuestionDto;
-    }
-    private List<AnswerForDifDto> copyAnswerForDifDtos(List<AnswerForDifDto> adhocAnswerForDifDtos){
-        List<AnswerForDifDto> answerForDifDtoCopys = new ArrayList<>(adhocAnswerForDifDtos.size());
-        for(AnswerForDifDto answerForDifDto : adhocAnswerForDifDtos){
-            AnswerForDifDto answerForDifDtoCopy = new AnswerForDifDto();
-            answerForDifDtoCopy .setRemark( answerForDifDto.getRemark());
-            answerForDifDtoCopy .setAnswer( answerForDifDto.getAnswer());
-            answerForDifDtoCopy .setIsRec( answerForDifDto.getIsRec());
-            answerForDifDtoCopy .setSubmitName( answerForDifDto.getSubmitName());
-            answerForDifDtoCopy.setNcs(answerForDifDto.getNcs());
-            answerForDifDtoCopys.add(answerForDifDtoCopy);
-        }
-        return answerForDifDtoCopys;
-    }
-    private Boolean isSameByStrings(String s1,String s2,String answer){
-        if("NO".equalsIgnoreCase(answer)){
-            if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
-                return Boolean.FALSE;
-            }
-        }
-        return isSameByStrings(s1, s2);
-    }
-    private Boolean isSameByStrings(String s1,String s2){
-        if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
-            return Boolean.TRUE;
-        }
-        if(!StringUtil.isEmpty(s1)){
-            if( StringUtil.isEmpty(s2)){
-                return Boolean.FALSE;
-            }else {
-                if(s1.equalsIgnoreCase(s2)){
-                    return Boolean.TRUE;
-                }else {
-                    return Boolean.FALSE;
-                }
-            }
-
-        }
-
-        return Boolean.FALSE;
     }
     public void getRateOfCheckList(InspectionFDtosDto serListDto) {
         if(serListDto == null) return;

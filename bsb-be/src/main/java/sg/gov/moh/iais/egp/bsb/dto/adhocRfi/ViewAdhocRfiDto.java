@@ -45,4 +45,6 @@ public class ViewAdhocRfiDto implements Serializable {
 
     private List<DocRecordInfo> applicationDocDtos;
 
+    private String dueDateShow;
+
 }
