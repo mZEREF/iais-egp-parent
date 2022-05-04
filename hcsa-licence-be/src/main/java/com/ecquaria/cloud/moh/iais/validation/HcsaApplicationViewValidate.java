@@ -168,10 +168,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         }else if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
                            String aoSelect = ParamUtil.getRequestString(request, "aoSelect");
                             ParamUtil.setSessionAttr(request,"aoSelect",aoSelect);
-                            if (StringUtil.isEmpty(aoSelect)) {
-                                errMap.put("aoSelect", generalErrSix);
-                                ParamUtil.setSessionAttr(request,"aoSelectError",generalErrSix);
-                            }
+//                            if (StringUtil.isEmpty(aoSelect)) {
+//                                errMap.put("aoSelect", generalErrSix);
+//                                ParamUtil.setSessionAttr(request,"aoSelectError",generalErrSix);
+//                            }
                         }
                         // if role is AOS or PSO ,check verified's value
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {

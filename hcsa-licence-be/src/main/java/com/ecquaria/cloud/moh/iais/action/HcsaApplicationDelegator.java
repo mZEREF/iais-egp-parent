@@ -2429,11 +2429,13 @@ public class HcsaApplicationDelegator {
                 String aoUserId = null;
                 if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
                     String aoSelect = ParamUtil.getRequestString(bpc.request, "aoSelect");
-                    String[] aoSelects =  aoSelect.split(AppConsts.DFT_DELIMITER);
-                    aoWorkGroupId = aoSelects[0];
-                    aoUserId = aoSelects[1];
+                    log.info(StringUtil.changeForLog("The aoSelect is -->:"+aoSelect));
+                    if(StringUtil.isNotEmpty(aoSelect)){
+                        String[] aoSelects =  aoSelect.split(AppConsts.DFT_DELIMITER);
+                        aoWorkGroupId = aoSelects[0];
+                        aoUserId = aoSelects[1];
+                    }
                 }
-
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId,aoWorkGroupId,aoUserId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
