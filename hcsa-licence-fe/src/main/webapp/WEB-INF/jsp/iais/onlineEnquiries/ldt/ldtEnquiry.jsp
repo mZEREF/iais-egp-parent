@@ -18,7 +18,8 @@
         line-height: 0px;
     }
 </style>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
+<%@include file="../../common/dashboard.jsp"%>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -217,5 +218,6 @@
         </div>
     </form>
 </div>
+
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/ldtSearch.js"></script>
