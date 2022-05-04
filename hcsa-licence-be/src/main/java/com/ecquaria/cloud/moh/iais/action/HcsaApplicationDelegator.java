@@ -244,6 +244,7 @@ public class HcsaApplicationDelegator {
         Map<String,String> roleStage = IaisCommonUtils.genNewHashMap();
         roleStage.put(RoleConsts.USER_ROLE_AO1,HcsaConsts.ROUTING_STAGE_AO1);
         roleStage.put(RoleConsts.USER_ROLE_AO2,HcsaConsts.ROUTING_STAGE_AO2);
+        roleStage.put(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, HcsaConsts.ROUTING_STAGE_INS);
         roleStage.put(RoleConsts.USER_ROLE_AO3,HcsaConsts.ROUTING_STAGE_AO3);
         AjaxResDto ajaxResDto = new AjaxResDto();
         String verified = ParamUtil.getString(request, "verified");
@@ -270,7 +271,7 @@ public class HcsaApplicationDelegator {
                 }
                 ParamUtil.setSessionAttr(request,"aoSelect",null);
                 log.info(StringUtil.changeForLog("aoSelect is -->:"+aoSelect));
-                String chargeTypeSelHtml = SelectHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(verified,request,stageId),
+                String chargeTypeSelHtml = SelectHelper.genMutilSelectOpHtml(chargesTypeAttr, getAoSelect(request,stageId),
                         "Please Select", checkedVals, false,true);
 
                 String aoSelectError = (String) ParamUtil.getSessionAttr(request, "aoSelectError");
@@ -295,31 +296,32 @@ public class HcsaApplicationDelegator {
         return ajaxResDto;
     }
 
-    private List<SelectOption> getSelect(String verified,HttpServletRequest request,String stageId){
-        log.info(StringUtil.changeForLog("the getSelect start ...."));
+    private List<SelectOption> getAoSelect(HttpServletRequest request, String stageId) {
+        log.info(StringUtil.changeForLog("the getAoSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(verified)){
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-            applicationDtos.add(applicationDto);
-            List<HcsaSvcStageWorkingGroupDto>  hcsaSvcStageWorkingGroupDtos = taskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
-            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-            if(IaisCommonUtils.isNotEmpty(hcsaSvcStageWorkingGroupDtos)){
-                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = hcsaSvcStageWorkingGroupDtos.get(0);
-                String workGroupId = hcsaSvcStageWorkingGroupDto.getGroupId();
-                List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupIdExceptLeader(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
-                if(IaisCommonUtils.isNotEmpty(orgUserDtos)){
-                   for(OrgUserDto orgUserDto : orgUserDtos){
-                       result.add(new SelectOption(workGroupId + AppConsts.DFT_DELIMITER +orgUserDto.getId(),orgUserDto.getDisplayName()));
-                   }
-                }
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto>  hcsaSvcStageWorkingGroupDtos = taskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
+        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+            hcsaSvcStageWorkingGroupDtos.forEach(h -> {
+                h.setOrder(2);
+            });
+        }
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if(IaisCommonUtils.isNotEmpty(hcsaSvcStageWorkingGroupDtos)){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = hcsaSvcStageWorkingGroupDtos.get(0);
+            String workGroupId = hcsaSvcStageWorkingGroupDto.getGroupId();
+            List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupIdExceptLeader(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+            if(IaisCommonUtils.isNotEmpty(orgUserDtos)){
+               for(OrgUserDto orgUserDto : orgUserDtos){
+                   result.add(new SelectOption(workGroupId + "_" + orgUserDto.getId(),orgUserDto.getDisplayName()));
+               }
             }
-        }else {
-            log.info(StringUtil.changeForLog("The verified is null"));
         }
 
-        log.info(StringUtil.changeForLog("the getSelect end ...."));
+        log.info(StringUtil.changeForLog("the getAoSelect end ...."));
         return result;
     }
     /**

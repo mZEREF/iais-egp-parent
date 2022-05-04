@@ -459,14 +459,19 @@ public class InspecEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
+            String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
             TaskDto taskDto1=new TaskDto();
             taskDto1.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setRefNo(taskDto.getRefNo());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
+
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1=hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
             taskDto1.setWkGrpId(hcsaSvcStageWorkingGroupDto1.getGroupId());
+            if (!StringUtil.isEmpty(ao1Sel)) {
+                taskDto1.setUserId(ao1Sel.replaceAll(hcsaSvcStageWorkingGroupDto1.getGroupId() + "_", ""));
+            }
             switch (hcsaSvcStageWorkingGroupDto1.getSchemeType()) {
                 case TaskConsts.TASK_SCHEME_TYPE_COMMON:
                     taskDto1.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
