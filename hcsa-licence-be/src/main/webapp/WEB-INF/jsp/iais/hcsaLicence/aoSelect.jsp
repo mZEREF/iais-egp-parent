@@ -1,5 +1,5 @@
 <iais:row id = "showAoRow">
-  <iais:field   value=""/>
+  <iais:field value="Officer"/>
   <iais:value width="10" id = "showAoDiv" cssClass="other-charges-type-div">
     <iais:select name="aoSelect" firstOption="Please Select"
                  value="Assign To"/>
