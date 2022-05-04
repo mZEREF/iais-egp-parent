@@ -919,68 +919,68 @@ public class MasterCodeDelegator {
         }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
-            if (masterCodeDto.getSequence() != null){
-                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
-                    errorMap.put("sequence", mcuperrErrMsg8);
-                    masterCodeDto.setSequence(null);
+        }
+        if (masterCodeDto.getSequence() != null){
+            if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
+                errorMap.put("sequence", mcuperrErrMsg8);
+                masterCodeDto.setSequence(null);
+            }
+        }
+        if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
+            if (masterCodeDto.getEffectiveFrom() != null){
+                if (masterCodeDto.getEffectiveFrom().before(new Date())){
+                    validationResult.setHasErrors(true);
+                    String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
+                    //The effective date of inactive data must be a future time
+                    errorMap.put("effectiveFrom", errMsg);
                 }
             }
-            if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveFrom() != null){
-                    if (masterCodeDto.getEffectiveFrom().before(new Date())){
-                        validationResult.setHasErrors(true);
-                        String errMsg = MessageUtil.getMessageDesc("MCUPERR007");
-                        //The effective date of inactive data must be a future time
-                        errorMap.put("effectiveFrom", errMsg);
-                    }
-                }
-            }
-            if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                if (masterCodeDto.getEffectiveTo() != null){
-                    if (masterCodeDto.getEffectiveTo().before(new Date())){
-                        validationResult.setHasErrors(true);
-                        String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
-                        //The effective date of inactive data must be a future time
-                        errorMap.put("effectiveTo", errMsg);
-                    }
-                }
-            }
-            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+        }
+        if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
+            if (masterCodeDto.getEffectiveTo() != null){
+                if (masterCodeDto.getEffectiveTo().before(new Date())){
+                    validationResult.setHasErrors(true);
+                    String errMsg = MessageUtil.getMessageDesc("MCUPERR009");
+                    //The effective date of inactive data must be a future time
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional.isPresent()) {
-                validationResult.setHasErrors(true);
-                String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
-                errorMap.put("codeValue", errMsg);
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            }
-            if (IaisCommonUtils.isNotEmpty(errorMap)) {
-                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
-                ParamUtil.setRequestAttr(request, "codeCategory", ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY));
-                return;
-            }
-            log.info(StringUtil.changeForLog("isEffect:"+isEffect));
-            if(!isEffect){
-                masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            }
-            MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
-            //eic
-            List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
-            msDto.setUpdateAt(new Date());
-            syncMasterCodeList.add(msDto);
-            masterCodeService.syncMasterCodeFe(syncMasterCodeList);
-            MasterCodeUtil.refreshCache();
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
-            Date date = new Date();
-            String dateStr = Formatter.formatDateTime(date);
-            String dateReplace = dateStr.replace(" "," at ");
-            String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
-            ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
         }
+        if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
+            if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                errorMap.put("effectiveTo", errMsg);
+            }
+        }
+        if (cartOptional.isPresent()) {
+            validationResult.setHasErrors(true);
+            String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
+            errorMap.put("codeValue", errMsg);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+        }
+        if (IaisCommonUtils.isNotEmpty(errorMap)) {
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+            ParamUtil.setRequestAttr(request, "codeCategory", ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY));
+            return;
+        }
+        log.info(StringUtil.changeForLog("isEffect:"+isEffect));
+        if(!isEffect){
+            masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        }
+        MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
+        //eic
+        List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
+        msDto.setUpdateAt(new Date());
+        syncMasterCodeList.add(msDto);
+        masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+        MasterCodeUtil.refreshCache();
+        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date);
+        String dateReplace = dateStr.replace(" "," at ");
+        String ackMsg = MessageUtil.replaceMessage("ACKMCM001",dateReplace,"Date");
+        ParamUtil.setRequestAttr(request,"CREATE_ACKMSG",ackMsg);
     }
 
     /**
