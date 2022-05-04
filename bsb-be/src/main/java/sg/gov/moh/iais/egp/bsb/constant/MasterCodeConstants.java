@@ -59,6 +59,9 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PENDING_AO_APPROVAL_LETTER_REVIEW = "BSBAPST037";
     public static final String APP_STATUS_PEND_AFC_REPORT_UPLOAD        = "BSBAPST038";
     public static final String APP_STATUS_PEND_AFC_INPUT                = "BSBAPST039";
+    public static final String APP_STATUS_PEND_APPLICANT_REPORT_REVIEW  = "BSBAPST040";
+    public static final String APP_STATUS_PEND_DO_REPORT_REVIEW         = "BSBAPST043";
+    public static final String APP_STATUS_PEND_AO_REPORT_REVIEW         = "BSBAPST044";
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
     public static final Set<String> UNAVAILABLE_APP_STATUS;

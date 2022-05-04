@@ -12,6 +12,7 @@ public class InspectionConstants {
 
     public static final String KEY_ROUTE = "route";
     public static final String KEY_ACK_MSG = "ackMsg";
+    public static final String KEY_DASHBOARD_MSG = "dashboardMsg";
 
     //NC Rectification and Follow-up items
     public static final String KEY_NCS_RECTIFICATION_DISPLAY_DATA = "ncsPreData";
@@ -28,6 +29,7 @@ public class InspectionConstants {
     public static final String KEY_NEW_SAVED_DOCUMENT = "newSavedDoc";
     public static final String KEY_SAVED_DOCUMENT = "oldSavedDoc";
     public static final String KEY_FOLLOW_UP_VIEW_DTO = "followUpViewDto";
+    public static final String KEY_REVIEW_AFC_REPORT_DTO = "reviewAFCReportDto";
 
     //Reschedule Appointment
     public static final String MODULE_NAME = "Inbox";
@@ -38,4 +40,13 @@ public class InspectionConstants {
 
     public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+
+    //AFC
+    public static final String KEY_AFC_DASHBOARD_MSG = "AFC Certification Documents Submission";
+    public static final String KEY_APPLICANT_DASHBOARD_MSG = "AFC Certification Documents Review";
+    public static final String KEY_AFC_ACK_MSG = "Your Submission is successfully uploaded.";
+
+    public static final String PARAM_PREPARE = "prepare";
+    public static final String PARAM_NEXT = "next";
+    public static final String PARAM_CAN_ACTION_ROLE = "canActionRole";
 }

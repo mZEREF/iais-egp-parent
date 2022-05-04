@@ -164,6 +164,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_APPROVED_FACILITY_CERTIFIER_SELECTION            = "9934209F-CB20-47C4-9FC3-E920B13B8923";
     public static final String CATE_ID_BSB_ROLE_IN_FACILITY                             = "56F494C2-5836-40AA-938D-3C98EC0F146C";
 
+    public static final String CATE_ID_BSB_DOCUMENT_TYPE                                = "095099A5-CB2B-4D4F-81B3-83D5F78B34AC";
+
 
     /**
      * @description: refresh the master codes into cache
