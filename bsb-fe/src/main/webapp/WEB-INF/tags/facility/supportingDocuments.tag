@@ -46,12 +46,13 @@
                                     <div class="document-content">
                                         <div class="document-info-list">
                                             <ul>
-                                                <li><p>The maximum file size for each upload is 5MB</p></li>
-                                                <li><p>Acceptable file formats are PDF, word, JPG, Excel and PNG</p></li>
+                                                <li><p>The maximum file size per document is 10 MB.</p></li>
+                                                <li><p>Acceptable file formats: JPG, PNG, PDF, CSV, DOCX, JPEG, XLS, DOC and XLSX.</p></li>
+                                                <li><p>Please ensure that the corresponding Document Type is selected for each document uploaded under Others.</p></li>
                                             </ul>
                                         </div>
                                         <div class="document-upload-gp">
-                                            <h2>PRIMARY DOCUMENTS</h2>
+                                            <h2>Supporting Documents</h2>
                                             <c:forEach var="doc" items="${docSettings}">
                                                 <c:set var="maskDocType"><iais:mask name="file" value="${doc.type}"/></c:set>
                                                 <div class="document-upload-list">

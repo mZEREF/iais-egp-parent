@@ -594,7 +594,7 @@
                             <c:if test="${otherAppInfoEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "otherInfo")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
                                 <div class="form-group">
-                                    <div class="col-10"><strong>Declaration</strong></div>
+                                    <div class="col-10" style="padding-bottom: 15px;"><strong>Declaration</strong></div>
                                     <div class="clear"></div>
                                 </div>
                                 <div class="col-xs-12 form-group">
@@ -658,6 +658,10 @@
                         <div class="panel-body">
                             <c:if test="${docEditJudge}"><div class="text-right app-font-size-16">${fn:replace(editFragString, "REPLACE-STEP-KEY", "primaryDocs")}</div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
+                                <div class="form-group">
+                                    <div class="col-10" style="padding-bottom: 15px;"><strong>Uploaded Documents</strong></div>
+                                    <div class="clear"></div>
+                                </div>
                                 <jsp:invoke fragment="docFrag"/>
                             </div>
                         </div>

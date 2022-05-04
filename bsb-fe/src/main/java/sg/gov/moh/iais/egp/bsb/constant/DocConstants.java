@@ -6,21 +6,30 @@ import java.util.List;
 
 public class DocConstants {
     private DocConstants() {}
-    public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
+
+    public static final String DOC_TYPE_OTHERS = "others";
 
     public static final String DOC_TYPE_DATA_COMMITTEE = "committeeData";
     public static final String DOC_TYPE_DATA_AUTHORISER = "authoriserData";
     public static final String DOC_TYPE_DATA_CERTIFYING_TEAM = "certifyingTeamData";
 
     public static final String DOC_TYPE_GAZETTE_ORDER = "gazetteOrder";
+
+    public static final String DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN = "facAdminOversightPlan";
+    public static final String DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS = "facLayoutAndAcmvSchematics";
     public static final String DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES = "bsfCoordinatorCert";
-    public static final String DOC_TYPE_INVENTORY_FILE = "inventoryFile";
-    public static final String DOC_TYPE_GMAC_ENDORSEMENT = "gmacEndorsement";
-    public static final String DOC_TYPE_RISK_ASSESS_PLAN = "riskAssessPlan";
+    public static final String DOC_TYPE_FACILITY_LAYOUT = "facLayout";
+    public static final String DOC_TYPE_BIO_SAFETY_COMMITTEE = "bsfCommittee";
+    public static final String DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES = "riskAssessmentManagement";
     public static final String DOC_TYPE_STANDARD_OPERATING_PROCEDURE = "stdOperatingProcedure";
     public static final String DOC_TYPE_EMERGENCY_RESPONSE_PLAN = "emgResponsePlan";
-    public static final String DOC_TYPE_BIO_SAFETY_COM = "bsfCom";
-    public static final String DOC_TYPE_FACILITY_PLAN_LAYOUT = "facPlanLayout";
+    public static final String DOC_TYPE_APPLICATION_LETTER = "appLetter";
+    public static final String DOC_TYPE_INVENTORY_TEMPLATE = "inventoryTemplate";
+
+    public static final String DOC_TYPE_GMAC_ENDORSEMENT = "gmacEndorsement";
+    public static final String DOC_TYPE_RISK_ASSESS_PLAN = "riskAssessPlan";
+
+
     public static final String DOC_RED_TEAMING_REPORT = "REPTYPE01";
     public static final String DOC_PNEF_INVENTORY_REPORT = "REPTYPE02";
     public static final String DOC_BI_ANNUAL_TOXIN_REPORT = "REPTYPE03";
@@ -30,7 +39,7 @@ public class DocConstants {
     public static final String DOC_ANNUAL_LENTIVIRUS_REPORT = "REPTYPE07";
     public static final String DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE= "REPTYPE07";
     public static final String DOC_REPORT_UPLOAD = "report";
-    public static final String DOC_TYPE_OTHERS = "others";
+
     public static final String DOC_INCIDENT_REPORT = "incidentReport";
     public static final String DOC_INCIDENT_ACTION_REPORT = "incidentActionReport";
 
@@ -48,20 +57,22 @@ public class DocConstants {
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, DOC_TYPE_INVENTORY_FILE, DOC_TYPE_GMAC_ENDORSEMENT,
-            DOC_TYPE_RISK_ASSESS_PLAN, DOC_TYPE_STANDARD_OPERATING_PROCEDURE, DOC_TYPE_EMERGENCY_RESPONSE_PLAN,
-            DOC_TYPE_BIO_SAFETY_COM, DOC_TYPE_FACILITY_PLAN_LAYOUT, DOC_TYPE_OTHERS));
+            DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, DOC_TYPE_FACILITY_LAYOUT, DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS,
+            DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, DOC_TYPE_BIO_SAFETY_COMMITTEE,
+            DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
+            DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_APPLICATION_LETTER,
+            DOC_TYPE_INVENTORY_TEMPLATE, DOC_TYPE_OTHERS));
 
     public static final List<String> APP_POSSESS_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_BIO_SAFETY_COM, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
+            DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
             DOC_TYPE_GMAC_ENDORSEMENT, DOC_TYPE_OTHERS));
 
     public static final List<String> APP_LARGE_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_BIO_SAFETY_COM, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
+            DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_STANDARD_OPERATING_PROCEDURE,
             DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_OTHERS));
 
     public static final List<String> APP_SPECIAL_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
-            DOC_TYPE_BIO_SAFETY_COM, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_APPROVAL_DOCUMENT_FROM_MOH,
+            DOC_TYPE_BIO_SAFETY_COMMITTEE, DOC_TYPE_RISK_ASSESSMENT, DOC_TYPE_APPROVAL_DOCUMENT_FROM_MOH,
             DOC_TYPE_EMERGENCY_RESPONSE_PLAN, DOC_TYPE_SPECIAL_APPROVAL_TO_HANDLE, DOC_TYPE_OTHERS));
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
@@ -78,4 +89,7 @@ public class DocConstants {
     public static final String DOC_TYPE_INSPECTION_NON_COMPLIANCE = "nonComplianceReport";
     public static final String DOC_TYPE_FOLLOW_UP = "insFollowUp";
     public static final String DOC_TYPE_ADHOC_RFI_UP = "adhocRfiUp";
+
+
+    public static final String KEY_COMMON_DOC_DTO = "commonDocDto";
 }

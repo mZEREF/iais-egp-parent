@@ -586,7 +586,8 @@ public class FacilityRegistrationService {
         }
         Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings(selectionDto.getFacClassification()));
 
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -685,7 +686,9 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
         ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
+        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings(selectionDto.getFacClassification()));
+
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();

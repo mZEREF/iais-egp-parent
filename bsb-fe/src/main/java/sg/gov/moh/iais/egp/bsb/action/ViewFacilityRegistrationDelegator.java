@@ -119,7 +119,7 @@ public class ViewFacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_CONFIG, otherAppInfoDto.getDeclarationConfig());
             ParamUtil.setRequestAttr(request, KEY_DECLARATION_ANSWER_MAP, otherAppInfoDto.getAnswerMap());
 
-            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+            ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings(selectionDto.getFacClassification()));
             PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
             Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
             ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);

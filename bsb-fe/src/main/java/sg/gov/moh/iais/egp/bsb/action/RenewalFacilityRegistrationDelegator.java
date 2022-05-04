@@ -111,7 +111,7 @@ public class RenewalFacilityRegistrationDelegator {
         List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
 
-        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
+//        ParamUtil.setRequestAttr(request, "docSettings", docSettingService.getFacRegDocSettings());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();

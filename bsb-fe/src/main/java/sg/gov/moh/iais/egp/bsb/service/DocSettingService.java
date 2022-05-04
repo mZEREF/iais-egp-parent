@@ -16,23 +16,40 @@ import java.util.List;
 public class DocSettingService {
     private static final String TYPE_DISPLAY_OTHERS = "Others";
 
-    public List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(9);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
+    /**
+     * Hard code of supporting document list used by facility registration.
+     * This method may be changed to retrieve config from DB in the future.
+     * @author chenwei
+     * @param classification facility classification
+     * @return a list of doc settings
+     */
+    public List<DocSetting> getFacRegDocSettings (String classification) {
+        List<DocSetting> docSettings;
+        if (MasterCodeConstants.UNCERTIFIED_CLASSIFICATION.contains(classification)) {
+            docSettings = new ArrayList<>(10);
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT, "Facility Layout", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management: Work Activities", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", false));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TEMPLATE, "Inventory Template", false));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
+        } else {
+            docSettings = new ArrayList<>(4);
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout and ACMV Schematics", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator’s Certificates", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
+        }
         return docSettings;
     }
 
     public List<DocSetting> getApprovalAppDocSettings () {
         List<DocSetting> docSettings = new ArrayList<>(5);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
@@ -44,28 +61,28 @@ public class DocSettingService {
         List<DocSetting> docSettings = new ArrayList<>(5);
         switch (approvalType) {
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS:
-                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP:
-                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", false));
+                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
                 break;
             case MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE:
-                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPROVAL_DOCUMENT_FROM_MOH, "Approval Document From MOH", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, TYPE_DISPLAY_OTHERS, false));
                 break;
             case MasterCodeConstants.PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE:
-                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", false));
+                docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
                 docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
