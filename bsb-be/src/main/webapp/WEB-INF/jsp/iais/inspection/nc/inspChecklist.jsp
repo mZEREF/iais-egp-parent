@@ -137,7 +137,7 @@
                     </td>
                     <td class="text-center">
                         <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comDueDateIns${inspectorsStatus.index}" <c:if test="${inspComAnswer.followupItem != 'YES'}">style="display: none;"</c:if>>
-                            <iais:datePicker  id = "${item.incqDto.itemId}${item.incqDto.sectionNameShow}comDueDate${inspectorsStatus.index}" name = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}comDueDate${inspectorsStatus.index}"  value="${inspComAnswer.dueDate}" />
+                            <iais:datePicker disabled="${inspectorUserFinishChecklistId == inspector.id ? 'false' : 'true'}" id = "${item.incqDto.itemId}${item.incqDto.sectionNameShow}comDueDate${inspectorsStatus.index}" name = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}comDueDate${inspectorsStatus.index}"  value="${inspComAnswer.dueDate}" />
                         </div>
                     </td>
                     <td>
