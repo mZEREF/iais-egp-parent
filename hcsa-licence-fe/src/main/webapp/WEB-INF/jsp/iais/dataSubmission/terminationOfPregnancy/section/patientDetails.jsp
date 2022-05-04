@@ -83,7 +83,7 @@
                         <iais:row>
                             <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="200" type="text" id="otherEthnicGroup" name="otherEthnicGroup"
+                                <iais:input maxLength="20" type="text" id="otherEthnicGroup" name="otherEthnicGroup"
                                             value="${patientInformationDto.otherEthnicGroup}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherEthnicGroup"></span>
                             </iais:value>
