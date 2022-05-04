@@ -72,6 +72,9 @@
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIRST_SCHEDULE}" role="tab">Possession of First Schedule Biological Agent</a></li>
                                                 </c:if>
+                                                <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}'>
+                                                    <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}" role="tab">Possession of Fifth Schedule Toxin</a></li>
+                                                </c:if>
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_SCHEDULE}" role="tab">Large-Scale Production of First Schedule Biological Agent</a></li>
                                                 </c:if>
@@ -80,9 +83,6 @@
                                                 </c:if>
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE}" role="tab">Large-Scale Production of First and/or Third Schedule Biological Agent</a></li>
-                                                </c:if>
-                                                <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE)}'>
-                                                    <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}" role="tab">Possession of Fifth Schedule Toxin</a></li>
                                                 </c:if>
                                                 <c:if test='${activityTypes.contains(masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV)}'>
                                                     <li <c:if test="${activeNodeKey eq masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}">class="active"</c:if> role="presentation"><a data-step-key="batInfo_${masterCodeConstants.ACTIVITY_SP_HANDLE_NON_FIRST_SCHEDULE_PV}" role="tab">Handling of non-First Schedule Poliovirus Infectious Materials</a></li>
@@ -106,13 +106,21 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 30;">
-                                                                            <select name="schedule--v--${status.index}" class="scheduleDropdown${status.index}" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
-                                                                                <option value="">Please Select</option>
-                                                                                <c:forEach items="${scheduleOps}" var="schedule">
-                                                                                    <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
-                                                                                </c:forEach>
-                                                                            </select>
-                                                                            <span data-err-ind="schedule--v--${status.index}" class="error-msg"></span>
+                                                                            <c:choose>
+                                                                                <c:when test="${activeNodeKey eq masterCodeConstants.ACTIVITY_POSSESS_FIFTH_SCHEDULE}">
+                                                                                    <label>Fifth Schedule</label>
+                                                                                    <input type="hidden" name="schedule--v--${status.index}" id="schedule--v--${status.index}" value="${masterCodeConstants.FIFTH_SCHEDULE}"/>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <select name="schedule--v--${status.index}" class="scheduleDropdown${status.index}" id="schedule--v--${status.index}" data-cascade-dropdown="schedule-bat">
+                                                                                        <option value="">Please Select</option>
+                                                                                        <c:forEach items="${scheduleOps}" var="schedule">
+                                                                                            <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
+                                                                                        </c:forEach>
+                                                                                    </select>
+                                                                                    <span data-err-ind="schedule--v--${status.index}" class="error-msg"></span>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
                                                                         </div>
                                                                         <c:if test="${status.index gt 0}">
                                                                             <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
@@ -125,7 +133,6 @@
                                                                         </div>
                                                                         <div class="col-sm-6" style="z-index: 20;">
                                                                             <select name="batName--v--${status.index}"  class="batNameDropdown${status.index}" id="batName--v--${status.index}">
-                                                                                <option value="">Please Select</option>
                                                                                 <c:set var="batNameOps" value="${scheduleBatMap.get(empty info.schedule ? firstScheduleOp : info.schedule)}"/>
                                                                                 <c:forEach items="${batNameOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -221,17 +228,19 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <div class="col-sm-4" style="margin-top: 8px; padding-left:0; padding-right:0">
-                                                                                <label for="procurementModeLocalTransfer--v--${status.index}">Local Transfer</label>
-                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" data-custom-ind="batProcurementModeLocal" value="${masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}" <c:if test="${info.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">checked="checked"</c:if> />
+                                                                            <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
+                                                                                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModeLocalTransfer--v--${status.index}" data-custom-ind="batProcurementModeLocal" value="${masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}" <c:if test="${info.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">checked="checked"</c:if> />
+                                                                                <label for="procurementModeLocalTransfer--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Local Transfer</label>
                                                                             </div>
-                                                                            <div class="col-sm-4" style="margin-top: 8px; padding-left:0; padding-right:0">
-                                                                                <label for="procurementModeImport--v--${status.index}">Import</label>
-                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" data-custom-ind="batProcurementModeImport" value="${masterCodeConstants.PROCUREMENT_MODE_IMPORT}" <c:if test="${info.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_IMPORT}">checked="checked"</c:if> />
+                                                                            <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
+                                                                                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" data-custom-ind="batProcurementModeImport" value="${masterCodeConstants.PROCUREMENT_MODE_IMPORT}" <c:if test="${info.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_IMPORT}">checked="checked"</c:if> />
+                                                                                <label for="procurementModeImport--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Import</label>
                                                                             </div>
                                                                             <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
+                                                                    <iais-bsb:single-constant constantName="ADDRESS_TYPE_APT_BLK" classFullName="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" attributeKey="aptBlk"/>
+                                                                        <%--@elvariable id="aptBlk" type="java.lang.String"--%>
                                                                     <div id="transferringFacilityDiv--v--${status.index}" <c:if test="${info.procurementMode ne null and info.procurementMode ne masterCodeConstants.PROCUREMENT_MODE_LOCAL_TRANSFER}">style="display: none;"</c:if>>
                                                                         <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Transferring Facility:</p>
                                                                         <div class="form-group ">
@@ -240,7 +249,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-5">
-                                                                                <input maxlength="250" type="text" autocomplete="off" name="postalCodeT--v--${status.index}" id="postalCodeT--v--${status.index}" value='<c:out value="${info.postalCodeT}"/>'/>
+                                                                                <input maxlength="6" type="text" autocomplete="off" name="postalCodeT--v--${status.index}" id="postalCodeT--v--${status.index}" value='<c:out value="${info.postalCodeT}"/>'/>
                                                                                 <span data-err-ind="postalCodeT--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                             <div class="col-sm-2">
@@ -265,7 +274,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
                                                                                 <label for="blockNoT--v--${status.index}">Block / House No.</label>
-                                                                                <span id="aptMandatoryBlkT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
+                                                                                <span id="aptMandatoryBlkT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
                                                                                 <input maxlength="250" type="text" autocomplete="off" name="blockNoT--v--${status.index}" id="blockNoT--v--${status.index}" value='<c:out value="${info.blockNoT}"/>'/>
@@ -274,17 +283,20 @@
                                                                         </div>
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
-                                                                                <label for="floorNoT--v--${status.index}">Floor / Unit No.</label>
-                                                                                <span id="aptMandatoryFloorUnitT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne 'ADDTY001'}">style="display:none;"</c:if>>*</span>
+                                                                                <label for="floorNoT--v--${status.index}">Floor</label>
+                                                                                <span id="aptMandatoryFloorT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
-                                                                            <div class="col-sm-2">
+                                                                            <div class="col-sm-6">
                                                                                 <input type="text" autocomplete="off" name="floorNoT--v--${status.index}" id="floorNoT--v--${status.index}" value='${info.floorNoT}' maxlength="250"/>
                                                                                 <span data-err-ind="floorNoT--v--${status.index}" class="error-msg"></span>
                                                                             </div>
-                                                                            <div class="hidden-xs col-sm-1" style="text-align: center">
-                                                                                <p>-</p>
+                                                                        </div>
+                                                                        <div class="form-group ">
+                                                                            <div class="col-sm-5 control-label">
+                                                                                <label for="unitNoT--v--${status.index}">Unit No.</label>
+                                                                                <span id="aptMandatoryUnitT--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeT ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
-                                                                            <div class="col-sm-3">
+                                                                            <div class="col-sm-6">
                                                                                 <input type="text" autocomplete="off" name="unitNoT--v--${status.index}" id="unitNoT--v--${status.index}" value='${info.unitNoT}' maxlength="250"/>
                                                                                 <span data-err-ind="unitNoT--v--${status.index}" class="error-msg"></span>
                                                                             </div>
@@ -388,8 +400,33 @@
                                                                         </div>
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
-                                                                                <label for="blockNoE--v--${status.index}">Block No.</label>
+                                                                                <label for="postalCodeE--v--${status.index}">Postal Code</label>
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <input maxlength="6" type="text" autocomplete="off" name="postalCodeE--v--${status.index}" id="postalCodeE--v--${status.index}" value='<c:out value="${info.postalCodeE}"/>'/>
+                                                                                <span data-err-ind="postalCodeE--v--${status.index}" class="error-msg"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group ">
+                                                                            <div class="col-sm-5 control-label">
+                                                                                <label for="addressTypeE--v--${status.index}">Address Type</label>
+                                                                                <span class="mandatory otherQualificationSpan">*</span>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <select name="addressTypeE--v--${status.index}" id="addressTypeE--v--${status.index}" data-custom-ind="addressTypeE">
+                                                                                    <option value="">Please Select</option>
+                                                                                    <c:forEach items="${addressTypeOps}" var="name">
+                                                                                        <option value="${name.value}" <c:if test="${info.addressTypeE eq name.value}">selected="selected"</c:if>>${name.text}</option>
+                                                                                    </c:forEach>
+                                                                                </select>
+                                                                                <span data-err-ind="addressTypeE--v--${status.index}" class="error-msg"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group ">
+                                                                            <div class="col-sm-5 control-label">
+                                                                                <label for="blockNoE--v--${status.index}">Block / House No.</label>
+                                                                                <span id="aptMandatoryBlkE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
                                                                                 <input maxlength="250" type="text" autocomplete="off" name="blockNoE--v--${status.index}" id="blockNoE--v--${status.index}" value='<c:out value="${info.blockNoE}"/>'/>
@@ -398,24 +435,27 @@
                                                                         </div>
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
-                                                                                <label for="floorNoE--v--${status.index}">Floor / Unit</label>
-                                                                                <span class="mandatory otherQualificationSpan">*</span>
+                                                                                <label for="floorNoE--v--${status.index}">Floor</label>
+                                                                                <span id="aptMandatoryFloorE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
-                                                                            <div class="col-sm-2">
+                                                                            <div class="col-sm-6">
                                                                                 <input type="text" autocomplete="off" name="floorNoE--v--${status.index}" id="floorNoE--v--${status.index}" value='${info.floorNoE}' maxlength="250"/>
                                                                                 <span data-err-ind="floorNoE--v--${status.index}" class="error-msg"></span>
                                                                             </div>
-                                                                            <div class="hidden-xs col-sm-1" style="text-align: center">
-                                                                                <p>-</p>
+                                                                        </div>
+                                                                        <div class="form-group ">
+                                                                            <div class="col-sm-5 control-label">
+                                                                                <label for="unitNoE--v--${status.index}">Unit No.</label>
+                                                                                <span id="aptMandatoryUnitE--v--${status.index}" class="mandatory otherQualificationSpan" <c:if test="${info.addressTypeE ne aptBlk}">style="display:none;"</c:if>>*</span>
                                                                             </div>
-                                                                            <div class="col-sm-3">
+                                                                            <div class="col-sm-6">
                                                                                 <input type="text" autocomplete="off" name="unitNoE--v--${status.index}" id="unitNoE--v--${status.index}" value='${info.unitNoE}' maxlength="250"/>
                                                                                 <span data-err-ind="unitNoE--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
-                                                                                <label for="streetNameE--v--${status.index}">Street</label>
+                                                                                <label for="streetNameE--v--${status.index}">Street Name</label>
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
@@ -425,12 +465,11 @@
                                                                         </div>
                                                                         <div class="form-group ">
                                                                             <div class="col-sm-5 control-label">
-                                                                                <label for="postalCodeE--v--${status.index}">Postal Code</label>
-                                                                                <span class="mandatory otherQualificationSpan">*</span>
+                                                                                <label for="buildingNameE--v--${status.index}">Building Name</label>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <input maxlength="250" type="text" autocomplete="off" name="postalCodeE--v--${status.index}" id="postalCodeE--v--${status.index}" value='<c:out value="${info.postalCodeE}"/>'/>
-                                                                                <span data-err-ind="postalCodeE--v--${status.index}" class="error-msg"></span>
+                                                                                <input maxlength="250" type="text" autocomplete="off" name="buildingNameE--v--${status.index}" id="buildingNameE--v--${status.index}" value='<c:out value="${info.buildingNameE}"/>'/>
+                                                                                <span data-err-ind="buildingNameE--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group ">
@@ -522,15 +561,6 @@
                                                                                 <textarea maxLength="250" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${info.remarksE}"/></textarea>
                                                                                 <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group " <c:if test="${firstScheduleOp ne masterCodeConstants.FIFTH_SCHEDULE}">style="display: none"</c:if>>
-                                                                        <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                                            <input type="checkbox" name="toxinRegulationDeclare--v--${status.index}" id="toxinRegulationDeclare--v--${status.index}" value="Y" <c:if test="${info.toxinRegulationDeclare eq 'Y'}">checked="checked"</c:if> />
-                                                                        </div>
-                                                                        <div class="col-xs-10 control-label">
-                                                                            <label for="toxinRegulationDeclare--v--${status.index}">I will ensure that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated under the BATA Transportation Regulations, the BATA and any other related regulations.</label>
-                                                                            <span data-err-ind="toxinRegulationDeclare--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                 </section>

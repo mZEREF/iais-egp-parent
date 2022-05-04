@@ -53,10 +53,12 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
         private String facNameE;
         private String postalCodeE;
+        private String addressTypeE;
         private String blockNoE;
         private String floorNoE;
         private String unitNoE;
         private String streetNameE;
+        private String buildingNameE;
         private String countryE;
         private String stateE;
 
@@ -66,8 +68,6 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
         private String expectedDateE;
         private String courierServiceProviderNameE;
         private String remarksE;
-
-        private String toxinRegulationDeclare;
     }
 
     private String activityEntityId;
@@ -160,7 +160,6 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_WORK_TYPE                          = "workType";
     private static final String KEY_PREFIX_SAMPLE_WORK_DETAIL                 = "sampleWorkDetail";
     private static final String KEY_PREFIX_PROCUREMENT_MODE                   = "procurementMode";
-    private static final String KEY_PREFIX_TOXIN_REGULATION_DECLARE           = "toxinRegulationDeclare";
 
     private static final String KEY_PREFIX_TRANSFERRING_POSTAL_CODE                        = "postalCodeT";
     private static final String KEY_PREFIX_TRANSFERRING_ADDRESS_TYPE                       = "addressTypeT";
@@ -178,10 +177,12 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
     private static final String KEY_PREFIX_EXPORTING_FACILITY_NAME                      = "facNameE";
     private static final String KEY_PREFIX_EXPORTING_POSTAL_CODE                        = "postalCodeE";
+    private static final String KEY_PREFIX_EXPORTING_ADDRESS_TYPE                       = "addressTypeE";
     private static final String KEY_PREFIX_EXPORTING_BLOCK_NO                           = "blockNoE";
     private static final String KEY_PREFIX_EXPORTING_FLOOR_NO                           = "floorNoE";
     private static final String KEY_PREFIX_EXPORTING_UNIT_NO                            = "unitNoE";
     private static final String KEY_PREFIX_EXPORTING_STREET_NAME                        = "streetNameE";
+    private static final String KEY_PREFIX_EXPORTING_BUILDING_NAME                      = "buildingNameE";
     private static final String KEY_PREFIX_EXPORTING_COUNTRY                            = "countryE";
     private static final String KEY_PREFIX_EXPORTING_STATE                              = "stateE";
     private static final String KEY_PREFIX_EXPORTING_CONTACT_PERSON_NAME                = "contactPersonNameE";
@@ -231,10 +232,12 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
             } else if (MasterCodeConstants.PROCUREMENT_MODE_IMPORT.equals(info.getProcurementMode())) {
                 info.setFacNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_FACILITY_NAME + SEPARATOR + idx));
                 info.setPostalCodeE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_POSTAL_CODE + SEPARATOR +idx));
+                info.setAddressTypeE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_ADDRESS_TYPE + SEPARATOR +idx));
                 info.setBlockNoE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_BLOCK_NO + SEPARATOR +idx));
                 info.setFloorNoE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_FLOOR_NO + SEPARATOR +idx));
                 info.setUnitNoE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_UNIT_NO + SEPARATOR +idx));
                 info.setStreetNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_STREET_NAME + SEPARATOR +idx));
+                info.setBuildingNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_BUILDING_NAME + SEPARATOR +idx));
                 info.setCountryE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_COUNTRY + SEPARATOR + idx));
                 info.setStateE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_STATE + SEPARATOR + idx));
                 info.setContactPersonNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_CONTACT_PERSON_NAME + SEPARATOR +idx));
@@ -244,7 +247,6 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
                 info.setCourierServiceProviderNameE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +idx));
                 info.setRemarksE(ParamUtil.getString(request, KEY_PREFIX_EXPORTING_REMARKS + SEPARATOR +idx));
             }
-            info.setToxinRegulationDeclare(ParamUtil.getString(request, KEY_PREFIX_TOXIN_REGULATION_DECLARE + SEPARATOR + idx));
             addBatInfo(info);
         }
     }

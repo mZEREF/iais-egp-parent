@@ -23,10 +23,10 @@
     <input type="hidden" name="action_additional" value="">
 
     <div class="main-content">
-        <div class="container">
+        <div class="container" style="padding-left: 0">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
+                <div class="col-xs-12" style="padding-left: 0">
+                    <div class="tab-gp steps-tab" style="margin-top: 0;">
                         <div class="tab-content" style="padding-left: 30px">
                             <%@include file="../mainAppCommon/facRegistration/previewFacilityAuthoriserInfo.jsp"%>
                         </div>

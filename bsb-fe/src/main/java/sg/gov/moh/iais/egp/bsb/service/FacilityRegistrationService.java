@@ -482,7 +482,8 @@ public class FacilityRegistrationService {
         // convert BatBasicInfo to SelectOption object
         Map<String, List<SelectOption>> scheduleBatOptionMap = Maps.newHashMapWithExpectedSize(scheduleBatMap.size());
         for (Map.Entry<String, List<BatBasicInfo>> entry : scheduleBatMap.entrySet()) {
-            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size());
+            List<SelectOption> optionList = new ArrayList<>(entry.getValue().size() + 1);
+            optionList.add(new SelectOption("", "Please Select"));
             for (BatBasicInfo info : entry.getValue()) {
                 SelectOption option = new SelectOption();
                 option.setText(info.getName());

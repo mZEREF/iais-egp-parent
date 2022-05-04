@@ -1,4 +1,8 @@
 <div>
+    <p style="font-weight: bold; padding-left: 8px;">Preview Biosafety Committee Information</p>
+</div>
+
+<div>
     <table class="table" aria-describedby="">
         <thead>
         <tr>

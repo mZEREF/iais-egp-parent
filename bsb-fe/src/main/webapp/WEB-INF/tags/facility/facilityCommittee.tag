@@ -58,7 +58,7 @@
                                                     <div class="file-upload-gp">
                                                         <span data-err-ind="committeeData" class="error-msg"></span>
                                                         <c:if test="${dataHasError}">
-                                                            <span class="error-msg">There are invalid record(s) in the file. Please rectify them and re-upload the file.</span>
+                                                            <span class="error-msg">Unsuccessful upload due to the following invalid record. Please complete rectification before reattempting upload.</span>
                                                             <div class="row">
                                                                 <div class="col-xs-12">
                                                                     <div class="table-gp">

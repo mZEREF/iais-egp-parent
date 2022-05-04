@@ -79,6 +79,15 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
+                                                    <label for="idNumberM">ID No</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <label id="idNumberM">${facAdminOfficer.mainAdmin.idNumber}</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
                                                     <label for="nationalityM">Nationality</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
@@ -90,15 +99,6 @@
                                                         </c:forEach>
                                                     </select>
                                                     <span data-err-ind="nationalityM" class="error-msg"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group ">
-                                                <div class="col-sm-5 control-label">
-                                                    <label for="idNumberM">ID No</label>
-                                                    <span class="mandatory otherQualificationSpan">*</span>
-                                                </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <label id="idNumberM">${facAdminOfficer.mainAdmin.idNumber}</label>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -123,7 +123,7 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="emailM">Email</label>
+                                                    <label for="emailM">Email Address</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
@@ -172,21 +172,6 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="nationalityA">Nationality</label>
-                                                    <span class="mandatory otherQualificationSpan">*</span>
-                                                </div>
-                                                <div class="col-sm-6 col-md-7">
-                                                    <select name="nationalityA" class="nationalityADropdown" id="nationalityA">
-                                                        <option value="">Please Select</option>
-                                                        <c:forEach items="${nationalityOps}" var="na">
-                                                            <option value="${na.value}" <c:if test="${facAdminOfficer.alternativeAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <span data-err-ind="nationalityA" class="error-msg"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group ">
-                                                <div class="col-sm-5 control-label">
                                                     <label for="idNumberA">ID No</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
@@ -200,6 +185,21 @@
                                                 <div class="col-sm-3 col-md-4">
                                                     <input maxLength="9" type="text" autocomplete="off" name="idNumberA" id="idNumberA" value='<c:out value="${facAdminOfficer.alternativeAdmin.idNumber}"/>'/>
                                                     <span data-err-ind="idNumberA" class="error-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label for="nationalityA">Nationality</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <select name="nationalityA" class="nationalityDown" id="nationalityA">
+                                                        <option value="">Please Select</option>
+                                                        <c:forEach items="${nationalityOps}" var="na">
+                                                            <option value="${na.value}" <c:if test="${facAdminOfficer.alternativeAdmin.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <span data-err-ind="nationalityA" class="error-msg"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group ">
@@ -224,7 +224,7 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="emailA">Email</label>
+                                                    <label for="emailA">Email Address</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
@@ -281,21 +281,6 @@
                                                     </div>
                                                     <div class="form-group ">
                                                         <div class="col-sm-5 control-label">
-                                                            <label for="nationality--v--${status.index}">Nationality</label>
-                                                            <span class="mandatory otherQualificationSpan">*</span>
-                                                        </div>
-                                                        <div class="col-sm-6 col-md-7">
-                                                            <select name="nationality--v--${status.index}" class="nationalityDropdown${status.index}" id="nationality--v--${status.index}">
-                                                                <option value="">Please Select</option>
-                                                                <c:forEach items="${nationalityOps}" var="na">
-                                                                    <option value="${na.value}" <c:if test="${officer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                            <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group ">
-                                                        <div class="col-sm-5 control-label">
                                                             <label for="idNumber--v--${status.index}">ID No</label>
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
@@ -309,6 +294,21 @@
                                                         <div class="col-sm-3 col-md-4">
                                                             <input maxLength="9" type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${officer.idNumber}"/>'/>
                                                             <span data-err-ind="idNumber--v--${status.index}" class="error-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <div class="col-sm-5 control-label">
+                                                            <label for="nationality--v--${status.index}">Nationality</label>
+                                                            <span class="mandatory otherQualificationSpan">*</span>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-7">
+                                                            <select name="nationality--v--${status.index}" class="nationalityvv" id="nationality--v--${status.index}">
+                                                                <option value="">Please Select</option>
+                                                                <c:forEach items="${nationalityOps}" var="na">
+                                                                    <option value="${na.value}" <c:if test="${officer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                            <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group ">

@@ -1,4 +1,8 @@
 <div>
+    <p style="font-weight: bold; padding-left: 8px;">Preview Personnel Authorised to Access the Facility Information</p>
+</div>
+
+<div>
     <table class="table" aria-describedby="">
         <thead>
         <tr>
