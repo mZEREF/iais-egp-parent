@@ -75,13 +75,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Living Children"/>
-                    <iais:value width="7" display="true" cssClass="col-md-7">
-                        <c:out value="${patientInformationDto.livingChildrenNo}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Activity Status" />
+                    <iais:field width="5" value="Employment Status" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${patientInformationDto.activityStatus}"/>
                     </iais:value>
@@ -94,7 +88,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${patientInformationDto.occupation!='TOPOCC014' || patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
+                <div <c:if test="${patientInformationDto.occupation!='TOPOCC011' || patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Occupation"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
@@ -102,6 +96,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field width="5" value="No. of Living Children"/>
+                    <iais:value width="7" display="true" cssClass="col-md-7">
+                        <c:out value="${patientInformationDto.livingChildrenNo}"/>
+                    </iais:value>
+                </iais:row>
                     <iais:row>
                         <div <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
                             <iais:field width="5" value="Gender of Living Children (By Order)"/>

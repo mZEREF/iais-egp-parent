@@ -562,6 +562,8 @@ public class TopDataSubmissionDelegator {
         TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto() == null ? new TerminationDto() : terminationOfPregnancyDto.getTerminationDto();
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto() == null ? new PreTerminationDto() : terminationOfPregnancyDto.getPreTerminationDto();
         ControllerHelper.get(request, terminationDto);
+        String doctorName = ParamUtil.getString(request, "names");
+        terminationDto.setDoctorName(doctorName);
         String topDate=ParamUtil.getString(request,"topDate");
         terminationDto.setTopDate(topDate);
         terminationOfPregnancyDto.setTerminationDto(terminationDto);

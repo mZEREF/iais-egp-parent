@@ -102,6 +102,35 @@
                                          codeCategory="TOP_EDUCATION_LEVEL" value="${patientInformationDto.educationLevel}"/>
                         </iais:value>
                     </iais:row>
+                   <iais:row>
+                       <iais:field width="5" value="Employment Status" mandatory="true"/>
+                       <iais:value width="7" cssClass="col-md-7">
+                           <iais:select cssClass="activityStatus" name="activityStatus" id="activityStatus" firstOption="Please Select"
+                                        codeCategory="TOP_ACTIVITY_STATUS" value="${patientInformationDto.activityStatus}"/>
+                       </iais:value>
+                   </iais:row>
+                   <div id="occupations"
+                        <c:if test="${patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
+                       <iais:row>
+                           <iais:field width="5" value="Occupation" mandatory="true"/>
+                           <iais:value width="7" cssClass="col-md-7">
+                               <iais:select cssClass="occupation" name="occupation" id="occupation" firstOption="Please Select"
+                                            codeCategory="TOP_OCCUPATION" value="${patientInformationDto.occupation}"/>
+                               <span class="error-msg" name="iaisErrorMsg" id="error_occupation"></span>
+                           </iais:value>
+                       </iais:row>
+                   </div>
+                   <div id="otherOccupations"
+                        <c:if test="${patientInformationDto.occupation!='TOPOCC011'}">style="display: none"</c:if>>
+                       <iais:row>
+                           <iais:field width="5" value="Other Occupation" mandatory="true"/>
+                           <iais:value width="7" cssClass="col-md-7">
+                               <iais:input maxLength="20" type="text" id="otherOccupation" name="otherOccupation"
+                                           value="${patientInformationDto.otherOccupation}"/>
+                               <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
+                           </iais:value>
+                       </iais:row>
+                   </div>
                     <iais:row>
                         <iais:field width="5" value="No. of Living Children" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -110,38 +139,8 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_livingChildrenNo"></span>
                         </iais:value>
                     </iais:row>
-
                     <iais:row>
-                        <iais:field width="5" value="Activity Status" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select cssClass="activityStatus" name="activityStatus" id="activityStatus" firstOption="Please Select"
-                                         codeCategory="TOP_ACTIVITY_STATUS" value="${patientInformationDto.activityStatus}"/>
-                        </iais:value>
-                    </iais:row>
-                    <div id="occupations"
-                         <c:if test="${patientInformationDto.activityStatus!='TOPAS001'}">style="display: none"</c:if>>
-                        <iais:row>
-                            <iais:field width="5" value="Occupation" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:select cssClass="occupation" name="occupation" id="occupation" firstOption="Please Select"
-                                             codeCategory="TOP_OCCUPATION" value="${patientInformationDto.occupation}"/>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_occupation"></span>
-                            </iais:value>
-                        </iais:row>
-                    </div>
-                    <div id="otherOccupations"
-                         <c:if test="${patientInformationDto.occupation!='TOPOCC014'}">style="display: none"</c:if>>
-                        <iais:row>
-                            <iais:field width="5" value="Other Occupation" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" id="otherOccupation" name="otherOccupation"
-                                            value="${patientInformationDto.otherOccupation}"/>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_otherOccupation"></span>
-                            </iais:value>
-                        </iais:row>
-                    </div>
-                    <iais:row>
-                        <div id="gender" <c:if test="${patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null}">style="display: none"</c:if>>
+                        <div id="gender" <c:if test="${!(patientInformationDto.livingChildrenNo).matches('[0-9]+') || patientInformationDto.livingChildrenNo<=0 || patientInformationDto.livingChildrenNo ==null }">style="display: none"</c:if>>
                                 <iais:field width="5" value="Gender of Living Children (By Order)" mandatory="true"/>
                         </div>
                         <iais:value width="7" cssClass="col-md-7">
@@ -196,7 +195,7 @@
 
             var occupation = $('#occupation option:selected').val();
 
-            if (occupation == "TOPOCC014") {
+            if (occupation == "TOPOCC011") {
                 $('#otherOccupations').show();
             } else {
                 $('#otherOccupations').hide();
