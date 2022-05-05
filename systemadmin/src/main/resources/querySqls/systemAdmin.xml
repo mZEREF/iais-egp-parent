@@ -258,9 +258,9 @@
     <sql key="templatesQuery"  remarks="QUERY MESSAGE TEMPLATE">
         <![CDATA[
                 SELECT   T1.*,
-                isnull(CC,'N/A') CCSort,
-                isnull(BCC,'N/A') BCCSort,
-                isnull(REC,'N/A') RECSort
+                 isnull(CC,'N/A') CCSort,
+                 isnull(BCC,'N/A') BCCSort,
+                 REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(isnull(REC,'N/A'),'EM-AO,','MOH officer,'),'EM-ASO','Admin Officer'),'EM-A-ASO','Aq'),'EM-A-INSPECTOR','Ar'),'EM-A-PSO','As'),'EM-APO','Au1'),'EM-AP','Au2'),'EM-','')  RECSort
                 FROM  (SELECT *  FROM (SELECT
                 mt.id,
                 mt.message_type,

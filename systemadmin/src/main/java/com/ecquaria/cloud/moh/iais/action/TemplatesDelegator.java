@@ -31,10 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Hc
@@ -114,6 +111,7 @@ public class TemplatesDelegator {
         }
 
         List<SelectOption> msgProcessList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
+        Collections.sort(msgProcessList,SelectOption::compareTo);
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
 
@@ -122,11 +120,13 @@ public class TemplatesDelegator {
         String[] BccList = rec.split(", ");
         for (String item:BccList
         ) {
-            String str = (item);
-            String full = MasterCodeUtil.getCodeDesc(str);
+            String full = MasterCodeUtil.getCodeDesc(item);
+            if(StringUtil.isEmpty(full)){
+                full = item;
+            }
             bccDes.append(full).append(",</br>");
         }
-        return bccDes.toString().substring(0,bccDes.toString().length()-6);
+        return bccDes.substring(0,bccDes.toString().length()-6);
     }
 
 
@@ -329,7 +329,7 @@ public class TemplatesDelegator {
     public void doSort(BaseProcessClass bpc){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, MsgTemplateConstants.MSG_SEARCH_PARAM);
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
-        if(StringUtil.isNotEmpty(searchParam.getSortMap().get("process_desc"))){
+        if(StringUtil.isNotEmpty(searchParam.getSortMap().get("PROCESS_DESC"))){
             List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
             MasterCodePair mcp = new MasterCodePair("process", "process_desc", inboxTypes);
             searchParam.addMasterCode(mcp);
