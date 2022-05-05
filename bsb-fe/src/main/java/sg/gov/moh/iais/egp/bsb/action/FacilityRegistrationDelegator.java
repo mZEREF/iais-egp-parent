@@ -40,15 +40,13 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 public class FacilityRegistrationDelegator {
     private final FileRepoClient fileRepoClient;
     private final FacilityRegisterClient facRegClient;
-    private final OrganizationInfoClient orgInfoClient;
     private final FacilityRegistrationService facilityRegistrationService;
 
     @Autowired
-    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient, OrganizationInfoClient orgInfoClient,
+    public FacilityRegistrationDelegator(FileRepoClient fileRepoClient,
                                          FacilityRegisterClient facRegClient, FacilityRegistrationService facilityRegistrationService) {
         this.fileRepoClient = fileRepoClient;
         this.facRegClient = facRegClient;
-        this.orgInfoClient = orgInfoClient;
         this.facilityRegistrationService = facilityRegistrationService;
     }
 
@@ -75,27 +73,7 @@ public class FacilityRegistrationDelegator {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
-
-                    // check data uploaded by committee data file
-                    String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-                    FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
-                    /* If there is no committee data, we don't need to show error message.
-                     * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
-                     * so the error table should be displayed. This situation means user click save as draft when user
-                     * upload a file contains error fields.
-                     * If pass validation, we set the node status to avoid not necessary validation again. */
-                    if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
-                        Nodes.passValidation(facRegRoot, committeeNodePath);
-                    }
-                    // check data uploaded by authoriser data file
-                    String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-                    FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
-                    if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
-                        Nodes.passValidation(facRegRoot, authoriserNodePath);
-                    }
-
-                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+                    facilityRegistrationService.retrieveFacRegRoot(request, resultDto);
                 }
             }
             if (failRetrieveEditData) {
@@ -107,20 +85,7 @@ public class FacilityRegistrationDelegator {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facilityRegistrationService.getFacilityRegisterRoot(request));
         }
 
-        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        assert auditTrailDto != null;
-        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
-        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
-        orgAddressInfo.setUen(auditTrailDto.getUenId());
-        orgAddressInfo.setCompName(licenseeDto.getName());
-        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
-        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
-        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
-        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
-        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
-        orgAddressInfo.setStreet(licenseeDto.getStreetName());
-        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
-        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
+        facilityRegistrationService.retrieveOrgAddressInfo(request);
     }
 
     public void handleBeforeBegin(BaseProcessClass bpc) {

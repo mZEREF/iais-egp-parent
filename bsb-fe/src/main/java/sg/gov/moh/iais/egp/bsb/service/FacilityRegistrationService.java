@@ -1,7 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.service;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,12 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.OrganizationInfoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -31,6 +36,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationConfigInfo;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatBasicInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
@@ -57,15 +63,58 @@ public class FacilityRegistrationService {
     private final BsbFileClient bsbFileClient;
     private final FacilityRegisterClient facRegClient;
     private final DocSettingService docSettingService;
+    private final OrganizationInfoClient orgInfoClient;
 
     @Autowired
     public FacilityRegistrationService(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient,
                                        FacilityRegisterClient facRegClient,
-                                       DocSettingService docSettingService) {
+                                       DocSettingService docSettingService, OrganizationInfoClient orgInfoClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
         this.facRegClient = facRegClient;
         this.docSettingService = docSettingService;
+        this.orgInfoClient = orgInfoClient;
+    }
+
+    public void retrieveFacRegRoot(HttpServletRequest request, ResponseDto<FacilityRegisterDto> resultDto) {
+        NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+
+        // check data uploaded by committee data file
+        String committeeNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
+        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(committeeNodePath)).getValue();
+        /* If there is no committee data, we don't need to show error message.
+         * We call validation, if any error exists. The 'doValidation' method will set the errorVisible flag,
+         * so the error table should be displayed. This situation means user click save as draft when user
+         * upload a file contains error fields.
+         * If pass validation, we set the node status to avoid not necessary validation again. */
+        if (facCommitteeDto.getAmount() > 0 && facCommitteeDto.doValidation()) {
+            Nodes.passValidation(facRegRoot, committeeNodePath);
+        }
+        // check data uploaded by authoriser data file
+        String authoriserNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(authoriserNodePath)).getValue();
+        if (facAuthDto.getAmount() > 0 && facAuthDto.doValidation()) {
+            Nodes.passValidation(facRegRoot, authoriserNodePath);
+        }
+
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+    }
+
+    public void retrieveOrgAddressInfo(HttpServletRequest request) {
+        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        assert auditTrailDto != null;
+        LicenseeDto licenseeDto = orgInfoClient.getLicenseeByUenNo(auditTrailDto.getUenId());
+        OrgAddressInfo orgAddressInfo = new OrgAddressInfo();
+        orgAddressInfo.setUen(auditTrailDto.getUenId());
+        orgAddressInfo.setCompName(licenseeDto.getName());
+        orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+        orgAddressInfo.setAddressType(licenseeDto.getAddrType());
+        orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
+        orgAddressInfo.setFloor(licenseeDto.getFloorNo());
+        orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+        orgAddressInfo.setStreet(licenseeDto.getStreetName());
+        orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
+        ParamUtil.setSessionAttr(request, KEY_ORG_ADDRESS, orgAddressInfo);
     }
 
     public void handleBeforeBegin(BaseProcessClass bpc) {
