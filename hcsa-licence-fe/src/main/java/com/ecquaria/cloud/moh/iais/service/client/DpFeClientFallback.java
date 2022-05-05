@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -73,7 +74,7 @@ public class DpFeClientFallback implements DpFeClient {
         return getFeignResponseEntity(orgId, type, hciCode);
     }
     @Override
-    public FeignResponseEntity<List<DrugMedicationDto>> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
+    public FeignResponseEntity<DrugPrescribedDispensedDto> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
         return getFeignResponseEntity(submissionNo);
     }
     @Override

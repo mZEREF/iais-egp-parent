@@ -1,4 +1,5 @@
 <%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_drugSubmission.js"></script>--%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <div id="flagDocMessage" hidden><iais:message key="GENERAL_ERR0042"/> </div>
 <div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
 <div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
@@ -82,7 +83,8 @@
                     <iais:row>
                         <iais:field width="5" value="Prescription Submission ID" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="16" type="text" name="prescriptionSubmissionId" value="${drugSubmission.prescriptionSubmissionId}" />
+                            <iais:input maxLength="16" type="text" id ="prescriptionSubmissionId" name="prescriptionSubmissionId"
+                                        value="${drugSubmission.prescriptionSubmissionId}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_prescriptionSubmissionId"></span>
                         </iais:value>
                     </iais:row>
@@ -94,13 +96,15 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Medication" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="medication" id = "medication" name="medication"
-                                     firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
-                    </iais:value>
-                </iais:row>
+                <div class="medication">
+                    <iais:row>
+                        <iais:field width="5" value="Medication" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select cssClass="medication" id = "medication" name="medication"
+                                         firstOption="Please Select" codeCategory="DP_MEDICATION" value="${drugSubmission.medication}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Start Date" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -169,12 +173,48 @@
         $('#medication').change(function (){
             changeStrength();
         });
+        $('#prescriptionSubmissionId').change(function(){
+            checkPrescriptionSubmissionId();
+        });
         changeStrength();
         <c:if test="${dpSuperDataSubmissionDto.appType eq 'DSTY_005'}">
         disableContent('div.drugType');
         </c:if>
 
     });
+
+    function checkPrescriptionSubmissionId(){
+        var prescriptionSubmissionId = $('#prescriptionSubmissionId').val();
+        if(prescriptionSubmissionId != ""){
+            var data = {
+                'prescriptionSubmissionId':prescriptionSubmissionId
+            };
+            showWaiting();
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/checkPrescriptionSubmissionId',
+                'dataType':'json',
+                'data':data,
+                'type':'POST',
+                'success':function (data) {
+                    if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                        $("#error_prescriptionSubmissionId").html('');
+                        $("#medication").val(data.resultJson);
+                        disableContent('div.medication');
+                    }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                        $("#error_prescriptionSubmissionId").html(data.resultJson + '');
+                    }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                        $("#error_prescriptionSubmissionId").html('');
+                    }else{
+                        unDisableContent('div.medication');
+                    }
+                },
+                'error':function () {
+
+                }
+            });
+            dismissWaiting();
+        }
+    }
 
     function changeStrength(){
         var medication= $('#medication').val();

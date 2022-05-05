@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -172,7 +173,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     }
 
     @Override
-    public List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNo(String submissionNo) {
+    public DrugPrescribedDispensedDto getDrugMedicationDtoBySubmissionNo(String submissionNo) {
         log.info(StringUtil.changeForLog("The getDrugMedicationDtoBySubmissionNo submissionNo is -->:"+submissionNo));
         if (StringUtil.isEmpty(submissionNo) ) {
             return null;

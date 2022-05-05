@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import java.util.List;
@@ -38,7 +39,7 @@ public interface DpDataSubmissionService {
 
     DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoByDraftNo(String draftNo);
 
-    List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNo(String submissionNo);
+    DrugPrescribedDispensedDto getDrugMedicationDtoBySubmissionNo(String submissionNo);
 
     List<DrugMedicationDto> getDrugMedicationDtoBySubmissionNoForDispensed(String submissionNo,String rfcSubmissionNo);
 }
