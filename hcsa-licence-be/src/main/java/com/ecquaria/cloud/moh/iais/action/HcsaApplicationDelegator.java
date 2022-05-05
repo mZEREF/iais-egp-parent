@@ -2458,7 +2458,7 @@ public class HcsaApplicationDelegator {
                     String aoSelect = ParamUtil.getRequestString(bpc.request, "aoSelect");
                     log.info(StringUtil.changeForLog("The aoSelect is -->:"+aoSelect));
                     if(StringUtil.isNotEmpty(aoSelect)){
-                        String[] aoSelects =  aoSelect.split(AppConsts.DFT_DELIMITER);
+                        String[] aoSelects =  aoSelect.split("_");
                         aoWorkGroupId = aoSelects[0];
                         aoUserId = aoSelects[1];
                     }
