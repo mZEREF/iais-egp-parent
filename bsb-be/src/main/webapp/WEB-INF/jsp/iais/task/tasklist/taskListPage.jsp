@@ -139,8 +139,7 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Last Modified Date</p>
-                                            <p><fmt:formatDate value="${entity.modifiedDate}" pattern="dd/MM/yyyy"/></p>
-                                        </td>
+                                            <p><fmt:formatDate value="${entity.modifiedAt}" pattern="dd/MM/yyyy"/></p>                                        </td>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>

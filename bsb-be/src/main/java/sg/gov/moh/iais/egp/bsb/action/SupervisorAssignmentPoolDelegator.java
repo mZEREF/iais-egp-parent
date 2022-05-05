@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 
+import bitronix.tm.timer.Task;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -19,9 +20,9 @@ import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
-import sg.gov.moh.iais.egp.bsb.entity.TaskView;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -81,26 +82,29 @@ public class SupervisorAssignmentPoolDelegator {
         ResponseDto<TaskListSearchResultDto> resultDto = bsbTaskClient.searchInspectionTaskPool(searchDto);
 
         if (resultDto.ok()) {
-            List<TaskView> tasks = resultDto.getEntity().getTasks();
-            List<String> doUserIds = new ArrayList<>(tasks.size());
-            List<String> aoUserIds = new ArrayList<>(tasks.size());
-            List<String> hmUserIds = new ArrayList<>(tasks.size());
-            //get the do/ao/hm user id from task
-            setUserIdList(tasks, doUserIds, aoUserIds, hmUserIds);
-            //
-            List<OrgUserDto> userDtoList = new ArrayList<>();
-            if (curRoleId.equals(ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
-                userDtoList = organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
-            } else if (curRoleId.equals(ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
-                userDtoList = organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
-            } else if (curRoleId.equals(ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
-                userDtoList = organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
+            List<TaskDto> tasks = resultDto.getEntity().getTasks();
+            if(tasks != null && !tasks.isEmpty()){
+                List<String> doUserIds = new ArrayList<>(tasks.size());
+                List<String> aoUserIds = new ArrayList<>(tasks.size());
+                List<String> hmUserIds = new ArrayList<>(tasks.size());
+                //get the do/ao/hm user id from task
+                setUserIdList(tasks, doUserIds, aoUserIds, hmUserIds);
+                //
+                List<OrgUserDto> userDtoList = new ArrayList<>();
+                if (curRoleId.equals(ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
+                    userDtoList = organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
+                } else if (curRoleId.equals(ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
+                    userDtoList = organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
+                } else if (curRoleId.equals(ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
+                    userDtoList = organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
+                }
+                Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
+                //set current owner by current role and the user id from task
+                setTaskCurOwner(tasks, curRoleId, userDtoMap);
+                ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
+                ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, tasks);
             }
-            Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
-            //set current owner by current role and the user id from task
-            setTaskCurOwner(tasks, curRoleId, userDtoMap);
-            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, tasks);
+
         } else {
             log.info("Search Task List fail");
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
@@ -114,8 +118,8 @@ public class SupervisorAssignmentPoolDelegator {
         ParamUtil.setRequestAttr(request,"insAppStatus",inspectionAppStatusOption);
     }
 
-    private void setUserIdList(List<TaskView> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
-        for (TaskView task : tasks) {
+    private void setUserIdList(List<TaskDto> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
+        for (TaskDto task : tasks) {
             if (task.getApplication() != null) {
                 if (StringUtils.hasLength(task.getApplication().getDoUserId())) {
                     doUserIds.add(task.getApplication().getDoUserId());
@@ -130,8 +134,8 @@ public class SupervisorAssignmentPoolDelegator {
         }
     }
 
-    private void setTaskCurOwner(List<TaskView> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
-        for (TaskView task : tasks) {
+    private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
+        for (TaskDto task : tasks) {
             if (task.getApplication() != null) {
                 if (curRoleId.equals(ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
                     task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());

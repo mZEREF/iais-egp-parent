@@ -18,7 +18,6 @@ import sg.gov.moh.iais.egp.bsb.dto.task.TaskReassignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
-import java.util.Map;
 
 
 @FeignClient(value = "bsb-be-api", configuration = FeignClientsConfiguration.class)
@@ -37,9 +36,6 @@ public interface BsbTaskClient {
 
     @PutMapping(value = "/task/assign/multi", produces = MediaType.APPLICATION_JSON_VALUE)
     List<TaskAssignDto> assignMultiTasks(List<TaskAssignDto> taskAssignDtoList);
-
-    @PostMapping(value = "/task/find/appNo", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, String> findAppNoByTaskId(List<String> taskIdList);
 
     @GetMapping(value = "/inspection-task/pool", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<TaskListSearchResultDto> searchInspectionTaskPool(@SpringQueryMap TaskListSearchDto searchDto);

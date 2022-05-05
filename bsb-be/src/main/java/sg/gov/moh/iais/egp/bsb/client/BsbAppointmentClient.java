@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -17,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appointment.SearchResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.appointment.doreschedule.OfficerRescheduleDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDraftDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.InspectionAppointmentDto;
+import sg.gov.moh.iais.egp.bsb.dto.task.ApptInspectionDateDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;

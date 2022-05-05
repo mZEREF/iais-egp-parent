@@ -21,20 +21,17 @@ import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskReassignDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
-import sg.gov.moh.iais.egp.bsb.entity.TaskView;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
@@ -95,7 +92,7 @@ public class ReassignTaskDelegator {
 
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            List<TaskView> tasks = resultDto.getEntity().getTasks();
+            List<TaskDto> tasks = resultDto.getEntity().getTasks();
             List<String> doUserIds = new ArrayList<>(tasks.size());
             List<String> aoUserIds = new ArrayList<>(tasks.size());
             List<String> hmUserIds = new ArrayList<>(tasks.size());
@@ -126,8 +123,8 @@ public class ReassignTaskDelegator {
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, curRoleId);
     }
 
-    private void setUserIdList(List<TaskView> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
-        for (TaskView task : tasks) {
+    private void setUserIdList(List<TaskDto> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
+        for (TaskDto task : tasks) {
             if (task.getApplication() != null) {
                 if (StringUtils.hasLength(task.getApplication().getDoUserId())) {
                     doUserIds.add(task.getApplication().getDoUserId());
@@ -142,8 +139,9 @@ public class ReassignTaskDelegator {
         }
     }
 
-    private void setTaskCurOwner(List<TaskView> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
-        for (TaskView task : tasks) {
+    //TODO TangTang create Dto own data you need
+    private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
+        for (TaskDto task : tasks) {
             if (task.getApplication() != null) {
                 if (curRoleId.equals(ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
                     task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());
