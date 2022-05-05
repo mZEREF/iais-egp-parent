@@ -17,9 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -60,7 +58,7 @@ public class OnlineTopEnquiryDelegator {
     private AssistedReproductionClient assistedReproductionClient;
 
     public void start(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_DS);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -98,16 +96,13 @@ public class OnlineTopEnquiryDelegator {
             }
 
             SearchParam topParam = SearchResultHelper.getSearchParam(request, topParameter,true);
-            if(topParam.getSortMap().containsKey("SAMPLE_TYPE_DESC")){
-                HalpSearchResultHelper.setMasterCodeForSearchParam(topParam,"SAMPLE_TYPE", "SAMPLE_TYPE_DESC", MasterCodeUtil.AR_DONOR_SAMPLE_TYPE);
-            }
+
             if(searchParam!=null){
                 topParam.setPageNo(searchParam.getPageNo());
                 topParam.setPageSize(searchParam.getPageSize());
             }
             CrudHelper.doPaging(topParam,bpc.request);
-
-            QueryHelp.setMainSql("onlineEnquiry","searchtopByAssistedReproduction",topParam);
+            QueryHelp.setMainSql("onlineEnquiry","searchTop",topParam);
             SearchResult<DsTopEnquiryResultsDto> topResult = assistedReproductionService.searchDsTopByParam(topParam);
             ParamUtil.setRequestAttr(request,"topResult",topResult);
             ParamUtil.setSessionAttr(request,"topParam",topParam);
