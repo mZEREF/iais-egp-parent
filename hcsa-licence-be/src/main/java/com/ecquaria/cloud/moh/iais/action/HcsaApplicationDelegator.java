@@ -272,7 +272,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setSessionAttr(request,"aoSelect",null);
                 log.info(StringUtil.changeForLog("aoSelect is -->:"+aoSelect));
                 String chargeTypeSelHtml = SelectHelper.genMutilSelectOpHtml(chargesTypeAttr, getAoSelect(request,stageId),
-                        "Please Select", checkedVals, false,true);
+                        "By System", checkedVals, false,true);
 
                 String aoSelectError = (String) ParamUtil.getSessionAttr(request, "aoSelectError");
                 chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_aoSelect\">";

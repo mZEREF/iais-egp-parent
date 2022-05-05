@@ -154,6 +154,11 @@ public class InsReportAoDelegator  {
         AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
+        String ao1Sel = ParamUtil.getString(bpc.request, "aoSelect");
+        if (!StringUtil.isEmpty(ao1Sel)) {
+            String[] ao1SelStrs = ao1Sel.split("_");
+            taskDto.setUserId(ao1SelStrs[ao1SelStrs.length - 1]);
+        }
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");

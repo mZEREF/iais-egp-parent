@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
@@ -123,6 +124,12 @@
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
                                                                             <span id="error_submit" class="error-msg"
                                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
+                                                                        </iais:value>
+                                                                    </iais:row>
+                                                                    <iais:row id="ao1SelectRow">
+                                                                        <iais:field value="Officer" required="false"/>
+                                                                        <iais:value width="7" id = "showAoDiv">
+                                                                            <iais:select name="aoSelect" firstOption="By System"/>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
@@ -265,6 +272,46 @@
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
 <script>
+    $(document).ready(function () {
+        $("#ao1SelectRow").hide();
+        $("#processSubmit").change(function () {
+            var fv = $('#processSubmit option:selected').val();
+            if (fv == 'submit') {
+                showWaiting();
+                var data = {
+                    'verified':'REDECI003'
+                };
+                $.ajax({
+                    'url':'${pageContext.request.contextPath}/check-ao',
+                    'dataType':'json',
+                    'data':data,
+                    'type':'POST',
+                    'success':function (data) {
+                        if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                            $("#error_aoSelect").html('');
+                            $("#showAoDiv").html(data.resultJson + '');
+                            $("#aoSelect").niceSelect();
+                            $("#ao1SelectRow").show();
+                        }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                            $("#error_aoSelect").html(data.resultJson + '');
+                            $("#ao1SelectRow").hide();
+                        }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                            $("#error_aoSelect").html('');
+                            $("#ao1SelectRow").hide();
+                        }
+                        // setValue();
+                    },
+                    'error':function () {
+
+                    }
+                });
+                dismissWaiting();
+            } else {
+                $("#ao1SelectRow").hide();
+            }
+        })
+    });
+
     function insSubmit() {
         const s = $("#processSubmit").val();
         if (s == "" || s == null) {
