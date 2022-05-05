@@ -106,9 +106,9 @@
                                                         </iais:value>
                                                     </iais:row>
                                                     <iais:row id="ao1SelectRow">
-                                                        <iais:field value="Officer" required="true"/>
+                                                        <iais:field value="Select Approving Officer" required="false"/>
                                                         <iais:value width="7" id = "showAoDiv">
-                                                            <iais:select name="aoSelect" firstOption="Please Select"/>
+                                                            <iais:select name="aoSelect" firstOption="By System"/>
                                                         </iais:value>
                                                     </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
