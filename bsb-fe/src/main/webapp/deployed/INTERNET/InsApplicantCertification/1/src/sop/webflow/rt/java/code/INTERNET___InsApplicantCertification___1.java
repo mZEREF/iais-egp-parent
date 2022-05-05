@@ -13,28 +13,26 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___InsAfcCertification___0 extends BaseProcessClass {
+public class INTERNET___InsApplicantCertification___1 extends BaseProcessClass {
+//	private static final String DELEGATOR ="";
 
-	private static final String DELEGATOR ="";
-	
 	public void start_OnStepProcess_0() throws Exception {
-	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
+//		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
-	// 		Init->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "init", this);
+//		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
-	public void prepare_OnStepProcess_0() throws Exception {
-	// 		Prepare->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepare", this);
+	public void prepareData_OnStepProcess_0() throws Exception {
+//		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void handle_OnStepProcess_0() throws Exception {
-	// 		Handle->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handle", this);
+//		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
+	public void submit_OnStepProcess_0() throws Exception {
+		//		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
 }

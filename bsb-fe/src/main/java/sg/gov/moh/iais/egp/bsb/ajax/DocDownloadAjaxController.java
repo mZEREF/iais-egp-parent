@@ -27,6 +27,8 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.CommentInsReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.AFCCommonDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.afc.CertificationDocDisPlayDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamSavedDoc;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
@@ -56,6 +58,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_CONSU
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_DISPOSAL_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_EXPORT_NOTIFICATION_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.DocConstants.PARAM_REPO_ID_DOC_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_APPLICATION_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_CERTIFYING_TEAM_DETAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
@@ -348,6 +351,16 @@ public class DocDownloadAjaxController {
     @GetMapping("/reportableEvent/view/{id}")
     public void downloadViewReportableEventReport(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getViewReportableEventSavedFile);
+    }
+
+    @GetMapping("/insAFC/new/{id}")
+    public void downloadNewInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCNewFile);
+    }
+
+    @GetMapping("/insAFC/repo/{id}")
+    public void downloadSavedInsAFCFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::getInsAFCSavedFile);
     }
 
 
@@ -744,5 +757,20 @@ public class DocDownloadAjaxController {
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
 
+    }
+
+    private MultipartFile getInsAFCNewFile(HttpServletRequest request, String id) {
+        AFCCommonDocDto dto = (AFCCommonDocDto) ParamUtil.getSessionAttr(request, DocConstants.KEY_COMMON_DOC_DTO);
+        return dto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    private MultipartFile getInsAFCSavedFile(HttpServletRequest request, String id){
+        Map<String, CertificationDocDisPlayDto> repoIdDocDtoMap = (Map<String, CertificationDocDisPlayDto>) ParamUtil.getSessionAttr(request,PARAM_REPO_ID_DOC_MAP);
+        CertificationDocDisPlayDto info = repoIdDocDtoMap.get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getDocName(), null, content);
     }
 }

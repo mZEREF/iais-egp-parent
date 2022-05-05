@@ -55,6 +55,8 @@ public class DocConstants {
 
     public static final String DOC_TYPE_SELF_ASSESSMENT   = "selfAssessment";
 
+    public static final String PARAM_REPO_ID_DOC_MAP          = "repoIdDocMap";
+
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(
             DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, DOC_TYPE_FACILITY_LAYOUT, DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS,

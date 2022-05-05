@@ -25,7 +25,6 @@ public class NewDocInfo implements Serializable {
 
     private File file;
     private String userId;
-    private String maskedTempId;
 
     /**
      * Convert this new doc to meta info object with a specific module name
