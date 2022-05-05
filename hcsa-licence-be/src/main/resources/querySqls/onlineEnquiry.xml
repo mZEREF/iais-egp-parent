@@ -1031,6 +1031,32 @@
          ]]>
     </sql>
 
+    <sql key = "searchTop" remarks="Search Termination of Pregnancy">
+        <![CDATA[
+            select distinct * from (
+            SELECT dds.id, null CENTER_NAME ,dds.SUBMISSION_NO ,dtp.PATIENT_NAME ,dtp.PATIENT_ID_TYPE ,dtp.PATIENT_ID_NO ,dtp.PATIENT_BIRTHDAY ,dtt.DOCTOR_REGN_NO ,dtt.DOCTOR_NAME ,dds.SUBMIT_DT
+                FROM ds_data_submission dds
+                join  ds_top_patient dtp on dds.ID =dtp.SUBMISSION_ID
+                left join ds_top_termination dtt  on dds.ID = dtt.SUBMISSION_ID
+                left join ds_top_family_plan dtfp on dds.ID =dtfp.SUBMISSION_ID
+                left join ds_top_post_termination dtpt  on dds.ID = dtpt.SUBMISSION_ID
+                left join ds_top_pre_termination dtpt2  on dds.ID = dtpt2.SUBMISSION_ID
+
+                where dds.SUBMIT_DT in (SELECT  MAX(ddsNew.SUBMIT_DT ) SUBMIT_DT
+                FROM ds_data_submission ddsNew
+                join  ds_top_patient dtpNew on ddsNew.ID =dtpNew.SUBMISSION_ID
+                GROUP BY dtpNew.PATIENT_ID_NO ,dtpNew.PATIENT_ID_TYPE )
+                ) T1
+            where 1 = 1
+            <#if ldtDateFrom??> AND T1.LDT_DATE >= convert(date,:ldtDateFrom)</#if>
+            <#if ldtDateTo??> AND T1.LDT_DATE <= convert(datetime,:ldtDateTo)</#if>
+            <#if laboratoryName??> AND  charindex(:laboratoryName, T1.LDT_NAME) >0</#if>
+            <#if ldtTestName??> AND  charindex(:ldtTestName, T1.LDT_TEST_NAME) >0</#if>
+            <#if responsePerson??> AND  charindex(:responsePerson, T1.RESPONSE_PERSON) >0</#if>
+            <#if testStatus??> AND  T1.TEST_STATUS = :testStatus</#if>
+         ]]>
+    </sql>
+
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[
