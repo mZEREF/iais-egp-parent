@@ -39,7 +39,7 @@ import java.util.Map;
  * @author junyu
  * @date 2022/5/5
  */
-@Delegator(value = "labDevelopedTestsEnquiryDelegator")
+@Delegator(value = "mohTopOnlineEnquiry")
 @Slf4j
 public class OnlineTopEnquiryDelegator {
 
