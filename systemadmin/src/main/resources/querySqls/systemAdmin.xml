@@ -257,17 +257,28 @@
 
     <sql key="templatesQuery"  remarks="QUERY MESSAGE TEMPLATE">
         <![CDATA[
-             SELECT *  FROM (SELECT
+                SELECT   T1.*,
+                isnull(CC,'N/A') CCSort,
+                isnull(BCC,'N/A') BCCSort,
+                isnull(REC,'N/A') RECSort
+                FROM  (SELECT *  FROM (SELECT
                 mt.id,
                 mt.message_type,
                 mt.template_name,
                 mt.message_content,
                 mt.delivery_mode,
+                CASE When mt.delivery_mode = 'DEMD001' THEN 'Email'
+                     When mt.delivery_mode = 'DEMD002' THEN 'SMS'
+                     When mt.delivery_mode = 'DEMD003' THEN 'System Inbox'
+                     When mt.delivery_mode = 'DEMD004' THEN 'N/A'
+                     END   delivery_mode_desc
+                ,
                 mt.effective_from,
                 mt.effective_to,
                 mt.STATUS,
-                (SELECT DISTINCT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process
-            FROM message_template AS mt WHERE STATUS = 'CMSTAT001') AS T1
+               isnull((SELECT DISTINCT mtp.process_type
+               FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) ,'N/A') as process
+               FROM message_template AS mt WHERE STATUS = 'CMSTAT001') AS T1
             CROSS APPLY
 			(
 				SELECT RECIPIENT + ', '
@@ -288,7 +299,7 @@
 				FROM message_template_recipient M1
 				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'TO'
 				FOR XML PATH('')
-			) C (REC)
+			) C (REC)  )T1
             WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND T1.message_type = :msgType</#if>

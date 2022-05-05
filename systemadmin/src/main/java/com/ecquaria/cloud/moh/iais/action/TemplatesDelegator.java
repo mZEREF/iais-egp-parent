@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -328,6 +329,12 @@ public class TemplatesDelegator {
     public void doSort(BaseProcessClass bpc){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, MsgTemplateConstants.MSG_SEARCH_PARAM);
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
+        if(StringUtil.isNotEmpty(searchParam.getSortMap().get("process_desc"))){
+            List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
+            MasterCodePair mcp = new MasterCodePair("process", "process_desc", inboxTypes);
+            searchParam.addMasterCode(mcp);
+            ParamUtil.setSessionAttr(bpc.request, MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
+        }
     }
 
     public void preView(BaseProcessClass bpc){
