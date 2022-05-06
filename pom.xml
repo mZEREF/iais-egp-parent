@@ -33,8 +33,9 @@
     </properties>
 
     <modules>
-        <module>hcsa-licence-fe</module>
         <module>backbone</module>
+        <module>hcsa-licence-comm</module>
+        <module>hcsa-licence-fe</module>
         <module>systemadmin</module>
         <module>web-common</module>
         <module>web</module>

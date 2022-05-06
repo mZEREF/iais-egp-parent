@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
-import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -53,23 +52,25 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -77,7 +78,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -135,7 +135,7 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private LicenceClient licenceClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
@@ -150,6 +150,8 @@ public class AppealServiceImpl implements AppealService {
     private ComFileRepoClient comFileRepoClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public String submitData(HttpServletRequest request) {
@@ -193,8 +195,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
@@ -435,12 +436,12 @@ public class AppealServiceImpl implements AppealService {
                     request.getSession().setAttribute("GovernanceOfficersList", appSvcCgoDto);
                     LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+                    ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
                     List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
                     Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
-                    Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-                    ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-                    List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
+                    Map<String, AppSvcPersonAndExtDto> personMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+                    ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+                    List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
                     ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
                     List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
                     ParamUtil.setSessionAttr(request, "IdTypeSelect", (Serializable) idTypeSelOp);
@@ -619,7 +620,7 @@ public class AppealServiceImpl implements AppealService {
 
             List<String> list = IaisCommonUtils.genNewArrayList();
             list.add(serviceId);
-            List<HcsaServiceDto> entity = appConfigClient.getHcsaService(list).getEntity();
+            List<HcsaServiceDto> entity = configCommClient.getHcsaService(list).getEntity();
             for (int i = 0; i < entity.size(); i++) {
                 String svcName = entity.get(i).getSvcName();
                 request.getSession().setAttribute("serviceName", svcName);
@@ -713,7 +714,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public ProfessionalResponseDto prsFlag(String regNo) {
-        return appSubmissionService.retrievePrsInfo(regNo);
+        return appCommService.retrievePrsInfo(regNo);
     }
 
     @Override
@@ -739,8 +740,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
@@ -925,7 +925,7 @@ public class AppealServiceImpl implements AppealService {
             validateFile(pageShowFileDtos.get(i),map,i);
         }
         req.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-        String errLen=MessageUtil.getMessageDesc("GENERAL_ERR0022");
+        String errLen= MessageUtil.getMessageDesc("GENERAL_ERR0022");
         if (file != null && file.getSize() > 0) {
             int configFileSize = systemParamConfig.getUploadFileLimit();
             String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
@@ -1286,7 +1286,7 @@ public class AppealServiceImpl implements AppealService {
                 applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
                 Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
                 appNo=entity1.getApplicationNo();
-                params.put("appNo", entity1.getApplicationNo());
+                params.put("appNo", appNo);
                 List<AppPremisesRoutingHistoryDto> hisList = feEicGatewayClient.getRoutingHistoryDtos(params).getEntity();
                 if (hisList != null) {
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
@@ -1308,7 +1308,7 @@ public class AppealServiceImpl implements AppealService {
                 request.getSession().setAttribute("rfiApplication", entity1);
                 applicationFeClient.updateApplication(entity1);
             }
-            HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
+            HcsaServiceDto hcsaServiceDto = configCommClient.getActiveHcsaServiceDtoByName(licenceDto.getSvcName()).getEntity();
             applicationDto.setServiceId(hcsaServiceDto.getId());
             applicationDto.setApplicationNo(s);
             applicationDto.setOriginLicenceId(licenceDto.getId());
@@ -1447,7 +1447,7 @@ public class AppealServiceImpl implements AppealService {
         //info
 
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
+        HcsaServiceDto hcsaServiceDto = configCommClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
         applicationDto1.setServiceId(hcsaServiceDto.getId());
         applicationDto1.setBaseServiceId(applicationDto.getBaseServiceId());
         applicationDto1.setVersion(1);
@@ -1598,16 +1598,16 @@ public class AppealServiceImpl implements AppealService {
                 }
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-                ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+                ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
                 List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
                 Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
-                Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-                ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-                List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
+                Map<String, AppSvcPersonAndExtDto> personMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+                ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+                List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
                 ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
                 ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
                 HcsaServiceDto serviceDto= HcsaServiceCacheHelper.getServiceById(entity.getServiceId());
-                ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE,serviceDto.getSvcCode());
+                ParamUtil.setSessionAttr(request, HcsaAppConst.CURRENTSVCCODE,serviceDto.getSvcCode());
                 List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
                 ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelOp);
                 List<SelectOption> list = AppealDelegator.genSpecialtySelectList(serviceDto.getSvcCode());
@@ -1647,8 +1647,7 @@ public class AppealServiceImpl implements AppealService {
                         files.add(v);
                         AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                         premisesSpecialDocDto.setDocName(v.getName());
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        String fileMd5 = FileUtils.getFileMd5(v);
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
@@ -1784,14 +1783,14 @@ public class AppealServiceImpl implements AppealService {
         HcsaServiceDto activeHcsaServiceDtoById = serviceConfigService.getActiveHcsaServiceDtoById(serviceId);
         if(activeHcsaServiceDtoById!=null){
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationFeClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
-            List<HcsaServiceStepSchemeDto> list = appConfigClient.getServiceStepsByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
+            List<HcsaServiceStepSchemeDto> list = configCommClient.getServiceStepsByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
             if(list!=null){
                 Optional<HcsaServiceStepSchemeDto> any = list.stream().filter(v -> HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(v.getStepCode())).findAny();
                 if(!any.isPresent()){
                    return false;
                 }
             }
-            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = configCommClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
             if (hcsaSvcPersonnelDto != null) {
                 int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                 int size = appSvcKeyPersonnelDtos.size();
@@ -1844,7 +1843,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private void validateCgoIdNo(ApplicationDto applicationDto,Map<String,String> map){
-        AppSubmissionDto entity = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        AppSubmissionDto entity = appCommService.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo());
         if(entity!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){

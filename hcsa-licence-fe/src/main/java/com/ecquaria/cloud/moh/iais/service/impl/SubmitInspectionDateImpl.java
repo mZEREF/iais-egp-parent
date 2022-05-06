@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.SubmitInspectionDate;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
     private ApplicationFeClient applicationFeClient;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
 
     @Override
     public ApplicationGroupDto getApplicationGroupByGroupId(String groupId) {
@@ -50,7 +50,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
     @Override
     public List<HcsaServicePrefInspPeriodDto> getPrefInspPeriodList(List<ApplicationDto> appList) {
-        List<HcsaServicePrefInspPeriodDto> periodList = appConfigClient.getPrefInspPeriodList().getEntity();
+        List<HcsaServicePrefInspPeriodDto> periodList = configCommClient.getPrefInspPeriodList().getEntity();
 
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         appList.forEach(i -> {

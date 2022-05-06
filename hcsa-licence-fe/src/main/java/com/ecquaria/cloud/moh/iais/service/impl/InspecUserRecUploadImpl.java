@@ -18,7 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -50,7 +50,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     private InspectionFeClient inspectionFeClient;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
 
     @Autowired
     private FileRepoClient fileRepoClient;
@@ -362,7 +362,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         if(adhocChecklistItemDto != null){
             String itemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(itemId)){
-                ChecklistItemDto checklistItemDto = appConfigClient.getChklItemById(itemId).getEntity();
+                ChecklistItemDto checklistItemDto = configCommClient.getChklItemById(itemId).getEntity();
                 inspecUserRecUploadDto.setCheckClause("-");
                 inspecUserRecUploadDto.setCheckQuestion(checklistItemDto.getChecklistItem());
             } else {
@@ -464,7 +464,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(itemIds != null && !(itemIds.isEmpty())) {
             for (String itemId:itemIds) {
-                ChecklistItemDto checklistItemDto = appConfigClient.getChklItemById(itemId).getEntity();
+                ChecklistItemDto checklistItemDto = configCommClient.getChklItemById(itemId).getEntity();
                 checklistItemDtos.add(checklistItemDto);
             }
         }

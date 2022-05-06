@@ -4,19 +4,27 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.sz.commons.util.Calculator;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -219,5 +227,60 @@ public final class FileUtils {
         }else {
             return "<br/>" + type;
         }
+    }
+
+    public static String getFileMd5(File file) {
+        if (file == null) {
+            throw new NullPointerException();
+        }
+        String s = "";
+        try (InputStream is = Files.newInputStream(file.toPath());
+             ByteArrayOutputStream by = new ByteArrayOutputStream()) {
+            int count;
+            byte[] size = new byte[1024];
+            count = is.read(size);
+            while (count != -1) {
+                by.write(size, 0, count);
+                count = is.read(size);
+            }
+            s = FileUtil.genMd5FileChecksum(by.toByteArray());
+            return s;
+
+        } catch (Exception e) {
+
+        }
+        return s;
+    }
+
+    public static String getFileMd5(MultipartFile multipartFile) throws IOException {
+        byte[] bytes = multipartFile.getBytes();
+        String s = FileUtil.genMd5FileChecksum(bytes);
+        return s;
+    }
+
+    public static List<PageShowFileDto> transForFileMapToPageShowFileDto(Map<String, File> map) {
+        if (map == null) {
+            return new ArrayList<>();
+        }
+        List<PageShowFileDto> pageShowFileDtos = new ArrayList<>();
+        map.forEach((k, v) -> {
+            if (v != null) {
+                long length = v.length();
+                if (length > 0) {
+                    Long size = length / 1024;
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    pageShowFileDto.setFileName(v.getName());
+                    String e = k.substring(k.lastIndexOf('e') + 1);
+                    pageShowFileDto.setIndex(e);
+                    String fileMd5 = getFileMd5(v);
+                    pageShowFileDto.setFileMapId("selectedFileDiv" + e);
+                    pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                    pageShowFileDto.setMd5Code(fileMd5);
+                    pageShowFileDtos.add(pageShowFileDto);
+                }
+            }
+        });
+        Collections.sort(pageShowFileDtos, Comparator.comparing(PageShowFileDto::getFileMapId));
+        return pageShowFileDtos;
     }
 }

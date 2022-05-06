@@ -63,6 +63,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.sqlite.date.FastDateFormat;
 import sop.audit.SOPAuditLog;
@@ -920,5 +922,36 @@ public final class IaisEGPHelper extends EGPHelper {
     public static String generateDummyVehicleNum(int index) {
         String timeStr = String.valueOf(System.currentTimeMillis()) + index;
         return timeStr.substring(timeStr.length() - 10);
+    }
+
+    public static <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public static <T> T invokeBeanMethod(String componentName, String methodName, Object... params) {
+        Object bean = SpringContextHelper.getContext().getBean(componentName);
+        Class<?>[] paramClass = null;
+        if (params != null) {
+            int len = params.length;
+            paramClass = new Class[len];
+            for (int i = 0; i < len; i++) {
+                paramClass[i] = params[i].getClass();
+            }
+        }
+        Method method = ReflectionUtils.findMethod(bean.getClass(), methodName, paramClass);
+        Assert.notNull(method, "Can not find the method");
+        return (T) ReflectionUtils.invokeMethod(method, bean, params);
+    }
+
+    public static <T> T invokeFeignRespMethod(String componentName, String methodName, Object... params) {
+        FeignResponseEntity<T> t = invokeBeanMethod(componentName, methodName, params);
+        if (t != null) {
+            return t.getEntity();
+        }
+        return null;
     }
 }

@@ -223,22 +223,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         entity.setHeaders(headers);
         return entity;
     }
-    
-    @Override
-    public FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> gainSubmissionDto(String appNo) {
@@ -659,32 +643,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(AppGroupMiscDto appGroupMiscDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(String groupNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<ApplicationDto> updateApplicationDto(ApplicationDto applicationDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-
-    @Override
-    public FeignResponseEntity<List<ApplicationDto>> getAppByLicIdAndExcludeNew(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -734,14 +693,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<Boolean> isApplicationWithdrawal(String appId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(AppPremisesDoQueryDto appPremisesDoQueryDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -870,37 +821,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId,String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByGroupId(String groupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -940,21 +860,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(String appGrpId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppSvcDocDto>> getMaxSeqNumSvcDocList(String appGrpId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 
     @Override
     public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
@@ -1013,14 +918,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles() {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<String> updatePaymentByAppGrp(ApplicationGroupDto applicationGroupDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -1042,17 +939,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
-        return getFeignResponseEntity(licenseeId);
-    }
-
-    @Override
-    public FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscsByConds(String type, String appId,
-            List<String> excludeStatus) {
-        return getFeignResponseEntity(type, appId, excludeStatus);
     }
 
 }

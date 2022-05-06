@@ -32,13 +32,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -51,7 +52,6 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +62,6 @@ import java.util.Map;
 @Service
 @Slf4j
 public class WithdrawalServiceImpl implements WithdrawalService {
-
 
     @Autowired
     private SystemAdminClient systemAdminClient;
@@ -81,16 +80,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
 
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -104,9 +100,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
+    @Autowired
+    private AppCommService appCommService;
+
     @Override
     public List<WithdrawnDto> saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
-        boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
+        boolean charity = ApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         int maxSeqNum = 0;
         if (ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
@@ -259,7 +258,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             String originLicenceId = applicationDto.getOriginLicenceId();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(originLicenceId);
-            AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = appCommService.getRfiAppSubmissionDtoByAppNo(applicationDto.getApplicationNo());
             try {
                 appSubmissionDto = transformRfi(appSubmissionDto, h.getLicenseeId(), applicationDto);
                 List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
@@ -438,7 +437,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-        List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+        List<RiskResultDto> riskResultDtoList = configCommClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);

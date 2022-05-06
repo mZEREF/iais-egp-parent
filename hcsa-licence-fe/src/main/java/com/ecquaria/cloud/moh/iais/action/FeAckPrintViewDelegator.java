@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -30,7 +31,7 @@ public class FeAckPrintViewDelegator {
         String menuRfc = ParamUtil.getString(bpc.request, "menuRfc");
         String action = ParamUtil.getString(bpc.request, "action");
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
 
 
         StringBuilder smallTitle = new StringBuilder();
@@ -74,7 +75,7 @@ public class FeAckPrintViewDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"renewAck", "test");
             }
         }
-        ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
+        ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_TITLE, title);
         ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle.toString());
 
         log.debug(StringUtil.changeForLog("ack print view doStart end ..."));

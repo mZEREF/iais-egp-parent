@@ -74,8 +74,6 @@ public interface OrganizationLienceseeClient {
     @RequestMapping(value = "/iais-orgUserRole/users-account/{id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "id") String user_id);
-    @GetMapping(value = "/iais-internet-user/giro-account-info")
-    FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-internet-user/organization/{uen}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> findOrganizationByUen(@PathVariable("uen") String uen);

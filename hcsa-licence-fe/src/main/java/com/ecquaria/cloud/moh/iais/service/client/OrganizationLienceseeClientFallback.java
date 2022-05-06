@@ -18,8 +18,7 @@ import org.springframework.http.HttpHeaders;
  * @author caijing
  * @date 2020/1/15
  */
-public class OrganizationLienceseeClientFallback
-        implements OrganizationLienceseeClient{
+public class OrganizationLienceseeClientFallback implements OrganizationLienceseeClient{
     @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByUen(String uenNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -125,14 +124,6 @@ public class OrganizationLienceseeClientFallback
 
     @Override
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String user_id) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

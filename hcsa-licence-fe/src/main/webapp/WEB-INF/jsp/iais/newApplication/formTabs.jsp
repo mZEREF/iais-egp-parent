@@ -1,8 +1,8 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.HcsaAppConst" %>
 
 <%
-    String actionForm = (String)ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+    String actionForm = (String)ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
 
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">

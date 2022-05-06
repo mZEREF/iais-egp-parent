@@ -38,7 +38,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
@@ -82,7 +82,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private NotificationHelper notificationHelper;
 
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -774,7 +774,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 hciCode = "";
             }
             String serviceId = applicationDto.getServiceId();
-            HcsaServiceDto hcsaServiceDto = appConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            HcsaServiceDto hcsaServiceDto = configCommClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             String serviceName = hcsaServiceDto.getSvcName();
             Date date = apptFeConfirmDateDto.getSaveDate();
             String dateStr = "no date";

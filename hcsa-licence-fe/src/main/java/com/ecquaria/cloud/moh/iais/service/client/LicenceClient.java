@@ -41,16 +41,11 @@ import java.util.List;
 
 @FeignClient(name = "hcsa-licence",configuration = FeignConfiguration.class,fallback = LicenceInFallback.class)
 public interface LicenceClient {
-    @RequestMapping(path= "/hcsa-licence-rfc/licence-submission", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId") String licenceId);
+
     @GetMapping(value = "/hcsa-licence/licence-view-submission",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> viewAppSubmissionDto(@RequestParam("licenceId") String licenceId);
     @GetMapping(path= "/hcsa-licence-rfc/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(@PathVariable(value = "licenceId") String licenceId);
-
-    @GetMapping(path= "/hcsa-licence-rfc/all-related-lic-app-corrs", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicAppCorrelationDto>> getAllRelatedLicAppCorrs(@RequestParam("licenceId") String licenceId,
-            @RequestParam(value = "svcName", required = false) String svcName);
 
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byid/{licenceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicId(@RequestParam(value = "licenceId") String licenceId);
@@ -79,14 +74,6 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/licence-id-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDto(@RequestParam("licenceId") String licenceId);
-    @RequestMapping(path = "/hcsa-licence-rfc/licence-personnels",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(@RequestParam(value = "licenseeId")String licenseeId);
-
-    @PostMapping(path = "/hcsa-licence-rfc/licence-submission-licences", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(@RequestBody List<String> licenceIds);
-
-    @GetMapping(path= "/hcsa-licence/application-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId, @RequestParam(value ="serviceName") String serviceName);
 
     @PostMapping(value = "/hcsa-licence-rfc/psn-param", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<PersonnelQueryDto>> psnDoQuery(SearchParam searchParam);
@@ -108,15 +95,6 @@ public interface LicenceClient {
     @PostMapping(value = "/hcsa-licence-rfc/premises-query-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<PremisesListQueryDto>> getPremises(@RequestBody SearchParam searchParam);
 
-    @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
-
-    @PostMapping(value = "/hcsa-licence-rfc/licence-by-person", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicKeyPersonnelDto>> getLicBypersonId(@RequestBody List<String> personIds);
-
-    @GetMapping(value = "/hcsa-licence-rfc/getPersonnelDtoByLicId/{idNo}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(@PathVariable(name = "idNo") String idNo);
-
     @PostMapping(value = "/hcsa-licence-rfc/personnel-list", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelListDto>> getPersonnelListDto(@RequestBody PersonnelTypeDto personnelTypeDto);
 
@@ -132,17 +110,11 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getActSpecIdByActBaseId(@RequestParam("licId") String licId);
 
-    @GetMapping(value = "/hcsa-licence/lic-premises",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr);
+//    @GetMapping(value = "/hcsa-licence/lic-premises",produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr);
 
     @GetMapping(value = "/hcsa-licence/app-svc-align-licence",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppAlignLicQueryDto>> getAppAlignLicQueryDto(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcNameStr") String svcNameStr,@RequestParam("premTypeStr") String premTypeStr);
-
-    @GetMapping(value = "/hcsa-licence-rfc/licence-premises-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesDto>> getLicPremisesById(@RequestParam("id") String id);
-
-    @GetMapping(value = "/hcsa-licence/other-licensee-premises")
-    FeignResponseEntity<Boolean> getOtherLicseePremises(@RequestBody CheckCoLocationDto checkCoLocationDto);
 
     @GetMapping(value = "/hcsa-licence//check-new-licensee")
     FeignResponseEntity<Boolean> checkIsNewLicsee(@RequestParam("licenseeId") String licenseeId);
@@ -168,12 +140,6 @@ public interface LicenceClient {
     @PostMapping(value = "/hcsa-licence/giro-info",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountByHciCodeAndOrgId(@RequestBody List<String> hciCodeList,@RequestParam("orgId") String orgId);
 
-    @PostMapping(value = "/hcsa-licence/giro-info-licId",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountsByLicIds(@RequestBody List<String> licIdList);
-
-    @GetMapping(value = "/hcsa-licence-rfc/premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PremisesDto>> getPremisesDtoByHciNameAndPremType(@RequestParam("hciName") String hciName, @RequestParam("premType") String premType, @RequestParam("licenseeId")String licenseeId);
-
     @PostMapping(value = "/hcsa-licence/bundle-licence-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> getBundleLicence(@RequestParam("hciCode")String hciCode, @RequestParam("licenseeId") String licenseeId, @RequestBody List<String> svcNameList);
     @PostMapping(value = "/get-svc-clincal-director",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -181,15 +147,6 @@ public interface LicenceClient {
 
     @PostMapping(value = "/hcsa-licence/get-licence-by-prem-corre-id",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtoByPremCorreIds(@RequestBody List<String> premCorreIds);
-    @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
-                                                                                                 @PathVariable("originLicenceId") String originLicenceId);
-
-    @GetMapping(value = "/hcsa-licence/individual-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(@RequestParam("orgId") String orgId);
-
-    @GetMapping(value = "/hcsa-licence/inactive-licence-app-correlations", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations();
 
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byid-include-migrated/{licenceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicIdIncludeMigrated(@RequestParam(value = "licenceId") String licenceId);
@@ -200,18 +157,8 @@ public interface LicenceClient {
     @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
 
-    @PostMapping(value = "/hcsa-licence-rfc/sub-licensee/licence-submission", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtosBySubLicensee(@RequestBody SubLicenseeDto sublicenseeDto);
 
     @PostMapping(value = "/hcsa-licence/lic-giro-acct-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<GiroAccountInfoQueryDto>> searchGiroInfoByParam(@RequestBody SearchParam searchParam);
-
-    @GetMapping(value = "/hcsa-licence-rfc/premises-for-business-name", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(@RequestParam("licenceId") String licenceId);
-
-    @GetMapping(value = "/hcsa-licence-rfc/align-licence/{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(@PathVariable("licenceId") String licenceId,
-            @RequestParam("checkSpec") Boolean checkSpec);
 
 }

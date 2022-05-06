@@ -45,10 +45,12 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -90,7 +92,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
-    private AppConfigClient appConfigClient;
+    private ConfigCommClient configCommClient;
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -101,6 +103,10 @@ public class CessationFeServiceImpl implements CessationFeService {
     LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private LicCommService licCommService;
+    @Autowired
+    private AppCommService appCommService;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -222,12 +228,12 @@ public class CessationFeServiceImpl implements CessationFeService {
         licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(licId);
-            AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
+            AppSubmissionDto appSubmissionDto = licCommService.getAppSubmissionDtosByLicenceIds(licIds).get(0);
             filetDoc(appSubmissionDto);
             Map<String, List<String>> baseMap = transform(appSubmissionDto, licenseeId, premiseIds,appCessationDtos);
             List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                AppSubmissionDto appSubmissionDtoSpec = licenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
+                AppSubmissionDto appSubmissionDtoSpec = licCommService.getAppSubmissionDtosByLicenceIds(specLicIds).get(0);
                 filetDoc(appSubmissionDtoSpec);
                 Map<String, List<String>> specMap = transformSpec(appSubmissionDtoSpec, licenseeId, premiseIds);
                 for (String premiseId : premiseIds) {
@@ -260,7 +266,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
-        AppSubmissionDto appSubmissionDto = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        AppSubmissionDto appSubmissionDto = appCommService.getRfiAppSubmissionDtoByAppNo(applicationDto.getApplicationNo());
         String appId = transformRfi(appSubmissionDto, licenseeId, applicationDto);
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         appIds.add(appId);
@@ -659,7 +665,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Autowired
-private RequestForChangeService requestForChangeService;
+    private RequestForChangeService requestForChangeService;
     /*
     utils
      */
@@ -672,7 +678,7 @@ private RequestForChangeService requestForChangeService;
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         String svcId = hcsaServiceDto.getId();
-        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
+        HcsaServiceDto hcsaServiceDto1 = configCommClient.getActiveHcsaServiceDtoById(svcId).getEntity();
         String svcCode = hcsaServiceDto.getSvcCode();
         //get the base service id
         LicenceDto licenceDto = new LicenceDto();
@@ -760,7 +766,7 @@ private RequestForChangeService requestForChangeService;
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         String svcId = hcsaServiceDto.getId();
-        HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
+        HcsaServiceDto hcsaServiceDto1 = configCommClient.getActiveHcsaServiceDtoById(svcId).getEntity();
         String svcCode = hcsaServiceDto.getSvcCode();
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
@@ -923,7 +929,7 @@ private RequestForChangeService requestForChangeService;
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-        List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+        List<RiskResultDto> riskResultDtoList = configCommClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);

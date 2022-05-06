@@ -3,15 +3,14 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.SystemParamHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +33,7 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
         String name = svcPersonnel.getName();
         if (StringUtil.isNotEmpty(name)) {
             List<AppSvcPersonnelDto> appSvcSectionLeaderList = (List<AppSvcPersonnelDto>) request.getAttribute(
-                    ClinicalLaboratoryDelegator.SECTION_LEADER_LIST);
+                    HcsaAppConst.SECTION_LEADER_LIST);
             if (appSvcSectionLeaderList != null && appSvcSectionLeaderList.size() > 1) {
                 boolean duplicateName = false;
                 for (AppSvcPersonnelDto dto : appSvcSectionLeaderList) {

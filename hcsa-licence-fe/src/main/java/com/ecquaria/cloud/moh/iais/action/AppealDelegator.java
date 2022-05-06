@@ -23,12 +23,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
@@ -99,7 +100,7 @@ public class AppealDelegator {
                     appealService.getMessage(bpc.request);
                     bpc. request.setAttribute("crud_action_type","appeal");
                     Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
-                    subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+                    subjectMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                     subjectMap.put("ApplicationNumber",StringUtil.viewHtml(appNo));
                     MsgTemplateDto autoEntity = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
                     String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
@@ -278,12 +279,12 @@ public class AppealDelegator {
     public @ResponseBody String genGovernanceOfficerHtmlList(HttpServletRequest request){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(loginContext.getLicenseeId());
-        ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
         List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
         Map<String, AppSvcPersonAndExtDto> licPersonMap=IaisCommonUtils.genNewHashMap();
-        Map<String, AppSvcPersonAndExtDto> personMap = NewApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
-        List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request, true);
+        Map<String, AppSvcPersonAndExtDto> personMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
+        List<SelectOption> cgoSelectList = ApplicationHelper.genAssignPersonSel(request, true);
         ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
 
         //reload
@@ -305,7 +306,7 @@ public class AppealDelegator {
         //Specialty
         String serviceName =(String)request.getSession().getAttribute("serviceName");
         HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-        ParamUtil.setSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE,serviceByServiceName.getSvcCode());
+        ParamUtil.setSessionAttr(request, HcsaAppConst.CURRENTSVCCODE,serviceByServiceName.getSvcCode());
         List<SelectOption> specialtySelectList= genSpecialtySelectList(serviceByServiceName.getSvcCode());
         ParamUtil.setSessionAttr(request, "SpecialtySelectList", (Serializable) specialtySelectList);
         sql = sql.replace("(6)", generateDropDownHtml(specialtySelectList, "specialty", null));
@@ -319,7 +320,7 @@ public class AppealDelegator {
 
     public static List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption idType0 = new SelectOption("", HcsaAppConst.FIRESTOPTION);
         idTypeSelectList.add(idType0);
 
         List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
@@ -379,7 +380,7 @@ public class AppealDelegator {
         attrs.put("class", className);
         attrs.put("name", name);
         attrs.put("style", "display: none;");
-        return NewApplicationHelper.generateDropDownHtml(attrs, list, NewApplicationDelegator.FIRESTOPTION, null,
+        return ApplicationHelper.generateDropDownHtml(attrs, list, HcsaAppConst.FIRESTOPTION, null,
                 !MasterCodeUtil.CATE_ID_NATIONALITY.equals(cateId));
     }
 
@@ -392,6 +393,6 @@ public class AppealDelegator {
         attrs.put("class", className);
         attrs.put("name", name);
         attrs.put("style", "display: none;");
-        return NewApplicationHelper.generateDropDownHtml(attrs, options, firstOption, null);
+        return ApplicationHelper.generateDropDownHtml(attrs, options, firstOption, null);
     }
 }
